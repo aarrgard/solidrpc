@@ -8,7 +8,7 @@ namespace SolidRpc.Core
     public abstract class Permission
     {
         /// <summary>
-        /// Returns the permission name. Defaults to full name of clas.
+        /// Returns the permission name. Defaults to full name of class.
         /// </summary>
         public virtual string PermissionName => GetType().FullName;
     }

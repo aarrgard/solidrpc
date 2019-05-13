@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SolidProxy.Core" Version="1.0.0-build024" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Core\SolidRpc.Core.csproj" />
   </ItemGroup>
 
