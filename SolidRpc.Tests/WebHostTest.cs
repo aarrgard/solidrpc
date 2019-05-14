@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Tests
@@ -52,6 +56,22 @@ namespace Tests
                 sc.AddSingleton<IStartup>(this);
             });
             return builder.Build();
+        }
+
+        protected async Task<string> AssertOk(HttpResponseMessage resp)
+        {
+            var content = await resp.Content.ReadAsStringAsync();
+            if (resp.StatusCode != HttpStatusCode.OK)
+            {
+                var fi = new FileInfo("c:\\temp\\result.html");
+                using (var fs = fi.Create())
+                {
+                    var buf = Encoding.UTF8.GetBytes(content);
+                    await fs.WriteAsync(buf, 0, buf.Length);
+                }
+                Assert.Fail($"Status:{resp.StatusCode}");
+            }
+            return content;
         }
 
         public abstract IServiceProvider ConfigureServices(IServiceCollection services);

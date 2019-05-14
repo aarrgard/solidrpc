@@ -11,16 +11,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
     <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build001" />
     <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build024" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Client\SolidRpc.Client.csproj" />
     <ProjectReference Include="..\SolidRpc.Core\SolidRpc.Core.csproj" />
+    <ProjectReference Include="..\SolidRpc.Swagger\SolidRpc.Swagger.csproj" />
   </ItemGroup>
 
 </Project>

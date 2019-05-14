@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Client", "SolidRpc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Tests", "SolidRpc.Tests\SolidRpc.Tests.csproj", "{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Swagger", "SolidRpc.Swagger\SolidRpc.Swagger.csproj", "{42A950AD-1D09-48E2-B7A2-7E7A1FAC9B00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A950AD-1D09-48E2-B7A2-7E7A1FAC9B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A950AD-1D09-48E2-B7A2-7E7A1FAC9B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A950AD-1D09-48E2-B7A2-7E7A1FAC9B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A950AD-1D09-48E2-B7A2-7E7A1FAC9B00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

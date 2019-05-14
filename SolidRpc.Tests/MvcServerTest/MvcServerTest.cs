@@ -1,4 +1,8 @@
+using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -12,7 +16,10 @@ namespace Tests.MvcServerTest
             using (var ctx = new TestHostContext(GetWebHost()))
             {
                 var resp = await ctx.GetResponse("/MvcServerTest/Index");
-                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+                await AssertOk(resp);
+
+                resp = await ctx.GetResponse("/swagger/v1/swagger.json");
+                var content = await AssertOk(resp);
             }
         }
     }
