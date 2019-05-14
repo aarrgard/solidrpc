@@ -97,7 +97,7 @@ namespace SolidRpc.Swagger.V2
         /// Additional external documentation.
         /// </summary>
         [DataMember(Name = "externalDocs", EmitDefaultValue = false)]
-        public IEnumerable<ExternalDocumentationObject> ExternalDocs { get; set; }
+        public ExternalDocumentationObject ExternalDocs { get; set; }
 
     }
 }

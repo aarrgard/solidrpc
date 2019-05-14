@@ -57,33 +57,55 @@ namespace SolidRpc.Swagger
             private object ReadJson<T>(JsonReader reader, object value, JsonSerializer serializer)
             {
                 var dict = (IDictionary<string, T>)value;
-                if (reader.TokenType != JsonToken.StartObject)
+                if (reader.TokenType == JsonToken.StartObject)
                 {
-                    throw new Exception("Not start of object");
-                }
-                reader.Read();
-                while (reader.TokenType == JsonToken.PropertyName)
-                {
-                    var propertyName = (string)reader.Value;
                     reader.Read();
-                    if (reader.TokenType != JsonToken.StartObject)
+                    while (reader.TokenType == JsonToken.PropertyName)
                     {
-                        throw new Exception("Not start of object");
+                        var propertyName = (string)reader.Value;
+                        reader.Read();
+                        if (reader.TokenType == JsonToken.StartObject)
+                        {
+                            var val = (T)serializer.Deserialize(reader, typeof(T));
+                            dict[propertyName] = val;
+                            if (reader.TokenType != JsonToken.EndObject)
+                            {
+                                throw new Exception("Not end of object");
+                            }
+                            reader.Read();
+                        }
+                        else if (reader.TokenType == JsonToken.StartArray)
+                        {
+                            var val = (T)serializer.Deserialize(reader, typeof(T));
+                            dict[propertyName] = val;
+                            if (reader.TokenType != JsonToken.EndArray)
+                            {
+                                throw new Exception("Not end of array");
+                            }
+                            reader.Read();
+                        }
+                        else if (reader.TokenType == JsonToken.String)
+                        {
+                            var val = (T)serializer.Deserialize(reader, typeof(T));
+                            dict[propertyName] = val;
+                            reader.Read();
+                        }
+                        else
+                        {
+                            throw new Exception($"Cannot handle {reader.TokenType}");
+                        }
                     }
-                    var val = (T)serializer.Deserialize(reader, typeof(T));
-                    dict[propertyName] = val;
                     if (reader.TokenType != JsonToken.EndObject)
                     {
                         throw new Exception("Not end of object");
                     }
-                    reader.Read();
+                    //reader.Read();
+                    return value;
                 }
-                if (reader.TokenType != JsonToken.EndObject)
+                else
                 {
-                    throw new Exception("Not end of object");
+                    throw new Exception($"Cannot handle {reader.TokenType}");
                 }
-                //reader.Read();
-                return value;
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
