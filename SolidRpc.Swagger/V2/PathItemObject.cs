@@ -12,49 +12,49 @@ namespace SolidRpc.Swagger.V2
         /// <summary>
         /// A definition of a GET operation on this path.
         /// </summary>
-        [DataMember(Name = "get")]
+        [DataMember(Name = "get", EmitDefaultValue = false)]
         public OperationObject Get { get; set; }
 
         /// <summary>
         /// A definition of a PUT operation on this path.
         /// </summary>
-        [DataMember(Name = "put")]
+        [DataMember(Name = "put", EmitDefaultValue = false)]
         public OperationObject Put { get; set; }
 
         /// <summary>
         /// A definition of a POST operation on this path.
         /// </summary>
-        [DataMember(Name = "post")]
+        [DataMember(Name = "post", EmitDefaultValue = false)]
         public OperationObject Post { get; set; }
 
         /// <summary>
         /// A definition of a DELETE operation on this path.
         /// </summary>
-        [DataMember(Name = "delete")]
+        [DataMember(Name = "delete", EmitDefaultValue = false)]
         public OperationObject Delete { get; set; }
 
         /// <summary>
         /// A definition of a OPTIONS operation on this path.
         /// </summary>
-        [DataMember(Name = "options")]
+        [DataMember(Name = "options", EmitDefaultValue = false)]
         public OperationObject Options { get; set; }
 
         /// <summary>
         /// A definition of a HEAD operation on this path.
         /// </summary>
-        [DataMember(Name = "head")]
+        [DataMember(Name = "head", EmitDefaultValue = false)]
         public OperationObject Head { get; set; }
 
         /// <summary>
         /// A definition of a HEAD operation on this path.
         /// </summary>
-        [DataMember(Name = "patch")]
+        [DataMember(Name = "patch", EmitDefaultValue = false)]
         public OperationObject Patch { get; set; }
 
         /// <summary>
         /// A list of parameters that are applicable for all the operations described under this path. These parameters can be overridden at the operation level, but cannot be removed there. The list MUST NOT include duplicated parameters. A unique parameter is defined by a combination of a name and location. The list can use the Reference Object to link to parameters that are defined at the Swagger Object's parameters. There can be one "body" parameter at most.
         /// </summary>
-        [DataMember(Name = "parameters")]
+        [DataMember(Name = "parameters", EmitDefaultValue = false)]
         public IEnumerable<ParameterObject> Parameters { get; set; }
     }
 }

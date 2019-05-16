@@ -24,6 +24,12 @@ namespace SolidRpc.Swagger.V2
         /// <summary>
         /// Required if type is "array". Describes the type of items in the array.
         /// </summary>
+        [DataMember(Name = "description", EmitDefaultValue = false)]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Required if type is "array". Describes the type of items in the array.
+        /// </summary>
         [DataMember(Name = "items", EmitDefaultValue = false)]
         public ItemsObject Items { get; set; }
 

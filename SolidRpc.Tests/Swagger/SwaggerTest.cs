@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using SolidRpc.Swagger;
+using SolidRpc.Swagger.V2;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -13,6 +13,16 @@ namespace SolidRpc.Tests.Swagger
         {
             var swaggerSpec = ReadSwaggerV2Spec("petstore.json");
 
+            CheckPetStoreSwaggerSpec(swaggerSpec);
+
+            var str = SwaggerParser.WriteSwaggerDoc(swaggerSpec);
+            swaggerSpec = SwaggerParser.ParseSwaggerDoc<SwaggerObject>(str);
+
+            CheckPetStoreSwaggerSpec(swaggerSpec);
+        }
+
+        private void CheckPetStoreSwaggerSpec(SwaggerObject swaggerSpec)
+        {
             // basic tests
             Assert.AreEqual("2.0", swaggerSpec.Swagger);
             Assert.AreEqual("This is a sample Petstore server.  You can find \nout more about Swagger at \n[http://swagger.io](http://swagger.io) or on \n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n", swaggerSpec.Info.Description);

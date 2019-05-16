@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.Swagger.V2
 {
@@ -10,7 +11,7 @@ namespace SolidRpc.Swagger.V2
     /// <see cref="https://swagger.io/specification/v2/#schemaObject"/>
     public class SchemaObject : ItemBase
     {
-         [DataMember(Name = "discriminator", EmitDefaultValue = false)]
+        [DataMember(Name = "discriminator", EmitDefaultValue = false)]
         public string Discriminator { get; set; }
 
         [DataMember(Name = "readOnly", EmitDefaultValue = false)]
@@ -24,5 +25,14 @@ namespace SolidRpc.Swagger.V2
 
         [DataMember(Name = "example", EmitDefaultValue = false)]
         public object Example { get; set; }
+
+        [DataMember(Name = "properties", EmitDefaultValue = false)]
+        public DefinitionsObject Properties { get; set; }
+
+        [DataMember(Name = "additionalProperties", EmitDefaultValue = false)]
+        public SchemaObject AdditionalProperties { get; set; }
+
+        [DataMember(Name = "required", EmitDefaultValue = false)]
+        public IEnumerable<string> Required { get; set; }
     }
 }

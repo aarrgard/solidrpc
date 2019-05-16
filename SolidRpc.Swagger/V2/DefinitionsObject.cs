@@ -1,6 +1,6 @@
 ﻿namespace SolidRpc.Swagger.V2
 {
-    public class DefinitionsObject
+    public class DefinitionsObject : DynamicBase<SchemaObject>
     {
     }
 }
