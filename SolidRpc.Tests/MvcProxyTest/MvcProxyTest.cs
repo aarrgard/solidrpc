@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using NUnit.Framework;
-using SolidRpc.Swagger.V2;
+using SolidRpc.Swagger.Model.V2;
 
-namespace Tests.MvcProxyTest
+namespace SolidRpc.Tests.MvcProxyTest
 {
     public class MvcProxyTest : WebHostMvcTest
     {
@@ -14,11 +13,7 @@ namespace Tests.MvcProxyTest
             {
                 var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
                 var content = await AssertOk(resp);
-                var settings = new JsonSerializerSettings()
-                {
-                    ContractResolver = SolidRpc.Swagger.NewtonsoftContractResolver.Instance
-                };
-                var obj = JsonConvert.DeserializeObject<SwaggerObject>(content, settings);
+                var spec = new SwaggerParserV2().ParseSwaggerDoc(content);
 
                 resp = await ctx.GetResponse("/MvcProxyTest/ProxyInt?i=10");
                 Assert.AreEqual("10", await AssertOk(resp));

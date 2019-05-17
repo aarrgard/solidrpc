@@ -1,22 +1,25 @@
 ﻿using NUnit.Framework;
-using SolidRpc.Swagger;
-using SolidRpc.Swagger.V2;
+using SolidRpc.Swagger.Model;
+using SolidRpc.Swagger.Model.V2;
+using SolidRpc.Tests.Swagger.Petstore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SolidRpc.Tests.Swagger
 {
-    public class SwaggerTest
+    public class SwaggerTest : TestBase
     {
         [Test]
         public void TestPetStore()
         {
-            var swaggerSpec = ReadSwaggerV2Spec("petstore.json");
+            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
 
-            var str = SwaggerParser.WriteSwaggerDoc(swaggerSpec);
-            swaggerSpec = SwaggerParser.ParseSwaggerDoc<SwaggerObject>(str);
+            var str = new SwaggerParserV2().WriteSwaggerDoc(swaggerSpec);
+            swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(str);
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
         }
@@ -102,13 +105,22 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual("Find out more about Swagger", swaggerSpec.ExternalDocs.Description);
         }
 
-        private SolidRpc.Swagger.V2.SwaggerObject ReadSwaggerV2Spec(string resourceName)
+        [Test]
+        public void TestMethodBinder()
         {
-            var resName = GetType().Assembly.GetManifestResourceNames().Single(o => o.EndsWith(resourceName));
-            using (var s = GetType().Assembly.GetManifestResourceStream(resName))
-            {
-                return SwaggerParser.ParseSwaggerDoc<SolidRpc.Swagger.V2.SwaggerObject>(s);
-            }
+            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+
+            var mi = typeof(IPet).GetMethod(nameof(IPet.FindPetsByStatus));
+            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            Assert.AreEqual("findPetsByStatus", smi.OperationId);
+            Assert.AreEqual(1, smi.Arguments.Count());
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
+
+            var req = new RequestMock();
+            smi.BindArguments(req, new object[]{ new string[] { "available", "pending" } });
+            var status = req.Query["status"];
+            Assert.AreEqual("available", status.First());
+            Assert.AreEqual("pending", status.Last());
         }
     }
 }

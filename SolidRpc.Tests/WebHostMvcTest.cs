@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace Tests
+namespace SolidRpc.Tests
 {
     public class WebHostMvcTest : WebHostTest
     {

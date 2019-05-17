@@ -12,9 +12,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tests
+namespace SolidRpc.Tests
 {
-    public abstract class WebHostTest : IStartup
+    public abstract class WebHostTest : TestBase, IStartup
     {
         public class TestHostContext : IDisposable
         {
