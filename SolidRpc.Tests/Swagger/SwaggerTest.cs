@@ -129,8 +129,26 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(2, swaggerSpec.Definitions["Category"].Properties.Count);
             Assert.AreEqual("integer", swaggerSpec.Definitions["Category"].Properties["id"].Type);
             Assert.AreEqual("int64", swaggerSpec.Definitions["Category"].Properties["id"].Format);
-            Assert.AreEqual("string", swaggerSpec.Definitions["Category"].Properties["Name"].Type);
+            Assert.AreEqual("string", swaggerSpec.Definitions["Category"].Properties["name"].Type);
             Assert.AreEqual("Category", swaggerSpec.Definitions["Category"].Xml.Name);
+            //...
+            // Pet
+            Assert.AreEqual("object", swaggerSpec.Definitions["Pet"].Type);
+            Assert.AreEqual("name", swaggerSpec.Definitions["Pet"].Required.First());
+            Assert.AreEqual("photoUrls", swaggerSpec.Definitions["Pet"].Required.Last());
+            Assert.AreEqual("integer", swaggerSpec.Definitions["Pet"].Properties["id"].Type);
+            Assert.AreEqual("int64", swaggerSpec.Definitions["Pet"].Properties["id"].Format);
+            Assert.AreEqual("#/definitions/Category", swaggerSpec.Definitions["Pet"].Properties["category"].Ref);
+            Assert.AreEqual("string", swaggerSpec.Definitions["Pet"].Properties["name"].Type);
+            Assert.AreEqual("doggie", swaggerSpec.Definitions["Pet"].Properties["name"].Example);
+            Assert.AreEqual("array", swaggerSpec.Definitions["Pet"].Properties["photoUrls"].Type);
+            Assert.AreEqual("photoUrl", swaggerSpec.Definitions["Pet"].Properties["photoUrls"].Xml.Name);
+            Assert.AreEqual(true, swaggerSpec.Definitions["Pet"].Properties["photoUrls"].Xml.Wrapped);
+            Assert.AreEqual("string", swaggerSpec.Definitions["Pet"].Properties["photoUrls"].Items.Type);
+            Assert.AreEqual("array", swaggerSpec.Definitions["Pet"].Properties["tags"].Type);
+            Assert.AreEqual("tag", swaggerSpec.Definitions["Pet"].Properties["tags"].Xml.Name);
+            Assert.AreEqual(true, swaggerSpec.Definitions["Pet"].Properties["tags"].Xml.Wrapped);
+            Assert.AreEqual("#/definitions/Tag", swaggerSpec.Definitions["Pet"].Properties["tags"].Items.Ref);
         }
 
         [Test]

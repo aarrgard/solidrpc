@@ -8,8 +8,19 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     public interface IMember
     {
         /// <summary>
+        /// The name of the member
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Returns all the members.
         /// </summary>
         IEnumerable<IMember> Members { get; }
+
+        /// <summary>
+        /// Writes the code to supplied writer
+        /// </summary>
+        /// <param name="codeWriter"></param>
+        void WriteCode(ICodeWriter codeWriter);
     }
 }

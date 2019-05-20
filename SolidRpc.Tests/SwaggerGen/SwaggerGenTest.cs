@@ -13,7 +13,8 @@ namespace SolidRpc.Tests.Swagger
             var settings = new SwaggerCodeSettings()
             {
                 SwaggerSpec = swaggerSpec,
-                OutputPath = TestContext.CurrentContext.TestDirectory
+                OutputPath = "C:\\Development\\github\\solidrpc\\SolidRpc.Tests\\tmp"
+                //OutputPath = TestContext.CurrentContext.TestDirectory
             };
 
             SwaggerCodeGenerator.GenerateCode(settings);

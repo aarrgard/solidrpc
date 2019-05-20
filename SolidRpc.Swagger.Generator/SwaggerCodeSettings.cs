@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SolidRpc.Swagger.Generator.Code;
 using SolidRpc.Swagger.Generator.Code.Binder;
 
 namespace SolidRpc.Swagger.Generator
@@ -17,7 +18,7 @@ namespace SolidRpc.Swagger.Generator
                 return new CSharpMethod()
                 {
                     ReturnType = settings.ItemMapper(settings, operation.ReturnType),
-                    ClassName = className,
+                    InterfaceName = className,
                     MethodName = operation.OperationId,
                     Parameters = operation.Parameters.Select(o => new CSharpMethodParameter()
                     {
@@ -28,9 +29,10 @@ namespace SolidRpc.Swagger.Generator
             };
             ItemMapper = (settings, item) =>
             {
+                if(string.IsNullOrEmpty(item.Name)) throw new Exception("Name is null or empty");
                 return new CSharpObject()
                 {
-                    Name = item.Name
+                    Name = ((QualifiedName)settings.Namespace) + item.Name
                 };
             };
 

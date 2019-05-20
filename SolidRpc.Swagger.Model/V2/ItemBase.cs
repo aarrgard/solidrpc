@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.Swagger.Model.V2
@@ -85,5 +87,20 @@ namespace SolidRpc.Swagger.Model.V2
 
         [DataMember(Name = "multipleOf", EmitDefaultValue = false)]
         public decimal MultipleOf { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                if (Parent is DefinitionsObject defObj)
+                {
+                    return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
+                }
+                else
+                {
+                    throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
+                }
+            }
+        }
     }
 }

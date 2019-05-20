@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SolidRpc.Swagger.Generator.Code.Binder;
+using SolidRpc.Swagger.Generator.Code.CSharp;
 using SolidRpc.Swagger.Model.V2;
 
 namespace SolidRpc.Swagger.Generator.V2
@@ -26,20 +28,44 @@ namespace SolidRpc.Swagger.Generator.V2
                 o.Put
             }).Where(o => o != null);
 
-        protected override void GenerateCode()
+        protected override void GenerateCode(ICodeGenerator codeGenerator)
         {
             // iterate all operations
-            foreach(var op in Operations)
+            var methods = Operations.Select(op =>
             {
                 var swaggerOperation = new SwaggerOperation()
                 {
                     Tags = op.Tags,
                     OperationId = op.OperationId,
+                    ReturnType = GetSwaggerDefinition(op),
                     Parameters = CreateParameters(op.Parameters)
                 };
 
-                var cSharpMethod = CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
+                return CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
+            }).ToList();
+
+            methods.ForEach(o =>
+            {
+                var ns = codeGenerator.GetNamespace(o.InterfaceName.Namespace);
+                var i = ns.GetInterface(o.InterfaceName.Name);
+                var m = i.AddMethod(o.MethodName);
+                m.ReturnType = codeGenerator.GetNamespace(o.ReturnType.Name.Namespace).GetClass(o.ReturnType.Name.Name);
+                foreach(var p in o.Parameters)
+                {
+                    m.AddParameter(p.Name).ParameterType = codeGenerator.GetNamespace(p.ParameterType.Name.Namespace).GetClass(p.ParameterType.Name.Name);
+                }
+            });
+
+          }
+
+        private SwaggerDefinition GetSwaggerDefinition(OperationObject op)
+        {
+            ResponseObject ro;
+            if(!op.Responses.TryGetValue("200", out ro))
+            {
+                return SwaggerDefinition.Void;
             }
+            return GetSwaggerDefinition($"{op.OperationId}Args", ro.Schema);
         }
 
         private IEnumerable<SwaggerOperationParameter> CreateParameters(IEnumerable<ParameterObject> parameters)
@@ -49,9 +75,45 @@ namespace SolidRpc.Swagger.Generator.V2
 
         private SwaggerOperationParameter CreateParameter(ParameterObject arg)
         {
-            var sop =  new SwaggerOperationParameter();
-            sop.Name = arg.Name;
-            return sop;
+            return new SwaggerOperationParameter()
+            {
+                Name = arg.Name,
+                ParameterType = GetSwaggerDefinition(arg.Name, arg.Schema)
+            };
+        }
+
+        private SwaggerDefinition GetSwaggerDefinition(string definitionName, ItemBase schema)
+        {
+            if(!string.IsNullOrEmpty(schema.Ref))
+            {
+                var prefix = "#/definitions/";
+                if(schema.Ref.StartsWith(prefix))
+                {
+                    var d = SwaggerObject.Definitions[schema.Ref.Substring(prefix.Length)];
+                    return GetSwaggerDefinition(definitionName, d);
+                }
+                else
+                {
+                    throw new Exception("Cannot handle ref.");
+                }
+            }
+            switch(schema.Type)
+            {
+                case "object":
+                    return new SwaggerDefinition()
+                    {
+                        Name = schema.Name
+                    };
+                case "array":
+                    var arrayType = GetSwaggerDefinition(definitionName, schema.Items);
+                    return new SwaggerDefinition()
+                    {
+                        Name = arrayType.Name,
+                        IsArray = true
+                    };
+                default:
+                    throw new Exception("Cannot handle schema type:"+schema.Type);
+            }
         }
     }
 }

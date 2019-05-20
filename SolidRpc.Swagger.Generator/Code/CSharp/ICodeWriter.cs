@@ -7,11 +7,15 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     /// </summary>
     public interface ICodeWriter
     {
+        string NewLine { get; }
+
         /// <summary>
-        /// Returns the text writer that can be used to write data to supplied filename.
+        /// Moves to supplied file name.
         /// </summary>
         /// <param name="fileName"></param>
-        /// <returns></returns>
-        TextWriter GetTextWriter(string fileName);
+        void MoveToFile(string fileName);
+        void Emit(string v);
+        void Indent();
+        void Unindent();
     }
 }

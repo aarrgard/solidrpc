@@ -16,9 +16,9 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         public CSharpObject ReturnType { get; set; }
 
         /// <summary>
-        /// The full class name
+        /// The interface the this method belongs to
         /// </summary>
-        public QualifiedName ClassName { get; set; }
+        public QualifiedName InterfaceName { get; set; }
 
         /// <summary>
         /// The full class name
