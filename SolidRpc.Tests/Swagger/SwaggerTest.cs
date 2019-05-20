@@ -103,6 +103,34 @@ namespace SolidRpc.Tests.Swagger
 
             Assert.AreEqual("http://swagger.io", swaggerSpec.ExternalDocs.Url);
             Assert.AreEqual("Find out more about Swagger", swaggerSpec.ExternalDocs.Description);
+
+            // definitions
+            Assert.AreEqual(6, swaggerSpec.Definitions.Count);
+            // Order
+            Assert.AreEqual("object", swaggerSpec.Definitions["Order"].Type);
+            Assert.AreEqual(6, swaggerSpec.Definitions["Order"].Properties.Count);
+            Assert.AreEqual("integer", swaggerSpec.Definitions["Order"].Properties["id"].Type);
+            Assert.AreEqual("int64", swaggerSpec.Definitions["Order"].Properties["id"].Format);
+            Assert.AreEqual("integer", swaggerSpec.Definitions["Order"].Properties["petId"].Type);
+            Assert.AreEqual("int64", swaggerSpec.Definitions["Order"].Properties["petId"].Format);
+            Assert.AreEqual("integer", swaggerSpec.Definitions["Order"].Properties["quantity"].Type);
+            Assert.AreEqual("int32", swaggerSpec.Definitions["Order"].Properties["quantity"].Format);
+            Assert.AreEqual("string", swaggerSpec.Definitions["Order"].Properties["shipDate"].Type);
+            Assert.AreEqual("date-time", swaggerSpec.Definitions["Order"].Properties["shipDate"].Format);
+            Assert.AreEqual("string", swaggerSpec.Definitions["Order"].Properties["status"].Type);
+            Assert.AreEqual("Order Status", swaggerSpec.Definitions["Order"].Properties["status"].Description);
+            Assert.AreEqual("placed", swaggerSpec.Definitions["Order"].Properties["status"].Enum.First());
+            Assert.AreEqual("approved", swaggerSpec.Definitions["Order"].Properties["status"].Enum.Skip(1).First());
+            Assert.AreEqual("delivered", swaggerSpec.Definitions["Order"].Properties["status"].Enum.Skip(2).First());
+            Assert.AreEqual("boolean", swaggerSpec.Definitions["Order"].Properties["complete"].Type);
+            Assert.AreEqual(false, swaggerSpec.Definitions["Order"].Properties["complete"].Default);
+            // Category
+            Assert.AreEqual("object", swaggerSpec.Definitions["Category"].Type);
+            Assert.AreEqual(2, swaggerSpec.Definitions["Category"].Properties.Count);
+            Assert.AreEqual("integer", swaggerSpec.Definitions["Category"].Properties["id"].Type);
+            Assert.AreEqual("int64", swaggerSpec.Definitions["Category"].Properties["id"].Format);
+            Assert.AreEqual("string", swaggerSpec.Definitions["Category"].Properties["Name"].Type);
+            Assert.AreEqual("Category", swaggerSpec.Definitions["Category"].Xml.Name);
         }
 
         [Test]

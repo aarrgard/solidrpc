@@ -23,12 +23,6 @@ namespace SolidRpc.Swagger.Model.V2
         public string In { get; set; }
 
         /// <summary>
-        /// A brief description of the parameter. This could contain examples of use. GFM syntax can be used for rich text representation.
-        /// </summary>
-        [DataMember(Name = "description", EmitDefaultValue = false)]
-        public string Description { get; set; }
-
-        /// <summary>
         /// Determines whether this parameter is mandatory. If the parameter is in "path", this property is required and its value MUST be true. Otherwise, the property MAY be included and its default value is false.
         /// </summary>
         [DataMember(Name = "required")]

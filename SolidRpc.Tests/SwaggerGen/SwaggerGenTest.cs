@@ -12,10 +12,11 @@ namespace SolidRpc.Tests.Swagger
             var swaggerSpec = new StreamReader(GetManifestResource("petstore.json")).ReadToEnd();
             var settings = new SwaggerCodeSettings()
             {
-                SwaggerSpec = swaggerSpec
+                SwaggerSpec = swaggerSpec,
+                OutputPath = TestContext.CurrentContext.TestDirectory
             };
 
-            new SwaggerCodeGenerator().GenerateCode(settings);
+            SwaggerCodeGenerator.GenerateCode(settings);
         }
     }
 }
