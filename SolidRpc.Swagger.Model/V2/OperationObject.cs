@@ -61,7 +61,7 @@ namespace SolidRpc.Swagger.Model.V2
         /// Required. The list of possible responses as they are returned from executing this operation.
         /// </summary>
         [DataMember(Name = "responses", EmitDefaultValue = false)]
-        public ResposesObject Responses { get; set; }
+        public ResponsesObject Responses { get; set; }
 
         /// <summary>
         /// The transfer protocol for the operation. Values MUST be from the list: "http", "https", "ws", "wss". The value overrides the Swagger Object schemes definition.

@@ -17,7 +17,7 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 
         public void WriteCode(ICodeWriter codeWriter)
         {
-            throw new System.NotImplementedException();
+            codeWriter.Emit($"{ParameterType.FullName} {Name}");
         }
     }
 }

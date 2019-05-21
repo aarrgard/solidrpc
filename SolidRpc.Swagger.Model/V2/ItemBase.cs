@@ -96,6 +96,10 @@ namespace SolidRpc.Swagger.Model.V2
                 {
                     return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
                 }
+                if (Parent is ResponseObject respObj)
+                {
+                    return respObj.Status;
+                }
                 else
                 {
                     throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);

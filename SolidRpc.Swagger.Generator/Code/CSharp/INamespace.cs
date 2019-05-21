@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an interface
     /// </summary>
-    public interface INamespace : IMember
+    public interface INamespace : IQualifiedMember
     {
         /// <summary>
         /// Returns the interface in this namespace.
@@ -18,5 +18,12 @@
         /// <param name="name"></param>
         /// <returns></returns>
         IClass GetClass(string name);
+
+        /// <summary>
+        /// Returns the namespace for supplied name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        INamespace GetNamespace(string name);
     }
 }

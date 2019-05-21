@@ -31,66 +31,83 @@ namespace SolidRpc.Swagger.Generator.V2
         protected override void GenerateCode(ICodeGenerator codeGenerator)
         {
             // iterate all operations
-            var methods = Operations.Select(op =>
+            var cSharpMethods = Operations.Select(op =>
             {
-                var swaggerOperation = new SwaggerOperation()
-                {
-                    Tags = op.Tags,
-                    OperationId = op.OperationId,
-                    ReturnType = GetSwaggerDefinition(op),
-                    Parameters = CreateParameters(op.Parameters)
-                };
-
+                var swaggerOperation = new SwaggerOperation();
+                swaggerOperation.Tags = op.Tags;
+                swaggerOperation.OperationId = op.OperationId;
+                swaggerOperation.ReturnType = GetSwaggerDefinition(swaggerOperation, op);
+                swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
                 return CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
             }).ToList();
 
-            methods.ForEach(o =>
+            cSharpMethods.ForEach(o =>
             {
                 var ns = codeGenerator.GetNamespace(o.InterfaceName.Namespace);
                 var i = ns.GetInterface(o.InterfaceName.Name);
                 var m = i.AddMethod(o.MethodName);
-                m.ReturnType = codeGenerator.GetNamespace(o.ReturnType.Name.Namespace).GetClass(o.ReturnType.Name.Name);
+                m.ReturnType = GetClass(codeGenerator, o.ReturnType);
                 foreach(var p in o.Parameters)
                 {
-                    m.AddParameter(p.Name).ParameterType = codeGenerator.GetNamespace(p.ParameterType.Name.Namespace).GetClass(p.ParameterType.Name.Name);
+                    m.AddParameter(p.Name).ParameterType = GetClass(codeGenerator, p.ParameterType);
                 }
             });
 
+            SwaggerObject.Definitions.Values.ToList().ForEach(o =>
+            {
+                var swaggerDef = GetSwaggerDefinition(null, o);
+                var cSharpObject = CodeSettings.ItemMapper(CodeSettings, swaggerDef);
+                GetClass(codeGenerator, cSharpObject);
+            });
           }
 
-        private SwaggerDefinition GetSwaggerDefinition(OperationObject op)
+        private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, OperationObject op)
         {
             ResponseObject ro;
             if(!op.Responses.TryGetValue("200", out ro))
             {
                 return SwaggerDefinition.Void;
             }
-            return GetSwaggerDefinition($"{op.OperationId}Args", ro.Schema);
+            return GetSwaggerDefinition(swaggerOperation, ro.Schema);
         }
 
-        private IEnumerable<SwaggerOperationParameter> CreateParameters(IEnumerable<ParameterObject> parameters)
+        private IEnumerable<SwaggerOperationParameter> CreateParameters(SwaggerOperation swaggerOperation, IEnumerable<ParameterObject> parameters)
         {
-            return parameters.Select(CreateParameter).ToList();
+            return parameters.Select(o => CreateParameter(swaggerOperation, o)).ToList();
         }
 
-        private SwaggerOperationParameter CreateParameter(ParameterObject arg)
+        private SwaggerOperationParameter CreateParameter(SwaggerOperation swaggerOperation, ParameterObject arg)
         {
             return new SwaggerOperationParameter()
             {
                 Name = arg.Name,
-                ParameterType = GetSwaggerDefinition(arg.Name, arg.Schema)
+                ParameterType = GetSwaggerDefinition(swaggerOperation, arg)
             };
         }
 
-        private SwaggerDefinition GetSwaggerDefinition(string definitionName, ItemBase schema)
+        private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, ParameterObject parameterObject)
         {
+            switch(parameterObject.In)
+            {
+                case "body":
+                    return GetSwaggerDefinition(swaggerOperation, parameterObject.Schema);
+                default:
+                    return GetSwaggerDefinition(swaggerOperation, (ItemBase)parameterObject);
+            }
+        }
+        private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, ItemBase schema)
+        {
+            if (schema == null)
+            {
+                throw new ArgumentNullException(nameof(schema));
+            }
             if(!string.IsNullOrEmpty(schema.Ref))
             {
                 var prefix = "#/definitions/";
                 if(schema.Ref.StartsWith(prefix))
                 {
                     var d = SwaggerObject.Definitions[schema.Ref.Substring(prefix.Length)];
-                    return GetSwaggerDefinition(definitionName, d);
+                    return GetSwaggerDefinition(null, d);
                 }
                 else
                 {
@@ -100,17 +117,46 @@ namespace SolidRpc.Swagger.Generator.V2
             switch(schema.Type)
             {
                 case "object":
-                    return new SwaggerDefinition()
+                    var sd = new SwaggerDefinition(swaggerOperation, schema.Name);
+                    if(schema is SchemaObject so && so.Properties != null)
                     {
-                        Name = schema.Name
-                    };
+                        sd.Properties = so.Properties.Select(o => new SwaggerProperty()
+                        {
+                            Name = o.Key,
+                            Type = GetSwaggerDefinition(swaggerOperation, o.Value)
+                        }).ToList();
+                    }
+                    return sd;
                 case "array":
-                    var arrayType = GetSwaggerDefinition(definitionName, schema.Items);
-                    return new SwaggerDefinition()
+                    var arrayType = GetSwaggerDefinition(swaggerOperation, schema.Items);
+                    return new SwaggerDefinition(arrayType.SwaggerOperation, arrayType.Name)
                     {
-                        Name = arrayType.Name,
                         IsArray = true
                     };
+                case "string":
+                    switch (schema.Format)
+                    {
+                        case null:
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeString);
+                        case "date-time":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDateTime);
+                        default:
+                            throw new Exception("Cannot handle schema format:" + schema.Format);
+                    }
+                case "integer":
+                    switch (schema.Format)
+                    {
+                        case "int64":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeLong);
+                        case "int32":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeInt);
+                        default:
+                            throw new Exception("Cannot handle schema format:" + schema.Format);
+                    }
+                case "file":
+                    return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeStream);
+                case "boolean":
+                    return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeBoolean);
                 default:
                     throw new Exception("Cannot handle schema type:"+schema.Type);
             }

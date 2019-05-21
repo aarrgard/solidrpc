@@ -1,22 +1,27 @@
-﻿using System;
+﻿using SolidRpc.Swagger.Generator.Code.Binder;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
-    public class Namespace : INamespace
+    public class Namespace : INamespace, IQualifiedMember
     {
-        public Namespace(string name)
+        public Namespace(IQualifiedMember parent, string name)
         {
-            Members = new ConcurrentDictionary<string, IMember>();
+            Name = name;
+            FullName = new QualifiedName(parent?.FullName, name).ToString();
+            Members = new ConcurrentDictionary<string, IQualifiedMember>();
         }
 
-        private ConcurrentDictionary<string, IMember> Members { get; }
+        private ConcurrentDictionary<string, IQualifiedMember> Members { get; }
 
         IEnumerable<IMember> IMember.Members => Members.Values;
 
         public string Name { get; }
+
+        public string FullName { get; }
 
         public IClass GetClass(string className)
         {
@@ -28,22 +33,17 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
             return (IInterface)Members.GetOrAdd(interfaceName, _ => new Interface(this, _));
         }
 
+        public INamespace GetNamespace(string interfaceName)
+        {
+            return (INamespace)Members.GetOrAdd(interfaceName, _ => new Namespace(this, _));
+        }
+
         public void WriteCode(ICodeWriter codeWriter)
         {
             Members.Values
-                .Where(o => !IsReservedName(o.Name))
+                .Where(o => !SwaggerDefinition.ReservedNames.Contains(o.FullName))
+                .Where(o => !o.Name.Contains('<')) // do not generate generic types
                 .ToList().ForEach(o => o.WriteCode(codeWriter));
-        }
-
-        private bool IsReservedName(string name)
-        {
-            switch(name)
-            {
-                case "void":
-                    return true;
-                default:
-                    return false;
-            }
         }
     }
 }

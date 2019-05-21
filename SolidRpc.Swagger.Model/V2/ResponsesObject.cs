@@ -6,7 +6,7 @@
     /// The Responses Object MUST contain at least one response code, and it SHOULD be the response for a successful operation call.
     /// </summary>
     /// <see cref="https://swagger.io/specification/v2/#responsesObject"/>
-    public class ResposesObject : ModelBaseDynamic<ResponseObject>
+    public class ResponsesObject : ModelBaseDynamic<ResponseObject>
     {
     }
 }

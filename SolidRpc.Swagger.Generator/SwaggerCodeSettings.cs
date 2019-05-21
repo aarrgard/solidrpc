@@ -14,7 +14,7 @@ namespace SolidRpc.Swagger.Generator
         {
             OperationMapper = (settings, operation) =>
             {
-                var className = new QualifiedName(settings.Namespace, operation.Tags.First());
+                var className = new QualifiedName(settings.RootNamespace, settings.ServiceNamespace, operation.Tags.First());
                 return new CSharpMethod()
                 {
                     ReturnType = settings.ItemMapper(settings, operation.ReturnType),
@@ -27,15 +27,29 @@ namespace SolidRpc.Swagger.Generator
                     }).ToList()
                 };
             };
-            ItemMapper = (settings, item) =>
+            ItemMapper = (settings, swaggerDef) =>
             {
-                if(string.IsNullOrEmpty(item.Name)) throw new Exception("Name is null or empty");
-                return new CSharpObject()
+                if(string.IsNullOrEmpty(swaggerDef.Name)) throw new Exception("Name is null or empty");
+                var name = swaggerDef.Name;
+                if(!swaggerDef.IsReservedName)
                 {
-                    Name = ((QualifiedName)settings.Namespace) + item.Name
-                };
+                    if (swaggerDef.SwaggerOperation != null)
+                    {
+                        name = swaggerDef.SwaggerOperation.OperationId + name;
+                    }
+                    name = new QualifiedName(settings.RootNamespace, settings.TypeNamespace, name);
+                }
+                var csObj = new CSharpObject(name);
+                csObj.IsArray = swaggerDef.IsArray;
+                csObj.Properties = swaggerDef.Properties.Select(o => new CSharpProperty()
+                {
+                    PropertyName = o.Name,
+                    PropertyType = settings.ItemMapper(settings, o.Type)
+                });
+                return csObj;
             };
-
+            TypeNamespace = "Types";
+            ServiceNamespace = "Services";
         }
 
         /// <summary>
@@ -46,7 +60,17 @@ namespace SolidRpc.Swagger.Generator
         /// <summary>
         /// The namespace to add to all the generated classes.
         /// </summary>
-        public string Namespace { get; set; }
+        public string RootNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace to append to the root namespace for all the types
+        /// </summary>
+        public string TypeNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace to append to the root namespace for all the services(interfaces)
+        /// </summary>
+        public string ServiceNamespace { get; set; }
 
         /// <summary>
         /// The output path. May be a folder or zip.

@@ -14,12 +14,15 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
                 throw new ArgumentException("Directory does not exist:" + outputPath);
             }
             OutputPath = outputPath;
-            Indentation = "";
+            IndentationString = "    ";
+            CurrentIndentation = "";
         }
 
         public string OutputPath { get; }
 
-        public string Indentation { get; private set; }
+        public string IndentationString { get; private set; }
+
+        public string CurrentIndentation { get; private set; }
 
         public TextWriter CurrentWriter
         {
@@ -43,6 +46,7 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 
         public void MoveToFile(string fileName)
         {
+            CurrentWriter = null;
             var filePath = Path.Combine(OutputPath, fileName);
             var file = new FileInfo(filePath);
             if (!file.Directory.Exists)
@@ -62,7 +66,7 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
             if(IndentOnNextEmit)
             {
                 CurrentWriter.Write(NewLine);
-                CurrentWriter.Write(Indentation);
+                CurrentWriter.Write(CurrentIndentation);
             }
             if(txt.EndsWith(NewLine))
             {
@@ -73,18 +77,18 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
             {
                 IndentOnNextEmit = false;
             }
-            txt = txt.Replace(NewLine, $"{NewLine}{Indentation}");
+            txt = txt.Replace(NewLine, $"{NewLine}{CurrentIndentation}");
             CurrentWriter.Write(txt);
         }
 
         public void Indent()
         {
-            Indentation = Indentation + "  ";
+            CurrentIndentation = CurrentIndentation + IndentationString;
         }
 
         public void Unindent()
         {
-            Indentation = Indentation.Substring(0, Indentation.Length - 2);
+            CurrentIndentation = CurrentIndentation.Substring(0, CurrentIndentation.Length - IndentationString.Length);
         }
     }
 }

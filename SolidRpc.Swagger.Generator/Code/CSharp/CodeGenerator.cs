@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
@@ -9,23 +7,36 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     {
         public CodeGenerator()
         {
-            Namespaces = new ConcurrentDictionary<string, INamespace>();
+            DefaultNamespace = new Namespace(null, "");
         }
 
-        public ConcurrentDictionary<string, INamespace> Namespaces { get; }
+        public INamespace DefaultNamespace { get; }
 
         public string Name => "";
 
-        public IEnumerable<IMember> Members => Namespaces.Values;
+        public IEnumerable<IMember> Members => DefaultNamespace.Members;
+
+        public IClass CreateGenericType(string genericTypeDef, string classFullName)
+        {
+            var genQName = new QualifiedName(genericTypeDef);
+            var genNs = GetNamespace(genQName.Namespace);
+            return genNs.GetClass($"{genQName.Name}<{classFullName}>");
+        }
 
         public INamespace GetNamespace(string ns)
         {
-            return Namespaces.GetOrAdd(ns, (_) => new Namespace(ns));
+            var names = new QualifiedName(ns).Names;
+            var @namespace = DefaultNamespace;
+            foreach (var name in names)
+            {
+                @namespace = @namespace.GetNamespace(name);
+            }
+            return @namespace;
         }
 
         public void WriteCode(ICodeWriter codeWriter)
         {
-            Members.ToList().ForEach(o => o.WriteCode(codeWriter));
+            DefaultNamespace.WriteCode(codeWriter);
         }
     }
 }

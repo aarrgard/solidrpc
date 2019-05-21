@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.Swagger.Model.V2
 {
@@ -31,5 +33,20 @@ namespace SolidRpc.Swagger.Model.V2
         /// </summary>
         [DataMember(Name = "examples", EmitDefaultValue = false)]
         public ExampleObject examples { get; set; }
+
+        public string Status
+        {
+            get
+            {
+                if (Parent is ResponsesObject defObj)
+                {
+                    return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
+                }
+                else
+                {
+                    throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
+                }
+            }
+        }
     }
 }

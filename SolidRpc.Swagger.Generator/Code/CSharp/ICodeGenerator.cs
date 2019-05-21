@@ -15,5 +15,13 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         /// <param name="ns"></param>
         /// <returns></returns>
         INamespace GetNamespace(string ns);
+
+        /// <summary>
+        /// Creates a generic class from supplied arguments.
+        /// </summary>
+        /// <param name="genericTypeDef"></param>
+        /// <param name="classFullName"></param>
+        /// <returns></returns>
+        IClass CreateGenericType(string genericTypeDef, string classFullName);
     }
 }

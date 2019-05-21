@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
@@ -8,31 +9,43 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         {
             Member = member;
             Name = methodName;
-            Parameters = new List<IParameter>();
+            Members = new List<IMember>();
         }
 
         public IMember Member { get; }
 
         public string Name { get; }
 
-        public IEnumerable<IMember> Members => new IMember[0];
+        public IList<IMember> Members { get; }
+
+        IEnumerable<IMember> IMember.Members => Members;
 
         public IClass ReturnType { get; set; }
 
-        public IList<IParameter> Parameters { get; }
-
-        IEnumerable<IParameter> IMethod.Parameters => Parameters;
+        public IEnumerable<IParameter> Parameters => Members.OfType<IParameter>();
 
         public IParameter AddParameter(string parameterName)
         {
             var p = new Parameter(this, parameterName);
-            Parameters.Add(p);
+            Members.Add(p);
             return p;
         }
 
         public void WriteCode(ICodeWriter codeWriter)
         {
-            codeWriter.Emit($"{ReturnType.Name} {Name}(");
+            codeWriter.Emit($"{ReturnType.FullName} {Name}(");
+            var parameters = Members.OfType<IParameter>().ToList();
+            for(int i = 0; i < parameters.Count; i ++)
+            {
+                codeWriter.Emit(codeWriter.NewLine);
+                codeWriter.Indent();
+                parameters[i].WriteCode(codeWriter);
+                if(i < parameters.Count - 1)
+                {
+                    codeWriter.Emit(",");
+                }
+                codeWriter.Unindent();
+            }
             codeWriter.Emit($");{codeWriter.NewLine}");
         }
     }

@@ -21,17 +21,12 @@ namespace SolidRpc.Swagger.Generator.Code
             return new QualifiedName(a,b);
         }
 
-        public QualifiedName(string name1)
-            : this((name1 ?? "").Split('.'))
+        public QualifiedName(params string[] namespaces)
+            : this(namespaces.SelectMany(o => (o ?? "").Split('.')))
         {
         }
 
-        public QualifiedName(string name1, string name2)
-            : this((name1 ?? "").Split('.').Union((name2 ?? "").Split('.')))
-        {
-        }
-
-        public QualifiedName(IEnumerable<string> names)
+        private QualifiedName(IEnumerable<string> names)
         {
             Names = names.Where(o => !string.IsNullOrEmpty(o)).ToList();
             QName = string.Join(".", Names);

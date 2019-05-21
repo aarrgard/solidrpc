@@ -5,6 +5,12 @@
     /// </summary>
     public interface IInterface : IMember
     {
+
+        /// <summary>
+        /// Returns the fully qualified name
+        /// </summary>
+        string FullName { get; }
+
         /// <summary>
         /// Adds a method to this interface
         /// </summary>
