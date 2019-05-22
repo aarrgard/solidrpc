@@ -14,5 +14,10 @@
         /// The property type.
         /// </summary>
         public SwaggerDefinition Type { get; set; }
+
+        /// <summary>
+        /// The description of this property - null if not description available
+        /// </summary>
+        public string Description { get; set; }
     }
 }

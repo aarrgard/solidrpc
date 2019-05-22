@@ -7,7 +7,7 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     /// <summary>
     /// Interface to access the code generator.
     /// </summary>
-    public interface ICodeGenerator : IMember
+    public interface ICodeGenerator : IQualifiedMember
     {
         /// <summary>
         /// Returns the namespace

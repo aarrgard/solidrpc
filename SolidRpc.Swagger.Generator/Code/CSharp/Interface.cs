@@ -5,17 +5,14 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
     public class Interface : ClassOrInterface, IInterface
     {
-        public Interface(Namespace ns, string name)
+        public Interface(Namespace ns, string name) : base(ns)
         {
             Namespace = ns;
             Name = name;
-            Members = new List<IMember>();
         }
         public override string Name { get; }
 
         public override INamespace Namespace { get; }
-
-        public override IEnumerable<IMember> Members { get; }
 
         public IMethod AddMethod(string methodName)
         {

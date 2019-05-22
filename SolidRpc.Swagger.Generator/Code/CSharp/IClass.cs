@@ -17,6 +17,6 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="propType"></param>
-        void AddProperty(string propertyName, IClass propType);
+        IProperty AddProperty(string propertyName, IClass propType);
     }
 }

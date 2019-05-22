@@ -5,23 +5,22 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
     public class Class : ClassOrInterface, IClass
     {
-        public Class(Namespace ns, string name)
+        public Class(Namespace ns, string name) : base(ns)
         {
             Namespace = ns;
             Name = name;
-            Members = new List<IMember>();
         }
         public override INamespace Namespace { get; }
 
         public override string Name { get; }
 
-        public override IEnumerable<IMember> Members { get; }
-
         public IEnumerable<IProperty> Properties => Members.OfType<IProperty>();
 
-        public void AddProperty(string propertyName, IClass propType)
+        public IProperty AddProperty(string propertyName, IClass propType)
         {
-            ((IList<IMember>)Members).Add(new Property(propType, propertyName));
+            var property = new Property(this, propType, propertyName);
+            Members.Add(property);
+            return property;
         }
     }
 }

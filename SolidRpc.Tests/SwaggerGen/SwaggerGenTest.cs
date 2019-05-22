@@ -13,8 +13,9 @@ namespace SolidRpc.Tests.Swagger
             var settings = new SwaggerCodeSettings()
             {
                 SwaggerSpec = swaggerSpec,
-                OutputPath = "C:\\Development\\github\\solidrpc\\SolidRpc.Tests\\tmp"
+                OutputPath = "C:\\Development\\github\\solidrpc\\SolidRpc.Tests\\tmp",
                 //OutputPath = TestContext.CurrentContext.TestDirectory
+                //RootNamespace = "SolidRpc.Tests.Swagger.Petstore"
             };
 
             SwaggerCodeGenerator.GenerateCode(settings);

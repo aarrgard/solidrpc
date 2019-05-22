@@ -1,23 +1,27 @@
-﻿using System.Collections.Generic;
-
-namespace SolidRpc.Swagger.Generator.Code.CSharp
+﻿namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
-    public class Parameter : IParameter
+    public class Parameter : Member, IParameter
     {
-        public Parameter(IMethod method, string name)
+        public Parameter(IMethod method, string name) : base(method)
         {
             Name = name;
         }
 
-        public string Name { get; }
+        public string Description { get; set; }
 
-        public IEnumerable<IMember> Members => new IMember[0];
+        public override string Name { get; }
 
         public IClass ParameterType { get; set; }
 
-        public void WriteCode(ICodeWriter codeWriter)
+        public string DefaultValue { get; set; }
+
+        public override void WriteCode(ICodeWriter codeWriter)
         {
-            codeWriter.Emit($"{ParameterType.FullName} {Name}");
+            codeWriter.Emit($"{SimplifyName(ParameterType.FullName)} {Name}");
+            if(!string.IsNullOrEmpty(DefaultValue))
+            {
+                codeWriter.Emit($" = {SimplifyName(DefaultValue)}");
+            }
         }
     }
 }

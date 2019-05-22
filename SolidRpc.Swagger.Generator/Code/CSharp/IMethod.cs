@@ -5,6 +5,11 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     public interface IMethod : IMember
     {
         /// <summary>
+        /// The summary of the method
+        /// </summary>
+        string Summary { get; set; }
+
+        /// <summary>
         /// The return type.
         /// </summary>
         IClass ReturnType { get; set; }

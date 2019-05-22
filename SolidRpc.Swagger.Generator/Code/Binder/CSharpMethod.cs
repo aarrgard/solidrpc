@@ -29,5 +29,10 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// The method parameters.
         /// </summary>
         public IEnumerable<CSharpMethodParameter> Parameters { get; set; }
+
+        /// <summary>
+        /// The summary for the method
+        /// </summary>
+        public string Summary { get; set; }
     }
 }

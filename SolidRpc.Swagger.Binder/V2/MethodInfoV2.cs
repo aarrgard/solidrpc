@@ -8,25 +8,30 @@ namespace SolidRpc.Swagger.Binder.V2
 {
     public class MethodInfoV2 : IMethodInfo
     {
-        public static ParameterObject GetMethodArgument(OperationObject operationObject, ParameterInfo parameterInfo)
+        public static ParameterObject GetParameterObject(OperationObject operationObject, ParameterInfo parameterInfo)
         {
-            var parameters = operationObject.Parameters.Where(o => o.Name == parameterInfo.Name);
-
-            return parameters.FirstOrDefault();
+            var parameters = operationObject.Parameters
+                .Where(o => o.Name == parameterInfo.Name);
+            var parameter = parameters.FirstOrDefault();
+            if(parameter == null)
+            {
+                throw new Exception($"Cannot find parameter {parameterInfo.Name} among parameters({string.Join(",",parameters.Select(o => o.Name))}).");
+            }
+            return parameter;
         }
 
         public MethodInfoV2(OperationObject operationObject, MethodInfo methodInfo)
         {
-            OperationObject = operationObject;
-            MethodInfo = methodInfo;
+            OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
+            MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             Arguments = CreateArguments();
         }
 
         private IMethodArgument[] CreateArguments()
         {
-            return MethodInfo.GetParameters().Select(o => {
-                var parameterObject = GetMethodArgument(OperationObject, o);
-                return new MethodArgument(parameterObject, o);
+            return MethodInfo.GetParameters().Select(parameterInfo => {
+                var parameterObject = GetParameterObject(OperationObject, parameterInfo);
+                return new MethodArgument(parameterObject, parameterInfo);
             }).ToArray();
         }
 
@@ -35,6 +40,7 @@ namespace SolidRpc.Swagger.Binder.V2
         public MethodInfo MethodInfo { get; }
 
         public IMethodArgument[] Arguments { get; }
+
         IEnumerable<IMethodArgument> IMethodInfo.Arguments => Arguments;
 
         public string OperationId => OperationObject.OperationId;

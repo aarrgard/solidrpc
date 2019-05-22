@@ -3,10 +3,12 @@ using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
-    public abstract class ClassOrInterface : IMember, IQualifiedMember
+    public abstract class ClassOrInterface : Member, IQualifiedMember
     {
-        public abstract string Name { get; }
-        public abstract IEnumerable<IMember> Members { get; }
+        public ClassOrInterface(IMember parent) : base(parent)
+        {
+        }
+
         public abstract INamespace Namespace { get; }
         public bool IsInterface => this is IInterface;
 
@@ -18,22 +20,31 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
             }
         }
 
-        public void WriteCode(ICodeWriter codeWriter)
+        public override void WriteCode(ICodeWriter codeWriter)
         {
-            var fileName = new QualifiedName(Namespace.Name, Name).QName.Replace('.', '/') + ".cs";
+            var fileName = new QualifiedName(Namespace.FullName, Name).QName.Replace('.', '/') + ".cs";
             codeWriter.MoveToFile(fileName);
+            Members.OfType<IUsing>().ToList().ForEach(o =>
+            {
+                o.WriteCode(codeWriter);
+            });
+
             if (!string.IsNullOrEmpty(Namespace.Name))
             {
-                codeWriter.Emit($"namespace {Namespace.Name} {{{codeWriter.NewLine}");
+                codeWriter.Emit($"namespace {Namespace.FullName} {{{codeWriter.NewLine}");
                 codeWriter.Indent();
             }
             var structType = IsInterface ? "interface" : "class";
             codeWriter.Emit($"public {structType} {Name} {{{codeWriter.NewLine}");
             Members.ToList().ForEach(o =>
             {
-                codeWriter.Indent();
-                o.WriteCode(codeWriter);
-                codeWriter.Unindent();
+                if(o is IMethod || o is IProperty) 
+                {
+                    codeWriter.Indent();
+                    o.WriteCode(codeWriter);
+                    codeWriter.Unindent();
+                    codeWriter.Emit(codeWriter.NewLine);
+                }
             });
             codeWriter.Emit($"}}{codeWriter.NewLine}");
 

@@ -10,46 +10,76 @@ namespace SolidRpc.Swagger.Generator
     /// </summary>
     public class SwaggerCodeSettings
     {
+        private static string CapitalizeFirstChar(string name)
+        {
+            if(char.IsUpper(name[0]))
+            {
+                return name;
+            }
+            return char.ToUpper(name[0]) + name.Substring(1);
+        }
+        private static string NameStartsWithLetter(string name, char letter)
+        {
+            if (name[0] == letter)
+            {
+                return name;
+            }
+            return letter + name;
+        }
+
         public SwaggerCodeSettings()
         {
             OperationMapper = (settings, operation) =>
             {
-                var className = new QualifiedName(settings.RootNamespace, settings.ServiceNamespace, operation.Tags.First());
+                var className = new QualifiedName(
+                    settings.RootNamespace, 
+                    settings.ServiceNamespace,
+                    settings.InterfaceNameMapper(operation.Tags.First()));
                 return new CSharpMethod()
                 {
-                    ReturnType = settings.ItemMapper(settings, operation.ReturnType),
+                    ReturnType = settings.DefinitionMapper(settings, operation.ReturnType),
                     InterfaceName = className,
-                    MethodName = operation.OperationId,
+                    MethodName = settings.MethodNameMapper(operation.OperationId),
                     Parameters = operation.Parameters.Select(o => new CSharpMethodParameter()
                     {
                         Name = o.Name,
-                        ParameterType = settings.ItemMapper(settings, o.ParameterType)
-                    }).ToList()
+                        ParameterType = settings.DefinitionMapper(settings, o.ParameterType),
+                        Description = o.Description
+                    }).ToList(),
+                    Summary = $"{operation.Summary} {operation.Description}".Trim()
                 };
             };
-            ItemMapper = (settings, swaggerDef) =>
+            DefinitionMapper = (settings, swaggerDef) =>
             {
                 if(string.IsNullOrEmpty(swaggerDef.Name)) throw new Exception("Name is null or empty");
-                var name = swaggerDef.Name;
+                var className = swaggerDef.Name;
                 if(!swaggerDef.IsReservedName)
                 {
                     if (swaggerDef.SwaggerOperation != null)
                     {
-                        name = swaggerDef.SwaggerOperation.OperationId + name;
+                        className = swaggerDef.SwaggerOperation.OperationId + className;
                     }
-                    name = new QualifiedName(settings.RootNamespace, settings.TypeNamespace, name);
+                    className = new QualifiedName(
+                        settings.RootNamespace, 
+                        settings.TypeNamespace,
+                        settings.ClassNameMapper(className));
                 }
-                var csObj = new CSharpObject(name);
+                var csObj = new CSharpObject(className);
                 csObj.IsArray = swaggerDef.IsArray;
                 csObj.Properties = swaggerDef.Properties.Select(o => new CSharpProperty()
                 {
                     PropertyName = o.Name,
-                    PropertyType = settings.ItemMapper(settings, o.Type)
+                    PropertyType = settings.DefinitionMapper(settings, o.Type),
+                    Description = o.Description
                 });
                 return csObj;
             };
+            InterfaceNameMapper = qn => NameStartsWithLetter(CapitalizeFirstChar(qn), 'I');
+            ClassNameMapper = CapitalizeFirstChar;
+            MethodNameMapper = CapitalizeFirstChar;
             TypeNamespace = "Types";
             ServiceNamespace = "Services";
+            UseAsyncAwaitPattern = true;
         }
 
         /// <summary>
@@ -77,6 +107,8 @@ namespace SolidRpc.Swagger.Generator
         /// </summary>
         public string OutputPath { get; set; }
 
+        public bool UseAsyncAwaitPattern { get; set; }
+
         /// <summary>
         /// Method to map from a swagger operation to a C# method
         /// </summary>
@@ -85,6 +117,21 @@ namespace SolidRpc.Swagger.Generator
         /// <summary>
         /// Method to map from a swagger object to a c# object.
         /// </summary>
-        public Func<SwaggerCodeSettings, SwaggerDefinition, CSharpObject> ItemMapper { get; set; }
+        public Func<SwaggerCodeSettings, SwaggerDefinition, CSharpObject> DefinitionMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one qualified class name to another.
+        /// </summary>
+        public Func<string, string> MethodNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one qualified class name to another.
+        /// </summary>
+        public Func<string, string> InterfaceNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one qualified class name to another.
+        /// </summary>
+        public Func<string, string> ClassNameMapper { get; set; }
     }
 }

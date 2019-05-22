@@ -2,24 +2,30 @@
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
-    public class Property : IProperty
+    public class Property : Member, IProperty
     {
 
-        public Property(IClass propertyType, string propertyName)
+        public Property(IClass parent, IClass propertyType, string propertyName) : base(parent)
         {
             Name = propertyName;
             PropertyType = propertyType;
         }
 
-        public string Name { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string Name { get; }
 
         public IClass PropertyType { get; }
 
-        public IEnumerable<IMember> Members => new IMember[0];
+        public string Summary { get; set; }
 
-        public void WriteCode(ICodeWriter codeWriter)
+        public override void WriteCode(ICodeWriter codeWriter)
         {
-            codeWriter.Emit($"public {PropertyType.FullName} {Name} {{ get; set; }}{codeWriter.NewLine}");
+            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
+            codeWriter.Emit($"/// {Summary}{codeWriter.NewLine}");
+            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            codeWriter.Emit($"public {SimplifyName(PropertyType.FullName)} {Name} {{ get; set; }}{codeWriter.NewLine}");
         }
     }
 }

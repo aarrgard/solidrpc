@@ -7,14 +7,18 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     {
         public CodeGenerator()
         {
-            DefaultNamespace = new Namespace(null, "");
+            DefaultNamespace = new Namespace(this, "");
         }
 
         public INamespace DefaultNamespace { get; }
 
         public string Name => "";
 
-        public IEnumerable<IMember> Members => DefaultNamespace.Members;
+        public IList<IMember> Members => DefaultNamespace.Members;
+
+        public IMember Parent => null;
+
+        public string FullName => "";
 
         public IClass CreateGenericType(string genericTypeDef, string classFullName)
         {
@@ -32,6 +36,11 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
                 @namespace = @namespace.GetNamespace(name);
             }
             return @namespace;
+        }
+
+        public T GetParent<T>() where T : IMember
+        {
+            throw new System.NotImplementedException();
         }
 
         public void WriteCode(ICodeWriter codeWriter)

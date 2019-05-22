@@ -23,5 +23,15 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// The operation parameters.
         /// </summary>
         public IEnumerable<SwaggerOperationParameter> Parameters { get; set; }
+
+        /// <summary>
+        /// The description
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// The summary
+        /// </summary>
+        public string Summary { get; set; }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using NUnit.Framework;
 using SolidRpc.Swagger.Model;
 using SolidRpc.Swagger.Model.V2;
-using SolidRpc.Tests.Swagger.Petstore;
+using SolidRpc.Tests.Swagger.Petstore.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SolidRpc.Tests.Swagger
 {

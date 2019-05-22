@@ -8,6 +8,11 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
     public class SwaggerOperationParameter
     {
         /// <summary>
+        /// The description
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// The operation name
         /// </summary>
         public string Name { get; set; }

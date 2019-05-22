@@ -88,7 +88,7 @@ namespace SolidRpc.Swagger.Model.V2
         [DataMember(Name = "multipleOf", EmitDefaultValue = false)]
         public decimal MultipleOf { get; set; }
 
-        public string Name
+        public string OperationName
         {
             get
             {

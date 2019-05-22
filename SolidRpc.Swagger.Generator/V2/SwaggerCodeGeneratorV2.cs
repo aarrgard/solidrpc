@@ -36,6 +36,8 @@ namespace SolidRpc.Swagger.Generator.V2
                 var swaggerOperation = new SwaggerOperation();
                 swaggerOperation.Tags = op.Tags;
                 swaggerOperation.OperationId = op.OperationId;
+                swaggerOperation.Summary = op.Summary;
+                swaggerOperation.Description = op.Description;
                 swaggerOperation.ReturnType = GetSwaggerDefinition(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
                 return CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
@@ -45,21 +47,45 @@ namespace SolidRpc.Swagger.Generator.V2
             {
                 var ns = codeGenerator.GetNamespace(o.InterfaceName.Namespace);
                 var i = ns.GetInterface(o.InterfaceName.Name);
+                AddUsings(i);
                 var m = i.AddMethod(o.MethodName);
+                m.Summary = o.Summary;
                 m.ReturnType = GetClass(codeGenerator, o.ReturnType);
                 foreach(var p in o.Parameters)
                 {
-                    m.AddParameter(p.Name).ParameterType = GetClass(codeGenerator, p.ParameterType);
+                    var csp = m.AddParameter(p.Name);
+                    csp.Description = p.Description;
+                    csp.ParameterType = GetClass(codeGenerator, p.ParameterType);
+                }
+                if (CodeSettings.UseAsyncAwaitPattern)
+                {
+                    m.ReturnType = CreateTask(m.ReturnType);
+                    var csp = m.AddParameter("cancellationToken");
+                    csp.ParameterType = codeGenerator.GetNamespace("System.Threading").GetClass("CancellationToken");
+                    csp.DefaultValue = $"default({csp.ParameterType.FullName})";
                 }
             });
 
             SwaggerObject.Definitions.Values.ToList().ForEach(o =>
             {
                 var swaggerDef = GetSwaggerDefinition(null, o);
-                var cSharpObject = CodeSettings.ItemMapper(CodeSettings, swaggerDef);
+                var cSharpObject = CodeSettings.DefinitionMapper(CodeSettings, swaggerDef);
                 GetClass(codeGenerator, cSharpObject);
             });
           }
+
+        private IClass CreateTask(IClass returnType)
+        {
+            var codeGenerator = returnType.GetParent<ICodeGenerator>();
+            if (returnType.Name == SwaggerDefinition.TypeVoid)
+            {
+                return codeGenerator.GetNamespace("System.Threading.Tasks").GetClass("Task");
+            }
+            else
+            {
+                return codeGenerator.CreateGenericType("System.Threading.Tasks.Task", returnType.FullName);
+            }
+        }
 
         private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, OperationObject op)
         {
@@ -81,7 +107,8 @@ namespace SolidRpc.Swagger.Generator.V2
             return new SwaggerOperationParameter()
             {
                 Name = arg.Name,
-                ParameterType = GetSwaggerDefinition(swaggerOperation, arg)
+                ParameterType = GetSwaggerDefinition(swaggerOperation, arg),
+                Description = arg.Description
             };
         }
 
@@ -117,13 +144,14 @@ namespace SolidRpc.Swagger.Generator.V2
             switch(schema.Type)
             {
                 case "object":
-                    var sd = new SwaggerDefinition(swaggerOperation, schema.Name);
+                    var sd = new SwaggerDefinition(swaggerOperation, schema.OperationName);
                     if(schema is SchemaObject so && so.Properties != null)
                     {
                         sd.Properties = so.Properties.Select(o => new SwaggerProperty()
                         {
                             Name = o.Key,
-                            Type = GetSwaggerDefinition(swaggerOperation, o.Value)
+                            Type = GetSwaggerDefinition(swaggerOperation, o.Value),
+                            Description = o.Value.Description
                         }).ToList();
                     }
                     return sd;

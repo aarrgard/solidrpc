@@ -12,7 +12,7 @@ namespace SolidRpc.Swagger.Binder.V2
         {
             ParameterObject = parameterObject ?? throw new ArgumentNullException(nameof(parameterObject));
             ParameterInfo = parameterInfo ?? throw new ArgumentNullException(nameof(parameterObject));
-            Path = CreatePath();
+            ArgumentPath = CreatePath();
 
             if(parameterObject.Name != parameterInfo.Name)
             {
@@ -41,11 +41,11 @@ namespace SolidRpc.Swagger.Binder.V2
 
         public string Name => ParameterObject.Name;
 
-        public IEnumerable<string> Path { get; }
+        public IEnumerable<string> ArgumentPath { get; }
 
         public void BindArgument(IHttpRequest request, object val)
         {
-            BindPath(request, Path, val);
+            BindPath(request, ArgumentPath, val);
         }
 
         private void BindPath(object target, IEnumerable<string> path, object value)

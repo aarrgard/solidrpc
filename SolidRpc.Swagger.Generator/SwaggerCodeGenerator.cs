@@ -1,4 +1,5 @@
-﻿using SolidRpc.Swagger.Generator.Code.Binder;
+﻿using SolidRpc.Swagger.Generator.Code;
+using SolidRpc.Swagger.Generator.Code.Binder;
 using SolidRpc.Swagger.Generator.Code.CSharp;
 using SolidRpc.Swagger.Generator.V2;
 using SolidRpc.Swagger.Model;
@@ -53,20 +54,39 @@ namespace SolidRpc.Swagger.Generator
         {
             var ns = codeGenerator.GetNamespace(cSharpObject.Name.Namespace);
             var cls = ns.GetClass(cSharpObject.Name.Name);
-            foreach(var prop in cSharpObject.Properties)
+            AddUsings(cls);
+            // add missing properties
+            foreach (var prop in cSharpObject.Properties)
             {
                 if(cls.Properties.Any(o => o.Name == prop.PropertyName))
                 {
                     continue;
                 }
                 var propType = GetClass(codeGenerator, prop.PropertyType);
-                cls.AddProperty(prop.PropertyName, propType);
+                cls.AddProperty(prop.PropertyName, propType).Summary = prop.Description;
             }
             if(cSharpObject.IsArray)
             {
                 return codeGenerator.CreateGenericType("System.Collections.Generic.IEnumerable", cls.FullName);
             }
             return cls;
+        }
+
+        protected void AddUsings(IMember member)
+        {
+            AddUsings(member, "System");
+            AddUsings(member, "System.Collections.Generic");
+            AddUsings(member, "System.IO");
+            AddUsings(member, "System.Threading");
+            AddUsings(member, "System.Threading.Tasks");
+            AddUsings(member, new QualifiedName(CodeSettings.RootNamespace, CodeSettings.ServiceNamespace));
+            AddUsings(member, new QualifiedName(CodeSettings.RootNamespace, CodeSettings.TypeNamespace));
+        }
+
+        private void AddUsings(IMember member, string ns)
+        {
+            var usings = member.Members.OfType<Using>().Select(o => o.Name);
+            if (!usings.Contains(ns)) member.Members.Add(new Using(member, ns));
         }
     }
 }

@@ -13,9 +13,21 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         string Name { get; }
 
         /// <summary>
+        /// The parent member
+        /// </summary>
+        IMember Parent { get; }
+
+        /// <summary>
+        /// Returns the parent of supplied type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T GetParent<T>() where T:IMember;
+
+        /// <summary>
         /// Returns all the members.
         /// </summary>
-        IEnumerable<IMember> Members { get; }
+        IList<IMember> Members { get; }
 
         /// <summary>
         /// Writes the code to supplied writer

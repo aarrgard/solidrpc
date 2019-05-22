@@ -1,46 +1,53 @@
 ﻿using SolidRpc.Swagger.Generator.Code.Binder;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
-    public class Namespace : INamespace, IQualifiedMember
+    public class Namespace : Member, INamespace, IQualifiedMember
     {
-        public Namespace(IQualifiedMember parent, string name)
+        public Namespace(IQualifiedMember parent, string name) : base(parent)
         {
             Name = name;
             FullName = new QualifiedName(parent?.FullName, name).ToString();
-            Members = new ConcurrentDictionary<string, IQualifiedMember>();
         }
 
-        private ConcurrentDictionary<string, IQualifiedMember> Members { get; }
-
-        IEnumerable<IMember> IMember.Members => Members.Values;
-
-        public string Name { get; }
+        public override string Name { get; }
 
         public string FullName { get; }
 
         public IClass GetClass(string className)
         {
-            return (IClass)Members.GetOrAdd(className, _ => new Class(this, _));
+            var cls = Members.OfType<IClass>().Where(o => o.Name == className).SingleOrDefault();
+            if(cls == null)
+            {
+                Members.Add(cls = new Class(this, className));
+            }
+            return cls;
         }
 
         public IInterface GetInterface(string interfaceName)
         {
-            return (IInterface)Members.GetOrAdd(interfaceName, _ => new Interface(this, _));
+            var ifz = Members.OfType<IInterface>().Where(o => o.Name == interfaceName).SingleOrDefault();
+            if (ifz == null)
+            {
+                Members.Add(ifz = new Interface(this, interfaceName));
+            }
+            return ifz;
         }
 
-        public INamespace GetNamespace(string interfaceName)
+        public INamespace GetNamespace(string namespaceName)
         {
-            return (INamespace)Members.GetOrAdd(interfaceName, _ => new Namespace(this, _));
+            var ns = Members.OfType<INamespace>().Where(o => o.Name == namespaceName).SingleOrDefault();
+            if (ns == null)
+            {
+                Members.Add(ns = new Namespace(this, namespaceName));
+            }
+            return ns;
         }
 
-        public void WriteCode(ICodeWriter codeWriter)
+        public override void WriteCode(ICodeWriter codeWriter)
         {
-            Members.Values
+            Members.OfType<IQualifiedMember>()
                 .Where(o => !SwaggerDefinition.ReservedNames.Contains(o.FullName))
                 .Where(o => !o.Name.Contains('<')) // do not generate generic types
                 .ToList().ForEach(o => o.WriteCode(codeWriter));

@@ -3,22 +3,16 @@ using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
-    public class Method : IMethod
+    public class Method : Member, IMethod
     {
-        public Method(IMember member, string methodName)
+        public Method(IMember member, string methodName) : base(member)
         {
-            Member = member;
             Name = methodName;
-            Members = new List<IMember>();
         }
 
-        public IMember Member { get; }
+        public string Summary { get; set; }
 
-        public string Name { get; }
-
-        public IList<IMember> Members { get; }
-
-        IEnumerable<IMember> IMember.Members => Members;
+        public override string Name { get; }
 
         public IClass ReturnType { get; set; }
 
@@ -31,10 +25,17 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
             return p;
         }
 
-        public void WriteCode(ICodeWriter codeWriter)
+        public override void WriteCode(ICodeWriter codeWriter)
         {
-            codeWriter.Emit($"{ReturnType.FullName} {Name}(");
             var parameters = Members.OfType<IParameter>().ToList();
+            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
+            codeWriter.Emit($"/// {Summary}{codeWriter.NewLine}");
+            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            parameters.ForEach(p =>
+            {
+                codeWriter.Emit($"/// <param name=\"{p.Name}\">{p.Description}</param>{codeWriter.NewLine}");
+            });
+            codeWriter.Emit($"{SimplifyName(ReturnType.FullName)} {Name}(");
             for(int i = 0; i < parameters.Count; i ++)
             {
                 codeWriter.Emit(codeWriter.NewLine);

@@ -16,6 +16,8 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         public static string TypeLong = "long";
         public static string TypeStream = "System.IO.Stream";
         public static string TypeDateTime = "System.DateTime";
+        public static string TypeTask = "System.Threading.Tasks.Task";
+        public static string TypeCancellationToken = "System.Threading.CancellationToken";
 
         public static IEnumerable<string> ReservedNames = new string[]
         {
@@ -25,7 +27,9 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
             TypeInt,
             TypeLong,
             TypeStream,
-            TypeDateTime
+            TypeDateTime,
+            TypeTask,
+            TypeCancellationToken
         };
 
         public static SwaggerDefinition Void = new SwaggerDefinition(null, TypeVoid);

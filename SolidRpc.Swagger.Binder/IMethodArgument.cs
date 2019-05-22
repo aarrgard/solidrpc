@@ -15,7 +15,7 @@ namespace SolidRpc.Swagger.Binder
         /// <summary>
         /// Specifies where this argument is located.
         /// </summary>
-        IEnumerable<string> Path { get; }
+        IEnumerable<string> ArgumentPath { get; }
 
         /// <summary>
         /// Binds this argument to the supplied request.
