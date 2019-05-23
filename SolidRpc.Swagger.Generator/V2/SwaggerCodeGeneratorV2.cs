@@ -36,8 +36,8 @@ namespace SolidRpc.Swagger.Generator.V2
                 var swaggerOperation = new SwaggerOperation();
                 swaggerOperation.Tags = op.Tags;
                 swaggerOperation.OperationId = op.OperationId;
-                swaggerOperation.Summary = op.Summary;
-                swaggerOperation.Description = op.Description;
+                swaggerOperation.OperationSummary = op.Summary;
+                swaggerOperation.OperationDescription = op.Description;
                 swaggerOperation.ReturnType = GetSwaggerDefinition(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
                 return CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
@@ -47,9 +47,9 @@ namespace SolidRpc.Swagger.Generator.V2
             {
                 var ns = codeGenerator.GetNamespace(o.InterfaceName.Namespace);
                 var i = ns.GetInterface(o.InterfaceName.Name);
-                AddUsings(i);
                 var m = i.AddMethod(o.MethodName);
-                m.Summary = o.Summary;
+                i.Summary = o.TypeSummary;
+                m.Summary = o.MethodSummary;
                 m.ReturnType = GetClass(codeGenerator, o.ReturnType);
                 foreach(var p in o.Parameters)
                 {
@@ -64,6 +64,7 @@ namespace SolidRpc.Swagger.Generator.V2
                     csp.ParameterType = codeGenerator.GetNamespace("System.Threading").GetClass("CancellationToken");
                     csp.DefaultValue = $"default({csp.ParameterType.FullName})";
                 }
+                AddUsings(i);
             });
 
             SwaggerObject.Definitions.Values.ToList().ForEach(o =>
@@ -89,8 +90,11 @@ namespace SolidRpc.Swagger.Generator.V2
 
         private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, OperationObject op)
         {
-            ResponseObject ro;
-            if(!op.Responses.TryGetValue("200", out ro))
+            if (!op.Responses.TryGetValue("200", out ResponseObject ro))
+            {
+                return SwaggerDefinition.Void;
+            }
+            if (ro.Schema == null)
             {
                 return SwaggerDefinition.Void;
             }

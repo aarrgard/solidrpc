@@ -1,11 +1,12 @@
-using System;
+using System.Threading.Tasks;
+using SolidRpc.Tests.Generated.Petstore.Types;
+using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using SolidRpc.Tests.Swagger.Petstore.Services;
-using SolidRpc.Tests.Swagger.Petstore.Types;
-namespace SolidRpc.Tests.Swagger.Petstore.Services {
+namespace SolidRpc.Tests.Generated.Petstore.Services {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IPet {
         /// <summary>
         /// Add a new pet to the store

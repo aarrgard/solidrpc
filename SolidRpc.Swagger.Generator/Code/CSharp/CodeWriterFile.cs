@@ -7,16 +7,18 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     {
         private TextWriter _textWriter;
 
-        public CodeWriterFile(string outputPath)
+        public CodeWriterFile(string outputPath, string projectNamespace)
         {
             if (!Directory.Exists(outputPath))
             {
                 throw new ArgumentException("Directory does not exist:" + outputPath);
             }
+            ProjectNamespace = projectNamespace;
             OutputPath = outputPath;
             IndentationString = "    ";
             CurrentIndentation = "";
         }
+        public string ProjectNamespace { get; set; }
 
         public string OutputPath { get; }
 
@@ -44,8 +46,13 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 
         public bool IndentOnNextEmit { get; private set; }
 
-        public void MoveToFile(string fileName)
+        public void MoveToClassFile(string fullClassName)
         {
+            if(!fullClassName.StartsWith($"{ProjectNamespace}."))
+            {
+                throw new ArgumentException("Cannot generate classes that does not belong to the project namespace");
+            }
+            var fileName = fullClassName.Substring(ProjectNamespace.Length+1).Replace('.', Path.DirectorySeparatorChar) + ".cs";
             CurrentWriter = null;
             var filePath = Path.Combine(OutputPath, fileName);
             var file = new FileInfo(filePath);

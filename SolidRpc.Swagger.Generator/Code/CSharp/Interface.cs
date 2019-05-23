@@ -7,12 +7,10 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     {
         public Interface(Namespace ns, string name) : base(ns)
         {
-            Namespace = ns;
             Name = name;
         }
-        public override string Name { get; }
 
-        public override INamespace Namespace { get; }
+        public override string Name { get; }
 
         public IMethod AddMethod(string methodName)
         {

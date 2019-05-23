@@ -1,12 +1,12 @@
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using SolidRpc.Tests.Swagger.Petstore.Services;
-using SolidRpc.Tests.Swagger.Petstore.Types;
-namespace SolidRpc.Tests.Swagger.Petstore.Services {
+using SolidRpc.Tests.Generated.Petstore.Types;
+using System.Threading;
+using System.Collections.Generic;
+namespace SolidRpc.Tests.Generated.Petstore.Services {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IUser {
         /// <summary>
         /// Create user This can only be done by the logged in user.

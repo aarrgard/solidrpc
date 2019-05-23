@@ -32,7 +32,8 @@ namespace SolidRpc.Swagger.Generator
             OperationMapper = (settings, operation) =>
             {
                 var className = new QualifiedName(
-                    settings.RootNamespace, 
+                    settings.ProjectNamespace,
+                    settings.CodeNamespace,
                     settings.ServiceNamespace,
                     settings.InterfaceNameMapper(operation.Tags.First()));
                 return new CSharpMethod()
@@ -46,7 +47,8 @@ namespace SolidRpc.Swagger.Generator
                         ParameterType = settings.DefinitionMapper(settings, o.ParameterType),
                         Description = o.Description
                     }).ToList(),
-                    Summary = $"{operation.Summary} {operation.Description}".Trim()
+                    TypeSummary = operation.TagDescription,
+                    MethodSummary = $"{operation.OperationSummary} {operation.OperationDescription}".Trim()
                 };
             };
             DefinitionMapper = (settings, swaggerDef) =>
@@ -60,7 +62,8 @@ namespace SolidRpc.Swagger.Generator
                         className = swaggerDef.SwaggerOperation.OperationId + className;
                     }
                     className = new QualifiedName(
-                        settings.RootNamespace, 
+                        settings.ProjectNamespace,
+                        settings.CodeNamespace,
                         settings.TypeNamespace,
                         settings.ClassNameMapper(className));
                 }
@@ -68,7 +71,7 @@ namespace SolidRpc.Swagger.Generator
                 csObj.IsArray = swaggerDef.IsArray;
                 csObj.Properties = swaggerDef.Properties.Select(o => new CSharpProperty()
                 {
-                    PropertyName = o.Name,
+                    PropertyName = settings.PropertyNameMapper(o.Name),
                     PropertyType = settings.DefinitionMapper(settings, o.Type),
                     Description = o.Description
                 });
@@ -77,6 +80,7 @@ namespace SolidRpc.Swagger.Generator
             InterfaceNameMapper = qn => NameStartsWithLetter(CapitalizeFirstChar(qn), 'I');
             ClassNameMapper = CapitalizeFirstChar;
             MethodNameMapper = CapitalizeFirstChar;
+            PropertyNameMapper = CapitalizeFirstChar;
             TypeNamespace = "Types";
             ServiceNamespace = "Services";
             UseAsyncAwaitPattern = true;
@@ -88,9 +92,16 @@ namespace SolidRpc.Swagger.Generator
         public string SwaggerSpec { get; set; }
 
         /// <summary>
-        /// The namespace to add to all the generated classes.
+        /// The namespace that the project belongs to. This namespace 
+        /// will not be included in the filepath.
         /// </summary>
-        public string RootNamespace { get; set; }
+        public string ProjectNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace that will be added to the project namespace
+        /// before adding the type or service namespace.
+        /// </summary>
+        public string CodeNamespace { get; set; }
 
         /// <summary>
         /// The namespace to append to the root namespace for all the types
@@ -120,18 +131,23 @@ namespace SolidRpc.Swagger.Generator
         public Func<SwaggerCodeSettings, SwaggerDefinition, CSharpObject> DefinitionMapper { get; set; }
 
         /// <summary>
-        /// Function that maps one qualified class name to another.
+        /// Function that maps one method name to another.
         /// </summary>
         public Func<string, string> MethodNameMapper { get; set; }
 
         /// <summary>
-        /// Function that maps one qualified class name to another.
+        /// Function that maps one interface name to another.
         /// </summary>
         public Func<string, string> InterfaceNameMapper { get; set; }
 
         /// <summary>
-        /// Function that maps one qualified class name to another.
+        /// Function that maps one class name to another.
         /// </summary>
         public Func<string, string> ClassNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one property name to another.
+        /// </summary>
+        public Func<string, string> PropertyNameMapper { get; set; }
     }
 }

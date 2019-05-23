@@ -13,8 +13,8 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         /// Moves to supplied file name.
         /// </summary>
         /// <param name="fileName"></param>
-        void MoveToFile(string fileName);
-        void Emit(string v);
+        void MoveToClassFile(string fileName);
+        void Emit(string str);
         void Indent();
         void Unindent();
     }

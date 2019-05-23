@@ -22,7 +22,15 @@ namespace SolidRpc.Swagger.Binder.V2
 
         private IEnumerable<string> CreatePath()
         {
-            return new[] { MapScope(ParameterObject.In), ParameterObject.Name };
+            var scope = MapScope(ParameterObject.In);
+            if(scope == nameof(IHttpRequest.Body))
+            {
+                return new[] { scope };
+            }
+            else
+            {
+                return new[] { scope, ParameterObject.Name };
+            }
         }
 
         private string MapScope(string scope)
@@ -35,6 +43,10 @@ namespace SolidRpc.Swagger.Binder.V2
                     return nameof(IHttpRequest.Query);
                 case "path":
                     return nameof(IHttpRequest.Path);
+                case "formData":
+                    return nameof(IHttpRequest.FormData);
+                case "body":
+                    return nameof(IHttpRequest.Body);
                 default:
                     throw new Exception("Cannot handle scope:" + scope);
             }
@@ -50,52 +62,63 @@ namespace SolidRpc.Swagger.Binder.V2
 
         public void BindArgument(IHttpRequest request, object val)
         {
-            BindPath(request, ArgumentPath, val);
+            BindPath(request, ArgumentPath.GetEnumerator(), val);
         }
 
-        private void BindPath(object target, IEnumerable<string> path, object value)
+        private object BindPath(object target, IEnumerator<string> enumerator, object value)
         {
-            var elements = path.ToList();
-            if(elements.FirstOrDefault() == null)
+            // if we have reach end of path - return value
+            if(!enumerator.MoveNext())
             {
-                return;
+                return value;
             }
-            for(int i = 0; i < elements.Count - 1; i++)
+            var pathElement = enumerator.Current;
+            if(string.IsNullOrEmpty(pathElement))
             {
-                target = BindPath(target, elements[i]);
+                return null;
             }
-            BindValue(target, elements.Last(), value);
-        }
-
-        private void BindValue(object target, string pathElement, object value)
-        {
-            if(target is IDictionary<string, IEnumerable<string>> dict)
+            if (target is IEnumerable<HttpRequestData> data)
             {
-                var strVals = Convert(ParameterInfo.ParameterType, ParameterObject, value);
-                IEnumerable<string> values;
-                if(dict.TryGetValue(pathElement, out values))
+                var lst = data.ToList();
+                var oldReqData = lst.FirstOrDefault(o => o.Name == pathElement);
+                value = BindPath(oldReqData, enumerator, value);
+                if(oldReqData == null)
                 {
-                    dict[pathElement] = values.Union(strVals).ToArray();
+                    lst.Add(HttpRequestData.Create(pathElement, value));
                 }
                 else
                 {
-                    dict[pathElement] = strVals;
+                    var idx = lst.IndexOf(oldReqData);
+                    lst[idx] = oldReqData + HttpRequestData.Create(pathElement, value);
                 }
-                return;
+                return lst;
             }
             if (target is string str)
             {
                 var strVals = Convert(ParameterInfo.ParameterType, ParameterObject, value);
-                str = str.Replace($"{{{pathElement}}}", String.Join("", strVals));
-                return;
+                str = str.Replace($"{{{pathElement}}}", string.Join("", strVals));
+                return str;
             }
-
             //
             // set value on target.
             //
             var props = target.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public);
-            var prop = props.First(o => o.Name == pathElement);
-            prop.SetValue(target, value);
+            var prop = props.FirstOrDefault(o => o.Name == pathElement);
+            if(prop == null)
+            {
+                throw new Exception($"Cannot find path {pathElement} in {target.GetType().FullName}");
+            }
+            var propValue = prop.GetValue(target);
+            if (propValue == null)
+            {
+                propValue = Activator.CreateInstance(prop.PropertyType);
+            }
+            var newValue = BindPath(propValue, enumerator, value);
+            if(!ReferenceEquals(newValue, propValue))
+            {
+                prop.SetValue(target, newValue);
+            }
+            return newValue;
         }
 
         private IEnumerable<string> Convert(Type type, ItemBase schema, object value)

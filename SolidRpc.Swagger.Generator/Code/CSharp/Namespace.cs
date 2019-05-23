@@ -8,12 +8,16 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         public Namespace(IQualifiedMember parent, string name) : base(parent)
         {
             Name = name;
-            FullName = new QualifiedName(parent?.FullName, name).ToString();
+            FullName = new QualifiedName(parent?.FullName, name).QName;
+            NamespaceDummy = new QualifiedName(parent?.FullName, name).Namespace;
         }
 
         public override string Name { get; }
 
         public string FullName { get; }
+
+        private string NamespaceDummy { get; }
+        string IQualifiedMember.Namespace => NamespaceDummy;
 
         public IClass GetClass(string className)
         {

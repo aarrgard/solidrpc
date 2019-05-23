@@ -17,6 +17,11 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 
         public abstract string Name { get; }
 
+        public virtual void GetNamespaces(ICollection<string> namespaces)
+        {
+            Members.ToList().ForEach(o => o.GetNamespaces(namespaces));
+        }
+
         public T GetParent<T>() where T : IMember
         {
             if(Parent is T t)

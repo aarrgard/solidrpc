@@ -1,12 +1,11 @@
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using SolidRpc.Tests.Swagger.Petstore.Services;
-using SolidRpc.Tests.Swagger.Petstore.Types;
-namespace SolidRpc.Tests.Swagger.Petstore.Services {
+using System.Threading;
+using SolidRpc.Tests.Generated.Petstore.Types;
+namespace SolidRpc.Tests.Generated.Petstore.Services {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IStore {
         /// <summary>
         /// Returns pet inventories by status Returns a map of status codes to quantities

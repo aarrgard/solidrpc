@@ -49,5 +49,10 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
             }
             codeWriter.Emit($");{codeWriter.NewLine}");
         }
+        public override void GetNamespaces(ICollection<string> namespaces)
+        {
+            namespaces.Add(ReturnType.Namespace);
+            base.GetNamespaces(namespaces);
+        }
     }
 }

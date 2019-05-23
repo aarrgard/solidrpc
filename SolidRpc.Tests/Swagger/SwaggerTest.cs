@@ -1,15 +1,23 @@
 ﻿using NUnit.Framework;
+using SolidRpc.Swagger.Binder;
 using SolidRpc.Swagger.Model;
 using SolidRpc.Swagger.Model.V2;
-using SolidRpc.Tests.Swagger.Petstore.Services;
+using SolidRpc.Tests.Generated.Petstore.Services;
+using SolidRpc.Tests.Generated.Petstore.Types;
 using System;
 using System.Linq;
 using System.Threading;
 
 namespace SolidRpc.Tests.Swagger
 {
+    /// <summary>
+    /// Tests swagger functionality.
+    /// </summary>
     public class SwaggerTest : TestBase
     {
+        /// <summary>
+        /// Tests that the petstore json file is processed correctly.
+        /// </summary>
         [Test]
         public void TestPetStore()
         {
@@ -165,9 +173,8 @@ namespace SolidRpc.Tests.Swagger
             smi.BindArguments(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual("/pet/findByStatus", req.Path);
-            var status = req.Query["status"];
-            Assert.AreEqual("available", status.First());
-            Assert.AreEqual("pending", status.Last());
+            Assert.AreEqual("available", req.Query.GetStringData("status").First());
+            Assert.AreEqual("pending", req.Query.GetStringData("status").Last());
         }
 
         [Test]
@@ -186,6 +193,82 @@ namespace SolidRpc.Tests.Swagger
             smi.BindArguments(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual($"/pet/{petId}", req.Path);
+        }
+
+        [Test]
+        public void TestMethodBinderUpdatePetWithForm()
+        {
+            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+
+            var mi = typeof(IPet).GetMethod(nameof(IPet.UpdatePetWithForm));
+            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            Assert.AreEqual("updatePetWithForm", smi.OperationId);
+            Assert.AreEqual(4, smi.Arguments.Count());
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "name"));
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
+
+            var petId = 3456;
+            var req = new RequestMock();
+            smi.BindArguments(req, new object[] { petId, "kalle", "available", CancellationToken.None });
+            Assert.AreEqual("POST", req.Method);
+            Assert.AreEqual($"/pet/{petId}", req.Path);
+            Assert.AreEqual($"kalle", req.FormData.GetStringData("name").First());
+            Assert.AreEqual($"available", req.FormData.GetStringData("status").First());
+        }
+
+        [Test]
+        public void TestMethodBinderUploadFile()
+        {
+            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+
+            var mi = typeof(IPet).GetMethod(nameof(IPet.UploadFile));
+            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            Assert.AreEqual("uploadFile", smi.OperationId);
+            Assert.AreEqual(4, smi.Arguments.Count());
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "additionalMetadata"));
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "file"));
+
+            var petId = 3456;
+            var req = new RequestMock();
+            smi.BindArguments(req, new object[] { petId, "Image metadata", new byte[] { 1, 2, 3, 4 }, CancellationToken.None });
+            Assert.AreEqual("POST", req.Method);
+            Assert.AreEqual($"/pet/{petId}/uploadImage", req.Path);
+            Assert.AreEqual($"Image metadata", req.FormData.GetStringData("additionalMetadata").First());
+            Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.FormData.GetBinaryData("file"));
+        }
+
+        [Test]
+        public void TestMethodBinderPlaceOrder()
+        {
+            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+
+            var mi = typeof(IStore).GetMethod(nameof(IStore.PlaceOrder));
+            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            Assert.AreEqual("placeOrder", smi.OperationId);
+            Assert.AreEqual(2, smi.Arguments.Count());
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "body"));
+
+            var req = new RequestMock();
+            var order = new Order()
+            {
+                Id = 343,
+                PetId = 34234,
+                Quantity = 1,
+                ShipDate = DateTime.Now,
+                Status = "sdfsdf",
+                Complete = false
+            };
+
+            smi.BindArguments(req, new object[] { order, CancellationToken.None });
+            Assert.AreEqual("POST", req.Method);
+            Assert.AreEqual($"/store/order", req.Path);
+            Assert.AreEqual(order.Complete, ((Order)req.Body).Complete);
+            Assert.AreEqual(order.Status, ((Order)req.Body).Status);
+            Assert.AreEqual(order.Quantity, ((Order)req.Body).Quantity);
+            Assert.AreEqual(order.PetId, ((Order)req.Body).PetId);
+            Assert.AreEqual(order.Id, ((Order)req.Body).Id);
         }
     }
 }

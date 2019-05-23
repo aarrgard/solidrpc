@@ -7,18 +7,21 @@ namespace SolidRpc.Tests.Swagger
     {
         public RequestMock()
         {
-            Headers = new Dictionary<string, IEnumerable<string>>();
-            Query = new Dictionary<string, IEnumerable<string>>();
+            Headers = new HttpRequestData[0];
+            Query = new HttpRequestData[0];
+            FormData = new HttpRequestData[0];
         }
- 
+
         public string Path { get; set; }
 
         public string Method { get; set; }
 
-        public IDictionary<string, IEnumerable<string>> Headers { get; }
+        public IEnumerable<HttpRequestData> Headers { get; set; }
 
-        public IDictionary<string, IEnumerable<string>> Query { get; }
+        public IEnumerable<HttpRequestData> Query { get; set; }
 
-        public object Body => null;
+        public IEnumerable<HttpRequestData> FormData { get; set; }
+
+        public object Body { get; set; }
     }
 }

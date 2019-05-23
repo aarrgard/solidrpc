@@ -34,5 +34,12 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         /// </summary>
         /// <param name="codeWriter"></param>
         void WriteCode(ICodeWriter codeWriter);
+
+        /// <summary>
+        /// Returns all the namespaces in this member.
+        /// </summary>
+        /// <param name="namespaces"></param>
+        void GetNamespaces(ICollection<string> namespaces);
+
     }
 }

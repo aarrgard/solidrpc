@@ -20,16 +20,21 @@ namespace SolidRpc.Swagger.Binder
         /// <summary>
         /// The request headers
         /// </summary>
-        IDictionary<string, IEnumerable<string>> Headers { get; }
+        IEnumerable<HttpRequestData> Headers { get; set; }
 
         /// <summary>
         /// The request query string
         /// </summary>
-        IDictionary<string, IEnumerable<string>> Query { get; }
+        IEnumerable<HttpRequestData> Query { get; set; }
+
+        /// <summary>
+        /// The data in the form
+        /// </summary>
+        IEnumerable<HttpRequestData> FormData { get; set; }
 
         /// <summary>
         /// The body
         /// </summary>
-        object Body { get; }
+        object Body { get; set; }
     }
 }

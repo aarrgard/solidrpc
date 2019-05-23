@@ -7,10 +7,8 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     {
         public Class(Namespace ns, string name) : base(ns)
         {
-            Namespace = ns;
             Name = name;
         }
-        public override INamespace Namespace { get; }
 
         public override string Name { get; }
 

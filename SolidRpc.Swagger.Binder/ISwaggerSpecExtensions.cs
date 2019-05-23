@@ -3,7 +3,7 @@ using System;
 
 namespace SolidRpc.Swagger.Model
 {
-    public static class ISwaggerSpecExtenstions
+    public static class ISwaggerSpecExtensions
     {
         /// <summary>
         /// Returns the method binder for supplied spec.

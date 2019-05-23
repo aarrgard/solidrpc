@@ -1,4 +1,6 @@
-﻿namespace SolidRpc.Swagger.Generator.Code.CSharp
+﻿using System.Collections.Generic;
+
+namespace SolidRpc.Swagger.Generator.Code.CSharp
 {
     public class Parameter : Member, IParameter
     {
@@ -22,6 +24,12 @@
             {
                 codeWriter.Emit($" = {SimplifyName(DefaultValue)}");
             }
+        }
+
+        public override void GetNamespaces(ICollection<string> namespaces)
+        {
+            namespaces.Add(ParameterType.Namespace);
+            base.GetNamespaces(namespaces);
         }
     }
 }

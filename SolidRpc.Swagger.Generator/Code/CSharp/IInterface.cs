@@ -12,6 +12,11 @@
         string FullName { get; }
 
         /// <summary>
+        /// The summary to set on in the interface
+        /// </summary>
+        string Summary { get; set; }
+
+        /// <summary>
         /// Adds a method to this interface
         /// </summary>
         /// <param name="methodName"></param>

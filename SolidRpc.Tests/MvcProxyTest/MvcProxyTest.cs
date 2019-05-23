@@ -4,8 +4,15 @@ using SolidRpc.Swagger.Model.V2;
 
 namespace SolidRpc.Tests.MvcProxyTest
 {
+    /// <summary>
+    /// Tests sending data back and forth between client and server.
+    /// </summary>
     public class MvcProxyTest : WebHostMvcTest
     {
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task TestProxyInt()
         {

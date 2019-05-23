@@ -20,6 +20,8 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
 
         public string FullName => "";
 
+        public string Namespace => "";
+
         public IClass CreateGenericType(string genericTypeDef, string classFullName)
         {
             var genQName = new QualifiedName(genericTypeDef);
@@ -36,6 +38,11 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
                 @namespace = @namespace.GetNamespace(name);
             }
             return @namespace;
+        }
+
+        public void GetNamespaces(ICollection<string> namespaces)
+        {
+            DefaultNamespace.GetNamespaces(namespaces);
         }
 
         public T GetParent<T>() where T : IMember

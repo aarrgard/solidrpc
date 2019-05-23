@@ -1,14 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Swagger\petstore.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Swagger\petstore.json" />
@@ -34,10 +30,6 @@
     <ProjectReference Include="..\SolidRpc.Swagger.Binder\SolidRpc.Swagger.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="tmp\" />
   </ItemGroup>
 
 </Project>

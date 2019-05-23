@@ -6,6 +6,7 @@ using SolidRpc.Swagger.Model;
 using SolidRpc.Swagger.Model.V2;
 using SolidRpc.Swagger.Model.V3;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SolidRpc.Swagger.Generator
@@ -44,7 +45,7 @@ namespace SolidRpc.Swagger.Generator
                 throw new Exception("Cannot parse swagger json.");
             }
 
-            var codeWriter = new CodeWriterFile(codeSettings.OutputPath);
+            var codeWriter = new CodeWriterFile(codeSettings.OutputPath, codeSettings.ProjectNamespace);
             codeGenerator.WriteCode(codeWriter);
             codeWriter.Close();
         }
@@ -54,7 +55,6 @@ namespace SolidRpc.Swagger.Generator
         {
             var ns = codeGenerator.GetNamespace(cSharpObject.Name.Namespace);
             var cls = ns.GetClass(cSharpObject.Name.Name);
-            AddUsings(cls);
             // add missing properties
             foreach (var prop in cSharpObject.Properties)
             {
@@ -69,18 +69,18 @@ namespace SolidRpc.Swagger.Generator
             {
                 return codeGenerator.CreateGenericType("System.Collections.Generic.IEnumerable", cls.FullName);
             }
+            AddUsings(cls);
             return cls;
         }
 
         protected void AddUsings(IMember member)
         {
-            AddUsings(member, "System");
-            AddUsings(member, "System.Collections.Generic");
-            AddUsings(member, "System.IO");
-            AddUsings(member, "System.Threading");
-            AddUsings(member, "System.Threading.Tasks");
-            AddUsings(member, new QualifiedName(CodeSettings.RootNamespace, CodeSettings.ServiceNamespace));
-            AddUsings(member, new QualifiedName(CodeSettings.RootNamespace, CodeSettings.TypeNamespace));
+            var namespaces = new HashSet<string>();
+            member.GetNamespaces(namespaces);
+            namespaces.Where(o => !string.IsNullOrEmpty(o)).ToList().ForEach(ns =>
+            {
+                AddUsings(member, ns);
+            });
         }
 
         private void AddUsings(IMember member, string ns)
