@@ -23,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task UpdatePet(
             Pet body,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Finds Pets by status Multiple status values can be provided with comma separated strings
@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Pet>> FindPetsByStatus(
             IEnumerable<string> status,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Finds Pets by tags Muliple tags can be provided with comma separated strings. Use\ \ tag1, tag2, tag3 for testing.
@@ -41,7 +41,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Pet>> FindPetsByTags(
             IEnumerable<string> tags,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Deletes a pet
@@ -52,7 +52,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         Task DeletePet(
             string api_key,
             long petId,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Find pet by ID Returns a single pet
@@ -61,7 +61,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<Pet> GetPetById(
             long petId,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Updates a pet in the store with form data
@@ -74,7 +74,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
             long petId,
             string name,
             string status,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// uploads an image
@@ -87,7 +87,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
             long petId,
             string additionalMetadata,
             Stream file,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
     }
 }

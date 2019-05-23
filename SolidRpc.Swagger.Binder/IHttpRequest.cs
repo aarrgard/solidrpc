@@ -8,9 +8,14 @@ namespace SolidRpc.Swagger.Binder
     public interface IHttpRequest
     {
         /// <summary>
-        /// The request uri.
+        /// The method to use
         /// </summary>
-        string Uri { get; set; }
+        string Method { get; set; }
+
+        /// <summary>
+        /// The path
+        /// </summary>
+        string Path { get; set; }
 
         /// <summary>
         /// The request headers
@@ -23,7 +28,7 @@ namespace SolidRpc.Swagger.Binder
         IDictionary<string, IEnumerable<string>> Query { get; }
 
         /// <summary>
-        /// The request query string
+        /// The body
         /// </summary>
         object Body { get; }
     }

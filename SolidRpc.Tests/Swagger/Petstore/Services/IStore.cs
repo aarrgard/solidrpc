@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// </summary>
         /// <param name="cancellationToken"></param>
         Task<GetInventory200> GetInventory(
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Place an order for a pet
@@ -22,7 +22,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<Order> PlaceOrder(
             Order body,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Delete purchase order by ID For valid response try integer IDs with positive integer value.\ \ Negative or non-integer values will generate API errors
@@ -31,7 +31,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task DeleteOrder(
             long orderId,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Find purchase order by ID For valid response try integer IDs with value >= 1 and <= 10.\ \ Other values will generated exceptions
@@ -40,7 +40,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<Order> GetOrderById(
             long orderId,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
     }
 }

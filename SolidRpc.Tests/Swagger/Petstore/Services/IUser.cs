@@ -15,7 +15,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task CreateUser(
             User body,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Creates list of users with given input array
@@ -24,7 +24,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task CreateUsersWithArrayInput(
             IEnumerable<User> body,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Creates list of users with given input array
@@ -33,7 +33,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task CreateUsersWithListInput(
             IEnumerable<User> body,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Logs user into the system
@@ -44,14 +44,14 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         Task<string> LoginUser(
             string username,
             string password,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Logs out current logged in user session
         /// </summary>
         /// <param name="cancellationToken"></param>
         Task LogoutUser(
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Delete user This can only be done by the logged in user.
@@ -60,7 +60,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task DeleteUser(
             string username,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Get user by user name
@@ -69,7 +69,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<User> GetUserByName(
             string username,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Updated user This can only be done by the logged in user.
@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.Petstore.Services {
         Task UpdateUser(
             string username,
             User body,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
     
     }
 }

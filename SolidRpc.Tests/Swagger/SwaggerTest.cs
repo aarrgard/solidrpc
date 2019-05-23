@@ -4,6 +4,7 @@ using SolidRpc.Swagger.Model.V2;
 using SolidRpc.Tests.Swagger.Petstore.Services;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -150,21 +151,41 @@ namespace SolidRpc.Tests.Swagger
         }
 
         [Test]
-        public void TestMethodBinder()
+        public void TestMethodBinderFindPetsByStatus()
         {
             var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.FindPetsByStatus));
             var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
             Assert.AreEqual("findPetsByStatus", smi.OperationId);
-            Assert.AreEqual(1, smi.Arguments.Count());
+            Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
 
             var req = new RequestMock();
-            smi.BindArguments(req, new object[]{ new string[] { "available", "pending" } });
+            smi.BindArguments(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
+            Assert.AreEqual("GET", req.Method);
+            Assert.AreEqual("/pet/findByStatus", req.Path);
             var status = req.Query["status"];
             Assert.AreEqual("available", status.First());
             Assert.AreEqual("pending", status.Last());
+        }
+
+        [Test]
+        public void TestMethodBinderGetPetById()
+        {
+            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+
+            var mi = typeof(IPet).GetMethod(nameof(IPet.GetPetById));
+            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            Assert.AreEqual("getPetById", smi.OperationId);
+            Assert.AreEqual(2, smi.Arguments.Count());
+            Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
+
+            var petId = 3456;
+            var req = new RequestMock();
+            smi.BindArguments(req, new object[] { petId, CancellationToken.None });
+            Assert.AreEqual("GET", req.Method);
+            Assert.AreEqual($"/pet/{petId}", req.Path);
         }
     }
 }

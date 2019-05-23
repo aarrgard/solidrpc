@@ -29,14 +29,19 @@ namespace SolidRpc.Swagger.Binder.V2
         {
             switch(scope)
             {
+                case "skip":
+                    return null;
                 case "query":
                     return nameof(IHttpRequest.Query);
+                case "path":
+                    return nameof(IHttpRequest.Path);
                 default:
                     throw new Exception("Cannot handle scope:" + scope);
             }
         }
 
         public ParameterObject ParameterObject { get; }
+
         public ParameterInfo ParameterInfo { get; }
 
         public string Name => ParameterObject.Name;
@@ -51,6 +56,10 @@ namespace SolidRpc.Swagger.Binder.V2
         private void BindPath(object target, IEnumerable<string> path, object value)
         {
             var elements = path.ToList();
+            if(elements.FirstOrDefault() == null)
+            {
+                return;
+            }
             for(int i = 0; i < elements.Count - 1; i++)
             {
                 target = BindPath(target, elements[i]);
@@ -74,6 +83,12 @@ namespace SolidRpc.Swagger.Binder.V2
                 }
                 return;
             }
+            if (target is string str)
+            {
+                var strVals = Convert(ParameterInfo.ParameterType, ParameterObject, value);
+                str = str.Replace($"{{{pathElement}}}", String.Join("", strVals));
+                return;
+            }
 
             //
             // set value on target.
@@ -91,6 +106,8 @@ namespace SolidRpc.Swagger.Binder.V2
                     return CreateArray(type, schema, value);
                 case "string":
                     return CreateString(type, schema, value);
+                case "integer":
+                    return new[] { System.Convert.ToString(value) };
                 default:
                     throw new Exception("Cannot handle schema object:"+ schema.Type);
             }

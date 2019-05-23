@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.Swagger.Model.V2
@@ -56,5 +57,20 @@ namespace SolidRpc.Swagger.Model.V2
         /// </summary>
         [DataMember(Name = "parameters", EmitDefaultValue = false)]
         public IEnumerable<ParameterObject> Parameters { get; set; }
+
+        /// <summary>
+        /// The path to this operation.
+        /// </summary>
+        public string Path
+        {
+            get
+            {
+                if (Parent is PathsObject pathsItem)
+                {
+                    return pathsItem.Where(o => o.Value == this).Select(o => o.Key).Single();
+                }
+                throw new System.Exception("Cannot determine method.");
+            }
+        }
     }
 }
