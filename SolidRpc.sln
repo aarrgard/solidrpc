@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Binder", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Model", "SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj", "{393BDD73-8F40-4EE9-BC6A-8B9EC1253C0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Swagger.Generator", "SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj", "{BB458CA5-495F-4C46-9931-8D5C6F30AFCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Generator", "SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj", "{BB458CA5-495F-4C46-9931-8D5C6F30AFCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Proxy", "SolidRpc.Proxy\SolidRpc.Proxy.csproj", "{E8C949C3-33FD-4871-A4D8-3263CD25055A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{BB458CA5-495F-4C46-9931-8D5C6F30AFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB458CA5-495F-4C46-9931-8D5C6F30AFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB458CA5-495F-4C46-9931-8D5C6F30AFCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8C949C3-33FD-4871-A4D8-3263CD25055A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8C949C3-33FD-4871-A4D8-3263CD25055A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8C949C3-33FD-4871-A4D8-3263CD25055A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8C949C3-33FD-4871-A4D8-3263CD25055A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

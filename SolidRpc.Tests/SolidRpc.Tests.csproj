@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Client\SolidRpc.Client.csproj" />
     <ProjectReference Include="..\SolidRpc.Core\SolidRpc.Core.csproj" />
+    <ProjectReference Include="..\SolidRpc.Proxy\SolidRpc.Proxy.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Binder\SolidRpc.Swagger.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj" />
