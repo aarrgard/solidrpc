@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SolidRpc.Swagger.Binder
@@ -8,6 +9,9 @@ namespace SolidRpc.Swagger.Binder
     /// </summary>
     public abstract class HttpRequestData
     {
+
+        public static readonly IEnumerable<HttpRequestData> EmptyArray = new HttpRequestData[0];
+
         /// <summary>
         /// Constructs a new request data instance
         /// </summary>
@@ -26,6 +30,26 @@ namespace SolidRpc.Swagger.Binder
             else if (value is byte[] bytes)
             {
                 return new HttpRequestDataBinary(name, bytes);
+            }
+            else if (value is bool b)
+            {
+                return new HttpRequestDataStrings(name, b ? "true" : "false");
+            }
+            else if (value is short s)
+            {
+                return new HttpRequestDataStrings(name, s.ToString());
+            }
+            else if (value is int i)
+            {
+                return new HttpRequestDataStrings(name, i.ToString());
+            }
+            else if (value is long l)
+            {
+                return new HttpRequestDataStrings(name, l.ToString());
+            }
+            else if (value is Guid g)
+            {
+                return new HttpRequestDataStrings(name, g.ToString());
             }
             throw new Exception("Cannot handle value:"+ value?.GetType().FullName);
         }

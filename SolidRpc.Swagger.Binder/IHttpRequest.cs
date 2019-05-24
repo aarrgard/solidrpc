@@ -13,6 +13,16 @@ namespace SolidRpc.Swagger.Binder
         string Method { get; set; }
 
         /// <summary>
+        /// The scheme to use.
+        /// </summary>
+        string Scheme { get; set; }
+
+        /// <summary>
+        /// The host to use.
+        /// </summary>
+        string Host { get; set; }
+
+        /// <summary>
         /// The path
         /// </summary>
         string Path { get; set; }

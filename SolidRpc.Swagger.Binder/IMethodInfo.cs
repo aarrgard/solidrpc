@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Swagger.Binder
 {
@@ -30,5 +31,13 @@ namespace SolidRpc.Swagger.Binder
         /// <param name="request"></param>
         /// <param name="args"></param>
         void BindArguments(IHttpRequest request, object[] args);
+
+        /// <summary>
+        /// Returns the respone.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        Task<T> GetResponse<T>(IHttpResponse response);
     }
 }

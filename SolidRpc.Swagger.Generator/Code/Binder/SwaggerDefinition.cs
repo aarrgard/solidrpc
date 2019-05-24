@@ -16,6 +16,7 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         public static string TypeLong = "long";
         public static string TypeStream = "System.IO.Stream";
         public static string TypeDateTime = "System.DateTime";
+        public static string TypeGuid = "System.Guid";
         public static string TypeTask = "System.Threading.Tasks.Task";
         public static string TypeCancellationToken = "System.Threading.CancellationToken";
 
@@ -28,6 +29,7 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
             TypeLong,
             TypeStream,
             TypeDateTime,
+            TypeGuid,
             TypeTask,
             TypeCancellationToken
         };

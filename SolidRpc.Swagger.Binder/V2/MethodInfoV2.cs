@@ -1,9 +1,12 @@
-﻿using SolidRpc.Swagger.Model.V2;
+﻿using Newtonsoft.Json;
+using SolidRpc.Swagger.Model.V2;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Swagger.Binder.V2
 {
@@ -33,6 +36,14 @@ namespace SolidRpc.Swagger.Binder.V2
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             Arguments = CreateArguments();
+            OperationId = OperationObject.OperationId;
+            Method = OperationObject.Method;
+            Scheme = OperationObject.Schemes?.FirstOrDefault() ??
+                OperationObject.GetParent<SwaggerObject>().Schemes?.FirstOrDefault() ??
+                "http";
+            Host = OperationObject.GetParent<SwaggerObject>().Host;
+            Path = $"{OperationObject.GetParent<SwaggerObject>().BasePath}{OperationObject.Path}";
+            Produces = OperationObject.Produces ?? new string[0];
         }
 
         private IMethodArgument[] CreateArguments()
@@ -51,7 +62,12 @@ namespace SolidRpc.Swagger.Binder.V2
 
         IEnumerable<IMethodArgument> IMethodInfo.Arguments => Arguments;
 
-        public string OperationId => OperationObject.OperationId;
+        public string OperationId { get; }
+        public string Method { get; }
+        public string Scheme { get; }
+        public string Host { get; }
+        public string Path { get; }
+        public IEnumerable<string> Produces { get; }
 
         public void BindArguments(IHttpRequest request, object[] args)
         {
@@ -59,13 +75,34 @@ namespace SolidRpc.Swagger.Binder.V2
             {
                 throw new ArgumentException($"Number of supplied arguments({args.Length}) does not match number of arguments in method({Arguments.Length}).");
             }
-            request.Method = OperationObject.Method;
-            request.Path = OperationObject.Path;
-            for(int i = 0; i < Arguments.Length; i++)
+            request.Method = Method;
+            request.Scheme = Scheme;
+            request.Host = Host;
+            request.Path = Path;
+
+            for (int i = 0; i < Arguments.Length; i++)
             {
                 Arguments[i].BindArgument(request, args[i]);
             }
         }
 
+        public async Task<T> GetResponse<T>(IHttpResponse response)
+        {
+            if(!Produces.Contains(response.ContentType))
+            {
+                throw new Exception("Operation does not support content type:" + response.ContentType);
+            }
+            using (var s = await response.GetResponseStreamAsync())
+            {
+                using (StreamReader sr = new StreamReader(s))
+                {
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        var serializer = JsonSerializer.Create();
+                        return serializer.Deserialize<T>(reader);
+                    }
+                }
+            }
+        }
     }
 }

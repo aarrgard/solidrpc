@@ -33,7 +33,7 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// <summary>
         /// The summary to use for the class.
         /// </summary>
-        public string TypeSummary { get; set; }
+        public string ClassSummary { get; set; }
 
         /// <summary>
         /// The summary for the method

@@ -48,7 +48,7 @@ namespace SolidRpc.Swagger.Generator.V2
                 var ns = codeGenerator.GetNamespace(o.InterfaceName.Namespace);
                 var i = ns.GetInterface(o.InterfaceName.Name);
                 var m = i.AddMethod(o.MethodName);
-                i.Summary = o.TypeSummary;
+                i.Summary = o.ClassSummary;
                 m.Summary = o.MethodSummary;
                 m.ReturnType = GetClass(codeGenerator, o.ReturnType);
                 foreach(var p in o.Parameters)
@@ -172,6 +172,8 @@ namespace SolidRpc.Swagger.Generator.V2
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeString);
                         case "date-time":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDateTime);
+                        case "uuid":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeGuid);
                         default:
                             throw new Exception("Cannot handle schema format:" + schema.Format);
                     }

@@ -16,11 +16,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="nunit" Version="3.11.0" />
+    <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build001" />
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build024" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build002" />
+    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build025" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
@@ -31,6 +31,10 @@
     <ProjectReference Include="..\SolidRpc.Swagger.Binder\SolidRpc.Swagger.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Generated\Local\Types\" />
   </ItemGroup>
 
 </Project>

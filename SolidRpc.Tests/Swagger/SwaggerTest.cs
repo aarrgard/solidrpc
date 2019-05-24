@@ -172,7 +172,7 @@ namespace SolidRpc.Tests.Swagger
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
-            Assert.AreEqual("/pet/findByStatus", req.Path);
+            Assert.AreEqual("/aarrgard/Test/1.0.0/pet/findByStatus", req.Path);
             Assert.AreEqual("available", req.Query.GetStringData("status").First());
             Assert.AreEqual("pending", req.Query.GetStringData("status").Last());
         }
@@ -192,7 +192,7 @@ namespace SolidRpc.Tests.Swagger
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
-            Assert.AreEqual($"/pet/{petId}", req.Path);
+            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
         }
 
         [Test]
@@ -212,7 +212,7 @@ namespace SolidRpc.Tests.Swagger
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { petId, "kalle", "available", CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
-            Assert.AreEqual($"/pet/{petId}", req.Path);
+            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
             Assert.AreEqual($"kalle", req.FormData.GetStringData("name").First());
             Assert.AreEqual($"available", req.FormData.GetStringData("status").First());
         }
@@ -234,7 +234,7 @@ namespace SolidRpc.Tests.Swagger
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { petId, "Image metadata", new byte[] { 1, 2, 3, 4 }, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
-            Assert.AreEqual($"/pet/{petId}/uploadImage", req.Path);
+            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}/uploadImage", req.Path);
             Assert.AreEqual($"Image metadata", req.FormData.GetStringData("additionalMetadata").First());
             Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.FormData.GetBinaryData("file"));
         }
@@ -263,7 +263,7 @@ namespace SolidRpc.Tests.Swagger
 
             smi.BindArguments(req, new object[] { order, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
-            Assert.AreEqual($"/store/order", req.Path);
+            Assert.AreEqual($"/aarrgard/Test/1.0.0/store/order", req.Path);
             Assert.AreEqual(order.Complete, ((Order)req.Body).Complete);
             Assert.AreEqual(order.Status, ((Order)req.Body).Status);
             Assert.AreEqual(order.Quantity, ((Order)req.Body).Quantity);

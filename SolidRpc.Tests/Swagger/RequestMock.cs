@@ -15,6 +15,8 @@ namespace SolidRpc.Tests.Swagger
         public string Path { get; set; }
 
         public string Method { get; set; }
+        public string Scheme { get; set; }
+        public string Host { get; set; }
 
         public IEnumerable<HttpRequestData> Headers { get; set; }
 
