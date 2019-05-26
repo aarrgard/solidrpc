@@ -171,6 +171,8 @@ namespace SolidRpc.Swagger.Generator.V2
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDateTime);
                         case "uuid":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeGuid);
+                        case "binary":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeStream);
                         default:
                             throw new Exception("Cannot handle schema format:" + schema.Format);
                     }

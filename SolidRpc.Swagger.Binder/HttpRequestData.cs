@@ -114,7 +114,18 @@ namespace SolidRpc.Swagger.Binder
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    return (_) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(_));
+                    switch (type?.FullName)
+                    {
+                        case SystemIOStream:
+                            return (_) =>
+                            {
+                                var ms = new MemoryStream();
+                                ((Stream)_).CopyTo(ms);
+                                return new HttpRequestDataBinary(contentType, name, ms.ToArray());
+                            };
+                        default:
+                            return (_) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(_));
+                    }
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }

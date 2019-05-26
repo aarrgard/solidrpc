@@ -67,7 +67,7 @@ namespace SolidRpc.Swagger.Generator
             }
             if(cSharpObject.ArrayElement != null)
             {
-                return GetClass(codeGenerator, cSharpObject.ArrayElement);
+                GetClass(codeGenerator, cSharpObject.ArrayElement);
             }
             AddUsings(cls);
             return cls;
@@ -77,6 +77,10 @@ namespace SolidRpc.Swagger.Generator
         {
             var namespaces = new HashSet<string>();
             member.GetNamespaces(namespaces);
+            if (namespaces.Any(o => o.Contains("<")))
+            {
+                throw new Exception();
+            }
             namespaces.Where(o => !string.IsNullOrEmpty(o)).ToList().ForEach(ns =>
             {
                 AddUsings(member, ns);

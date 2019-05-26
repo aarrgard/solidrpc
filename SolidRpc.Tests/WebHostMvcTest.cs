@@ -60,6 +60,8 @@ namespace SolidRpc.Tests
                     Version = "v1"
                 });
 
+                c.OperationFilter<IFormFileOperationFilter>(); //Register File Upload Operation Filter
+
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

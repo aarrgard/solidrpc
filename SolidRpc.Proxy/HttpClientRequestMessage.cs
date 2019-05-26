@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 
 namespace SolidRpc.Proxy
@@ -39,6 +40,42 @@ namespace SolidRpc.Proxy
                     Method = new HttpMethod(Method),
                     RequestUri = builder.Uri
                 };
+
+                FormUrlEncodedContent formContent = null;
+                if(FormData.Any())
+                {
+                    var data = FormData.Select(o => new KeyValuePair<string, string>(o.Name, o.GetStringValue()));
+                    formContent = new FormUrlEncodedContent(data);
+                }
+
+                MultipartFormDataContent formData = null;
+                if (Body != null)
+                {
+                    formData = new MultipartFormDataContent();
+                    if(formContent != null)
+                    {
+                        formData.Add(formContent);
+                    }
+                    var sc = new StreamContent(Body.GetBinaryValue());
+                    sc.Headers.ContentType = new MediaTypeHeaderValue(Body.ContentType);
+                    sc.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = Body.Name, FileName = "test.xml" };
+                    if(formData != null)
+                    {
+                        formData.Add(sc);
+                    }
+                    else
+                    {
+                        req.Content = sc;
+                    }
+                }
+                if(formData != null)
+                {
+                    req.Content = formData;
+                }
+                else if(formContent != null)
+                {
+                    req.Content = formContent;
+                }
                 return req;
             }
         }

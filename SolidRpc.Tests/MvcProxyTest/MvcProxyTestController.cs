@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.MvcProxyTest
@@ -19,7 +21,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="b">The boolean to proxy</param>
         /// <returns>the supplied boolean</returns>
         [HttpGet]
-        public Task<bool> ProxyBoolean(bool b)
+        public Task<bool> ProxyBooleanInQuery([FromQuery]bool b)
         {
             return Task.FromResult(b);
         }
@@ -30,7 +32,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="s">The short to proxy</param>
         /// <returns>the supplied short</returns>
         [HttpGet]
-        public Task<short> ProxyShort(short s)
+        public Task<short> ProxyShortInQuery([FromQuery]short s)
         {
             return Task.FromResult(s);
         }
@@ -41,7 +43,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="b">The byte to proxy</param>
         /// <returns>the supplied byte</returns>
         [HttpGet]
-        public Task<byte> ProxyByte(byte b)
+        public Task<byte> ProxyByteInQuery([FromQuery]byte b)
         {
             return Task.FromResult(b);
         }
@@ -53,7 +55,18 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="i">The interger to proxy</param>
         /// <returns>the supplied int</returns>
         [HttpGet]
-        public Task<int> ProxyInt(int i)
+        public Task<int> ProxyIntInQuery([FromQuery]int i)
+        {
+            return Task.FromResult(i);
+        }
+
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
+        /// <param name="i">The interger to proxy</param>
+        /// <returns>the supplied int</returns>
+        [HttpPost]
+        public Task<int> ProxyIntInForm([FromForm]int i)
         {
             return Task.FromResult(i);
         }
@@ -64,7 +77,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="i">The interger to proxy</param>
         /// <returns>the supplied int</returns>
         [HttpGet]
-        public Task<int[][]> ProxyIntArrArr(int[][] iarr)
+        public Task<int[][]> ProxyIntArrArrInQuery([FromQuery]int[][] iarr)
         {
             return Task.FromResult(iarr);
         }
@@ -75,7 +88,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="l">The long to proxy</param>
         /// <returns>the supplied long</returns>
         [HttpGet]
-        public Task<long> ProxyLong(long l)
+        public Task<long> ProxyLongInQuery([FromQuery]long l)
         {
             return Task.FromResult(l);
         }
@@ -86,7 +99,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="f">The float to proxy</param>
         /// <returns>the supplied float</returns>
         [HttpGet]
-        public Task<float> ProxyFloat(float f)
+        public Task<float> ProxyFloatInQuery([FromQuery]float f)
         {
             return Task.FromResult(f);
         }
@@ -97,7 +110,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="d">The double to proxy</param>
         /// <returns>the supplied double</returns>
         [HttpGet]
-        public Task<double> ProxyDouble(double d)
+        public Task<double> ProxyDoubleInQuery([FromQuery]double d)
         {
             return Task.FromResult(d);
         }
@@ -108,7 +121,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="s">The string to proxy</param>
         /// <returns>the supplied string</returns>
         [HttpGet]
-        public Task<string> ProxyString(string s)
+        public Task<string> ProxyStringInQuery([FromQuery]string s)
         {
             return Task.FromResult(s);
         }
@@ -119,7 +132,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="g">The guid to proxy</param>
         /// <returns>the supplied guid</returns>
         [HttpGet]
-        public Task<Guid> ProxyGuid(Guid g)
+        public Task<Guid> ProxyGuidInQuery([FromQuery]Guid g)
         {
             return Task.FromResult(g);
         }
@@ -130,7 +143,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="g">The datetime to proxy</param>
         /// <returns>the supplied datetime</returns>
         [HttpGet]
-        public Task<DateTime> ProxyDateTime(DateTime d)
+        public Task<DateTime> ProxyDateTimeInQuery([FromQuery]DateTime d)
         {
             return Task.FromResult(d);
         }
@@ -141,9 +154,36 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="dArr">The datetime to proxy</param>
         /// <returns>the supplied datetime</returns>
         [HttpGet]
-        public Task<IEnumerable<DateTime>> ProxyDateTimeArray(IEnumerable<DateTime> dArr)
+        public Task<IEnumerable<DateTime>> ProxyDateTimeArrayInQuery([FromQuery]IEnumerable<DateTime> dArr)
         {
             return Task.FromResult(dArr);
+        }
+
+        /// <summary>
+        /// Sends a datetime back and forth between client and server
+        /// </summary>
+        /// <param name="dArr">The datetime to proxy</param>
+        /// <returns>the supplied datetime</returns>
+        [HttpPost]
+        public Task<IEnumerable<DateTime>> ProxyDateTimeArrayInForm([FromForm]IEnumerable<DateTime> dArr)
+        {
+            return Task.FromResult(dArr);
+        }
+
+        /// <summary>
+        /// Sends a stream back and forth between client and server
+        /// </summary>
+        /// <param name="ff">The stream to proxy</param>
+        /// <returns>the supplied stream</returns>
+        [HttpPost]
+        public async Task<FileStreamResult> ProxyStream(IFormFile ff)
+        {
+            var ms = new MemoryStream();
+            using (var s = ff.OpenReadStream())
+            {
+                await s.CopyToAsync(ms);
+            }
+            return new FileStreamResult(new MemoryStream(ms.ToArray()), ff.ContentType);
         }
     }
 

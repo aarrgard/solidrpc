@@ -6,11 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SolidRpc.Tests
 {
@@ -40,8 +44,42 @@ namespace SolidRpc.Tests
 
             public Task<HttpResponseMessage> GetResponse(string requestUri)
             {
+                return GetResponse<object>(requestUri);
+            }
+            public Task<HttpResponseMessage> GetResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> nvps = null)
+            {
                 var httpClient = new HttpClient();
+                if(nvps != null)
+                {
+                    var query = string.Join("&", nvps.Select(o => $"{o.Key}={HttpUtility.UrlEncode(ToString(o.Value))}"));
+                    requestUri = requestUri + "?" + query;
+                }
                 return httpClient.GetAsync(new Uri(BaseAddress, requestUri));
+            }
+
+            private string ToString<T>(T value)
+            {
+                if (typeof(DateTime) == typeof(T))
+                {
+                    return ((DateTime)(object)value).ToString("yyyy-MM-ddTHH:mm:ss");
+                }
+                if (typeof(int) == typeof(T))
+                {
+                    return value.ToString();
+                }
+                throw new NotImplementedException();
+            }
+
+            public Task<HttpResponseMessage> PostResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> nvps = null)
+            {
+                var httpClient = new HttpClient();
+                var content = new FormUrlEncodedContent(nvps.Select(o => new KeyValuePair<string, string>(o.Key, ToString(o.Value))));
+                return httpClient.PostAsync(new Uri(BaseAddress, requestUri), content);
+            }
+            public Task<HttpResponseMessage> GetResponse(HttpRequestMessage msg)
+            {
+                var httpClient = new HttpClient();
+                return httpClient.SendAsync(msg);
             }
         }
         protected IWebHost GetWebHost()

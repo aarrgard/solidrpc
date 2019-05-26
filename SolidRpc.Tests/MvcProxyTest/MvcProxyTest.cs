@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -25,12 +30,12 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = new TestHostContext(GetWebHost()))
             {
-                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyBoolean?b=true");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyBooleanInQuery)}?b=true");
                 Assert.AreEqual("true", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(true, await sp.ProxyBoolean(true));
-                Assert.AreEqual(false, await sp.ProxyBoolean(false));
+                Assert.AreEqual(true, await sp.ProxyBooleanInQuery(true));
+                Assert.AreEqual(false, await sp.ProxyBooleanInQuery(false));
             }
         }
 
@@ -43,12 +48,12 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = new TestHostContext(GetWebHost()))
             {
-                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyByte?b=10");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyByteInQuery)}?b=10");
                 Assert.AreEqual("10", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual((byte)10, await sp.ProxyByte(10));
-                Assert.AreEqual((byte)11, await sp.ProxyByte(11));
+                Assert.AreEqual((byte)10, await sp.ProxyByteInQuery(10));
+                Assert.AreEqual((byte)11, await sp.ProxyByteInQuery(11));
             }
         }
 
@@ -61,12 +66,12 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = new TestHostContext(GetWebHost()))
             {
-                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyShort?s=10");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyShortInQuery)}?s=10");
                 Assert.AreEqual("10", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual((short)10, await sp.ProxyShort(10));
-                Assert.AreEqual((short)11, await sp.ProxyShort(11));
+                Assert.AreEqual((short)10, await sp.ProxyShortInQuery(10));
+                Assert.AreEqual((short)11, await sp.ProxyShortInQuery(11));
             }
         }
 
@@ -79,12 +84,34 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = new TestHostContext(GetWebHost()))
             {
-                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyInt?i=10");
+                var vals = new int[] { 10 };
+                var nvps = vals.Select(o => new KeyValuePair<string, int>("i", o));
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyIntInQuery)}", nvps);
+                Assert.AreEqual("10", await AssertOk(resp));
+                resp = await ctx.PostResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyIntInForm)}", nvps);
                 Assert.AreEqual("10", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(10, await sp.ProxyInt(10));
-                Assert.AreEqual(11, await sp.ProxyInt(11));
+                Assert.AreEqual(10, await sp.ProxyIntInQuery(10));
+                Assert.AreEqual(11, await sp.ProxyIntInForm(11));
+            }
+        }
+
+        /// <summary>
+        /// Sends an integer array-array back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test, Ignore("implement binder")]
+        public async Task TestProxyIntArrArr()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
+            {
+                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyIntArrArr?iarr=10");
+                Assert.AreEqual("[[10]]", await AssertOk(resp));
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                var intArrArr = new int[][] { new int[] { 10 } };
+                Assert.AreEqual(intArrArr, await sp.ProxyIntArrArrInQuery(intArrArr));
             }
         }
 
@@ -97,12 +124,12 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = new TestHostContext(GetWebHost()))
             {
-                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyLong?l=10");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyLongInQuery)}?l=10");
                 Assert.AreEqual("10", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(10l, await sp.ProxyLong(10));
-                Assert.AreEqual(11l, await sp.ProxyLong(11));
+                Assert.AreEqual(10l, await sp.ProxyLongInQuery(10));
+                Assert.AreEqual(11l, await sp.ProxyLongInQuery(11));
             }
         }
 
@@ -117,11 +144,11 @@ namespace SolidRpc.Tests.MvcProxyTest
             using (var ctx = new TestHostContext(GetWebHost()))
             {
                 var f = 1.5f;
-                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyFloat?f={f.ToString(CultureInfo.InvariantCulture)}");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyFloatInQuery)}?f={f.ToString(CultureInfo.InvariantCulture)}");
                 Assert.AreEqual($"{f.ToString(CultureInfo.InvariantCulture)}", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(f, await sp.ProxyFloat(f));
+                Assert.AreEqual(f, await sp.ProxyFloatInQuery(f));
             }
         }
 
@@ -136,11 +163,11 @@ namespace SolidRpc.Tests.MvcProxyTest
             using (var ctx = new TestHostContext(GetWebHost()))
             {
                 var d = 3.5d;
-                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyDouble?d={d.ToString(CultureInfo.InvariantCulture)}");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDoubleInQuery)}?d={d.ToString(CultureInfo.InvariantCulture)}");
                 Assert.AreEqual($"{d.ToString(CultureInfo.InvariantCulture)}", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(d, await sp.ProxyDouble(d));
+                Assert.AreEqual(d, await sp.ProxyDoubleInQuery(d));
             }
         }
 
@@ -153,12 +180,12 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = new TestHostContext(GetWebHost()))
             {
-                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyString?s=testar");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyStringInQuery)}?s=testar");
                 Assert.AreEqual("\"testar\"", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual("testar", await sp.ProxyString("testar"));
-                Assert.AreEqual("testar2", await sp.ProxyString("testar2"));
+                Assert.AreEqual("testar", await sp.ProxyStringInQuery("testar"));
+                Assert.AreEqual("testar2", await sp.ProxyStringInQuery("testar2"));
             }
         }
 
@@ -172,11 +199,11 @@ namespace SolidRpc.Tests.MvcProxyTest
             using (var ctx = new TestHostContext(GetWebHost()))
             {
                 var guid = Guid.NewGuid();
-                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyGuid?g={guid.ToString()}");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyGuidInQuery)}?g={guid.ToString()}");
                 Assert.AreEqual($"\"{guid.ToString()}\"", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(guid, await sp.ProxyGuid(guid));
+                Assert.AreEqual(guid, await sp.ProxyGuidInQuery(guid));
             }
         }
 
@@ -190,16 +217,16 @@ namespace SolidRpc.Tests.MvcProxyTest
             using (var ctx = new TestHostContext(GetWebHost()))
             {
                 var dateTime = new DateTime(2019, 05, 25, 17, 32, 44);
-                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyDateTime?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
                 Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:ss")}\"", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(dateTime, await sp.ProxyDateTime(dateTime));
+                Assert.AreEqual(dateTime, await sp.ProxyDateTimeInQuery(dateTime));
             }
         }
 
         /// <summary>
-        /// Sends a datetime arry back and forth between client and server
+        /// Sends a datetime array back and forth between client and server
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -211,30 +238,62 @@ namespace SolidRpc.Tests.MvcProxyTest
                     new DateTime(2019, 05, 25, 17, 32, 44),
                     new DateTime(2019, 05, 25, 17, 32, 47),
                 };
-                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyDateTimeArray?dArr={dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}&dArr={dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}");
+                var nvps = dateTimeArr.Select(o => new KeyValuePair<string, DateTime>("dArr", o));
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeArrayInQuery)}", nvps);
+                Assert.AreEqual($"[\"{dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}\",\"{dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}\"]", await AssertOk(resp));
+                resp = await ctx.PostResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeArrayInForm)}", nvps);
                 Assert.AreEqual($"[\"{dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}\",\"{dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}\"]", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                CompareEnums(dateTimeArr, await sp.ProxyDateTimeArray(dateTimeArr));
+                Assert.AreEqual(dateTimeArr, await sp.ProxyDateTimeArrayInQuery(dateTimeArr));
+                Assert.AreEqual(dateTimeArr, await sp.ProxyDateTimeArrayInForm(dateTimeArr));
             }
         }
 
-        private void CompareEnums<T>(IEnumerable<T> arr1, IEnumerable<T> arr2)
+        private NameValueCollection CreateNameValueCollection<T>(params KeyValuePair<string, T>[] values)
         {
-            var e1 = arr1.GetEnumerator();
-            var e2 = arr2.GetEnumerator();
-            while(e1.MoveNext())
+            var nvc = new NameValueCollection();
+            if (typeof(T) == typeof(DateTime))
             {
-                if(!e2.MoveNext())
-                {
-                    Assert.Fail("Length differs");
-                }
-                Assert.AreEqual(e1.Current, e2.Current);
+                values.ToList().ForEach(o => nvc.Add(o.Key, ((DateTime)(object)o.Value).ToString("yyy-MM-ddTHH:mm:ss")));
             }
-            if (e2.MoveNext())
+            return nvc;
+        }
+
+        /// <summary>
+        /// Sends a stream back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyStream()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
             {
-                Assert.Fail("Length differs");
+                var payload = new byte[] { 10, 20 };
+                var msg = new HttpRequestMessage();
+                msg.Method = HttpMethod.Post;
+                msg.RequestUri = new Uri(ctx.BaseAddress, $"/MvcProxyTest/ProxyStream");
+                var streamContent = new StreamContent(new MemoryStream(payload));
+                streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "ff", FileName="test.xml" };
+                var multipart = new MultipartFormDataContent();
+                multipart.Add(streamContent);
+                msg.Content = multipart;
+
+                var resp = await ctx.GetResponse(msg);
+                Assert.AreEqual("application/octet-stream", resp.Content.Headers.ContentType.MediaType);
+                Assert.AreEqual(payload, await resp.Content.ReadAsByteArrayAsync());
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                Assert.AreEqual(payload, ReadStream(await sp.ProxyStream(new MemoryStream(payload))));
             }
+        }
+
+        private byte[] ReadStream(Stream stream)
+        {
+            var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            return ms.ToArray();
         }
 
         private async Task<T> CreateServiceProxy<T>(TestHostContext ctx) where T:class

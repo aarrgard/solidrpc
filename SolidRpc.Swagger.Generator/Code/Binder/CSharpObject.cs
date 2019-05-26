@@ -35,6 +35,6 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// <summary>
         /// The array object.
         /// </summary>
-        public CSharpObject ArrayElement { get; internal set; }
+        public CSharpObject ArrayElement { get; }
     }
 }

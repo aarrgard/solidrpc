@@ -100,6 +100,10 @@ namespace SolidRpc.Swagger.Model.V2
                 {
                     return respObj.Status;
                 }
+                if (Parent is OperationObject opObj)
+                {
+                    return opObj.OperationId;
+                }
                 else
                 {
                     throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);

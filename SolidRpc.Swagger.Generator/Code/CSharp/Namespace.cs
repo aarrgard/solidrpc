@@ -7,6 +7,14 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
     {
         public Namespace(IQualifiedMember parent, string name) : base(parent)
         {
+            if (parent.FullName.Contains("<"))
+            {
+                throw new System.Exception("Supplied namespace contains illegal characters in name:" + parent.FullName);
+            }
+            if (name.Contains("<"))
+            {
+                throw new System.Exception("Supplied name contains illegal characters:" + name);
+            }
             Name = name;
             FullName = new QualifiedName(parent?.FullName, name).QName;
             NamespaceDummy = new QualifiedName(parent?.FullName, name).Namespace;

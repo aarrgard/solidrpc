@@ -92,6 +92,10 @@ namespace SolidRpc.Swagger.Binder.V2
             {
                 throw new Exception("Operation does not support content type:" + response.ContentType);
             }
+            if(typeof(T).IsAssignableFrom(typeof(Stream)))
+            {
+                return (T)(object)(await response.GetResponseStreamAsync());
+            }
             using (var s = await response.GetResponseStreamAsync())
             {
                 using (StreamReader sr = new StreamReader(s))

@@ -23,7 +23,12 @@ namespace SolidRpc.Swagger.Generator.Code.CSharp
         {
             get
             {
-                return ((IQualifiedMember)Parent).FullName;
+                var ns = ((IQualifiedMember)Parent).FullName;
+                if(ns.Contains("<"))
+                {
+                    throw new System.Exception();
+                }
+                return ns;
             }
         }
 

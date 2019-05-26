@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Code
@@ -22,8 +23,20 @@ namespace SolidRpc.Swagger.Generator.Code
         }
 
         public QualifiedName(params string[] namespaces)
-            : this(namespaces.SelectMany(o => (o ?? "").Split('.')))
+            : this(namespaces.SelectMany(o=>SplitNamespace(o)))
         {
+        }
+        private static IEnumerable<string> SplitNamespace(string ns)
+        {
+            var genType = ns.IndexOf('<');
+            if (genType > -1)
+            {
+                var splits = SplitNamespace(ns.Substring(0, genType));
+                var count = splits.Count();
+                splits = splits.Take(count - 1).Union(new[] { splits.Last() + ns.Substring(genType)});
+                return splits;
+            }
+            return ns.Split('.');
         }
 
         private QualifiedName(IEnumerable<string> names)
@@ -32,6 +45,10 @@ namespace SolidRpc.Swagger.Generator.Code
             QName = string.Join(".", Names);
             Namespace = string.Join(".", Names.Reverse().Skip(1).Reverse());
             Name = Names.LastOrDefault();
+            if(Namespace.Contains("<"))
+            {
+                throw new Exception("Illegal characters in namespace");
+            }
         }
 
         /// <summary>

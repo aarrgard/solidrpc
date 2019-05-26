@@ -54,6 +54,10 @@ namespace SolidRpc.Swagger.Generator
             DefinitionMapper = (settings, swaggerDef) =>
             {
                 if(string.IsNullOrEmpty(swaggerDef.Name)) throw new Exception("Name is null or empty");
+                if(swaggerDef.ArrayType != null)
+                {
+                    return new CSharpObject(settings.DefinitionMapper(settings, swaggerDef.ArrayType));
+                }
                 var className = swaggerDef.Name;
                 if(!swaggerDef.IsReservedName)
                 {

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 using System;
+using System.IO;
 namespace SolidRpc.Tests.Generated.Local.Services {
     /// <summary>
     /// 
@@ -12,7 +13,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="b">The boolean to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<bool> ProxyBoolean(
+        Task<bool> ProxyBooleanInQuery(
             bool b,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -21,7 +22,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="s">The short to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<int> ProxyShort(
+        Task<int> ProxyShortInQuery(
             int s,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -30,7 +31,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="b">The byte to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<int> ProxyByte(
+        Task<int> ProxyByteInQuery(
             int b,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -39,7 +40,16 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="i">The interger to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<int> ProxyInt(
+        Task<int> ProxyIntInQuery(
+            int i,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
+        /// <param name="i">The interger to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<int> ProxyIntInForm(
             int i,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -48,8 +58,8 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="iarr"></param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<int>> ProxyIntArrArr(
-            IEnumerable<int> iarr,
+        Task<IEnumerable<IEnumerable<int>>> ProxyIntArrArrInQuery(
+            IEnumerable<IEnumerable<int>> iarr,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -57,7 +67,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="l">The long to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<long> ProxyLong(
+        Task<long> ProxyLongInQuery(
             long l,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -66,7 +76,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="f">The float to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<float> ProxyFloat(
+        Task<float> ProxyFloatInQuery(
             float f,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -75,7 +85,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="d">The double to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<double> ProxyDouble(
+        Task<double> ProxyDoubleInQuery(
             double d,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -84,7 +94,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="s">The string to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<string> ProxyString(
+        Task<string> ProxyStringInQuery(
             string s,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -93,7 +103,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="g">The guid to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<Guid> ProxyGuid(
+        Task<Guid> ProxyGuidInQuery(
             Guid g,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -102,7 +112,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="d"></param>
         /// <param name="cancellationToken"></param>
-        Task<DateTime> ProxyDateTime(
+        Task<DateTime> ProxyDateTimeInQuery(
             DateTime d,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -111,8 +121,26 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// </summary>
         /// <param name="dArr">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<DateTime>> ProxyDateTimeArray(
+        Task<IEnumerable<DateTime>> ProxyDateTimeArrayInQuery(
             IEnumerable<DateTime> dArr,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Sends a datetime back and forth between client and server
+        /// </summary>
+        /// <param name="dArr">The datetime to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<IEnumerable<DateTime>> ProxyDateTimeArrayInForm(
+            IEnumerable<DateTime> dArr,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Sends a stream back and forth between client and server
+        /// </summary>
+        /// <param name="ff">The stream to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<Stream> ProxyStream(
+            Stream ff,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }
