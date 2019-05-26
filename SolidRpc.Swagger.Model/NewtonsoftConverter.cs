@@ -126,12 +126,16 @@ namespace SolidRpc.Swagger.Model
 
         private Tp Deserialize<Tp>(JsonReader r, ModelBase parent, JsonSerializer s)
         {
-            Tp val = s.Deserialize<Tp>(r);
-            if(val is ModelBase)
+            object val = s.Deserialize<Tp>(r);
+            if (val is ModelBase mb)
             {
-                ((ModelBase)(object)val).Parent = parent;
+                mb.Parent = parent;
             }
-            return val;
+            else if (val is IEnumerable<ModelBase> emb)
+            {
+                emb.ToList().ForEach(o => o.Parent = parent);
+            }
+            return (Tp)val;
         }
 
         private Action<JsonReader, object, JsonSerializer> CreateReadPropertyHandler(string propertyName)

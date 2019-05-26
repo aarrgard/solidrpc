@@ -161,10 +161,7 @@ namespace SolidRpc.Swagger.Generator.V2
                     return sd;
                 case "array":
                     var arrayType = GetSwaggerDefinition(swaggerOperation, schema.Items);
-                    return new SwaggerDefinition(arrayType.SwaggerOperation, arrayType.Name)
-                    {
-                        IsArray = true
-                    };
+                    return new SwaggerDefinition(arrayType);
                 case "string":
                     switch (schema.Format)
                     {
@@ -191,6 +188,16 @@ namespace SolidRpc.Swagger.Generator.V2
                     return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeStream);
                 case "boolean":
                     return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeBoolean);
+                case "number":
+                    switch (schema.Format)
+                    {
+                        case "float":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeFloat);
+                        case "double":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDouble);
+                        default:
+                            throw new Exception("Cannot handle schema format:" + schema.Format);
+                    }
                 default:
                     throw new Exception("Cannot handle schema type:"+schema.Type);
             }

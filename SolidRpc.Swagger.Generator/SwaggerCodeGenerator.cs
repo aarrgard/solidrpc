@@ -65,9 +65,9 @@ namespace SolidRpc.Swagger.Generator
                 var propType = GetClass(codeGenerator, prop.PropertyType);
                 cls.AddProperty(prop.PropertyName, propType).Summary = prop.Description;
             }
-            if(cSharpObject.IsArray)
+            if(cSharpObject.ArrayElement != null)
             {
-                return codeGenerator.CreateGenericType("System.Collections.Generic.IEnumerable", cls.FullName);
+                return GetClass(codeGenerator, cSharpObject.ArrayElement);
             }
             AddUsings(cls);
             return cls;

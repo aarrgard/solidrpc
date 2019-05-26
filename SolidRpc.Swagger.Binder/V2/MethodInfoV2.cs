@@ -37,12 +37,12 @@ namespace SolidRpc.Swagger.Binder.V2
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             Arguments = CreateArguments();
             OperationId = OperationObject.OperationId;
-            Method = OperationObject.Method;
+            Method = OperationObject.GetMethod();
             Scheme = OperationObject.Schemes?.FirstOrDefault() ??
                 OperationObject.GetParent<SwaggerObject>().Schemes?.FirstOrDefault() ??
                 "http";
             Host = OperationObject.GetParent<SwaggerObject>().Host;
-            Path = $"{OperationObject.GetParent<SwaggerObject>().BasePath}{OperationObject.Path}";
+            Path = $"{OperationObject.GetParent<SwaggerObject>().BasePath}{OperationObject.GetPath()}";
             Produces = OperationObject.Produces ?? new string[0];
         }
 

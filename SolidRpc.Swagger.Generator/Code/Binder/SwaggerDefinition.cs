@@ -14,6 +14,8 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         public static string TypeString = "string";
         public static string TypeInt = "int";
         public static string TypeLong = "long";
+        public static string TypeFloat = "float";
+        public static string TypeDouble = "double";
         public static string TypeStream = "System.IO.Stream";
         public static string TypeDateTime = "System.DateTime";
         public static string TypeGuid = "System.Guid";
@@ -27,6 +29,8 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
             TypeString,
             TypeInt,
             TypeLong,
+            TypeFloat,
+            TypeDouble,
             TypeStream,
             TypeDateTime,
             TypeGuid,
@@ -42,6 +46,11 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
             Name = name ?? throw new ArgumentNullException();
             IsReservedName = ReservedNames.Any(o => o == Name);
             Properties = new List<SwaggerProperty>();
+        }
+
+        public SwaggerDefinition(SwaggerDefinition arrayType) : this(arrayType.SwaggerOperation, arrayType.Name)
+        {
+            ArrayType = arrayType;
         }
 
         /// <summary>
@@ -63,7 +72,7 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// <summary>
         /// Specifies if this definition represents an array of objects.
         /// </summary>
-        public bool IsArray { get; set; }
+        public SwaggerDefinition ArrayType { get; }
 
         /// <summary>
         /// The properties that belongs to this definition.

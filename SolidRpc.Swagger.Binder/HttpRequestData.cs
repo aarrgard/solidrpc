@@ -1,5 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SolidRpc.Swagger.Binder
@@ -9,75 +14,136 @@ namespace SolidRpc.Swagger.Binder
     /// </summary>
     public abstract class HttpRequestData
     {
-
+        private const string SystemBoolean = "System.Boolean";
+        private const string SystemDouble = "System.Double";
+        private const string SystemByte = "System.Byte";
+        private const string SystemByteArray = "System.Byte[]";
+        private const string SystemSingle = "System.Single";
+        private const string SystemInt16 = "System.Int16";
+        private const string SystemInt32 = "System.Int32";
+        private const string SystemInt64 = "System.Int64";
+        private const string SystemGuid = "System.Guid";
+        private const string SystemDateTime = "System.DateTime";
+        private const string SystemString = "System.String";
+        private const string SystemIOStream = "System.IO.Stream";
+        private const string SystemThreadingCancellationToken = "System.Threading.CancellationToken";
+        
         public static readonly IEnumerable<HttpRequestData> EmptyArray = new HttpRequestData[0];
 
-        /// <summary>
-        /// Constructs a new request data instance
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static HttpRequestData Create(string name, object value)
+        public static Func<object, IEnumerable<HttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
         {
-            if (value is string str)
+            Func<object, HttpRequestData> subBinder;
+            switch(collectionFormat)
             {
-                return new HttpRequestDataStrings(name, str);
+                case null:
+                    subBinder = CreateBinder(contentType, name, parameterType);
+                    return _ => new HttpRequestData[] { subBinder(_) };
+                case "multi":
+                    var binder = CreateEnumBinder(contentType, name, parameterType);
+                    return _ => binder(_);
+                default:
+                    throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
-            else if (value is string[] strArr)
-            {
-                return new HttpRequestDataStrings(name, strArr);
-            }
-            else if (value is byte[] bytes)
-            {
-                return new HttpRequestDataBinary(name, bytes);
-            }
-            else if (value is bool b)
-            {
-                return new HttpRequestDataStrings(name, b ? "true" : "false");
-            }
-            else if (value is short s)
-            {
-                return new HttpRequestDataStrings(name, s.ToString());
-            }
-            else if (value is int i)
-            {
-                return new HttpRequestDataStrings(name, i.ToString());
-            }
-            else if (value is long l)
-            {
-                return new HttpRequestDataStrings(name, l.ToString());
-            }
-            else if (value is Guid g)
-            {
-                return new HttpRequestDataStrings(name, g.ToString());
-            }
-            throw new Exception("Cannot handle value:"+ value?.GetType().FullName);
         }
 
-        public static HttpRequestData operator +(HttpRequestData a, HttpRequestData b)
+        private static Type GetEnumType(Type type)
         {
-            if (a == null) return b;
-            if (b == null) return a;
-            return a.AppendData(b);
+            if (type.IsGenericType)
+            {
+                if (typeof(IEnumerable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+                {
+                    return type.GetGenericArguments()[0];
+                }
+            }
+            return type.GetInterfaces().Select(o => GetEnumType(o)).Where(o => o != null).FirstOrDefault();
         }
 
-        /// <summary>
+        private static Func<object, IEnumerable<HttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
+        {
+            var enumType = GetEnumType(type);
+            var m = typeof(HttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                    .Where(o => o.Name == nameof(CreateEnumBinder))
+                    .Where(o => o.GetParameters().Length == 2)
+                    .Where(o => o.IsGenericMethod)
+                    .Single();
+            return (Func<object, IEnumerable<HttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+        }
+
+        private static Func<object, IEnumerable<HttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
+        {
+            var subBinder = CreateBinder(contentType, name, typeof(T));
+            return _ => ((IEnumerable<T>)_).Select(o => subBinder(o));
+        }
+
+        private static Func<object, HttpRequestData> CreateBinder(string contentType, string name, Type type)
+        {
+            switch(contentType)
+            {
+                case "text/plain":
+                    switch (type?.FullName)
+                    {
+                        case null:
+                        case SystemThreadingCancellationToken:
+                            return (_) => null;
+                        case SystemBoolean:
+                            return (_) => new HttpRequestDataString(contentType, name, ((bool)_) ? "true" : "false");
+                        case SystemDouble:
+                            return (_) => new HttpRequestDataString(contentType, name, ((double)_).ToString(CultureInfo.InvariantCulture));
+                        case SystemSingle:
+                            return (_) => new HttpRequestDataString(contentType, name, ((float)_).ToString(CultureInfo.InvariantCulture));
+                        case SystemInt16:
+                            return (_) => new HttpRequestDataString(contentType, name, ((short)_).ToString(CultureInfo.InvariantCulture));
+                        case SystemInt32:
+                            return (_) => new HttpRequestDataString(contentType, name, ((int)_).ToString(CultureInfo.InvariantCulture));
+                        case SystemInt64:
+                            return (_) => new HttpRequestDataString(contentType, name, ((long)_).ToString(CultureInfo.InvariantCulture));
+                        case SystemGuid:
+                            return (_) => new HttpRequestDataString(contentType, name, ((Guid)_).ToString());
+                        case SystemDateTime:
+                            return (_) => new HttpRequestDataString(contentType, name, ((DateTime)_).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+                        case SystemString:
+                            return (_) => new HttpRequestDataString(contentType, name, (string)_);
+                        case SystemIOStream:
+                            return (_) =>
+                            {
+                                var ms = new MemoryStream();
+                                ((Stream)_).CopyTo(ms);
+                                return new HttpRequestDataBinary(contentType, name, ms.ToArray());
+                            };
+                        default:
+                            throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
+                    }
+                case "application/json":
+                    return (_) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(_));
+                default:
+                    throw new NotImplementedException("cannot handle content type:" + contentType);
+            }
+        }
+
+       /// <summary>
         /// The name of the request data.
         /// </summary>
         /// <param name="name"></param>
-        public HttpRequestData(string name)
+        public HttpRequestData(string contentType, string name)
         {
+            ContentType = contentType;
             Name = name;
         }
 
+        /// <summary>
+        /// The content type
+        /// </summary>
+        public string ContentType { get; }
+
+        /// <summary>
+        /// The name
+        /// </summary>
         public string Name { get; }
 
         protected Encoding GetEncoding(Encoding encoding)
         {
             return encoding ?? Encoding.UTF8;
         }
-
-        public abstract HttpRequestData AppendData(HttpRequestData b);
 
         /// <summary>
         /// Returns the string value using supplied encoding.
@@ -86,5 +152,44 @@ namespace SolidRpc.Swagger.Binder
         /// <returns></returns>
         public abstract string GetStringValue(Encoding encoding = null);
 
+        /// <summary>
+        /// Returns the binary value using supplied encoding.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public abstract Stream GetBinaryValue(Encoding encoding = null);
+
+        /// <summary>
+        /// Convertes the value to specified type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T As<T>()
+        {
+            switch(ContentType)
+            {
+                case "text/plain":
+                    switch (typeof(T).FullName)
+                    {
+                        case SystemIOStream:
+                            return (T)(object)GetBinaryValue();
+                        case SystemByteArray:
+                            using (var s = GetBinaryValue())
+                            {
+                                var ms = new MemoryStream();
+                                s.CopyTo(ms);
+                                return (T)(object)ms.ToArray();
+                            }
+                        case SystemString:
+                            return (T)(object)GetStringValue();
+                        default:
+                            throw new Exception("Cannot handle:" + typeof(T).FullName);
+                    }
+                case "application/json":
+                    return JsonConvert.DeserializeObject<T>(GetStringValue());
+                default:
+                    throw new Exception("Cannot handle:"+ContentType);
+            }
+        }
     }
 }

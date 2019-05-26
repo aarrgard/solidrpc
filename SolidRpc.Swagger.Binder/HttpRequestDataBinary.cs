@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 
 namespace SolidRpc.Swagger.Binder
 {
@@ -10,8 +11,10 @@ namespace SolidRpc.Swagger.Binder
         /// <summary>
         /// Constructs a new structure representing binary data.
         /// </summary>
+        /// <param name="contentType"></param>
+        /// <param name="name"></param>
         /// <param name="binaryData"></param>
-        public HttpRequestDataBinary(string name, byte[] binaryData) : base(name)
+        public HttpRequestDataBinary(string contentType, string name, byte[] binaryData) : base(contentType, name)
         {
             BinaryData = binaryData;
         }
@@ -21,9 +24,9 @@ namespace SolidRpc.Swagger.Binder
         /// </summary>
         public byte[] BinaryData { get; }
 
-        public override HttpRequestData AppendData(HttpRequestData b)
+        public override Stream GetBinaryValue(Encoding encoding = null)
         {
-            throw new System.NotImplementedException();
+            return new MemoryStream(BinaryData);
         }
 
         public override string GetStringValue(Encoding encoding)

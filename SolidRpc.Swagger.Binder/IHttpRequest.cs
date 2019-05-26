@@ -45,6 +45,6 @@ namespace SolidRpc.Swagger.Binder
         /// <summary>
         /// The body
         /// </summary>
-        object Body { get; set; }
+        HttpRequestData Body { get; set; }
     }
 }

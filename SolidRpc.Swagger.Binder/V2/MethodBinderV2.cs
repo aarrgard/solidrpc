@@ -31,13 +31,37 @@ namespace SolidRpc.Swagger.Binder.V2
             var binderStatus = new StringBuilder();
             var prospects = Operations;
             binderStatus.Append($"->#{prospects.Count()}");
+
+            // operation id must start with method name
             prospects = prospects.Where(o => o.OperationId.StartsWith(mi.Name, StringComparison.InvariantCultureIgnoreCase));
-            binderStatus.Append($"->{mi.Name}->#{prospects.Count()}");
-            if(prospects.Count() != 1)
+            binderStatus.Append($"->method({mi.Name})->#{prospects.Count()}");
+
+            // find all parameters 
+            foreach(var param in mi.GetParameters())
+            {
+                prospects = prospects.Where(o => FindParameter(o.Parameters, param));
+                binderStatus.Append($"->param({param.Name})->#{prospects.Count()}");
+            }
+
+            if (prospects.Count() != 1)
             {
                 throw new NotImplementedException(binderStatus.ToString());
             }
             return new MethodInfoV2(prospects.Single(), mi);
+        }
+
+        private bool FindParameter(IEnumerable<ParameterObject> parameters, ParameterInfo parameter)
+        {
+            var prospect = parameters.FirstOrDefault(o => o.Name == parameter.Name);
+            if(prospect != null)
+            {
+                return true;
+            }
+            if(parameter.IsOptional)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

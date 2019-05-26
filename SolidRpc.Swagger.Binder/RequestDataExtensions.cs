@@ -11,9 +11,9 @@ namespace SolidRpc.Swagger.Binder
         /// <param name="data"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static IEnumerable<string> GetStringData(this IEnumerable<HttpRequestData> data, string name)
+        public static IEnumerable<T> As<T>(this IEnumerable<HttpRequestData> data, string name)
         {
-            return data.OfType<HttpRequestDataStrings>().Where(o => o.Name == name).SelectMany(o => o.StringData);
+            return data.Where(o => o.Name == name).Select(o => o.As<T>());
         }
         /// <summary>
         /// Returns the binary data for supplied name
@@ -21,9 +21,9 @@ namespace SolidRpc.Swagger.Binder
         /// <param name="data"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static byte[] GetBinaryData(this IEnumerable<HttpRequestData> data, string name)
+        public static T GetData<T>(this IEnumerable<HttpRequestData> data, string name)
         {
-            return data.OfType<HttpRequestDataBinary>().Where(o => o.Name == name).Select(o => o.BinaryData).Single();
+            return data.Single(o => o.Name == name).As<T>(); ;
         }
     }
 }

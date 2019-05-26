@@ -24,6 +24,6 @@ namespace SolidRpc.Tests.Swagger
 
         public IEnumerable<HttpRequestData> FormData { get; set; }
 
-        public object Body { get; set; }
+        public HttpRequestData Body { get; set; }
     }
 }

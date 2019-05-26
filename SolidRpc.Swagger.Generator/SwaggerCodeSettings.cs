@@ -68,7 +68,6 @@ namespace SolidRpc.Swagger.Generator
                         settings.ClassNameMapper(className));
                 }
                 var csObj = new CSharpObject(className);
-                csObj.IsArray = swaggerDef.IsArray;
                 csObj.Properties = swaggerDef.Properties.Select(o => new CSharpProperty()
                 {
                     PropertyName = settings.PropertyNameMapper(o.Name),

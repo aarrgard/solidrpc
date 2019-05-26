@@ -15,19 +15,26 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
             Properties = new List<CSharpProperty>();
         }
 
+        public CSharpObject(CSharpObject arrayElement)
+        {
+            ArrayElement = arrayElement;
+            Name = $"System.Collections.Generic.IEnumerable<{arrayElement.Name}>";
+            Properties = new List<CSharpProperty>();
+        }
+
         /// <summary>
         /// The full class name
         /// </summary>
         public QualifiedName Name { get; }
 
         /// <summary>
-        /// Returns true if this is an array.
-        /// </summary>
-        public bool IsArray { get; set; }
-
-        /// <summary>
         /// The properties in this object
         /// </summary>
         public IEnumerable<CSharpProperty> Properties { get; set; }
+
+        /// <summary>
+        /// The array object.
+        /// </summary>
+        public CSharpObject ArrayElement { get; internal set; }
     }
 }

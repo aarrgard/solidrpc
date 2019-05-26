@@ -13,11 +13,19 @@ namespace SolidRpc.Swagger.Binder.V2
             ParameterObject = parameterObject ?? throw new ArgumentNullException(nameof(parameterObject));
             ParameterInfo = parameterInfo ?? throw new ArgumentNullException(nameof(parameterObject));
             ArgumentPath = CreatePath();
-
-            if(parameterObject.Name != parameterInfo.Name)
+            if (parameterObject.Name != parameterInfo.Name)
             {
                 throw new Exception("Name mismatch");
             }
+
+            var contentType = "text/plain";
+            if(ParameterObject.In == "body")
+            {
+                contentType = ParameterObject.GetParent<OperationObject>().GetProduces().FirstOrDefault();
+            }
+
+            var collectionFormat = ParameterObject.Type == "array" ? ParameterObject.CollectionFormat ?? "csv" : null;
+            HttpRequestDataBinder = HttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
         }
 
         private IEnumerable<string> CreatePath()
@@ -60,67 +68,63 @@ namespace SolidRpc.Swagger.Binder.V2
 
         public IEnumerable<string> ArgumentPath { get; }
 
+        public Func<object, IEnumerable<HttpRequestData>> HttpRequestDataBinder { get; }
+
         public void BindArgument(IHttpRequest request, object val)
         {
-            BindPath(request, ArgumentPath.GetEnumerator(), val);
+            BindPath(typeof(IHttpRequest), request, ArgumentPath.GetEnumerator(), val);
         }
 
-        private object BindPath(object target, IEnumerator<string> enumerator, object value)
+        private object BindPath(Type type, object existingValue, IEnumerator<string> pathEnumerator, object value)
         {
+            if (typeof(IEnumerable<HttpRequestData>).IsAssignableFrom(type))
+            {
+                var lst = ((IEnumerable<HttpRequestData>)existingValue).ToList();
+                var requestData = HttpRequestDataBinder(value);
+                lst.AddRange(requestData);
+                return lst;
+            }
+            if (typeof(HttpRequestData).IsAssignableFrom(type))
+            {
+                return HttpRequestDataBinder(value).Single();
+            }
+
             // if we have reach end of path - return value
-            if(!enumerator.MoveNext())
+            if (!pathEnumerator.MoveNext())
             {
                 return value;
             }
-            var pathElement = enumerator.Current;
-            if(string.IsNullOrEmpty(pathElement))
+            var pathElement = pathEnumerator.Current;
+            if (string.IsNullOrEmpty(pathElement))
             {
                 return null;
             }
-            if (target is IEnumerable<HttpRequestData> data)
+            if (typeof(string).IsAssignableFrom(type))
             {
-                var lst = data.ToList();
-                var oldReqData = lst.FirstOrDefault(o => o.Name == pathElement);
-                value = BindPath(oldReqData, enumerator, value);
-                if(oldReqData == null)
-                {
-                    lst.Add(HttpRequestData.Create(pathElement, value));
-                }
-                else
-                {
-                    var idx = lst.IndexOf(oldReqData);
-                    lst[idx] = oldReqData + HttpRequestData.Create(pathElement, value);
-                }
-                return lst;
-            }
-            if (target is string str)
-            {
-                var strVals = Convert(ParameterInfo.ParameterType, ParameterObject, value);
+                var str = (string) existingValue;
+                var requestData = HttpRequestDataBinder(value);
+                var strVals = requestData.Select(o => o.GetStringValue());
                 str = str.Replace($"{{{pathElement}}}", string.Join("", strVals));
                 return str;
             }
             //
             // set value on target.
             //
-            var props = target.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public);
+            var props = existingValue.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public);
             var prop = props.FirstOrDefault(o => o.Name == pathElement);
             if(prop == null)
             {
-                throw new Exception($"Cannot find path {pathElement} in {target.GetType().FullName}");
+                throw new Exception($"Cannot find path {pathElement} in {existingValue.GetType().FullName}");
             }
-            var propValue = prop.GetValue(target);
-            if (propValue == null)
-            {
-                propValue = Activator.CreateInstance(prop.PropertyType);
-            }
-            var newValue = BindPath(propValue, enumerator, value);
+            var propValue = prop.GetValue(existingValue);
+            var newValue = BindPath(prop.PropertyType, propValue, pathEnumerator, value);
             if(!ReferenceEquals(newValue, propValue))
             {
-                prop.SetValue(target, newValue);
+                prop.SetValue(existingValue, newValue);
             }
             return newValue;
         }
-
+/*
         private IEnumerable<string> Convert(Type type, ItemBase schema, object value)
         {
             switch(schema.Type)
@@ -196,5 +200,6 @@ namespace SolidRpc.Swagger.Binder.V2
             var prop = props.First(o => o.Name == pathElement);
             return prop.GetValue(target);
         }
+        */
     }
 }

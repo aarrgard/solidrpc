@@ -5,6 +5,7 @@ using SolidRpc.Swagger.Model.V2;
 using SolidRpc.Tests.Generated.Petstore.Services;
 using SolidRpc.Tests.Generated.Petstore.Types;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -173,8 +174,8 @@ namespace SolidRpc.Tests.Swagger
             smi.BindArguments(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual("/aarrgard/Test/1.0.0/pet/findByStatus", req.Path);
-            Assert.AreEqual("available", req.Query.GetStringData("status").First());
-            Assert.AreEqual("pending", req.Query.GetStringData("status").Last());
+            Assert.AreEqual("available", req.Query.As<string>("status").First());
+            Assert.AreEqual("pending", req.Query.As<string>("status").Last());
         }
 
         [Test]
@@ -188,7 +189,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
 
-            var petId = 3456;
+            var petId = 3456L;
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
@@ -208,13 +209,13 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "name"));
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
 
-            var petId = 3456;
+            var petId = 3456L;
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { petId, "kalle", "available", CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
-            Assert.AreEqual($"kalle", req.FormData.GetStringData("name").First());
-            Assert.AreEqual($"available", req.FormData.GetStringData("status").First());
+            Assert.AreEqual($"kalle", req.FormData.As<string>("name").First());
+            Assert.AreEqual($"available", req.FormData.As<string>("status").First());
         }
 
         [Test]
@@ -230,13 +231,14 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "additionalMetadata"));
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "file"));
 
-            var petId = 3456;
+            var petId = 3456L;
             var req = new RequestMock();
-            smi.BindArguments(req, new object[] { petId, "Image metadata", new byte[] { 1, 2, 3, 4 }, CancellationToken.None });
+            var data = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+            smi.BindArguments(req, new object[] { petId, "Image metadata", data, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}/uploadImage", req.Path);
-            Assert.AreEqual($"Image metadata", req.FormData.GetStringData("additionalMetadata").First());
-            Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.FormData.GetBinaryData("file"));
+            Assert.AreEqual($"Image metadata", req.FormData.As<string>("additionalMetadata").First());
+            Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.FormData.GetData<byte[]>("file"));
         }
 
         [Test]
@@ -264,11 +266,12 @@ namespace SolidRpc.Tests.Swagger
             smi.BindArguments(req, new object[] { order, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/store/order", req.Path);
-            Assert.AreEqual(order.Complete, ((Order)req.Body).Complete);
-            Assert.AreEqual(order.Status, ((Order)req.Body).Status);
-            Assert.AreEqual(order.Quantity, ((Order)req.Body).Quantity);
-            Assert.AreEqual(order.PetId, ((Order)req.Body).PetId);
-            Assert.AreEqual(order.Id, ((Order)req.Body).Id);
+            var orderResp = req.Body.As<Order>();
+            Assert.AreEqual(order.Complete, orderResp.Complete);
+            Assert.AreEqual(order.Status, orderResp.Status);
+            Assert.AreEqual(order.Quantity, orderResp.Quantity);
+            Assert.AreEqual(order.PetId, orderResp.PetId);
+            Assert.AreEqual(order.Id, orderResp.Id);
         }
     }
 }

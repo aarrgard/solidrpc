@@ -85,57 +85,59 @@ namespace SolidRpc.Swagger.Model.V2
         /// <summary>
         /// The method to use to access this operation.
         /// </summary>
-        public string Method {
-            get
+        public string GetMethod() {
+            if (Parent is PathItemObject pathItem)
             {
-                if (Parent is PathItemObject pathItem)
+                if (pathItem.Delete == this)
                 {
-                    if (pathItem.Delete == this)
-                    {
-                        return "DELETE";
-                    }
-                    else if (pathItem.Get == this)
-                    {
-                        return "GET";
-                    }
-                    else if (pathItem.Head == this)
-                    {
-                        return "HEAD";
-                    }
-                    else if (pathItem.Patch == this)
-                    {
-                        return "PATCH";
-                    }
-                    else if (pathItem.Post == this)
-                    {
-                        return "POST";
-                    }
-                    else if (pathItem.Put == this)
-                    {
-                        return "PUT";
-                    }
-                    else
-                    {
-                        throw new System.Exception("Cannot find operation object.");
-                    }
+                    return "DELETE";
                 }
-                throw new System.Exception("Cannot determine method.");
+                else if (pathItem.Get == this)
+                {
+                    return "GET";
+                }
+                else if (pathItem.Head == this)
+                {
+                    return "HEAD";
+                }
+                else if (pathItem.Patch == this)
+                {
+                    return "PATCH";
+                }
+                else if (pathItem.Post == this)
+                {
+                    return "POST";
+                }
+                else if (pathItem.Put == this)
+                {
+                    return "PUT";
+                }
+                else
+                {
+                    throw new System.Exception("Cannot find operation object.");
+                }
             }
+            throw new System.Exception("Cannot determine method.");
         }
 
         /// <summary>
         /// The path to this operation.
         /// </summary>
-        public string Path
+        public string GetPath()
         {
-            get
+            if (Parent is PathItemObject pathItem)
             {
-                if (Parent is PathItemObject pathItem)
-                {
-                    return pathItem.Path;
-                }
-                throw new System.Exception("Cannot determine method.");
+                return pathItem.Path;
             }
+            throw new System.Exception("Cannot determine method.");
+        }
+        public IEnumerable<string> GetProduces()
+        {
+            if(Produces == null)
+            {
+                return GetParent<SwaggerObject>().Produces ?? new string[0];
+            }
+            return Produces;
         }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -29,6 +31,24 @@ namespace SolidRpc.Tests.MvcProxyTest
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
                 Assert.AreEqual(true, await sp.ProxyBoolean(true));
                 Assert.AreEqual(false, await sp.ProxyBoolean(false));
+            }
+        }
+
+        /// <summary>
+        /// Sends a byte back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyByte()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
+            {
+                var resp = await ctx.GetResponse("/MvcProxyTest/ProxyByte?b=10");
+                Assert.AreEqual("10", await AssertOk(resp));
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                Assert.AreEqual((byte)10, await sp.ProxyByte(10));
+                Assert.AreEqual((byte)11, await sp.ProxyByte(11));
             }
         }
 
@@ -86,6 +106,44 @@ namespace SolidRpc.Tests.MvcProxyTest
             }
         }
 
+
+        /// <summary>
+        /// Sends a datetime back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyFloat()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
+            {
+                var f = 1.5f;
+                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyFloat?f={f.ToString(CultureInfo.InvariantCulture)}");
+                Assert.AreEqual($"{f.ToString(CultureInfo.InvariantCulture)}", await AssertOk(resp));
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                Assert.AreEqual(f, await sp.ProxyFloat(f));
+            }
+        }
+
+
+        /// <summary>
+        /// Sends a datetime back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyDouble()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
+            {
+                var d = 3.5d;
+                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyDouble?d={d.ToString(CultureInfo.InvariantCulture)}");
+                Assert.AreEqual($"{d.ToString(CultureInfo.InvariantCulture)}", await AssertOk(resp));
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                Assert.AreEqual(d, await sp.ProxyDouble(d));
+            }
+        }
+
         /// <summary>
         /// Sends an integer back and forth between client and server
         /// </summary>
@@ -122,6 +180,62 @@ namespace SolidRpc.Tests.MvcProxyTest
             }
         }
 
+        /// <summary>
+        /// Sends a datetime back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyDateTime()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
+            {
+                var dateTime = new DateTime(2019, 05, 25, 17, 32, 44);
+                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyDateTime?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
+                Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:ss")}\"", await AssertOk(resp));
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                Assert.AreEqual(dateTime, await sp.ProxyDateTime(dateTime));
+            }
+        }
+
+        /// <summary>
+        /// Sends a datetime arry back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyDateTimeArr()
+        {
+            using (var ctx = new TestHostContext(GetWebHost()))
+            {
+                var dateTimeArr = new DateTime[] {
+                    new DateTime(2019, 05, 25, 17, 32, 44),
+                    new DateTime(2019, 05, 25, 17, 32, 47),
+                };
+                var resp = await ctx.GetResponse($"/MvcProxyTest/ProxyDateTimeArray?dArr={dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}&dArr={dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}");
+                Assert.AreEqual($"[\"{dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}\",\"{dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}\"]", await AssertOk(resp));
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                CompareEnums(dateTimeArr, await sp.ProxyDateTimeArray(dateTimeArr));
+            }
+        }
+
+        private void CompareEnums<T>(IEnumerable<T> arr1, IEnumerable<T> arr2)
+        {
+            var e1 = arr1.GetEnumerator();
+            var e2 = arr2.GetEnumerator();
+            while(e1.MoveNext())
+            {
+                if(!e2.MoveNext())
+                {
+                    Assert.Fail("Length differs");
+                }
+                Assert.AreEqual(e1.Current, e2.Current);
+            }
+            if (e2.MoveNext())
+            {
+                Assert.Fail("Length differs");
+            }
+        }
 
         private async Task<T> CreateServiceProxy<T>(TestHostContext ctx) where T:class
         {

@@ -76,6 +76,6 @@ namespace SolidRpc.Proxy
         public IEnumerable<HttpRequestData> Headers { get; set; }
         public IEnumerable<HttpRequestData> Query { get; set; }
         public IEnumerable<HttpRequestData> FormData { get; set; }
-        public object Body { get; set; }
+        public HttpRequestData Body { get; set; }
     }
 }
