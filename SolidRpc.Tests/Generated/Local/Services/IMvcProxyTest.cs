@@ -56,6 +56,24 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// <summary>
         /// Sends an integer back and forth between client and server
         /// </summary>
+        /// <param name="i">The interger to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<int> ProxyIntInHeader(
+            int i,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
+        /// <param name="i">The interger to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<int> ProxyIntInRoute(
+            int i,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
         /// <param name="iarr"></param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<IEnumerable<int>>> ProxyIntArrArrInQuery(

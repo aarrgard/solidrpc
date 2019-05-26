@@ -77,6 +77,29 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <param name="i">The interger to proxy</param>
         /// <returns>the supplied int</returns>
         [HttpGet]
+        public Task<int> ProxyIntInHeader([FromHeader]int i)
+        {
+            return Task.FromResult(i);
+        }
+
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
+        /// <param name="i">The interger to proxy</param>
+        /// <returns>the supplied int</returns>
+        [HttpGet]
+        [Route("{i}")]
+        public Task<int> ProxyIntInRoute([FromRoute]int i)
+        {
+            return Task.FromResult(i);
+        }
+
+        /// <summary>
+        /// Sends an integer back and forth between client and server
+        /// </summary>
+        /// <param name="i">The interger to proxy</param>
+        /// <returns>the supplied int</returns>
+        [HttpGet]
         public Task<int[][]> ProxyIntArrArrInQuery([FromQuery]int[][] iarr)
         {
             return Task.FromResult(iarr);

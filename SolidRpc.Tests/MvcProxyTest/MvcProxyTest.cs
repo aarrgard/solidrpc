@@ -90,10 +90,18 @@ namespace SolidRpc.Tests.MvcProxyTest
                 Assert.AreEqual("10", await AssertOk(resp));
                 resp = await ctx.PostResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyIntInForm)}", nvps);
                 Assert.AreEqual("10", await AssertOk(resp));
+                resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyIntInRoute)}/10");
+                Assert.AreEqual("10", await AssertOk(resp));
+
+                // The .net core mvc does not bind it - its in the header collection on the server !!!
+                //resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyIntInHeader)}", null, nvps);
+                //Assert.AreEqual("10", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
                 Assert.AreEqual(10, await sp.ProxyIntInQuery(10));
                 Assert.AreEqual(11, await sp.ProxyIntInForm(11));
+                Assert.AreEqual(13, await sp.ProxyIntInRoute(13));
+                //Assert.AreEqual(14, await sp.ProxyIntInHeader(14));
             }
         }
 

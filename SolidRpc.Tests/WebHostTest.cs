@@ -46,15 +46,27 @@ namespace SolidRpc.Tests
             {
                 return GetResponse<object>(requestUri);
             }
-            public Task<HttpResponseMessage> GetResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> nvps = null)
+            public Task<HttpResponseMessage> GetResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> formValues = null, IEnumerable<KeyValuePair<string, T>> headerValues = null)
             {
                 var httpClient = new HttpClient();
-                if(nvps != null)
+                if(formValues != null)
                 {
-                    var query = string.Join("&", nvps.Select(o => $"{o.Key}={HttpUtility.UrlEncode(ToString(o.Value))}"));
+                    var query = string.Join("&", formValues.Select(o => $"{o.Key}={HttpUtility.UrlEncode(ToString(o.Value))}"));
                     requestUri = requestUri + "?" + query;
                 }
-                return httpClient.GetAsync(new Uri(BaseAddress, requestUri));
+                var req = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(BaseAddress, requestUri)
+                };
+                if(headerValues != null)
+                {
+                    foreach (var h in headerValues)
+                    {
+                        req.Headers.Add(h.Key, ToString(h.Value));
+                    }
+                }
+                return httpClient.SendAsync(req);
             }
 
             private string ToString<T>(T value)
