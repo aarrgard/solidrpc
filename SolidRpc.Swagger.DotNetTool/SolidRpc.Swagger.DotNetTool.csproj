@@ -8,4 +8,8 @@
     <StartupObject>SolidRpc.Swagger.DotNetTool.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.2.1" />
+  </ItemGroup>
+
 </Project>
