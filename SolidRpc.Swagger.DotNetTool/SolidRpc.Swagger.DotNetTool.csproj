@@ -13,4 +13,8 @@
     <DebugType>embedded</DebugType>-->
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SolidRpc.Swagger.DotNetTool
 {
@@ -6,7 +7,11 @@ namespace SolidRpc.Swagger.DotNetTool
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Running swagger-generator");
+            args.ToList().ForEach(o =>
+            {
+                Console.WriteLine($" * arg:{o}");
+            });
         }
     }
 }

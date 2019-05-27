@@ -37,11 +37,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build006" />
+    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build007" />
   </ItemGroup>
   
-  <!--<Target Name="RunExampleTool" BeforeTargets="Build">
-    <Exec Command="dotnet SolidRpc.Swagger.DotNetTool" WorkingDirectory="$(ProjectDir)" />
-  </Target>-->
+  <Target Name="SwaggerGenerator" BeforeTargets="Build">
+    <Exec Command="dotnet solidrpc-swaggergen -create-code swagger.json" WorkingDirectory="$(ProjectDir)" />
+  </Target>
   
 </Project>
