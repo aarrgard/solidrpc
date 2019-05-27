@@ -30,18 +30,11 @@
     <ProjectReference Include="..\SolidRpc.Swagger.Binder\SolidRpc.Swagger.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj" />
+    <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Generated\Local\Types\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build007" />
-  </ItemGroup>
-  
-  <Target Name="SwaggerGenerator" BeforeTargets="Build">
-    <Exec Command="dotnet solidrpc-swaggergen -create-code swagger.json" WorkingDirectory="$(ProjectDir)" />
-  </Target>
   
 </Project>

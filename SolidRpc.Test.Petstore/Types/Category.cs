@@ -1,5 +1,5 @@
 
-namespace SolidRpc.Tests.Generated.Petstore.Types {
+namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
     /// 
     /// </summary>

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="petstore.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build008" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="petstore.json" />
+  </ItemGroup>
+
+  <Target Name="SwaggerGenerator" BeforeTargets="Build">
+    <Exec Command="dotnet solidrpc-swaggergen --create-code swagger.json" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+
+</Project>

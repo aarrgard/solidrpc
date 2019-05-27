@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using SolidRpc.Tests.Generated.Petstore.Types;
+using SolidRpc.Test.Petstore.Types;
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
-namespace SolidRpc.Tests.Generated.Petstore.Services {
+namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
     /// 
     /// </summary>

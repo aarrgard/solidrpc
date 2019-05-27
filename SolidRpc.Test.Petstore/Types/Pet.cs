@@ -1,5 +1,5 @@
 
-namespace SolidRpc.Tests.Generated.Petstore.Types {
+namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
     /// 
     /// </summary>
@@ -12,7 +12,7 @@ namespace SolidRpc.Tests.Generated.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        public SolidRpc.Tests.Generated.Petstore.Types.Category Category { get; set; }
+        public SolidRpc.Test.Petstore.Types.Category Category { get; set; }
     
         /// <summary>
         /// 
@@ -27,7 +27,7 @@ namespace SolidRpc.Tests.Generated.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        public System.Collections.Generic.IEnumerable<SolidRpc.Tests.Generated.Petstore.Types.Tag> Tags { get; set; }
+        public System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.Tag> Tags { get; set; }
     
         /// <summary>
         /// pet status in the store

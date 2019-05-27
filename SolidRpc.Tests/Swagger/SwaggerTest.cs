@@ -2,8 +2,8 @@
 using SolidRpc.Swagger.Binder;
 using SolidRpc.Swagger.Model;
 using SolidRpc.Swagger.Model.V2;
-using SolidRpc.Tests.Generated.Petstore.Services;
-using SolidRpc.Tests.Generated.Petstore.Types;
+using SolidRpc.Test.Petstore.Services;
+using SolidRpc.Test.Petstore.Types;
 using System;
 using System.IO;
 using System.Linq;

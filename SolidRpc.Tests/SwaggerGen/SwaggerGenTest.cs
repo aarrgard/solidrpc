@@ -11,24 +11,6 @@ namespace SolidRpc.Tests.Swagger
     public class SwaggerGenTest : WebHostMvcTest
     {
         /// <summary>
-        /// Creates the petstore bindings.
-        /// </summary>
-        [Test]
-        public void TestPetStoreGenerator()
-        {
-            var swaggerSpec = new StreamReader(GetManifestResource("petstore.json")).ReadToEnd();
-            var settings = new SwaggerCodeSettings()
-            {
-                SwaggerSpec = swaggerSpec,
-                OutputPath = GetProjectFolder("SolidRpc.Tests").FullName,
-                ProjectNamespace = "SolidRpc.Tests",
-                CodeNamespace = "Generated.Petstore"
-            };
-
-            SwaggerCodeGenerator.GenerateCode(settings);
-        }
-
-        /// <summary>
         /// Creates the local bindings
         /// </summary>
         /// <returns></returns>

@@ -23,7 +23,7 @@ namespace SolidRpc.Swagger.Generator.Code
         }
 
         public QualifiedName(params string[] namespaces)
-            : this(namespaces.SelectMany(o=>SplitNamespace(o)))
+            : this(namespaces.Where(o => o!=null).SelectMany(o=>SplitNamespace(o)))
         {
         }
         private static IEnumerable<string> SplitNamespace(string ns)
