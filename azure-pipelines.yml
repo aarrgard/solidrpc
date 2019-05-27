@@ -1,0 +1,103 @@
+#
+## Build pipeline
+#
+
+name: 'SolidProxy$(Date:yyyyMMdd)$(Rev:.r)'
+
+trigger:
+  branches:
+    include:
+    - master
+    - SolidProxy/*
+ 
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+variables:
+  buildConfiguration: 'Release'
+  projectFolder: '$(Build.SourcesDirectory)'
+  solidCIPowershellFolder: $(projectFolder)
+
+steps:
+
+#
+# Restore nuget packages
+#
+- task: DotNetCoreCLI@2
+  displayName: Nuget - restore
+  inputs:
+    command: restore
+    projects: '$(projectFolder)/**/*.csproj'
+    feedsToUse: config
+    nugetConfigPath: $(projectFolder)/nuget.config
+
+#
+# Setupd solidci paths - must be done after nuget restore
+#
+- task: PowerShell@2
+  displayName: SolidCI - Powershell bootstrap
+  inputs:
+    targetType: "filePath"
+    filePath: $(solidCIPowershellFolder)/solidci-powershell-bootstrap.ps1
+
+#
+# Prepare nuget packages
+#
+- task: PowerShell@2
+  displayName: SolidCI - Nuget prepare
+  inputs:
+    targetType: "filePath"
+    filePath: $(solidCIPowershellFolder)/AzurePipelineScripts/solidci-nuget-prepare.ps1
+  env: 
+    projectFolder: $(projectFolder)
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        
+#
+# Build stuff
+#
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'Build - dotnet build $(buildConfiguration)'
+  workingDirectory: $(projectFolder)
+
+#
+# Run tests
+#
+- task: DotNetCoreCLI@2
+  displayName: Test - Run test projects
+  inputs:
+    command: test
+    projects: '$(projectFolder)/**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+
+#
+# Pack it in a nuget assembly and copy to artifacts folder, then push it
+#
+- script: dotnet pack
+  displayName: 'Nuget - Create packages'
+  workingDirectory: $(projectFolder)
+
+- task: CopyFiles@2
+  displayName: 'Nuget - Copy packages to staging folder'
+  inputs:
+    contents: '$(projectFolder)/**/*.nupkg'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: NuGetCommand@2
+  displayName: 'Nuget - push - Prerelease'
+  condition: eq(variables['releasebuild'], 'false')
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishVstsFeed: Prerelease
+    publishFeedCredentials: NugetPrerelease
+
+- task: NuGetCommand@2
+  displayName: 'Nuget - push - Release'
+  condition: eq(variables['releasebuild'], 'true')
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishVstsFeed: Released
+    publishFeedCredentials: NugetReleased
+

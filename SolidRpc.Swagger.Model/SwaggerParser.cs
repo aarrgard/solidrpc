@@ -31,7 +31,7 @@ namespace SolidRpc.Swagger.Model
     /// </summary>
     public abstract class SwaggerParser<T> : SwaggerParser where T : ISwaggerSpec
     {
-        private static JsonSerializerSettings s_settings = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings s_settings = new JsonSerializerSettings()
         {
             ContractResolver = NewtonsoftContractResolver.Instance
         };
