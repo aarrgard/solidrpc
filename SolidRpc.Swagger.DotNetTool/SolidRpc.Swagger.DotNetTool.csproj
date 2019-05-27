@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
-    <AssemblyName>solidrpc-swaggergen</AssemblyName>
+    <ToolCommandName>solidrpc-swaggergen</ToolCommandName>
     <Description>Generates code from a swagger specification.</Description>
     <DebugType>embedded</DebugType>
     <RootNamespace>SolidRpc.Swagger.DotNetTool</RootNamespace>
