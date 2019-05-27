@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build003" />-->
+    <!--<DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build004" />-->
   </ItemGroup>
 
 </Project>
