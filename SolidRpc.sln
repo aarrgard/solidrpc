@@ -11,13 +11,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Model", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Generator", "SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj", "{BB458CA5-495F-4C46-9931-8D5C6F30AFCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Proxy", "SolidRpc.Proxy\SolidRpc.Proxy.csproj", "{E8C949C3-33FD-4871-A4D8-3263CD25055A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Proxy", "SolidRpc.Proxy\SolidRpc.Proxy.csproj", "{E8C949C3-33FD-4871-A4D8-3263CD25055A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C253128-5D02-4E68-BAFB-901E9F7B1055}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Swagger.DotNetTool", "SolidRpc.Swagger.DotNetTool\SolidRpc.Swagger.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.DotNetTool", "SolidRpc.Swagger.DotNetTool\SolidRpc.Swagger.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D62C2EE1-7472-4CEA-A334-D14D98193014}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+		nuget.config = nuget.config
+		solidci-powershell-bootstrap.ps1 = solidci-powershell-bootstrap.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

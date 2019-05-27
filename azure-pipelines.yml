@@ -8,7 +8,7 @@ trigger:
   branches:
     include:
     - master
-    - SolidProxy/*
+    - SolidRpc/*
  
 pool:
   vmImage: 'Ubuntu-16.04'
