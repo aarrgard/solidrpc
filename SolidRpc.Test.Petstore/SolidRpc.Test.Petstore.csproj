@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build008" />
+    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build009" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <Target Name="SwaggerGenerator" BeforeTargets="Build">
-    <Exec Command="dotnet solidrpc-swaggergen --create-code swagger.json" WorkingDirectory="$(ProjectDir)" />
+    <Exec Command="dotnet solidrpc-swaggergen --swagger2code petstore.json" WorkingDirectory="$(ProjectDir)" />
   </Target>
 
 </Project>

@@ -12,7 +12,12 @@ namespace SolidRpc.Swagger.DotNetTool
         {
             Console.WriteLine("Running swagger-generator");
             var argList = new List<string>(args);
-            var command = argList.Where(o => o == "--code2swagger" || o == "--swagger2code").Single();
+            var command = argList.Where(o => o == "--code2swagger" || o == "--swagger2code").SingleOrDefault();
+            if(command == null)
+            {
+                Console.Error.WriteLine($"Must supply direction of code: --code2swagger or --swagger2code");
+                Environment.Exit(1);
+            }
             argList.Remove(command);
 
             var workingDir = Directory.GetCurrentDirectory();
