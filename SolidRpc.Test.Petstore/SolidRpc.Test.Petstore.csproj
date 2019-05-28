@@ -6,18 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="petstore.json" />
+    <EmbeddedResource Include="petstore.json" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build009" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="petstore.json" />
-  </ItemGroup>
-
-  <Target Name="SwaggerGenerator" BeforeTargets="Build">
+  <Target Name="SwaggerGenerator" BeforeTargets="Compile">
     <Exec Command="dotnet solidrpc-swaggergen --swagger2code petstore.json" WorkingDirectory="$(ProjectDir)" />
   </Target>
 

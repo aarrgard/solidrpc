@@ -136,8 +136,8 @@ namespace SolidRpc.Tests.MvcProxyTest
                 Assert.AreEqual("10", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                Assert.AreEqual(10l, await sp.ProxyLongInQuery(10));
-                Assert.AreEqual(11l, await sp.ProxyLongInQuery(11));
+                Assert.AreEqual(10L, await sp.ProxyLongInQuery(10));
+                Assert.AreEqual(11L, await sp.ProxyLongInQuery(11));
             }
         }
 

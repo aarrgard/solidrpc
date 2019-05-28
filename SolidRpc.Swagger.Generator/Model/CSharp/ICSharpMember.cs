@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using SolidRpc.Swagger.Generator.Model.CSharp.Impl;
+
+namespace SolidRpc.Swagger.Generator.Model.CSharp
+{
+    /// <summary>
+    /// The base type for all the members
+    /// </summary>
+    public interface ICSharpMember
+    {
+
+        /// <summary>
+        /// The parent member.
+        /// </summary>
+        ICSharpMember Parent { get; }
+
+        /// <summary>
+        /// The members that this member contains.
+        /// </summary>
+        IEnumerable<ICSharpMember> Members { get; }
+
+        /// <summary>
+        /// The name of the member
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Returns the full name for this member.
+        /// </summary>
+        string FullName { get; }
+
+        /// <summary>
+        /// The comment for this member.
+        /// </summary>
+        string Comment { get; set; }
+
+        /// <summary>
+        /// Adds a member to this member.
+        /// </summary>
+        /// <param name="member"></param>
+        void AddMember(ICSharpMember member);
+    }
+}

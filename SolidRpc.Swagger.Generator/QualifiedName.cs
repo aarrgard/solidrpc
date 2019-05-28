@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SolidRpc.Swagger.Generator.Code
+namespace SolidRpc.Swagger.Generator
 {
     /// <summary>
     /// Represents a qualified name

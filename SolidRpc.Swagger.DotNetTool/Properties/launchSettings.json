@@ -1,8 +1,13 @@
 {
   "profiles": {
-    "SolidRpc.Swagger.DotNetTool": {
+    "DotNetTool - Swagger2Code": {
       "commandName": "Project",
       "commandLineArgs": "--swagger2code petstore.json",
+      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Petstore"
+    },
+    "DotNetTool - Code2Swagger": {
+      "commandName": "Project",
+      "commandLineArgs": "--code2swagger  generated.json",
       "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Petstore"
     }
   }
