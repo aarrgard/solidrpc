@@ -10,6 +10,13 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
     public interface ICSharpRepository
     {
         /// <summary>
+        /// Returns the type with full name.
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
+        ICSharpType GetType(string fullName);
+
+        /// <summary>
         /// Returns the interface for supplied name
         /// </summary>
         /// <param name="fullName">The name of the interface</param>

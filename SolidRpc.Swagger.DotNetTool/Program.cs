@@ -1,14 +1,18 @@
 ﻿using SolidRpc.Swagger.Generator;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 
 namespace SolidRpc.Swagger.DotNetTool
 {
     class Program
     {
+        private static ConcurrentDictionary<string, XmlDocument> ProjectDocuments = new ConcurrentDictionary<string, XmlDocument>();
+
         static void Main(string[] args)
         {
             Console.WriteLine("Running swagger-generator");
@@ -56,37 +60,48 @@ namespace SolidRpc.Swagger.DotNetTool
             //var assembly = FindAssembly(fileInfo.DirectoryName);
             var settings = new SwaggerSpecSettings()
             {
+                Title = GetAssemblyName(),
+                Version = GetProjectSetting("SwaggerVersion", "Version"),
+                Description = GetProjectSetting("SwaggerDescription", "Description"),
+                LicenseName = GetProjectSetting("SwaggerLicenseName", "PackageLicenseUrl"),
+                LicenseUrl = GetProjectSetting("SwaggerLicenseUrl", "PackageLicenseUrl"),
+                ContactEmail = GetProjectSetting("SwaggerContactEmail"),
+                ContactName = GetProjectSetting("SwaggerContactName", "Authors"),
+                ContactUrl = GetProjectSetting("SwaggerContactUrl", "PackageProjectUrl"),
                 SwaggerFile = fileInfo.FullName,
                 CodePath = fileInfo.DirectoryName
             };
             SwaggerSpecGenerator.GenerateCode(settings);
         }
 
-        private static Assembly FindAssembly(string projectFolder)
+        private static string GetProjectSetting(params string[] settings)
         {
-            var assemblyName = GetAssemblyName(projectFolder);
-            var di = new DirectoryInfo(Path.Combine(projectFolder, "bin"));
-            var assemblyFiles = di.GetFiles($"{assemblyName}.dll", new EnumerationOptions() { RecurseSubdirectories = true });
-            var assemblyFile = assemblyFiles.OrderByDescending(o => o.LastWriteTime).FirstOrDefault();
-            if(assemblyFile == null)
+            var doc = GetProjectDocument(Directory.GetCurrentDirectory());
+            var nsmgr = new XmlNamespaceManager(doc.NameTable);
+
+            foreach(var setting in settings)
             {
-                Console.Error.WriteLine($"Cannot locate assembly {assemblyName}.dll in or below folder {di.FullName}");
-                Environment.Exit(1);
+                var xpath = $"/Project/PropertyGroup/{setting}";
+                var node = doc.SelectSingleNode(xpath, nsmgr);
+                if (node != null)
+                {
+                    return node.InnerText;
+                }
             }
-            try
-            {
-                // load the assembly and generate swagger file
-                return Assembly.LoadFile(assemblyFile.FullName);
-            } 
-            catch(Exception e)
-            {
-                Console.Error.WriteLine($"Cannot load the assembly:" + assemblyFile.FullName);
-                Environment.Exit(1);
-                return null;
-            }
+            return null;
         }
 
-        private static void GenerateCodeFromSwagger(List<FileInfo> files)
+        private static XmlDocument GetProjectDocument(string projectFolder)
+        {
+            return ProjectDocuments.GetOrAdd(projectFolder, _ =>
+            {
+                var projectDocument = new XmlDocument();
+                projectDocument.Load(GetCsProjFile().FullName);
+                return projectDocument;
+            });
+        }
+
+         private static void GenerateCodeFromSwagger(List<FileInfo> files)
         {
             var nonexisingFiles = files.Where(o => !o.Exists);
             if (nonexisingFiles.Any())
@@ -106,36 +121,36 @@ namespace SolidRpc.Swagger.DotNetTool
                 {
                     SwaggerSpec = swaggerSpec,
                     OutputPath = swaggerFile.DirectoryName,
-                    ProjectNamespace = GetProjectNamespace(swaggerFile.DirectoryName)
+                    ProjectNamespace = GetProjectNamespace()
                 };
 
                 SwaggerCodeGenerator.GenerateCode(settings);
             }
         }
 
-        private static FileInfo GetCsProjFile(string projectFolder)
+        private static FileInfo GetCsProjFile()
         {
-            var dir = new DirectoryInfo(projectFolder);
+            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
             // locate csproj file
             var csprojFiles = dir.GetFiles("*.csproj");
             if (csprojFiles.Length != 1)
             {
-                throw new Exception("Cannot find csproj file in folder:" + projectFolder);
+                throw new Exception("Cannot find csproj file in folder:" + dir.FullName);
             }
             return csprojFiles.First();
         }
 
-        private static string GetProjectNamespace(string projectFolder)
+        private static string GetProjectNamespace()
         {
-            var csProjFile = GetCsProjFile(projectFolder);
+            var csProjFile = GetCsProjFile();
             var projectNamespace = csProjFile.Name;
             projectNamespace = projectNamespace.Substring(0, projectNamespace.Length - csProjFile.Extension.Length);
             return projectNamespace;
         }
 
-        private static string GetAssemblyName(string projectFolder)
+        private static string GetAssemblyName()
         {
-            var csProjFile = GetCsProjFile(projectFolder);
+            var csProjFile = GetCsProjFile();
             var assemblyName = csProjFile.Name;
             assemblyName = assemblyName.Substring(0, assemblyName.Length - csProjFile.Extension.Length);
             return assemblyName;

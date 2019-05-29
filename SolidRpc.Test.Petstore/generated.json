@@ -1,0 +1,16 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SolidRpc.Test.Petstore",
+    "contact": {
+      "name": "Authors",
+      "url": "https://github.com/aarrgard/solidrpc/wiki",
+      "email": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "license": {
+      "name": "http://www.apache.org/licenses/LICENSE-2.0.html",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.4.5"
+  }
+}

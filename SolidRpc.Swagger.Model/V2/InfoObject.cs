@@ -11,7 +11,7 @@ namespace SolidRpc.Swagger.Model.V2
         /// <summary>
         /// Required. The title of the application.
         /// </summary>
-        [DataMember(Name = "title")]
+        [DataMember(Name = "title", EmitDefaultValue = false, IsRequired = true)]
         public string Title { get; set; }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace SolidRpc.Swagger.Model.V2
         /// <summary>
         /// Required Provides the version of the application API (not to be confused with the specification version).
         /// </summary>
-        [DataMember(Name = "version")]
+        [DataMember(Name = "version", EmitDefaultValue = false)]
         public string Version { get; set; }
     }
 }

@@ -3,6 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
+    <Version>1.4.5</Version>
+    <Authors>Authors</Authors>
+    <Company>Company</Company>
+    <Product>Product</Product>
+    <Description>This is a generated package</Description>
+    <Copyright>MyCompany</Copyright>
+    <PackageProjectUrl>https://github.com/aarrgard/solidrpc/wiki</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

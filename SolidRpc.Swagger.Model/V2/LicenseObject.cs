@@ -11,7 +11,7 @@ namespace SolidRpc.Swagger.Model.V2
         /// <summary>
         /// Required. The license name used for the API.
         /// </summary>
-        [DataMember(Name = "name", EmitDefaultValue = false)]
+        [DataMember(Name = "name", EmitDefaultValue = false, IsRequired = true)]
         public string Name { get; set; }
 
         /// <summary>

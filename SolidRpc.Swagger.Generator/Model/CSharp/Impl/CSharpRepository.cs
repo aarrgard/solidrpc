@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 
 namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 {
@@ -61,6 +61,56 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
         public void AddMember(ICSharpMember member)
         {
             throw new NotImplementedException();
+        }
+
+        public ICSharpType GetType(string fullName)
+        {
+            ICSharpMember member;
+            if(Members.TryGetValue(fullName, out member))
+            {
+                return (ICSharpType) member;
+            }
+            return GetSystemType(fullName);
+        }
+
+        private ICSharpType GetSystemType(string fullName)
+        {
+            foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type t in a.GetTypes())
+                {
+                    if(t.FullName == fullName)
+                    {
+                        if (t.IsClass)
+                        {
+                            return GetClass(fullName);
+                        }
+                        else if (t.IsInterface)
+                        {
+                            return GetInterface(fullName);
+                        }
+                        else if (t.IsValueType)
+                        {
+                            return GetClass(fullName);
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }
+                }
+            }
+            switch (fullName)
+            {
+                case "bool":
+                case "short":
+                case "int":
+                case "long":
+                case "string":
+                    return GetClass("string");
+                default:
+                    return null;
+            }
         }
     }
 }
