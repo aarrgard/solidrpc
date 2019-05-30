@@ -4,18 +4,10 @@ using System.Linq;
 
 namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 {
-    public class CSharpInterface : CSharpMember, ICSharpInterface
+    public class CSharpInterface : CSharpType, ICSharpInterface
     {
-        public CSharpInterface(ICSharpNamespace ns, string name, Type runtimeType) : base(ns, name)
+        public CSharpInterface(ICSharpNamespace ns, string name, Type runtimeType) : base(ns, name, runtimeType)
         {
-            RuntimeType = runtimeType;
-        }
-
-        public Type RuntimeType { get; }
-
-        public override void AddMember(ICSharpMember member)
-        {
-            ProtectedMembers.Add(member);
         }
     }
 }

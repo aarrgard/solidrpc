@@ -1,6 +1,6 @@
-﻿using SolidRpc.Swagger.Generator.Code;
-using SolidRpc.Swagger.Generator.Code.Binder;
-using SolidRpc.Swagger.Generator.Code.CSharp;
+﻿using SolidRpc.Swagger.Generator.Code.Binder;
+using SolidRpc.Swagger.Generator.Model.CSharp;
+using SolidRpc.Swagger.Generator.Model.CSharp.Impl;
 using SolidRpc.Swagger.Generator.V2;
 using SolidRpc.Swagger.Model;
 using SolidRpc.Swagger.Model.V2;
@@ -29,7 +29,7 @@ namespace SolidRpc.Swagger.Generator
         /// <param name="codeSettings"></param>
         public static void GenerateCode(SwaggerCodeSettings codeSettings)
         {
-            var codeGenerator = (ICodeGenerator)new CodeGenerator();
+            var codeGenerator = (ICSharpRepository)new CSharpRepository();
 
             var model = SwaggerParser.ParseSwaggerSpec(codeSettings.SwaggerSpec);
             if (model is SwaggerObject v2)
@@ -49,12 +49,11 @@ namespace SolidRpc.Swagger.Generator
             codeGenerator.WriteCode(codeWriter);
             codeWriter.Close();
         }
-        protected abstract void GenerateCode(ICodeGenerator codeGenerator);
+        protected abstract void GenerateCode(ICSharpRepository codeGenerator);
 
-        protected IClass GetClass(ICodeGenerator codeGenerator, CSharpObject cSharpObject)
+        protected ICSharpClass GetClass(ICSharpRepository csharpRepository, CSharpObject cSharpObject)
         {
-            var ns = codeGenerator.GetNamespace(cSharpObject.Name.Namespace);
-            var cls = ns.GetClass(cSharpObject.Name.Name);
+            var cls = csharpRepository.GetClass(cSharpObject.Name);
             // add missing properties
             foreach (var prop in cSharpObject.Properties)
             {
@@ -62,18 +61,20 @@ namespace SolidRpc.Swagger.Generator
                 {
                     continue;
                 }
-                var propType = GetClass(codeGenerator, prop.PropertyType);
-                cls.AddProperty(prop.PropertyName, propType).Summary = prop.Description;
+                var propType = GetClass(csharpRepository, prop.PropertyType);
+                var csProp = new Model.CSharp.Impl.CSharpProperty(cls, prop.PropertyName, propType);
+                csProp.ParseComment($"<summary>{prop.Description}</summary>");
+                cls.AddMember(csProp);
             }
             if(cSharpObject.ArrayElement != null)
             {
-                GetClass(codeGenerator, cSharpObject.ArrayElement);
+                GetClass(csharpRepository, cSharpObject.ArrayElement);
             }
             AddUsings(cls);
             return cls;
         }
 
-        protected void AddUsings(IMember member)
+        protected void AddUsings(ICSharpType member)
         {
             var namespaces = new HashSet<string>();
             member.GetNamespaces(namespaces);
@@ -87,10 +88,10 @@ namespace SolidRpc.Swagger.Generator
             });
         }
 
-        private void AddUsings(IMember member, string ns)
+        private void AddUsings(ICSharpType member, string ns)
         {
-            var usings = member.Members.OfType<Using>().Select(o => o.Name);
-            if (!usings.Contains(ns)) member.Members.Add(new Using(member, ns));
+            var usings = member.Members.OfType<ICSharpUsing>().Select(o => o.Name);
+            if (!usings.Contains(ns)) member.AddMember(new CSharpUsing(member, ns));
         }
     }
 }

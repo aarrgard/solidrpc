@@ -1,5 +1,5 @@
 ﻿using System;
-using SolidRpc.Swagger.Generator.Code.CSharp;
+using SolidRpc.Swagger.Generator.Model.CSharp;
 using SolidRpc.Swagger.Model.V3;
 
 namespace SolidRpc.Swagger.Generator.V2
@@ -14,7 +14,7 @@ namespace SolidRpc.Swagger.Generator.V2
 
         public OpenAPIObject ApiObject { get; }
 
-        protected override void GenerateCode(ICodeGenerator codeGenerator)
+        protected override void GenerateCode(ICSharpRepository repo)
         {
             throw new NotImplementedException();
         }

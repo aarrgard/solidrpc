@@ -1,4 +1,5 @@
 ﻿using System;
+using SolidRpc.Swagger.Generator.Model.CSharp;
 
 namespace SolidRpc.Swagger.Generator
 {
@@ -13,8 +14,54 @@ namespace SolidRpc.Swagger.Generator
         public SwaggerSpecSettings()
         {
             SwaggerVersion = "2.0";
+            TypeNamespace = "Types";
+            ServiceNamespace = "Services";
+
             MapPath = s => $"/{s.Replace('.', '/')}";
+            TypeDefinitionNameMapper = c => {
+                var name = c.FullName;
+                if (name.StartsWith($"{ProjectNamespace}."))
+                {
+                    name = name.Substring(ProjectNamespace.Length + 1);
+                }
+                if (name.StartsWith($"{CodeNamespace}."))
+                {
+                    name = name.Substring(CodeNamespace.Length + 1);
+                }
+                if (name.StartsWith($"{ServiceNamespace}."))
+                {
+                    name = name.Substring(ServiceNamespace.Length + 1);
+                }
+                else if (name.StartsWith($"{TypeNamespace}."))
+                {
+                    name = name.Substring(TypeNamespace.Length + 1);
+                }
+
+                return name;
+            };
         }
+
+        /// <summary>
+        /// The namespace that the project belongs to. This namespace 
+        /// will not be included in the type references.
+        /// </summary>
+        public string ProjectNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace that will be added to the project namespace
+        /// before adding the type or service namespace.
+        /// </summary>
+        public string CodeNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace to append to the root namespace for all the types
+        /// </summary>
+        public string TypeNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace to append to the root namespace for all the services(interfaces)
+        /// </summary>
+        public string ServiceNamespace { get; set; }
 
         /// <summary>
         /// The swagger version to generate
@@ -76,6 +123,11 @@ namespace SolidRpc.Swagger.Generator
         /// The base path for the service
         /// </summary>
         public string BasePath { get; set; }
+
+        /// <summary>
+        /// The function that maps a type definition on to a reference name.
+        /// </summary>
+        public Func<ICSharpType, string> TypeDefinitionNameMapper { get; set; }
 
         /// <summary>
         /// The function that maps the method name to a path.

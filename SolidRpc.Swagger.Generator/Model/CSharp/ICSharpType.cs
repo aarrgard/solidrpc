@@ -9,6 +9,11 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
     public interface ICSharpType : ICSharpMember
     {
         /// <summary>
+        /// The namepspace that this member belongs to.
+        /// </summary>
+        ICSharpNamespace Namespace { get; }
+
+        /// <summary>
         /// Returns true if this type is a runtime type. 
         /// </summary>
         Type RuntimeType { get; }
@@ -27,5 +32,10 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
         /// Returns the enumerable type
         /// </summary>
         ICSharpType EnumerableType { get; }
+
+        /// <summary>
+        /// Returns the task type - null if this is not a task.
+        /// </summary>
+        ICSharpType TaskType { get; }
     }
 }

@@ -135,12 +135,22 @@ namespace SolidRpc.Swagger.Generator
             {
                 var (className, nameScope) = GetClassOrInterfaceName(ids);
                 var m = GetMember(className, nameScope);
-            }
+                SetComment(member, m);
+             }
             if (member is ClassDeclarationSyntax cds)
             {
                 var (className, nameScope) = GetClassOrInterfaceName(cds);
                 var m = GetMember(className, nameScope);
+                SetComment(member, m);
             }
+        }
+
+        private void SetComment(SyntaxNode node, ICSharpMember cSharpMember)
+        {
+            var comment = string.Join("", node.GetLeadingTrivia()
+                 //.Where(o => o.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia)
+                 .Select(o => o.ToString()));
+            cSharpMember.ParseComment(comment);
         }
 
         private void Sweap2(MemberDeclarationSyntax member)
@@ -162,8 +172,17 @@ namespace SolidRpc.Swagger.Generator
             var (className, nameScope) = GetClassOrInterfaceName(pds);
             var m = GetMember(className, nameScope);
 
-            var propertyType = GetFullName(pds, pds.Type.ToString());
+            var propertyTypeName = GetFullName(pds, pds.Type.ToString());
+            var propertyType = CSharpRepository.GetType(propertyTypeName);
+            if (propertyType == null)
+            {
+                throw new Exception("Failed to find the type for " + propertyTypeName);
+            }
             var propertyName = pds.Identifier.ToString();
+
+            var property = new CSharpProperty(m, propertyName, propertyType);
+            SetComment(pds,property);
+            m.AddMember(property);
         }
 
         private void CreateCSharpMethod(MethodDeclarationSyntax mds)
@@ -174,10 +193,14 @@ namespace SolidRpc.Swagger.Generator
             // return type
             var returnTypeName = GetFullName(mds, mds.ReturnType.ToString());
             var returnType = CSharpRepository.GetType(returnTypeName);
+            if (returnType == null)
+            {
+                throw new Exception("Failed to find the type for " + returnTypeName);
+            }
 
             var methodName = mds.Identifier.ToString();
 
-            var method = new CSharpMethod(m, methodName);
+            var method = new CSharpMethod(m, methodName, returnType);
             method.Parameters = mds.ParameterList.Parameters.Select(o =>
             {
                 var parameterTypeName = GetFullName(o, o.Type.ToString());
@@ -191,6 +214,8 @@ namespace SolidRpc.Swagger.Generator
                 var optional = o.Default == null;
                 return new CSharpMethodParameter(method, parameterName, parameterType, optional);
             }).ToList();
+
+            SetComment(mds, method);
             m.AddMember(method);
         }
 

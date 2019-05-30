@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SolidRpc.Swagger.Generator.Code.Binder;
-using SolidRpc.Swagger.Generator.Code.CSharp;
+using SolidRpc.Swagger.Generator.Model.CSharp;
 using SolidRpc.Swagger.Model.V2;
 
 namespace SolidRpc.Swagger.Generator.V2
@@ -28,7 +28,7 @@ namespace SolidRpc.Swagger.Generator.V2
                 o.Put
             }).Where(o => o != null);
 
-        protected override void GenerateCode(ICodeGenerator codeGenerator)
+        protected override void GenerateCode(ICSharpRepository cSharpRepository)
         {
             // iterate all operations
             var cSharpMethods = Operations.Select(op =>
@@ -45,29 +45,34 @@ namespace SolidRpc.Swagger.Generator.V2
 
             cSharpMethods.ForEach(o =>
             {
-                var ns = codeGenerator.GetNamespace(o.InterfaceName.Namespace);
-                var i = ns.GetInterface(o.InterfaceName.Name);
-                var m = i.AddMethod(o.MethodName);
-                i.Summary = o.ClassSummary;
-                m.Summary = o.MethodSummary;
-                m.ReturnType = GetClass(codeGenerator, o.ReturnType);
+                var i = cSharpRepository.GetInterface(o.InterfaceName);
+                i.ParseComment($"<summary>{o.ClassSummary}</summary>");
+                var returnType = (ICSharpType)GetClass(cSharpRepository, o.ReturnType);
+                if (CodeSettings.UseAsyncAwaitPattern)
+                {
+                    returnType = CreateTask(returnType);
+                }
+
+                var m = new Model.CSharp.Impl.CSharpMethod(i, o.MethodName, returnType);
+                m.ParseComment($"<summary>{o.MethodSummary}</summary>");
                 foreach(var p in o.Parameters)
                 {
-                    var csp = m.AddParameter(p.Name);
-                    csp.Description = p.Description;
-                    csp.ParameterType = GetClass(codeGenerator, p.ParameterType);
+                    var parameterType = GetClass(cSharpRepository, p.ParameterType);
+                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, p.Optional);
+                    mp.ParseComment($"<summary>{p.Description}</summary>");
                     //if(!p.Optional)
                     //{
                     //    csp.DefaultValue = $"default({csp.ParameterType.FullName})";
                     //}
+                    m.AddMember(mp);
                 }
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
-                    m.ReturnType = CreateTask(m.ReturnType);
-                    var csp = m.AddParameter("cancellationToken");
-                    csp.ParameterType = codeGenerator.GetNamespace("System.Threading").GetClass("CancellationToken");
-                    csp.DefaultValue = $"default({csp.ParameterType.FullName})";
+                    var parameterType = cSharpRepository.GetClass("System.Threading.CancellationToken");
+                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, "cancellationToken", parameterType, true, $"default({parameterType.FullName})");
+                    m.AddMember(mp);
                 }
+                i.AddMember(m);
                 AddUsings(i);
             });
 
@@ -75,20 +80,20 @@ namespace SolidRpc.Swagger.Generator.V2
             {
                 var swaggerDef = GetSwaggerDefinition(null, o);
                 var cSharpObject = CodeSettings.DefinitionMapper(CodeSettings, swaggerDef);
-                GetClass(codeGenerator, cSharpObject);
+                GetClass(cSharpRepository, cSharpObject);
             });
           }
 
-        private IClass CreateTask(IClass returnType)
+        private ICSharpType CreateTask(ICSharpType returnType)
         {
-            var codeGenerator = returnType.GetParent<ICodeGenerator>();
+            var repository = returnType.GetParent<ICSharpRepository>();
             if (returnType.Name == SwaggerDefinition.TypeVoid)
             {
-                return codeGenerator.GetNamespace("System.Threading.Tasks").GetClass("Task");
+                return repository.GetClass($"System.Threading.Tasks.Task");
             }
             else
             {
-                return codeGenerator.CreateGenericType("System.Threading.Tasks.Task", returnType.FullName);
+                return repository.GetClass($"System.Threading.Tasks.Task<{returnType.FullName}>");
             }
         }
 

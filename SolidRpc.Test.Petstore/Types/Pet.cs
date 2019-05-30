@@ -1,4 +1,6 @@
 
+using SolidRpc.Test.Petstore.Types;
+using System.Collections.Generic;
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
     /// 
@@ -12,7 +14,7 @@ namespace SolidRpc.Test.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        public SolidRpc.Test.Petstore.Types.Category Category { get; set; }
+        public Category Category { get; set; }
     
         /// <summary>
         /// 
@@ -22,12 +24,12 @@ namespace SolidRpc.Test.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        public System.Collections.Generic.IEnumerable<string> PhotoUrls { get; set; }
+        public IEnumerable<string> PhotoUrls { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        public System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.Tag> Tags { get; set; }
+        public IEnumerable<Tag> Tags { get; set; }
     
         /// <summary>
         /// pet status in the store

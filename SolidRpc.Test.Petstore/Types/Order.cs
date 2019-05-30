@@ -1,4 +1,5 @@
 
+using System;
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Test.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        public System.DateTime ShipDate { get; set; }
+        public DateTime ShipDate { get; set; }
     
         /// <summary>
         /// Order Status

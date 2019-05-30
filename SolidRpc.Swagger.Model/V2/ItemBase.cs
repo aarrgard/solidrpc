@@ -24,7 +24,7 @@ namespace SolidRpc.Swagger.Model.V2
         public string Format { get; set; }
 
         /// <summary>
-        /// Required if type is "array". Describes the type of items in the array.
+        /// Describes this item.
         /// </summary>
         [DataMember(Name = "description", EmitDefaultValue = false)]
         public string Description { get; set; }

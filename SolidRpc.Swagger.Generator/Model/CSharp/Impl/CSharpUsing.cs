@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace SolidRpc.Swagger.Generator.Code.CSharp
+namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 {
-    public class Using : Member, IUsing
+    public class CSharpUsing : CSharpMember, ICSharpUsing
     {
-        public Using(IMember parent, string ns) : base(parent)
+        public CSharpUsing(ICSharpMember parent, string name) : base(parent, name)
         {
-            Name = ns;
         }
-
-        public override string Name { get; }
 
         public override void WriteCode(ICodeWriter codeWriter)
         {

@@ -72,7 +72,8 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 
         public string FullName => "";
 
-        public string Comment { get; set; }
+        public ICSharpComment Comment => null;
+        public void ParseComment(string comment) {  }
 
         public IEnumerable<ICSharpClass> Classes => Members.Values.OfType<ICSharpClass>();
 
@@ -88,7 +89,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
                 {
                     parent = GetNamespace(qn.Namespace);
                 }
-                return new CSNamespace(parent, qn.Name ?? "");
+                return new CSharpNamespace(parent, qn.Name ?? "");
             });
         }
 
@@ -163,6 +164,8 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
             }
             switch (fullName)
             {
+                case "void":
+                    return typeof(void);
                 case "bool":
                     return typeof(bool);
                 case "short":
@@ -181,6 +184,23 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
         public T GetParent<T>() where T : ICSharpMember
         {
             return default(T);
+        }
+
+        public void WriteCode(ICodeWriter codeWriter)
+        {
+            Members.Values.OfType<ICSharpType>()
+                .Where(o => o.RuntimeType == null)
+                .Where(o => o.EnumerableType == null)
+                .Where(o => o.TaskType == null)
+                .ToList().ForEach(o =>
+                {
+                    o.WriteCode(codeWriter);
+                });
+        }
+
+        public void GetNamespaces(ICollection<string> namespaces)
+        {
+            throw new NotImplementedException();
         }
     }
 }

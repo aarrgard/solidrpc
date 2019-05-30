@@ -1,6 +1,4 @@
-﻿using SolidRpc.Swagger.Generator.Code.CSharp;
-
-namespace SolidRpc.Swagger.Generator.Code.Binder
+﻿namespace SolidRpc.Swagger.Generator.Code.Binder
 {
     /// <summary>
     /// Represents a swagger operation parameter

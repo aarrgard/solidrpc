@@ -41,12 +41,30 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
         /// <summary>
         /// The comment for this member.
         /// </summary>
-        string Comment { get; set; }
+        ICSharpComment Comment { get; }
+
+        /// <summary>
+        /// Parses the supplied code comment
+        /// </summary>
+        /// <param name="comment"></param>
+        void ParseComment(string comment);
 
         /// <summary>
         /// Adds a member to this member.
         /// </summary>
         /// <param name="member"></param>
         void AddMember(ICSharpMember member);
+
+        /// <summary>
+        /// Writes the code to supplied writer
+        /// </summary>
+        /// <param name="codeWriter"></param>
+        void WriteCode(ICodeWriter codeWriter);
+
+        /// <summary>
+        /// Returns all the namespaces in this member.
+        /// </summary>
+        /// <param name="namespaces"></param>
+        void GetNamespaces(ICollection<string> namespaces);
     }
 }

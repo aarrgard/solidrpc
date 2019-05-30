@@ -70,7 +70,8 @@ namespace SolidRpc.Swagger.DotNetTool
                 ContactUrl = GetProjectSetting("SwaggerContactUrl", "PackageProjectUrl"),
                 SwaggerFile = fileInfo.FullName,
                 CodePath = fileInfo.DirectoryName,
-                BasePath = $"/{GetAssemblyName().Replace('.', '/')}",               
+                BasePath = $"/{GetAssemblyName().Replace('.', '/')}",  
+                ProjectNamespace = GetProjectNamespace(),
             };
             SwaggerSpecGenerator.GenerateCode(settings);
         }

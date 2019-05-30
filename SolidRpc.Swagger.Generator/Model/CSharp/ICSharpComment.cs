@@ -5,13 +5,15 @@ using System.Text;
 namespace SolidRpc.Swagger.Generator.Model.CSharp
 {
     /// <summary>
-    /// Represents a c# method
+    /// Represents a comment
     /// </summary>
-    public interface ICSharpProperty : ICSharpMember
+    /// <see cref=""/>
+    public interface ICSharpComment
     {
         /// <summary>
-        /// The property type.
+        /// The summary
         /// </summary>
-        ICSharpType PropertyType { get; }
+        string Summary { get; }
+        
     }
 }
