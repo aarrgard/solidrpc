@@ -16,5 +16,10 @@
         /// The parameter type.
         /// </summary>
         public CSharpObject ParameterType { get; set; }
+
+        /// <summary>
+        /// Specifies if this parameter is optional
+        /// </summary>
+        public bool Optional { get; set; }
     }
 }

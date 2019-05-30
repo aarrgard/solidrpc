@@ -1,4 +1,6 @@
-﻿namespace SolidRpc.Swagger.Generator
+﻿using System;
+
+namespace SolidRpc.Swagger.Generator
 {
     /// <summary>
     /// Settings for generating a swagger spec.
@@ -11,6 +13,7 @@
         public SwaggerSpecSettings()
         {
             SwaggerVersion = "2.0";
+            MapPath = s => $"/{s.Replace('.', '/')}";
         }
 
         /// <summary>
@@ -68,5 +71,16 @@
         /// The contact url
         /// </summary>
         public string ContactUrl { get; set; }
+
+        /// <summary>
+        /// The base path for the service
+        /// </summary>
+        public string BasePath { get; set; }
+
+        /// <summary>
+        /// The function that maps the method name to a path.
+        /// </summary>
+        public Func<string, string> MapPath { get; set; }
+
     }
 }

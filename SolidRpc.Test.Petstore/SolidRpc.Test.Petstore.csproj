@@ -21,8 +21,8 @@
     <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build009" />
   </ItemGroup>
 
-  <Target Name="SwaggerGenerator" BeforeTargets="Compile">
-    <Exec Command="dotnet solidrpc-swaggergen --swagger2code petstore.json" WorkingDirectory="$(ProjectDir)" />
-  </Target>
+  <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">
+    <Exec Command="dotnet solidrpc-swaggergen -swagger2code petstore.json" WorkingDirectory="$(ProjectDir)" />
+  </Target>-->
 
 </Project>

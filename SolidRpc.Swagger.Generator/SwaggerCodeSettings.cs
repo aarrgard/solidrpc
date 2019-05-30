@@ -45,6 +45,7 @@ namespace SolidRpc.Swagger.Generator
                     {
                         Name = o.Name,
                         ParameterType = settings.DefinitionMapper(settings, o.ParameterType),
+                        Optional = !o.Required,
                         Description = o.Description
                     }).ToList(),
                     ClassSummary = operation.TagDescription,

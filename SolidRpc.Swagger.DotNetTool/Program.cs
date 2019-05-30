@@ -17,10 +17,10 @@ namespace SolidRpc.Swagger.DotNetTool
         {
             Console.WriteLine("Running swagger-generator");
             var argList = new List<string>(args);
-            var command = argList.Where(o => o == "--code2swagger" || o == "--swagger2code").SingleOrDefault();
+            var command = argList.Where(o => o == "-code2swagger" || o == "-swagger2code").SingleOrDefault();
             if(command == null)
             {
-                Console.Error.WriteLine($"Must supply direction of code: --code2swagger or --swagger2code");
+                Console.Error.WriteLine($"Must supply direction of code: -code2swagger or -swagger2code");
                 Environment.Exit(1);
             }
             argList.Remove(command);
@@ -30,10 +30,10 @@ namespace SolidRpc.Swagger.DotNetTool
 
             switch(command)
             {
-                case "--code2swagger":
+                case "-code2swagger":
                     GenerateSwaggerFromCode(files);
                     break;
-                case "--swagger2code":
+                case "-swagger2code":
                     GenerateCodeFromSwagger(files);
                     break;
             }
@@ -69,7 +69,8 @@ namespace SolidRpc.Swagger.DotNetTool
                 ContactName = GetProjectSetting("SwaggerContactName", "Authors"),
                 ContactUrl = GetProjectSetting("SwaggerContactUrl", "PackageProjectUrl"),
                 SwaggerFile = fileInfo.FullName,
-                CodePath = fileInfo.DirectoryName
+                CodePath = fileInfo.DirectoryName,
+                BasePath = $"/{GetAssemblyName().Replace('.', '/')}",               
             };
             SwaggerSpecGenerator.GenerateCode(settings);
         }

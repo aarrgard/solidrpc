@@ -11,7 +11,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// The following properties are taken directly from the JSON Schema definition and follow the same specifications:
     /// </summary>
     /// <see cref="https://swagger.io/specification/v2/#schemaObject"/>
-    public class SchemaObject : ItemBase
+    public class SchemaObject : ItemsObject
     {
         [DataMember(Name = "discriminator", EmitDefaultValue = false)]
         public string Discriminator { get; set; }

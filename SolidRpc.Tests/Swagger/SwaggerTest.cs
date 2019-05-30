@@ -193,7 +193,7 @@ namespace SolidRpc.Tests.Swagger
             var req = new RequestMock();
             smi.BindArguments(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
-            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
+            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}",req.Path);
         }
 
         [Test]

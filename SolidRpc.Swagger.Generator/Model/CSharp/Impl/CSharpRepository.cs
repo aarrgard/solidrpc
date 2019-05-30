@@ -8,6 +8,56 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 {
     public class CSharpRepository : ICSharpRepository, ICSharpMember
     {
+
+        public static (string, IList<string>, string) ReadType(string fullName)
+        {
+            if (string.IsNullOrEmpty(fullName))
+            {
+                return (fullName, null, null);
+            }
+            if (fullName.StartsWith(">"))
+            {
+                return (null, null, fullName.Substring(1));
+            }
+            var genIdxStart = fullName.IndexOf('<');
+            if (genIdxStart == -1)
+            {
+                var genIdxEnd = fullName.IndexOf('>');
+                if (genIdxEnd > -1)
+                {
+                    return (fullName.Substring(0, genIdxEnd), null, fullName.Substring(genIdxEnd));
+                }
+                else
+                {
+                    return (fullName, null, "");
+                }
+            }
+
+            var genArgs = new List<string>();
+            var genType = fullName.Substring(0, genIdxStart);
+            var work = fullName.Substring(genIdxStart + 1);
+            var rest = "";
+            while (work != null)
+            {
+                string argType;
+                IList<string> args;
+                (argType, args, rest) = ReadType(work);
+                if (!string.IsNullOrEmpty(argType))
+                {
+                    if (args == null)
+                    {
+                        genArgs.Add($"{argType}");
+                    }
+                    else
+                    {
+                        genArgs.Add($"{argType}<{string.Join(",", args)}>");
+                    }
+                }
+                work = rest;
+            }
+            return (genType, genArgs, rest);
+        }
+
         public CSharpRepository()
         {
             Members = new ConcurrentDictionary<string, ICSharpMember>();
@@ -24,6 +74,10 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 
         public string Comment { get; set; }
 
+        public IEnumerable<ICSharpClass> Classes => Members.Values.OfType<ICSharpClass>();
+
+        public IEnumerable<ICSharpInterface> Interfaces => Members.Values.OfType<ICSharpInterface>();
+
         public ICSharpNamespace GetNamespace(string fullName)
         {
             return (ICSharpNamespace)Members.GetOrAdd(fullName, _ =>
@@ -34,7 +88,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
                 {
                     parent = GetNamespace(qn.Namespace);
                 }
-                return new CSNamespace(parent, qn.Name);
+                return new CSNamespace(parent, qn.Name ?? "");
             });
         }
 
@@ -44,7 +98,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
-                return new CSharpClass(ns, qn.Name);
+                return new CSharpClass(ns, qn.Name, GetSystemType(_));
             });
         }
 
@@ -54,7 +108,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
-                return new CSharpInterface(ns, qn.Name);
+                return new CSharpInterface(ns, qn.Name, GetSystemType(_));
             });
         }
 
@@ -70,10 +124,32 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
             {
                 return (ICSharpType) member;
             }
-            return GetSystemType(fullName);
-        }
+            var (genType, genArgs, rest) = ReadType(fullName);
+            if (genArgs != null) genType = $"{genType}`{genArgs.Count}";
+            var t = GetSystemType(genType);
+            if (t == null)
+            {
+                return null;
+            }
+            else if (t.IsClass)
+            {
+                return GetClass(fullName);
+            }
+            else if (t.IsInterface)
+            {
+                return GetInterface(fullName);
+            }
+            else if (t.IsValueType)
+            {
+                return GetClass(fullName);
+            }
+            else
+            {
+                throw new Exception();
+            }
 
-        private ICSharpType GetSystemType(string fullName)
+        }
+        private Type GetSystemType(string fullName)
         {
             foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -81,36 +157,30 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
                 {
                     if(t.FullName == fullName)
                     {
-                        if (t.IsClass)
-                        {
-                            return GetClass(fullName);
-                        }
-                        else if (t.IsInterface)
-                        {
-                            return GetInterface(fullName);
-                        }
-                        else if (t.IsValueType)
-                        {
-                            return GetClass(fullName);
-                        }
-                        else
-                        {
-                            throw new Exception();
-                        }
+                        return t;
                     }
                 }
             }
             switch (fullName)
             {
                 case "bool":
+                    return typeof(bool);
                 case "short":
+                    return typeof(short);
                 case "int":
+                    return typeof(int);
                 case "long":
+                    return typeof(long);
                 case "string":
-                    return GetClass("string");
+                    return typeof(string);
                 default:
                     return null;
             }
+        }
+
+        public T GetParent<T>() where T : ICSharpMember
+        {
+            return default(T);
         }
     }
 }

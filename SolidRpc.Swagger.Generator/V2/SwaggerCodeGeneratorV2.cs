@@ -56,6 +56,10 @@ namespace SolidRpc.Swagger.Generator.V2
                     var csp = m.AddParameter(p.Name);
                     csp.Description = p.Description;
                     csp.ParameterType = GetClass(codeGenerator, p.ParameterType);
+                    //if(!p.Optional)
+                    //{
+                    //    csp.DefaultValue = $"default({csp.ParameterType.FullName})";
+                    //}
                 }
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
@@ -112,7 +116,8 @@ namespace SolidRpc.Swagger.Generator.V2
             {
                 Name = arg.Name,
                 ParameterType = GetSwaggerDefinition(swaggerOperation, arg),
-                Description = arg.Description
+                Description = arg.Description,
+                Required = arg.Required
             };
         }
 

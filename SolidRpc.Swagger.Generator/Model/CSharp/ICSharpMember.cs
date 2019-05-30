@@ -17,6 +17,13 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
         ICSharpMember Parent { get; }
 
         /// <summary>
+        /// Returns the parent of supplied type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T GetParent<T>() where T : ICSharpMember;
+
+        /// <summary>
         /// The members that this member contains.
         /// </summary>
         IEnumerable<ICSharpMember> Members { get; }

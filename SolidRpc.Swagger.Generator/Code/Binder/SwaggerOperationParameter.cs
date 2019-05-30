@@ -21,5 +21,10 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// The parameter type.
         /// </summary>
         public SwaggerDefinition ParameterType { get; set; }
+
+        /// <summary>
+        /// Specifies if this parameter is required.
+        /// </summary>
+        public bool Required { get; set; }
     }
 }

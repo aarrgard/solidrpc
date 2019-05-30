@@ -182,9 +182,14 @@ namespace SolidRpc.Swagger.Generator
             {
                 var parameterTypeName = GetFullName(o, o.Type.ToString());
                 var parameterType = CSharpRepository.GetType(parameterTypeName);
+                if(parameterType == null)
+                {
+                    throw new Exception("Failed to find the type for " + parameterTypeName);
+                }
 
                 var parameterName = o.Identifier.ToString();
-                return new CSharpMethodParameter(method, parameterName, parameterType);
+                var optional = o.Default == null;
+                return new CSharpMethodParameter(method, parameterName, parameterType, optional);
             }).ToList();
             m.AddMember(method);
         }

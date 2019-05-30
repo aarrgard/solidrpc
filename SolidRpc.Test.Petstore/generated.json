@@ -4,13 +4,399 @@
     "title": "SolidRpc.Test.Petstore",
     "contact": {
       "name": "Authors",
-      "url": "https://github.com/aarrgard/solidrpc/wiki",
-      "email": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "url": "https://github.com/aarrgard/solidrpc/wiki"
     },
     "license": {
       "name": "http://www.apache.org/licenses/LICENSE-2.0.html",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
     "version": "1.4.5"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Test/Petstore",
+  "paths": {
+    "/Services/IPet/AddPet": {
+      "post": {
+        "operationId": "AddPet",
+        "parameters": [
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.Pet",
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/DeletePet": {
+      "post": {
+        "operationId": "DeletePet",
+        "parameters": [
+          {
+            "name": "api_key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "petId",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/FindPetsByStatus": {
+      "post": {
+        "operationId": "FindPetsByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/FindPetsByTags": {
+      "post": {
+        "operationId": "FindPetsByTags",
+        "parameters": [
+          {
+            "name": "tags",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/GetPetById": {
+      "post": {
+        "operationId": "GetPetById",
+        "parameters": [
+          {
+            "name": "petId",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/UpdatePet": {
+      "post": {
+        "operationId": "UpdatePet",
+        "parameters": [
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.Pet",
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/UpdatePetWithForm": {
+      "post": {
+        "operationId": "UpdatePetWithForm",
+        "parameters": [
+          {
+            "name": "petId",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IPet/UploadFile": {
+      "post": {
+        "operationId": "UploadFile",
+        "parameters": [
+          {
+            "name": "petId",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "additionalMetadata",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IStore/DeleteOrder": {
+      "post": {
+        "operationId": "DeleteOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IStore/GetInventory": {
+      "post": {
+        "operationId": "GetInventory",
+        "parameters": []
+      }
+    },
+    "/Services/IStore/GetOrderById": {
+      "post": {
+        "operationId": "GetOrderById",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IStore/PlaceOrder": {
+      "post": {
+        "operationId": "PlaceOrder",
+        "parameters": [
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.Order",
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/CreateUser": {
+      "post": {
+        "operationId": "CreateUser",
+        "parameters": [
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.User",
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/CreateUsersWithArrayInput": {
+      "post": {
+        "operationId": "CreateUsersWithArrayInput",
+        "parameters": [
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.User",
+                "type": "object"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/CreateUsersWithListInput": {
+      "post": {
+        "operationId": "CreateUsersWithListInput",
+        "parameters": [
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.User",
+                "type": "object"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/DeleteUser": {
+      "post": {
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "name": "username",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/GetUserByName": {
+      "post": {
+        "operationId": "GetUserByName",
+        "parameters": [
+          {
+            "name": "username",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/LoginUser": {
+      "post": {
+        "operationId": "LoginUser",
+        "parameters": [
+          {
+            "name": "username",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/Services/IUser/LogoutUser": {
+      "post": {
+        "operationId": "LogoutUser",
+        "parameters": []
+      }
+    },
+    "/Services/IUser/UpdateUser": {
+      "post": {
+        "operationId": "UpdateUser",
+        "parameters": [
+          {
+            "name": "username",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Test.Petstore.Types.User",
+              "type": "object"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "SolidRpc.Test.Petstore.Types.ApiResponse": {
+      "type": "object"
+    },
+    "SolidRpc.Test.Petstore.Types.Category": {
+      "type": "object"
+    },
+    "SolidRpc.Test.Petstore.Types.GetInventory200": {
+      "type": "object"
+    },
+    "SolidRpc.Test.Petstore.Types.Order": {
+      "type": "object"
+    },
+    "SolidRpc.Test.Petstore.Types.Pet": {
+      "type": "object"
+    },
+    "SolidRpc.Test.Petstore.Types.Tag": {
+      "type": "object"
+    },
+    "SolidRpc.Test.Petstore.Types.User": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<SolidRpc.Test.Petstore.Types.ApiResponse>": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<SolidRpc.Test.Petstore.Types.GetInventory200>": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<SolidRpc.Test.Petstore.Types.Order>": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<SolidRpc.Test.Petstore.Types.Pet>": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<SolidRpc.Test.Petstore.Types.User>": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<string>": {
+      "type": "object"
+    },
+    "System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.Pet>>": {
+      "type": "object"
+    }
   }
 }

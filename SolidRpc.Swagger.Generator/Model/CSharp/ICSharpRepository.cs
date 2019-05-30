@@ -7,8 +7,18 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
     /// <summary>
     /// The CSharp repository contains all the objects
     /// </summary>
-    public interface ICSharpRepository
+    public interface ICSharpRepository : ICSharpMember
     {
+        /// <summary>
+        /// Returns all the classes in this repo.
+        /// </summary>
+        IEnumerable<ICSharpClass> Classes { get; }
+
+        /// <summary>
+        /// Returns all the interfaces in this repo.
+        /// </summary>
+        IEnumerable<ICSharpInterface> Interfaces { get; }
+
         /// <summary>
         /// Returns the type with full name.
         /// </summary>

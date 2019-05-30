@@ -1,4 +1,6 @@
-﻿namespace SolidRpc.Swagger.Generator.Model.CSharp
+﻿using System.Collections.Generic;
+
+namespace SolidRpc.Swagger.Generator.Model.CSharp
 {
     /// <summary>
     /// Represents a c# interface.
