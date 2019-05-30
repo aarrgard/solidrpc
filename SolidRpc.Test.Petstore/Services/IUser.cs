@@ -5,7 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
-    /// 
+    /// Operations about user
     /// </summary>
     public interface IUser {
         /// <summary>

@@ -31,11 +31,12 @@ namespace SolidRpc.Swagger.Generator
         {
             OperationMapper = (settings, operation) =>
             {
+                var tag = operation.Tags.First();
                 var className = new QualifiedName(
                     settings.ProjectNamespace,
                     settings.CodeNamespace,
                     settings.ServiceNamespace,
-                    settings.InterfaceNameMapper(operation.Tags.First()));
+                    settings.InterfaceNameMapper(tag.Name));
                 return new CSharpMethod()
                 {
                     ReturnType = settings.DefinitionMapper(settings, operation.ReturnType),
@@ -48,12 +49,13 @@ namespace SolidRpc.Swagger.Generator
                         Optional = !o.Required,
                         Description = o.Description
                     }).ToList(),
-                    ClassSummary = operation.TagDescription,
+                    ClassSummary = tag.Description,
                     MethodSummary = $"{operation.OperationSummary} {operation.OperationDescription}".Trim()
                 };
             };
             DefinitionMapper = (settings, swaggerDef) =>
             {
+                if (swaggerDef == null) return null;
                 if(string.IsNullOrEmpty(swaggerDef.Name)) throw new Exception("Name is null or empty");
                 if(swaggerDef.ArrayType != null)
                 {
@@ -79,6 +81,7 @@ namespace SolidRpc.Swagger.Generator
                     PropertyType = settings.DefinitionMapper(settings, o.Type),
                     Description = o.Description
                 });
+                csObj.AdditionalProperties = settings.DefinitionMapper(settings, swaggerDef.AdditionalProperties);
                 return csObj;
             };
             InterfaceNameMapper = qn => NameStartsWithLetter(CapitalizeFirstChar(qn), 'I');

@@ -54,6 +54,12 @@ namespace SolidRpc.Swagger.Generator
         protected ICSharpClass GetClass(ICSharpRepository csharpRepository, CSharpObject cSharpObject)
         {
             var cls = csharpRepository.GetClass(cSharpObject.Name);
+            if(cSharpObject.AdditionalProperties != null)
+            {
+                var dictType = csharpRepository.GetClass(cSharpObject.AdditionalProperties.Name);
+                var extType = csharpRepository.GetClass($"System.Collections.Generic.Dictionary<string,{dictType.FullName}>");
+                cls.AddExtends(extType);
+            }
             // add missing properties
             foreach (var prop in cSharpObject.Properties)
             {

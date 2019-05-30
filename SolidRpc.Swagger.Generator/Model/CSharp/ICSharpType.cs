@@ -29,6 +29,12 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
         IEnumerable<ICSharpProperty> Properties { get; }
 
         /// <summary>
+        /// Adds an extension to this type.
+        /// </summary>
+        /// <param name="extType"></param>
+        void AddExtends(ICSharpType extType);
+
+        /// <summary>
         /// Returns the enumerable type
         /// </summary>
         ICSharpType EnumerableType { get; }

@@ -34,11 +34,11 @@ namespace SolidRpc.Swagger.Generator.V2
             var cSharpMethods = Operations.Select(op =>
             {
                 var swaggerOperation = new SwaggerOperation();
-                swaggerOperation.Tags = op.Tags;
+                swaggerOperation.Tags = GetTags(op);
                 swaggerOperation.OperationId = op.OperationId;
                 swaggerOperation.OperationSummary = op.Summary;
                 swaggerOperation.OperationDescription = op.Description;
-                swaggerOperation.ReturnType = GetSwaggerDefinition(swaggerOperation, op);
+                swaggerOperation.ReturnType = GetReturnType(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
                 return CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
             }).ToList();
@@ -84,6 +84,28 @@ namespace SolidRpc.Swagger.Generator.V2
             });
           }
 
+        private IEnumerable<SwaggerTag> GetTags(OperationObject op)
+        {
+            if (op.Tags == null)
+            {
+                throw new ArgumentNullException(op.OperationId);
+            }
+            if(op.GetParent<SwaggerObject>().Tags == null)
+            {
+                return op.Tags.Select(o => new SwaggerTag()
+                {
+                    Name = o
+                });
+            }
+            return op.GetParent<SwaggerObject>().Tags
+                .Where(o => op.Tags.Contains(o.Name))
+                .Select(o => new SwaggerTag()
+                {
+                    Name = o.Name,
+                    Description = o.Description
+                });
+        }
+
         private ICSharpType CreateTask(ICSharpType returnType)
         {
             var repository = returnType.GetParent<ICSharpRepository>();
@@ -97,17 +119,22 @@ namespace SolidRpc.Swagger.Generator.V2
             }
         }
 
-        private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, OperationObject op)
+        private SwaggerDefinition GetReturnType(SwaggerOperation swaggerOperation, OperationObject op)
         {
-            if (!op.Responses.TryGetValue("200", out ResponseObject ro))
-            {
-                return SwaggerDefinition.Void;
-            }
-            if (ro.Schema == null)
-            {
-                return SwaggerDefinition.Void;
-            }
-            return GetSwaggerDefinition(swaggerOperation, ro.Schema);
+            var responseDef = new SwaggerDefinition(null, SwaggerDefinition.TypeVoid);
+            op.Responses.ToList().ForEach(ro => {
+                var def = new SwaggerDefinition(null, SwaggerDefinition.TypeVoid);
+                if (ro.Value.Schema != null)
+                {
+                    def = GetSwaggerDefinition(swaggerOperation, ro.Value.Schema);
+                }
+                def.Description = ro.Value.Description;
+                if (ro.Key == "200")
+                {
+                    responseDef = def;
+                }
+            });
+            return responseDef;
         }
 
         private IEnumerable<SwaggerOperationParameter> CreateParameters(SwaggerOperation swaggerOperation, IEnumerable<ParameterObject> parameters)
@@ -159,14 +186,22 @@ namespace SolidRpc.Swagger.Generator.V2
             {
                 case "object":
                     var sd = new SwaggerDefinition(swaggerOperation, schema.OperationName);
-                    if(schema is SchemaObject so && so.Properties != null)
+                    if(schema is SchemaObject so)
                     {
-                        sd.Properties = so.Properties.Select(o => new SwaggerProperty()
+                        if(so.Properties != null)
                         {
-                            Name = o.Key,
-                            Type = GetSwaggerDefinition(swaggerOperation, o.Value),
-                            Description = o.Value.Description
-                        }).ToList();
+                            sd.Properties = so.Properties?.Select(o => new SwaggerProperty()
+                            {
+                                Name = o.Key,
+                                Type = GetSwaggerDefinition(swaggerOperation, o.Value),
+                                Description = o.Value.Description
+                            }).ToList();
+                        }
+
+                        if (so.AdditionalProperties != null)
+                        {
+                            sd.AdditionalProperties = GetSwaggerDefinition(swaggerOperation, so.AdditionalProperties);
+                        }
                     }
                     return sd;
                 case "array":

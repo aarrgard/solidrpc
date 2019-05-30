@@ -1,3 +1,4 @@
+
 using System.Threading.Tasks;
 using SolidRpc.Test.Petstore.Types;
 using System.Threading;
@@ -5,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
-    /// 
+    /// Everything about your Pets
     /// </summary>
     public interface IPet {
         /// <summary>

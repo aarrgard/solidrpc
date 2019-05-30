@@ -4,7 +4,7 @@ using System.Threading;
 using SolidRpc.Test.Petstore.Types;
 namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
-    /// 
+    /// Access to Petstore orders
     /// </summary>
     public interface IStore {
         /// <summary>

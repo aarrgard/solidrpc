@@ -7,7 +7,7 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// <summary>
         /// The operation tags
         /// </summary>
-        public IEnumerable<string> Tags { get; set; }
+        public IEnumerable<SwaggerTag> Tags { get; set; }
 
         /// <summary>
         /// The operation id.
@@ -23,12 +23,6 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// The operation parameters.
         /// </summary>
         public IEnumerable<SwaggerOperationParameter> Parameters { get; set; }
-
-        /// <summary>
-        /// The tag description.
-        /// </summary>
-        public string TagDescription { get; set; }
-
         /// <summary>
         /// The description
         /// </summary>

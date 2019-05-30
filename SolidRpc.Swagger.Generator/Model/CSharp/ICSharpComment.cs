@@ -15,5 +15,6 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
         /// </summary>
         string Summary { get; }
         
+        ICSharpCommentExternalDoc ExternalDoc { get; }
     }
 }

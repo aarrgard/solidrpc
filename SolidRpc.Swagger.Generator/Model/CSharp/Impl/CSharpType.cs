@@ -12,6 +12,15 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 
         public Type RuntimeType { get; }
 
+        public void AddExtends(ICSharpType extType)
+        {
+            if(Members.OfType<ICSharpTypeExtends>().Where(o => o.Name == extType.FullName).Any())
+            {
+                return;
+            }
+            ProtectedMembers.Add(new CSharpTypeExtends(this, extType));
+        }
+
         public override void AddMember(ICSharpMember member)
         {
             ProtectedMembers.Add(member);
@@ -35,7 +44,12 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
             codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
             codeWriter.Emit($"/// {Comment?.Summary}{codeWriter.NewLine}");
             codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
-            codeWriter.Emit($"public {structType} {Name} {{{codeWriter.NewLine}");
+            codeWriter.Emit($"public {structType} {Name}");
+            if(Members.OfType<ICSharpTypeExtends>().Any())
+            {
+                codeWriter.Emit($" : {string.Join(",", Members.OfType<ICSharpTypeExtends>().Select(o => o.Name))}");
+            }
+            codeWriter.Emit($" {{{codeWriter.NewLine}");
             Members.ToList().ForEach(o =>
             {
                 if (o is ICSharpMethod || o is ICSharpProperty)

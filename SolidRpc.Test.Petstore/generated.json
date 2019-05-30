@@ -28,8 +28,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/Pet",
-              "type": "object",
-              "description": "My pet!"
+              "type": "object"
             },
             "description": "Pet object that needs to be added to the store"
           }
@@ -89,8 +88,7 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/Pet",
-                "type": "object",
-                "description": "My pet!"
+                "type": "object"
               }
             }
           }
@@ -123,8 +121,7 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/Pet",
-                "type": "object",
-                "description": "My pet!"
+                "type": "object"
               }
             }
           }
@@ -153,8 +150,7 @@
           "200": {
             "schema": {
               "$ref": "#/definitions/Pet",
-              "type": "object",
-              "description": "My pet!"
+              "type": "object"
             }
           }
         }
@@ -173,8 +169,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/Pet",
-              "type": "object",
-              "description": "My pet!"
+              "type": "object"
             },
             "description": "Pet object that needs to be added to the store"
           }
@@ -369,8 +364,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/User",
-              "type": "object",
-              "description": "The user representation"
+              "type": "object"
             },
             "description": "Created user object"
           }
@@ -392,8 +386,7 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/User",
-                "type": "object",
-                "description": "The user representation"
+                "type": "object"
               }
             },
             "description": "List of user object"
@@ -416,8 +409,7 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/User",
-                "type": "object",
-                "description": "The user representation"
+                "type": "object"
               }
             },
             "description": "List of user object"
@@ -465,8 +457,7 @@
           "200": {
             "schema": {
               "$ref": "#/definitions/User",
-              "type": "object",
-              "description": "The user representation"
+              "type": "object"
             }
           }
         }
@@ -537,8 +528,7 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/User",
-              "type": "object",
-              "description": "The user representation"
+              "type": "object"
             },
             "description": "Updated user object"
           }
@@ -636,8 +626,7 @@
           "description": "pet status in the store"
         }
       },
-      "type": "object",
-      "description": "My pet!"
+      "type": "object"
     },
     "Tag": {
       "properties": {
@@ -681,20 +670,21 @@
           "description": "User Status"
         }
       },
-      "type": "object",
-      "description": "The user representation"
+      "type": "object"
     }
   },
   "tags": [
     {
       "name": "IPet",
-      "description": "My Pet"
+      "description": "Everything about your Pets"
     },
     {
-      "name": "IStore"
+      "name": "IStore",
+      "description": "Access to Petstore orders"
     },
     {
-      "name": "IUser"
+      "name": "IUser",
+      "description": "Operations about user"
     }
   ]
 }

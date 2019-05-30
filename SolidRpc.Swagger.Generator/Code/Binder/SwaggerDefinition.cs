@@ -38,8 +38,6 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
             TypeCancellationToken
         };
 
-        public static SwaggerDefinition Void = new SwaggerDefinition(null, TypeVoid);
-
         public SwaggerDefinition(SwaggerOperation swaggerOperation, string name)
         {
             SwaggerOperation = swaggerOperation;
@@ -78,5 +76,15 @@ namespace SolidRpc.Swagger.Generator.Code.Binder
         /// The properties that belongs to this definition.
         /// </summary>
         public IEnumerable<SwaggerProperty> Properties { get; set; }
+
+        /// <summary>
+        /// The additional properties
+        /// </summary>
+        public SwaggerDefinition AdditionalProperties { get; set; }
+
+        /// <summary>
+        /// The description of this definition
+        /// </summary>
+        public string Description { get; internal set; }
     }
 }

@@ -174,6 +174,10 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
                     return typeof(int);
                 case "long":
                     return typeof(long);
+                case "float":
+                    return typeof(float);
+                case "double":
+                    return typeof(double);
                 case "string":
                     return typeof(string);
                 default:
@@ -192,6 +196,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
                 .Where(o => o.RuntimeType == null)
                 .Where(o => o.EnumerableType == null)
                 .Where(o => o.TaskType == null)
+                .Where(o => !o.FullName.StartsWith("System."))
                 .ToList().ForEach(o =>
                 {
                     o.WriteCode(codeWriter);
