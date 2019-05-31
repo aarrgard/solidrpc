@@ -55,7 +55,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
         public void Close()
         {
             string oldContent = "";
-            if(CurrentFile != null)
+            if(CurrentFile != null && CurrentFile.Exists)
             {
                 using (var tr = CurrentFile.OpenText())
                 {
