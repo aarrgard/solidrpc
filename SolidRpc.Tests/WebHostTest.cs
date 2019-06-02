@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,10 +17,20 @@ using System.Web;
 
 namespace SolidRpc.Tests
 {
+    /// <summary>
+    /// Represents a test that sets up a webhost.
+    /// </summary>
     public abstract class WebHostTest : TestBase, IStartup
     {
+        /// <summary>
+        /// Represents a web host context
+        /// </summary>
         public class TestHostContext : IDisposable
         {
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="webHost"></param>
             public TestHostContext(IWebHost webHost)
             {
                 WebHost = webHost;
@@ -34,18 +43,43 @@ namespace SolidRpc.Tests
                 }
             }
 
+            /// <summary>
+            /// The constructed host
+            /// </summary>
             public IWebHost WebHost { get; }
+
+            /// <summary>
+            /// The test base address
+            /// </summary>
             public Uri BaseAddress { get; }
 
+
+            /// <summary>
+            /// Disposes the context - stops the host.
+            /// </summary>
             public void Dispose()
             {
                 WebHost.StopAsync().Wait();
             }
 
+            /// <summary>
+            /// Returns the response
+            /// </summary>
+            /// <param name="requestUri"></param>
+            /// <returns></returns>
             public Task<HttpResponseMessage> GetResponse(string requestUri)
             {
                 return GetResponse<object>(requestUri);
             }
+
+            /// <summary>
+            /// Returns the response.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="requestUri"></param>
+            /// <param name="formValues"></param>
+            /// <param name="headerValues"></param>
+            /// <returns></returns>
             public Task<HttpResponseMessage> GetResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> formValues = null, IEnumerable<KeyValuePair<string, T>> headerValues = null)
             {
                 var httpClient = new HttpClient();
@@ -81,19 +115,37 @@ namespace SolidRpc.Tests
                 }
                 throw new NotImplementedException();
             }
-
+            
+            /// <summary>
+            /// Posts a response.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="requestUri"></param>
+            /// <param name="nvps"></param>
+            /// <returns></returns>
             public Task<HttpResponseMessage> PostResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> nvps = null)
             {
                 var httpClient = new HttpClient();
                 var content = new FormUrlEncodedContent(nvps.Select(o => new KeyValuePair<string, string>(o.Key, ToString(o.Value))));
                 return httpClient.PostAsync(new Uri(BaseAddress, requestUri), content);
             }
+
+            /// <summary>
+            /// Returns the response
+            /// </summary>
+            /// <param name="msg"></param>
+            /// <returns></returns>
             public Task<HttpResponseMessage> GetResponse(HttpRequestMessage msg)
             {
                 var httpClient = new HttpClient();
                 return httpClient.SendAsync(msg);
             }
         }
+
+        /// <summary>
+        /// Returns the webbost. Does not start it.
+        /// </summary>
+        /// <returns></returns>
         protected IWebHost GetWebHost()
         {
             var builder = WebHost.CreateDefaultBuilder(new string[0]);
@@ -108,6 +160,11 @@ namespace SolidRpc.Tests
             return builder.Build();
         }
 
+        /// <summary>
+        /// Asserts that the response is successful. Writes error message/page to disk.
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <returns></returns>
         protected async Task<string> AssertOk(HttpResponseMessage resp)
         {
             var content = await resp.Content.ReadAsStringAsync();
@@ -124,8 +181,17 @@ namespace SolidRpc.Tests
             return content;
         }
 
+        /// <summary>
+        /// Configures the services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public abstract IServiceProvider ConfigureServices(IServiceCollection services);
 
+        /// <summary>
+        /// Configures the applicatio 
+        /// </summary>
+        /// <param name="app"></param>
         public abstract void Configure(IApplicationBuilder app);
     }
 }

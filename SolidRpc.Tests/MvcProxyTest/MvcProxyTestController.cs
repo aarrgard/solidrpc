@@ -97,7 +97,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <summary>
         /// Sends an integer back and forth between client and server
         /// </summary>
-        /// <param name="i">The interger to proxy</param>
+        /// <param name="iarr">The interger to proxy</param>
         /// <returns>the supplied int</returns>
         [HttpGet]
         public Task<int[][]> ProxyIntArrArrInQuery([FromQuery]int[][] iarr)
@@ -163,7 +163,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         /// <summary>
         /// Sends a datetime back and forth between client and server
         /// </summary>
-        /// <param name="g">The datetime to proxy</param>
+        /// <param name="d">The datetime to proxy</param>
         /// <returns>the supplied datetime</returns>
         [HttpGet]
         public Task<DateTime> ProxyDateTimeInQuery([FromQuery]DateTime d)

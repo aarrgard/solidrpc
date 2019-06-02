@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build015" />
+    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build016" />
   </ItemGroup>
 
-  <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">
+  <Target Name="SwaggerGenerator" BeforeTargets="Compile">
     <Exec Command="dotnet solidrpc-swaggergen -code2swagger swagger.json" WorkingDirectory="$(ProjectDir)" />
-  </Target>-->
+  </Target>
 
 </Project>
