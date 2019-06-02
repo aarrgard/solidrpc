@@ -10,6 +10,10 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#pathItemObject"/>
     public class PathItemObject : ModelBase
     {
+        public PathItemObject(ModelBase parent) : base(parent)
+        {
+
+        }
         /// <summary>
         /// A definition of a GET operation on this path.
         /// </summary>

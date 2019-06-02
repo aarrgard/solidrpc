@@ -8,6 +8,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#infoObject"/>
     public class InfoObject : ModelBase
     {
+        public InfoObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// Required. The title of the application.
         /// </summary>

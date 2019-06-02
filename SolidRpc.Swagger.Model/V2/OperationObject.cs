@@ -10,6 +10,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#operationObject"/>
     public class OperationObject : ModelBase
     {
+        public OperationObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// A list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier.
         /// </summary>

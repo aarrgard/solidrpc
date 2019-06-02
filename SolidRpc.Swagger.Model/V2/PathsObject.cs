@@ -10,6 +10,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#pathsObject"/>
     public class PathsObject : ModelBaseDynamic<PathItemObject>
     {
+        public PathsObject(ModelBase parent) : base(parent) { }
 
     }
 }

@@ -9,6 +9,11 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#xmlObject"/>
     public class XmlObject : ModelBase
     {
+        public XmlObject(ModelBase parent) : base(parent)
+        {
+
+        }
+
         /// <summary>
         /// Replaces the name of the element/attribute used for the described schema property. When defined within the Items Object (items), it will affect the name of the individual XML elements within the list. When defined alongside type being array (outside the items), it will affect the wrapping element and only if wrapped is true. If wrapped is false, it will be ignored.
         /// </summary>

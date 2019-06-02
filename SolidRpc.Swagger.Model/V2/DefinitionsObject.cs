@@ -2,5 +2,6 @@
 {
     public class DefinitionsObject : ModelBaseDynamic<SchemaObject>
     {
+        public DefinitionsObject(ModelBase parent) : base(parent) { }
     }
 }

@@ -6,5 +6,6 @@
     /// <see cref="https://swagger.io/specification/v2/#securityDefinitionsObject"/>
     public class SecurityDefinitionsObject : ModelBaseDynamic<SecuritySchemeObject>
     {
+        public SecurityDefinitionsObject(ModelBase parent) : base(parent) { }
     }
 }

@@ -2,5 +2,6 @@
 {
     public class ExampleObject : ModelBase
     {
+        public ExampleObject(ModelBase parent) : base(parent) { }
     }
 }

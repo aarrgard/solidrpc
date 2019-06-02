@@ -10,10 +10,14 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#responseObject"/>
     public class ResponseObject : ModelBase
     {
+        public ResponseObject(ModelBase parent) : base(parent)
+        {
+
+        }
         /// <summary>
         /// A definition of a GET operation on this path.
         /// </summary>
-        [DataMember(Name = "description", EmitDefaultValue = false)]
+        [DataMember(Name = "description", EmitDefaultValue = false, IsRequired = true)]
         public string Description { get; set; }
 
         /// <summary>

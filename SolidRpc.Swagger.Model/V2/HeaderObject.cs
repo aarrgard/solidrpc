@@ -8,5 +8,6 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#headerObject"/>
     public class HeaderObject : ItemBase
     {
+        public HeaderObject(ModelBase parent) : base(parent) { }
     }
 }

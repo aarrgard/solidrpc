@@ -7,5 +7,6 @@
     /// <see cref="https://swagger.io/specification/v2/#responsesDefinitionsObject"/>
     public class ResponsesDefinitionsObject : ModelBaseDynamic<ResponseObject>
     {
+        public ResponsesDefinitionsObject(ModelBase parent) : base(parent) { }
     }
 }

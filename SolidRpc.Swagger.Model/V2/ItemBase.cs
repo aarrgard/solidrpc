@@ -11,6 +11,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#itemsObject"/>
     public class ItemBase : ModelBase
     {
+        public ItemBase(ModelBase parent) : base(parent) { }
         [DataMember(Name = "$ref", EmitDefaultValue = false)]
         public string Ref { get; set; }
 

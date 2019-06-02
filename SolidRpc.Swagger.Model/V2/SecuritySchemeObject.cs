@@ -8,6 +8,11 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#securitySchemeObject"/>
     public class SecuritySchemeObject : ModelBase
     {
+        public SecuritySchemeObject(ModelBase parent) : base(parent)
+        {
+
+        }
+
         /// <summary>
         /// Required. The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
         /// </summary>

@@ -238,30 +238,34 @@ namespace SolidRpc.Swagger.Generator
         private string GetFullName(SyntaxNode member, string typeName)
         {
             // handle generic types
-            var genIdx = typeName.IndexOf("<");
-            if (genIdx > -1 && typeName.EndsWith(">"))
+            var (genType, genArgs, rest) = Model.CSharp.Impl.CSharpRepository.ReadType(typeName);
+            if(genArgs != null)
             {
-                var genName = typeName.Substring(0, genIdx).Trim();
-                var genArgs = typeName.Substring(genIdx + 1, typeName.Length - genIdx - 2).Split(',').Select(o => o.Trim()).ToList();
-                genName = $"{genName}`{genArgs.Count}";
-                genName = GetFullName(member, genName);
-                if(genName == null)
-                {
-                    return null;
-                }
-                genName = genName.Substring(0, genName.Length - 2);
-                return $"{genName}<{string.Join(",", genArgs.Select(o =>GetFullName(member, o)))}>";
+                var suffix = $"`{genArgs.Count}";
+                genType = $"{genType}{suffix}";
+                genType = GetFullName(member, genType);
+                genArgs = genArgs.Select(o => GetFullName(member, o)).ToList();
+                return $"{genType.Substring(0, genType.Length - suffix.Length)}<{string.Join(",", genArgs)}>";
             }
+            var genIdx = typeName.IndexOf("<");
+
             var (usings, ns) = GetPrefixes(member);
 
             // try to get the type from "ns"
-            var type = CSharpRepository.GetType(MergeNames(ns, ".", typeName));
-            if (type != null)
+            ICSharpType type;
+            do
             {
-                return type.FullName;
-            }
+                type = CSharpRepository.GetType(MergeNames(ns, ".", typeName));
+                if (type != null)
+                {
+                    return type.FullName;
+                }
+                ns = ns.Substring(0, ns.LastIndexOf('.'));
+
+            } while (ns.LastIndexOf('.') > -1) ;
+
             // use the "usings"
-            foreach(var u in usings)
+            foreach (var u in usings)
             {
                 type = CSharpRepository.GetType(MergeNames(u, ".", typeName));
                 if (type != null)

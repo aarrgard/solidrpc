@@ -9,6 +9,8 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#swaggerObject"/>
     public class SwaggerObject : ModelBase, ISwaggerSpec
     {
+        public SwaggerObject(ModelBase parent) : base(parent) { }
+
         /// <summary>
         /// Required. Specifies the Swagger Specification version being used. It can be used by the Swagger UI and other clients to interpret the API listing. The value MUST be "2.0".
         /// </summary>

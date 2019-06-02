@@ -9,7 +9,7 @@ namespace SolidRpc.Swagger.Model
     {
         private IDictionary<string, T> _container;
 
-        public ModelBaseDynamic()
+        public ModelBaseDynamic(ModelBase parent) : base(parent)
         {
             _container = new Dictionary<string, T>();
         }

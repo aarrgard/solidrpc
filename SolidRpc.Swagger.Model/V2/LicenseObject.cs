@@ -8,6 +8,8 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#licenseObject"/>
     public class LicenseObject : ModelBase
     {
+        public LicenseObject(ModelBase parent) : base(parent) { }
+
         /// <summary>
         /// Required. The license name used for the API.
         /// </summary>

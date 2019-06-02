@@ -6,5 +6,6 @@
     /// <see cref="https://swagger.io/specification/v2/#headersObject"/>
     public class HeadersObject : ModelBaseDynamic<HeaderObject>
     {
+        public HeadersObject(ModelBase parent) : base(parent) { }
     }
 }

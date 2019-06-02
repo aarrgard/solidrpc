@@ -8,5 +8,9 @@
     /// <see cref="https://swagger.io/specification/v2/#responsesObject"/>
     public class ResponsesObject : ModelBaseDynamic<ResponseObject>
     {
+        public ResponsesObject(ModelBase parent) : base(parent)
+        {
+
+        }
     }
 }

@@ -7,8 +7,8 @@
     },
     "DotNetTool - Code2Swagger": {
       "commandName": "Project",
-      "commandLineArgs": "-code2swagger  generated.json",
-      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Petstore"
+      "commandLineArgs": "-code2swagger  swagger.json",
+      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Swagger.Generator"
     }
   }
 }

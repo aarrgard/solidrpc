@@ -6,5 +6,6 @@
     /// <see cref="https://swagger.io/specification/v2/#itemsObject"/>
     public class ItemsObject : ItemBase
     {
+        public ItemsObject(ModelBase parent) : base(parent) { }
     }
 }

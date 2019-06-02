@@ -5,8 +5,6 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 {
     public class CodeWriterFile : ICodeWriter
     {
-        private TextWriter _textWriter;
-
         public CodeWriterFile(string outputPath, string projectNamespace)
         {
             if (!Directory.Exists(outputPath))

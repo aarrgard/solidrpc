@@ -8,7 +8,10 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#tagObject"/>
     public class TagObject : ModelBase
     {
+        public TagObject(ModelBase parent) : base(parent)
+        {
 
+        }
         /// <summary>
         /// Required. The name of the tag.
         /// </summary>

@@ -10,5 +10,6 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#securityRequirementObject"/>
     public class SecurityRequirementObject : ModelBaseDynamic<IEnumerable<string>>
     {
+        public SecurityRequirementObject(ModelBase parent) : base(parent) { }
     }
 }

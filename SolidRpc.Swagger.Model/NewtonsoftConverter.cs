@@ -107,7 +107,7 @@ namespace SolidRpc.Swagger.Model
             reader.Read();
             if(existingValue == null)
             {
-                existingValue = Activator.CreateInstance<T>();
+                existingValue = Activator.CreateInstance(typeof(T), new object[] { null});
             }
             while (reader.TokenType == JsonToken.PropertyName)
             {

@@ -8,7 +8,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#externalDocumentationObject"/>
     public class ExternalDocumentationObject : ModelBase
     {
-
+        public ExternalDocumentationObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// Required. The URL for the target documentation. Value MUST be in the format of a URL.
         /// </summary>

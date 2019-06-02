@@ -8,6 +8,7 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#contactObject"/>
     public class ContactObject : ModelBase
     {
+        public ContactObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// The identifying name of the contact person/organization.
         /// </summary>

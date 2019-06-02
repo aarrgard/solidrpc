@@ -61,7 +61,7 @@ namespace SolidRpc.Swagger.DotNetTool
             var settings = new SwaggerSpecSettings()
             {
                 Title = GetAssemblyName(),
-                Version = GetProjectSetting("SwaggerVersion", "Version"),
+                Version = GetProjectSetting("SwaggerVersion", "Version") ?? "1.0.0",
                 Description = GetProjectSetting("SwaggerDescription", "Description"),
                 LicenseName = GetProjectSetting("SwaggerLicenseName", "PackageLicenseUrl"),
                 LicenseUrl = GetProjectSetting("SwaggerLicenseUrl", "PackageLicenseUrl"),

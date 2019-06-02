@@ -1,0 +1,73 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SolidRpc.Swagger.Generator",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Swagger/Generator",
+  "paths": {
+    "/Services/IProjectFileParser/ParseProject": {
+      "post": {
+        "tags": [
+          "IProjectFileParser"
+        ],
+        "description": "Parses the supplied project zip into a project representation.",
+        "operationId": "ParseProject",
+        "parameters": [
+          {
+            "name": "projectZip",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "binary"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a project",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProjectFile": {
+      "properties": {
+        "FilePath": {
+          "type": "string",
+          "description": "The filepath from the base of the project"
+        },
+        "FileContent": {
+          "type": "string",
+          "format": "binary",
+          "description": "The file content"
+        }
+      },
+      "type": "object",
+      "description": "Represents a project file"
+    },
+    "Project": {
+      "properties": {
+        "ProjectFiles": {
+          "type": "array",
+          "description": "All the project files",
+          "items": {
+            "$ref": "#/definitions/ProjectFile"
+          }
+        }
+      },
+      "type": "object",
+      "description": "Represents a project"
+    }
+  },
+  "tags": [
+    {
+      "name": "IProjectFileParser",
+      "description": "The project parser is responsible for parsing project files into representations\r\nthat can be analyzed by the swagger code generators."
+    }
+  ]
+}

@@ -15,6 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SolidRpc.Swagger.Generator" Version="1.0.0-build016" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Swagger.Generator.Impl\SolidRpc.Swagger.Generator.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj" />
   </ItemGroup>
 

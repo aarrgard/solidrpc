@@ -9,6 +9,10 @@ namespace SolidRpc.Swagger.Model
     /// </summary>
     public abstract class ModelBase
     {
+        protected ModelBase(ModelBase parent)
+        {
+            Parent = parent;
+        }
         /// <summary>
         /// Returns the parent structure - null for SwaggerObject
         /// </summary>

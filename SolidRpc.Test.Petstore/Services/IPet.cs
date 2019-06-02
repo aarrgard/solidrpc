@@ -1,4 +1,3 @@
-
 using System.Threading.Tasks;
 using SolidRpc.Test.Petstore.Types;
 using System.Threading;

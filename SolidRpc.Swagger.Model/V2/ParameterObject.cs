@@ -8,6 +8,8 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#parameterObject"/>
     public class ParameterObject : ItemBase
     {
+        public ParameterObject(ModelBase parent) : base(parent) { }
+
         /// <summary>
         /// Required. The name of the parameter. Parameter names are case sensitive.
         /// If in is "path", the name field MUST correspond to the associated path segment from the path field in the Paths Object.See Path Templating for further information.

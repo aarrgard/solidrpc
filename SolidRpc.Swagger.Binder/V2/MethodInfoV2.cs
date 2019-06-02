@@ -21,7 +21,7 @@ namespace SolidRpc.Swagger.Binder.V2
             {
                 if(parameterInfo.ParameterType == typeof(CancellationToken))
                 {
-                    return new ParameterObject() {
+                    return new ParameterObject(operationObject) {
                         In = "skip",
                         Name = parameterInfo.Name
                     };

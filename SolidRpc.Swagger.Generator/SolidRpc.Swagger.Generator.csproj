@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.1.0" />
+    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build015" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj" />
-  </ItemGroup>
+  <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">
+    <Exec Command="dotnet solidrpc-swaggergen -code2swagger swagger.json" WorkingDirectory="$(ProjectDir)" />
+  </Target>-->
 
 </Project>
