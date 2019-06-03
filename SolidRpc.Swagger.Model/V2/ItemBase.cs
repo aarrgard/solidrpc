@@ -89,26 +89,55 @@ namespace SolidRpc.Swagger.Model.V2
         [DataMember(Name = "multipleOf", EmitDefaultValue = false)]
         public decimal MultipleOf { get; set; }
 
-        public string OperationName
+        /// <summary>
+        /// Return the referenced schema object if reference is set.
+        /// </summary>
+        /// <returns></returns>
+        public SchemaObject GetRefSchema()
         {
-            get
+            if (string.IsNullOrEmpty(Ref))
             {
-                if (Parent is DefinitionsObject defObj)
-                {
-                    return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
-                }
-                if (Parent is ResponseObject respObj)
-                {
-                    return respObj.Status;
-                }
-                if (Parent is OperationObject opObj)
-                {
-                    return opObj.OperationId;
-                }
-                else
-                {
-                    throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
-                }
+                return null;
+            }
+            if (Ref.StartsWith("#/definitions/"))
+            {
+                var key = Ref.Substring("#/definitions/".Length);
+                return GetParent<SwaggerObject>().Definitions[key];
+            }
+            throw new Exception("Cannot find ref:" + Ref);
+        }
+
+        public string GetBaseType()
+        {
+            var refSchema = GetRefSchema();
+            if(refSchema != null)
+            {
+                return refSchema.GetBaseType();
+            }
+            if (Type == "array")
+            {
+                return Items.GetBaseType();
+            }
+            return Type;
+        }
+
+        public string GetOperationName()
+        {
+            if (Parent is DefinitionsObject defObj)
+            {
+                return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
+            }
+            if (Parent is ResponseObject respObj)
+            {
+                return respObj.Status;
+            }
+            if (Parent is OperationObject opObj)
+            {
+                return opObj.OperationId;
+            }
+            else
+            {
+                throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
             }
         }
     }

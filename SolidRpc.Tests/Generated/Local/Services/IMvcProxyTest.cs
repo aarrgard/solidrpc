@@ -1,8 +1,10 @@
+
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using SolidRpc.Tests.Generated.Local.Types;
 namespace SolidRpc.Tests.Generated.Local.Services {
     /// <summary>
     /// 
@@ -74,7 +76,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// <summary>
         /// Sends an integer back and forth between client and server
         /// </summary>
-        /// <param name="iarr"></param>
+        /// <param name="iarr">The interger to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<IEnumerable<int>>> ProxyIntArrArrInQuery(
             IEnumerable<IEnumerable<int>> iarr,
@@ -128,7 +130,7 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// <summary>
         /// Sends a datetime back and forth between client and server
         /// </summary>
-        /// <param name="d"></param>
+        /// <param name="d">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<DateTime> ProxyDateTimeInQuery(
             DateTime d,
@@ -159,6 +161,15 @@ namespace SolidRpc.Tests.Generated.Local.Services {
         /// <param name="cancellationToken"></param>
         Task<Stream> ProxyStream(
             Stream ff,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Sends a complex object back and forth between client and server
+        /// </summary>
+        /// <param name="co1">The complex object to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<ComplexObject1> ProxyComplexObject1InBody(
+            ComplexObject1 co1,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

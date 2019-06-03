@@ -8,13 +8,13 @@ namespace SolidRpc.Swagger.Generator.Types
     public class ProjectFile
     {
         /// <summary>
-        /// The filepath from the base of the project
+        /// The directory where the file resides
         /// </summary>
-        public string FilePath { get; set; }
+        public string Directory { get; set; }
 
         /// <summary>
-        /// The file content
+        /// The file data
         /// </summary>
-        public Stream FileContent { get; set; } 
+        public FileData FileData { get; set; } 
     }
 }

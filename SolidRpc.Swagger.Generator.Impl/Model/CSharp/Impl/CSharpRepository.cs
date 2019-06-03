@@ -152,10 +152,17 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
         }
         private Type GetSystemType(string fullName)
         {
-            foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+            var systemAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(o => !o.IsDynamic)
+                .Where(o => o.IsFullyTrusted);
+            foreach (Assembly a in systemAssemblies)
             {
                 foreach (Type t in a.GetTypes())
                 {
+                    if(!t.FullName.StartsWith("System."))
+                    {
+                        continue;
+                    }
                     if(t.FullName == fullName)
                     {
                         return t;
@@ -192,12 +199,12 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
 
         public void WriteCode(ICodeWriter codeWriter)
         {
-            Members.Values.OfType<ICSharpType>()
-                .Where(o => o.RuntimeType == null)
-                .Where(o => o.EnumerableType == null)
-                .Where(o => o.TaskType == null)
-                .Where(o => !o.FullName.StartsWith("System."))
-                .ToList().ForEach(o =>
+            var prospects = Members.Values.OfType<ICSharpType>();
+            prospects = prospects.Where(o => o.RuntimeType == null);
+            prospects = prospects.Where(o => o.EnumerableType == null);
+            prospects = prospects.Where(o => o.TaskType == null);
+            prospects = prospects.Where(o => !o.FullName.StartsWith("System."));
+            prospects.ToList().ForEach(o =>
                 {
                     o.WriteCode(codeWriter);
                 });

@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Proxy;
-using SolidRpc.Swagger.Model.V2;
 using SolidRpc.Tests.Generated.Local.Services;
+using SolidRpc.Tests.Generated.Local.Types;
 
 namespace SolidRpc.Tests.MvcProxyTest
 {
@@ -258,14 +260,59 @@ namespace SolidRpc.Tests.MvcProxyTest
             }
         }
 
-        private NameValueCollection CreateNameValueCollection<T>(params KeyValuePair<string, T>[] values)
+        /// <summary>
+        /// Sends a datetime array back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyComplexObject()
         {
-            var nvc = new NameValueCollection();
-            if (typeof(T) == typeof(DateTime))
+            using (var ctx = new TestHostContext(GetWebHost()))
             {
-                values.ToList().ForEach(o => nvc.Add(o.Key, ((DateTime)(object)o.Value).ToString("yyy-MM-ddTHH:mm:ss")));
+                var co1 = new ComplexObject1()
+                {
+                    Value1= "Value1",
+                    Value2= "Value2",
+                };
+                var msg = new HttpRequestMessage();
+                msg.Method = HttpMethod.Post;
+                msg.RequestUri = new Uri(ctx.BaseAddress, $"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyComplexObject1InBody)}");
+                msg.Content = new StringContent(JsonConvert.SerializeObject(co1), Encoding.UTF8, "application/json");
+
+                var resp = await ctx.SendAsync(msg);
+                Assert.AreEqual("application/json", resp.Content.Headers.ContentType.MediaType);
+                var respCo2 = JsonConvert.DeserializeObject<ComplexObject1>(await resp.Content.ReadAsStringAsync());
+                AssertEqual(co1, respCo2);
+
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                AssertEqual(co1, await sp.ProxyComplexObject1InBody(co1));
             }
-            return nvc;
+        }
+
+        private void AssertEqual<T>(T o1, T o2)
+        {
+            if(ReferenceEquals(o1, o2))
+            {
+                return;
+            }
+            if (typeof(T).IsValueType)
+            {
+                Assert.AreEqual(o1, o2);
+                return;
+            }
+            if (typeof(T).FullName.StartsWith("System."))
+            {
+                Assert.AreEqual(o1, o2);
+                return;
+            }
+            foreach (var p in typeof(T).GetProperties())
+            {
+                var m = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(o => o.Name == nameof(AssertEqual))
+                    .Where(o => o.IsGenericMethod)
+                    .Single();
+                m.MakeGenericMethod(new[] { p.PropertyType }).Invoke(this, new[] { p.GetValue(o1), p.GetValue(o2) });
+            }
         }
 
         /// <summary>
@@ -288,7 +335,7 @@ namespace SolidRpc.Tests.MvcProxyTest
                 multipart.Add(streamContent);
                 msg.Content = multipart;
 
-                var resp = await ctx.GetResponse(msg);
+                var resp = await ctx.SendAsync(msg);
                 Assert.AreEqual("application/octet-stream", resp.Content.Headers.ContentType.MediaType);
                 Assert.AreEqual(payload, await resp.Content.ReadAsByteArrayAsync());
 

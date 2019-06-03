@@ -1,8 +1,5 @@
 ﻿using SolidRpc.Swagger.Generator.Types;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +17,15 @@ namespace SolidRpc.Swagger.Generator.Services
         /// <param name="projectZip"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Project> ParseProject(Stream projectZip, CancellationToken cancellationToken);
+        Task<Project> ParseProject(FileData projectZip, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates a swagger specification from supplied project.
+        /// </summary>
+        /// <param name="project">The project to analyze</param>
+        /// <param name="openApiVersion">The version of swagger specification to create</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Stream> CreateSwaggerSpec(Project project, string openApiVersion, CancellationToken cancellationToken);
     }
 }

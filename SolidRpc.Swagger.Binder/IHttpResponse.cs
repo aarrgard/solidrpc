@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Swagger.Binder
@@ -10,6 +8,11 @@ namespace SolidRpc.Swagger.Binder
     /// </summary>
     public interface IHttpResponse
     {
+        /// <summary>
+        /// Returns the status code
+        /// </summary>
+        int StatusCode { get; }
+
         /// <summary>
         /// Returns the content type
         /// </summary>

@@ -135,7 +135,7 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="msg"></param>
             /// <returns></returns>
-            public Task<HttpResponseMessage> GetResponse(HttpRequestMessage msg)
+            public Task<HttpResponseMessage> SendAsync(HttpRequestMessage msg)
             {
                 var httpClient = new HttpClient();
                 return httpClient.SendAsync(msg);

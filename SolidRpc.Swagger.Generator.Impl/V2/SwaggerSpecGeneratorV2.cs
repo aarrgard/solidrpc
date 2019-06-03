@@ -29,7 +29,6 @@ namespace SolidRpc.Swagger.Generator.V2
                 BasePath = Settings.BasePath,
             };
             swaggerObject.Paths = CreatePaths(swaggerObject);
-            //swaggerObject.Definitions = CreateDefinitions(swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)
             {
                 Title = Settings.Title,
@@ -80,22 +79,70 @@ namespace SolidRpc.Swagger.Generator.V2
             operationObject.Tags = new string[] { CreateTag(null, (ICSharpType)method.Parent).Name };
             operationObject.OperationId = method.Name;
             operationObject.Description = method.Comment?.Summary;
-            operationObject.Parameters = method.Parameters
+            method.Parameters
                 .Where(o => o.ParameterType.RuntimeType != typeof(CancellationToken))
-                .Select(o => {
-                    var po = new ParameterObject(operationObject)
-                    {
-                        Description = o.Comment?.Summary,
-                        Name = o.Name,
-                        Required = !o.Optional,
-                        In = "query"
-                    };
-                    SetItemProps(po, o.ParameterType);
+                .ToList()
+                .ForEach(o =>
+                {
 
-                    return po;
-                }).ToList();
+                    //
+                    // get the schema for the property
+                    //
+                    var schema = GetSchema(operationObject, false, o.ParameterType);
+                    ParameterObject po;
+                    if (schema.GetBaseType() == "object")
+                    {
+                        po = operationObject.GetParameter("body");
+                        po.In = "body";
+                        po.Schema = po.Schema ?? new SchemaObject(po);
+                        po.Schema.Type = "object";
+                        po.Schema.Properties = po.Schema.Properties ?? new DefinitionsObject(po);
+                        po.Schema.Properties[o.Name] = GetSchema(po.Schema, false, o.ParameterType);
+                    }
+                    else
+                    {
+                        po = operationObject.GetParameter(o.Name);
+                        po.Description = o.Comment?.Summary;
+                        po.Required = !o.Optional;
+                        po.In = "query";
+
+                        SetItemProps(po, true, o.ParameterType);
+                    }
+                });
             operationObject.Responses = CreateResponses(operationObject, method);
+
+            //
+            // set the consumes and produces based on parameters and responses
+            //
+            if (operationObject.Parameters.Any(o => o.In == "file"))
+            {
+                operationObject.AddConsumes("multipart/form-data");
+            }
+            else if(operationObject.Parameters.Any(o => o.In == "body"))
+            {
+                operationObject.AddConsumes("application/json");
+            }
+            if (operationObject.Responses.Any(o => o.Value.Schema?.Type == "file"))
+            {
+                operationObject.AddProduces("application/octet-stream");
+            }
+            else if (operationObject.Responses.Where(o => o.Key == "200").Any(o => o.Value.Schema != null))
+            {
+                operationObject.AddProduces("application/json");
+            }
             return operationObject;
+        }
+
+        private void SetAdditionalParameterInfo(ParameterObject po)
+        {
+            if(po.Type == "file")
+            {
+                po.In = "formData";
+            }
+            else
+            {
+                po.In = "query";
+            }
         }
 
         private ResponsesObject CreateResponses(OperationObject operationObject, ICSharpMethod method)
@@ -108,7 +155,7 @@ namespace SolidRpc.Swagger.Generator.V2
                 case "System.Threading.Tasks.Task":
                     break;
                 default:
-                    var responseSchema = GetSchema(responsesObject, method.ReturnType.TaskType ?? method.ReturnType);
+                    var responseSchema = GetSchema(responsesObject, true, method.ReturnType.TaskType ?? method.ReturnType);
                     responsesObject["200"] = new ResponseObject(responsesObject)
                     {
                         Schema = responseSchema,
@@ -123,15 +170,24 @@ namespace SolidRpc.Swagger.Generator.V2
             return responsesObject;
         }
 
-        private SchemaObject GetSchema(ModelBase parent, ICSharpType type)
+        private SchemaObject GetSchema(ModelBase parent, bool canHandleFile, ICSharpType type)
         {
             var so = new SchemaObject(parent);
-            SetItemProps(so, type);
+            SetItemProps(so, canHandleFile, type);
             return so;
          }
 
-        private void SetItemProps(ItemBase itemBase, ICSharpType type)
+        private void SetItemProps(ItemBase itemBase, bool canHandleFile, ICSharpType type)
         {
+            var runtimeProps = type.Properties.ToDictionary(o => o.Name, o => o.PropertyType.RuntimeType);
+            if(TypeExtensions.IsFileType(type.FullName, runtimeProps))
+            {
+                if (canHandleFile)
+                {
+                    itemBase.Type = "file";
+                    return;
+                }
+            }
             if (type.RuntimeType != null)
             {
                 if (type.RuntimeType == typeof(bool))
@@ -180,7 +236,7 @@ namespace SolidRpc.Swagger.Generator.V2
             if (type.EnumerableType != null)
             {
                 itemBase.Type = "array";
-                itemBase.Items = GetSchema(itemBase, type.EnumerableType);
+                itemBase.Items = GetSchema(itemBase, canHandleFile, type.EnumerableType);
                 return;
             }
             else
@@ -219,8 +275,8 @@ namespace SolidRpc.Swagger.Generator.V2
             }
             var definitionsObject = new DefinitionsObject(parent);
             clazz.Properties.ToList().ForEach(o => {
-                var schema = GetSchema(definitionsObject, o.PropertyType);
-                schema.Description = o.Comment?.Summary;
+                var schema = GetSchema(definitionsObject, false, o.PropertyType);
+                //schema.Description = o.Comment?.Summary;
                 definitionsObject[o.Name] = schema;
             });
             return definitionsObject;

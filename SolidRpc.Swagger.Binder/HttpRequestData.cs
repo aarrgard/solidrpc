@@ -77,7 +77,18 @@ namespace SolidRpc.Swagger.Binder
 
         private static Func<object, HttpRequestData> CreateBinder(string contentType, string name, Type type)
         {
-            switch(contentType)
+            if(type?.FullName == SystemIOStream)
+            {
+                contentType = contentType ?? "application/octet-stream";
+                return (_) =>
+                {
+                    var ms = new MemoryStream();
+                    ((Stream)_).CopyTo(ms);
+                    return new HttpRequestDataBinary(contentType, name, ms.ToArray());
+                };
+            }
+            contentType = contentType ?? "application/json";
+            switch (contentType)
             {
                 case "text/plain":
                     switch (type?.FullName)
@@ -103,29 +114,11 @@ namespace SolidRpc.Swagger.Binder
                             return (_) => new HttpRequestDataString(contentType, name, ((DateTime)_).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
                         case SystemString:
                             return (_) => new HttpRequestDataString(contentType, name, (string)_);
-                        case SystemIOStream:
-                            return (_) =>
-                            {
-                                var ms = new MemoryStream();
-                                ((Stream)_).CopyTo(ms);
-                                return new HttpRequestDataBinary(contentType, name, ms.ToArray());
-                            };
                         default:
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    switch (type?.FullName)
-                    {
-                        case SystemIOStream:
-                            return (_) =>
-                            {
-                                var ms = new MemoryStream();
-                                ((Stream)_).CopyTo(ms);
-                                return new HttpRequestDataBinary(contentType, name, ms.ToArray());
-                            };
-                        default:
-                            return (_) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(_));
-                    }
+                    return (_) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(_));
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }

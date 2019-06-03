@@ -88,13 +88,17 @@ namespace SolidRpc.Swagger.Binder.V2
 
         public async Task<T> GetResponse<T>(IHttpResponse response)
         {
-            if(!Produces.Contains(response.ContentType))
+            if(response.StatusCode != 200)
             {
-                throw new Exception("Operation does not support content type:" + response.ContentType);
+                throw new Exception("Status:"+response.StatusCode);
             }
             if(typeof(T).IsAssignableFrom(typeof(Stream)))
             {
                 return (T)(object)(await response.GetResponseStreamAsync());
+            }
+            if (!Produces.Contains(response.ContentType))
+            {
+                throw new Exception("Operation does not support content type:" + response.ContentType);
             }
             using (var s = await response.GetResponseStreamAsync())
             {

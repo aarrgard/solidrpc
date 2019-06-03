@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SolidRpc.Tests.MvcProxyTest.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -207,6 +208,18 @@ namespace SolidRpc.Tests.MvcProxyTest
                 await s.CopyToAsync(ms);
             }
             return new FileStreamResult(new MemoryStream(ms.ToArray()), ff.ContentType);
+        }
+
+        /// <summary>
+        /// Sends a complex object back and forth between client and server
+        /// </summary>
+        /// <param name="co1">The complex object to proxy</param>
+        /// <returns>the supplied complex object</returns>
+        [HttpPost]
+        [Consumes("application/json")]
+        public Task<ComplexObject1> ProxyComplexObject1InBody([FromBody]ComplexObject1 co1)
+        {
+            return Task.FromResult(co1);
         }
     }
 

@@ -185,7 +185,7 @@ namespace SolidRpc.Swagger.Generator.V2
             switch(schema.Type)
             {
                 case "object":
-                    var sd = new SwaggerDefinition(swaggerOperation, schema.OperationName);
+                    var sd = new SwaggerDefinition(swaggerOperation, schema.GetOperationName());
                     if(schema is SchemaObject so)
                     {
                         if(so.Properties != null)

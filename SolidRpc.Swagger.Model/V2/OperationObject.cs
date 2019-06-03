@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.Swagger.Model.V2
@@ -84,6 +85,24 @@ namespace SolidRpc.Swagger.Model.V2
         public IEnumerable<SecurityRequirementObject> Security { get; set; }
 
         /// <summary>
+        /// Adds a consumes content type
+        /// </summary>
+        /// <param name="contentType"></param>
+        public void AddConsumes(string contentType)
+        {
+            Consumes = (new string[] { contentType }).Union(Consumes ?? new string[0]).Distinct().ToArray();
+        }
+
+        /// <summary>
+        /// Adds a consumes content type
+        /// </summary>
+        /// <param name="contentType"></param>
+        public void AddProduces(string contentType)
+        {
+            Produces = (new string[] { contentType }).Union(Produces ?? new string[0]).Distinct().ToArray();
+        }
+
+        /// <summary>
         /// The method to use to access this operation.
         /// </summary>
         public string GetMethod() {
@@ -132,13 +151,38 @@ namespace SolidRpc.Swagger.Model.V2
             }
             throw new System.Exception("Cannot determine method.");
         }
+        public IEnumerable<string> GetConsumes()
+        {
+            if (Consumes == null)
+            {
+                return GetParent<SwaggerObject>().Consumes ?? new string[0];
+            }
+            return Consumes;
+        }
+
         public IEnumerable<string> GetProduces()
         {
-            if(Produces == null)
+            if (Produces == null)
             {
                 return GetParent<SwaggerObject>().Produces ?? new string[0];
             }
             return Produces;
+        }
+
+        /// <summary>
+        /// Returns the parameter with supplied name. Creates one if it does not exist
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <returns></returns>
+        public ParameterObject GetParameter(string parameterName)
+        {
+            var parameter = Parameters?.FirstOrDefault(o => o.Name == parameterName);
+            if(parameter == null)
+            {
+                parameter = new ParameterObject(this) { Name = parameterName };
+                Parameters = new[] { parameter }.Union(Parameters?? ParameterObject.EmptyList).ToList();
+            }
+            return parameter;
         }
     }
 }

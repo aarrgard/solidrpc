@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.Swagger.Model.V2
 {
@@ -8,6 +9,8 @@ namespace SolidRpc.Swagger.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#parameterObject"/>
     public class ParameterObject : ItemBase
     {
+        public static IEnumerable<ParameterObject> EmptyList = new ParameterObject[0];
+
         public ParameterObject(ModelBase parent) : base(parent) { }
 
         /// <summary>

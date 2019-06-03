@@ -16,6 +16,8 @@ namespace SolidRpc.Proxy
 
         public string ContentType => HttpClientResponse.Content.Headers.ContentType.MediaType;
 
+        public int StatusCode => (int)HttpClientResponse.StatusCode;
+
         public Task<Stream> GetResponseStreamAsync()
         {
             return HttpClientResponse.Content.ReadAsStreamAsync();

@@ -7,6 +7,51 @@
   "host": "localhost",
   "basePath": "/SolidRpc/Swagger/Generator",
   "paths": {
+    "/Services/IProjectFileParser/CreateSwaggerSpec": {
+      "post": {
+        "tags": [
+          "IProjectFileParser"
+        ],
+        "description": "Creates a swagger specification from supplied project.",
+        "operationId": "CreateSwaggerSpec",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/octet-stream"
+        ],
+        "parameters": [
+          {
+            "name": "openApiVersion",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The version of swagger specification to create"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "project": {
+                  "$ref": "#/definitions/Project"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/IProjectFileParser/ParseProject": {
       "post": {
         "tags": [
@@ -14,13 +59,25 @@
         ],
         "description": "Parses the supplied project zip into a project representation.",
         "operationId": "ParseProject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "projectZip",
-            "in": "query",
+            "name": "body",
+            "in": "body",
             "required": false,
-            "type": "string",
-            "format": "binary"
+            "schema": {
+              "properties": {
+                "projectZip": {
+                  "$ref": "#/definitions/FileData"
+                }
+              },
+              "type": "object"
+            }
           }
         ],
         "responses": {
@@ -35,16 +92,29 @@
     }
   },
   "definitions": {
+    "FileData": {
+      "properties": {
+        "FileStream": {
+          "type": "string",
+          "format": "binary"
+        },
+        "ContentType": {
+          "type": "string"
+        },
+        "Filename": {
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "description": "Represents a file"
+    },
     "ProjectFile": {
       "properties": {
-        "FilePath": {
-          "type": "string",
-          "description": "The filepath from the base of the project"
+        "Directory": {
+          "type": "string"
         },
-        "FileContent": {
-          "type": "string",
-          "format": "binary",
-          "description": "The file content"
+        "FileData": {
+          "$ref": "#/definitions/FileData"
         }
       },
       "type": "object",
@@ -54,7 +124,6 @@
       "properties": {
         "ProjectFiles": {
           "type": "array",
-          "description": "All the project files",
           "items": {
             "$ref": "#/definitions/ProjectFile"
           }

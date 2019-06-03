@@ -1,9 +1,11 @@
-﻿using SolidRpc.Swagger.Binder;
+﻿using Newtonsoft.Json;
+using SolidRpc.Swagger.Binder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 
 namespace SolidRpc.Proxy
@@ -51,21 +53,35 @@ namespace SolidRpc.Proxy
                 MultipartFormDataContent formData = null;
                 if (Body != null)
                 {
-                    formData = new MultipartFormDataContent();
-                    if(formContent != null)
+                    HttpContent content;
+                    switch(Body.ContentType.ToLower())
                     {
-                        formData.Add(formContent);
+                        case "application/octet-stream":
+                            content = new StreamContent(Body.GetBinaryValue());
+                            content.Headers.ContentType = new MediaTypeHeaderValue(Body.ContentType);
+                            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = Body.Name, FileName = "test.xml" };
+
+                            formData = new MultipartFormDataContent();
+                            if (formContent != null)
+                            {
+                                formData.Add(formContent);
+                            }
+                            break;
+                        case "application/json":
+                            var enc = Encoding.UTF8;
+                            content = new StringContent(Body.GetStringValue(enc));
+                            content.Headers.ContentType = new MediaTypeHeaderValue(Body.ContentType) { CharSet = enc.HeaderName };
+                            break;
+                        default:
+                            throw new Exception("Cannot handle content type:" + Body.ContentType);
                     }
-                    var sc = new StreamContent(Body.GetBinaryValue());
-                    sc.Headers.ContentType = new MediaTypeHeaderValue(Body.ContentType);
-                    sc.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = Body.Name, FileName = "test.xml" };
                     if(formData != null)
                     {
-                        formData.Add(sc);
+                        formData.Add(content);
                     }
                     else
                     {
-                        req.Content = sc;
+                        req.Content = content;
                     }
                 }
                 if(formData != null)

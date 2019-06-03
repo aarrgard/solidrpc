@@ -38,23 +38,5 @@ namespace SolidRpc.Swagger.Model.V2
 
         [DataMember(Name = "required", EmitDefaultValue = false)]
         public IEnumerable<string> Required { get; set; }
-
-        /// <summary>
-        /// Return the referenced schema object if reference is set.
-        /// </summary>
-        /// <returns></returns>
-        public SchemaObject GetRefSchema()
-        {
-            if(string.IsNullOrEmpty(Ref))
-            {
-                return null;
-            }
-            if(Ref.StartsWith("#/definitions/"))
-            {
-                var key = Ref.Substring("#/definitions/".Length);
-                return GetParent<SwaggerObject>().Definitions[key];
-            }
-            throw new Exception("Cannot find ref:"+Ref);
-        }
     }
 }
