@@ -9,7 +9,7 @@ namespace SolidRpc.Swagger.Generator.Services
     /// The project parser is responsible for parsing project files into representations
     /// that can be analyzed by the swagger code generators.
     /// </summary>
-    public interface IProjectFileParser
+    public interface ISwaggerGenerator
     {
         /// <summary>
         /// Parses the supplied project zip into a project representation.
@@ -22,10 +22,19 @@ namespace SolidRpc.Swagger.Generator.Services
         /// <summary>
         /// Creates a swagger specification from supplied project.
         /// </summary>
+        /// <param name="settings">The settings for generating the spec</param>
         /// <param name="project">The project to analyze</param>
-        /// <param name="openApiVersion">The version of swagger specification to create</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Stream> CreateSwaggerSpec(Project project, string openApiVersion, CancellationToken cancellationToken);
+        Task<Stream> CreateSwaggerSpec(SettingsSpecGen settings, Project project, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Creates a swagger specification from supplied project.
+        /// </summary>
+        /// <param name="settings">The settings for generating the code</param>
+        /// <param name="swaggerFile">The swagger file to analyze</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Project> CreateSwaggerCode(SettingsCodeGen settings, FileData swaggerFile, CancellationToken cancellationToken);
     }
 }

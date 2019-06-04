@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SolidProxy.Core" Version="1.0.0-build025" />
+    <PackageReference Include="SolidProxy.Core" Version="1.0.0-build026" />
   </ItemGroup>
 
   <ItemGroup>

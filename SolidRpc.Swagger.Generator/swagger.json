@@ -7,10 +7,51 @@
   "host": "localhost",
   "basePath": "/SolidRpc/Swagger/Generator",
   "paths": {
-    "/Services/IProjectFileParser/CreateSwaggerSpec": {
+    "/Services/ISwaggerGenerator/CreateSwaggerCode": {
       "post": {
         "tags": [
-          "IProjectFileParser"
+          "ISwaggerGenerator"
+        ],
+        "description": "Creates a swagger specification from supplied project.",
+        "operationId": "CreateSwaggerCode",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "settings": {
+                  "$ref": "#/definitions/SettingsCodeGen"
+                },
+                "swaggerFile": {
+                  "$ref": "#/definitions/FileData"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a project",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISwaggerGenerator/CreateSwaggerSpec": {
+      "post": {
+        "tags": [
+          "ISwaggerGenerator"
         ],
         "description": "Creates a swagger specification from supplied project.",
         "operationId": "CreateSwaggerSpec",
@@ -22,18 +63,14 @@
         ],
         "parameters": [
           {
-            "name": "openApiVersion",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "description": "The version of swagger specification to create"
-          },
-          {
             "name": "body",
             "in": "body",
             "required": false,
             "schema": {
               "properties": {
+                "settings": {
+                  "$ref": "#/definitions/SettingsSpecGen"
+                },
                 "project": {
                   "$ref": "#/definitions/Project"
                 }
@@ -52,10 +89,10 @@
         }
       }
     },
-    "/Services/IProjectFileParser/ParseProject": {
+    "/Services/ISwaggerGenerator/ParseProject": {
       "post": {
         "tags": [
-          "IProjectFileParser"
+          "ISwaggerGenerator"
         ],
         "description": "Parses the supplied project zip into a project representation.",
         "operationId": "ParseProject",
@@ -92,6 +129,10 @@
     }
   },
   "definitions": {
+    "SettingsCodeGen": {
+      "type": "object",
+      "description": "Settings for generating code from a swagger file."
+    },
     "FileData": {
       "properties": {
         "FileStream": {
@@ -131,11 +172,15 @@
       },
       "type": "object",
       "description": "Represents a project"
+    },
+    "SettingsSpecGen": {
+      "type": "object",
+      "description": "Settings for generating a swagger file from code."
     }
   },
   "tags": [
     {
-      "name": "IProjectFileParser",
+      "name": "ISwaggerGenerator",
       "description": "The project parser is responsible for parsing project files into representations\r\nthat can be analyzed by the swagger code generators."
     }
   ]

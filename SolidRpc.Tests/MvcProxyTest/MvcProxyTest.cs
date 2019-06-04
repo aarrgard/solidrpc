@@ -15,6 +15,7 @@ using SolidProxy.GeneratorCastle;
 using SolidRpc.Proxy;
 using SolidRpc.Tests.Generated.Local.Services;
 using SolidRpc.Tests.Generated.Local.Types;
+using Microsoft.Extensions.Logging;
 
 namespace SolidRpc.Tests.MvcProxyTest
 {
@@ -273,6 +274,13 @@ namespace SolidRpc.Tests.MvcProxyTest
                 {
                     Value1= "Value1",
                     Value2= "Value2",
+                    Children = new[] {
+                        new ComplexObject1()
+                        {
+                            Value1 = "Value3",
+                            Value2 = "Value4"
+                        }
+                    }
                 };
                 var msg = new HttpRequestMessage();
                 msg.Method = HttpMethod.Post;
@@ -289,9 +297,20 @@ namespace SolidRpc.Tests.MvcProxyTest
             }
         }
 
+        private void AssertEnumEqual<T>(IEnumerable<T> o1, IEnumerable<T> o2)
+        {
+            var e1 = o1.GetEnumerator();
+            var e2 = o1.GetEnumerator();
+            while(e1.MoveNext())
+            {
+                Assert.IsTrue(e2.MoveNext());
+                AssertEqual(e1.Current, e2.Current);
+            }
+            Assert.IsFalse(e2.MoveNext());
+        }
         private void AssertEqual<T>(T o1, T o2)
         {
-            if(ReferenceEquals(o1, o2))
+            if (ReferenceEquals(o1, o2))
             {
                 return;
             }
@@ -299,6 +318,20 @@ namespace SolidRpc.Tests.MvcProxyTest
             {
                 Assert.AreEqual(o1, o2);
                 return;
+            }
+            if(typeof(T).IsGenericType)
+            {
+                var genType = typeof(T).GetGenericTypeDefinition();
+                if(typeof(IEnumerable<>).IsAssignableFrom(genType))
+                {
+                    var m = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                        .Where(o => o.Name == nameof(AssertEnumEqual))
+                        .Where(o => o.IsGenericMethod)
+                        .Single();
+                    var t = typeof(T).GetGenericArguments()[0];
+                    m.MakeGenericMethod(new[] { t }).Invoke(this, new[] { (object)o1, (object)o2 });
+                    return;
+                }
             }
             if (typeof(T).FullName.StartsWith("System."))
             {
@@ -357,6 +390,7 @@ namespace SolidRpc.Tests.MvcProxyTest
             var swaggerConfiguration = await AssertOk(resp);
 
             var sc = new ServiceCollection();
+            sc.AddLogging(ConfigureLogging);
             sc.AddTransient<T,T>();
             var proxyConf = sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxyCastleGenerator>()
@@ -364,6 +398,7 @@ namespace SolidRpc.Tests.MvcProxyTest
                 .ConfigureAdvice<ISolidRpcProxyConfig>();
             proxyConf.SwaggerConfiguration = swaggerConfiguration;
 
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();

@@ -34,7 +34,8 @@ namespace SolidRpc.Tests
             public TestHostContext(IWebHost webHost)
             {
                 WebHost = webHost;
-                webHost.StartAsync();
+                HttpClient = new HttpClient();
+                webHost.StartAsync().Wait();
 
                 var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
                 foreach (var addr in feature.Addresses)
@@ -49,6 +50,11 @@ namespace SolidRpc.Tests
             public IWebHost WebHost { get; }
 
             /// <summary>
+            /// The Http client
+            /// </summary>
+            public HttpClient HttpClient { get; }
+
+            /// <summary>
             /// The test base address
             /// </summary>
             public Uri BaseAddress { get; }
@@ -60,6 +66,7 @@ namespace SolidRpc.Tests
             public void Dispose()
             {
                 WebHost.StopAsync().Wait();
+                HttpClient?.Dispose();
             }
 
             /// <summary>
@@ -82,7 +89,6 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public Task<HttpResponseMessage> GetResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> formValues = null, IEnumerable<KeyValuePair<string, T>> headerValues = null)
             {
-                var httpClient = new HttpClient();
                 if(formValues != null)
                 {
                     var query = string.Join("&", formValues.Select(o => $"{o.Key}={HttpUtility.UrlEncode(ToString(o.Value))}"));
@@ -100,7 +106,7 @@ namespace SolidRpc.Tests
                         req.Headers.Add(h.Key, ToString(h.Value));
                     }
                 }
-                return httpClient.SendAsync(req);
+                return HttpClient.SendAsync(req);
             }
 
             private string ToString<T>(T value)
@@ -125,9 +131,8 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public Task<HttpResponseMessage> PostResponse<T>(string requestUri, IEnumerable<KeyValuePair<string, T>> nvps = null)
             {
-                var httpClient = new HttpClient();
                 var content = new FormUrlEncodedContent(nvps.Select(o => new KeyValuePair<string, string>(o.Key, ToString(o.Value))));
-                return httpClient.PostAsync(new Uri(BaseAddress, requestUri), content);
+                return HttpClient.PostAsync(new Uri(BaseAddress, requestUri), content);
             }
 
             /// <summary>
@@ -137,8 +142,7 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public Task<HttpResponseMessage> SendAsync(HttpRequestMessage msg)
             {
-                var httpClient = new HttpClient();
-                return httpClient.SendAsync(msg);
+                return HttpClient.SendAsync(msg);
             }
         }
 
@@ -149,15 +153,17 @@ namespace SolidRpc.Tests
         protected IWebHost GetWebHost()
         {
             var builder = WebHost.CreateDefaultBuilder(new string[0]);
-            builder.ConfigureLogging(o =>
-            {
-                o.SetMinimumLevel(LogLevel.Trace);
-                o.AddConsole();
-            });
+            builder.ConfigureLogging(ConfigureLogging);
             builder.ConfigureServices((sc) => {
                 sc.AddSingleton<IStartup>(this);
             });
             return builder.Build();
+        }
+
+        protected void ConfigureLogging(ILoggingBuilder builder)
+        {
+            builder.SetMinimumLevel(LogLevel.Trace);
+            builder.AddConsole();
         }
 
         /// <summary>

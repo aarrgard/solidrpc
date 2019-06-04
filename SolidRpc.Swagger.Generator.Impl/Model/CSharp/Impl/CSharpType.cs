@@ -11,6 +11,7 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp.Impl
         }
 
         public Type RuntimeType { get; }
+        public bool Initialized { get; set; }
 
         public void AddExtends(ICSharpType extType)
         {

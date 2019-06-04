@@ -163,8 +163,20 @@ namespace SolidRpc.Swagger.Generator.V2
                     return GetSwaggerDefinition(swaggerOperation, (ItemBase)parameterObject);
             }
         }
-        private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, ItemBase schema)
+        private SwaggerDefinition GetSwaggerDefinition(SwaggerOperation swaggerOperation, ItemBase schema, IDictionary<string, SwaggerDefinition> refs = null, string refKey = null)
         {
+            if(refs == null)
+            {
+                refs = new Dictionary<string, SwaggerDefinition>();
+            }
+            SwaggerDefinition sd = null;
+            if(refKey != null)
+            {
+                if (refs.TryGetValue(refKey, out sd))
+                {
+                    return sd;
+                }
+            }
             if (schema == null)
             {
                 throw new ArgumentNullException(nameof(schema));
@@ -172,10 +184,12 @@ namespace SolidRpc.Swagger.Generator.V2
             if(!string.IsNullOrEmpty(schema.Ref))
             {
                 var prefix = "#/definitions/";
-                if(schema.Ref.StartsWith(prefix))
+                if (schema.Ref.StartsWith(prefix))
                 {
-                    var d = SwaggerObject.Definitions[schema.Ref.Substring(prefix.Length)];
-                    return GetSwaggerDefinition(null, d);
+                    refKey = schema.Ref.Substring(prefix.Length);
+                    var d = SwaggerObject.Definitions[refKey];
+                    var rd = GetSwaggerDefinition(null, d, refs, refKey);
+                    return rd;
                 }
                 else
                 {
@@ -185,7 +199,11 @@ namespace SolidRpc.Swagger.Generator.V2
             switch(schema.Type)
             {
                 case "object":
-                    var sd = new SwaggerDefinition(swaggerOperation, schema.GetOperationName());
+                    sd = new SwaggerDefinition(swaggerOperation, schema.GetOperationName());
+                    if(refKey != null)
+                    {
+                        refs[refKey] = sd;
+                    }
                     if(schema is SchemaObject so)
                     {
                         if(so.Properties != null)
@@ -193,19 +211,19 @@ namespace SolidRpc.Swagger.Generator.V2
                             sd.Properties = so.Properties?.Select(o => new SwaggerProperty()
                             {
                                 Name = o.Key,
-                                Type = GetSwaggerDefinition(swaggerOperation, o.Value),
+                                Type = GetSwaggerDefinition(swaggerOperation, o.Value, refs),
                                 Description = o.Value.Description
                             }).ToList();
                         }
 
                         if (so.AdditionalProperties != null)
                         {
-                            sd.AdditionalProperties = GetSwaggerDefinition(swaggerOperation, so.AdditionalProperties);
+                            sd.AdditionalProperties = GetSwaggerDefinition(swaggerOperation, so.AdditionalProperties, refs);
                         }
                     }
                     return sd;
                 case "array":
-                    var arrayType = GetSwaggerDefinition(swaggerOperation, schema.Items);
+                    var arrayType = GetSwaggerDefinition(swaggerOperation, schema.Items, refs);
                     return new SwaggerDefinition(arrayType);
                 case "string":
                     switch (schema.Format)

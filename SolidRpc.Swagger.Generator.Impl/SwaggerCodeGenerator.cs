@@ -54,29 +54,29 @@ namespace SolidRpc.Swagger.Generator
         protected ICSharpClass GetClass(ICSharpRepository csharpRepository, CSharpObject cSharpObject)
         {
             var cls = csharpRepository.GetClass(cSharpObject.Name);
-            if(cSharpObject.AdditionalProperties != null)
+            if(!cls.Initialized)
             {
-                var dictType = csharpRepository.GetClass(cSharpObject.AdditionalProperties.Name);
-                var extType = csharpRepository.GetClass($"System.Collections.Generic.Dictionary<string,{dictType.FullName}>");
-                cls.AddExtends(extType);
-            }
-            // add missing properties
-            foreach (var prop in cSharpObject.Properties)
-            {
-                if(cls.Properties.Any(o => o.Name == prop.PropertyName))
+                cls.Initialized = true;
+                if (cSharpObject.AdditionalProperties != null)
                 {
-                    continue;
+                    var dictType = csharpRepository.GetClass(cSharpObject.AdditionalProperties.Name);
+                    var extType = csharpRepository.GetClass($"System.Collections.Generic.Dictionary<string,{dictType.FullName}>");
+                    cls.AddExtends(extType);
                 }
-                var propType = GetClass(csharpRepository, prop.PropertyType);
-                var csProp = new Model.CSharp.Impl.CSharpProperty(cls, prop.PropertyName, propType);
-                csProp.ParseComment($"<summary>{prop.Description}</summary>");
-                cls.AddMember(csProp);
+                // add missing properties
+                foreach (var prop in cSharpObject.Properties)
+                {
+                    var propType = GetClass(csharpRepository, prop.PropertyType);
+                    var csProp = new Model.CSharp.Impl.CSharpProperty(cls, prop.PropertyName, propType);
+                    csProp.ParseComment($"<summary>{prop.Description}</summary>");
+                    cls.AddMember(csProp);
+                }
+                if (cSharpObject.ArrayElement != null)
+                {
+                    GetClass(csharpRepository, cSharpObject.ArrayElement);
+                }
+                AddUsings(cls);
             }
-            if(cSharpObject.ArrayElement != null)
-            {
-                GetClass(csharpRepository, cSharpObject.ArrayElement);
-            }
-            AddUsings(cls);
             return cls;
         }
 

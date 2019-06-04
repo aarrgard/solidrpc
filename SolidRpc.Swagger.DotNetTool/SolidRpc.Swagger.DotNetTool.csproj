@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SolidRpc.Swagger.Generator" Version="1.0.0-build016" />
+    <PackageReference Include="SolidRpc.Swagger.Generator" Version="1.0.0-build019" />
   </ItemGroup>
 
   <ItemGroup>

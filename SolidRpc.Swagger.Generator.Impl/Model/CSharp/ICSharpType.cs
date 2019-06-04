@@ -9,6 +9,11 @@ namespace SolidRpc.Swagger.Generator.Model.CSharp
     public interface ICSharpType : ICSharpMember
     {
         /// <summary>
+        /// Specifies if this type has been inititalized
+        /// </summary>
+        bool Initialized { get; set; }
+
+        /// <summary>
         /// The namepspace that this member belongs to.
         /// </summary>
         ICSharpNamespace Namespace { get; }
