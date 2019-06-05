@@ -4,13 +4,22 @@ using System.Linq;
 
 namespace SolidRpc.Tests
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TestBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
         protected Stream GetManifestResource(string resourceName)
         {
             var resName = GetType().Assembly.GetManifestResourceNames().Single(o => o.EndsWith(resourceName));
             return GetType().Assembly.GetManifestResourceStream(resName);
         }
+        /// <summary>
+        /// 
+        /// </summary>
         protected DirectoryInfo GetProjectFolder(string projectName)
         {
             var dir = new DirectoryInfo(".");

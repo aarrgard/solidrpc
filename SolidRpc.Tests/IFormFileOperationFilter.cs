@@ -10,8 +10,14 @@ using System.Threading.Tasks;
 
 namespace SolidRpc.Tests
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class IFormFileOperationFilter : IOperationFilter
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IFormFileOperationFilter()
         {
             StreamSchema = new Schema()
@@ -20,8 +26,14 @@ namespace SolidRpc.Tests
                 Format = "binary"
             };
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public Schema StreamSchema { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Apply(Operation operation, OperationFilterContext context)
         {
             if (typeof(FileStreamResult).IsAssignableFrom(context.MethodInfo.ReturnType) ||

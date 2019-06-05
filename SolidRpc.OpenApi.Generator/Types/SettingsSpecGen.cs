@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SolidRpc.OpenApi.Generator.Types
+{
+    /// <summary>
+    /// Settings for generating a swagger file from code.
+    /// </summary>
+    public class SettingsSpecGen : SettingsGen
+    {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        public SettingsSpecGen()
+        {
+            OpenApiVersion = "2.0";
+        }
+
+        /// <summary>
+        /// The openapi/swagger version to generate
+        /// </summary>
+        public string OpenApiVersion { get; set; }
+
+        /// <summary>
+        /// The path wher the code resides. All the .cs files in this
+        /// folder and the subfolders will be analyzed
+        /// </summary>
+        public string CodePath { get; set; }
+
+        /// <summary>
+        /// The swagger file that we are generating.
+        /// </summary>
+        public string SwaggerFile { get; set; }
+
+        /// <summary>
+        /// The license name
+        /// </summary>
+        public string LicenseName { get; set; }
+
+        /// <summary>
+        /// The license url.
+        /// </summary>
+        public string LicenseUrl { get; set; }
+
+        /// <summary>
+        /// The version of the swagger spec
+        /// </summary>
+        public string Version { get; set; }
+
+        /// <summary>
+        /// The tile in the document
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// The description to set in the document
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// The contact email
+        /// </summary>
+        public string ContactEmail { get; set; }
+
+        /// <summary>
+        /// The contact name
+        /// </summary>
+        public string ContactName { get; set; }
+
+        /// <summary>
+        /// The contact url
+        /// </summary>
+        public string ContactUrl { get; set; }
+
+        /// <summary>
+        /// The base path for the service
+        /// </summary>
+        public string BasePath { get; set; }
+    }
+}

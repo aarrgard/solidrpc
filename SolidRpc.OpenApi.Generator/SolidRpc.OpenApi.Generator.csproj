@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build016" />
+  </ItemGroup>
+
+  <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">
+    <Exec Command="dotnet solidrpc-swaggergen -code2swagger swagger.json" WorkingDirectory="$(ProjectDir)" />
+  </Target>-->
+
+</Project>

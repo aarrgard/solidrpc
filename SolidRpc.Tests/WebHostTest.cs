@@ -160,6 +160,9 @@ namespace SolidRpc.Tests
             return builder.Build();
         }
 
+        /// <summary>
+        /// Configures the logging.
+        /// </summary>
         protected void ConfigureLogging(ILoggingBuilder builder)
         {
             builder.SetMinimumLevel(LogLevel.Trace);

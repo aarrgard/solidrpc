@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SolidRpc.OpenApi.Generator</name>
+    </assembly>
+    <members>
+        <member name="T:SolidRpc.Swagger.Generator.Services.IOpenApiGenerator">
+            <summary>
+            The project parser is responsible for parsing project files into representations
+            that can be analyzed by the swagger code generators.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Swagger.Generator.Services.IOpenApiGenerator.ParseProject(SolidRpc.Swagger.Generator.Types.FileData,System.Threading.CancellationToken)">
+            <summary>
+            Parses the supplied project zip into a project representation.
+            </summary>
+            <param name="projectZip"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Swagger.Generator.Services.IOpenApiGenerator.CreateSwaggerSpec(SolidRpc.Swagger.Generator.Types.SettingsSpecGen,SolidRpc.Swagger.Generator.Types.Project,System.Threading.CancellationToken)">
+            <summary>
+            Creates a swagger specification from supplied project.
+            </summary>
+            <param name="settings">The settings for generating the spec</param>
+            <param name="project">The project to analyze</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Swagger.Generator.Services.IOpenApiGenerator.CreateSwaggerCode(SolidRpc.Swagger.Generator.Types.SettingsCodeGen,SolidRpc.Swagger.Generator.Types.FileData,System.Threading.CancellationToken)">
+            <summary>
+            Creates a swagger specification from supplied project.
+            </summary>
+            <param name="settings">The settings for generating the code</param>
+            <param name="swaggerFile">The swagger file to analyze</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Swagger.Generator.Types.FileData">
+            <summary>
+            Represents a file
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.FileData.FileStream">
+            <summary>
+            The file content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.FileData.ContentType">
+            <summary>
+            The content type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.FileData.Filename">
+            <summary>
+            The file name
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Swagger.Generator.Types.Project">
+            <summary>
+            Represents a project
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.Project.ProjectFiles">
+            <summary>
+            All the project files
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Swagger.Generator.Types.ProjectFile">
+            <summary>
+            Represents a project file
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.ProjectFile.Directory">
+            <summary>
+            The directory where the file resides
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.ProjectFile.FileData">
+            <summary>
+            The file data
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Swagger.Generator.Types.SettingsCodeGen">
+            <summary>
+            Settings for generating code from a swagger file.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsCodeGen.SwaggerSpec">
+            <summary>
+            The swagger json.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsCodeGen.OutputPath">
+            <summary>
+            The output path. May be a folder or zip.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsCodeGen.UseAsyncAwaitPattern">
+            <summary>
+            Specifies if we should use the async/await pattern. Setting this 
+            to true will wrap all the return types with a generic Task and 
+            add a cancellation token argument to all methods.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Swagger.Generator.Types.SettingsGen">
+            <summary>
+            Base class for the settings
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Swagger.Generator.Types.SettingsGen.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsGen.ProjectNamespace">
+            <summary>
+            The namespace that the project belongs to. This namespace 
+            will not be included in the type references.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsGen.CodeNamespace">
+            <summary>
+            The namespace that will be added to the project namespace
+            before adding the type or service namespace.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsGen.TypeNamespace">
+            <summary>
+            The namespace to append to the root namespace for all the types
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsGen.ServiceNamespace">
+            <summary>
+            The namespace to append to the root namespace for all the services(interfaces)
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Swagger.Generator.Types.SettingsSpecGen">
+            <summary>
+            Settings for generating a swagger file from code.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.OpenApiVersion">
+            <summary>
+            The openapi/swagger version to generate
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.CodePath">
+            <summary>
+            The path wher the code resides. All the .cs files in this
+            folder and the subfolders will be analyzed
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.SwaggerFile">
+            <summary>
+            The swagger file that we are generating.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.LicenseName">
+            <summary>
+            The license name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.LicenseUrl">
+            <summary>
+            The license url.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.Version">
+            <summary>
+            The version of the swagger spec
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.Title">
+            <summary>
+            The tile in the document
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.Description">
+            <summary>
+            The description to set in the document
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.ContactEmail">
+            <summary>
+            The contact email
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.ContactName">
+            <summary>
+            The contact name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.ContactUrl">
+            <summary>
+            The contact url
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Swagger.Generator.Types.SettingsSpecGen.BasePath">
+            <summary>
+            The base path for the service
+            </summary>
+        </member>
+    </members>
+</doc>

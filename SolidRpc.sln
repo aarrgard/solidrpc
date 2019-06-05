@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Tests", "SolidRpc.Tests\SolidRpc.Tests.csproj", "{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Binder", "SolidRpc.Swagger.Binder\SolidRpc.Swagger.Binder.csproj", "{A9FCFFF2-9A0F-4A36-B08E-AA946836ED6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.Binder", "SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj", "{A9FCFFF2-9A0F-4A36-B08E-AA946836ED6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Model", "SolidRpc.Swagger.Model\SolidRpc.Swagger.Model.csproj", "{393BDD73-8F40-4EE9-BC6A-8B9EC1253C0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.Model", "SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj", "{393BDD73-8F40-4EE9-BC6A-8B9EC1253C0F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Proxy", "SolidRpc.Proxy\SolidRpc.Proxy.csproj", "{E8C949C3-33FD-4871-A4D8-3263CD25055A}"
 EndProject
@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{02FC1D9B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C253128-5D02-4E68-BAFB-901E9F7B1055}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.DotNetTool", "SolidRpc.Swagger.DotNetTool\SolidRpc.Swagger.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.DotNetTool", "SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D62C2EE1-7472-4CEA-A334-D14D98193014}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,9 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore", "SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj", "{4256B95B-DEC2-45C8-B1AD-56FC2E126CEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Generator", "SolidRpc.Swagger.Generator\SolidRpc.Swagger.Generator.csproj", "{011EDD2B-765B-4612-92CB-B7D2B9362FB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.Generator", "SolidRpc.OpenApi.Generator\SolidRpc.OpenApi.Generator.csproj", "{011EDD2B-765B-4612-92CB-B7D2B9362FB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Swagger.Generator.Impl", "SolidRpc.Swagger.Generator.Impl\SolidRpc.Swagger.Generator.Impl.csproj", "{DE8D7A50-D30D-413C-BB12-571C5C6264DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.Generator.Impl", "SolidRpc.OpenApi.Generator.Impl\SolidRpc.OpenApi.Generator.Impl.csproj", "{DE8D7A50-D30D-413C-BB12-571C5C6264DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

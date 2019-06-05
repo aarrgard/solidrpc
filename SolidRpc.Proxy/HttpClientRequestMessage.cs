@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SolidRpc.Swagger.Binder;
+using SolidRpc.OpenApi.Binder;
 using System;
 using System.Collections.Generic;
 using System.Linq;

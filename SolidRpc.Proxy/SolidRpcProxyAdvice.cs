@@ -1,6 +1,6 @@
 ﻿using SolidProxy.Core.Proxy;
-using SolidRpc.Swagger.Binder;
-using SolidRpc.Swagger.Model;
+using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Model;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace SolidRpc.Proxy
                 throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject)}.");
             }
             // use the swagger binder to setup the invocation
-            var swaggerConf = SwaggerParser.ParseSwaggerSpec(config.SwaggerConfiguration);
+            var swaggerConf = OpenApiParser.ParseSwaggerSpec(config.SwaggerConfiguration);
             if(swaggerConf == null)
             {
                 throw new Exception($"Cannot parse swagger configuration({config}).");

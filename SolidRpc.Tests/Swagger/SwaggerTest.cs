@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using SolidRpc.Swagger.Binder;
-using SolidRpc.Swagger.Model;
-using SolidRpc.Swagger.Model.V2;
+using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Model;
+using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.Test.Petstore.Services;
 using SolidRpc.Test.Petstore.Types;
 using System;
@@ -22,12 +22,12 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public void TestPetStore()
         {
-            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
 
-            var str = new SwaggerParserV2().WriteSwaggerDoc(swaggerSpec);
-            swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(str);
+            var str = new OpenApiParserV2().WriteSwaggerDoc(swaggerSpec);
+            swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(str);
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
         }
@@ -159,10 +159,13 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual("#/definitions/Tag", swaggerSpec.Definitions["Pet"].Properties["tags"].Items.Ref);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public void TestMethodBinderFindPetsByStatus()
         {
-            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.FindPetsByStatus));
             var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
@@ -178,10 +181,13 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual("pending", req.Query.As<string>("status").Last());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public void TestMethodBinderGetPetById()
         {
-            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.GetPetById));
             var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
@@ -196,10 +202,13 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}",req.Path);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public void TestMethodBinderUpdatePetWithForm()
         {
-            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.UpdatePetWithForm));
             var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
@@ -218,10 +227,13 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual($"available", req.FormData.As<string>("status").First());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public void TestMethodBinderUploadFile()
         {
-            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.UploadFile));
             var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
@@ -241,10 +253,13 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.FormData.GetData<byte[]>("file"));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public void TestMethodBinderPlaceOrder()
         {
-            var swaggerSpec = new SwaggerParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
             var mi = typeof(IStore).GetMethod(nameof(IStore.PlaceOrder));
             var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);

@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
-using SolidRpc.Swagger.Generator;
-using System.IO;
+using SolidRpc.OpenApi.Generator;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger
@@ -21,7 +20,7 @@ namespace SolidRpc.Tests.Swagger
             {
                 var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
                 var swaggerSpec = await AssertOk(resp);
-                var settings = new SwaggerCodeSettings()
+                var settings = new OpenApiCodeSettings()
                 {
                     SwaggerSpec = swaggerSpec,
                     OutputPath = GetProjectFolder("SolidRpc.Tests").FullName,
@@ -29,7 +28,7 @@ namespace SolidRpc.Tests.Swagger
                     CodeNamespace = "Generated.Local"
                 };
 
-                SwaggerCodeGenerator.GenerateCode(settings);
+                OpenApiCodeGenerator.GenerateCode(settings);
             }
         }
     }

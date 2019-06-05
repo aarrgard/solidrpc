@@ -8,8 +8,14 @@ using NUnit.Framework;
 
 namespace SolidRpc.Tests.MvcServerTest
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MvcServerTest : WebHostMvcTest
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [Test]
         public async Task Test1()
         {
