@@ -1,4 +1,3 @@
-
 using System;
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>

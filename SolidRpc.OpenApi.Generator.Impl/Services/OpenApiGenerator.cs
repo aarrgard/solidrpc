@@ -12,9 +12,10 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 {
     public class OpenApiGenerator : IOpenApiGenerator
     {
-        public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen settings, FileData swaggerFile, CancellationToken cancellationToken)
+        public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen settings, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var projectZip = OpenApiCodeGenerator.GenerateCode(settings);
+            return ParseProjectZip(projectZip, cancellationToken);
         }
 
         public Task<FileData> CreateOpenApiSpecFromCode(SettingsSpecGen settings, Project project, CancellationToken cancellationToken)
@@ -24,7 +25,11 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 
         public Task<SettingsCodeGen> GetSettingsCodeGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            var csprojInfo = CsprojInfo.GetCsprojInfo(csproj.Filename, csproj.FileStream);
+            return Task.FromResult(new SettingsCodeGen()
+            {
+                ProjectNamespace = csprojInfo.ProjectNamespace
+            });
         }
 
         public Task<SettingsSpecGen> GetSettingsSpecGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default(CancellationToken))
@@ -45,7 +50,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             });
         }
 
-        public async Task<Project> ParseProject(FileData projectZip, CancellationToken cancellationToken)
+        public async Task<Project> ParseProjectZip(FileData projectZip, CancellationToken cancellationToken)
         {
             if(!string.Equals(projectZip.ContentType,"application/zip",StringComparison.InvariantCultureIgnoreCase))
             {
@@ -57,6 +62,27 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
                 await CreateProject(zipStream, project);
                 return project;
             }
+        }
+
+        public async Task<FileData> CreateProjectZip(Project project, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var ms = new MemoryStream();
+            using (var zos = new ZipOutputStream(ms))
+            {
+                foreach (var f in project.ProjectFiles)
+                {
+                    var ze = new ZipEntry($"{f.Directory}/{f.FileData.Filename}");
+                    zos.PutNextEntry(ze);
+                    await f.FileData.FileStream.CopyToAsync(zos);
+                    zos.CloseEntry();
+                }
+            }
+            return new FileData()
+            {
+                ContentType = "application/octet-stream",
+                Filename = "project.zip",
+                FileStream = new MemoryStream(ms.ToArray())
+            };
         }
 
         private async Task CreateProject(ZipInputStream zipStream, Project project)

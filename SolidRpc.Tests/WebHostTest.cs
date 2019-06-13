@@ -30,18 +30,22 @@ namespace SolidRpc.Tests
             /// <summary>
             /// Constructor
             /// </summary>
-            /// <param name="webHost"></param>
-            public TestHostContext(IWebHost webHost)
+            /// <param name="webHostTest"></param>
+            public TestHostContext(WebHostTest webHostTest)
             {
-                WebHost = webHost;
+                WebHost = webHostTest.GetWebHost();
                 HttpClient = new HttpClient();
-                webHost.StartAsync().Wait();
+                WebHost.StartAsync().Wait();
 
                 var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
                 foreach (var addr in feature.Addresses)
                 {
                     BaseAddress = new Uri(addr);
                 }
+
+                var sc = new ServiceCollection();
+                webHostTest.ConfigureClientServices(sc);
+                ServiceProvider = sc.BuildServiceProvider();
             }
 
             /// <summary>
@@ -58,6 +62,11 @@ namespace SolidRpc.Tests
             /// The test base address
             /// </summary>
             public Uri BaseAddress { get; }
+
+            /// <summary>
+            /// The service provider for the test context.
+            /// </summary>
+            public ServiceProvider ServiceProvider { get; }
 
 
             /// <summary>
@@ -147,6 +156,15 @@ namespace SolidRpc.Tests
         }
 
         /// <summary>
+        /// Constructs a new host context
+        /// </summary>
+        /// <returns></returns>
+        protected TestHostContext CreateTestHostContext()
+        {
+            return new TestHostContext(this);
+        }
+
+        /// <summary>
         /// Returns the webbost. Does not start it.
         /// </summary>
         /// <returns></returns>
@@ -190,12 +208,24 @@ namespace SolidRpc.Tests
             return content;
         }
 
+        IServiceProvider IStartup.ConfigureServices(IServiceCollection services) => ConfigureServerServices(services);
+
         /// <summary>
-        /// Configures the services
+        /// Configures the services hosted on the server
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public abstract IServiceProvider ConfigureServices(IServiceCollection services);
+        public abstract IServiceProvider ConfigureServerServices(IServiceCollection services);
+
+        /// <summary>
+        /// Configures the services hosted on the client
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public virtual void ConfigureClientServices(IServiceCollection services)
+        {
+
+        }
 
         /// <summary>
         /// Configures the applicatio 

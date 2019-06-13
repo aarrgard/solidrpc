@@ -1,4 +1,3 @@
-
 using SolidRpc.Test.Petstore.Types;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Petstore.Types {

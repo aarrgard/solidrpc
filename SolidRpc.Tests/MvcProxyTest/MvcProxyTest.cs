@@ -15,7 +15,6 @@ using SolidProxy.GeneratorCastle;
 using SolidRpc.Proxy;
 using SolidRpc.Tests.Generated.Local.Services;
 using SolidRpc.Tests.Generated.Local.Types;
-using Microsoft.Extensions.Logging;
 
 namespace SolidRpc.Tests.MvcProxyTest
 {
@@ -31,7 +30,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyBoolean()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = new TestHostContext(this))
             {
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyBooleanInQuery)}?b=true");
                 Assert.AreEqual("true", await AssertOk(resp));
@@ -49,7 +48,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyByte()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyByteInQuery)}?b=10");
                 Assert.AreEqual("10", await AssertOk(resp));
@@ -67,7 +66,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyShort()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyShortInQuery)}?s=10");
                 Assert.AreEqual("10", await AssertOk(resp));
@@ -85,7 +84,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyInt()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var vals = new int[] { 10 };
                 var nvps = vals.Select(o => new KeyValuePair<string, int>("i", o));
@@ -115,7 +114,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test, Ignore("implement binder")]
         public async Task TestProxyIntArrArr()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse("/MvcProxyTest/ProxyIntArrArr?iarr=10");
                 Assert.AreEqual("[[10]]", await AssertOk(resp));
@@ -133,7 +132,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyLong()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyLongInQuery)}?l=10");
                 Assert.AreEqual("10", await AssertOk(resp));
@@ -152,7 +151,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyFloat()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var f = 1.5f;
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyFloatInQuery)}?f={f.ToString(CultureInfo.InvariantCulture)}");
@@ -171,7 +170,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyDouble()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var d = 3.5d;
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDoubleInQuery)}?d={d.ToString(CultureInfo.InvariantCulture)}");
@@ -189,7 +188,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyString()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyStringInQuery)}?s=testar");
                 Assert.AreEqual("\"testar\"", await AssertOk(resp));
@@ -207,7 +206,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyGuid()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var guid = Guid.NewGuid();
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyGuidInQuery)}?g={guid.ToString()}");
@@ -225,7 +224,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyDateTime()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var dateTime = new DateTime(2019, 05, 25, 17, 32, 44);
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
@@ -243,7 +242,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyDateTimeArr()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var dateTimeArr = new DateTime[] {
                     new DateTime(2019, 05, 25, 17, 32, 44),
@@ -268,7 +267,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyComplexObject()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var co1 = new ComplexObject1()
                 {
@@ -355,7 +354,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         [Test]
         public async Task TestProxyStream()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var payload = new byte[] { 10, 20 };
                 var msg = new HttpRequestMessage();

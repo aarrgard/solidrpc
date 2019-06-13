@@ -8,6 +8,7 @@ using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SolidRpc.OpenApi.Generator
@@ -134,7 +135,7 @@ namespace SolidRpc.OpenApi.Generator
         /// Generates code 
         /// </summary>
         /// <param name="codeSettings"></param>
-        public static Project GenerateCode(SettingsCodeGen codeSettings)
+        public static FileData GenerateCode(SettingsCodeGen codeSettings)
         {
             var codeGenerator = (ICSharpRepository)new CSharpRepository();
 
@@ -155,7 +156,14 @@ namespace SolidRpc.OpenApi.Generator
             var codeWriter = new CodeWriterZip(codeSettings.ProjectNamespace);
             codeGenerator.WriteCode(codeWriter);
             codeWriter.Close();
-            return null;
+            codeWriter.ZipOutputStream.Close();
+
+            return new FileData()
+            {
+                ContentType = "application/zip",
+                Filename = "project.zip",
+                FileStream = new MemoryStream(codeWriter.MemoryStream.ToArray())
+            };
         }
         protected abstract void GenerateCode(ICSharpRepository codeGenerator);
 

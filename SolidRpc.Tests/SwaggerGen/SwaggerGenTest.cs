@@ -1,7 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 using SolidRpc.OpenApi.Generator;
+using SolidRpc.OpenApi.Generator.Impl.Services;
+using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -10,6 +14,12 @@ namespace SolidRpc.Tests.Swagger
     /// </summary>
     public class SwaggerGenTest : WebHostMvcTest
     {
+        public override void ConfigureClientServices(IServiceCollection services)
+        {
+            base.ConfigureClientServices(services);
+            services.AddTransient<IOpenApiGenerator, OpenApiGenerator>();
+        }
+
         /// <summary>
         /// Creates the local bindings
         /// </summary>
@@ -17,7 +27,7 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestTestsGenerator()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
                 var swaggerSpec = await AssertOk(resp);
@@ -29,7 +39,11 @@ namespace SolidRpc.Tests.Swagger
                 };
 
                 var projPath = GetProjectFolder("SolidRpc.Tests");
-                OpenApiCodeGenerator.GenerateCode(settings);
+
+                var gen = ctx.ServiceProvider.GetRequiredService<IOpenApiGenerator>();
+                var project = await gen.CreateCodeFromOpenApiSpec(settings);
+                var zip = await gen.CreateProjectZip(project);
+                await projPath.WriteFileDataZip(zip);
             }
         }
     }

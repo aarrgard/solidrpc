@@ -49,6 +49,9 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
             {
                 CurrentWriter.Flush();
                 CurrentWriter = null;
+                ZipOutputStream.CloseEntry();
+                CurrentIndentation = "";
+                IndentOnNextEmit = false;
             }
         }
 

@@ -1,8 +1,3 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -19,7 +14,7 @@ namespace SolidRpc.Tests.MvcServerTest
         [Test]
         public async Task Test1()
         {
-            using (var ctx = new TestHostContext(GetWebHost()))
+            using (var ctx = CreateTestHostContext())
             {
                 var resp = await ctx.GetResponse("/MvcServerTest/Index");
                 await AssertOk(resp);

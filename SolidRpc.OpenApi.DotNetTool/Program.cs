@@ -38,18 +38,22 @@ namespace SolidRpc.OpenApi.DotNetTool
             var workingDir = Directory.GetCurrentDirectory();
             var files = argList.Select(o => new FileInfo(Path.Combine(workingDir, o))).ToList();
 
+            Task task;
             switch(command)
             {
                 case s_code2openapi:
-                    GenerateOpenApiFromCode(files);
+                    task = GenerateOpenApiFromCode(files);
                     break;
                 case s_openapi2code:
-                    GenerateCodeFromSwagger(files);
+                    task = GenerateCodeFromSwagger(files);
                     break;
+                default:
+                    throw new Exception("Cannot handle command:" + command);
             }
+            task.GetAwaiter().GetResult();
         }
 
-        private static void GenerateOpenApiFromCode(IEnumerable<FileInfo> files)
+        private static Task GenerateOpenApiFromCode(IEnumerable<FileInfo> files)
         {
             if (files.Count() == 0)
             {
@@ -61,15 +65,15 @@ namespace SolidRpc.OpenApi.DotNetTool
                 Console.Error.WriteLine($"Cannot specify more than one file when generating openapi from code.");
                 Environment.Exit(1);
             }
-            GenerateOpenApiFromCode(files.First()).GetAwaiter().GetResult();
+            return GenerateOpenApiFromCode(files.First());
         }
 
         private static async Task GenerateOpenApiFromCode(FileInfo fileInfo)
         {
             var sp = GetServiceProvider();
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
-            var projectZip = await CreateZip();
-            var project = await gen.ParseProject(projectZip);
+            var projectZip = await new DirectoryInfo(Directory.GetCurrentDirectory()).CreateFileDataZip();
+            var project = await gen.ParseProjectZip(projectZip);
             var csproj = project.ProjectFiles
                 .Where(o => o.Directory == "")
                 .Where(o => o.FileData.Filename.EndsWith(".csproj"))
@@ -88,57 +92,6 @@ namespace SolidRpc.OpenApi.DotNetTool
             }
         }
 
-        private static async Task<FileData> CreateZip()
-        {
-            var dir = Directory.GetCurrentDirectory();
-
-            var ms = new MemoryStream();
-            using (var zipStream = new ZipOutputStream(ms))
-            {
-                await CreateZip(new DirectoryInfo(dir), "/", zipStream);
-            }
-
-            return new FileData()
-            {
-                ContentType = "application/zip",
-                Filename = "project.zip",
-                FileStream = new MemoryStream(ms.ToArray())
-            };
-        }
-
-        private static async Task CreateZip(DirectoryInfo dir, string folder, ZipOutputStream zipStream)
-        {
-            var extensions = new[]
-            {
-                ".cs", ".csproj"
-            };
-            foreach (var subDir in dir.GetDirectories())
-            {
-                await CreateZip(subDir, $"{folder}{subDir.Name}/", zipStream);
-            }
-            foreach (var file in dir.GetFiles())
-            {
-                if (!extensions.Any(o => string.Equals(file.Extension, o, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    continue;
-                }
-                var entry = new ZipEntry($"{folder}{file.Name}");
-                zipStream.PutNextEntry(entry);
-                try
-                {
-                    using (var fs = file.OpenRead())
-                    {
-                        await fs.CopyToAsync(zipStream);
-                    }
-                }
-                finally
-                {
-                    zipStream.CloseEntry();
-                }
-
-            }
-        }
-
         private static IServiceProvider GetServiceProvider()
         {
             if(s_serviceProvider == null)
@@ -150,7 +103,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             return s_serviceProvider;
         }
 
-        private static void GenerateCodeFromSwagger(List<FileInfo> files)
+        private static Task GenerateCodeFromSwagger(List<FileInfo> files)
         {
             var nonexisingFiles = files.Where(o => !o.Exists);
             if (nonexisingFiles.Any())
@@ -158,50 +111,36 @@ namespace SolidRpc.OpenApi.DotNetTool
                 Console.Error.WriteLine($"Cannot find files {string.Join(",", nonexisingFiles.Select(o => o.FullName))}");
                 Environment.Exit(1);
             }
-            files.ForEach(o => GenerateCodeFromSwagger(o));
+            return Task.WhenAll(files.Select(o => GenerateCodeFromOpenApi(o)));
         }
 
-        private static void GenerateCodeFromSwagger(FileInfo swaggerFile)
+        private static async Task GenerateCodeFromOpenApi(FileInfo openApiFile)
         {
-            using (var fr = swaggerFile.OpenText())
+            var sp = GetServiceProvider();
+            var gen = sp.GetRequiredService<IOpenApiGenerator>();
+
+            var projectDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            var projectZip = await projectDir.CreateFileDataZip();
+            var project = await gen.ParseProjectZip(projectZip);
+            var csproj = project.ProjectFiles
+                .Where(o => o.Directory == "")
+                .Where(o => o.FileData.Filename.EndsWith(".csproj"))
+                .SingleOrDefault();
+
+            if (csproj == null)
             {
-                var swaggerSpec = fr.ReadToEnd();
-                var settings = new SettingsCodeGen()
-                {
-                    SwaggerSpec = swaggerSpec,
-                    ProjectNamespace = GetProjectNamespace()
-                };
-
-                OpenApiCodeGenerator.GenerateCode(settings);
+                throw new Exception("Cannot find csproj file in project.");
             }
-        }
 
-        private static FileInfo GetCsProjFile()
-        {
-            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            // locate csproj file
-            var csprojFiles = dir.GetFiles("*.csproj");
-            if (csprojFiles.Length != 1)
+            var settings = await gen.GetSettingsCodeGenFromCsproj(csproj.FileData);
+
+            using (var fr = openApiFile.OpenText())
             {
-                throw new Exception("Cannot find csproj file in folder:" + dir.FullName);
+                settings.SwaggerSpec = fr.ReadToEnd();
             }
-            return csprojFiles.First();
-        }
-
-        private static string GetProjectNamespace()
-        {
-            var csProjFile = GetCsProjFile();
-            var projectNamespace = csProjFile.Name;
-            projectNamespace = projectNamespace.Substring(0, projectNamespace.Length - csProjFile.Extension.Length);
-            return projectNamespace;
-        }
-
-        private static string GetAssemblyName()
-        {
-            var csProjFile = GetCsProjFile();
-            var assemblyName = csProjFile.Name;
-            assemblyName = assemblyName.Substring(0, assemblyName.Length - csProjFile.Extension.Length);
-            return assemblyName;
+            project = await gen.CreateCodeFromOpenApiSpec(settings);
+            projectZip = await gen.CreateProjectZip(project);
+            await projectDir.WriteFileDataZip(projectZip);
         }
     }
 }

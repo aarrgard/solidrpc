@@ -3,7 +3,7 @@
     "DotNetTool - Swagger2Code": {
       "commandName": "Project",
       "commandLineArgs": "-openapi2code petstore.json",
-      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Generator"
+      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Petstore"
     },
     "DotNetTool - Code2Swagger": {
       "commandName": "Project",

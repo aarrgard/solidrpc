@@ -1,5 +1,4 @@
 ﻿using SolidRpc.OpenApi.Generator.Types;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,8 +16,18 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <param name="projectZip"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Project> ParseProject(
-            FileData projectZip, 
+        Task<Project> ParseProjectZip(
+            FileData projectZip,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Creates a project zip from supplied project files
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileData> CreateProjectZip(
+            Project project,
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -37,12 +46,10 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// Creates a swagger specification from supplied project.
         /// </summary>
         /// <param name="settings">The settings for generating the code</param>
-        /// <param name="swaggerFile">The swagger file to analyze</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Project> CreateCodeFromOpenApiSpec(
             SettingsCodeGen settings, 
-            FileData swaggerFile, 
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

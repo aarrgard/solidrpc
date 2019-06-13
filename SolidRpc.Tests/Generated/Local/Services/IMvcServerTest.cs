@@ -1,4 +1,3 @@
-
 using System.Threading.Tasks;
 using System.Threading;
 namespace SolidRpc.Tests.Generated.Local.Services {

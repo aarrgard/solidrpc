@@ -45,7 +45,7 @@ namespace SolidRpc.Tests
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public override IServiceProvider ConfigureServices(IServiceCollection services)
+        public override IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
             services.AddMvc().ConfigureApplicationPartManager(apm =>
             {
