@@ -1,17 +1,25 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.OpenApi.Generator;
+using SolidRpc.OpenApi.Generator.Impl.Services;
 using SolidRpc.OpenApi.Generator.Services;
+using SolidRpc.OpenApi.Generator.Types;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace SolidRpc.OpenApi.DotNetTool
 {
     class Program
     {
+        private const string s_openapi2code = "-openapi2code";
+        private const string s_code2openapi = "-code2openapi";
+        private static string[] s_commands = new[] { s_openapi2code, s_code2openapi };
         private static ConcurrentDictionary<string, XmlDocument> ProjectDocuments = new ConcurrentDictionary<string, XmlDocument>();
         private static IServiceProvider s_serviceProvider;
 
@@ -19,10 +27,10 @@ namespace SolidRpc.OpenApi.DotNetTool
         {
             Console.WriteLine("Running swagger-generator");
             var argList = new List<string>(args);
-            var command = argList.Where(o => o == "-code2swagger" || o == "-swagger2code").SingleOrDefault();
+            var command = argList.Where(o => s_commands.Contains(o)).SingleOrDefault();
             if(command == null)
             {
-                Console.Error.WriteLine($"Must supply direction of code: -code2swagger or -swagger2code");
+                Console.Error.WriteLine($"Must supply direction of code: {string.Join("or", s_commands)}");
                 Environment.Exit(1);
             }
             argList.Remove(command);
@@ -32,16 +40,16 @@ namespace SolidRpc.OpenApi.DotNetTool
 
             switch(command)
             {
-                case "-code2swagger":
-                    GenerateSwaggerFromCode(files);
+                case s_code2openapi:
+                    GenerateOpenApiFromCode(files);
                     break;
-                case "-swagger2code":
+                case s_openapi2code:
                     GenerateCodeFromSwagger(files);
                     break;
             }
         }
 
-        private static void GenerateSwaggerFromCode(IEnumerable<FileInfo> files)
+        private static void GenerateOpenApiFromCode(IEnumerable<FileInfo> files)
         {
             if (files.Count() == 0)
             {
@@ -50,33 +58,85 @@ namespace SolidRpc.OpenApi.DotNetTool
             }
             if (files.Count() > 1)
             {
-                Console.Error.WriteLine($"Cannot specify more than one file when generating swagger from code.");
+                Console.Error.WriteLine($"Cannot specify more than one file when generating openapi from code.");
                 Environment.Exit(1);
             }
-            GenerateSwaggerFromCode(files.First());
+            GenerateOpenApiFromCode(files.First()).GetAwaiter().GetResult();
         }
 
-        private static void GenerateSwaggerFromCode(FileInfo fileInfo)
+        private static async Task GenerateOpenApiFromCode(FileInfo fileInfo)
         {
             var sp = GetServiceProvider();
-            // find the project assembly.
-            //var assembly = FindAssembly(fileInfo.DirectoryName);
-            var settings = new OpenApiSpecSettings()
+            var gen = sp.GetRequiredService<IOpenApiGenerator>();
+            var projectZip = await CreateZip();
+            var project = await gen.ParseProject(projectZip);
+            var csproj = project.ProjectFiles
+                .Where(o => o.Directory == "")
+                .Where(o => o.FileData.Filename.EndsWith(".csproj"))
+                .SingleOrDefault();
+
+            if(csproj == null)
             {
-                Title = GetAssemblyName(),
-                Version = GetProjectSetting("SwaggerVersion", "Version") ?? "1.0.0",
-                Description = GetProjectSetting("SwaggerDescription", "Description"),
-                LicenseName = GetProjectSetting("SwaggerLicenseName", "PackageLicenseUrl"),
-                LicenseUrl = GetProjectSetting("SwaggerLicenseUrl", "PackageLicenseUrl"),
-                ContactEmail = GetProjectSetting("SwaggerContactEmail"),
-                ContactName = GetProjectSetting("SwaggerContactName", "Authors"),
-                ContactUrl = GetProjectSetting("SwaggerContactUrl", "PackageProjectUrl"),
-                SwaggerFile = fileInfo.FullName,
-                CodePath = fileInfo.DirectoryName,
-                BasePath = $"/{GetAssemblyName().Replace('.', '/')}",  
-                ProjectNamespace = GetProjectNamespace(),
+                throw new Exception("Cannot find csproj file in project.");
+            }
+
+            var settings = await gen.GetSettingsSpecGenFromCsproj(csproj.FileData);
+            var spec = await gen.CreateOpenApiSpecFromCode(settings, project);
+            using (var fs = fileInfo.Create())
+            {
+                await spec.FileStream.CopyToAsync(fs);
+            }
+        }
+
+        private static async Task<FileData> CreateZip()
+        {
+            var dir = Directory.GetCurrentDirectory();
+
+            var ms = new MemoryStream();
+            using (var zipStream = new ZipOutputStream(ms))
+            {
+                await CreateZip(new DirectoryInfo(dir), "/", zipStream);
+            }
+
+            return new FileData()
+            {
+                ContentType = "application/zip",
+                Filename = "project.zip",
+                FileStream = new MemoryStream(ms.ToArray())
             };
-            OpenApiSpecGenerator.GenerateCode(settings);
+        }
+
+        private static async Task CreateZip(DirectoryInfo dir, string folder, ZipOutputStream zipStream)
+        {
+            var extensions = new[]
+            {
+                ".cs", ".csproj"
+            };
+            foreach (var subDir in dir.GetDirectories())
+            {
+                await CreateZip(subDir, $"{folder}{subDir.Name}/", zipStream);
+            }
+            foreach (var file in dir.GetFiles())
+            {
+                if (!extensions.Any(o => string.Equals(file.Extension, o, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    continue;
+                }
+                var entry = new ZipEntry($"{folder}{file.Name}");
+                zipStream.PutNextEntry(entry);
+                try
+                {
+                    using (var fs = file.OpenRead())
+                    {
+                        await fs.CopyToAsync(zipStream);
+                    }
+                }
+                finally
+                {
+                    zipStream.CloseEntry();
+                }
+
+            }
         }
 
         private static IServiceProvider GetServiceProvider()
@@ -84,40 +144,13 @@ namespace SolidRpc.OpenApi.DotNetTool
             if(s_serviceProvider == null)
             {
                 var sc = new ServiceCollection();
-                sc.AddTransient<IOpenApiGenerator, IOpenApiGenerator>();
+                sc.AddTransient<IOpenApiGenerator, OpenApiGenerator>();
                 s_serviceProvider = sc.BuildServiceProvider();
             }
             return s_serviceProvider;
         }
 
-        private static string GetProjectSetting(params string[] settings)
-        {
-            var doc = GetProjectDocument(Directory.GetCurrentDirectory());
-            var nsmgr = new XmlNamespaceManager(doc.NameTable);
-
-            foreach(var setting in settings)
-            {
-                var xpath = $"/Project/PropertyGroup/{setting}";
-                var node = doc.SelectSingleNode(xpath, nsmgr);
-                if (node != null)
-                {
-                    return node.InnerText;
-                }
-            }
-            return null;
-        }
-
-        private static XmlDocument GetProjectDocument(string projectFolder)
-        {
-            return ProjectDocuments.GetOrAdd(projectFolder, _ =>
-            {
-                var projectDocument = new XmlDocument();
-                projectDocument.Load(GetCsProjFile().FullName);
-                return projectDocument;
-            });
-        }
-
-         private static void GenerateCodeFromSwagger(List<FileInfo> files)
+        private static void GenerateCodeFromSwagger(List<FileInfo> files)
         {
             var nonexisingFiles = files.Where(o => !o.Exists);
             if (nonexisingFiles.Any())
@@ -133,10 +166,9 @@ namespace SolidRpc.OpenApi.DotNetTool
             using (var fr = swaggerFile.OpenText())
             {
                 var swaggerSpec = fr.ReadToEnd();
-                var settings = new OpenApiCodeSettings()
+                var settings = new SettingsCodeGen()
                 {
                     SwaggerSpec = swaggerSpec,
-                    OutputPath = swaggerFile.DirectoryName,
                     ProjectNamespace = GetProjectNamespace()
                 };
 

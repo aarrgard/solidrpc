@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SolidRpc.OpenApi.Generator;
+using SolidRpc.OpenApi.Generator.Types;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger
@@ -20,14 +21,14 @@ namespace SolidRpc.Tests.Swagger
             {
                 var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
                 var swaggerSpec = await AssertOk(resp);
-                var settings = new OpenApiCodeSettings()
+                var settings = new SettingsCodeGen()
                 {
                     SwaggerSpec = swaggerSpec,
-                    OutputPath = GetProjectFolder("SolidRpc.Tests").FullName,
                     ProjectNamespace = "SolidRpc.Tests",
                     CodeNamespace = "Generated.Local"
                 };
 
+                var projPath = GetProjectFolder("SolidRpc.Tests");
                 OpenApiCodeGenerator.GenerateCode(settings);
             }
         }

@@ -1,6 +1,7 @@
 ﻿using SolidRpc.OpenApi.Generator.Code.Binder;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Model.CSharp.Impl;
+using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Generator.V2;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
@@ -16,18 +17,124 @@ namespace SolidRpc.OpenApi.Generator
     /// </summary>
     public abstract class OpenApiCodeGenerator
     {
-        protected OpenApiCodeGenerator(OpenApiCodeSettings codeSettings)
+        private static string CapitalizeFirstChar(string name)
         {
-            CodeSettings = codeSettings;
+            if (char.IsUpper(name[0]))
+            {
+                return name;
+            }
+            return char.ToUpper(name[0]) + name.Substring(1);
+        }
+        private static string NameStartsWithLetter(string name, char letter)
+        {
+            if (name[0] == letter)
+            {
+                return name;
+            }
+            return letter + name;
         }
 
-        public OpenApiCodeSettings CodeSettings { get; }
+        protected OpenApiCodeGenerator(SettingsCodeGen codeSettings)
+        {
+            CodeSettings = codeSettings;
+            OperationMapper = (settings, operation) =>
+            {
+                var tag = operation.Tags.First();
+                var className = new QualifiedName(
+                    settings.ProjectNamespace,
+                    settings.CodeNamespace,
+                    settings.ServiceNamespace,
+                    InterfaceNameMapper(tag.Name));
+                return new Code.Binder.CSharpMethod()
+                {
+                    ReturnType = DefinitionMapper(settings, operation.ReturnType),
+                    InterfaceName = className,
+                    MethodName = MethodNameMapper(operation.OperationId),
+                    Parameters = operation.Parameters.Select(o => new Code.Binder.CSharpMethodParameter()
+                    {
+                        Name = o.Name,
+                        ParameterType = DefinitionMapper(settings, o.ParameterType),
+                        Optional = !o.Required,
+                        Description = o.Description
+                    }).ToList(),
+                    ClassSummary = tag.Description,
+                    MethodSummary = $"{operation.OperationSummary} {operation.OperationDescription}".Trim()
+                };
+            };
+            DefinitionMapper = (settings, swaggerDef) =>
+            {
+                if (swaggerDef == null) return null;
+                if (string.IsNullOrEmpty(swaggerDef.Name)) throw new Exception("Name is null or empty");
+                if (swaggerDef.ArrayType != null)
+                {
+                    return new CSharpObject(DefinitionMapper(settings, swaggerDef.ArrayType));
+                }
+                var className = swaggerDef.Name;
+                if (!swaggerDef.IsReservedName)
+                {
+                    if (swaggerDef.SwaggerOperation != null)
+                    {
+                        className = swaggerDef.SwaggerOperation.OperationId + className;
+                    }
+                    className = new QualifiedName(
+                        settings.ProjectNamespace,
+                        settings.CodeNamespace,
+                        settings.TypeNamespace,
+                        ClassNameMapper(className));
+                }
+                var csObj = new CSharpObject(className);
+                csObj.Properties = swaggerDef.Properties.Select(o => new Code.Binder.CSharpProperty()
+                {
+                    PropertyName = PropertyNameMapper(o.Name),
+                    PropertyType = DefinitionMapper(settings, o.Type),
+                    Description = o.Description
+                });
+                csObj.AdditionalProperties = DefinitionMapper(settings, swaggerDef.AdditionalProperties);
+                return csObj;
+            };
+            InterfaceNameMapper = qn => NameStartsWithLetter(CapitalizeFirstChar(qn), 'I');
+            ClassNameMapper = CapitalizeFirstChar;
+            MethodNameMapper = CapitalizeFirstChar;
+            PropertyNameMapper = CapitalizeFirstChar;
+        }
+
+        public SettingsCodeGen CodeSettings { get; }
+
+        /// <summary>
+        /// Method to map from a swagger operation to a C# method
+        /// </summary>
+        public Func<SettingsCodeGen, SwaggerOperation, Code.Binder.CSharpMethod> OperationMapper { get; set; }
+
+        /// <summary>
+        /// Method to map from a swagger object to a c# object.
+        /// </summary>
+        public Func<SettingsCodeGen, SwaggerDefinition, CSharpObject> DefinitionMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one method name to another.
+        /// </summary>
+        public Func<string, string> MethodNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one interface name to another.
+        /// </summary>
+        public Func<string, string> InterfaceNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one class name to another.
+        /// </summary>
+        public Func<string, string> ClassNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps one property name to another.
+        /// </summary>
+        public Func<string, string> PropertyNameMapper { get; set; }
 
         /// <summary>
         /// Generates code 
         /// </summary>
         /// <param name="codeSettings"></param>
-        public static void GenerateCode(OpenApiCodeSettings codeSettings)
+        public static Project GenerateCode(SettingsCodeGen codeSettings)
         {
             var codeGenerator = (ICSharpRepository)new CSharpRepository();
 
@@ -45,9 +152,10 @@ namespace SolidRpc.OpenApi.Generator
                 throw new Exception("Cannot parse swagger json.");
             }
 
-            var codeWriter = new CodeWriterFile(codeSettings.OutputPath, codeSettings.ProjectNamespace);
+            var codeWriter = new CodeWriterZip(codeSettings.ProjectNamespace);
             codeGenerator.WriteCode(codeWriter);
             codeWriter.Close();
+            return null;
         }
         protected abstract void GenerateCode(ICSharpRepository codeGenerator);
 

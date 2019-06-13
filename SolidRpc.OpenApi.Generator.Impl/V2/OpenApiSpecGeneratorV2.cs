@@ -1,4 +1,5 @@
 ﻿using SolidRpc.OpenApi.Generator.Model.CSharp;
+using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using System;
@@ -10,7 +11,7 @@ namespace SolidRpc.OpenApi.Generator.V2
 {
     public class OpenApiSpecGeneratorV2 : OpenApiSpecGenerator
     {
-        public OpenApiSpecGeneratorV2(OpenApiSpecSettings settings) : base(settings)
+        public OpenApiSpecGeneratorV2(SettingsSpecGen settings) : base(settings)
         {
         }
 
@@ -44,7 +45,7 @@ namespace SolidRpc.OpenApi.Generator.V2
         {
             return new TagObject(swaggerObject)
             {
-                Name = Settings.TypeDefinitionNameMapper(o),
+                Name = TypeDefinitionNameMapper(o),
                 Description = o.Comment?.Summary
             };
         }
@@ -56,7 +57,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 .OrderBy(o => o.FullName)
                 .ToList().ForEach(o =>
             {
-                var path = Settings.MapPath(o.FullName);
+                var path = MapPath(o.FullName);
                 if(!string.IsNullOrEmpty(Settings.BasePath) && path.StartsWith(Settings.BasePath))
                 {
                     path = path.Substring(Settings.BasePath.Length);
@@ -247,7 +248,7 @@ namespace SolidRpc.OpenApi.Generator.V2
         }
         private string CreateRefObject(ModelBase node, ICSharpClass clazz)
         {
-            var defName = Settings.TypeDefinitionNameMapper(clazz);
+            var defName = TypeDefinitionNameMapper(clazz);
             var swaggerObject = node.GetParent<SwaggerObject>();
             if(swaggerObject.Definitions == null)
             {
@@ -260,6 +261,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                     Type = "object",
                     Description = clazz.Comment?.Summary
                 };
+                so.Properties = CreateDefinitionsObject(so, clazz);
                 so.Properties = CreateDefinitionsObject(so, clazz);
                 swaggerObject.Definitions[defName] = so;
             }
@@ -276,7 +278,10 @@ namespace SolidRpc.OpenApi.Generator.V2
             var definitionsObject = new DefinitionsObject(parent);
             clazz.Properties.ToList().ForEach(o => {
                 var schema = GetSchema(definitionsObject, false, o.PropertyType);
-                //schema.Description = o.Comment?.Summary;
+                if(schema.Ref == null)
+                {
+                    schema.Description = o.Comment?.Summary;
+                }
                 definitionsObject[o.Name] = schema;
             });
             return definitionsObject;

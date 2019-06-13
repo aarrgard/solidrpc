@@ -10,14 +10,16 @@ namespace SolidRpc.OpenApi.Generator.Types
     public class SettingsCodeGen : SettingsGen
     {
         /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        public SettingsCodeGen()
+        {
+            UseAsyncAwaitPattern = true;
+        }
+        /// <summary>
         /// The swagger json.
         /// </summary>
         public string SwaggerSpec { get; set; }
-
-        /// <summary>
-        /// The output path. May be a folder or zip.
-        /// </summary>
-        public string OutputPath { get; set; }
 
         /// <summary>
         /// Specifies if we should use the async/await pattern. Setting this 

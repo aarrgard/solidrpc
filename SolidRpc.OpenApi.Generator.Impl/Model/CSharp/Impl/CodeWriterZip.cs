@@ -1,36 +1,34 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System;
 using System.IO;
 
 namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 {
-    public class CodeWriterFile : ICodeWriter
+    public class CodeWriterZip : ICodeWriter
     {
-        public CodeWriterFile(string outputPath, string projectNamespace)
+        public CodeWriterZip(string projectNamespace)
         {
-            if (!Directory.Exists(outputPath))
-            {
-                throw new ArgumentException("Directory does not exist:" + outputPath);
-            }
             ProjectNamespace = projectNamespace;
-            OutputPath = outputPath;
             IndentationString = "    ";
             CurrentIndentation = "";
+            MemoryStream = new MemoryStream();
+            ZipOutputStream = new ZipOutputStream(MemoryStream);
         }
-        public string ProjectNamespace { get; set; }
+        public MemoryStream MemoryStream { get; }
 
-        public string OutputPath { get; }
+        public ZipOutputStream ZipOutputStream { get; }
+
+        public string ProjectNamespace { get; set; }
 
         public string IndentationString { get; private set; }
 
         public string CurrentIndentation { get; private set; }
 
-        public StringWriter CurrentWriter { get; private set; }
+        public TextWriter CurrentWriter { get; private set; }
 
         public string NewLine => Environment.NewLine;
 
         public bool IndentOnNextEmit { get; private set; }
-
-        public FileInfo CurrentFile { get; private set; }
 
         public void MoveToClassFile(string fullClassName)
         {
@@ -40,38 +38,18 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
             }
             Close();
             var fileName = fullClassName.Substring(ProjectNamespace.Length + 1).Replace('.', Path.DirectorySeparatorChar) + ".cs";
-            var filePath = Path.Combine(OutputPath, fileName);
-            var file = new FileInfo(filePath);
-            if (!file.Directory.Exists)
-            {
-                file.Directory.Create();
-            }
-            CurrentFile = file;
-            CurrentWriter = new StringWriter();
+            var ze = new ZipEntry(fileName);
+            ZipOutputStream.PutNextEntry(ze);
+            CurrentWriter = new StreamWriter(ZipOutputStream);
         }
 
         public void Close()
         {
-            string oldContent = "";
-            if(CurrentFile != null && CurrentFile.Exists)
-            {
-                using (var tr = CurrentFile.OpenText())
-                {
-                    oldContent = tr.ReadToEnd();
-                }
-            }
             if (CurrentWriter != null)
             {
-                var newContent = CurrentWriter.ToString();
-                if(!newContent.Equals(oldContent))
-                {
-                    using (var sw = CurrentFile.CreateText())
-                    {
-                        sw.Write(newContent);
-                    }
-                }
+                CurrentWriter.Flush();
+                CurrentWriter = null;
             }
-            CurrentWriter = null;
         }
 
         public void Emit(string txt)

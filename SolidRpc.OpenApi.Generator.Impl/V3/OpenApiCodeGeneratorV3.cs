@@ -1,12 +1,13 @@
 ﻿using System;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
+using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Model.V3;
 
 namespace SolidRpc.OpenApi.Generator.V2
 {
     public class OpenApiCodeGeneratorV3 : OpenApiCodeGenerator
     {
-        public OpenApiCodeGeneratorV3(OpenAPIObject apiObject, OpenApiCodeSettings codeSettings)
+        public OpenApiCodeGeneratorV3(OpenAPIObject apiObject, SettingsCodeGen codeSettings)
             : base(codeSettings)
         {
             ApiObject = apiObject;

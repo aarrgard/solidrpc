@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using SolidRpc.OpenApi.Generator.Code.Binder;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
+using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Model.V2;
 
 namespace SolidRpc.OpenApi.Generator.V2
 {
     public class OpenApiCodeGeneratorV2 : OpenApiCodeGenerator
     {
-        public OpenApiCodeGeneratorV2(SwaggerObject swaggerObject, OpenApiCodeSettings codeSettings)
+        public OpenApiCodeGeneratorV2(SwaggerObject swaggerObject, SettingsCodeGen codeSettings)
             : base(codeSettings)
         {
             SwaggerObject = swaggerObject;
@@ -40,7 +41,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 swaggerOperation.OperationDescription = op.Description;
                 swaggerOperation.ReturnType = GetReturnType(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
-                return CodeSettings.OperationMapper(CodeSettings, swaggerOperation);
+                return OperationMapper(CodeSettings, swaggerOperation);
             }).ToList();
 
             cSharpMethods.ForEach(o =>
@@ -79,7 +80,7 @@ namespace SolidRpc.OpenApi.Generator.V2
             SwaggerObject.Definitions.Values.ToList().ForEach(o =>
             {
                 var swaggerDef = GetSwaggerDefinition(null, o);
-                var cSharpObject = CodeSettings.DefinitionMapper(CodeSettings, swaggerDef);
+                var cSharpObject = DefinitionMapper(CodeSettings, swaggerDef);
                 GetClass(cSharpRepository, cSharpObject);
             });
           }

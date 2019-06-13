@@ -17,7 +17,9 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <param name="projectZip"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Project> ParseProject(FileData projectZip, CancellationToken cancellationToken);
+        Task<Project> ParseProject(
+            FileData projectZip, 
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Creates a swagger specification from supplied project.
@@ -26,7 +28,10 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <param name="project">The project to analyze</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Stream> CreateSwaggerSpec(SettingsSpecGen settings, Project project, CancellationToken cancellationToken);
+        Task<FileData> CreateOpenApiSpecFromCode(
+            SettingsSpecGen settings, 
+            Project project, 
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Creates a swagger specification from supplied project.
@@ -35,6 +40,31 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <param name="swaggerFile">The swagger file to analyze</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Project> CreateSwaggerCode(SettingsCodeGen settings, FileData swaggerFile, CancellationToken cancellationToken);
+        Task<Project> CreateCodeFromOpenApiSpec(
+            SettingsCodeGen settings, 
+            FileData swaggerFile, 
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the settings for the code generation based
+        /// on the settings in supplied csproj file.
+        /// </summary>
+        /// <param name="csproj">The csproj file</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<SettingsCodeGen> GetSettingsCodeGenFromCsproj(
+            FileData csproj,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the settings for the spec generation based
+        /// on the settings in supplied csproj file.
+        /// </summary>
+        /// <param name="csproj">The csproj file</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<SettingsSpecGen> GetSettingsSpecGenFromCsproj(
+            FileData csproj,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

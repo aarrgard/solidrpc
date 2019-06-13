@@ -23,15 +23,9 @@ namespace SolidRpc.OpenApi.Generator.Types
         public string OpenApiVersion { get; set; }
 
         /// <summary>
-        /// The path wher the code resides. All the .cs files in this
-        /// folder and the subfolders will be analyzed
+        /// The base path to put in the openapi/swagger spec.
         /// </summary>
-        public string CodePath { get; set; }
-
-        /// <summary>
-        /// The swagger file that we are generating.
-        /// </summary>
-        public string SwaggerFile { get; set; }
+        public string BasePath { get; set; }
 
         /// <summary>
         /// The license name
@@ -72,10 +66,5 @@ namespace SolidRpc.OpenApi.Generator.Types
         /// The contact url
         /// </summary>
         public string ContactUrl { get; set; }
-
-        /// <summary>
-        /// The base path for the service
-        /// </summary>
-        public string BasePath { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Model.CSharp.Impl;
+using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Generator.V2;
 using SolidRpc.OpenApi.Model;
 using System;
@@ -20,7 +21,7 @@ namespace SolidRpc.OpenApi.Generator
     public abstract class OpenApiSpecGenerator
     {
         private enum NameScope { Namespace, Class, Interface };
-        public static void GenerateCode(OpenApiSpecSettings settings)
+        public static FileData GenerateOpenApiSpec(SettingsSpecGen settings, Project project)
         {
             OpenApiSpecGenerator generator;
             switch (settings.OpenApiVersion)
@@ -31,27 +32,59 @@ namespace SolidRpc.OpenApi.Generator
                 default:
                     throw new Exception("Cannot handle swagger version:" + settings.OpenApiVersion);
             }
-            generator.GenerateSpec();
+            return generator.GenerateSpec(project);
         }
 
-        public OpenApiSpecGenerator(OpenApiSpecSettings settings)
+        public OpenApiSpecGenerator(SettingsSpecGen settings)
         {
             Settings = settings;
             CSharpRepository = new CSharpRepository();
             CompilationUnits = new ConcurrentDictionary<string, CompilationUnitSyntax>();
+
+            TypeDefinitionNameMapper = c => {
+                var name = c.FullName;
+                if (name.StartsWith($"{Settings.ProjectNamespace}."))
+                {
+                    name = name.Substring(Settings.ProjectNamespace.Length + 1);
+                }
+                if (name.StartsWith($"{Settings.CodeNamespace}."))
+                {
+                    name = name.Substring(Settings.CodeNamespace.Length + 1);
+                }
+                if (name.StartsWith($"{Settings.ServiceNamespace}."))
+                {
+                    name = name.Substring(Settings.ServiceNamespace.Length + 1);
+                }
+                else if (name.StartsWith($"{Settings.TypeNamespace}."))
+                {
+                    name = name.Substring(Settings.TypeNamespace.Length + 1);
+                }
+
+                return name;
+            };
+            MapPath = s => $"/{s.Replace('.', '/')}";
         }
 
-        public OpenApiSpecSettings Settings { get; }
+        public SettingsSpecGen Settings { get; }
 
         public ConcurrentDictionary<string, CompilationUnitSyntax> CompilationUnits { get; }
 
         public ICSharpRepository CSharpRepository { get; }
 
-        protected virtual void GenerateSpec()
+        /// <summary>
+        /// The function that maps a type definition on to a reference name.
+        /// </summary>
+        public Func<ICSharpType, string> TypeDefinitionNameMapper { get; set; }
+
+        /// <summary>
+        /// The function that maps the method name to a path.
+        /// </summary>
+        public Func<string, string> MapPath { get; set; }
+
+        protected virtual FileData GenerateSpec(Project project)
         {
-            // find all .cs file
-            var di = new DirectoryInfo(Settings.CodePath);
-            var csFiles = di.EnumerateFiles("*.cs", SearchOption.AllDirectories);
+            var csFiles = project.ProjectFiles
+                .Where(o => o.FileData.Filename.EndsWith(".cs", StringComparison.InvariantCultureIgnoreCase));
             foreach (var csFile in csFiles)
             {
                 var cu = GetCompilationUnit(csFile);
@@ -64,27 +97,34 @@ namespace SolidRpc.OpenApi.Generator
             }
 
             var swaggerSpec = CreateSwaggerSpecFromTypesInRepo();
-            var swaggerFile = new FileInfo(Settings.SwaggerFile);
-            using (var fs = swaggerFile.CreateText())
+            var ms = new MemoryStream();
+            using (var tw = new StreamWriter(ms))
             {
                 var s = JsonSerializer.Create(new JsonSerializerSettings()
                 {
                     ContractResolver = NewtonsoftContractResolver.Instance,
                     Formatting = Formatting.Indented
                 });
-                s.Serialize(fs, swaggerSpec);
+                s.Serialize(tw, swaggerSpec);
             }
+            return new FileData()
+            {
+                ContentType = "application/json",
+                FileStream = new MemoryStream(ms.ToArray()),
+                Filename = $"{Settings.ProjectNamespace}.json"
+            };
         }
 
         protected abstract IOpenApiSpec CreateSwaggerSpecFromTypesInRepo();
 
-        private CompilationUnitSyntax GetCompilationUnit(FileInfo csFile)
+        private CompilationUnitSyntax GetCompilationUnit(ProjectFile csFile)
         {
-            return CompilationUnits.GetOrAdd(csFile.FullName, _ =>
+            var fullName = $"{csFile.Directory}/{csFile.FileData.Filename}";
+            return CompilationUnits.GetOrAdd(fullName, _ =>
             {
-                using (var tr = csFile.OpenText())
+                using (var sr = new StreamReader(csFile.FileData.FileStream))
                 {
-                    var syntaxTree = CSharpSyntaxTree.ParseText(tr.ReadToEnd());
+                    var syntaxTree = CSharpSyntaxTree.ParseText(sr.ReadToEnd());
                     return (CompilationUnitSyntax)syntaxTree.GetRoot();
                 }
             });
@@ -122,6 +162,10 @@ namespace SolidRpc.OpenApi.Generator
                 return;
             }
             if (member is PropertyDeclarationSyntax pds)
+            {
+                return;
+            }
+            if (member is ConstructorDeclarationSyntax ctrds)
             {
                 return;
             }

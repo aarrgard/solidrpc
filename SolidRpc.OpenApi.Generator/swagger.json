@@ -1,19 +1,19 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "SolidRpc.Swagger.Generator",
+    "title": "SolidRpc.OpenApi.Generator",
     "version": "1.0.0"
   },
   "host": "localhost",
-  "basePath": "/SolidRpc/Swagger/Generator",
+  "basePath": "/SolidRpc/OpenApi/Generator",
   "paths": {
-    "/Services/ISwaggerGenerator/CreateSwaggerCode": {
+    "/Services/IOpenApiGenerator/CreateCodeFromOpenApiSpec": {
       "post": {
         "tags": [
-          "ISwaggerGenerator"
+          "IOpenApiGenerator"
         ],
         "description": "Creates a swagger specification from supplied project.",
-        "operationId": "CreateSwaggerCode",
+        "operationId": "CreateCodeFromOpenApiSpec",
         "consumes": [
           "application/json"
         ],
@@ -48,13 +48,13 @@
         }
       }
     },
-    "/Services/ISwaggerGenerator/CreateSwaggerSpec": {
+    "/Services/IOpenApiGenerator/CreateOpenApiSpecFromCode": {
       "post": {
         "tags": [
-          "ISwaggerGenerator"
+          "IOpenApiGenerator"
         ],
         "description": "Creates a swagger specification from supplied project.",
-        "operationId": "CreateSwaggerSpec",
+        "operationId": "CreateOpenApiSpecFromCode",
         "consumes": [
           "application/json"
         ],
@@ -89,10 +89,86 @@
         }
       }
     },
-    "/Services/ISwaggerGenerator/ParseProject": {
+    "/Services/IOpenApiGenerator/GetSettingsCodeGenFromCsproj": {
       "post": {
         "tags": [
-          "ISwaggerGenerator"
+          "IOpenApiGenerator"
+        ],
+        "description": "Returns the settings for the code generation based\r\non the settings in supplied csproj file.",
+        "operationId": "GetSettingsCodeGenFromCsproj",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "csproj": {
+                  "$ref": "#/definitions/FileData"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settings for generating code from a swagger file.",
+            "schema": {
+              "$ref": "#/definitions/SettingsCodeGen"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IOpenApiGenerator/GetSettingsSpecGenFromCsproj": {
+      "post": {
+        "tags": [
+          "IOpenApiGenerator"
+        ],
+        "description": "Returns the settings for the spec generation based\r\non the settings in supplied csproj file.",
+        "operationId": "GetSettingsSpecGenFromCsproj",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "csproj": {
+                  "$ref": "#/definitions/FileData"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settings for generating a swagger file from code.",
+            "schema": {
+              "$ref": "#/definitions/SettingsSpecGen"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IOpenApiGenerator/ParseProject": {
+      "post": {
+        "tags": [
+          "IOpenApiGenerator"
         ],
         "description": "Parses the supplied project zip into a project representation.",
         "operationId": "ParseProject",
@@ -130,6 +206,16 @@
   },
   "definitions": {
     "SettingsCodeGen": {
+      "properties": {
+        "SwaggerSpec": {
+          "type": "string",
+          "description": "The swagger json."
+        },
+        "UseAsyncAwaitPattern": {
+          "type": "boolean",
+          "description": "Specifies if we should use the async/await pattern. Setting this\r\nto true will wrap all the return types with a generic Task and\r\nadd a cancellation token argument to all methods."
+        }
+      },
       "type": "object",
       "description": "Settings for generating code from a swagger file."
     },
@@ -137,13 +223,16 @@
       "properties": {
         "FileStream": {
           "type": "string",
-          "format": "binary"
+          "format": "binary",
+          "description": "The file content"
         },
         "ContentType": {
-          "type": "string"
+          "type": "string",
+          "description": "The content type"
         },
         "Filename": {
-          "type": "string"
+          "type": "string",
+          "description": "The file name"
         }
       },
       "type": "object",
@@ -152,7 +241,8 @@
     "ProjectFile": {
       "properties": {
         "Directory": {
-          "type": "string"
+          "type": "string",
+          "description": "The directory where the file resides"
         },
         "FileData": {
           "$ref": "#/definitions/FileData"
@@ -165,6 +255,7 @@
       "properties": {
         "ProjectFiles": {
           "type": "array",
+          "description": "All the project files",
           "items": {
             "$ref": "#/definitions/ProjectFile"
           }
@@ -174,13 +265,55 @@
       "description": "Represents a project"
     },
     "SettingsSpecGen": {
+      "properties": {
+        "OpenApiVersion": {
+          "type": "string",
+          "description": "The openapi/swagger version to generate"
+        },
+        "BasePath": {
+          "type": "string",
+          "description": "The base path to put in the openapi/swagger spec."
+        },
+        "LicenseName": {
+          "type": "string",
+          "description": "The license name"
+        },
+        "LicenseUrl": {
+          "type": "string",
+          "description": "The license url."
+        },
+        "Version": {
+          "type": "string",
+          "description": "The version of the swagger spec"
+        },
+        "Title": {
+          "type": "string",
+          "description": "The tile in the document"
+        },
+        "Description": {
+          "type": "string",
+          "description": "The description to set in the document"
+        },
+        "ContactEmail": {
+          "type": "string",
+          "description": "The contact email"
+        },
+        "ContactName": {
+          "type": "string",
+          "description": "The contact name"
+        },
+        "ContactUrl": {
+          "type": "string",
+          "description": "The contact url"
+        }
+      },
       "type": "object",
       "description": "Settings for generating a swagger file from code."
     }
   },
   "tags": [
     {
-      "name": "ISwaggerGenerator",
+      "name": "IOpenApiGenerator",
       "description": "The project parser is responsible for parsing project files into representations\r\nthat can be analyzed by the swagger code generators."
     }
   ]
