@@ -28,7 +28,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             var csprojInfo = CsprojInfo.GetCsprojInfo(csproj.Filename, csproj.FileStream);
             return Task.FromResult(new SettingsCodeGen()
             {
-                ProjectNamespace = csprojInfo.ProjectNamespace
+                ProjectNamespace = csprojInfo.RootNamespace
             });
         }
 
@@ -45,7 +45,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
                 ContactEmail = csprojInfo.OpenApiContactEmail,
                 ContactName = csprojInfo.OpenApiContactName ?? csprojInfo.Authors,
                 ContactUrl = csprojInfo.OpenApiContactUrl ?? csprojInfo.PackageProjectUrl,
-                ProjectNamespace = csprojInfo.ProjectNamespace,
+                ProjectNamespace = csprojInfo.RootNamespace,
                 BasePath = csprojInfo.OpenApiBasePath
             });
         }

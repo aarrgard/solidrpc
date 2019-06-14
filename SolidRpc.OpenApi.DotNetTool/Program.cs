@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace SolidRpc.OpenApi.DotNetTool
 {
-    class Program
+    public class Program
     {
         private const string s_openapi2code = "-openapi2code";
         private const string s_code2openapi = "-code2openapi";
@@ -23,7 +23,19 @@ namespace SolidRpc.OpenApi.DotNetTool
         private static ConcurrentDictionary<string, XmlDocument> ProjectDocuments = new ConcurrentDictionary<string, XmlDocument>();
         private static IServiceProvider s_serviceProvider;
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
+        {
+            try
+            {
+                MainWithExeptions(args).GetAwaiter().GetResult();
+            }
+            catch(Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                Environment.Exit(1);
+            }
+        }
+        public static Task MainWithExeptions(string[] args)
         {
             Console.WriteLine("Running swagger-generator");
             var argList = new List<string>(args);
@@ -35,40 +47,69 @@ namespace SolidRpc.OpenApi.DotNetTool
             }
             argList.Remove(command);
 
-            var workingDir = Directory.GetCurrentDirectory();
-            var files = argList.Select(o => new FileInfo(Path.Combine(workingDir, o))).ToList();
+            var workingDir = new DirectoryInfo(GetArgParam(argList, "-d", Directory.GetCurrentDirectory()));
+            var settings = GetSettings(argList);
+            var files = argList.Select(o => new FileInfo(Path.Combine(workingDir.FullName, o))).ToList();
 
             Task task;
             switch(command)
             {
                 case s_code2openapi:
-                    task = GenerateOpenApiFromCode(files);
+                    task = GenerateOpenApiFromCode(workingDir, settings, files);
                     break;
                 case s_openapi2code:
-                    task = GenerateCodeFromSwagger(files);
+                    task = GenerateCodeFromOpenApi(workingDir, settings, files);
                     break;
                 default:
                     throw new Exception("Cannot handle command:" + command);
             }
-            task.GetAwaiter().GetResult();
+
+            return task;
         }
 
-        private static Task GenerateOpenApiFromCode(IEnumerable<FileInfo> files)
+        private static IDictionary<string, string> GetSettings(List<string> argList)
+        {
+            var dict = new Dictionary<string, string>();
+            for (int i = 0; i < argList.Count; i++)
+            {
+                if (argList[i].StartsWith("-"))
+                {
+                    dict[argList[i].Substring(1)] = argList[i + 1];
+                    argList.RemoveAt(i);
+                    argList.RemoveAt(i);
+                    i--;
+                }
+            }
+            return dict;
+        }
+
+        private static string GetArgParam(List<string> argList, string arg, string defaultValue)
+        {
+            var argIdx = argList.IndexOf(arg);
+            if(argIdx == -1)
+            {
+                return defaultValue;
+            }
+            var val = argList[argIdx + 1];
+            argList.RemoveAt(argIdx);
+            argList.RemoveAt(argIdx);
+            return val;
+        }
+
+        private static Task GenerateOpenApiFromCode(DirectoryInfo workingDir, IDictionary<string, string> settings, IEnumerable<FileInfo> files)
         {
             if (files.Count() == 0)
             {
-                Console.Error.WriteLine($"Must specify file to generate");
-                Environment.Exit(1);
+                throw new Exception($"Must specify file to generate");
             }
             if (files.Count() > 1)
             {
-                Console.Error.WriteLine($"Cannot specify more than one file when generating openapi from code.");
-                Environment.Exit(1);
+                throw new Exception($"Cannot specify more than one file when generating openapi from code.");
             }
-            return GenerateOpenApiFromCode(files.First());
+            return GenerateOpenApiFromCode(workingDir, settings, files.First());
         }
 
-        private static async Task GenerateOpenApiFromCode(FileInfo fileInfo)
+        private static async Task GenerateOpenApiFromCode(DirectoryInfo workingDir, IDictionary<string, string> argSettings, FileInfo fileInfo)
         {
             var sp = GetServiceProvider();
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
@@ -103,23 +144,21 @@ namespace SolidRpc.OpenApi.DotNetTool
             return s_serviceProvider;
         }
 
-        private static Task GenerateCodeFromSwagger(List<FileInfo> files)
+        private static Task GenerateCodeFromOpenApi(DirectoryInfo workingDir, IDictionary<string, string> settings, List<FileInfo> files)
         {
             var nonexisingFiles = files.Where(o => !o.Exists);
             if (nonexisingFiles.Any())
             {
-                Console.Error.WriteLine($"Cannot find files {string.Join(",", nonexisingFiles.Select(o => o.FullName))}");
-                Environment.Exit(1);
+                throw new Exception($"Cannot find files {string.Join(",", nonexisingFiles.Select(o => o.FullName))}");
             }
-            return Task.WhenAll(files.Select(o => GenerateCodeFromOpenApi(o)));
+            return Task.WhenAll(files.Select(o => GenerateCodeFromOpenApi(workingDir, settings, o)));
         }
 
-        private static async Task GenerateCodeFromOpenApi(FileInfo openApiFile)
+        private static async Task GenerateCodeFromOpenApi(DirectoryInfo projectDir, IDictionary<string, string> argSettings, FileInfo openApiFile)
         {
             var sp = GetServiceProvider();
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
 
-            var projectDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             var projectZip = await projectDir.CreateFileDataZip();
             var project = await gen.ParseProjectZip(projectZip);
             var csproj = project.ProjectFiles
@@ -127,12 +166,12 @@ namespace SolidRpc.OpenApi.DotNetTool
                 .Where(o => o.FileData.Filename.EndsWith(".csproj"))
                 .SingleOrDefault();
 
-            if (csproj == null)
+            var settings = new SettingsCodeGen();
+            if (csproj != null)
             {
-                throw new Exception("Cannot find csproj file in project.");
+                settings = await gen.GetSettingsCodeGenFromCsproj(csproj.FileData);
             }
-
-            var settings = await gen.GetSettingsCodeGenFromCsproj(csproj.FileData);
+            UpdateSettingsFromArguments(argSettings, settings);
 
             using (var fr = openApiFile.OpenText())
             {
@@ -140,7 +179,32 @@ namespace SolidRpc.OpenApi.DotNetTool
             }
             project = await gen.CreateCodeFromOpenApiSpec(settings);
             projectZip = await gen.CreateProjectZip(project);
-            await projectDir.WriteFileDataZip(projectZip);
+
+            if(argSettings.ContainsKey("only-compare") && bool.Parse(argSettings["only-compare"]))
+            {
+                if(await projectDir.FileDataZipDiffers(projectZip))
+                {
+                    throw new Exception("File differs!");
+                }
+            }
+            else
+            {
+                await projectDir.WriteFileDataZip(projectZip);
+            }
+        }
+
+        private static void UpdateSettingsFromArguments(IDictionary<string, string> argSettings, SettingsGen settings)
+        {
+            foreach(var prop in settings.GetType().GetProperties())
+            {
+                if (!prop.CanRead) continue;
+                if (!prop.CanWrite) continue;
+                string val;
+                if(argSettings.TryGetValue(prop.Name, out val))
+                {
+                    prop.SetValue(settings, val);
+                }
+            }
         }
     }
 }

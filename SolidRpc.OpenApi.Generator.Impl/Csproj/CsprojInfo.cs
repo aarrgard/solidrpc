@@ -43,9 +43,9 @@ namespace SolidRpc.OpenApi.Generator.Impl.Csproj
             {
                 projInfo.OpenApiBasePath = $"/{projInfo.AssemblyName.Replace(".", "/")}";
             }
-            if (string.IsNullOrEmpty(projInfo.ProjectNamespace))
+            if (string.IsNullOrEmpty(projInfo.RootNamespace))
             {
-                projInfo.ProjectNamespace = projInfo.AssemblyName;
+                projInfo.RootNamespace = projInfo.AssemblyName;
             }
             return projInfo;
         }
@@ -66,7 +66,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Csproj
             return null;
         }
 
-        public string ProjectNamespace { get; set; }
+        public string RootNamespace { get; set; }
         public string AssemblyName { get; set; }
         public string Version { get; set; }
         public string Description { get; set; }

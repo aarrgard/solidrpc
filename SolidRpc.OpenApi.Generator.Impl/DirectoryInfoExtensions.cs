@@ -15,54 +15,77 @@ namespace System.IO
         /// <param name="dir"></param>
         /// <param name="zip"></param>
         /// <returns></returns>
-        public static async Task WriteFileDataZip(this DirectoryInfo dir, FileData zip)
+        public static Task WriteFileDataZip(this DirectoryInfo dir, FileData zip)
         {
+            return HandleFileDataZip(dir, zip, true);
+        }
+
+        /// <summary>
+        /// Compares the contents of supplied zip with the contents on disk.
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="zip"></param>
+        /// <returns></returns>
+        public static Task<bool> FileDataZipDiffers(this DirectoryInfo dir, FileData zip)
+        {
+            return HandleFileDataZip(dir, zip, false);
+        }
+
+        private static async Task<bool> HandleFileDataZip(DirectoryInfo dir, FileData zip, bool replaceFilesThatDiffers)
+        {
+            bool differs = false;
             using (var zos = new ZipInputStream(zip.FileStream))
             {
                 ZipEntry ze;
-                while((ze = zos.GetNextEntry()) != null)
+                while ((ze = zos.GetNextEntry()) != null)
                 {
                     var fileName = Path.Combine(dir.FullName, ze.Name);
                     var fi = new FileInfo(fileName);
                     var fileDir = fi.Directory;
-                    if(!fileDir.Exists)
+                    if (!fileDir.Exists)
                     {
                         fileDir.Create();
                     }
                     var ms = new MemoryStream();
                     await zos.CopyToAsync(ms);
-                    await WriteFileIfDiffers(fi, ms.ToArray());
-                }
-            }
-        }
-
-        private static async Task WriteFileIfDiffers(FileInfo fi, byte[] newFileContent)
-        {
-            if(fi.Length == newFileContent.Length)
-            {
-                var ms = new MemoryStream();
-                using (var fs = fi.OpenRead())
-                {
-                    await fs.CopyToAsync(ms);
-                }
-                var existingFileContent = ms.ToArray();
-                var same = true;
-                for(int i = 0; same && i < newFileContent.Length; i++)
-                {
-                    if(newFileContent[i] != existingFileContent[i])
+                    var newFileContent = ms.ToArray();
+                    differs = await FileDiffers(fi, newFileContent) | differs;
+                    if (differs && replaceFilesThatDiffers)
                     {
-                        same = false;
+                        using (var fs = fi.Create())
+                        {
+                            await fs.WriteAsync(newFileContent, 0, newFileContent.Length);
+                        }
                     }
                 }
-                if(same)
+            }
+            return differs;
+        }
+
+        private static async Task<bool> FileDiffers(FileInfo fi, byte[] newFileContent)
+        {
+            if(!fi.Exists)
+            {
+                return true;
+            }
+            if(fi.Length != newFileContent.Length)
+            {
+                return true;
+            }
+            var ms = new MemoryStream();
+            using (var fs = fi.OpenRead())
+            {
+                await fs.CopyToAsync(ms);
+            }
+            var existingFileContent = ms.ToArray();
+            for(int i = 0; i < newFileContent.Length; i++)
+            {
+                if(newFileContent[i] != existingFileContent[i])
                 {
-                    return;
+                    return true;
                 }
             }
-            using (var fs = fi.Create())
-            {
-                await fs.WriteAsync(newFileContent, 0, newFileContent.Length);
-            }
+            return false;
         }
 
         /// <summary>

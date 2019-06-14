@@ -8,7 +8,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
     {
         public CodeWriterZip(string projectNamespace)
         {
-            ProjectNamespace = projectNamespace;
+            ProjectNamespace = projectNamespace ?? "";
             IndentationString = "    ";
             CurrentIndentation = "";
             MemoryStream = new MemoryStream();
@@ -32,12 +32,17 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         public void MoveToClassFile(string fullClassName)
         {
-            if (!fullClassName.StartsWith($"{ProjectNamespace}."))
+            var prefix = string.IsNullOrEmpty(ProjectNamespace) ? "" : $"{ProjectNamespace}.";
+            if (!fullClassName.StartsWith(prefix))
             {
-                throw new ArgumentException("Cannot generate classes that does not belong to the project namespace");
+                throw new ArgumentException($"Cannot generate class({fullClassName}) that does not belong to the project namespace({prefix})");
             }
             Close();
-            var fileName = fullClassName.Substring(ProjectNamespace.Length + 1).Replace('.', Path.DirectorySeparatorChar) + ".cs";
+            var fileName = fullClassName.Replace('.', Path.DirectorySeparatorChar) + ".cs";
+            if(!string.IsNullOrEmpty(prefix))
+            {
+                fileName = fileName.Substring(prefix.Length);
+            }
             var ze = new ZipEntry(fileName);
             ZipOutputStream.PutNextEntry(ze);
             CurrentWriter = new StreamWriter(ZipOutputStream);
