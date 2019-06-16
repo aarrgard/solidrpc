@@ -113,19 +113,24 @@ namespace SolidRpc.OpenApi.DotNetTool
         {
             var sp = GetServiceProvider();
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
-            var projectZip = await new DirectoryInfo(Directory.GetCurrentDirectory()).CreateFileDataZip();
+            var projectZip = await workingDir.CreateFileDataZip();
             var project = await gen.ParseProjectZip(projectZip);
             var csproj = project.ProjectFiles
                 .Where(o => o.Directory == "")
                 .Where(o => o.FileData.Filename.EndsWith(".csproj"))
                 .SingleOrDefault();
 
-            if(csproj == null)
+            var settings = new SettingsSpecGen()
             {
-                throw new Exception("Cannot find csproj file in project.");
+                Title = workingDir.Name,
+                Version = "1.0.0"
+            };
+            if (csproj != null)
+            {
+                settings = await gen.GetSettingsSpecGenFromCsproj(csproj.FileData);
             }
+            UpdateSettingsFromArguments(argSettings, settings);
 
-            var settings = await gen.GetSettingsSpecGenFromCsproj(csproj.FileData);
             var spec = await gen.CreateOpenApiSpecFromCode(settings, project);
             using (var fs = fileInfo.Create())
             {

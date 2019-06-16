@@ -76,7 +76,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 AddUsings(i);
             });
 
-            SwaggerObject.Definitions.Values.ToList().ForEach(o =>
+            SwaggerObject.Definitions?.Values.ToList().ForEach(o =>
             {
                 var swaggerDef = GetSwaggerDefinition(null, o);
                 var cSharpObject = DefinitionMapper(CodeSettings, swaggerDef);

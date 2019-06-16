@@ -71,6 +71,7 @@ namespace SolidRpc.Tests.Swagger
             }
             catch(Exception e)
             {
+                Console.WriteLine(e);
                 throw;
             }
        }

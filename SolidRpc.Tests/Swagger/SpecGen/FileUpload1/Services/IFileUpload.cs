@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload.Services
+namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload1.Services
 {
     /// <summary>
     /// Test interface to upload a file
@@ -12,9 +12,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload.Services
         /// <summary>
         /// Uploads a file. This method will get a "file" parameter. 
         /// </summary>
-        /// <param name="fileStream"></param>
-        /// <param name="fileName"></param>
-        /// <param name="contentType"></param>
+        /// <param name="fileStream">The file stream</param>
+        /// <param name="fileName">The file name</param>
+        /// <param name="contentType">The content type</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task UploadFile(Stream fileStream, string fileName, string contentType, CancellationToken cancellationToken = default(CancellationToken));

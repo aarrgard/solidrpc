@@ -113,9 +113,22 @@ namespace SolidRpc.OpenApi.Generator.V2
             operationObject.Responses = CreateResponses(operationObject, method);
 
             //
+            // Handle file parameters
+            //
+            if(operationObject.Parameters.Any(o => o.Type == "file"))
+            {
+                operationObject.Parameters.Where(o => o.Type == "file").ToList().ForEach(o => o.In = "formData");
+                // remove the content-type and filename parameters
+                operationObject.Parameters = operationObject.Parameters
+                    .Where(o => !o.Name.Equals("contenttype", StringComparison.InvariantCultureIgnoreCase))
+                    .Where(o => !o.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+            }
+
+            //
             // set the consumes and produces based on parameters and responses
             //
-            if (operationObject.Parameters.Any(o => o.In == "file"))
+            if (operationObject.Parameters.Any(o => o.In == "formData"))
             {
                 operationObject.AddConsumes("multipart/form-data");
             }
@@ -132,18 +145,6 @@ namespace SolidRpc.OpenApi.Generator.V2
                 operationObject.AddProduces("application/json");
             }
             return operationObject;
-        }
-
-        private void SetAdditionalParameterInfo(ParameterObject po)
-        {
-            if(po.Type == "file")
-            {
-                po.In = "formData";
-            }
-            else
-            {
-                po.In = "query";
-            }
         }
 
         private ResponsesObject CreateResponses(OperationObject operationObject, ICSharpMethod method)
@@ -166,7 +167,9 @@ namespace SolidRpc.OpenApi.Generator.V2
             }  
             if(!responsesObject.Any())
             {
-                return null;
+                var successResponse = new ResponseObject(responsesObject);
+                successResponse.Description = "Success";
+                responsesObject["200"] = successResponse;
             }
             return responsesObject;
         }
@@ -261,9 +264,9 @@ namespace SolidRpc.OpenApi.Generator.V2
                     Type = "object",
                     Description = clazz.Comment?.Summary
                 };
-                so.Properties = CreateDefinitionsObject(so, clazz);
-                so.Properties = CreateDefinitionsObject(so, clazz);
                 swaggerObject.Definitions[defName] = so;
+                so.Properties = CreateDefinitionsObject(so, clazz);
+                so.Properties = CreateDefinitionsObject(so, clazz);
             }
 
             return $"#/definitions/{defName}";

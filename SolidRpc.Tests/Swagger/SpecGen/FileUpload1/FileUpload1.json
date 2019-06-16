@@ -1,0 +1,43 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "FileUpload1",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/FileUpload1",
+  "paths": {
+    "/Services/IFileUpload/UploadFile": {
+      "post": {
+        "tags": [
+          "IFileUpload"
+        ],
+        "description": "Uploads a file. This method will get a \"file\" parameter.",
+        "operationId": "UploadFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "fileStream",
+            "in": "formData",
+            "required": false,
+            "type": "file",
+            "description": "The file stream"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IFileUpload",
+      "description": "Test interface to upload a file"
+    }
+  ]
+}
