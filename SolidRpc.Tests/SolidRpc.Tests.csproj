@@ -38,7 +38,6 @@
 
   <ItemGroup>
     <Folder Include="Swagger\CodeGen\Local\" />
-    <Folder Include="Swagger\SpecGen\" />
   </ItemGroup>
   
 </Project>

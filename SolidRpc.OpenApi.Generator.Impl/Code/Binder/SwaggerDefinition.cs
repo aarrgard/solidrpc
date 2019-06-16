@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Generator.Code.Binder
+namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
     /// <summary>
     /// Represents a swagger object.

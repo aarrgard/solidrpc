@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SolidRpc.OpenApi.Generator.Code.Binder;
+using SolidRpc.OpenApi.Generator.Impl.Code.Binder;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Model.V2;
@@ -37,8 +37,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 var swaggerOperation = new SwaggerOperation();
                 swaggerOperation.Tags = GetTags(op);
                 swaggerOperation.OperationId = op.OperationId;
-                swaggerOperation.OperationSummary = op.Summary;
-                swaggerOperation.OperationDescription = op.Description;
+                swaggerOperation.OperationDescription = SwaggerDescription.Create($"{op.Summary} {op.Description}", op.ExternalDocs?.Description, op.ExternalDocs?.Url);
                 swaggerOperation.ReturnType = GetReturnType(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
                 return OperationMapper(CodeSettings, swaggerOperation);
@@ -47,7 +46,7 @@ namespace SolidRpc.OpenApi.Generator.V2
             cSharpMethods.ForEach(o =>
             {
                 var i = cSharpRepository.GetInterface(o.InterfaceName);
-                i.ParseComment($"<summary>{o.ClassSummary}</summary>");
+                i.ParseComment($"<summary>{o.ClassSummary?.Summary}</summary><a href=\"{o.ClassSummary?.ExternalUri}\">{o.ClassSummary?.ExternalDescription}</a>");
                 var returnType = (ICSharpType)GetClass(cSharpRepository, o.ReturnType);
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
@@ -55,8 +54,8 @@ namespace SolidRpc.OpenApi.Generator.V2
                 }
 
                 var m = new Model.CSharp.Impl.CSharpMethod(i, o.MethodName, returnType);
-                m.ParseComment($"<summary>{o.MethodSummary}</summary>");
-                foreach(var p in o.Parameters)
+                m.ParseComment($"<summary>{o.MethodSummary?.Summary}</summary><a href=\"{o.MethodSummary?.ExternalUri}\">{o.MethodSummary?.ExternalDescription}</a>");
+                foreach (var p in o.Parameters)
                 {
                     var parameterType = GetClass(cSharpRepository, p.ParameterType);
                     var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, p.Optional);
@@ -103,7 +102,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 .Select(o => new SwaggerTag()
                 {
                     Name = o.Name,
-                    Description = o.Description
+                    Description = SwaggerDescription.Create(o.Description, o.ExternalDocs?.Description, o.ExternalDocs?.Url)
                 });
         }
 

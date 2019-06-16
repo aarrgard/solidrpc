@@ -12,9 +12,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         public override void WriteCode(ICodeWriter codeWriter)
         {
-            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
-            codeWriter.Emit($"/// {Comment?.Summary}{codeWriter.NewLine}");
-            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            WriteSummary(codeWriter);
             codeWriter.Emit($"public {SimplifyName(PropertyType.FullName)} {Name} {{ get; set; }}{codeWriter.NewLine}");
         }
 

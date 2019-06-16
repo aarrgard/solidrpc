@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Xml;
 
 namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
@@ -68,7 +69,21 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
                 }
             }
             comment = sb.ToString();
-            HandleTags("summary", comment, (p, c) => SetCommentSummary(c));
+            string summary = "";
+            ICSharpCommentExternalDoc externalDoc = null;
+            HandleTags("summary", comment, (p, c) => summary = c.Trim());
+            HandleTags("a", comment, (p, c) => {
+                if (p.ContainsKey("href"))
+                {
+                    if(!string.IsNullOrEmpty(p["href"]) || !string.IsNullOrEmpty(c))
+                    {
+                        externalDoc = new CSharpCommentExternalDoc(p["href"], c);
+                    }
+                }
+            });
+
+            Comment = new CSharpComment(summary, externalDoc);
+
             HandleTags("param", comment, (p, c) => {
                 if(p.ContainsKey("name"))
                 {
@@ -134,15 +149,6 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         protected virtual void SetCommentParameter(string parameterName, string comment)
         {
-        }
-
-        protected virtual void SetCommentSummary(string summary)
-        {
-            summary = summary.Trim();
-            if(!string.IsNullOrEmpty(summary))
-            {
-                Comment = new CSharpComment(summary);
-            }
         }
 
         public virtual void AddMember(ICSharpMember member)
@@ -226,6 +232,18 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
                 return $"default({SimplifyName(fullName.Substring(8, fullName.Length - 9))})";
             }
             return fullName;
+        }
+
+        protected void WriteSummary(ICodeWriter codeWriter)
+        {
+            var comment = Comment?.Summary ?? "";
+            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
+            codeWriter.Emit($"/// {HttpUtility.HtmlEncode(comment)}{codeWriter.NewLine}");
+            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            if(Comment?.ExternalDoc != null)
+            {
+                codeWriter.Emit($"/// <a href=\"{Comment.ExternalDoc.Url}\">{Comment.ExternalDoc.Description}</a>{codeWriter.NewLine}");
+            }
         }
 
     }

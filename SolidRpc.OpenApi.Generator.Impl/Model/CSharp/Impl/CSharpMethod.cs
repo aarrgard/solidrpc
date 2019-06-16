@@ -32,9 +32,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
         public override void WriteCode(ICodeWriter codeWriter)
         {
             var parameters = Members.OfType<ICSharpMethodParameter>().ToList();
-            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
-            codeWriter.Emit($"/// {Comment?.Summary}{codeWriter.NewLine}");
-            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            WriteSummary(codeWriter);
             parameters.ForEach(p =>
             {
                 codeWriter.Emit($"/// <param name=\"{p.Name}\">{p.Comment?.Summary}</param>{codeWriter.NewLine}");
@@ -53,6 +51,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
             }
             codeWriter.Emit($");{codeWriter.NewLine}");
         }
+
         public override void GetNamespaces(ICollection<string> namespaces)
         {
             namespaces.Add(ReturnType.Namespace.FullName);

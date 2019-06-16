@@ -1,4 +1,4 @@
-﻿using SolidRpc.OpenApi.Generator.Code.Binder;
+﻿using SolidRpc.OpenApi.Generator.Impl.Code.Binder;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Generator.Types;
@@ -46,20 +46,20 @@ namespace SolidRpc.OpenApi.Generator
                     settings.CodeNamespace,
                     settings.ServiceNamespace,
                     InterfaceNameMapper(tag.Name));
-                return new Code.Binder.CSharpMethod()
+                return new Impl.Code.Binder.CSharpMethod()
                 {
                     ReturnType = DefinitionMapper(settings, operation.ReturnType),
                     InterfaceName = className,
                     MethodName = MethodNameMapper(operation.OperationId),
-                    Parameters = operation.Parameters.Select(o => new Code.Binder.CSharpMethodParameter()
+                    Parameters = operation.Parameters.Select(o => new Impl.Code.Binder.CSharpMethodParameter()
                     {
                         Name = o.Name,
                         ParameterType = DefinitionMapper(settings, o.ParameterType),
                         Optional = !o.Required,
                         Description = o.Description
                     }).ToList(),
-                    ClassSummary = tag.Description,
-                    MethodSummary = $"{operation.OperationSummary} {operation.OperationDescription}".Trim()
+                    ClassSummary = MapDescription(tag.Description),
+                    MethodSummary = MapDescription(operation.OperationDescription)
                 };
             };
             DefinitionMapper = (settings, swaggerDef) =>
@@ -84,7 +84,7 @@ namespace SolidRpc.OpenApi.Generator
                         ClassNameMapper(className));
                 }
                 var csObj = new CSharpObject(className);
-                csObj.Properties = swaggerDef.Properties.Select(o => new Code.Binder.CSharpProperty()
+                csObj.Properties = swaggerDef.Properties.Select(o => new Impl.Code.Binder.CSharpProperty()
                 {
                     PropertyName = PropertyNameMapper(o.Name),
                     PropertyType = DefinitionMapper(settings, o.Type),
@@ -99,12 +99,27 @@ namespace SolidRpc.OpenApi.Generator
             PropertyNameMapper = CapitalizeFirstChar;
         }
 
+        private CSharpDescription MapDescription(SwaggerDescription description)
+        {
+            if(string.IsNullOrEmpty(description?.Description) &&
+                string.IsNullOrEmpty(description?.ExternalUri))
+            {
+                return null;
+            }
+            return new CSharpDescription()
+            {
+                ExternalDescription = description.ExternalDescription,
+                ExternalUri = description.ExternalUri,
+                Summary = description.Description
+            };
+        }
+
         public SettingsCodeGen CodeSettings { get; }
 
         /// <summary>
         /// Method to map from a swagger operation to a C# method
         /// </summary>
-        public Func<SettingsCodeGen, SwaggerOperation, Code.Binder.CSharpMethod> OperationMapper { get; set; }
+        public Func<SettingsCodeGen, SwaggerOperation, Impl.Code.Binder.CSharpMethod> OperationMapper { get; set; }
 
         /// <summary>
         /// Method to map from a swagger object to a c# object.

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -48,7 +49,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                CreateCode(subDir, false);
+                CreateCode(subDir, true);
             }
         }
 
@@ -59,12 +60,19 @@ namespace SolidRpc.Tests.Swagger
             {
                 Assert.Fail("Cannot find json file in folder:" + dir.FullName);
             }
-            Program.MainWithExeptions(new[] {
+            try
+            {
+                Program.MainWithExeptions(new[] {
                 "-openapi2code",
                 "-d", dir.FullName,
                 "-only-compare", onlyCompare.ToString(),
                 "-ProjectNamespace", $"{GetType().Assembly.GetName().Name}.Swagger.CodeGen.{dir.Name}",
                 openApiFiles[0].Name }).Wait();
-        }
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
+       }
     }
 }

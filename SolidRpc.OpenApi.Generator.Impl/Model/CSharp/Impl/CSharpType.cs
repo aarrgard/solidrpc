@@ -42,9 +42,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
             }
             var structType = (this is CSharpInterface) ? "interface" : "class";
 
-            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
-            codeWriter.Emit($"/// {Comment?.Summary}{codeWriter.NewLine}");
-            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            WriteSummary(codeWriter);
             codeWriter.Emit($"public {structType} {Name}");
             if(Members.OfType<ICSharpTypeExtends>().Any())
             {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SolidRpc.OpenApi.Generator.Code.Binder
+namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
     public class SwaggerOperation
     {
@@ -26,11 +26,6 @@ namespace SolidRpc.OpenApi.Generator.Code.Binder
         /// <summary>
         /// The description
         /// </summary>
-        public string OperationDescription { get; set; }
-
-        /// <summary>
-        /// The summary
-        /// </summary>
-        public string OperationSummary { get; set; }
+        public SwaggerDescription OperationDescription { get; set; }
     }
 }

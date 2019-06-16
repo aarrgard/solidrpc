@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Find purchase order by ID For valid response try integer IDs with value >= 1 and <= 10.\ \ Other values will generated exceptions
+        /// Find purchase order by ID For valid response try integer IDs with value &gt;= 1 and &lt;= 10.\ \ Other values will generated exceptions
         /// </summary>
         /// <param name="orderId">ID of pet that needs to be fetched</param>
         /// <param name="cancellationToken"></param>

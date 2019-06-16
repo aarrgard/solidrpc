@@ -1,4 +1,4 @@
-﻿namespace SolidRpc.OpenApi.Generator.Code.Binder
+﻿namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
     /// <summary>
     /// Represents a property in an object definied in swagger

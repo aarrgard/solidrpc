@@ -1,4 +1,4 @@
-﻿namespace SolidRpc.OpenApi.Generator.Code.Binder
+﻿namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
     /// <summary>
     /// Represents a swagger tag
@@ -13,6 +13,6 @@
         /// <summary>
         /// The tag description.
         /// </summary>
-        public string Description { get; set; }
+        public SwaggerDescription Description { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.OpenApi.Generator.Code.Binder
+namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
     /// <summary>
     /// Represents a CSharp method
@@ -33,11 +33,11 @@ namespace SolidRpc.OpenApi.Generator.Code.Binder
         /// <summary>
         /// The summary to use for the class.
         /// </summary>
-        public string ClassSummary { get; set; }
+        public CSharpDescription ClassSummary { get; set; }
 
         /// <summary>
         /// The summary for the method
         /// </summary>
-        public string MethodSummary { get; set; }
+        public CSharpDescription MethodSummary { get; set; }
     }
 }

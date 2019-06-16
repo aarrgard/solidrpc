@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace SolidRpc.OpenApi.Generator.Code.Binder
+namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
     /// <summary>
     /// Represents a c# object.

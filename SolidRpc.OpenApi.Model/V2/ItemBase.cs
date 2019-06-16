@@ -12,6 +12,7 @@ namespace SolidRpc.OpenApi.Model.V2
     public class ItemBase : ModelBase
     {
         public ItemBase(ModelBase parent) : base(parent) { }
+
         [DataMember(Name = "$ref", EmitDefaultValue = false)]
         public string Ref { get; set; }
 
