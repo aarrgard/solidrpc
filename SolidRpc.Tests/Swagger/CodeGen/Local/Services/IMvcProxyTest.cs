@@ -3,8 +3,8 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using System.IO;
-using SolidRpc.Tests.Generated.Local.Types;
-namespace SolidRpc.Tests.Generated.Local.Services {
+using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
+namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
     /// <summary>
     /// 
     /// </summary>

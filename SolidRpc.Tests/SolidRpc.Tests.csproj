@@ -33,10 +33,11 @@
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator\SolidRpc.OpenApi.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
+    <ProjectReference Include="..\SolidRpc.Wire\SolidRpc.Wire.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Generated\Local\Types\" />
+    <Folder Include="Swagger\CodeGen\Local\" />
     <Folder Include="Swagger\SpecGen\" />
   </ItemGroup>
   

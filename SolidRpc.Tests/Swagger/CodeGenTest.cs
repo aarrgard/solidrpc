@@ -1,22 +1,40 @@
 ﻿using NUnit.Framework;
-using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.DotNetTool;
-using SolidRpc.OpenApi.Model;
-using SolidRpc.OpenApi.Model.V2;
-using SolidRpc.Test.Petstore.Services;
-using SolidRpc.Test.Petstore.Types;
-using System;
 using System.IO;
-using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger
 {
     /// <summary>
     /// Tests swagger functionality.
     /// </summary>
-    public class CodeGenTest : TestBase
+    public class CodeGenTest : WebHostMvcTest
     {
+        /// <summary>
+        /// Tests generating code from a swagger file
+        /// </summary>
+        [Test]
+        public async Task TestCodeGenLocal()
+        {
+            string swaggerSpec;
+            using (var ctx = CreateTestHostContext())
+            {
+                var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
+                swaggerSpec = await AssertOk(resp);
+           }
+
+            var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
+            path = Path.Combine(path, "Swagger");
+            path = Path.Combine(path, "CodeGen");
+            path = Path.Combine(path, "Local");
+            path = Path.Combine(path, "swagger.json");
+            var fi = new FileInfo(path);
+            using (var tw = fi.CreateText())
+            {
+                await tw.WriteAsync(swaggerSpec);
+            }           
+        }
+
         /// <summary>
         /// Tests generating code from a swagger file
         /// </summary>
@@ -30,7 +48,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                CreateCode(subDir, true);
+                CreateCode(subDir, false);
             }
         }
 

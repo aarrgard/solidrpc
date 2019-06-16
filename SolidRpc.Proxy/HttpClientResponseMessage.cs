@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace SolidRpc.Proxy
 {
+    /// <summary>
+    /// Implements the logic that the binder uses to bind response data.
+    /// </summary>
     public class HttpClientResponseMessage : IHttpResponse
     {
         public HttpClientResponseMessage(HttpResponseMessage httpClientResponse)

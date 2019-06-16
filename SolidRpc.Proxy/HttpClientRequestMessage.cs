@@ -10,6 +10,9 @@ using System.Web;
 
 namespace SolidRpc.Proxy
 {
+    /// <summary>
+    /// Implements the logic that the binder uses to bind request data.
+    /// </summary>
     public class HttpClientRequestMessage : IHttpRequest
     {
         private string _host;

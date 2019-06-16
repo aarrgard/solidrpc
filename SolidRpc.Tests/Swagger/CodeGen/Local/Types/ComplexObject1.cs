@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-namespace SolidRpc.Tests.Generated.Local.Types {
+namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
     /// <summary>
     /// 
     /// </summary>
@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Generated.Local.Types {
         /// <summary>
         /// The children
         /// </summary>
-        public IEnumerable<SolidRpc.Tests.Generated.Local.Types.ComplexObject1> Children { get; set; }
+        public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Local.Types.ComplexObject1> Children { get; set; }
     
     }
 }

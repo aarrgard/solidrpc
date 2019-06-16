@@ -13,8 +13,8 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Proxy;
-using SolidRpc.Tests.Generated.Local.Services;
-using SolidRpc.Tests.Generated.Local.Types;
+using SolidRpc.Tests.Swagger.CodeGen.Local.Services;
+using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
 
 namespace SolidRpc.Tests.MvcProxyTest
 {
