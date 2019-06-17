@@ -40,7 +40,7 @@ namespace SolidRpc.OpenApi.Binder
                     return (_, __) => new HttpRequestData[] { subBinder(_, __) };
                 case "multi":
                     var binder = CreateEnumBinder(contentType, name, parameterType);
-                    return (_, __) => binder(_);
+                    return (_, __) => binder(_, __);
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
@@ -58,7 +58,7 @@ namespace SolidRpc.OpenApi.Binder
             return type.GetInterfaces().Select(o => GetEnumType(o)).Where(o => o != null).FirstOrDefault();
         }
 
-        private static Func<object, IEnumerable<HttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
         {
             var enumType = GetEnumType(type);
             var m = typeof(HttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
@@ -66,7 +66,7 @@ namespace SolidRpc.OpenApi.Binder
                     .Where(o => o.GetParameters().Length == 2)
                     .Where(o => o.IsGenericMethod)
                     .Single();
-            return (Func<object, IEnumerable<HttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+            return (Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
         }
 
         private static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
@@ -170,9 +170,10 @@ namespace SolidRpc.OpenApi.Binder
         /// <returns></returns>
         public T As<T>()
         {
-            switch(ContentType)
+            switch(ContentType?.ToLower())
             {
                 case "text/plain":
+                case "application/octet-stream":
                     switch (typeof(T).FullName)
                     {
                         case SystemIOStream:

@@ -19,24 +19,7 @@ namespace SolidRpc.Tests
         /// <param name="app"></param>
         public override void Configure(IApplicationBuilder app)
         {
-            app.UseDeveloperExceptionPage();
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => {
-                    swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new string[] { httpReq.Scheme };
-                });
-            });
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
-
+            base.Configure(app);
             app.UseMvcWithDefaultRoute();
         }
 
@@ -68,7 +51,7 @@ namespace SolidRpc.Tests
                 c.IncludeXmlComments(xmlPath);
             });
 
-            return services.BuildServiceProvider();
+            return base.ConfigureServerServices(services);
         }
     }
 }

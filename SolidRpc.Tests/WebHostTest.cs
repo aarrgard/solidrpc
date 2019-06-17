@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -33,15 +34,9 @@ namespace SolidRpc.Tests
             /// <param name="webHostTest"></param>
             public TestHostContext(WebHostTest webHostTest)
             {
-                WebHost = webHostTest.GetWebHost();
+                WebHostTest = webHostTest;
                 HttpClient = new HttpClient();
-                WebHost.StartAsync().Wait();
-
-                var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
-                foreach (var addr in feature.Addresses)
-                {
-                    BaseAddress = new Uri(addr);
-                }
+                StartAsync().Wait();
 
                 var sc = new ServiceCollection();
                 webHostTest.ConfigureClientServices(sc);
@@ -49,9 +44,14 @@ namespace SolidRpc.Tests
             }
 
             /// <summary>
+            /// The web host test
+            /// </summary>
+            public WebHostTest WebHostTest { get; }
+
+            /// <summary>
             /// The constructed host
             /// </summary>
-            public IWebHost WebHost { get; }
+            public IWebHost WebHost { get; private set; }
 
             /// <summary>
             /// The Http client
@@ -61,13 +61,29 @@ namespace SolidRpc.Tests
             /// <summary>
             /// The test base address
             /// </summary>
-            public Uri BaseAddress { get; }
+            public Uri BaseAddress { get; private set; }
 
             /// <summary>
             /// The service provider for the test context.
             /// </summary>
             public ServiceProvider ServiceProvider { get; }
 
+            /// <summary>
+            /// Starts the conted
+            /// </summary>
+            /// <returns></returns>
+            public async Task StartAsync()
+            {
+                WebHost = WebHostTest.GetWebHost();
+                await WebHost.StartAsync();
+
+                var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
+                foreach (var addr in feature.Addresses)
+                {
+                    BaseAddress = new Uri(addr);
+                }
+
+            }
 
             /// <summary>
             /// Disposes the context - stops the host.
@@ -86,6 +102,11 @@ namespace SolidRpc.Tests
             public Task<HttpResponseMessage> GetResponse(string requestUri)
             {
                 return GetResponse<object>(requestUri);
+            }
+
+            public void CreateServerProxy<T>(Expression<Action<T>> expression)
+            {
+                throw new NotImplementedException();
             }
 
             /// <summary>
@@ -215,7 +236,12 @@ namespace SolidRpc.Tests
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public abstract IServiceProvider ConfigureServerServices(IServiceCollection services);
+        public virtual IServiceProvider ConfigureServerServices(IServiceCollection services)
+        {
+            services.GetSolidConfigurationBuilder();
+
+            return services.BuildServiceProvider();
+        }
 
         /// <summary>
         /// Configures the services hosted on the client
@@ -231,6 +257,27 @@ namespace SolidRpc.Tests
         /// Configures the applicatio 
         /// </summary>
         /// <param name="app"></param>
-        public abstract void Configure(IApplicationBuilder app);
+        public virtual void Configure(IApplicationBuilder app)
+        {
+            app.UseDeveloperExceptionPage();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => {
+                    swaggerDoc.Host = httpReq.Host.Value;
+                    swaggerDoc.Schemes = new string[] { httpReq.Scheme };
+                });
+            });
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseSolidRpcProxies();
+        }
     }
 }

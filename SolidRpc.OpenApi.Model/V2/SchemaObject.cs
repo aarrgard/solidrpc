@@ -47,6 +47,7 @@ namespace SolidRpc.OpenApi.Model.V2
         public bool IsFileType()
         {
             var schema = GetRefSchema() ?? this;
+            if (schema.Properties == null) return false;
             var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
             return TypeExtensions.IsFileType(GetClrType().FullName, props);
         }

@@ -7,6 +7,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger.SpecGen
 {
@@ -83,9 +85,13 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         [Test]
         public void TestFileUpload1()
         {
-            var folder = GetSpecGenFolder(MethodBase.GetCurrentMethod());
-            var proxy = CreateProxy<FileUpload1.Services.IFileUpload>(folder);
-            proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
+            using (var ctx = CreateTestHostContext())
+            {
+                var folder = GetSpecGenFolder(MethodBase.GetCurrentMethod());
+                var proxy = CreateProxy<FileUpload1.Services.IFileUpload>(folder);
+                ctx.CreateServerProxy<FileUpload1.Services.IFileUpload>(o => o.UploadFile(null, null, null, CancellationToken.None));
+                proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
+            }
         }
 
         private T CreateProxy<T>(DirectoryInfo folder) where T:class

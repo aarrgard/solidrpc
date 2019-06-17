@@ -18,5 +18,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload1.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task UploadFile(Stream fileStream, string fileName, string contentType, CancellationToken cancellationToken = default(CancellationToken));
+        Task UploadFile(object p1, object p2, object p3, object none);
     }
 }

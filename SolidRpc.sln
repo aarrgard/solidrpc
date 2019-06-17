@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.Generator.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Wire", "SolidRpc.Wire\SolidRpc.Wire.csproj", "{3AEC999B-C7D5-475B-8DD2-11F87FD5111C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.AspNetCore", "SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj", "{B52F634A-5F35-4F72-943D-5B0CB0B68DA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{3AEC999B-C7D5-475B-8DD2-11F87FD5111C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AEC999B-C7D5-475B-8DD2-11F87FD5111C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AEC999B-C7D5-475B-8DD2-11F87FD5111C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B52F634A-5F35-4F72-943D-5B0CB0B68DA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B52F634A-5F35-4F72-943D-5B0CB0B68DA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B52F634A-5F35-4F72-943D-5B0CB0B68DA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B52F634A-5F35-4F72-943D-5B0CB0B68DA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{011EDD2B-765B-4612-92CB-B7D2B9362FB6} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{DE8D7A50-D30D-413C-BB12-571C5C6264DD} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{3AEC999B-C7D5-475B-8DD2-11F87FD5111C} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{B52F634A-5F35-4F72-943D-5B0CB0B68DA2} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}
