@@ -30,17 +30,17 @@ namespace SolidRpc.OpenApi.Binder
         
         public static readonly IEnumerable<HttpRequestData> EmptyArray = new HttpRequestData[0];
 
-        public static Func<object, IEnumerable<HttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
+        public static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
         {
-            Func<object, HttpRequestData> subBinder;
+            Func<IEnumerable<HttpRequestData>, object, HttpRequestData> subBinder;
             switch(collectionFormat)
             {
                 case null:
                     subBinder = CreateBinder(contentType, name, parameterType);
-                    return _ => new HttpRequestData[] { subBinder(_) };
+                    return (_, __) => new HttpRequestData[] { subBinder(_, __) };
                 case "multi":
                     var binder = CreateEnumBinder(contentType, name, parameterType);
-                    return _ => binder(_);
+                    return (_, __) => binder(_);
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
@@ -69,22 +69,22 @@ namespace SolidRpc.OpenApi.Binder
             return (Func<object, IEnumerable<HttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
         }
 
-        private static Func<object, IEnumerable<HttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
+        private static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
         {
             var subBinder = CreateBinder(contentType, name, typeof(T));
-            return _ => ((IEnumerable<T>)_).Select(o => subBinder(o));
+            return (_,__) => ((IEnumerable<T>)__).Select(o => subBinder(_, o));
         }
 
-        private static Func<object, HttpRequestData> CreateBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<HttpRequestData>, object, HttpRequestData> CreateBinder(string contentType, string name, Type type)
         {
             if(type?.FullName == SystemIOStream)
             {
                 contentType = contentType ?? "application/octet-stream";
-                return (_) =>
+                return (_, val) =>
                 {
-                    var ms = new MemoryStream();
-                    ((Stream)_).CopyTo(ms);
-                    return new HttpRequestDataBinary(contentType, name, ms.ToArray());
+                    var retVal = new HttpRequestDataBinary(contentType, "temp", null);
+                    retVal.SetBinaryData(name, (Stream)val);
+                    return retVal; ;
                 };
             }
             contentType = contentType ?? "application/json";
@@ -95,30 +95,30 @@ namespace SolidRpc.OpenApi.Binder
                     {
                         case null:
                         case SystemThreadingCancellationToken:
-                            return (_) => null;
+                            return (_, val) => null;
                         case SystemBoolean:
-                            return (_) => new HttpRequestDataString(contentType, name, ((bool)_) ? "true" : "false");
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((bool)val) ? "true" : "false");
                         case SystemDouble:
-                            return (_) => new HttpRequestDataString(contentType, name, ((double)_).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((double)val).ToString(CultureInfo.InvariantCulture));
                         case SystemSingle:
-                            return (_) => new HttpRequestDataString(contentType, name, ((float)_).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((float)val).ToString(CultureInfo.InvariantCulture));
                         case SystemInt16:
-                            return (_) => new HttpRequestDataString(contentType, name, ((short)_).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((short)val).ToString(CultureInfo.InvariantCulture));
                         case SystemInt32:
-                            return (_) => new HttpRequestDataString(contentType, name, ((int)_).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((int)val).ToString(CultureInfo.InvariantCulture));
                         case SystemInt64:
-                            return (_) => new HttpRequestDataString(contentType, name, ((long)_).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((long)val).ToString(CultureInfo.InvariantCulture));
                         case SystemGuid:
-                            return (_) => new HttpRequestDataString(contentType, name, ((Guid)_).ToString());
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((Guid)val).ToString());
                         case SystemDateTime:
-                            return (_) => new HttpRequestDataString(contentType, name, ((DateTime)_).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+                            return (_, val) => new HttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
                         case SystemString:
-                            return (_) => new HttpRequestDataString(contentType, name, (string)_);
+                            return (_, val) => new HttpRequestDataString(contentType, name, (string)val);
                         default:
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    return (_) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(_));
+                    return (_, val) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(val));
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }
@@ -137,12 +137,12 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// The content type
         /// </summary>
-        public string ContentType { get; }
+        public string ContentType { get; protected set; }
 
         /// <summary>
         /// The name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; protected set; }
 
         protected Encoding GetEncoding(Encoding encoding)
         {

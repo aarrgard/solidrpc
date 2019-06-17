@@ -110,12 +110,21 @@ namespace SolidRpc.OpenApi.Generator.V2
                         SetItemProps(po, true, o.ParameterType);
                     }
                 });
-            operationObject.Responses = CreateResponses(operationObject, method);
+
+            //
+            // if body only contains one parameter - move it to the root level.
+            //
+            var bodyParameter = operationObject.Parameters.FirstOrDefault(o => o.Name == "body");
+            if (bodyParameter != null && bodyParameter.Schema.Properties.Count == 1)
+            {
+                bodyParameter.Name = bodyParameter.Schema.Properties.First().Key;
+                bodyParameter.Schema = bodyParameter.Schema.Properties.First().Value;
+            }
 
             //
             // Handle file parameters
             //
-            if(operationObject.Parameters.Any(o => o.Type == "file"))
+            if (operationObject.Parameters.Any(o => o.Type == "file"))
             {
                 operationObject.Parameters.Where(o => o.Type == "file").ToList().ForEach(o => o.In = "formData");
                 // remove the content-type and filename parameters
@@ -124,6 +133,14 @@ namespace SolidRpc.OpenApi.Generator.V2
                     .Where(o => !o.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
             }
+            foreach(var fileType in operationObject.Parameters.Where(o => o.IsFileType()))
+            {
+                fileType.In = "formData";
+                fileType.Type = "file";
+                fileType.Schema = null;
+            }
+
+            operationObject.Responses = CreateResponses(operationObject, method);
 
             //
             // set the consumes and produces based on parameters and responses

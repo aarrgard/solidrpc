@@ -26,6 +26,27 @@ namespace SolidRpc.OpenApi.Binder.V2
                         Name = parameterInfo.Name
                     };
                 }
+                if(operationObject.Parameters.Any(o => o.IsFileType()))
+                {
+                    if (parameterInfo.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return new ParameterObject(operationObject)
+                        {
+                            Type = "file",
+                            In = "formData",
+                            Name = parameterInfo.Name
+                        };
+                    }
+                    if (parameterInfo.Name.Equals("contenttype", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return new ParameterObject(operationObject)
+                        {
+                            Type = "file",
+                            In = "formData",
+                            Name = parameterInfo.Name
+                        };
+                    }
+                }
                 throw new Exception($"Cannot find parameter {parameterInfo.Name} among parameters({string.Join(",",parameters.Select(o => o.Name))}).");
             }
             return parameter;

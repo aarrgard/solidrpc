@@ -61,6 +61,17 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return true;
             }
+            if(parameters.Any(o => o.IsFileType()))
+            {
+                if (parameter.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return true;
+                }
+                if (parameter.Name.Equals("contenttype", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }

@@ -386,7 +386,7 @@ namespace SolidRpc.Tests.MvcProxyTest
         private async Task<T> CreateServiceProxy<T>(TestHostContext ctx) where T:class
         {
             var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
-            var swaggerConfiguration = await AssertOk(resp);
+            var openApiConfiguration = await AssertOk(resp);
 
             var sc = new ServiceCollection();
             sc.AddLogging(ConfigureLogging);
@@ -395,7 +395,7 @@ namespace SolidRpc.Tests.MvcProxyTest
                 .SetGenerator<SolidProxyCastleGenerator>()
                 .ConfigureInterface<T>()
                 .ConfigureAdvice<ISolidRpcProxyConfig>();
-            proxyConf.SwaggerConfiguration = swaggerConfiguration;
+            proxyConf.OpenApiConfiguration = openApiConfiguration;
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));

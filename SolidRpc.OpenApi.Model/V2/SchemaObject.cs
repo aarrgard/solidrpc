@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -38,5 +39,37 @@ namespace SolidRpc.OpenApi.Model.V2
 
         [DataMember(Name = "required", EmitDefaultValue = false)]
         public IEnumerable<string> Required { get; set; }
+
+        /// <summary>
+        /// Returns true if this type is a file type
+        /// </summary>
+        /// <returns></returns>
+        public bool IsFileType()
+        {
+            var schema = GetRefSchema() ?? this;
+            var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
+            return TypeExtensions.IsFileType(GetClrType().FullName, props);
+        }
+
+        /// <summary>
+        /// Returns the clr type for this schema object.
+        /// </summary>
+        /// <returns></returns>
+        private Type GetClrType()
+        {
+            switch(Type)
+            {
+                case "string":
+                    switch(Format)
+                    {
+                        case "binary":
+                            return typeof(Stream);
+                        default:
+                            return typeof(string);
+                    }
+                default:
+                    return typeof(object);
+            }
+        }
     }
 }

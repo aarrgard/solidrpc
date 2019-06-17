@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Tests.Swagger
+namespace SolidRpc.Tests.Swagger.CodeGen
 {
     /// <summary>
     /// Tests swagger functionality.

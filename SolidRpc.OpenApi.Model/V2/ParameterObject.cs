@@ -38,5 +38,16 @@ namespace SolidRpc.OpenApi.Model.V2
         /// </summary>
         [DataMember(Name = "schema", EmitDefaultValue = false)]
         public SchemaObject Schema { get; set; }
+
+        /// <summary>
+        /// Returns true if this parameter is a file type
+        /// </summary>
+        /// <returns></returns>
+        public bool IsFileType()
+        {
+            if (Type == "file") return true;
+            if (Schema == null) return false;
+            return Schema.IsFileType(); 
+        }
     }
 }

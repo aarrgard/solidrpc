@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace SolidRpc.OpenApi.Binder
@@ -22,7 +23,12 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// The binary data.
         /// </summary>
-        public byte[] BinaryData { get; }
+        public byte[] BinaryData { get; private set; }
+
+        /// <summary>
+        /// The filename for this binary data.
+        /// </summary>
+        public string Filename { get; private set; }
 
         public override Stream GetBinaryValue(Encoding encoding = null)
         {
@@ -32,6 +38,37 @@ namespace SolidRpc.OpenApi.Binder
         public override string GetStringValue(Encoding encoding)
         {
             return GetEncoding(encoding).GetString(BinaryData, 0, BinaryData.Length);
+        }
+
+        /// <summary>
+        /// Sets the content type.
+        /// </summary>
+        /// <param name="contentType"></param>
+        public void SetContentType(string contentType)
+        {
+            ContentType = contentType;
+        }
+
+        /// <summary>
+        /// Sets the filename
+        /// </summary>
+        /// <param name="filename"></param>
+        public void SetFilename(string filename)
+        {
+            Filename = filename;
+        }
+
+        /// <summary>
+        /// Sets the binary data.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public void SetBinaryData(string name, Stream value)
+        {
+            Name = name;
+            var ms = new MemoryStream();
+            value.CopyTo(ms);
+            BinaryData = ms.ToArray();
         }
     }
 }

@@ -13,12 +13,12 @@ namespace SolidRpc.Proxy
 
         public void Configure(ISolidRpcProxyConfig config)
         {
-            if(config.SwaggerConfiguration == null)
+            if(config.OpenApiConfiguration == null)
             {
                 throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject)}.");
             }
             // use the swagger binder to setup the invocation
-            var swaggerConf = OpenApiParser.ParseSwaggerSpec(config.SwaggerConfiguration);
+            var swaggerConf = OpenApiParser.ParseSwaggerSpec(config.OpenApiConfiguration);
             if(swaggerConf == null)
             {
                 throw new Exception($"Cannot parse swagger configuration({config}).");

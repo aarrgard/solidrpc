@@ -8,8 +8,8 @@ namespace SolidRpc.Proxy
     public interface ISolidRpcProxyConfig : ISolidProxyInvocationAdviceConfig
     {
         /// <summary>
-        /// Sets the swagger configuration to use.
+        /// Sets the open api configuration to use.
         /// </summary>
-        string SwaggerConfiguration { get; set; }
+        string OpenApiConfiguration { get; set; }
     }
 }

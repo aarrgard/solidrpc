@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using SolidRpc.OpenApi.Model.V2;
@@ -25,7 +26,42 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
 
             var collectionFormat = ParameterObject.Type == "array" ? ParameterObject.CollectionFormat ?? "csv" : null;
-            HttpRequestDataBinder = HttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
+
+            if (ParameterObject.IsFileType())
+            {
+                HttpRequestDataBinder = (_, __) => SetFileData(ParameterObject.Name, _, __);
+            }
+            else
+            {
+                HttpRequestDataBinder = HttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
+            }
+        }
+
+        private IEnumerable<HttpRequestData> SetFileData(string name, IEnumerable<HttpRequestData> formData, object value)
+        {
+            var latest = GetLatestBinaryData(formData);
+            switch (name.ToLower())
+            {
+                case "contenttype":
+                    latest.SetContentType((string)value);
+                    return new[] { latest };
+                case "filename":
+                    latest.SetFilename((string)value);
+                    return new[] { latest };
+                default:
+                    latest.SetBinaryData(name, (Stream)value);
+                    return new[] { latest };
+            }
+        }
+
+        private HttpRequestDataBinary GetLatestBinaryData(IEnumerable<HttpRequestData> formData)
+        {
+            var latest = formData.OfType<HttpRequestDataBinary>().LastOrDefault();
+            if(latest == null)
+            {
+                latest = new HttpRequestDataBinary("application/octet-stream", "temp", null);
+            }
+            return latest;
         }
 
         private IEnumerable<string> CreatePath()
@@ -68,7 +104,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public IEnumerable<string> ArgumentPath { get; }
 
-        public Func<object, IEnumerable<HttpRequestData>> HttpRequestDataBinder { get; }
+        public Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> HttpRequestDataBinder { get; }
 
         public void BindArgument(IHttpRequest request, object val)
         {
@@ -80,13 +116,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (typeof(IEnumerable<HttpRequestData>).IsAssignableFrom(type))
             {
                 var lst = ((IEnumerable<HttpRequestData>)existingValue).ToList();
-                var requestData = HttpRequestDataBinder(value);
-                lst.AddRange(requestData);
+                var requestData = HttpRequestDataBinder(lst, value);
+                lst.AddRange(requestData.Where(o => !lst.Contains(o)));
                 return lst;
             }
             if (typeof(HttpRequestData).IsAssignableFrom(type))
             {
-                return HttpRequestDataBinder(value).Single();
+                return HttpRequestDataBinder(HttpRequestData.EmptyArray, value).Single();
             }
 
             // if we have reach end of path - return value
@@ -102,7 +138,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (typeof(string).IsAssignableFrom(type))
             {
                 var str = (string) existingValue;
-                var requestData = HttpRequestDataBinder(value);
+                var requestData = HttpRequestDataBinder(HttpRequestData.EmptyArray, value);
                 var strVals = requestData.Select(o => o.GetStringValue());
                 str = str.Replace($"{{{pathElement}}}", string.Join("", strVals));
                 return str;

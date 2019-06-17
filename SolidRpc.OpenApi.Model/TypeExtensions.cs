@@ -12,7 +12,7 @@ namespace SolidRpc.OpenApi.Model
     /// </summary>
     public static class TypeExtensions
     {
-        private static FileTypeHelper s_NotFileType = new FileTypeHelper(false, null, null, null, null,null,null);
+        private static readonly FileTypeHelper s_NotFileType = new FileTypeHelper(false, null, null, null, null,null,null);
 
         /// <summary>
         /// Contains information about a file type
