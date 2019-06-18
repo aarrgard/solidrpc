@@ -5,13 +5,13 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Proxy
+namespace SolidRpc.OpenApi.AspNetCore
 {
-    public class SolidRpcProxyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
+    public class SolidRpcAspNetCoreAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
         public IMethodInfo MethodInfo { get; private set; }
 
-        public void Configure(ISolidRpcProxyConfig config)
+        public void Configure(ISolidRpcAspNetCoreConfig config)
         {
             if(config.OpenApiConfiguration == null)
             {
@@ -23,22 +23,18 @@ namespace SolidRpc.Proxy
             {
                 throw new Exception($"Cannot parse swagger configuration({config}).");
             }
-            if(config.RootAddress != null)
-            {
-                swaggerConf.SetSchemeAndHostAndPort(config.RootAddress);
-            }
             MethodInfo = swaggerConf.GetMethodBinder().GetMethodInfo(config.InvocationConfiguration.MethodInfo);
         }
 
+        /// <summary>
+        /// Handles the invocation
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="invocation"></param>
+        /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            using (var httpClient = new HttpClient())
-            {
-                var httpClientRequestMessage = new HttpClientRequestMessage();
-                MethodInfo.BindArguments(httpClientRequestMessage, invocation.Arguments);
-                var httpClientResponse = await httpClient.SendAsync(httpClientRequestMessage.HttpRequestMessage);
-                return await MethodInfo.GetResponse<TAdvice>(new HttpClientResponseMessage(httpClientResponse));
-            }
+            return default(TAdvice);
         }
     }
 }

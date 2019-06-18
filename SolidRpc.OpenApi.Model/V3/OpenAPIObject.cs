@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.V3
@@ -18,5 +19,10 @@ namespace SolidRpc.OpenApi.Model.V3
         /// </summary>
         [DataMember(Name = "swagger", IsRequired = true, EmitDefaultValue = false)]
         public string Openapi { get; set; }
+
+        public void SetSchemeAndHostAndPort(Uri rootAddress)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

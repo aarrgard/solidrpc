@@ -56,15 +56,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             }
        }
 
-        private DirectoryInfo GetSpecGenFolder(MethodBase methodBase)
-        {
-            if(!methodBase.Name.StartsWith("Test"))
-            {
-                throw new ArgumentException("Method name must start with 'Test'.");
-            }
-            return GetSpecGenFolder(methodBase.Name.Substring(4));
-        }
-
         private DirectoryInfo GetSpecGenFolder(string folderName)
         {
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
@@ -83,34 +74,49 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public void TestFileUpload1()
+        public async Task TestFileUpload1()
         {
             using (var ctx = CreateTestHostContext())
             {
-                var folder = GetSpecGenFolder(MethodBase.GetCurrentMethod());
-                var proxy = CreateProxy<FileUpload1.Services.IFileUpload>(folder);
-                ctx.CreateServerProxy<FileUpload1.Services.IFileUpload>(o => o.UploadFile(null, null, null, CancellationToken.None));
-                proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
+                var config = ReadOpenApiConfiguration(nameof(TestFileUpload1).Substring(4));
+                ctx.CreateServerInterceptor<FileUpload1.Services.IFileUpload>(
+                    o => o.UploadFile(null, null, null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(4, args.Length);
+                        Assert.AreEqual(new byte[] { 0, 1, 2, 3 }, args[0]);
+                        Assert.AreEqual("filename.txt", args[1]);
+                        Assert.AreEqual("application/pdf", args[2]);
+                        Assert.IsNotNull((CancellationToken)args[3]);
+                    });
+                await ctx.StartAsync();
+                var proxy = CreateProxy<FileUpload1.Services.IFileUpload>(ctx.BaseAddress, config);
+                await proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
             }
         }
 
-        private T CreateProxy<T>(DirectoryInfo folder) where T:class
+        private string ReadOpenApiConfiguration(string folderName)
         {
-            string openApi;
+            var folder = GetSpecGenFolder(folderName);
             var jsonFile = folder.GetFiles("*.json").Single();
             using (var sr = jsonFile.OpenText())
             {
-                openApi = sr.ReadToEnd();
+                return sr.ReadToEnd();
             }
+        }
 
+        private T CreateProxy<T>(Uri rootAddress, string openApiConfiguration) where T:class
+        {
             var sc = new ServiceCollection();
             sc.AddLogging(ConfigureLogging);
             sc.AddTransient<T, T>();
-            sc.GetSolidConfigurationBuilder()
+            var conf = sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxyCastleGenerator>()
                 .ConfigureInterface<T>()
-                .ConfigureAdvice<ISolidRpcProxyConfig>()
-                .OpenApiConfiguration = openApi;
+                .ConfigureAdvice<ISolidRpcProxyConfig>();
+            conf.OpenApiConfiguration = openApiConfiguration;
+            conf.RootAddress = rootAddress;
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));

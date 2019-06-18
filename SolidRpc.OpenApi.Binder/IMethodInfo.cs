@@ -20,6 +20,11 @@ namespace SolidRpc.OpenApi.Binder
         string OperationId { get; }
 
         /// <summary>
+        /// The path to thes method. This includes the basepath and the path element.
+        /// </summary>
+        string Path { get; }
+
+        /// <summary>
         /// All the arguments.
         /// </summary>
         IEnumerable<IMethodArgument> Arguments { get; }
@@ -31,6 +36,13 @@ namespace SolidRpc.OpenApi.Binder
         /// <param name="request"></param>
         /// <param name="args"></param>
         void BindArguments(IHttpRequest request, object[] args);
+
+        /// <summary>
+        /// Extracts the arguments from supplied request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        object[] ExtractArguments(IHttpRequest request);
 
         /// <summary>
         /// Returns the respone.

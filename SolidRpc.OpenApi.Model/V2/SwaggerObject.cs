@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.V2
@@ -101,5 +102,18 @@ namespace SolidRpc.OpenApi.Model.V2
         [DataMember(Name = "externalDocs", EmitDefaultValue = false)]
         public ExternalDocumentationObject ExternalDocs { get; set; }
 
+        /// <summary>
+        /// Updates the host and port so that it reflects the supplied address
+        /// </summary>
+        /// <param name="rootAddress"></param>
+        public void SetSchemeAndHostAndPort(Uri rootAddress)
+        {
+            Schemes = new[] { rootAddress.Scheme };
+            Host = rootAddress.Host;
+            if(!rootAddress.IsDefaultPort)
+            {
+                Host = $"{Host}:{rootAddress.Port}";
+            }
+        }
     }
 }

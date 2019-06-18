@@ -133,5 +133,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
             }
         }
+
+        public object[] ExtractArguments(IHttpRequest request)
+        {
+            return new object[0];
+        }
     }
 }

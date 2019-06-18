@@ -7,6 +7,7 @@ namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
     /// Everything about your Pets
     /// </summary>
+    /// <a href="http://swagger.io/">Find out more</a>
     public interface IPet {
         /// <summary>
         /// Add a new pet to the store

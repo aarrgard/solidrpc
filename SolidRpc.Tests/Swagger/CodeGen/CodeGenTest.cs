@@ -18,7 +18,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         public async Task TestCodeGenLocal()
         {
             string swaggerSpec;
-            using (var ctx = CreateTestHostContext())
+            using (var ctx = await StartTestHostContextAsync())
             {
                 var resp = await ctx.GetResponse("/swagger/v1/swagger.json");
                 swaggerSpec = await AssertOk(resp);

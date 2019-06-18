@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using SolidProxy.GeneratorCastle;
+using SolidRpc.OpenApi.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,13 +23,49 @@ namespace SolidRpc.Tests
     /// <summary>
     /// Represents a test that sets up a webhost.
     /// </summary>
-    public abstract class WebHostTest : TestBase, IStartup
+    public abstract class WebHostTest : TestBase
     {
+        /// <summary>
+        /// A service interceptor
+        /// </summary>
+        public class ServiceInterceptor
+        {
+            /// <summary>
+            /// Constructs a new instance
+            /// </summary>
+            /// <param name="methodInfo"></param>
+            /// <param name="openApiConfiguration"></param>
+            /// <param name="callback"></param>
+            public ServiceInterceptor(MethodInfo methodInfo, string openApiConfiguration, Action<object[]> callback)
+            {
+                MethodInfo = methodInfo;
+                Callback = callback;
+                OpenApiConfiguration = openApiConfiguration;
+            }
+
+            /// <summary>
+            /// The method we are intercepting
+            /// </summary>
+            public MethodInfo MethodInfo { get; }
+
+            /// <summary>
+            /// The callback
+            /// </summary>
+            public Action<object[]> Callback { get; }
+
+            /// <summary>
+            /// The open api configuration to use when binding the method.
+            /// </summary>
+            public string OpenApiConfiguration { get;  }
+        }
+
         /// <summary>
         /// Represents a web host context
         /// </summary>
-        public class TestHostContext : IDisposable
+        public class TestHostContext : IStartup, IDisposable
         {
+            private IServiceProvider _serviceProvider;
+
             /// <summary>
             /// Constructor
             /// </summary>
@@ -36,12 +74,13 @@ namespace SolidRpc.Tests
             {
                 WebHostTest = webHostTest;
                 HttpClient = new HttpClient();
-                StartAsync().Wait();
-
-                var sc = new ServiceCollection();
-                webHostTest.ConfigureClientServices(sc);
-                ServiceProvider = sc.BuildServiceProvider();
+                ServiceInterceptors = new List<ServiceInterceptor>();
             }
+
+            /// <summary>
+            /// The service interceptors in this test.
+            /// </summary>
+            public IList<ServiceInterceptor> ServiceInterceptors { get; }
 
             /// <summary>
             /// The web host test
@@ -66,7 +105,19 @@ namespace SolidRpc.Tests
             /// <summary>
             /// The service provider for the test context.
             /// </summary>
-            public ServiceProvider ServiceProvider { get; }
+            public IServiceProvider ServiceProvider {
+                get
+                {
+                    if(_serviceProvider == null)
+                    {
+                        var sc = new ServiceCollection();
+                        WebHostTest.ConfigureClientServices(sc);
+                        _serviceProvider = sc.BuildServiceProvider();
+
+                    }
+                    return _serviceProvider;
+                }
+            }
 
             /// <summary>
             /// Starts the conted
@@ -74,7 +125,7 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public async Task StartAsync()
             {
-                WebHost = WebHostTest.GetWebHost();
+                WebHost = GetWebHost();
                 await WebHost.StartAsync();
 
                 var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
@@ -83,6 +134,20 @@ namespace SolidRpc.Tests
                     BaseAddress = new Uri(addr);
                 }
 
+            }
+
+            /// <summary>
+            /// Returns the webbost. Does not start it.
+            /// </summary>
+            /// <returns></returns>
+            protected IWebHost GetWebHost()
+            {
+                var builder = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(new string[0]);
+                builder.ConfigureLogging(WebHostTest.ConfigureLogging);
+                builder.ConfigureServices((sc) => {
+                    sc.AddSingleton<IStartup>(this);
+                });
+                return builder.Build();
             }
 
             /// <summary>
@@ -104,9 +169,17 @@ namespace SolidRpc.Tests
                 return GetResponse<object>(requestUri);
             }
 
-            public void CreateServerProxy<T>(Expression<Action<T>> expression)
+            /// <summary>
+            /// Adds an interceptor
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="expression"></param>
+            /// <param name="openApiConfiguration"></param>
+            /// <param name="callback"></param>
+            public void CreateServerInterceptor<T>(Expression<Action<T>> expression, string openApiConfiguration, Action<object[]> callback)
             {
-                throw new NotImplementedException();
+                var methodInfo = ((MethodCallExpression)((LambdaExpression)expression).Body).Method;
+                ServiceInterceptors.Add(new ServiceInterceptor(methodInfo, openApiConfiguration, callback) { });
             }
 
             /// <summary>
@@ -174,6 +247,41 @@ namespace SolidRpc.Tests
             {
                 return HttpClient.SendAsync(msg);
             }
+
+            /// <summary>
+            /// Configures the services
+            /// </summary>
+            /// <param name="services"></param>
+            /// <returns></returns>
+            public IServiceProvider ConfigureServices(IServiceCollection services)
+            {
+                var configBuilder = services.GetSolidConfigurationBuilder()
+                    .SetGenerator<SolidProxyCastleGenerator>();
+                ServiceInterceptors.ToList().ForEach(m =>
+                {
+                    if(!services.Any(s => s.ServiceType == m.MethodInfo.DeclaringType))
+                    {
+                        services.AddTransient(m.MethodInfo.DeclaringType, m.MethodInfo.DeclaringType);
+                    }
+                    var methodConf = configBuilder
+                        .ConfigureInterfaceAssembly(m.MethodInfo.DeclaringType.Assembly)
+                        .ConfigureInterface(m.MethodInfo.DeclaringType)
+                        .ConfigureMethod(m.MethodInfo);
+                    methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
+                    methodConf.ConfigureAdvice<ISolidRpcAspNetCoreConfig>().OpenApiConfiguration = m.OpenApiConfiguration;
+                });
+                configBuilder.AddAdvice(typeof(ServiceInterceptorAdvice<,,>));
+                return WebHostTest.ConfigureServerServices(services);
+            }
+
+            /// <summary>
+            /// Configures the host.
+            /// </summary>
+            /// <param name="app"></param>
+            public void Configure(IApplicationBuilder app)
+            {
+                WebHostTest.Configure(app);
+            }
         }
 
         /// <summary>
@@ -182,21 +290,19 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         protected TestHostContext CreateTestHostContext()
         {
-            return new TestHostContext(this);
+            var ctx = new TestHostContext(this);
+            return ctx;
         }
 
         /// <summary>
-        /// Returns the webbost. Does not start it.
+        /// Constructs a new host context
         /// </summary>
         /// <returns></returns>
-        protected IWebHost GetWebHost()
+        protected async Task<TestHostContext> StartTestHostContextAsync()
         {
-            var builder = WebHost.CreateDefaultBuilder(new string[0]);
-            builder.ConfigureLogging(ConfigureLogging);
-            builder.ConfigureServices((sc) => {
-                sc.AddSingleton<IStartup>(this);
-            });
-            return builder.Build();
+            var ctx = new TestHostContext(this);
+            await ctx.StartAsync();
+            return ctx;
         }
 
         /// <summary>
@@ -229,8 +335,6 @@ namespace SolidRpc.Tests
             return content;
         }
 
-        IServiceProvider IStartup.ConfigureServices(IServiceCollection services) => ConfigureServerServices(services);
-
         /// <summary>
         /// Configures the services hosted on the server
         /// </summary>
@@ -238,8 +342,6 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public virtual IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
-            services.GetSolidConfigurationBuilder();
-
             return services.BuildServiceProvider();
         }
 

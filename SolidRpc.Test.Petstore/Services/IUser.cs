@@ -6,6 +6,7 @@ namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
     /// Operations about user
     /// </summary>
+    /// <a href="http://swagger.io/">Find out more about our store</a>
     public interface IUser {
         /// <summary>
         /// Create user This can only be done by the logged in user.
