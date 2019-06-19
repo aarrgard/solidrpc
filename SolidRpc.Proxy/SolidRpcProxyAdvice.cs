@@ -34,10 +34,17 @@ namespace SolidRpc.Proxy
         {
             using (var httpClient = new HttpClient())
             {
-                var httpClientRequestMessage = new HttpClientRequestMessage();
-                MethodInfo.BindArguments(httpClientRequestMessage, invocation.Arguments);
-                var httpClientResponse = await httpClient.SendAsync(httpClientRequestMessage.HttpRequestMessage);
-                return await MethodInfo.GetResponse<TAdvice>(new HttpClientResponseMessage(httpClientResponse));
+                var httpReq = new HttpRequest();
+                await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
+
+                var httpClientReq = new HttpRequestMessage();
+                httpReq.CopyTo(httpClientReq);
+
+                var httpClientResponse = await httpClient.SendAsync(httpClientReq);
+                var httpResp = new HttpResponse();
+                await httpResp.CopyFrom(httpClientResponse);
+
+                return MethodInfo.GetResponse<TAdvice>(httpResp);
             }
         }
     }

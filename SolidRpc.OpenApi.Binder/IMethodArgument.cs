@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -22,6 +23,8 @@ namespace SolidRpc.OpenApi.Binder
         /// </summary>
         /// <param name="request"></param>
         /// <param name="val"></param>
-        void BindArgument(IHttpRequest request, object val);
+        Task BindArgumentAsync(IHttpRequest request, object val);
+
+        Task<object> ExtractArgumentAsync(IHttpRequest request);
     }
 }

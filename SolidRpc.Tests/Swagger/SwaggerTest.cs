@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -163,7 +164,7 @@ namespace SolidRpc.Tests.Swagger
         /// 
         /// </summary>
         [Test]
-        public void TestMethodBinderFindPetsByStatus()
+        public async Task TestMethodBinderFindPetsByStatus()
         {
             var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
@@ -174,7 +175,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
 
             var req = new RequestMock();
-            smi.BindArguments(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
+            await smi.BindArgumentsAsync(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual("/aarrgard/Test/1.0.0/pet/findByStatus", req.Path);
             Assert.AreEqual("available", req.Query.As<string>("status").First());
@@ -185,7 +186,7 @@ namespace SolidRpc.Tests.Swagger
         /// 
         /// </summary>
         [Test]
-        public void TestMethodBinderGetPetById()
+        public async Task TestMethodBinderGetPetById()
         {
             var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
@@ -197,7 +198,7 @@ namespace SolidRpc.Tests.Swagger
 
             var petId = 3456L;
             var req = new RequestMock();
-            smi.BindArguments(req, new object[] { petId, CancellationToken.None });
+            await smi.BindArgumentsAsync(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}",req.Path);
         }
@@ -206,7 +207,7 @@ namespace SolidRpc.Tests.Swagger
         /// 
         /// </summary>
         [Test]
-        public void TestMethodBinderUpdatePetWithForm()
+        public async Task TestMethodBinderUpdatePetWithForm()
         {
             var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
@@ -220,18 +221,18 @@ namespace SolidRpc.Tests.Swagger
 
             var petId = 3456L;
             var req = new RequestMock();
-            smi.BindArguments(req, new object[] { petId, "kalle", "available", CancellationToken.None });
+            await smi.BindArgumentsAsync(req, new object[] { petId, "kalle", "available", CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
-            Assert.AreEqual($"kalle", req.FormData.As<string>("name").First());
-            Assert.AreEqual($"available", req.FormData.As<string>("status").First());
+            Assert.AreEqual($"kalle", req.BodyData.As<string>("name").First());
+            Assert.AreEqual($"available", req.BodyData.As<string>("status").First());
         }
 
         /// <summary>
         /// 
         /// </summary>
         [Test]
-        public void TestMethodBinderUploadFile()
+        public async Task TestMethodBinderUploadFile()
         {
             var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
@@ -246,18 +247,18 @@ namespace SolidRpc.Tests.Swagger
             var petId = 3456L;
             var req = new RequestMock();
             var data = new MemoryStream(new byte[] { 1, 2, 3, 4 });
-            smi.BindArguments(req, new object[] { petId, "Image metadata", data, CancellationToken.None });
+            await smi.BindArgumentsAsync(req, new object[] { petId, "Image metadata", data, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}/uploadImage", req.Path);
-            Assert.AreEqual($"Image metadata", req.FormData.As<string>("additionalMetadata").First());
-            Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.FormData.GetData<byte[]>("file"));
+            Assert.AreEqual($"Image metadata", req.BodyData.As<string>("additionalMetadata").First());
+            Assert.AreEqual(new byte[] { 1, 2, 3, 4 }, req.BodyData.GetData<byte[]>("file"));
         }
 
         /// <summary>
         /// 
         /// </summary>
         [Test]
-        public void TestMethodBinderPlaceOrder()
+        public async Task TestMethodBinderPlaceOrder()
         {
             var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
 
@@ -278,10 +279,10 @@ namespace SolidRpc.Tests.Swagger
                 Complete = false
             };
 
-            smi.BindArguments(req, new object[] { order, CancellationToken.None });
+            await smi.BindArgumentsAsync(req, new object[] { order, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/store/order", req.Path);
-            var orderResp = req.Body.As<Order>();
+            var orderResp = req.BodyData.First().As<Order>();
             Assert.AreEqual(order.Complete, orderResp.Complete);
             Assert.AreEqual(order.Status, orderResp.Status);
             Assert.AreEqual(order.Quantity, orderResp.Quantity);

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="SolidProxy.Core" Version="1.0.0-build028" />
+    <PackageReference Include="SolidProxy.Core" Version="1.0.0-build033" />
   </ItemGroup>
 
   <ItemGroup>

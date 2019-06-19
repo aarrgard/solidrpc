@@ -36,7 +36,7 @@ namespace SolidRpc.Tests
             /// <param name="methodInfo"></param>
             /// <param name="openApiConfiguration"></param>
             /// <param name="callback"></param>
-            public ServiceInterceptor(MethodInfo methodInfo, string openApiConfiguration, Action<object[]> callback)
+            public ServiceInterceptor(MethodInfo methodInfo, string openApiConfiguration, Func<object[], object> callback)
             {
                 MethodInfo = methodInfo;
                 Callback = callback;
@@ -51,7 +51,7 @@ namespace SolidRpc.Tests
             /// <summary>
             /// The callback
             /// </summary>
-            public Action<object[]> Callback { get; }
+            public Func<object[], object> Callback { get; }
 
             /// <summary>
             /// The open api configuration to use when binding the method.
@@ -176,7 +176,7 @@ namespace SolidRpc.Tests
             /// <param name="expression"></param>
             /// <param name="openApiConfiguration"></param>
             /// <param name="callback"></param>
-            public void CreateServerInterceptor<T>(Expression<Action<T>> expression, string openApiConfiguration, Action<object[]> callback)
+            public void CreateServerInterceptor<T>(Expression<Action<T>> expression, string openApiConfiguration, Func<object[], object> callback)
             {
                 var methodInfo = ((MethodCallExpression)((LambdaExpression)expression).Body).Method;
                 ServiceInterceptors.Add(new ServiceInterceptor(methodInfo, openApiConfiguration, callback) { });
@@ -267,7 +267,11 @@ namespace SolidRpc.Tests
                         .ConfigureInterfaceAssembly(m.MethodInfo.DeclaringType.Assembly)
                         .ConfigureInterface(m.MethodInfo.DeclaringType)
                         .ConfigureMethod(m.MethodInfo);
-                    methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
+                    var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
+                    var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
+                    serviceCalls.Add(new ServiceCall(m.MethodInfo, m.Callback));
+                    interceptorConf.ServiceCalls = serviceCalls;
+
                     methodConf.ConfigureAdvice<ISolidRpcAspNetCoreConfig>().OpenApiConfiguration = m.OpenApiConfiguration;
                 });
                 configBuilder.AddAdvice(typeof(ServiceInterceptorAdvice<,,>));

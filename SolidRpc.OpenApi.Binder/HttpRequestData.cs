@@ -82,8 +82,9 @@ namespace SolidRpc.OpenApi.Binder
                 contentType = contentType ?? "application/octet-stream";
                 return (_, val) =>
                 {
-                    var retVal = new HttpRequestDataBinary(contentType, "temp", null);
+                    var retVal = new HttpRequestDataBinary(contentType, name, null);
                     retVal.SetBinaryData(name, (Stream)val);
+                    retVal.SetFilename("upload.tmp");
                     return retVal; ;
                 };
             }

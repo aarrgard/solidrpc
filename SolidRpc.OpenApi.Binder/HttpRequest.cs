@@ -1,48 +1,52 @@
-﻿using System.Collections.Generic;
-using SolidRpc.OpenApi.Binder;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace SolidRpc.Tests.Swagger
+namespace SolidRpc.OpenApi.Binder
 {
     /// <summary>
-    /// 
+    /// Implementation of the IHttpRequest object
     /// </summary>
-    public class RequestMock : IHttpRequest
+    public class HttpRequest : IHttpRequest
     {
         /// <summary>
-        /// 
+        /// Constructs a new instance
         /// </summary>
-        public RequestMock()
+        public HttpRequest()
         {
-            Headers = new HttpRequestData[0];
-            Query = new HttpRequestData[0];
-            BodyData = new HttpRequestData[0];
+            Headers = HttpRequestData.EmptyArray;
+            Query = HttpRequestData.EmptyArray;
+            BodyData = HttpRequestData.EmptyArray;
+            Scheme = "http";
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public string Path { get; set; }
-
-        /// <summary>
-        /// 
+        /// The method
         /// </summary>
         public string Method { get; set; }
+
         /// <summary>
-        /// 
+        /// The scheme
         /// </summary>
         public string Scheme { get; set; }
+
         /// <summary>
-        /// 
+        /// The host
         /// </summary>
         public string HostAndPort { get; set; }
 
         /// <summary>
-        /// 
+        /// The path
+        /// </summary>
+        public string Path { get; set; }
+
+        /// <summary>
+        /// The headers
         /// </summary>
         public IEnumerable<HttpRequestData> Headers { get; set; }
 
         /// <summary>
-        /// 
+        /// The query data
         /// </summary>
         public IEnumerable<HttpRequestData> Query { get; set; }
 
@@ -52,7 +56,7 @@ namespace SolidRpc.Tests.Swagger
         public string ContentType { get; set; }
 
         /// <summary>
-        /// 
+        /// Contains the data in the body.
         /// </summary>
         public IEnumerable<HttpRequestData> BodyData { get; set; }
     }

@@ -72,19 +72,21 @@ namespace Microsoft.AspNetCore.Builder
             try
             {
                 // extract information from http context.
-                var request = new AspNetCoreRequestMessage(context.Request);
-                var args = methodInfo.ExtractArguments(request);
+                var request = new SolidRpc.OpenApi.Binder.HttpRequest();
+                await request.CopyFrom(context.Request);
+                var args = await methodInfo.ExtractArgumentsAsync(request);
 
                 // invoke
                 var proxy = context.RequestServices.GetService(methodInfo.MethodInfo.DeclaringType);
                 var solidProxy = (ISolidProxy)proxy;
-                var res = solidProxy.Invoke(methodInfo.MethodInfo, args);
+                var res = await solidProxy.InvokeAsync(methodInfo.MethodInfo, args);
 
                 // return response
             }
             catch(Exception e)
             {
                 // handle exception
+                throw;
             }
         }
     }

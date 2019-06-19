@@ -85,10 +85,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     args =>
                     {
                         Assert.AreEqual(4, args.Length);
-                        Assert.AreEqual(new byte[] { 0, 1, 2, 3 }, args[0]);
+                        Assert.AreEqual(new byte[] { 0, 1, 2, 3 }, ((MemoryStream)args[0]).ToArray());
                         Assert.AreEqual("filename.txt", args[1]);
                         Assert.AreEqual("application/pdf", args[2]);
-                        Assert.IsNotNull((CancellationToken)args[3]);
+                        //Assert.IsNotNull((CancellationToken)args[3]);
+                        return Task.CompletedTask;
                     });
                 await ctx.StartAsync();
                 var proxy = CreateProxy<FileUpload1.Services.IFileUpload>(ctx.BaseAddress, config);

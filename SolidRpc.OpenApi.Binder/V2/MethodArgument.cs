@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using SolidRpc.OpenApi.Model.V2;
 
 namespace SolidRpc.OpenApi.Binder.V2
@@ -60,6 +61,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if(latest == null)
             {
                 latest = new HttpRequestDataBinary("application/octet-stream", "temp", null);
+                latest.SetFilename("upload.tmp");
             }
             return latest;
         }
@@ -67,7 +69,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         private IEnumerable<string> CreatePath()
         {
             var scope = MapScope(ParameterObject.In);
-            if(scope == nameof(IHttpRequest.Body))
+            if(scope == nameof(IHttpRequest.BodyData))
             {
                 return new[] { scope };
             }
@@ -88,9 +90,9 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case "path":
                     return nameof(IHttpRequest.Path);
                 case "formData":
-                    return nameof(IHttpRequest.FormData);
+                    return nameof(IHttpRequest.BodyData);
                 case "body":
-                    return nameof(IHttpRequest.Body);
+                    return nameof(IHttpRequest.BodyData);
                 default:
                     throw new Exception("Cannot handle scope:" + scope);
             }
@@ -106,9 +108,10 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> HttpRequestDataBinder { get; }
 
-        public void BindArgument(IHttpRequest request, object val)
+        public Task BindArgumentAsync(IHttpRequest request, object val)
         {
             BindPath(typeof(IHttpRequest), request, ArgumentPath.GetEnumerator(), val);
+            return Task.CompletedTask;
         }
 
         private object BindPath(Type type, object existingValue, IEnumerator<string> pathEnumerator, object value)
@@ -158,6 +161,60 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 prop.SetValue(existingValue, newValue);
             }
+            return newValue;
+        }
+
+        public Task<object> ExtractArgumentAsync(IHttpRequest request)
+        {
+            var res = ExtractPath(request, ArgumentPath.GetEnumerator(), request);
+            return Task.FromResult(res);
+        }
+
+        private object ExtractPath(IHttpRequest request, IEnumerator<string> pathEnumerator, object val)
+        {
+            // if we have reach end of path - return value
+            if (!pathEnumerator.MoveNext())
+            {
+                var requestData = (IEnumerable<HttpRequestData>)val;
+                var data = requestData.Where(o => o.Name == Name).FirstOrDefault();
+                if(data == null && requestData.OfType<HttpRequestDataBinary>().Any())
+                {
+                    if (string.Equals(Name,"filename",StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return requestData.OfType<HttpRequestDataBinary>().First().Filename;
+                    }
+                    if (string.Equals(Name, "contenttype", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return requestData.OfType<HttpRequestDataBinary>().First().ContentType;
+                    }
+                    return null;
+                }
+                if (ParameterInfo.ParameterType == typeof(Stream))
+                {
+                    return data.GetBinaryValue();
+                }
+                if (ParameterInfo.ParameterType == typeof(string))
+                {
+                    return data.GetStringValue();
+                }
+                throw new Exception("Cannot handle type:"+ParameterInfo.ParameterType.FullName);
+            }
+            var pathElement = pathEnumerator.Current;
+            if (string.IsNullOrEmpty(pathElement))
+            {
+                return null;
+            }
+            //
+            // get value from target.
+            //
+            var props = val.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public);
+            var prop = props.FirstOrDefault(o => o.Name == pathElement);
+            if (prop == null)
+            {
+                throw new Exception($"Cannot find path {pathElement} in {val.GetType().FullName}");
+            }
+            var propValue = prop.GetValue(val);
+            var newValue = ExtractPath(request, pathEnumerator, propValue);
             return newValue;
         }
     }

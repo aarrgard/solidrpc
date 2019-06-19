@@ -35,14 +35,14 @@ namespace SolidRpc.OpenApi.Binder
         /// </summary>
         /// <param name="request"></param>
         /// <param name="args"></param>
-        void BindArguments(IHttpRequest request, object[] args);
+        Task BindArgumentsAsync(IHttpRequest request, object[] args);
 
         /// <summary>
         /// Extracts the arguments from supplied request.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        object[] ExtractArguments(IHttpRequest request);
+        Task<object[]> ExtractArgumentsAsync(IHttpRequest request);
 
         /// <summary>
         /// Returns the respone.
@@ -50,6 +50,6 @@ namespace SolidRpc.OpenApi.Binder
         /// <typeparam name="T"></typeparam>
         /// <param name="response"></param>
         /// <returns></returns>
-        Task<T> GetResponse<T>(IHttpResponse response);
+        T GetResponse<T>(IHttpResponse response);
     }
 }

@@ -11,17 +11,17 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// Returns the status code
         /// </summary>
-        int StatusCode { get; }
+        int StatusCode { get; set; }
 
         /// <summary>
         /// Returns the content type
         /// </summary>
-        string ContentType { get; }
+        string ContentType { get; set; }
 
         /// <summary>
         /// Returns the response stream
         /// </summary>
         /// <returns></returns>
-        Task<Stream> GetResponseStreamAsync();
+        Stream ResponseStream { get; set; }
     }
 }

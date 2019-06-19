@@ -90,7 +90,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         public string Path { get; }
         public IEnumerable<string> Produces { get; }
 
-        public void BindArguments(IHttpRequest request, object[] args)
+        public async Task BindArgumentsAsync(IHttpRequest request, object[] args)
         {
             if(args.Length != Arguments.Length)
             {
@@ -98,16 +98,47 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             request.Method = Method;
             request.Scheme = Scheme;
-            request.Host = Host;
+            request.HostAndPort = Host;
             request.Path = Path;
 
             for (int i = 0; i < Arguments.Length; i++)
             {
-                Arguments[i].BindArgument(request, args[i]);
+                await Arguments[i].BindArgumentAsync(request, args[i]);
             }
+
+            request.ContentType = GetContentTypeBasedOnConsumesAndData(request);
         }
 
-        public async Task<T> GetResponse<T>(IHttpResponse response)
+        private string GetContentTypeBasedOnConsumesAndData(IHttpRequest request)
+        {
+            if(request.BodyData == null ||request.BodyData.Count() == 0)
+            {
+                return null;
+            }
+            var contentTypeProspects = OperationObject.GetConsumes();
+            if (contentTypeProspects.Contains("application/x-www-form-urlencoded"))
+            {
+                if (request.BodyData.All(o => o.GetType() == typeof(HttpRequestDataString)))
+                {
+                    return "application/x-www-form-urlencoded";
+                }
+            }
+            if (contentTypeProspects.Contains("multipart/form-data"))
+            {
+                return "multipart/form-data";
+            }
+            if(request.BodyData.Any(o => o is HttpRequestDataBinary))
+            {
+                return "multipart/form-data";
+            }
+            if (request.BodyData.Count() == 1)
+            {
+                return request.BodyData.First().ContentType;
+            }
+            throw new Exception("Cannot handle content type");
+        }
+
+        public T GetResponse<T>(IHttpResponse response)
         {
             if(response.StatusCode != 200)
             {
@@ -115,13 +146,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             if(typeof(T).IsAssignableFrom(typeof(Stream)))
             {
-                return (T)(object)(await response.GetResponseStreamAsync());
+                return (T)(object)response.ResponseStream;
             }
             if (!Produces.Contains(response.ContentType))
             {
                 throw new Exception("Operation does not support content type:" + response.ContentType);
             }
-            using (var s = await response.GetResponseStreamAsync())
+            using (var s = response.ResponseStream)
             {
                 using (StreamReader sr = new StreamReader(s))
                 {
@@ -134,9 +165,14 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        public object[] ExtractArguments(IHttpRequest request)
+        public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {
-            return new object[0];
+            var args = new object[Arguments.Length];
+            for(int i =0; i < args.Length; i++)
+            {
+                args[i] = await Arguments[i].ExtractArgumentAsync(request);
+            }
+            return args;
         }
     }
 }

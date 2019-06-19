@@ -20,7 +20,7 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// The host to use.
         /// </summary>
-        string Host { get; set; }
+        string HostAndPort { get; set; }
 
         /// <summary>
         /// The path
@@ -38,13 +38,19 @@ namespace SolidRpc.OpenApi.Binder
         IEnumerable<HttpRequestData> Query { get; set; }
 
         /// <summary>
-        /// The data in the form
+        /// The content type of the body data.
+        /// 
+        /// When composing a request a call that consumes 
+        ///  - "application/x-www-form-urlencoded"
+        ///  - "multipart/form-data"
+        /// will create the request accordingly.
         /// </summary>
-        IEnumerable<HttpRequestData> FormData { get; set; }
+        string ContentType { get; set; }
 
         /// <summary>
-        /// The body
+        /// The data in the body. Check the ContentType to 
+        /// determine how the data should be transmitted.
         /// </summary>
-        HttpRequestData Body { get; set; }
+        IEnumerable<HttpRequestData> BodyData { get; set; }
     }
 }
