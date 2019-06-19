@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.V2
@@ -48,6 +50,16 @@ namespace SolidRpc.OpenApi.Model.V2
             if (Type == "file") return true;
             if (Schema == null) return false;
             return Schema.IsFileType(); 
+        }
+
+        /// <summary>
+        /// Returns the name of the file parameter
+        /// </summary>
+        /// <returns></returns>
+        public string GetFileParameterName()
+        {
+            var fileTypes = GetParent<OperationObject>().Parameters.Where(o => o.Type == "file").FirstOrDefault();
+            return fileTypes?.Name;
         }
     }
 }

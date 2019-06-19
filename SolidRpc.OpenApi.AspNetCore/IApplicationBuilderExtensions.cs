@@ -73,7 +73,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 // extract information from http context.
                 var request = new SolidRpc.OpenApi.Binder.HttpRequest();
-                await request.CopyFrom(context.Request);
+                await request.CopyFromAsync(context.Request);
                 var args = await methodInfo.ExtractArgumentsAsync(request);
 
                 // invoke

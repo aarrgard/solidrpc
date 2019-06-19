@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -7,6 +8,12 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public interface IHttpRequest
     {
+        /// <summary>
+        /// Returns the cancellation token
+        /// </summary>
+
+        CancellationToken CancellationToken { get; set; }
+
         /// <summary>
         /// The method to use
         /// </summary>

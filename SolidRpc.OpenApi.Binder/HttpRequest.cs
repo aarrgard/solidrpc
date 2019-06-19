@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -14,11 +13,17 @@ namespace SolidRpc.OpenApi.Binder
         /// </summary>
         public HttpRequest()
         {
+            CancellationToken = CancellationToken.None;
             Headers = HttpRequestData.EmptyArray;
             Query = HttpRequestData.EmptyArray;
             BodyData = HttpRequestData.EmptyArray;
             Scheme = "http";
         }
+
+        /// <summary>
+        /// The cancellation token
+        /// </summary>
+        public CancellationToken CancellationToken { get; set; }
 
         /// <summary>
         /// The method

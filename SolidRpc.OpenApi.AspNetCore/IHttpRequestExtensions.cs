@@ -17,7 +17,7 @@ namespace SolidRpc.OpenApi.Binder
         /// 
         /// </summary>
         /// <param name="request"></param>
-        public static async Task CopyFrom(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source)
+        public static async Task CopyFromAsync(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source)
         {
             target.Scheme = source.Scheme;
             target.Method = source.Method;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -14,7 +15,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         {
             ParameterObject = parameterObject ?? throw new ArgumentNullException(nameof(parameterObject));
             ParameterInfo = parameterInfo ?? throw new ArgumentNullException(nameof(parameterObject));
-            ArgumentPath = CreatePath();
+            ArgumentPath = GetArgumentPath();
             if (parameterObject.Name != parameterInfo.Name)
             {
                 throw new Exception("Name mismatch");
@@ -36,6 +37,27 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 HttpRequestDataBinder = HttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
             }
+        }
+
+        private IEnumerable<string> GetArgumentPath()
+        {
+            if (ParameterObject.IsFileType())
+            {
+                var fileParameterName = ParameterObject.GetFileParameterName();
+                switch (ParameterObject.Name.ToLower())
+                {
+                    case "filename":
+                        return new[] { MapScope(ParameterObject.In), fileParameterName, "Filename" };
+                    case "contenttype":
+                        return new[] { MapScope(ParameterObject.In), fileParameterName, "ContentType" };
+
+                }
+            }
+            if(ParameterInfo.ParameterType == typeof(CancellationToken))
+            {
+                return new[] { "CancellationToken" };
+            }
+            return new[] { MapScope(ParameterObject.In), ParameterObject.Name };
         }
 
         private IEnumerable<HttpRequestData> SetFileData(string name, IEnumerable<HttpRequestData> formData, object value)
@@ -64,19 +86,6 @@ namespace SolidRpc.OpenApi.Binder.V2
                 latest.SetFilename("upload.tmp");
             }
             return latest;
-        }
-
-        private IEnumerable<string> CreatePath()
-        {
-            var scope = MapScope(ParameterObject.In);
-            if(scope == nameof(IHttpRequest.BodyData))
-            {
-                return new[] { scope };
-            }
-            else
-            {
-                return new[] { scope, ParameterObject.Name };
-            }
         }
 
         private string MapScope(string scope)
@@ -166,44 +175,36 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public Task<object> ExtractArgumentAsync(IHttpRequest request)
         {
-            var res = ExtractPath(request, ArgumentPath.GetEnumerator(), request);
+            var res = ExtractPath(request, ArgumentPath.GetEnumerator(), false, request);
             return Task.FromResult(res);
         }
 
-        private object ExtractPath(IHttpRequest request, IEnumerator<string> pathEnumerator, object val)
+        private object ExtractPath(IHttpRequest request, IEnumerator<string> pathEnumerator, bool filteredList, object val)
         {
             // if we have reach end of path - return value
             if (!pathEnumerator.MoveNext())
             {
-                var requestData = (IEnumerable<HttpRequestData>)val;
-                var data = requestData.Where(o => o.Name == Name).FirstOrDefault();
-                if(data == null && requestData.OfType<HttpRequestDataBinary>().Any())
+                if(val is IEnumerable<HttpRequestData> rdData2)
                 {
-                    if (string.Equals(Name,"filename",StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return requestData.OfType<HttpRequestDataBinary>().First().Filename;
-                    }
-                    if (string.Equals(Name, "contenttype", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return requestData.OfType<HttpRequestDataBinary>().First().ContentType;
-                    }
-                    return null;
+                    return ExtractData(rdData2);
                 }
-                if (ParameterInfo.ParameterType == typeof(Stream))
-                {
-                    return data.GetBinaryValue();
-                }
-                if (ParameterInfo.ParameterType == typeof(string))
-                {
-                    return data.GetStringValue();
-                }
-                throw new Exception("Cannot handle type:"+ParameterInfo.ParameterType.FullName);
+                return val;
             }
             var pathElement = pathEnumerator.Current;
             if (string.IsNullOrEmpty(pathElement))
             {
                 return null;
             }
+            if(val is IEnumerable<HttpRequestData> rdEnum)
+            {
+                if(!filteredList)
+                {
+                    var subVal = rdEnum.Where(o => o.Name == pathElement);
+                    return ExtractPath(request, pathEnumerator, true, subVal);
+                }
+                val = rdEnum.FirstOrDefault();
+            }
+
             //
             // get value from target.
             //
@@ -214,8 +215,21 @@ namespace SolidRpc.OpenApi.Binder.V2
                 throw new Exception($"Cannot find path {pathElement} in {val.GetType().FullName}");
             }
             var propValue = prop.GetValue(val);
-            var newValue = ExtractPath(request, pathEnumerator, propValue);
+            var newValue = ExtractPath(request, pathEnumerator, filteredList, propValue);
             return newValue;
+        }
+
+        private object ExtractData(IEnumerable<HttpRequestData> vals)
+        {
+            if (ParameterInfo.ParameterType == typeof(Stream))
+            {
+                return vals.FirstOrDefault()?.GetBinaryValue();
+            }
+            if (ParameterInfo.ParameterType == typeof(string))
+            {
+                return vals.FirstOrDefault()?.GetStringValue();
+            }
+            throw new Exception("Cannot handle type:" + ParameterInfo.ParameterType.FullName);
         }
     }
 }

@@ -88,7 +88,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                         Assert.AreEqual(new byte[] { 0, 1, 2, 3 }, ((MemoryStream)args[0]).ToArray());
                         Assert.AreEqual("filename.txt", args[1]);
                         Assert.AreEqual("application/pdf", args[2]);
-                        //Assert.IsNotNull((CancellationToken)args[3]);
+                        Assert.IsNotNull((CancellationToken)args[3]);
                         return Task.CompletedTask;
                     });
                 await ctx.StartAsync();
