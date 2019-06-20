@@ -1,6 +1,6 @@
-using SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Types;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System.Collections.Generic;
-namespace SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Types {
+namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
     /// 
     /// </summary>

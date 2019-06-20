@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Types;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System.Threading;
 using System.Collections.Generic;
-namespace SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Services {
+namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
     /// <summary>
     /// Operations about user
     /// </summary>

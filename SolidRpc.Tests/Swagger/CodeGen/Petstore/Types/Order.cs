@@ -1,5 +1,5 @@
 using System;
-namespace SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Types {
+namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
     /// 
     /// </summary>

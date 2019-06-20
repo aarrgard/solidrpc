@@ -1,0 +1,35 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "UrlParam"
+  },
+  "host": "localhost:5001",
+  "schemes": [ "https" ],
+  "paths": {
+    "/UrlParam1/{p}": {
+      "get": {
+        "tags": [ "UrlParam" ],
+        "summary": "Sends an integer back and forth between client and server",
+        "operationId": "ProxyIntegerInPath",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "path",
+            "description": "The number to proxy",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": { "type": "integer" }
+          }
+        }
+      }
+    }
+  }
+}

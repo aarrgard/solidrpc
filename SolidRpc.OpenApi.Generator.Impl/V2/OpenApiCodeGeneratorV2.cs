@@ -242,6 +242,8 @@ namespace SolidRpc.OpenApi.Generator.V2
                 case "integer":
                     switch (schema.Format)
                     {
+                        case null:
+                        case "":
                         case "int64":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeLong);
                         case "int32":
@@ -256,6 +258,8 @@ namespace SolidRpc.OpenApi.Generator.V2
                 case "number":
                     switch (schema.Format)
                     {
+                        case null:
+                        case "":
                         case "float":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeFloat);
                         case "double":

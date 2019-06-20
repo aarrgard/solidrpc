@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using System.Threading;
-using SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Types;
-namespace SolidRpc.Tests.Swagger.CodeGen.PetstoreTest.Services {
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
+namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
     /// <summary>
     /// Access to Petstore orders
     /// </summary>

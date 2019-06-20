@@ -98,6 +98,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 case "skip":
                     return null;
+                case "header":
+                    return nameof(IHttpRequest.Headers);
                 case "query":
                     return nameof(IHttpRequest.Query);
                 case "path":
@@ -208,7 +210,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
                 val = rdEnum.FirstOrDefault();
             }
-
+            if(val is string)
+            {
+                throw new Exception("Cannot extract args from path!");
+            }
             //
             // get value from target.
             //

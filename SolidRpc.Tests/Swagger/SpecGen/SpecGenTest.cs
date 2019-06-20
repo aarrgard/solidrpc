@@ -15,8 +15,21 @@ namespace SolidRpc.Tests.Swagger.SpecGen
     /// <summary>
     /// Tests swagger functionality.
     /// </summary>
-    public class SpecGenTest : WebHostMvcTest
+    public class SpecGenTest : SwaggerTestBase
     {
+        /// <summary>
+        /// Returns the spec folder
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
+        protected override DirectoryInfo GetSpecFolder(string folderName)
+        {
+            var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
+            path = Path.Combine(path, "Swagger");
+            path = Path.Combine(path, "SpecGen");
+            path = Path.Combine(path, folderName);
+            return new DirectoryInfo(path);
+        }
 
         /// <summary>
         /// Tests generating swagger file from code
@@ -120,35 +133,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var proxy = CreateProxy<OneComplexArg.Services.IOneComplexArg>(ctx.BaseAddress, config);
                 var res = proxy.GetComplexType("test", new OneComplexArg.Types.ComplexType1());
             }
-        }
-
-        private string ReadOpenApiConfiguration(string folderName)
-        {
-            var folder = GetSpecGenFolder(folderName);
-            var jsonFile = folder.GetFiles("*.json").Single();
-            using (var sr = jsonFile.OpenText())
-            {
-                return sr.ReadToEnd();
-            }
-        }
-
-        private T CreateProxy<T>(Uri rootAddress, string openApiConfiguration) where T:class
-        {
-            var sc = new ServiceCollection();
-            sc.AddLogging(ConfigureLogging);
-            sc.AddTransient<T, T>();
-            var conf = sc.GetSolidConfigurationBuilder()
-                .SetGenerator<SolidProxyCastleGenerator>()
-                .ConfigureInterface<T>()
-                .ConfigureAdvice<ISolidRpcProxyConfig>();
-            conf.OpenApiConfiguration = openApiConfiguration;
-            conf.RootAddress = rootAddress;
-
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
-
-            var sp = sc.BuildServiceProvider();
-            return sp.GetRequiredService<T>();
         }
     }
 }
