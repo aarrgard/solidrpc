@@ -97,6 +97,31 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             }
         }
 
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestOneComplexArg()
+        {
+            using (var ctx = CreateTestHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestOneComplexArg).Substring(4));
+                ctx.CreateServerInterceptor<OneComplexArg.Services.IOneComplexArg>(
+                    o => o.GetComplexType(null, null),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        Assert.AreEqual("test", args[0]);
+                        Assert.IsNotNull((OneComplexArg.Types.ComplexType1)args[1]);
+                        return (OneComplexArg.Types.ComplexType1)args[1];
+                    });
+                await ctx.StartAsync();
+                var proxy = CreateProxy<OneComplexArg.Services.IOneComplexArg>(ctx.BaseAddress, config);
+                var res = proxy.GetComplexType("test", new OneComplexArg.Types.ComplexType1());
+            }
+        }
+
         private string ReadOpenApiConfiguration(string folderName)
         {
             var folder = GetSpecGenFolder(folderName);

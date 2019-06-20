@@ -239,5 +239,31 @@ namespace SolidRpc.OpenApi.Model
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             h.SetStreamData(impl, data);
         }
+
+        /// <summary>
+        /// Returns the stream data.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <returns></returns>
+        public static Stream GetFileTypeStreamData(this Type type, object impl)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            return h.GetStreamData(impl);
+        }
+
+        /// <summary>
+        /// Returns the content type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <returns></returns>
+        public static string GetFileTypeContentType(this Type type, object impl)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            return h.GetContentType(impl);
+        }
     }
 }

@@ -42,6 +42,15 @@ namespace SolidRpc.OpenApi.Model.V2
         public SchemaObject Schema { get; set; }
 
         /// <summary>
+        /// Returns true if this parameter is a body type
+        /// </summary>
+        /// <returns></returns>
+        public bool IsBodyType()
+        {
+            return string.Equals(In,"body",StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
         /// Returns true if this parameter is a file type
         /// </summary>
         /// <returns></returns>

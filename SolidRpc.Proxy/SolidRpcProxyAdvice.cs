@@ -44,7 +44,7 @@ namespace SolidRpc.Proxy
                 var httpResp = new HttpResponse();
                 await httpResp.CopyFrom(httpClientResponse);
 
-                return MethodInfo.GetResponse<TAdvice>(httpResp);
+                return MethodInfo.ExtractResponse<TAdvice>(httpResp);
             }
         }
     }

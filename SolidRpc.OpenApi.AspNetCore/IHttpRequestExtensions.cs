@@ -23,6 +23,19 @@ namespace SolidRpc.OpenApi.Binder
             target.Method = source.Method;
             target.HostAndPort = source.Host.ToString();
             target.Path = source.Path;
+
+            // extract query
+            var queryList = new List<HttpRequestData>();
+            foreach(var q in source.Query)
+            {
+                foreach(var sv in q.Value)
+                {
+                    queryList.Add(new HttpRequestDataString("text/plain", q.Key, sv));
+                }
+            }
+            target.Query = queryList;
+
+            // extract body
             if(source.ContentType != null)
             {
                 var httpRequestData = new List<HttpRequestData>();

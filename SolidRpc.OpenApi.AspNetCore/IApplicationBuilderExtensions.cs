@@ -77,11 +77,13 @@ namespace Microsoft.AspNetCore.Builder
                 var args = await methodInfo.ExtractArgumentsAsync(request);
 
                 // invoke
-                var proxy = context.RequestServices.GetService(methodInfo.MethodInfo.DeclaringType);
-                var solidProxy = (ISolidProxy)proxy;
-                var res = await solidProxy.InvokeAsync(methodInfo.MethodInfo, args);
+                var proxy = (ISolidProxy)context.RequestServices.GetService(methodInfo.MethodInfo.DeclaringType);
+                var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
 
                 // return response
+                var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
+                await methodInfo.BindResponseAsync(resp, res);
+                await resp.CopyToAsync(context.Response);
             }
             catch(Exception e)
             {

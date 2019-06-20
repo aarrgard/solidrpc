@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
@@ -138,7 +139,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             throw new Exception("Cannot handle content type");
         }
 
-        public T GetResponse<T>(IHttpResponse response)
+        public T ExtractResponse<T>(IHttpResponse response)
         {
             if(response.StatusCode != 200)
             {
@@ -154,14 +155,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             using (var s = response.ResponseStream)
             {
-                using (StreamReader sr = new StreamReader(s))
-                {
-                    using (JsonReader reader = new JsonTextReader(sr))
-                    {
-                        var serializer = JsonSerializer.Create();
-                        return serializer.Deserialize<T>(reader);
-                    }
-                }
+                return JsonHelper.Deserialize<T>(s);
             }
         }
 
@@ -173,6 +167,47 @@ namespace SolidRpc.OpenApi.Binder.V2
                 args[i] = await Arguments[i].ExtractArgumentAsync(request);
             }
             return args;
+        }
+
+        public Task BindResponseAsync(IHttpResponse response, object resp)
+        {
+            response.StatusCode = 200;
+            var returnType = MethodInfo.ReturnType;
+            if (returnType.IsFileType())
+            {
+                response.ContentType = returnType.GetFileTypeContentType(resp);
+                response.ResponseStream = returnType.GetFileTypeStreamData(resp);
+                return Task.CompletedTask;
+            }
+
+            string contentType = null;
+            if(OperationObject.GetProduces().Contains("application/json"))
+            {
+                contentType = "application/json";
+            }
+            switch(contentType)
+            {
+                case null:
+                case "application/json":
+                    response.ContentType = "application/json";
+                    using (var ms = new MemoryStream())
+                    {
+                        using (StreamWriter sw = new StreamWriter(ms))
+                        {
+                            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
+                            {
+                                var serializer = JsonSerializer.Create();
+                                serializer.Serialize(jsonWriter, resp, returnType);
+                            }
+                        }
+                        response.ResponseStream = new MemoryStream(ms.ToArray());
+                    }
+                    break;
+                default:
+                    throw new Exception("Cannot handle content type:" + contentType);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

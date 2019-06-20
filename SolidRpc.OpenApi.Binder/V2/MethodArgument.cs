@@ -53,6 +53,10 @@ namespace SolidRpc.OpenApi.Binder.V2
 
                 }
             }
+            if (ParameterObject.IsBodyType())
+            {
+                return new[] { MapScope(ParameterObject.In),  "body" };
+            }
             if(ParameterInfo.ParameterType == typeof(CancellationToken))
             {
                 return new[] { "CancellationToken" };
@@ -221,13 +225,30 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private object ExtractData(IEnumerable<HttpRequestData> vals)
         {
+            var valData = vals.FirstOrDefault();
+            if(valData == null)
+            {
+                return null;
+            }
             if (ParameterInfo.ParameterType == typeof(Stream))
             {
-                return vals.FirstOrDefault()?.GetBinaryValue();
+                return valData.GetBinaryValue();
             }
-            if (ParameterInfo.ParameterType == typeof(string))
+            switch (valData.ContentType.ToLower())
             {
-                return vals.FirstOrDefault()?.GetStringValue();
+                case null:
+                case "text/plain":
+                case "application/octet-stream":
+                    if (ParameterInfo.ParameterType == typeof(string))
+                    {
+                        return valData.GetStringValue();
+                    }
+                    break;
+                case "application/json":
+                    using (var s = valData.GetBinaryValue())
+                    {
+                        return JsonHelper.Deserialize(s, ParameterInfo.ParameterType);
+                    }
             }
             throw new Exception("Cannot handle type:" + ParameterInfo.ParameterType.FullName);
         }

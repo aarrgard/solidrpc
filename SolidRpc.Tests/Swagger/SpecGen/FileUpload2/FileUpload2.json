@@ -17,6 +17,9 @@
         "consumes": [
           "multipart/form-data"
         ],
+        "produces": [
+          "application/octet-stream"
+        ],
         "parameters": [
           {
             "name": "fileData",
@@ -27,7 +30,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
           }
         }
       }

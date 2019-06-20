@@ -45,11 +45,18 @@ namespace SolidRpc.OpenApi.Binder
         Task<object[]> ExtractArgumentsAsync(IHttpRequest request);
 
         /// <summary>
+        /// Binds the response
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <returns></returns>
+        Task BindResponseAsync(IHttpResponse response, object resp);
+
+        /// <summary>
         /// Returns the respone.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="response"></param>
         /// <returns></returns>
-        T GetResponse<T>(IHttpResponse response);
+        T ExtractResponse<T>(IHttpResponse response);
     }
 }
