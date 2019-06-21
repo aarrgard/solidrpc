@@ -97,11 +97,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestPetStore()
+        public async Task TestPetstore()
         {
             using (var ctx = CreateTestHostContext())
             {
-                var config = ReadOpenApiConfiguration(nameof(TestPetStore).Substring(4));
+                var config = ReadOpenApiConfiguration(nameof(TestPetstore).Substring(4));
                 var api_key = "sfasdfoewr0sdf";
                 var pet = new Petstore.Types.Pet()
                 {
