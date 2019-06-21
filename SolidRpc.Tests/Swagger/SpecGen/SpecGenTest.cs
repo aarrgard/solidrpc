@@ -1,12 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using SolidProxy.GeneratorCastle;
+﻿using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
-using SolidRpc.Proxy;
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 

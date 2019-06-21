@@ -82,8 +82,7 @@ namespace SolidRpc.OpenApi.Binder
                 contentType = contentType ?? "application/octet-stream";
                 return (_, val) =>
                 {
-                    var retVal = new HttpRequestDataBinary(contentType, name, null);
-                    retVal.SetBinaryData(name, (Stream)val);
+                    var retVal = new HttpRequestDataBinary(contentType, name, (Stream)val);
                     retVal.SetFilename("upload.tmp");
                     return retVal; ;
                 };
@@ -119,7 +118,7 @@ namespace SolidRpc.OpenApi.Binder
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    return (_, val) => new HttpRequestDataString(contentType, name, JsonConvert.SerializeObject(val));
+                    return (_, val) => new HttpRequestDataBinary(contentType, name, JsonHelper.Serialize(val, type));
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }

@@ -54,11 +54,12 @@ namespace SolidRpc.OpenApi.Model.V2
         /// Returns true if this parameter is a file type
         /// </summary>
         /// <returns></returns>
-        public bool IsFileType()
+        public bool IsBinaryType()
         {
             if (Type == "file") return true;
+            if (Type == "string" && Format == "binary") return true;
             if (Schema == null) return false;
-            return Schema.IsFileType(); 
+            return Schema.IsBinaryType(); 
         }
 
         /// <summary>

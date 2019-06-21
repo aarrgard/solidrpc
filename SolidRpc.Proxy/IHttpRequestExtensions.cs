@@ -96,7 +96,14 @@ namespace SolidRpc.OpenApi.Binder
                 {
                     part = new StreamContent(d.GetBinaryValue());
                     part.Headers.ContentType = new MediaTypeHeaderValue(binary.ContentType);
-                    content.Add(part, binary.Name, binary.Filename);
+                    if(binary.Filename == null)
+                    {
+                        content.Add(part, binary.Name);
+                    }
+                    else
+                    {
+                        content.Add(part, binary.Name, binary.Filename);
+                    }
                 }
                 else if (d is HttpRequestDataString)
                 {

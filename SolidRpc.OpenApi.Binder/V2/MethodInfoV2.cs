@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using SolidRpc.OpenApi.Model;
-using SolidRpc.OpenApi.Model.V2;
+﻿using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +25,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                         Name = parameterInfo.Name
                     };
                 }
-                if(operationObject.Parameters.Any(o => o.IsFileType()))
+                if(operationObject.Parameters.Any(o => o.IsBinaryType()))
                 {
                     if (parameterInfo.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -133,7 +131,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return "multipart/form-data";
             }
-            if(request.BodyData.Any(o => o is HttpRequestDataBinary))
+            if(OperationObject.Parameters.Any(o => o.IsBinaryType()))
             {
                 return "multipart/form-data";
             }
@@ -141,7 +139,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return request.BodyData.First().ContentType;
             }
-            throw new Exception("Cannot handle content type");
+            return "multipart/form-data";
         }
 
         public T ExtractResponse<T>(IHttpResponse response)

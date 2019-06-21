@@ -62,7 +62,7 @@ namespace SolidRpc.OpenApi.Binder
                     while (section != null)
                     {
                         var sectionMediaType = section.Headers.ContentType;
-                        var data = new HttpRequestDataBinary(sectionMediaType.MediaType, "body", null);
+                        var data = new HttpRequestDataBinary(sectionMediaType.MediaType, "body", (byte[])null);
 
                         var stream = await section.ReadAsStreamAsync();
                         data.SetBinaryData(section.Headers.ContentDisposition?.Name, stream);

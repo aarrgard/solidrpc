@@ -29,7 +29,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
             var collectionFormat = ParameterObject.Type == "array" ? ParameterObject.CollectionFormat ?? "csv" : null;
 
-            if (ParameterObject.IsFileType())
+            if (ParameterObject.IsBinaryType())
             {
                 HttpRequestDataBinder = (_, __) => SetFileData(ParameterObject.Name, _, __);
             }
@@ -41,7 +41,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IEnumerable<string> GetArgumentPath()
         {
-            if (ParameterObject.IsFileType())
+            if (ParameterObject.IsBinaryType())
             {
                 var fileParameterName = ParameterObject.GetFileParameterName();
                 switch (ParameterObject.Name.ToLower())
@@ -55,9 +55,9 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             if (ParameterObject.IsBodyType())
             {
-                return new[] { MapScope(ParameterObject.In),  "body" };
+                return new[] { MapScope(ParameterObject.In), "body" };
             }
-            if(ParameterInfo.ParameterType == typeof(CancellationToken))
+            if (ParameterInfo.ParameterType == typeof(CancellationToken))
             {
                 return new[] { "CancellationToken" };
             }
@@ -86,7 +86,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             var latest = formData.OfType<HttpRequestDataBinary>().LastOrDefault();
             if(latest == null)
             {
-                latest = new HttpRequestDataBinary("application/octet-stream", "temp", null);
+                latest = new HttpRequestDataBinary("application/octet-stream", "temp", (byte[])null);
                 latest.SetFilename("upload.tmp");
             }
             return latest;
@@ -231,7 +231,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         private object ExtractData(IEnumerable<HttpRequestData> vals)
         {
             Type enumType;
-            if(ParameterInfo.ParameterType.GetEnumType(out enumType))
+            if(!ParameterObject.IsBodyType() && ParameterInfo.ParameterType.GetEnumType(out enumType))
             {
                 var arr = vals.Select(o => ExtractData(o, enumType)).ToArray();
                 var typedArr = Array.CreateInstance(enumType, arr.Length);

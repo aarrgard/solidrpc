@@ -29,11 +29,14 @@ namespace SolidRpc.OpenApi.Binder.V2
         protected override IMethodInfo FindBinding(MethodInfo mi)
         {
             var binderStatus = new StringBuilder();
-            var prospects = Operations;
-            binderStatus.Append($"->#{prospects.Count()}");
+            binderStatus.Append($"->#{Operations.Count()}");
 
             // operation id must start with method name
-            prospects = prospects.Where(o => o.OperationId.StartsWith(mi.Name, StringComparison.InvariantCultureIgnoreCase));
+            var prospects = Operations.Where(o => o.OperationId.Equals(mi.Name, StringComparison.InvariantCultureIgnoreCase));
+            if(prospects.Count() == 0)
+            {
+                prospects = Operations.Where(o => o.OperationId.StartsWith(mi.Name, StringComparison.InvariantCultureIgnoreCase));
+            }
             binderStatus.Append($"->method({mi.Name})->#{prospects.Count()}");
 
             // find all parameters 
@@ -61,7 +64,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return true;
             }
-            if(parameters.Any(o => o.IsFileType()))
+            if(parameters.Any(o => o.IsBinaryType()))
             {
                 if (parameter.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                 {

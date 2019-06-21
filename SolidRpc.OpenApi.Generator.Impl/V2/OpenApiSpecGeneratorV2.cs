@@ -133,7 +133,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                     .Where(o => !o.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
             }
-            foreach(var fileType in operationObject.Parameters.Where(o => o.IsFileType()))
+            foreach(var fileType in operationObject.Parameters.Where(o => o.IsBinaryType()))
             {
                 fileType.In = "formData";
                 fileType.Type = "file";

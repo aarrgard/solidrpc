@@ -37,6 +37,7 @@ namespace SolidRpc.OpenApi.Binder
         {
             using (var ms = new MemoryStream())
             {
+                var enc = Encoding.UTF8;
                 using (StreamWriter sw = new StreamWriter(ms))
                 {
                     using (JsonWriter jsonWriter = new JsonTextWriter(sw))

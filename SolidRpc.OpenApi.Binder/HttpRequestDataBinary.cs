@@ -19,6 +19,18 @@ namespace SolidRpc.OpenApi.Binder
         {
             BinaryData = binaryData;
         }
+        /// <summary>
+        /// Constructs a new structure representing binary data.
+        /// </summary>
+        /// <param name="contentType"></param>
+        /// <param name="name"></param>
+        /// <param name="binaryData"></param>
+        public HttpRequestDataBinary(string contentType, string name, Stream stream) : base(contentType, name)
+        {
+            var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            BinaryData = ms.ToArray();
+        }
 
         /// <summary>
         /// The binary data.

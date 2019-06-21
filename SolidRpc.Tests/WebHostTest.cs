@@ -155,7 +155,7 @@ namespace SolidRpc.Tests
             /// </summary>
             public void Dispose()
             {
-                WebHost.StopAsync().Wait();
+                WebHost?.StopAsync().Wait();
                 HttpClient?.Dispose();
             }
 

@@ -317,16 +317,40 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                     });
 
                 //  await proxy.CreateUser(null)
-                //ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                //    o => o.CreateUser(null, CancellationToken.None),
-                //    config,
-                //    args =>
-                //    {
-                //        Assert.AreEqual(2, args.Length);
-                //        CompareStructs(users[0], args[0]);
-                //        CompareStructs(CancellationToken.None, args[1]);
-                //        return Task.FromResult(inventory);
-                //    });
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.CreateUser(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(users[0], args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.CompletedTask;
+                    });
+
+                //  await proxy.CreateUser(null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.CreateUsersWithArrayInput(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(typeof(IEnumerable<Petstore.Types.User>), users, args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.CompletedTask;
+                    });
+
+                //  await proxy.CreateUser(null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.CreateUsersWithListInput(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(typeof(IEnumerable<Petstore.Types.User>), users, args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.CompletedTask;
+                    });
 
                 await ctx.StartAsync();
 
@@ -360,7 +384,9 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 //
                 // User
                 //
-                //await userProxy.CreateUser(users[0]);
+                await userProxy.CreateUser(users[0]);
+                await userProxy.CreateUsersWithArrayInput(users);
+                await userProxy.CreateUsersWithListInput(users);
             }
         }
 
