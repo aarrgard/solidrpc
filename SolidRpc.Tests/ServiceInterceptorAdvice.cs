@@ -79,10 +79,11 @@ namespace SolidRpc.Tests
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             var methodInfo = invocation.SolidProxyInvocationConfiguration.MethodInfo;
+            var availableMethods = ServiceCalls.Select(o => o.MethodInfo.Name);
+            invocation.ServiceProvider.LogTrace<ServiceInterceptorAdvice<TObject, TMethod, TAdvice>>($"Picking method({methodInfo.Name}) from available methods:{string.Join(",", availableMethods)}.");
             var serviceCall = ServiceCalls.FirstOrDefault(o => o.MethodInfo == methodInfo);
             if(serviceCall == null)
             {
-                var availableMethods = ServiceCalls.Select(o => o.MethodInfo.Name);
                 throw new Exception($"No service call registered for method({methodInfo.Name}). Available methods are {string.Join(",", availableMethods)}.");
             }
             var res = (TMethod)serviceCall.Callback(invocation.Arguments);

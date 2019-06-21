@@ -97,16 +97,23 @@ namespace Microsoft.AspNetCore.Builder
             {
                 path = path.Substring(0, nextSlashIdx);
             }
-            if(path != segment)
+            if(path == segment)
             {
-                if (fixedPaths.Contains(path))
-                {
-                    return false;
-                }
+                ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
+                ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
+                return true;
             }
-            ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
-            ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
-            return true;
+            if(fixedPaths.Contains(path))
+            {
+                return false;
+            }
+            if(segment.StartsWith("/{"))
+            {
+                ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
+                ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
+                return true;
+            }
+            return false;
         }
 
         private static async Task HandleInvocation(IMethodInfo methodInfo, HttpContext context)
