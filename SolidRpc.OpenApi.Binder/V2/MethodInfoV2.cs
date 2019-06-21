@@ -64,8 +64,8 @@ namespace SolidRpc.OpenApi.Binder.V2
                 OperationObject.GetParent<SwaggerObject>().Schemes?.FirstOrDefault() ??
                 "http";
             Host = OperationObject.GetParent<SwaggerObject>().Host;
-            Path = $"{OperationObject.GetParent<SwaggerObject>().BasePath}{OperationObject.GetPath()}";
-            Produces = OperationObject.Produces ?? new string[0];
+            Path = OperationObject.GetAbsolutePath();
+            Produces = OperationObject.GetProduces();
         }
 
         private IMethodArgument[] CreateArguments()
@@ -105,6 +105,11 @@ namespace SolidRpc.OpenApi.Binder.V2
             for (int i = 0; i < Arguments.Length; i++)
             {
                 await Arguments[i].BindArgumentAsync(request, args[i]);
+            }
+
+            foreach(var pathData in request.PathData)
+            {
+                request.Path = request.Path.Replace($"{{{pathData.Name}}}", pathData.GetStringValue());
             }
 
             request.ContentType = GetContentTypeBasedOnConsumesAndData(request);
@@ -149,18 +154,47 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return (T)(object)response.ResponseStream;
             }
-            if (!Produces.Contains(response.ContentType))
+            if(Produces.Any())
             {
-                throw new Exception("Operation does not support content type:" + response.ContentType);
+                if (!Produces.Contains(response.ContentType))
+                {
+                    throw new Exception($"Operation does not support content type {response.ContentType}. Supported content types are {string.Join(",", Produces)}");
+                }
             }
-            using (var s = response.ResponseStream)
+            switch (response.ContentType.ToLower())
             {
-                return JsonHelper.Deserialize<T>(s);
+                case "application/json":
+                    using (var s = response.ResponseStream)
+                    {
+                        return JsonHelper.Deserialize<T>(s);
+                    }
+                default:
+                    throw new Exception("Cannot handle content type:"+response.ContentType);
+                    
             }
         }
 
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {
+            // create path data
+            var patterns = OperationObject.GetAbsolutePath().Split('/');
+            var pathElements = request.Path.Split('/');
+            if(patterns.Length != pathElements.Length)
+            {
+                throw new Exception($"Supplied request path({request.Path}) does not match operation path({OperationObject.GetAbsolutePath()})");
+            }
+            var pathData = new List<HttpRequestData>();
+            for(int i = 0; i < patterns.Length; i++)
+            {
+                var pattern = patterns[i];
+                if(pattern.StartsWith("{") && pattern.EndsWith("}"))
+                {
+                    pathData.Add(new HttpRequestDataString("text/plain", pattern.Substring(1, pattern.Length - 2), pathElements[i]));
+                }
+            }
+            request.PathData = pathData;
+
+            // then bind the arguments
             var args = new object[Arguments.Length];
             for(int i =0; i < args.Length; i++)
             {
@@ -169,14 +203,14 @@ namespace SolidRpc.OpenApi.Binder.V2
             return args;
         }
 
-        public Task BindResponseAsync(IHttpResponse response, object resp)
+        public Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
         {
             response.StatusCode = 200;
             var returnType = MethodInfo.ReturnType;
             if (returnType.IsFileType())
             {
-                response.ContentType = returnType.GetFileTypeContentType(resp);
-                response.ResponseStream = returnType.GetFileTypeStreamData(resp);
+                response.ContentType = returnType.GetFileTypeContentType(obj);
+                response.ResponseStream = returnType.GetFileTypeStreamData(obj);
                 return Task.CompletedTask;
             }
 
@@ -190,18 +224,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case null:
                 case "application/json":
                     response.ContentType = "application/json";
-                    using (var ms = new MemoryStream())
-                    {
-                        using (StreamWriter sw = new StreamWriter(ms))
-                        {
-                            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
-                            {
-                                var serializer = JsonSerializer.Create();
-                                serializer.Serialize(jsonWriter, resp, returnType);
-                            }
-                        }
-                        response.ResponseStream = new MemoryStream(ms.ToArray());
-                    }
+                    response.ResponseStream = JsonHelper.Serialize(obj, objType);
                     break;
                 default:
                     throw new Exception("Cannot handle content type:" + contentType);

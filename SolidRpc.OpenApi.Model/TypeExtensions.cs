@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
-namespace SolidRpc.OpenApi.Model
+namespace System
 {
     /// <summary>
     /// Contains extension methods for the Type
@@ -264,6 +262,37 @@ namespace SolidRpc.OpenApi.Model
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             return h.GetContentType(impl);
+        }
+
+        /// <summary>
+        /// Returns true if the type is an enum
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="enumType"></param>
+        /// <returns></returns>
+        public static bool GetEnumType(this Type type, out Type enumType)
+        {
+            if (!type.IsGenericType)
+            {
+                enumType = null;
+                return false;
+            }
+            IEnumerable<Type> interfaceProspects = type.GetInterfaces();
+            if(type.IsInterface)
+            {
+                interfaceProspects = interfaceProspects.Union(new[] { type });
+            }
+            var enumInterface = interfaceProspects
+                .Where(o => o.IsGenericType)
+                .Where(o => o.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                .FirstOrDefault();
+            if (enumInterface == null)
+            {
+                enumType = null;
+                return false;
+            }
+            enumType = enumInterface.GetGenericArguments()[0];
+            return true;
         }
     }
 }

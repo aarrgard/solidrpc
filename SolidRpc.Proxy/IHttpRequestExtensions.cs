@@ -67,7 +67,10 @@ namespace SolidRpc.OpenApi.Binder
 
             target.Method = new HttpMethod(source.Method);
             target.RequestUri = builder.Uri;
-            switch(source.ContentType?.ToLower())
+
+            source.Headers.ToList().ForEach(o => target.Headers.Add(o.Name, o.GetStringValue()));
+
+            switch (source.ContentType?.ToLower())
             {
                 case null:
                     break;

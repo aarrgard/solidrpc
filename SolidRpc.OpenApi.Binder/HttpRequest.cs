@@ -14,6 +14,7 @@ namespace SolidRpc.OpenApi.Binder
         public HttpRequest()
         {
             CancellationToken = CancellationToken.None;
+            PathData = HttpRequestData.EmptyArray;
             Headers = HttpRequestData.EmptyArray;
             Query = HttpRequestData.EmptyArray;
             BodyData = HttpRequestData.EmptyArray;
@@ -44,6 +45,11 @@ namespace SolidRpc.OpenApi.Binder
         /// The path
         /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// The path data
+        /// </summary>
+        public IEnumerable<HttpRequestData> PathData { get; set; }
 
         /// <summary>
         /// The headers

@@ -35,6 +35,12 @@ namespace SolidRpc.OpenApi.Binder
         string Path { get; set; }
 
         /// <summary>
+        /// The path data. This information is extracted/populated by the binder. No
+        /// need to populate from implementation.
+        /// </summary>
+        IEnumerable<HttpRequestData> PathData { get; set; }
+
+        /// <summary>
         /// The request headers
         /// </summary>
         IEnumerable<HttpRequestData> Headers { get; set; }

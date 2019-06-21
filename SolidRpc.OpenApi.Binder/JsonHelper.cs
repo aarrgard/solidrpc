@@ -32,5 +32,21 @@ namespace SolidRpc.OpenApi.Binder
                 }
             }
         }
+
+        public static Stream Serialize(object resp, Type objectType)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (StreamWriter sw = new StreamWriter(ms))
+                {
+                    using (JsonWriter jsonWriter = new JsonTextWriter(sw))
+                    {
+                        var serializer = JsonSerializer.Create();
+                        serializer.Serialize(jsonWriter, resp, objectType);
+                    }
+                }
+                return new MemoryStream(ms.ToArray());
+            }
+        }
     }
 }

@@ -145,12 +145,17 @@ namespace SolidRpc.OpenApi.Model.V2
         /// </summary>
         public string GetPath()
         {
-            if (Parent is PathItemObject pathItem)
-            {
-                return pathItem.Path;
-            }
-            throw new System.Exception("Cannot determine method.");
+            return GetParent<PathItemObject>().Path;
         }
+
+        /// <summary>
+        /// The path to this operation Including the base path
+        /// </summary>
+        public string GetAbsolutePath()
+        {
+            return $"{GetParent<SwaggerObject>().BasePath}{GetPath()}";
+        }
+
         public IEnumerable<string> GetConsumes()
         {
             if (Consumes == null)

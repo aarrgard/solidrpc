@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using SolidProxy.Core.Configuration.Builder;
+using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidProxy.Core.Proxy;
 using SolidRpc.OpenApi.AspNetCore;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +27,12 @@ namespace Microsoft.AspNetCore.Builder
             {
                 throw new Exception("No solid proxy configuration registered - please configure during startup.");
             }
+
+            //
+            // if we map the same path twice we remove old mappings. Extract all paths
+            // and map them accordingly.
+            //
+            var dict = new Dictionary<string, IMethodInfo>();
             runtime.SolidConfigurationBuilder.AssemblyBuilders
                 .SelectMany(o => o.Interfaces)
                 .SelectMany(o => o.Methods)
@@ -37,40 +44,85 @@ namespace Microsoft.AspNetCore.Builder
                     var openApiSpec = OpenApiParser.ParseSwaggerSpec(config.OpenApiConfiguration);
                     var methodBinder = openApiSpec.GetMethodBinder();
                     var methodInfo = methodBinder.GetMethodInfo(o.MethodInfo);
-                    BindPath(applicationBuilder, methodInfo.Path, methodInfo);
+                    dict[$"{methodInfo.Method}{methodInfo.Path}"] = methodInfo;
                 });
+
+            //
+            // start mapping paths
+            //
+            foreach(var method in dict.Keys.Select(o => o.Split('/')[0]).Distinct())
+            {
+                applicationBuilder.MapWhen(
+                    ctx => string.Equals(ctx.Request.Method, method, StringComparison.InvariantCultureIgnoreCase),
+                    (ab) => BindPath(ab, method, dict));
+            }
             return applicationBuilder;
         }
 
-        private static void BindPath(IApplicationBuilder applicationBuilder, string path, IMethodInfo methodInfo)
+        private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, IMethodInfo> paths)
         {
-            applicationBuilder.Run(ctx => HandleInvocation(methodInfo, ctx));
-            if (string.IsNullOrEmpty(path))
+            ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
+
+            // drill down in sub paths
+            var parts = paths.Select(o => o.Key)
+                .Where(o => o.StartsWith($"{pathPrefix}/"))
+                .Select(o => o.Substring(pathPrefix.Length+1).Split('/')[0])
+                .Distinct()
+                .ToList();
+
+            var fixedPaths = parts.Where(o => !o.StartsWith("{")).Select(o => $"/{o}").ToList();
+            foreach (var part in parts)
             {
-                applicationBuilder.Run(ctx => HandleInvocation(methodInfo, ctx));
-                return;
+                ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths));
             }
-            if(!path.StartsWith("/"))
+
+            // add handler for this path
+            IMethodInfo methodInfo;
+            if (paths.TryGetValue(pathPrefix, out methodInfo))
             {
-                throw new ArgumentException("path must start with '/'");
+                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {methodInfo.OperationId}:{methodInfo.MethodInfo}");
+                ab.Run((ctx) => HandleInvocation(methodInfo, ctx));
             }
-            var pathPart = path;
-            var slashIdx = path.IndexOf('/', 1);
-            if (slashIdx == -1)
+        }
+
+        private static bool IsMatch(HttpContext ctx, string segment, IEnumerable<string> fixedPaths)
+        {
+            var path = ctx.Request.Path.Value;
+            if (!path.StartsWith("/"))
             {
-                slashIdx = path.Length;
+                return false;
             }
-            else
+            var nextSlashIdx = path.IndexOf('/', 1);
+            if(nextSlashIdx > -1)
             {
-                pathPart = path.Substring(0, slashIdx);
+                path = path.Substring(0, nextSlashIdx);
             }
-            applicationBuilder.Map(pathPart, (ab) => BindPath(ab, path.Substring(slashIdx), methodInfo));
+            if(path != segment)
+            {
+                if (fixedPaths.Contains(path))
+                {
+                    return false;
+                }
+            }
+            ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
+            ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
+            return true;
         }
 
         private static async Task HandleInvocation(IMethodInfo methodInfo, HttpContext context)
         {
             try
             {
+                //
+                // check if the request is intended for this path.
+                //
+                if (context.Request.Path != "")
+                {
+                    return;
+                }
+
+                context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+
                 // extract information from http context.
                 var request = new SolidRpc.OpenApi.Binder.HttpRequest();
                 await request.CopyFromAsync(context.Request);
@@ -82,7 +134,7 @@ namespace Microsoft.AspNetCore.Builder
 
                 // return response
                 var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
-                await methodInfo.BindResponseAsync(resp, res);
+                await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
                 await resp.CopyToAsync(context.Response);
             }
             catch(Exception e)

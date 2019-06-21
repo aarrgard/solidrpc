@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -18,6 +19,11 @@ namespace SolidRpc.OpenApi.Binder
         /// Returns the operation id for this method.
         /// </summary>
         string OperationId { get; }
+
+        /// <summary>
+        /// The method(POST,GET,HEAD,etc) to use when activating the method.
+        /// </summary>
+        string Method { get; }
 
         /// <summary>
         /// The path to thes method. This includes the basepath and the path element.
@@ -47,9 +53,9 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// Binds the response
         /// </summary>
-        /// <param name="resp"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        Task BindResponseAsync(IHttpResponse response, object resp);
+        Task BindResponseAsync(IHttpResponse response, object obj, Type objType);
 
         /// <summary>
         /// Returns the respone.

@@ -103,7 +103,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case "query":
                     return nameof(IHttpRequest.Query);
                 case "path":
-                    return nameof(IHttpRequest.Path);
+                    return nameof(IHttpRequest.PathData);
                 case "formData":
                     return nameof(IHttpRequest.BodyData);
                 case "body":
@@ -230,12 +230,24 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private object ExtractData(IEnumerable<HttpRequestData> vals)
         {
-            var valData = vals.FirstOrDefault();
-            if(valData == null)
+            Type enumType;
+            if(ParameterInfo.ParameterType.GetEnumType(out enumType))
+            {
+                var arr = vals.Select(o => ExtractData(o, enumType)).ToArray();
+                var typedArr = Array.CreateInstance(enumType, arr.Length);
+                arr.CopyTo(typedArr, 0);
+                return typedArr;
+            }
+            return ExtractData(vals.FirstOrDefault(), ParameterInfo.ParameterType);
+        }
+
+        private object ExtractData(HttpRequestData valData, Type dataType)
+        {
+            if (valData == null)
             {
                 return null;
             }
-            if (ParameterInfo.ParameterType == typeof(Stream))
+            if (dataType == typeof(Stream))
             {
                 return valData.GetBinaryValue();
             }
@@ -244,18 +256,14 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case null:
                 case "text/plain":
                 case "application/octet-stream":
-                    if (ParameterInfo.ParameterType == typeof(string))
-                    {
-                        return valData.GetStringValue();
-                    }
-                    break;
+                    return Convert.ChangeType(valData.GetStringValue(), dataType);
                 case "application/json":
                     using (var s = valData.GetBinaryValue())
                     {
-                        return JsonHelper.Deserialize(s, ParameterInfo.ParameterType);
+                        return JsonHelper.Deserialize(s, dataType);
                     }
             }
-            throw new Exception("Cannot handle type:" + ParameterInfo.ParameterType.FullName);
+            throw new Exception("Cannot handle type:" + dataType);
         }
     }
 }

@@ -20,13 +20,14 @@
             "in": "path",
             "description": "The number to proxy",
             "required": true,
-            "type": "integer"
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "responses": {
           "200": {
             "description": "Success",
-            "schema": { "type": "integer" }
+            "schema": { "type": "integer", "format": "int32" }
           }
         }
       }

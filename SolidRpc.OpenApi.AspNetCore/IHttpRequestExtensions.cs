@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder
@@ -22,7 +24,18 @@ namespace SolidRpc.OpenApi.Binder
             target.Scheme = source.Scheme;
             target.Method = source.Method;
             target.HostAndPort = source.Host.ToString();
-            target.Path = source.Path;
+            target.Path = $"{source.PathBase}{source.Path}";
+
+            // extract headers
+            var headerList = new List<HttpRequestData>();
+            foreach (var h in source.Headers)
+            {
+                foreach (var sv in h.Value)
+                {
+                    headerList.Add(new HttpRequestDataString("text/plain", h.Key, sv));
+                }
+            }
+            target.Headers = headerList;
 
             // extract query
             var queryList = new List<HttpRequestData>();
@@ -38,7 +51,7 @@ namespace SolidRpc.OpenApi.Binder
             // extract body
             if(source.ContentType != null)
             {
-                var httpRequestData = new List<HttpRequestData>();
+                var bodyData = new List<HttpRequestData>();
                 var mediaType = MediaTypeHeaderValue.Parse(source.ContentType);
                 target.ContentType = mediaType.MediaType;
                 if (mediaType.MediaType == "multipart/form-data")
@@ -56,22 +69,45 @@ namespace SolidRpc.OpenApi.Binder
 
                         data.SetFilename(section.Headers.ContentDisposition?.FileName);
 
-                        httpRequestData.Add(data);
+                        bodyData.Add(data);
 
                         section = await reader.ReadNextSectionAsync();
                     }
                 }
                 else if (mediaType.MediaType == "application/x-www-form-urlencoded")
                 {
-                    throw new NotImplementedException();
+                    // read the content as a query string
+                    StreamReader sr;
+                    if(mediaType.CharSet != null)
+                    {
+                        sr = new StreamReader(source.Body, Encoding.GetEncoding(mediaType.CharSet));
+                    }
+                    else
+                    {
+                        sr = new StreamReader(source.Body);
+                    }
+                    using (sr)
+                    {
+                        var content = await sr.ReadToEndAsync();
+                        content.Split('&').ToList().ForEach(o =>
+                        {
+                            var values = o.Split('=');
+                            if(values.Length != 2)
+                            {
+                                throw new Exception("Cannot split values");
+                            }
+                            bodyData.Add(new HttpRequestDataString("text/plain", values[0], values[1]));
+
+                        });
+                    }
                 }
                 else
                 {
                     var ms = new MemoryStream();
                     await source.Body.CopyToAsync(ms);
-                    httpRequestData.Add(new HttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
+                    bodyData.Add(new HttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
                 }
-                target.BodyData = httpRequestData;
+                target.BodyData = bodyData;
             }
         }
     }
