@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Proxy;
+using SolidRpc.OpenApi.Proxy;
 using System;
 using System.IO;
 using System.Linq;

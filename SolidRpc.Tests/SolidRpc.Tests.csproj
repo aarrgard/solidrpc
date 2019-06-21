@@ -27,12 +27,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
-    <ProjectReference Include="..\SolidRpc.Proxy\SolidRpc.Proxy.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator.Impl\SolidRpc.OpenApi.Generator.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator\SolidRpc.OpenApi.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.Proxy\SolidRpc.OpenApi.Proxy.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
     <ProjectReference Include="..\SolidRpc.Wire\SolidRpc.Wire.csproj" />
   </ItemGroup>

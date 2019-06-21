@@ -156,13 +156,15 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                     {
                         Id = 1,
                         Username = "aarrgard",
-                        Email = "a@b.c"
+                        Email = "a@b.c",
+                        Password = "pwd1"
                     },
                     new Petstore.Types.User()
                     {
                         Id = 2,
                         Username = "barrgard",
-                        Email = "b@b.c"
+                        Email = "b@b.c",
+                        Password = "pwd2"
                     }
                 };
 
@@ -352,6 +354,68 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                         return Task.CompletedTask;
                     });
 
+
+                //  await proxy.DeleteUser(null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.DeleteUser(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(users[0].Username, args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.CompletedTask;
+                    });
+
+                //  await proxy.DeleteUser(null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.DeleteUser(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(users[0].Username, args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.CompletedTask;
+                    });
+
+                //  await proxy.GetUserByName(null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.GetUserByName(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(users[0].Username, args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.FromResult(users[0]);
+                    });
+
+
+                //  await proxy.LoginUser(null,null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.LoginUser(null, null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(3, args.Length);
+                        CompareStructs(users[0].Username, args[0]);
+                        CompareStructs(users[0].Password, args[1]);
+                        CompareStructs(CancellationToken.None, args[2]);
+                        return Task.FromResult(api_key);
+                    });
+
+                //  await proxy.LoginUser(null,null)
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.LogoutUser(CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(1, args.Length);
+                        CompareStructs(CancellationToken.None, args[0]);
+                        return Task.CompletedTask;
+                    });
+
                 await ctx.StartAsync();
 
                 var petProxy = CreateProxy<Petstore.Services.IPet>(ctx.BaseAddress, config);
@@ -387,6 +451,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 await userProxy.CreateUser(users[0]);
                 await userProxy.CreateUsersWithArrayInput(users);
                 await userProxy.CreateUsersWithListInput(users);
+                await userProxy.DeleteUser(users[0].Username);
+                CompareStructs(users[0], await userProxy.GetUserByName(users[0].Username));
+                CompareStructs(api_key, await userProxy.LoginUser(users[0].Username, users[0].Password));
+                await userProxy.LogoutUser();
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿using SolidProxy.Core.Configuration;
 using System;
 
-namespace SolidRpc.Proxy
+namespace SolidRpc.OpenApi.Proxy
 {
     /// <summary>
     /// Configures the proxy.
