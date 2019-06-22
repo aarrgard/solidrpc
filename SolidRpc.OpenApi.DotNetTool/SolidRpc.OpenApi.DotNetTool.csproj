@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Description>Generates code from a swagger specification.</Description>
     <PackageId>SolidRpc.OpenApi.DotNetTool</PackageId>
-    <AssemblyName>dotnet-solidrpc-apenapigen</AssemblyName>
+    <AssemblyName>dotnet-solidrpc-openapigen</AssemblyName>
     <PackageType>DotNetCliTool</PackageType>
     
     <!--<IsPackable>true</IsPackable>
