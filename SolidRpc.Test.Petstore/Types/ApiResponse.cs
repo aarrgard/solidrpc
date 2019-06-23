@@ -1,6 +1,6 @@
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
-    /// 
+    /// successful operation
     /// </summary>
     public class ApiResponse {
         /// <summary>

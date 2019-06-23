@@ -37,7 +37,7 @@ namespace SolidRpc.OpenApi.DotNetTool
         }
         public static Task MainWithExeptions(string[] args)
         {
-            Console.WriteLine("Running swagger-generator");
+            Console.WriteLine("Running dotnet-openapigen");
             var argList = new List<string>(args);
             var command = argList.Where(o => s_commands.Contains(o)).SingleOrDefault();
             if(command == null)

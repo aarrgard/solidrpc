@@ -37,6 +37,10 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
             {
                 codeWriter.Emit($"/// <param name=\"{p.Name}\">{p.Comment?.Summary}</param>{codeWriter.NewLine}");
             });
+            Comment.Exceptions.ToList().ForEach(e =>
+            {
+                codeWriter.Emit($"/// <exception cref=\"{SimplifyName(e.Cref)}\">{e.Description}</exception>{codeWriter.NewLine}");
+            });
             codeWriter.Emit($"{SimplifyName(ReturnType.FullName)} {Name}(");
             for (int i = 0; i < parameters.Count; i++)
             {

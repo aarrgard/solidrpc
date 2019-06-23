@@ -41,7 +41,6 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Compares the structs
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="o1"></param>
         /// <param name="o2"></param>
         public static void CompareStructs(object o1, object o2)

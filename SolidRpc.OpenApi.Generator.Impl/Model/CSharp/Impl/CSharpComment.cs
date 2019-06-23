@@ -1,14 +1,19 @@
-﻿namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
+﻿using System.Collections.Generic;
+
+namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 {
     public class CSharpComment : ICSharpComment
     {
-        public CSharpComment(string summary, ICSharpCommentExternalDoc externalDoc = null)
+        public CSharpComment(string summary, IEnumerable<ICSharpCommentException> exceptions, ICSharpCommentExternalDoc externalDoc = null)
         {
             Summary = summary;
             ExternalDoc = externalDoc;
+            Exceptions = exceptions;
         }
         public string Summary { get; }
 
         public ICSharpCommentExternalDoc ExternalDoc { get; }
+
+        public IEnumerable<ICSharpCommentException> Exceptions { get; }
     }
 }

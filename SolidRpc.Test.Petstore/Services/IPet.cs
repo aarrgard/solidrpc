@@ -7,13 +7,14 @@ namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
     /// Everything about your Pets
     /// </summary>
-    /// <a href="http://swagger.io/">Find out more</a>
+    /// <a href="http://swagger.io">Find out more</a>
     public interface IPet {
         /// <summary>
         /// Add a new pet to the store
         /// </summary>
         /// <param name="body">Pet object that needs to be added to the store</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.AddPet.InvalidInputException">Invalid input</exception>
         Task AddPet(
             Pet body,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -23,6 +24,9 @@ namespace SolidRpc.Test.Petstore.Services {
         /// </summary>
         /// <param name="body">Pet object that needs to be added to the store</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.PetNotFoundException">Pet not found</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.ValidationException">Validation exception</exception>
         Task UpdatePet(
             Pet body,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -32,6 +36,7 @@ namespace SolidRpc.Test.Petstore.Services {
         /// </summary>
         /// <param name="status">Status values that need to be considered for filter</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByStatus.InvalidStatusValueException">Invalid status value</exception>
         Task<IEnumerable<Pet>> FindPetsByStatus(
             IEnumerable<string> status,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -41,6 +46,7 @@ namespace SolidRpc.Test.Petstore.Services {
         /// </summary>
         /// <param name="tags">Tags to filter by</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByTags.InvalidTagValueException">Invalid tag value</exception>
         Task<IEnumerable<Pet>> FindPetsByTags(
             IEnumerable<string> tags,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -51,6 +57,8 @@ namespace SolidRpc.Test.Petstore.Services {
         /// <param name="api_key"></param>
         /// <param name="petId">Pet id to delete</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">Pet not found</exception>
         Task DeletePet(
             string api_key,
             long petId,
@@ -61,6 +69,8 @@ namespace SolidRpc.Test.Petstore.Services {
         /// </summary>
         /// <param name="petId">ID of pet to return</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.InvalidIDSuppliedException">Invalid ID supplied</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.PetNotFoundException">Pet not found</exception>
         Task<Pet> GetPetById(
             long petId,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -72,6 +82,7 @@ namespace SolidRpc.Test.Petstore.Services {
         /// <param name="name">Updated name of the pet</param>
         /// <param name="status">Updated status of the pet</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">Invalid input</exception>
         Task UpdatePetWithForm(
             long petId,
             string name,

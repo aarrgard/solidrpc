@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// Returns pet inventories by status Returns a map of status codes to quantities
         /// </summary>
         /// <param name="cancellationToken"></param>
-        Task<GetInventory200> GetInventory(
+        Task<SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.GetInventory.Response200> GetInventory(
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -18,6 +18,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// </summary>
         /// <param name="body">order placed for purchasing the pet</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.PlaceOrder.InvalidOrderException">Invalid Order</exception>
         Task<Order> PlaceOrder(
             Order body,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -27,6 +28,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// </summary>
         /// <param name="orderId">ID of the order that needs to be deleted</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.DeleteOrder.InvalidIDSuppliedException">Invalid ID supplied</exception>
+        /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.DeleteOrder.OrderNotFoundException">Order not found</exception>
         Task DeleteOrder(
             long orderId,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -36,6 +39,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// </summary>
         /// <param name="orderId">ID of pet that needs to be fetched</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.GetOrderById.InvalidIDSuppliedException">Invalid ID supplied</exception>
+        /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.GetOrderById.OrderNotFoundException">Order not found</exception>
         Task<Order> GetOrderById(
             long orderId,
             CancellationToken cancellationToken = default(CancellationToken));

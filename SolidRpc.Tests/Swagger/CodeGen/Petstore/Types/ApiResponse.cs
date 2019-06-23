@@ -1,6 +1,6 @@
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
-    /// 
+    /// successful operation
     /// </summary>
     public class ApiResponse {
         /// <summary>

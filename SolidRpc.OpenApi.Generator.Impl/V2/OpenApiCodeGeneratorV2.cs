@@ -38,6 +38,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 swaggerOperation.Tags = GetTags(op);
                 swaggerOperation.OperationId = op.OperationId;
                 swaggerOperation.OperationDescription = SwaggerDescription.Create($"{op.Summary} {op.Description}", op.ExternalDocs?.Description, op.ExternalDocs?.Url);
+                swaggerOperation.Exceptions = GetExceptions(swaggerOperation, op);
                 swaggerOperation.ReturnType = GetReturnType(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
                 return OperationMapper(CodeSettings, swaggerOperation);
@@ -46,7 +47,11 @@ namespace SolidRpc.OpenApi.Generator.V2
             cSharpMethods.ForEach(o =>
             {
                 var i = cSharpRepository.GetInterface(o.InterfaceName);
-                i.ParseComment($"<summary>{o.ClassSummary?.Summary}</summary><a href=\"{o.ClassSummary?.ExternalUri}\">{o.ClassSummary?.ExternalDescription}</a>");
+
+                var comment = $"<summary>{o.ClassSummary?.Summary}</summary>";
+                comment += $"<a href=\"{o.ClassSummary?.ExternalUri}\">{o.ClassSummary?.ExternalDescription}</a>";
+
+                i.ParseComment(comment);
                 var returnType = (ICSharpType)GetClass(cSharpRepository, o.ReturnType);
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
@@ -54,7 +59,19 @@ namespace SolidRpc.OpenApi.Generator.V2
                 }
 
                 var m = new Model.CSharp.Impl.CSharpMethod(i, o.MethodName, returnType);
-                m.ParseComment($"<summary>{o.MethodSummary?.Summary}</summary><a href=\"{o.MethodSummary?.ExternalUri}\">{o.MethodSummary?.ExternalDescription}</a>");
+                comment = $"<summary>{o.MethodSummary?.Summary}</summary>";
+                comment += $"<a href=\"{o.MethodSummary?.ExternalUri}\">{o.MethodSummary?.ExternalDescription}</a>";
+                foreach (var e in o.Exceptions)
+                {
+                    var ex = GetClass(cSharpRepository, e);
+                    ex.AddExtends(cSharpRepository.GetClass(typeof(Exception).FullName));
+                    comment += $"<exception cref=\"{ex.FullName}\">{ex.Comment?.Summary}</exception>";
+                    var ctr = new Model.CSharp.Impl.CSharpConstructor(ex, $"\"{ex.Comment?.Summary}\"",$"Data[\"HttpStatusCode\"] = {e.ExceptionCode};");
+                    ctr.ParseComment("<summary>Constructs a new instance</summary>");
+                    ex.AddMember(ctr);
+                }
+                m.ParseComment(comment);
+
                 foreach (var p in o.Parameters)
                 {
                     var parameterType = GetClass(cSharpRepository, p.ParameterType);
@@ -119,21 +136,39 @@ namespace SolidRpc.OpenApi.Generator.V2
             }
         }
 
+        private IEnumerable<SwaggerDefinition> GetExceptions(SwaggerOperation swaggerOperation, OperationObject op)
+        {
+            int dummy;
+            return op.Responses
+                .Where(o => !string.Equals(o.Key, "200"))
+                .Where(o => !string.Equals(o.Key, "default", StringComparison.InvariantCultureIgnoreCase))
+                .Where(o => int.TryParse(o.Key, out dummy))
+                .Select(ro =>
+                {
+                    var def = new SwaggerDefinition(swaggerOperation, ExceptionNameMapper(ro.Value.Description));
+                    def.Description = ro.Value.Description;
+                    def.ExceptionCode = int.Parse(ro.Key);
+                    return def;
+                }).ToList();
+        }
+
         private SwaggerDefinition GetReturnType(SwaggerOperation swaggerOperation, OperationObject op)
         {
-            var responseDef = new SwaggerDefinition(null, SwaggerDefinition.TypeVoid);
-            op.Responses.ToList().ForEach(ro => {
+            var responseDef = op.Responses
+                .Where(o => string.Equals(o.Key, "200"))
+                .Select(ro => {
                 var def = new SwaggerDefinition(null, SwaggerDefinition.TypeVoid);
                 if (ro.Value.Schema != null)
                 {
                     def = GetSwaggerDefinition(swaggerOperation, ro.Value.Schema);
                 }
                 def.Description = ro.Value.Description;
-                if (ro.Key == "200")
-                {
-                    responseDef = def;
-                }
-            });
+                return def;
+            }).FirstOrDefault();
+            if(responseDef == null)
+            {
+                responseDef = new SwaggerDefinition(null, SwaggerDefinition.TypeVoid);
+            }
             return responseDef;
         }
 

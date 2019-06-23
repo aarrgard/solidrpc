@@ -85,6 +85,11 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
         /// <summary>
         /// The description of this definition
         /// </summary>
-        public string Description { get; internal set; }
+        public string Description { get; set; }
+
+        /// <summary>
+        /// The exception code if this is a type that should return a result.
+        /// </summary>
+        public int? ExceptionCode { get; internal set; }
     }
 }

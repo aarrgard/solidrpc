@@ -66,7 +66,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                CreateCode(subDir, false);
+                CreateCode(subDir, true);
             }
         }
 
@@ -144,7 +144,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                     Status = "pending"
                 };
 
-                var inventory = new Petstore.Types.GetInventory200()
+                var inventory = new Petstore.Types.Services.Store.GetInventory.Response200()
                 {
                     { "2321", 10 },
                     { "2322", 5 }

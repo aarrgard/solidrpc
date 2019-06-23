@@ -11,6 +11,7 @@
     <Description>This is a generated package</Description>
     <Copyright>MyCompany</Copyright>
     <PackageProjectUrl>https://github.com/aarrgard/solidrpc/wiki</PackageProjectUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

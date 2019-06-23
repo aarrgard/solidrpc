@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+
 
 namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
 {
@@ -9,6 +8,19 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
     /// </summary>
     public class CSharpMethod
     {
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        public CSharpMethod()
+        {
+            Exceptions = new CSharpObject[0];
+            Parameters = new CSharpMethodParameter[0];
+        }
+
+        /// <summary>
+        /// The exceptions rasised by this method
+        /// </summary>
+        public IEnumerable<CSharpObject> Exceptions { get; set; }
 
         /// <summary>
         /// The return type.

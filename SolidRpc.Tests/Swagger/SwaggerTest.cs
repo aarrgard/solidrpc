@@ -2,8 +2,8 @@
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
-using SolidRpc.Test.Petstore.Services;
-using SolidRpc.Test.Petstore.Types;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Services;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System;
 using System.IO;
 using System.Linq;

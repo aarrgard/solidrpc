@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
     /// <summary>
-    /// 
+    /// Success
     /// </summary>
     public class ComplexObject1 {
         /// <summary>

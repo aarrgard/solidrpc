@@ -1,7 +1,7 @@
 using System;
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
-    /// 
+    /// successful operation
     /// </summary>
     public class Order {
         /// <summary>

@@ -60,13 +60,16 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         public CSharpRepository()
         {
-            Members = new ConcurrentDictionary<string, ICSharpMember>();
+            Namespaces = new ConcurrentDictionary<string, ICSharpMember>();
+            ClassesAndInterfaces = new ConcurrentDictionary<string, ICSharpMember>();
         }
-        public ConcurrentDictionary<string, ICSharpMember> Members { get; }
+        public ConcurrentDictionary<string, ICSharpMember> Namespaces { get; }
+
+        public ConcurrentDictionary<string, ICSharpMember> ClassesAndInterfaces { get; }
 
         public ICSharpMember Parent => null;
 
-        IEnumerable<ICSharpMember> ICSharpMember.Members => Members.Values;
+        public IEnumerable<ICSharpMember> Members => Namespaces.Values.Union(ClassesAndInterfaces.Values);
 
         public string Name => "";
 
@@ -75,13 +78,13 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
         public ICSharpComment Comment => null;
         public void ParseComment(string comment) {  }
 
-        public IEnumerable<ICSharpClass> Classes => Members.Values.OfType<ICSharpClass>();
+        public IEnumerable<ICSharpClass> Classes => ClassesAndInterfaces.Values.OfType<ICSharpClass>();
 
-        public IEnumerable<ICSharpInterface> Interfaces => Members.Values.OfType<ICSharpInterface>();
+        public IEnumerable<ICSharpInterface> Interfaces => ClassesAndInterfaces.Values.OfType<ICSharpInterface>();
 
         public ICSharpNamespace GetNamespace(string fullName)
         {
-            return (ICSharpNamespace)Members.GetOrAdd(fullName, _ =>
+            return (ICSharpNamespace)Namespaces.GetOrAdd(fullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var parent = (ICSharpMember)this;
@@ -95,17 +98,22 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         public ICSharpClass GetClass(string fullName)
         {
-            return (ICSharpClass) Members.GetOrAdd(fullName, _ =>
+            var member = ClassesAndInterfaces.GetOrAdd(fullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
                 return new CSharpClass(ns, qn.Name, GetSystemType(_));
             });
+            if(member is ICSharpClass clz)
+            {
+                return clz;
+            }
+            throw new Exception("Member is not a class:" + member.GetType().FullName);
         }
 
         public ICSharpInterface GetInterface(string fullName)
         {
-            return (ICSharpInterface)Members.GetOrAdd(fullName, _ =>
+            return (ICSharpInterface)ClassesAndInterfaces.GetOrAdd(fullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
@@ -121,7 +129,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
         public ICSharpType GetType(string fullName)
         {
             ICSharpMember member;
-            if(Members.TryGetValue(fullName, out member))
+            if(ClassesAndInterfaces.TryGetValue(fullName, out member))
             {
                 return (ICSharpType) member;
             }
@@ -199,7 +207,7 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         public void WriteCode(ICodeWriter codeWriter)
         {
-            var prospects = Members.Values.OfType<ICSharpType>();
+            var prospects = Members.OfType<ICSharpType>();
             prospects = prospects.Where(o => o.RuntimeType == null);
             prospects = prospects.Where(o => o.EnumerableType == null);
             prospects = prospects.Where(o => o.TaskType == null);

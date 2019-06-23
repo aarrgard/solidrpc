@@ -49,16 +49,17 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
                 codeWriter.Emit($" : {string.Join(",", Members.OfType<ICSharpTypeExtends>().Select(o => o.Name))}");
             }
             codeWriter.Emit($" {{{codeWriter.NewLine}");
-            Members.ToList().ForEach(o =>
-            {
-                if (o is ICSharpMethod || o is ICSharpProperty)
+            Members.Where(o => o is ICSharpMethod ||
+                        o is ICSharpProperty ||
+                        o is ICSharpConstructor)
+                .ToList()
+                .ForEach(o =>
                 {
                     codeWriter.Indent();
                     o.WriteCode(codeWriter);
                     codeWriter.Unindent();
                     codeWriter.Emit(codeWriter.NewLine);
-                }
-            });
+                });
             codeWriter.Emit($"}}{codeWriter.NewLine}");
 
             if (!string.IsNullOrEmpty(Namespace.FullName))

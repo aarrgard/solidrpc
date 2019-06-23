@@ -15,6 +15,14 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp
         /// </summary>
         string Summary { get; }
         
+        /// <summary>
+        /// The external doc
+        /// </summary>
         ICSharpCommentExternalDoc ExternalDoc { get; }
+
+        /// <summary>
+        /// The exceptions
+        /// </summary>
+        IEnumerable<ICSharpCommentException> Exceptions { get; }
     }
 }

@@ -6,7 +6,7 @@ namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
     /// Operations about user
     /// </summary>
-    /// <a href="http://swagger.io/">Find out more about our store</a>
+    /// <a href="http://swagger.io">Find out more about our store</a>
     public interface IUser {
         /// <summary>
         /// Create user This can only be done by the logged in user.
@@ -41,6 +41,7 @@ namespace SolidRpc.Test.Petstore.Services {
         /// <param name="username">The user name for login</param>
         /// <param name="password">The password for login in clear text</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.LoginUser.InvalidUsernamePasswordSuppliedException">Invalid username/password supplied</exception>
         Task<string> LoginUser(
             string username,
             string password,
@@ -58,6 +59,8 @@ namespace SolidRpc.Test.Petstore.Services {
         /// </summary>
         /// <param name="username">The name that needs to be deleted</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.InvalidUsernameSuppliedException">Invalid username supplied</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.UserNotFoundException">User not found</exception>
         Task DeleteUser(
             string username,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -67,6 +70,8 @@ namespace SolidRpc.Test.Petstore.Services {
         /// </summary>
         /// <param name="username">The name that needs to be fetched. Use user1 for testing.</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.InvalidUsernameSuppliedException">Invalid username supplied</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.UserNotFoundException">User not found</exception>
         Task<User> GetUserByName(
             string username,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -77,6 +82,8 @@ namespace SolidRpc.Test.Petstore.Services {
         /// <param name="username">name that need to be updated</param>
         /// <param name="body">Updated user object</param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.InvalidUserSuppliedException">Invalid user supplied</exception>
+        /// <exception cref="SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.UserNotFoundException">User not found</exception>
         Task UpdateUser(
             string username,
             User body,

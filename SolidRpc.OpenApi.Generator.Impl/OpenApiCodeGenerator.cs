@@ -34,20 +34,35 @@ namespace SolidRpc.OpenApi.Generator
             }
             return letter + name;
         }
+        private static string CreateCamelCase(string token)
+        {
+            return string.Join("", token.Split(' ')
+                .SelectMany(o => o.Split('/'))
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => CapitalizeFirstChar(o)));
+        }
+        private static string NameEndsWith(string name, string suffix)
+        {
+            if(!name.EndsWith(suffix))
+            {
+                name = name + suffix;
+            }
+            return name;
+        }
 
         protected OpenApiCodeGenerator(SettingsCodeGen codeSettings)
         {
             CodeSettings = codeSettings;
             OperationMapper = (settings, operation) =>
             {
-                var tag = operation.Tags.First();
                 var className = new QualifiedName(
                     settings.ProjectNamespace,
                     settings.CodeNamespace,
                     settings.ServiceNamespace,
-                    InterfaceNameMapper(tag.Name));
+                    InterfaceNameMapper(GetOperationTag(operation).Name));
                 return new Impl.Code.Binder.CSharpMethod()
                 {
+                    Exceptions = operation.Exceptions.Select(o => DefinitionMapper(settings, o)),
                     ReturnType = DefinitionMapper(settings, operation.ReturnType),
                     InterfaceName = className,
                     MethodName = MethodNameMapper(operation.OperationId),
@@ -58,7 +73,7 @@ namespace SolidRpc.OpenApi.Generator
                         Optional = !o.Required,
                         Description = o.Description
                     }).ToList(),
-                    ClassSummary = MapDescription(tag.Description),
+                    ClassSummary = MapDescription(GetOperationTag(operation).Description),
                     MethodSummary = MapDescription(operation.OperationDescription)
                 };
             };
@@ -75,7 +90,9 @@ namespace SolidRpc.OpenApi.Generator
                 {
                     if (swaggerDef.SwaggerOperation != null)
                     {
-                        className = swaggerDef.SwaggerOperation.OperationId + className;
+                        var op = swaggerDef.SwaggerOperation;
+                        var operationNs = $"{CodeSettings.ServiceNamespace}.{MethodNameMapper(GetOperationTag(op).Name)}.{MethodNameMapper(op.OperationId)}";
+                        className = operationNs + "." + className;
                     }
                     className = new QualifiedName(
                         settings.ProjectNamespace,
@@ -84,6 +101,8 @@ namespace SolidRpc.OpenApi.Generator
                         ClassNameMapper(className));
                 }
                 var csObj = new CSharpObject(className);
+                csObj.Description = swaggerDef.Description;
+                csObj.ExceptionCode = swaggerDef.ExceptionCode;
                 csObj.Properties = swaggerDef.Properties.Select(o => new Impl.Code.Binder.CSharpProperty()
                 {
                     PropertyName = PropertyNameMapper(o.Name),
@@ -97,6 +116,21 @@ namespace SolidRpc.OpenApi.Generator
             ClassNameMapper = CapitalizeFirstChar;
             MethodNameMapper = CapitalizeFirstChar;
             PropertyNameMapper = CapitalizeFirstChar;
+            ExceptionNameMapper = (s) => { return NameEndsWith(CreateCamelCase(s), "Exception"); };
+        }
+
+        private SwaggerTag GetOperationTag(SwaggerOperation swaggerOperation)
+        {
+            var tag = swaggerOperation.Tags.FirstOrDefault();
+            if(tag == null)
+            {
+                return new SwaggerTag()
+                {
+                    Name = swaggerOperation.OperationId,
+                    Description = new SwaggerDescription() { Description = "Auto generated tag"  }
+                };
+            }
+            return tag;
         }
 
         private CSharpDescription MapDescription(SwaggerDescription description)
@@ -147,6 +181,11 @@ namespace SolidRpc.OpenApi.Generator
         public Func<string, string> PropertyNameMapper { get; set; }
 
         /// <summary>
+        /// Function that maps the description of the return type on to an exception name.
+        /// </summary>
+        public Func<string, string> ExceptionNameMapper { get; set; }
+
+        /// <summary>
         /// Generates code 
         /// </summary>
         /// <param name="codeSettings"></param>
@@ -188,6 +227,7 @@ namespace SolidRpc.OpenApi.Generator
             if(!cls.Initialized)
             {
                 cls.Initialized = true;
+                cls.ParseComment($"<summary>{cSharpObject.Description}</summary>");
                 if (cSharpObject.AdditionalProperties != null)
                 {
                     var dictType = csharpRepository.GetClass(cSharpObject.AdditionalProperties.Name);

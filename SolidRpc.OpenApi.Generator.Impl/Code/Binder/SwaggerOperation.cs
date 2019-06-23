@@ -5,6 +5,15 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
     public class SwaggerOperation
     {
         /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        public SwaggerOperation()
+        {
+            Exceptions = new SwaggerDefinition[0];
+            Parameters = new SwaggerOperationParameter[0];
+        }
+
+        /// <summary>
         /// The operation tags
         /// </summary>
         public IEnumerable<SwaggerTag> Tags { get; set; }
@@ -13,6 +22,11 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
         /// The operation id.
         /// </summary>
         public string OperationId { get; set; }
+
+        /// <summary>
+        /// The exceptions raised by this operation.
+        /// </summary>
+        public IEnumerable<SwaggerDefinition> Exceptions { get; set; }
 
         /// <summary>
         /// The return type

@@ -28,6 +28,11 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
         public QualifiedName Name { get; }
 
         /// <summary>
+        /// The description
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// The properties in this object
         /// </summary>
         public IEnumerable<CSharpProperty> Properties { get; set; }
@@ -41,5 +46,10 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
         /// The additional properties
         /// </summary>
         public CSharpObject AdditionalProperties { get; set; }
+
+        /// <summary>
+        /// The exception code.
+        /// </summary>
+        public int? ExceptionCode { get; internal set; }
     }
 }

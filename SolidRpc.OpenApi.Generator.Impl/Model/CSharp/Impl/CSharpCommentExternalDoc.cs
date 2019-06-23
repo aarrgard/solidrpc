@@ -6,15 +6,12 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
     {
         public CSharpCommentExternalDoc(string url, string description)
         {
-            if(!string.IsNullOrEmpty(url))
-            {
-                Url = new Uri(url);
-            }
+            Url = url;
             Description = description;
         }
 
         public string Description { get; }
 
-        public Uri Url { get; }
+        public string Url { get; }
     }
 }

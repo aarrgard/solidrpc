@@ -71,18 +71,28 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
             comment = sb.ToString();
             string summary = "";
             ICSharpCommentExternalDoc externalDoc = null;
+            var exceptions = new List<ICSharpCommentException>(); ;
             HandleTags("summary", comment, (p, c) => summary = c.Trim());
             HandleTags("a", comment, (p, c) => {
                 if (p.ContainsKey("href"))
                 {
-                    if(!string.IsNullOrEmpty(p["href"]) || !string.IsNullOrEmpty(c))
+                    if (!string.IsNullOrEmpty(p["href"]) || !string.IsNullOrEmpty(c))
                     {
                         externalDoc = new CSharpCommentExternalDoc(p["href"], c);
                     }
                 }
             });
+            HandleTags("exception", comment, (p, c) => {
+                if (p.ContainsKey("cref"))
+                {
+                    if (!string.IsNullOrEmpty(p["cref"]) || !string.IsNullOrEmpty(c))
+                    {
+                        exceptions.Add(new CSharpCommentException(p["cref"], c));
+                    }
+                }
+            });
 
-            Comment = new CSharpComment(summary, externalDoc);
+            Comment = new CSharpComment(summary, exceptions, externalDoc);
 
             HandleTags("param", comment, (p, c) => {
                 if(p.ContainsKey("name"))
@@ -213,7 +223,19 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
                 .FirstOrDefault();
             if (prefix != null)
             {
-                fullName = fullName.Substring(prefix.Length + 1);
+                var prospect = fullName.Substring(prefix.Length + 1);
+                if(prospect.IndexOf('<') != -1)
+                {
+                    prospect = prospect.Substring(0, prospect.IndexOf('<'));
+                }
+                if (prospect.IndexOf('.') == -1)
+                {
+                    fullName = fullName.Substring(prefix.Length + 1);
+                }
+            }
+            if(fullName.StartsWith("System.Collections.Generic.IEnumerable<"))
+            {
+                throw new Exception();
             }
             //
             // handle generic types

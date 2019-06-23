@@ -15,6 +15,6 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp
         /// <summary>
         /// The location of the document.
         /// </summary>
-        Uri Url { get; }
+        string Url { get; }
     }
 }
