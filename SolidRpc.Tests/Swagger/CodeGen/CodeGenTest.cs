@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.User.UpdateUser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -416,6 +417,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                         return Task.CompletedTask;
                     });
 
+                //  Exception - await UpdateUser
+                ctx.CreateServerInterceptor<Petstore.Services.IUser>(
+                    o => o.UpdateUser(null, null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(3, args.Length);
+                        CompareStructs("kalle", args[0]);
+                        CompareStructs(users[0], args[1]);
+                        CompareStructs(CancellationToken.None, args[2]);
+                        throw new UserNotFoundException();
+                    });
+
                 await ctx.StartAsync();
 
                 var petProxy = CreateProxy<Petstore.Services.IPet>(ctx.BaseAddress, config);
@@ -455,6 +469,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 CompareStructs(users[0], await userProxy.GetUserByName(users[0].Username));
                 CompareStructs(api_key, await userProxy.LoginUser(users[0].Username, users[0].Password));
                 await userProxy.LogoutUser();
+
+                //
+                // Exception
+                //
+                try
+                {
+                    await userProxy.UpdateUser("kalle", users[0]);
+                    Assert.Fail();
+                }
+                catch (UserNotFoundException)
+                {
+                    // ok
+                }
             }
         }
 

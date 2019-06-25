@@ -1,8 +1,10 @@
-﻿using SolidRpc.OpenApi.Model.V2;
+﻿using SolidRpc.OpenApi.Model.CodeDoc;
+using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,8 +53,9 @@ namespace SolidRpc.OpenApi.Binder.V2
             return parameter;
         }
 
-        public MethodInfoV2(OperationObject operationObject, MethodInfo methodInfo)
+        public MethodInfoV2(OperationObject operationObject, MethodInfo methodInfo, ICodeDocMethod codeDocMethod)
         {
+            CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             Arguments = CreateArguments();
@@ -64,7 +67,35 @@ namespace SolidRpc.OpenApi.Binder.V2
             Host = OperationObject.GetParent<SwaggerObject>().Host;
             Path = OperationObject.GetAbsolutePath();
             Produces = OperationObject.GetProduces();
+
+            // extract exception types
+            ExcpetionMappings = new Dictionary<int, Action>();
+            codeDocMethod.ExceptionDocumentation.ToList().ForEach(o =>
+            {
+                var exceptionType = MethodInfo.DeclaringType.Assembly.GetType(o.ExceptionType);
+                var exceptionInstance = (Exception)Activator.CreateInstance(exceptionType);
+                var httpStatusCode = exceptionInstance.Data["HttpStatusCode"] as int?;
+                if (httpStatusCode != null)
+                {
+                    ExcpetionMappings[httpStatusCode.Value] = CreateExceptionThrower(exceptionType);
+                }
+            });
         }
+
+        private Action CreateExceptionThrower(Type exceptionType)
+        {
+            var lamda = Expression.Lambda(
+                    Expression.Throw(
+                        Expression.Constant(Activator.CreateInstance(exceptionType))
+                    ),
+                    new ParameterExpression[0]
+                );
+            return (Action)lamda.Compile();
+        }
+         public void Analyze(Expression<Action> expr)
+        {
+
+        } 
 
         private IMethodArgument[] CreateArguments()
         {
@@ -74,6 +105,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             }).ToArray();
         }
 
+        public ICodeDocMethod CodeDocMethod { get; }
+
         public OperationObject OperationObject { get; }
 
         public MethodInfo MethodInfo { get; }
@@ -81,6 +114,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         public IMethodArgument[] Arguments { get; }
 
         IEnumerable<IMethodArgument> IMethodInfo.Arguments => Arguments;
+        public IDictionary<int, Action> ExcpetionMappings { get; }
 
         public string OperationId { get; }
         public string Method { get; }
@@ -146,6 +180,11 @@ namespace SolidRpc.OpenApi.Binder.V2
         {
             if(response.StatusCode != 200)
             {
+                Action exceptionAction;
+                if(ExcpetionMappings.TryGetValue(response.StatusCode, out exceptionAction))
+                {
+                    exceptionAction();
+                }
                 throw new Exception("Status:"+response.StatusCode);
             }
             if(typeof(T).IsAssignableFrom(typeof(Stream)))
@@ -204,6 +243,24 @@ namespace SolidRpc.OpenApi.Binder.V2
         public Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
         {
             response.StatusCode = 200;
+
+            //
+            // handle exception responses
+            //
+            if(obj is Exception ex)
+            {
+                response.StatusCode = 500;
+                var respCode = ex.Data["HttpStatusCode"] as int?;
+                if(respCode != null)
+                {
+                    response.StatusCode = respCode.Value;
+                }
+                return Task.CompletedTask;
+            }
+
+            //
+            // map return types
+            //
             var returnType = MethodInfo.ReturnType;
             if (returnType.IsFileType())
             {

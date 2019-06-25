@@ -118,37 +118,38 @@ namespace Microsoft.AspNetCore.Builder
 
         private static async Task HandleInvocation(IMethodInfo methodInfo, HttpContext context)
         {
+            //
+            // check if the request is intended for this path.
+            //
+            if (context.Request.Path != "")
+            {
+                return;
+            }
+
+            context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+
+            // extract information from http context.
+            var request = new SolidRpc.OpenApi.Binder.HttpRequest();
+            await request.CopyFromAsync(context.Request);
+            var args = await methodInfo.ExtractArgumentsAsync(request);
+
+            // return response
+            var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
             try
             {
-                //
-                // check if the request is intended for this path.
-                //
-                if (context.Request.Path != "")
-                {
-                    return;
-                }
-
-                context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
-
-                // extract information from http context.
-                var request = new SolidRpc.OpenApi.Binder.HttpRequest();
-                await request.CopyFromAsync(context.Request);
-                var args = await methodInfo.ExtractArgumentsAsync(request);
-
                 // invoke
                 var proxy = (ISolidProxy)context.RequestServices.GetService(methodInfo.MethodInfo.DeclaringType);
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
 
-                // return response
-                var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
                 await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
-                await resp.CopyToAsync(context.Response);
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
                 // handle exception
-                throw;
+                await methodInfo.BindResponseAsync(resp, ex, methodInfo.MethodInfo.ReturnType);
             }
+
+            await resp.CopyToAsync(context.Response);
         }
     }
 }

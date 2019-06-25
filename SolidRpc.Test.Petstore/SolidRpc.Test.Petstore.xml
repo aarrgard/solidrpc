@@ -1,0 +1,593 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SolidRpc.Test.Petstore</name>
+    </assembly>
+    <members>
+        <member name="T:SolidRpc.Test.Petstore.Services.IPet">
+            <summary>
+            Everything about your Pets
+            </summary>
+            <a href="http://swagger.io">Find out more</a>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.AddPet(SolidRpc.Test.Petstore.Types.Pet,System.Threading.CancellationToken)">
+            <summary>
+            Add a new pet to the store
+            </summary>
+            <param name="body">Pet object that needs to be added to the store</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.AddPet.InvalidInputException">Invalid input</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.UpdatePet(SolidRpc.Test.Petstore.Types.Pet,System.Threading.CancellationToken)">
+            <summary>
+            Update an existing pet
+            </summary>
+            <param name="body">Pet object that needs to be added to the store</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.PetNotFoundException">Pet not found</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.ValidationException">Validation exception</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.FindPetsByStatus(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Finds Pets by status Multiple status values can be provided with comma separated strings
+            </summary>
+            <param name="status">Status values that need to be considered for filter</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByStatus.InvalidStatusValueException">Invalid status value</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.FindPetsByTags(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Finds Pets by tags Muliple tags can be provided with comma separated strings. Use\ \ tag1, tag2, tag3 for testing.
+            </summary>
+            <param name="tags">Tags to filter by</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByTags.InvalidTagValueException">Invalid tag value</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.DeletePet(System.String,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Deletes a pet
+            </summary>
+            <param name="api_key"></param>
+            <param name="petId">Pet id to delete</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">Pet not found</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.GetPetById(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Find pet by ID Returns a single pet
+            </summary>
+            <param name="petId">ID of pet to return</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.InvalidIDSuppliedException">Invalid ID supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.PetNotFoundException">Pet not found</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.UpdatePetWithForm(System.Int64,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Updates a pet in the store with form data
+            </summary>
+            <param name="petId">ID of pet that needs to be updated</param>
+            <param name="name">Updated name of the pet</param>
+            <param name="status">Updated status of the pet</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">Invalid input</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.UploadFile(System.Int64,System.String,System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            uploads an image
+            </summary>
+            <param name="petId">ID of pet to update</param>
+            <param name="additionalMetadata">Additional data to pass to server</param>
+            <param name="file">file to upload</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Services.IStore">
+            <summary>
+            Access to Petstore orders
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IStore.GetInventory(System.Threading.CancellationToken)">
+            <summary>
+            Returns pet inventories by status Returns a map of status codes to quantities
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IStore.PlaceOrder(SolidRpc.Test.Petstore.Types.Order,System.Threading.CancellationToken)">
+            <summary>
+            Place an order for a pet
+            </summary>
+            <param name="body">order placed for purchasing the pet</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Store.PlaceOrder.InvalidOrderException">Invalid Order</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IStore.DeleteOrder(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Delete purchase order by ID For valid response try integer IDs with positive integer value.\ \ Negative or non-integer values will generate API errors
+            </summary>
+            <param name="orderId">ID of the order that needs to be deleted</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Store.DeleteOrder.InvalidIDSuppliedException">Invalid ID supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Store.DeleteOrder.OrderNotFoundException">Order not found</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IStore.GetOrderById(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Find purchase order by ID For valid response try integer IDs with value &gt;= 1 and &lt;= 10.\ \ Other values will generated exceptions
+            </summary>
+            <param name="orderId">ID of pet that needs to be fetched</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Store.GetOrderById.InvalidIDSuppliedException">Invalid ID supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Store.GetOrderById.OrderNotFoundException">Order not found</exception>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Services.IUser">
+            <summary>
+            Operations about user
+            </summary>
+            <a href="http://swagger.io">Find out more about our store</a>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.CreateUser(SolidRpc.Test.Petstore.Types.User,System.Threading.CancellationToken)">
+            <summary>
+            Create user This can only be done by the logged in user.
+            </summary>
+            <param name="body">Created user object</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.CreateUsersWithArrayInput(System.Collections.Generic.IEnumerable{SolidRpc.Test.Petstore.Types.User},System.Threading.CancellationToken)">
+            <summary>
+            Creates list of users with given input array
+            </summary>
+            <param name="body">List of user object</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.CreateUsersWithListInput(System.Collections.Generic.IEnumerable{SolidRpc.Test.Petstore.Types.User},System.Threading.CancellationToken)">
+            <summary>
+            Creates list of users with given input array
+            </summary>
+            <param name="body">List of user object</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.LoginUser(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Logs user into the system
+            </summary>
+            <param name="username">The user name for login</param>
+            <param name="password">The password for login in clear text</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.LoginUser.InvalidUsernamePasswordSuppliedException">Invalid username/password supplied</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.LogoutUser(System.Threading.CancellationToken)">
+            <summary>
+            Logs out current logged in user session
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.DeleteUser(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Delete user This can only be done by the logged in user.
+            </summary>
+            <param name="username">The name that needs to be deleted</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.InvalidUsernameSuppliedException">Invalid username supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.UserNotFoundException">User not found</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.GetUserByName(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get user by user name
+            </summary>
+            <param name="username">The name that needs to be fetched. Use user1 for testing.</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.InvalidUsernameSuppliedException">Invalid username supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.UserNotFoundException">User not found</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Services.IUser.UpdateUser(System.String,SolidRpc.Test.Petstore.Types.User,System.Threading.CancellationToken)">
+            <summary>
+            Updated user This can only be done by the logged in user.
+            </summary>
+            <param name="username">name that need to be updated</param>
+            <param name="body">Updated user object</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.InvalidUserSuppliedException">Invalid user supplied</exception>
+            <exception cref="T:SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.UserNotFoundException">User not found</exception>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.ApiResponse">
+            <summary>
+            successful operation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.ApiResponse.Code">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.ApiResponse.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.ApiResponse.Message">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Category">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Category.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Category.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Order">
+            <summary>
+            successful operation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Order.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Order.PetId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Order.Quantity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Order.ShipDate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Order.Status">
+            <summary>
+            Order Status
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Order.Complete">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Pet">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Pet.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Pet.Category">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Pet.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Pet.PhotoUrls">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Pet.Tags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Pet.Status">
+            <summary>
+            pet status in the store
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.AddPet.InvalidInputException">
+            <summary>
+            Invalid input
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.AddPet.InvalidInputException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">
+            <summary>
+            Invalid ID supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">
+            <summary>
+            Pet not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByStatus.InvalidStatusValueException">
+            <summary>
+            Invalid status value
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByStatus.InvalidStatusValueException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByTags.InvalidTagValueException">
+            <summary>
+            Invalid tag value
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByTags.InvalidTagValueException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.InvalidIDSuppliedException">
+            <summary>
+            Invalid ID supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.InvalidIDSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.PetNotFoundException">
+            <summary>
+            Pet not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.GetPetById.PetNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">
+            <summary>
+            Invalid input
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.InvalidIDSuppliedException">
+            <summary>
+            Invalid ID supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.InvalidIDSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.PetNotFoundException">
+            <summary>
+            Pet not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.PetNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.ValidationException">
+            <summary>
+            Validation exception
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.ValidationException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Store.DeleteOrder.InvalidIDSuppliedException">
+            <summary>
+            Invalid ID supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Store.DeleteOrder.InvalidIDSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Store.DeleteOrder.OrderNotFoundException">
+            <summary>
+            Order not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Store.DeleteOrder.OrderNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Store.GetInventory.Response200">
+            <summary>
+            successful operation
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Store.GetOrderById.InvalidIDSuppliedException">
+            <summary>
+            Invalid ID supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Store.GetOrderById.InvalidIDSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Store.GetOrderById.OrderNotFoundException">
+            <summary>
+            Order not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Store.GetOrderById.OrderNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Store.PlaceOrder.InvalidOrderException">
+            <summary>
+            Invalid Order
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Store.PlaceOrder.InvalidOrderException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.InvalidUsernameSuppliedException">
+            <summary>
+            Invalid username supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.InvalidUsernameSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.UserNotFoundException">
+            <summary>
+            User not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.DeleteUser.UserNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.InvalidUsernameSuppliedException">
+            <summary>
+            Invalid username supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.InvalidUsernameSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.UserNotFoundException">
+            <summary>
+            User not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.GetUserByName.UserNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.LoginUser.InvalidUsernamePasswordSuppliedException">
+            <summary>
+            Invalid username/password supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.LoginUser.InvalidUsernamePasswordSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.InvalidUserSuppliedException">
+            <summary>
+            Invalid user supplied
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.InvalidUserSuppliedException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.UserNotFoundException">
+            <summary>
+            User not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.User.UpdateUser.UserNotFoundException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Tag">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Tag.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.Tag.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.User">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.Username">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.FirstName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.LastName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.Email">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.Password">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.Phone">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Types.User.UserStatus">
+            <summary>
+            User Status
+            </summary>
+        </member>
+    </members>
+</doc>
