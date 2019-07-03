@@ -51,6 +51,7 @@ steps:
   env: 
     projectFolder: $(projectFolder)
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    nugetConfigPath: $(projectFolder)/nuget.config
         
 #
 # Build stuff
