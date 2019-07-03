@@ -84,20 +84,17 @@ steps:
     targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: NuGetCommand@2
-  displayName: 'Nuget - push - Prerelease'
-  condition: eq(variables['releasebuild'], 'false')
+  displayName: 'Nuget - push - internal'
+  condition: eq(variables['FEED_TYPE'], 'internal')
   inputs:
     command: push
-    nuGetFeedType: external
-    publishVstsFeed: Prerelease
-    publishFeedCredentials: NugetPrerelease
+    nuGetFeedType: internal
+    publishVstsFeed: $(FEED_ID)
 
 - task: NuGetCommand@2
-  displayName: 'Nuget - push - Release'
-  condition: eq(variables['releasebuild'], 'true')
+  displayName: 'Nuget - push - external - nuget.org'
+  condition: eq(variables['FEED_ID'], 'nuget.org')
   inputs:
     command: push
     nuGetFeedType: external
-    publishVstsFeed: Released
-    publishFeedCredentials: NugetReleased
-
+    publishFeedCredentials: nuget.org
