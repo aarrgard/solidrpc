@@ -19,7 +19,7 @@
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="SolidCI.Azure" Version="1.0.0-rc002" />
+    <PackageReference Include="SolidCI.Azure" Version="1.0.0-build025" />
     <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build012" />
     <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-rc001" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
