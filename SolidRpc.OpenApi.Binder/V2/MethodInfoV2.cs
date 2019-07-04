@@ -15,7 +15,7 @@ namespace SolidRpc.OpenApi.Binder.V2
     {
         public static ParameterObject GetParameterObject(OperationObject operationObject, ParameterInfo parameterInfo)
         {
-            var parameters = operationObject.Parameters
+            var parameters = operationObject.GetParameters()
                 .Where(o => o.Name == parameterInfo.Name);
             var parameter = parameters.FirstOrDefault();
             if(parameter == null)

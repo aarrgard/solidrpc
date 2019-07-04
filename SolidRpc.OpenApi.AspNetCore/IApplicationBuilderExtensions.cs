@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidProxy.Core.Proxy;
 using SolidRpc.OpenApi.AspNetCore;
@@ -61,7 +60,7 @@ namespace Microsoft.AspNetCore.Builder
 
         private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, IMethodInfo> paths)
         {
-            ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
+            //ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
 
             // drill down in sub paths
             var parts = paths.Select(o => o.Key)
@@ -118,38 +117,52 @@ namespace Microsoft.AspNetCore.Builder
 
         private static async Task HandleInvocation(IMethodInfo methodInfo, HttpContext context)
         {
-            //
-            // check if the request is intended for this path.
-            //
-            if (context.Request.Path != "")
-            {
-                return;
-            }
-
-            context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
-
-            // extract information from http context.
-            var request = new SolidRpc.OpenApi.Binder.HttpRequest();
-            await request.CopyFromAsync(context.Request);
-            var args = await methodInfo.ExtractArgumentsAsync(request);
-
-            // return response
-            var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
             try
             {
+                //
+                // check if the request is intended for this path.
+                //
+                if (context.Request.Path != "")
+                {
+                    return;
+                }
+
+                context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+
+                // extract information from http context.
+                var request = new SolidRpc.OpenApi.Binder.HttpRequest();
+                await request.CopyFromAsync(context.Request);
+                var args = await methodInfo.ExtractArgumentsAsync(request);
+
                 // invoke
                 var proxy = (ISolidProxy)context.RequestServices.GetService(methodInfo.MethodInfo.DeclaringType);
-                var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
+                if (proxy == null)
+                {
+                    throw new Exception($"Failed to resolve proxy for type {methodInfo.MethodInfo.DeclaringType}");
+                }
 
-                await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
+                // return response
+                var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
+                try
+                {
+                    var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
+
+                    await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
+                }
+                catch (Exception ex)
+                {
+                    // handle exception
+                    context.RequestServices.LogError<IApplicationBuilder>(ex, "Service returned an excpetion - sending to client");
+                    await methodInfo.BindResponseAsync(resp, ex, methodInfo.MethodInfo.ReturnType);
+                }
+
+                await resp.CopyToAsync(context.Response);
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
-                // handle exception
-                await methodInfo.BindResponseAsync(resp, ex, methodInfo.MethodInfo.ReturnType);
+                context.RequestServices.LogError<IApplicationBuilder>(e, "Failed to invoke service");
+                throw;
             }
-
-            await resp.CopyToAsync(context.Response);
         }
     }
 }

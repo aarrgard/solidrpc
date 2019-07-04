@@ -1,4 +1,5 @@
-﻿using SolidProxy.Core.Proxy;
+﻿using Microsoft.Extensions.Logging;
+using SolidProxy.Core.Proxy;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model;
 using System;
@@ -11,6 +12,12 @@ namespace SolidRpc.OpenApi.Proxy
 {
     public class SolidRpcProxyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
+        public SolidRpcProxyAdvice(ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger) {
+            Logger = logger;
+        }
+
+        private ILogger Logger { get; }
+
         public IMethodInfo MethodInfo { get; private set; }
 
         public void Configure(ISolidRpcProxyConfig config)
@@ -20,10 +27,10 @@ namespace SolidRpc.OpenApi.Proxy
                 // locate config base on assembly name
                 var assembly = typeof(TObject).Assembly;
                 var assemblyName = assembly.GetName().Name;
-                var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}"));
+                var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.json"));
                 if(resourceName == null)
                 {
-                    throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject)}.");
+                    throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject).FullName}.");
                 }
                 using (var s = assembly.GetManifestResourceStream(resourceName))
                 {
@@ -52,6 +59,8 @@ namespace SolidRpc.OpenApi.Proxy
             {
                 var httpReq = new HttpRequest();
                 await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
+
+                Logger.LogTrace($"Sending data to {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
 
                 var httpClientReq = new HttpRequestMessage();
                 httpReq.CopyTo(httpClientReq);

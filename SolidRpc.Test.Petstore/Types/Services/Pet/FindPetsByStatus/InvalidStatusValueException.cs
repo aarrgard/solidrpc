@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByStatus {
     /// <summary>
     /// Invalid status value

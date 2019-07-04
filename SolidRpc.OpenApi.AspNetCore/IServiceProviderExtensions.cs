@@ -37,5 +37,21 @@ namespace System
             }
             logger.LogTrace(message);
         }
+
+        /// <summary>
+        /// Logs an error messsage
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sp"></param>
+        /// <param name="message"></param>
+        public static void LogError<T>(this IServiceProvider sp, Exception e, string message)
+        {
+            var logger = sp.GetService<ILogger<T>>();
+            if (logger == null || !logger.IsEnabled(LogLevel.Error))
+            {
+                return;
+            }
+            logger.LogError(e, message);
+        }
     }
 }

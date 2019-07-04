@@ -114,7 +114,7 @@ namespace SolidRpc.OpenApi.Generator.V2
             //
             // if body only contains one parameter - move it to the root level.
             //
-            var bodyParameter = operationObject.Parameters.FirstOrDefault(o => o.Name == "body");
+            var bodyParameter = operationObject.GetParameters().FirstOrDefault(o => o.Name == "body");
             if (bodyParameter != null && bodyParameter.Schema.Properties.Count == 1)
             {
                 bodyParameter.Name = bodyParameter.Schema.Properties.First().Key;
@@ -124,7 +124,8 @@ namespace SolidRpc.OpenApi.Generator.V2
             //
             // Handle file parameters
             //
-            if (operationObject.Parameters.Any(o => o.Type == "file"))
+            var fileParam = operationObject.GetParameters().FirstOrDefault(o => o.Type == "file");
+            if (fileParam!=null)
             {
                 operationObject.Parameters.Where(o => o.Type == "file").ToList().ForEach(o => o.In = "formData");
                 // remove the content-type and filename parameters
@@ -133,7 +134,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                     .Where(o => !o.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
             }
-            foreach(var fileType in operationObject.Parameters.Where(o => o.IsBinaryType()))
+            foreach(var fileType in operationObject.GetParameters().Where(o => o.IsBinaryType()))
             {
                 fileType.In = "formData";
                 fileType.Type = "file";
@@ -145,11 +146,11 @@ namespace SolidRpc.OpenApi.Generator.V2
             //
             // set the consumes and produces based on parameters and responses
             //
-            if (operationObject.Parameters.Any(o => o.In == "formData"))
+            if (operationObject.GetParameters().Any(o => o.In == "formData"))
             {
                 operationObject.AddConsumes("multipart/form-data");
             }
-            else if(operationObject.Parameters.Any(o => o.In == "body"))
+            else if(operationObject.GetParameters().Any(o => o.In == "body"))
             {
                 operationObject.AddConsumes("application/json");
             }

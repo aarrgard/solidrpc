@@ -45,7 +45,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             // find all parameters 
             foreach(var param in mi.GetParameters())
             {
-                prospects = prospects.Where(o => FindParameter(o.Parameters, param));
+                prospects = prospects.Where(o => FindParameter(o.GetParameters(), param));
                 binderStatus.Append($"->param({param.Name})->#{prospects.Count()}");
             }
 

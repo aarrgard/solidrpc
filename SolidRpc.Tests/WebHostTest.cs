@@ -310,15 +310,6 @@ namespace SolidRpc.Tests
         }
 
         /// <summary>
-        /// Configures the logging.
-        /// </summary>
-        protected void ConfigureLogging(ILoggingBuilder builder)
-        {
-            builder.SetMinimumLevel(LogLevel.Trace);
-            builder.AddConsole();
-        }
-
-        /// <summary>
         /// Asserts that the response is successful. Writes error message/page to disk.
         /// </summary>
         /// <param name="resp"></param>

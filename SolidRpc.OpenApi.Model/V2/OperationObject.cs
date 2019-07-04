@@ -11,6 +11,11 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#operationObject"/>
     public class OperationObject : ModelBase
     {
+        /// <summary>
+        /// The empty list of parameters
+        /// </summary>
+        public static readonly IEnumerable<ParameterObject> EmptyParameterArray = new ParameterObject[0];
+
         public OperationObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// A list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier.
@@ -138,6 +143,11 @@ namespace SolidRpc.OpenApi.Model.V2
                 }
             }
             throw new System.Exception("Cannot determine method.");
+        }
+
+        public IEnumerable<ParameterObject> GetParameters()
+        {
+            return Parameters ?? EmptyParameterArray;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,6 +37,16 @@ namespace SolidRpc.Tests
                 dir = dir.Parent;
             }
             throw new Exception("Cannot find project folder:" + projectName);
+        }
+
+
+        /// <summary>
+        /// Configures the logging.
+        /// </summary>
+        protected void ConfigureLogging(ILoggingBuilder builder)
+        {
+            builder.SetMinimumLevel(LogLevel.Trace);
+            builder.AddConsole();
         }
 
         /// <summary>

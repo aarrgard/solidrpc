@@ -41,6 +41,9 @@ namespace SolidRpc.OpenApi.Binder
                 case "multi":
                     var binder = CreateEnumBinder(contentType, name, parameterType);
                     return (_, __) => binder(_, __);
+                case "csv":
+                    var csvBinder = CreateBinder(contentType, name, typeof(string));
+                    return (_, __) => csvBinder(_, __).GetStringValue().Split(';').Select(o => new HttpRequestDataString("text/plain", name, o));
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
