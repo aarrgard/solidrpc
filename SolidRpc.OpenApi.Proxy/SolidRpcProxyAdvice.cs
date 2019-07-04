@@ -2,6 +2,8 @@
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model;
 using System;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,7 +17,21 @@ namespace SolidRpc.OpenApi.Proxy
         {
             if(config.OpenApiConfiguration == null)
             {
-                throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject)}.");
+                // locate config base on assembly name
+                var assembly = typeof(TObject).Assembly;
+                var assemblyName = assembly.GetName().Name;
+                var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}"));
+                if(resourceName == null)
+                {
+                    throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject)}.");
+                }
+                using (var s = assembly.GetManifestResourceStream(resourceName))
+                {
+                    using (var sr = new StreamReader(s))
+                    {
+                        config.OpenApiConfiguration = sr.ReadToEnd();
+                    }
+                }
             }
             // use the swagger binder to setup the invocation
             var swaggerConf = OpenApiParser.ParseSwaggerSpec(config.OpenApiConfiguration);
