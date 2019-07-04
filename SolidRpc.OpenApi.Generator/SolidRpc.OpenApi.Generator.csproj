@@ -6,7 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SolidRpc.OpenApi.Generator.json" />
+    <None Remove="SolidRpc.OpenApi.Generator.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build016" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SolidRpc.OpenApi.Generator.json" />
+    <EmbeddedResource Include="SolidRpc.OpenApi.Generator.xml" />
   </ItemGroup>
 
   <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">

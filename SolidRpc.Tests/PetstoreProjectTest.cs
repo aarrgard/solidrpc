@@ -1,16 +1,16 @@
-﻿using NUnit.Framework;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 using SolidRpc.OpenApi.Proxy;
 using SolidRpc.Test.Petstore.Services;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Builder;
-using System;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using SolidRpc.Test.Petstore.Types;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests
 {
