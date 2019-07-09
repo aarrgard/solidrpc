@@ -12,9 +12,12 @@ namespace SolidRpc.OpenApi.Proxy
 {
     public class SolidRpcProxyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        public SolidRpcProxyAdvice(ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger) {
+        public SolidRpcProxyAdvice(ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger, IServiceProvider serviceProvider) {
             Logger = logger;
+            HttpMessageHandler = (HttpMessageHandler)serviceProvider.GetService(typeof(HttpMessageHandler));
         }
+
+        public HttpMessageHandler HttpMessageHandler { get; }
 
         private ILogger Logger { get; }
 
@@ -53,9 +56,21 @@ namespace SolidRpc.OpenApi.Proxy
             MethodInfo = swaggerConf.GetMethodBinder().GetMethodInfo(config.InvocationConfiguration.MethodInfo);
         }
 
+        private HttpClient CreateHttpClient()
+        {
+            if(HttpMessageHandler != null)
+            {
+                return new HttpClient(HttpMessageHandler);
+            }
+            else
+            {
+                return new HttpClient();
+            }
+        }
+
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            using (var httpClient = new HttpClient())
+            using (var httpClient = CreateHttpClient())
             {
                 var httpReq = new HttpRequest();
                 await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);

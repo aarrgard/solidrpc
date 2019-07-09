@@ -33,31 +33,5 @@ namespace SolidRpc.Tests.Swagger
         /// <param name="folderName"></param>
         /// <returns></returns>
         protected abstract DirectoryInfo GetSpecFolder(string folderName);
-
-        /// <summary>
-        /// Creates a proxy
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="rootAddress"></param>
-        /// <param name="openApiConfiguration"></param>
-        /// <returns></returns>
-        protected T CreateProxy<T>(Uri rootAddress, string openApiConfiguration) where T : class
-        {
-            var sc = new ServiceCollection();
-            sc.AddLogging(ConfigureLogging);
-            sc.AddTransient<T, T>();
-            var conf = sc.GetSolidConfigurationBuilder()
-                .SetGenerator<SolidProxyCastleGenerator>()
-                .ConfigureInterface<T>()
-                .ConfigureAdvice<ISolidRpcProxyConfig>();
-            conf.OpenApiConfiguration = openApiConfiguration;
-            conf.RootAddress = rootAddress;
-
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
-
-            var sp = sc.BuildServiceProvider();
-            return sp.GetRequiredService<T>();
-        }
     }
 }

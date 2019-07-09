@@ -13,8 +13,6 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public static class IHttpRequestExtensions
     {
-        public static object Body { get; private set; }
-
         /// <summary>
         /// Returns the host
         /// </summary>
@@ -56,7 +54,7 @@ namespace SolidRpc.OpenApi.Binder
                 Scheme = source.Scheme,
                 Host = source.GetHost(),
                 Path = source.Path,
-                Query = string.Join("&", source.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"))
+                Query = string.Join("&", source.Query.Select(o => $"{HttpUtility.UrlEncode(o.Name)}={HttpUtility.UrlEncode(o.GetStringValue())}"))
             };
             var port = source.GetPort();
             if (port != null)
@@ -83,6 +81,50 @@ namespace SolidRpc.OpenApi.Binder
                     target.Content = CreateBody(source.BodyData);
                     break;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        public static void CopyFrom(this IHttpRequest target, HttpRequestMessage source)
+        {
+            target.Method = source.Method.Method;
+            var uri = source.RequestUri;
+            if(uri.IsDefaultPort)
+            {
+                target.HostAndPort = uri.Host;
+            }
+            else
+            {
+                target.HostAndPort = $"{uri.Host}:{uri.Port}";
+            }
+            target.HostAndPort = uri.Host;
+            target.Path = uri.AbsolutePath;
+
+            target.Query = uri.Query.Split('&')
+                .Select(o => o.Split('='))
+                .Where(o => o.Length > 0)
+                .Where(o => !string.IsNullOrEmpty(o[0]))
+                .Select(o =>
+                {
+                    if (o.Length == 1)
+                    {
+                        return new HttpRequestDataString("text/plain", HttpUtility.UrlDecode(o[0]), "");
+                    }
+                    else if (o.Length == 2)
+                    {
+                        return new HttpRequestDataString("text/plain", HttpUtility.UrlDecode(o[0]), HttpUtility.UrlDecode(o[1]));
+                    }
+                    else
+                    {
+                        throw new Exception("Cannot parse query string");
+                    }
+                }).ToList();
+            target.Headers = source.Headers
+                .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
+                .Select(o => new HttpRequestDataString("text/plain", o.Key, o.Value))
+                .ToList();
         }
 
         private static HttpContent CreateMultipartFormDataContent(IEnumerable<HttpRequestData> bodyData)
@@ -150,5 +192,7 @@ namespace SolidRpc.OpenApi.Binder
             }
             return content;
         }
+
+
     }
 }

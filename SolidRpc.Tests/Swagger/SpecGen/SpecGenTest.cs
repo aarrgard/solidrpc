@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
 using System.IO;
@@ -84,7 +85,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         [Test]
         public async Task TestFileUpload1()
         {
-            using (var ctx = CreateTestHostContext())
+            using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload1).Substring(4));
                 ctx.CreateServerInterceptor<FileUpload1.Services.IFileUpload>(
@@ -99,8 +100,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                         Assert.IsNotNull((CancellationToken)args[3]);
                         return Task.CompletedTask;
                     });
+                ctx.AddOpenApiProxy<FileUpload1.Services.IFileUpload>(config);
                 await ctx.StartAsync();
-                var proxy = CreateProxy<FileUpload1.Services.IFileUpload>(ctx.BaseAddress, config);
+                var proxy = ctx.ServiceProvider.GetRequiredService<FileUpload1.Services.IFileUpload>();
                 await proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
             }
         }
@@ -111,7 +113,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         [Test]
         public async Task TestOneComplexArg()
         {
-            using (var ctx = CreateTestHostContext())
+            using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestOneComplexArg).Substring(4));
                 ctx.CreateServerInterceptor<OneComplexArg.Services.IOneComplexArg>(
@@ -124,8 +126,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                         Assert.IsNotNull((OneComplexArg.Types.ComplexType1)args[1]);
                         return (OneComplexArg.Types.ComplexType1)args[1];
                     });
+                ctx.AddOpenApiProxy<OneComplexArg.Services.IOneComplexArg>(config);
                 await ctx.StartAsync();
-                var proxy = CreateProxy<OneComplexArg.Services.IOneComplexArg>(ctx.BaseAddress, config);
+                var proxy = ctx.ServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
                 var res = proxy.GetComplexType("test", new OneComplexArg.Types.ComplexType1());
             }
         }

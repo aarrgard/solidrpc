@@ -9,6 +9,11 @@ namespace SolidRpc.OpenApi.Binder
     public interface IMethodBinder
     {
         /// <summary>
+        /// The open api spec that this binder gets its information from
+        /// </summary>
+        IOpenApiSpec OpenApiSpec { get; }
+
+        /// <summary>
         /// Returns the method info from supplied specification.
         /// </summary>
         /// <param name="methodInfo"></param>

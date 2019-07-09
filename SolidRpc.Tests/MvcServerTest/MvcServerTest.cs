@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.MvcServerTest
         [Test]
         public async Task Test1()
         {
-            using (var ctx = await StartTestHostContextAsync())
+            using (var ctx = await StartKestrelHostContextAsync())
             {
                 var resp = await ctx.GetResponse("/MvcServerTest/Index");
                 await AssertOk(resp);

@@ -53,8 +53,9 @@ namespace SolidRpc.OpenApi.Binder.V2
             return parameter;
         }
 
-        public MethodInfoV2(OperationObject operationObject, MethodInfo methodInfo, ICodeDocMethod codeDocMethod)
+        public MethodInfoV2(IMethodBinder methodBinder, OperationObject operationObject, MethodInfo methodInfo, ICodeDocMethod codeDocMethod)
         {
+            MethodBinder = methodBinder;
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
@@ -114,6 +115,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         public IMethodArgument[] Arguments { get; }
 
         IEnumerable<IMethodArgument> IMethodInfo.Arguments => Arguments;
+
         public IDictionary<int, Action> ExcpetionMappings { get; }
 
         public string OperationId { get; }
@@ -122,6 +124,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         public string Host { get; }
         public string Path { get; }
         public IEnumerable<string> Produces { get; }
+        public IMethodBinder MethodBinder { get; }
 
         public async Task BindArgumentsAsync(IHttpRequest request, object[] args)
         {

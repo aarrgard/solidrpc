@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.OpenApi.AspNetCore;
+using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Proxy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -60,32 +62,18 @@ namespace SolidRpc.Tests
         }
 
         /// <summary>
-        /// Represents a web host context
+        /// A kestrel test context
         /// </summary>
-        public class TestHostContext : IStartup, IDisposable
+        public class TestHostContextKestrel : TestHostContext, IStartup
         {
-            private IServiceProvider _serviceProvider;
 
             /// <summary>
             /// Constructor
             /// </summary>
             /// <param name="webHostTest"></param>
-            public TestHostContext(WebHostTest webHostTest)
+            public TestHostContextKestrel(WebHostTest webHostTest) : base(webHostTest, new HttpClient())
             {
-                WebHostTest = webHostTest;
-                HttpClient = new HttpClient();
-                ServiceInterceptors = new List<ServiceInterceptor>();
             }
-
-            /// <summary>
-            /// The service interceptors in this test.
-            /// </summary>
-            public IList<ServiceInterceptor> ServiceInterceptors { get; }
-
-            /// <summary>
-            /// The web host test
-            /// </summary>
-            public WebHostTest WebHostTest { get; }
 
             /// <summary>
             /// The constructed host
@@ -93,37 +81,10 @@ namespace SolidRpc.Tests
             public IWebHost WebHost { get; private set; }
 
             /// <summary>
-            /// The Http client
-            /// </summary>
-            public HttpClient HttpClient { get; }
-
-            /// <summary>
-            /// The test base address
-            /// </summary>
-            public Uri BaseAddress { get; private set; }
-
-            /// <summary>
-            /// The service provider for the test context.
-            /// </summary>
-            public IServiceProvider ServiceProvider {
-                get
-                {
-                    if(_serviceProvider == null)
-                    {
-                        var sc = new ServiceCollection();
-                        WebHostTest.ConfigureClientServices(sc);
-                        _serviceProvider = sc.BuildServiceProvider();
-
-                    }
-                    return _serviceProvider;
-                }
-            }
-
-            /// <summary>
-            /// Starts the conted
+            /// 
             /// </summary>
             /// <returns></returns>
-            public async Task StartAsync()
+            public override async Task StartAsync()
             {
                 WebHost = GetWebHost();
                 await WebHost.StartAsync();
@@ -131,9 +92,11 @@ namespace SolidRpc.Tests
                 var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
                 foreach (var addr in feature.Addresses)
                 {
+                    ServerStarted(new Uri(addr)); 
                     BaseAddress = new Uri(addr);
                 }
 
+                await base.StartAsync();
             }
 
             /// <summary>
@@ -151,11 +114,139 @@ namespace SolidRpc.Tests
             }
 
             /// <summary>
+            /// 
+            /// </summary>
+            public override void Dispose()
+            {
+                base.Dispose();
+                WebHost?.StopAsync().Wait();
+            }
+
+        }
+
+
+        /// <summary>
+        /// A kestrel test context
+        /// </summary>
+        public class TestHostContextHttpMessageHandler : TestHostContext
+        {
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="webHostTest"></param>
+            public TestHostContextHttpMessageHandler(WebHostTest webHostTest) : base(webHostTest, new HttpClient())
+            {
+
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="services"></param>
+            /// <returns></returns>
+            public override IServiceProvider ConfigureClientServices(IServiceCollection services)
+            {
+                //
+                // configure server services and use them from a singleton registration.
+                // 
+                var serverServices = new ServiceCollection();
+                var serverProvider = ConfigureServices(serverServices);
+
+                services.AddSingleton<HttpMessageHandler>(new SolidRpcHttpMessageHandler(serverProvider.GetRequiredService<IMethodInvoker>()));
+                return base.ConfigureClientServices(services);
+            }
+        }
+
+        /// <summary>
+        /// Represents a web host context
+        /// </summary>
+        public abstract class TestHostContext : IDisposable
+        {
+            /// <summary>
+            /// Event raised when the server is started
+            /// </summary>
+            public event Action<Uri> ServerStartedEvent;
+            private IServiceProvider _serviceProvider;
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="webHostTest"></param>
+            /// <param name="httpClient"></param>
+            public TestHostContext(WebHostTest webHostTest, HttpClient httpClient)
+            {
+                WebHostTest = webHostTest;
+                HttpClient = httpClient;
+                ServiceInterceptors = new List<ServiceInterceptor>();
+                ClientServices = new ServiceCollection();
+                ClientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+
+            }
+
+            /// <summary>
+            /// The service interceptors in this test.
+            /// </summary>
+            public IList<ServiceInterceptor> ServiceInterceptors { get; }
+
+            /// <summary>
+            /// The client services
+            /// </summary>
+            public ServiceCollection ClientServices { get; }
+
+            /// <summary>
+            /// The web host test
+            /// </summary>
+            public WebHostTest WebHostTest { get; }
+
+            /// <summary>
+            /// The Http client
+            /// </summary>
+            public HttpClient HttpClient { get; }
+
+            /// <summary>
+            /// The test base address
+            /// </summary>
+            public Uri BaseAddress { get; protected set; }
+
+            /// <summary>
+            /// The service provider for the test context.
+            /// </summary>
+            public IServiceProvider ServiceProvider {
+                get
+                {
+                    if(_serviceProvider == null)
+                    {
+                        throw new Exception("Context not started.");
+
+                    }
+                    return _serviceProvider;
+                }
+            }
+
+            /// <summary>
+            /// Starts the conted
+            /// </summary>
+            /// <returns></returns>
+            public virtual Task StartAsync()
+            {
+                _serviceProvider = ConfigureClientServices(ClientServices);
+                return Task.CompletedTask;
+            }
+
+            /// <summary>
+            /// Invoked when the server has started.
+            /// </summary>
+            /// <param name="uri"></param>
+            protected void ServerStarted(Uri uri)
+            {
+                ServerStartedEvent?.Invoke(uri);
+            }
+
+            /// <summary>
             /// Disposes the context - stops the host.
             /// </summary>
-            public void Dispose()
+            public virtual void Dispose()
             {
-                WebHost?.StopAsync().Wait();
                 HttpClient?.Dispose();
             }
 
@@ -253,10 +344,22 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="services"></param>
             /// <returns></returns>
+            public virtual IServiceProvider ConfigureClientServices(IServiceCollection services)
+            {
+                WebHostTest.ConfigureClientServices(services);
+                return services.BuildServiceProvider();
+            }
+
+            /// <summary>
+            /// Configures the services
+            /// </summary>
+            /// <param name="services"></param>
+            /// <returns></returns>
             public IServiceProvider ConfigureServices(IServiceCollection services)
             {
                 var configBuilder = services.GetSolidConfigurationBuilder()
                     .SetGenerator<SolidProxyCastleGenerator>();
+                services.AddScoped<IMethodInvoker, MethodInvoker>();
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
                     if(!services.Any(s => s.ServiceType == m.MethodInfo.DeclaringType))
@@ -286,15 +389,36 @@ namespace SolidRpc.Tests
             {
                 WebHostTest.Configure(app);
             }
+
+            /// <summary>
+            /// Adds an openapi proxy
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="openApiConfiguration"></param>
+            public void AddOpenApiProxy<T>(string openApiConfiguration) where T : class
+            {
+                ClientServices.AddTransient<T, T>();
+                var conf = ClientServices.GetSolidConfigurationBuilder()
+                    .ConfigureInterface<T>()
+                    .ConfigureAdvice<ISolidRpcProxyConfig>();
+                conf.OpenApiConfiguration = openApiConfiguration;
+                ServerStartedEvent += rootAddress =>
+                {
+                    conf.RootAddress = rootAddress;
+                };
+
+                ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
+                ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
+            }
         }
 
         /// <summary>
         /// Constructs a new host context
         /// </summary>
         /// <returns></returns>
-        protected TestHostContext CreateTestHostContext()
+        protected TestHostContext CreateHttpMessageHandlerContext()
         {
-            var ctx = new TestHostContext(this);
+            var ctx = new TestHostContextHttpMessageHandler(this);
             return ctx;
         }
 
@@ -302,9 +426,19 @@ namespace SolidRpc.Tests
         /// Constructs a new host context
         /// </summary>
         /// <returns></returns>
-        protected async Task<TestHostContext> StartTestHostContextAsync()
+        protected TestHostContext CreateKestrelHostContext()
         {
-            var ctx = new TestHostContext(this);
+            var ctx = new TestHostContextKestrel(this);
+            return ctx;
+        }
+
+        /// <summary>
+        /// Constructs a new host context
+        /// </summary>
+        /// <returns></returns>
+        protected async Task<TestHostContext> StartKestrelHostContextAsync()
+        {
+            var ctx = new TestHostContextKestrel(this);
             await ctx.StartAsync();
             return ctx;
         }
@@ -337,6 +471,7 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public virtual IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
+            services.AddLogging(ConfigureLogging);
             return services.BuildServiceProvider();
         }
 
@@ -347,7 +482,7 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public virtual void ConfigureClientServices(IServiceCollection services)
         {
-
+            services.AddLogging(ConfigureLogging);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.OpenApi.AspNetCore;
+using SolidRpc.OpenApi.Binder;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -50,6 +51,14 @@ namespace System
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi)
         {
+            //
+            // make sure that the method invoker is registered.
+            //
+            if (!sc.Any(o => typeof(IMethodInvoker) == o.ServiceType))
+            {
+                sc.AddScoped<IMethodInvoker, MethodInvoker>();
+            }
+
             //
             // make sure that the declaring type has a registration
             //

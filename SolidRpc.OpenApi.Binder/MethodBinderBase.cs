@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
+using SolidRpc.OpenApi.Model;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -14,6 +15,8 @@ namespace SolidRpc.OpenApi.Binder
             CachedBindings = new ConcurrentDictionary<MethodInfo, IMethodInfo>();
         }
 
+        public abstract IOpenApiSpec OpenApiSpec { get; }
+
         private ConcurrentDictionary<MethodInfo, IMethodInfo> CachedBindings { get; }
 
         public IMethodInfo GetMethodInfo(MethodInfo methodInfo)
@@ -24,3 +27,5 @@ namespace SolidRpc.OpenApi.Binder
         protected abstract IMethodInfo FindBinding(MethodInfo arg);
     }
 }
+
+

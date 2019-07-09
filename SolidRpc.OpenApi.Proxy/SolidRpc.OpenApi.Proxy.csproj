@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="SolidProxy.Core" Version="1.0.0-rc001" />
   </ItemGroup>
 
   <ItemGroup>

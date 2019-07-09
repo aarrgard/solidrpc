@@ -24,26 +24,54 @@ namespace SolidRpc.Tests
         /// </summary>
         public class PetImpl : IPet
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="body"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task AddPet(Pet body, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="api_key"></param>
+            /// <param name="petId"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task DeletePet(string api_key, long petId, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="status"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<IEnumerable<Pet>> FindPetsByStatus(IEnumerable<string> status, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="tags"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<IEnumerable<Pet>> FindPetsByTags(IEnumerable<string> tags, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="petId"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<Pet> GetPetById(long petId, CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.FromResult(new Pet()
@@ -51,17 +79,36 @@ namespace SolidRpc.Tests
                     Id = petId
                 });
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="body"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task UpdatePet(Pet body, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="petId"></param>
+            /// <param name="name"></param>
+            /// <param name="status"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task UpdatePetWithForm(long petId, string name, string status, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="petId"></param>
+            /// <param name="additionalMetadata"></param>
+            /// <param name="file"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<ApiResponse> UploadFile(long petId, string additionalMetadata, Stream file, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();

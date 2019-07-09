@@ -11,6 +11,11 @@ namespace SolidRpc.OpenApi.Binder
     public interface IMethodInfo
     {
         /// <summary>
+        /// The binder that this method information belongs to.
+        /// </summary>
+        IMethodBinder MethodBinder { get; }
+
+        /// <summary>
         /// The method info structure this binding represents.
         /// </summary>
         MethodInfo MethodInfo { get; }

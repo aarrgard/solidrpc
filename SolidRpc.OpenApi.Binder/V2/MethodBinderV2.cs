@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -17,6 +18,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         }
 
         private SwaggerObject SchemaObject { get; }
+        public override IOpenApiSpec OpenApiSpec => SchemaObject;
         private CodeDocRepository CodeDocRepo { get; }
 
         private IEnumerable<OperationObject> Operations => SchemaObject.Paths.Values.SelectMany(o => new[] {
@@ -53,7 +55,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 throw new NotImplementedException(binderStatus.ToString());
             }
-            return new MethodInfoV2(prospects.Single(), mi, CodeDocRepo.GetMethodDoc(mi));
+            return new MethodInfoV2(this, prospects.Single(), mi, CodeDocRepo.GetMethodDoc(mi));
         }
 
         private bool FindParameter(IEnumerable<ParameterObject> parameters, ParameterInfo parameter)

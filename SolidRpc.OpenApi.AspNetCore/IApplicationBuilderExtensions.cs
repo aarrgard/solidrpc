@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.Core.Configuration.Runtime;
-using SolidProxy.Core.Proxy;
 using SolidRpc.OpenApi.AspNetCore;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model;
@@ -132,31 +131,12 @@ namespace Microsoft.AspNetCore.Builder
                 // extract information from http context.
                 var request = new SolidRpc.OpenApi.Binder.HttpRequest();
                 await request.CopyFromAsync(context.Request);
-                var args = await methodInfo.ExtractArgumentsAsync(request);
 
-                // invoke
-                var proxy = (ISolidProxy)context.RequestServices.GetService(methodInfo.MethodInfo.DeclaringType);
-                if (proxy == null)
-                {
-                    throw new Exception($"Failed to resolve proxy for type {methodInfo.MethodInfo.DeclaringType}");
-                }
+                var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
+                var response = await methodInvoker.InvokeAsync(request, methodInfo, context.RequestAborted);
 
-                // return response
-                var resp = new SolidRpc.OpenApi.Binder.HttpResponse();
-                try
-                {
-                    var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
-
-                    await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
-                }
-                catch (Exception ex)
-                {
-                    // handle exception
-                    context.RequestServices.LogError<IApplicationBuilder>(ex, "Service returned an excpetion - sending to client");
-                    await methodInfo.BindResponseAsync(resp, ex, methodInfo.MethodInfo.ReturnType);
-                }
-
-                await resp.CopyToAsync(context.Response);
+                // send data back
+                await response.CopyToAsync(context.Response);
             }
             catch (Exception e)
             {
