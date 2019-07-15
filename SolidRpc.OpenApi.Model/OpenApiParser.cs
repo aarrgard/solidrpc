@@ -8,7 +8,6 @@ namespace SolidRpc.OpenApi.Model
 {
     public class OpenApiParser
     {
-        protected static ConcurrentDictionary<string, IOpenApiSpec> s_ParsedDocs = new ConcurrentDictionary<string, IOpenApiSpec>();
         private static OpenApiParserV2 v2Parser = new OpenApiParserV2();
         private static OpenApiParserV3 v3Parser = new OpenApiParserV3();
 
@@ -86,12 +85,11 @@ namespace SolidRpc.OpenApi.Model
         /// <returns></returns>
         public T ParseSwaggerDoc(string s)
         {
-            return (T)s_ParsedDocs.GetOrAdd(s, o => {
-                using (StringReader sr = new StringReader(o))
-                {
-                    return ParseSwaggerDoc(sr);
-                }
-            });
+
+            using (StringReader sr = new StringReader(s))
+            {
+                return ParseSwaggerDoc(sr);
+            }
         }
 
         /// <summary>
