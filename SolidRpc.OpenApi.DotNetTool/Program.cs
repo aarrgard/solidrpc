@@ -20,7 +20,7 @@ namespace SolidRpc.OpenApi.DotNetTool
         private const string s_openapi2code = "-openapi2code";
         private const string s_code2openapi = "-code2openapi";
         private static string[] s_commands = new[] { s_openapi2code, s_code2openapi };
-        private static ConcurrentDictionary<string, XmlDocument> ProjectDocuments = new ConcurrentDictionary<string, XmlDocument>();
+        private static readonly ConcurrentDictionary<string, XmlDocument> ProjectDocuments = new ConcurrentDictionary<string, XmlDocument>();
         private static IServiceProvider s_serviceProvider;
 
         public static void Main(string[] args)
@@ -204,8 +204,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             {
                 if (!prop.CanRead) continue;
                 if (!prop.CanWrite) continue;
-                string val;
-                if(argSettings.TryGetValue(prop.Name, out val))
+                if(argSettings.TryGetValue(prop.Name, out string val))
                 {
                     prop.SetValue(settings, val);
                 }

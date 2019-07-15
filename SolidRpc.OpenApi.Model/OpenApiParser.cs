@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
-using System.Collections.Concurrent;
 using System.IO;
 
 namespace SolidRpc.OpenApi.Model

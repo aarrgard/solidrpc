@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -7,6 +8,11 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public interface IMethodBinderStore
     {
+        /// <summary>
+        /// Returns all the method binders.
+        /// </summary>
+        IEnumerable<IMethodBinder> MethodBinders { get; }
+
         /// <summary>
         /// Returns the binder for supplied open api spec and assembly
         /// </summary>

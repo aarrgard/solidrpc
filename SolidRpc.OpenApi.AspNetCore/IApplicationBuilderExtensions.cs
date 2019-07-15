@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
@@ -20,11 +19,6 @@ namespace Microsoft.AspNetCore.Builder
         /// <returns></returns>
         public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder)
         {
-            var runtime = applicationBuilder.ApplicationServices.GetService<ISolidProxyConfigurationStore>();
-            if (runtime == null)
-            {
-                throw new Exception("No solid proxy configuration registered - please configure during startup.");
-            }
             var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
             if (bindingStore == null)
             {
@@ -36,16 +30,12 @@ namespace Microsoft.AspNetCore.Builder
             // and map them accordingly.
             //
             var dict = new Dictionary<string, IMethodInfo>();
-            runtime.SolidConfigurationBuilder.AssemblyBuilders
-                .SelectMany(o => o.Interfaces)
-                .SelectMany(o => o.Methods)
-                .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+            bindingStore.MethodBinders
+                .SelectMany(o => o.MethodInfos)
                 .ToList()
                 .ForEach(o =>
                 {
-                    var config = o.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                    var methodInfo = bindingStore.GetMethodInfo(config.OpenApiConfiguration, o.MethodInfo);
-                    dict[$"{methodInfo.Method}{methodInfo.Path}"] = methodInfo;
+                    dict[$"{o.Method}{o.Path}"] = o;
                 });
 
             //
@@ -78,8 +68,7 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             // add handler for this path
-            IMethodInfo methodInfo;
-            if (paths.TryGetValue(pathPrefix, out methodInfo))
+            if (paths.TryGetValue(pathPrefix, out IMethodInfo methodInfo))
             {
                 ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {methodInfo.OperationId}:{methodInfo.MethodInfo}");
                 ab.Run((ctx) => HandleInvocation(methodInfo, ctx));

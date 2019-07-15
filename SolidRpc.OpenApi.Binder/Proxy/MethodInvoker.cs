@@ -43,8 +43,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     {
                         key = "{}";
                     }
-                    PathSegment subSegment;
-                    if(!work.SubSegments.TryGetValue(key, out subSegment))
+                    if (!work.SubSegments.TryGetValue(key, out PathSegment subSegment))
                     {
                         work.SubSegments[key] = subSegment = new PathSegment(work);
                     }
@@ -59,8 +58,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 {
                     return MethodInfo;
                 }
-                PathSegment subSegment;
-                if (!SubSegments.TryGetValue(segments.First(), out subSegment))
+                if (!SubSegments.TryGetValue(segments.First(), out PathSegment subSegment))
                 {
                     if (!SubSegments.TryGetValue("{}", out subSegment))
                     {
@@ -93,7 +91,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 var mi = o.InvocationConfiguration.MethodInfo;
                 var methodInfo = MethodBinderStore.GetMethodInfo(o.OpenApiConfiguration, mi);
                 RootSegment.AddPath(methodInfo);
-                Logger.LogInformation($"[{DateTime.Now.ToString("HH:mm:ss.fffff")}]Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Path}.");
+                Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Path}.");
             });
         }
 

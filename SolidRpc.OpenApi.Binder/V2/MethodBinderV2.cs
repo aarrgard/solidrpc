@@ -31,7 +31,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IList<OperationObject> Operations { get; }
 
-        protected override IMethodInfo FindBinding(MethodInfo mi)
+        protected override IMethodInfo FindBinding(MethodInfo mi, bool mustExist)
         {
             if(mi.DeclaringType.Assembly != Assembly)
             {
@@ -59,7 +59,14 @@ namespace SolidRpc.OpenApi.Binder.V2
 
             if (prospects.Count != 1)
             {
-                throw new NotImplementedException(binderStatus.ToString());
+                if(mustExist)
+                {
+                    throw new NotImplementedException(binderStatus.ToString());
+                }
+                else
+                {
+                    return null;
+                }
             }
             return new MethodInfoV2(this, prospects.Single(), mi, CodeDocRepo.GetMethodDoc(mi));
 

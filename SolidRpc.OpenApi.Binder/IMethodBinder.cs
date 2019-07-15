@@ -1,4 +1,5 @@
 ﻿using SolidRpc.OpenApi.Model;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace SolidRpc.OpenApi.Binder
@@ -17,6 +18,11 @@ namespace SolidRpc.OpenApi.Binder
         /// The associated assembly.
         /// </summary>
         Assembly Assembly { get; }
+
+        /// <summary>
+        /// Returns all the mapped methods
+        /// </summary>
+        IEnumerable<IMethodInfo> MethodInfos { get; }
 
         /// <summary>
         /// Returns the method info from supplied specification.

@@ -67,34 +67,12 @@ namespace System
             }
 
             //
-            // read configuration file
-            //
-            string config;
-            var assembly = mi.DeclaringType.Assembly;
-            var assemblyName = assembly.GetName().Name;
-            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.json"));
-            if (resourceName == null)
-            {
-                throw new Exception($"Solid proxy advice config does not contain a swagger spec for {mi.DeclaringType.FullName}.");
-            }
-            using (var s = assembly.GetManifestResourceStream(resourceName))
-            {
-                using (var sr = new StreamReader(s))
-                {
-                    config = sr.ReadToEnd();
-                }
-            }
-
-            //
             // configure method
             //
             var mc = sc.GetSolidConfigurationBuilder()
                 .ConfigureInterfaceAssembly(mi.DeclaringType.Assembly)
                 .ConfigureInterface(mi.DeclaringType)
                 .ConfigureMethod(mi);
-
-            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>()
-                .OpenApiConfiguration = config;
 
             //
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.

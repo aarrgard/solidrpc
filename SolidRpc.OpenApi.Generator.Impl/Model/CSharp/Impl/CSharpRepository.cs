@@ -128,10 +128,9 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
 
         public ICSharpType GetType(string fullName)
         {
-            ICSharpMember member;
-            if(ClassesAndInterfaces.TryGetValue(fullName, out member))
+            if (ClassesAndInterfaces.TryGetValue(fullName, out ICSharpMember member))
             {
-                return (ICSharpType) member;
+                return (ICSharpType)member;
             }
             var (genType, genArgs, rest) = ReadType(fullName);
             if (genArgs != null) genType = $"{genType}`{genArgs.Count}";

@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using SolidProxy.GeneratorCastle;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model;
@@ -167,7 +169,7 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderFindPetsByStatus()
         {
-            var methodBinderStore = new MethodBinderStore();
+            var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.FindPetsByStatus));
             var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("findPetsByStatus", smi.OperationId);
@@ -188,7 +190,7 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderGetPetById()
         {
-            var methodBinderStore = new MethodBinderStore();
+            var methodBinderStore = GetMethodBinderStore();
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.GetPetById));
             var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
@@ -209,7 +211,7 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderUpdatePetWithForm()
         {
-            var methodBinderStore = new MethodBinderStore();
+            var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.UpdatePetWithForm));
             var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("updatePetWithForm", smi.OperationId);
@@ -233,7 +235,7 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderUploadFile()
         {
-            var methodBinderStore = new MethodBinderStore();
+            var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.UploadFile));
             var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("uploadFile", smi.OperationId);
@@ -258,7 +260,7 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderPlaceOrder()
         {
-            var methodBinderStore = new MethodBinderStore();
+            var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IStore).GetMethod(nameof(IStore.PlaceOrder));
             var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("placeOrder", smi.OperationId);
@@ -285,6 +287,15 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(order.Quantity, orderResp.Quantity);
             Assert.AreEqual(order.PetId, orderResp.PetId);
             Assert.AreEqual(order.Id, orderResp.Id);
+        }
+
+        private IMethodBinderStore GetMethodBinderStore()
+        {
+            var sc = new ServiceCollection();
+            sc.GetSolidConfigurationBuilder()
+                .SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSingleton<IMethodBinderStore, MethodBinderStore>();
+            return sc.BuildServiceProvider().GetRequiredService<IMethodBinderStore>();
         }
     }
 }
