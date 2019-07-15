@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder.Multipart
+namespace SolidRpc.OpenApi.Binder.Http.Multipart
 {
     public static class StreamHelperExtensions
     {

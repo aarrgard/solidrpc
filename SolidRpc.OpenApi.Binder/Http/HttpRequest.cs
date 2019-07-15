@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Implementation of the IHttpRequest object

@@ -14,6 +14,11 @@ namespace SolidRpc.OpenApi.Binder
         IOpenApiSpec OpenApiSpec { get; }
 
         /// <summary>
+        /// The associated assembly.
+        /// </summary>
+        Assembly Assembly { get; }
+
+        /// <summary>
         /// Returns the method info from supplied specification.
         /// </summary>
         /// <param name="methodInfo"></param>

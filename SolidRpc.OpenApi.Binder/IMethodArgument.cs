@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SolidRpc.OpenApi.Binder.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder

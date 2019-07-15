@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.OpenApi.AspNetCore;
 using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.OpenApi.Proxy;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -347,6 +346,7 @@ namespace SolidRpc.Tests
             public virtual IServiceProvider ConfigureClientServices(IServiceCollection services)
             {
                 WebHostTest.ConfigureClientServices(services);
+                services.AddSingleton<IMethodBinderStore, MethodBinderStore>();
                 return services.BuildServiceProvider();
             }
 
@@ -360,6 +360,7 @@ namespace SolidRpc.Tests
                 var configBuilder = services.GetSolidConfigurationBuilder()
                     .SetGenerator<SolidProxyCastleGenerator>();
                 services.AddScoped<IMethodInvoker, MethodInvoker>();
+                services.AddSingleton<IMethodBinderStore, MethodBinderStore>();
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
                     if(!services.Any(s => s.ServiceType == m.MethodInfo.DeclaringType))
@@ -375,7 +376,7 @@ namespace SolidRpc.Tests
                     serviceCalls.Add(new ServiceCall(m.MethodInfo, m.Callback));
                     interceptorConf.ServiceCalls = serviceCalls;
 
-                    methodConf.ConfigureAdvice<ISolidRpcAspNetCoreConfig>().OpenApiConfiguration = m.OpenApiConfiguration;
+                    methodConf.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiConfiguration = m.OpenApiConfiguration;
                 });
                 configBuilder.AddAdvice(typeof(ServiceInterceptorAdvice<,,>));
                 return WebHostTest.ConfigureServerServices(services);

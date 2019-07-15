@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 
-namespace SolidRpc.OpenApi.Binder.Multipart
+namespace SolidRpc.OpenApi.Binder.Http.Multipart
 {
     public static class MultipartRequestHelper
     {

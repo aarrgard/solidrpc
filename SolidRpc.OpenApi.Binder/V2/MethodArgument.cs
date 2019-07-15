@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.V2;
 
 namespace SolidRpc.OpenApi.Binder.V2

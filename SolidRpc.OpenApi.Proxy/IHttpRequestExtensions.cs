@@ -4,9 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Extension methods fro the http request
@@ -87,7 +88,7 @@ namespace SolidRpc.OpenApi.Binder
         /// 
         /// </summary>
         /// <param name="request"></param>
-        public static void CopyFrom(this IHttpRequest target, HttpRequestMessage source)
+        public static async Task CopyFrom(this IHttpRequest target, HttpRequestMessage source)
         {
             target.Method = source.Method.Method;
             var uri = source.RequestUri;
@@ -102,7 +103,8 @@ namespace SolidRpc.OpenApi.Binder
             target.HostAndPort = uri.Host;
             target.Path = uri.AbsolutePath;
 
-            target.Query = uri.Query.Split('&')
+            target.Query = (uri.Query.StartsWith("?") ? uri.Query.Substring(1) : uri.Query)
+                .Split('&')
                 .Select(o => o.Split('='))
                 .Where(o => o.Length > 0)
                 .Where(o => !string.IsNullOrEmpty(o[0]))
@@ -125,6 +127,13 @@ namespace SolidRpc.OpenApi.Binder
                 .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
                 .Select(o => new HttpRequestDataString("text/plain", o.Key, o.Value))
                 .ToList();
+
+            var mediaType = source.Content?.Headers?.ContentType;
+            if(mediaType != null)
+            {
+                target.ContentType = mediaType.MediaType;
+                target.BodyData = await HttpRequestData.ExtractContentData(mediaType, await source.Content.ReadAsStreamAsync());
+            }
         }
 
         private static HttpContent CreateMultipartFormDataContent(IEnumerable<HttpRequestData> bodyData)

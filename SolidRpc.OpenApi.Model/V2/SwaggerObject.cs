@@ -115,5 +115,10 @@ namespace SolidRpc.OpenApi.Model.V2
                 Host = $"{Host}:{rootAddress.Port}";
             }
         }
+
+        public string WriteAsJsonString()
+        {
+            return OpenApiParserV2.WriteSwaggerDoc(this);
+        }
     }
 }

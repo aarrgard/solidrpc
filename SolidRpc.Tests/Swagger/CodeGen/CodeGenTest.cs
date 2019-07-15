@@ -99,7 +99,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestPetstoreUsingKestresl()
+        public async Task TestPetstoreUsingKestrel()
         {
             using (var ctx = CreateKestrelHostContext())
             {
@@ -110,7 +110,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
-        [Test,Ignore("Not complete")]
+        [Test]
         public async Task TestPetstoreUsingHttpMessageHandler()
         {
             using (var ctx = CreateHttpMessageHandlerContext())

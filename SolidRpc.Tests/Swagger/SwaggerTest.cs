@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Services;
@@ -27,7 +28,7 @@ namespace SolidRpc.Tests.Swagger
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
 
-            var str = new OpenApiParserV2().WriteSwaggerDoc(swaggerSpec);
+            var str = OpenApiParserV2.WriteSwaggerDoc(swaggerSpec);
             swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(str);
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
@@ -166,10 +167,9 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderFindPetsByStatus()
         {
-            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
-
+            var methodBinderStore = new MethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.FindPetsByStatus));
-            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("findPetsByStatus", smi.OperationId);
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
@@ -188,10 +188,10 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderGetPetById()
         {
-            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var methodBinderStore = new MethodBinderStore();
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.GetPetById));
-            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("getPetById", smi.OperationId);
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
@@ -209,10 +209,9 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderUpdatePetWithForm()
         {
-            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
-
+            var methodBinderStore = new MethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.UpdatePetWithForm));
-            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("updatePetWithForm", smi.OperationId);
             Assert.AreEqual(4, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
@@ -234,10 +233,9 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderUploadFile()
         {
-            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
-
+            var methodBinderStore = new MethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.UploadFile));
-            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("uploadFile", smi.OperationId);
             Assert.AreEqual(4, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
@@ -260,10 +258,9 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public async Task TestMethodBinderPlaceOrder()
         {
-            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
-
+            var methodBinderStore = new MethodBinderStore();
             var mi = typeof(IStore).GetMethod(nameof(IStore.PlaceOrder));
-            var smi = swaggerSpec.GetMethodBinder().GetMethodInfo(mi);
+            var smi = methodBinderStore.GetMethodInfo(GetManifestResourceAsString("petstore.json"), mi);
             Assert.AreEqual("placeOrder", smi.OperationId);
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "body"));

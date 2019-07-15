@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Represents a response
@@ -8,7 +8,7 @@ namespace SolidRpc.OpenApi.Binder
     public class HttpResponse : IHttpResponse
     {
         public Stream ResponseStream { get; set; }
-        int IHttpResponse.StatusCode { get; set; }
-        string IHttpResponse.ContentType { get; set; }
+        public int StatusCode { get; set; }
+        public string ContentType { get; set; }
     }
 }

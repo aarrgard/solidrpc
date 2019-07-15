@@ -1,4 +1,4 @@
-﻿using SolidProxy.Core.Configuration;
+﻿using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 
 namespace SolidRpc.OpenApi.Proxy
@@ -6,17 +6,12 @@ namespace SolidRpc.OpenApi.Proxy
     /// <summary>
     /// Configures the proxy.
     /// </summary>
-    public interface ISolidRpcProxyConfig : ISolidProxyInvocationAdviceConfig
+    public interface ISolidRpcProxyConfig : ISolidRpcOpenApiConfig
     {
         /// <summary>
         /// The root address. This address overrides the host and port 
         /// in the configuration.
         /// </summary>
         Uri RootAddress { get; set; }
-
-        /// <summary>
-        /// Sets the open api configuration to use.
-        /// </summary>
-        string OpenApiConfiguration { get; set; }
     }
 }

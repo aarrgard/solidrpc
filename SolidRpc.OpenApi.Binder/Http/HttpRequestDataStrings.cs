@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Represents some HttpRequest data

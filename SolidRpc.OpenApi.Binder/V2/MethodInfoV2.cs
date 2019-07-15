@@ -1,4 +1,5 @@
-﻿using SolidRpc.OpenApi.Model.CodeDoc;
+﻿using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
@@ -59,28 +60,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
-            Arguments = CreateArguments();
-            OperationId = OperationObject.OperationId;
-            Method = OperationObject.GetMethod();
-            Scheme = OperationObject.Schemes?.FirstOrDefault() ??
-                OperationObject.GetParent<SwaggerObject>().Schemes?.FirstOrDefault() ??
-                "http";
-            Host = OperationObject.GetParent<SwaggerObject>().Host;
-            Path = OperationObject.GetAbsolutePath();
-            Produces = OperationObject.GetProduces();
-
-            // extract exception types
-            ExcpetionMappings = new Dictionary<int, Action>();
-            codeDocMethod.ExceptionDocumentation.ToList().ForEach(o =>
-            {
-                var exceptionType = MethodInfo.DeclaringType.Assembly.GetType(o.ExceptionType);
-                var exceptionInstance = (Exception)Activator.CreateInstance(exceptionType);
-                var httpStatusCode = exceptionInstance.Data["HttpStatusCode"] as int?;
-                if (httpStatusCode != null)
-                {
-                    ExcpetionMappings[httpStatusCode.Value] = CreateExceptionThrower(exceptionType);
-                }
-            });
         }
 
         private Action CreateExceptionThrower(Type exceptionType)
@@ -98,32 +77,124 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         } 
 
-        private IMethodArgument[] CreateArguments()
-        {
-            return MethodInfo.GetParameters().Select(parameterInfo => {
-                var parameterObject = GetParameterObject(OperationObject, parameterInfo);
-                return new MethodArgument(parameterObject, parameterInfo);
-            }).ToArray();
-        }
-
         public ICodeDocMethod CodeDocMethod { get; }
 
         public OperationObject OperationObject { get; }
 
         public MethodInfo MethodInfo { get; }
 
-        public IMethodArgument[] Arguments { get; }
+        private IMethodArgument[] _arguments;
+        public IMethodArgument[] Arguments
+        {
+            get
+            {
+                if(_arguments == null)
+                {
+                    _arguments = MethodInfo.GetParameters().Select(parameterInfo =>
+                    {
+                        var parameterObject = GetParameterObject(OperationObject, parameterInfo);
+                        return new MethodArgument(parameterObject, parameterInfo);
+                    }).ToArray();
+                }
+                return _arguments;
+            }
+        }
 
         IEnumerable<IMethodArgument> IMethodInfo.Arguments => Arguments;
 
-        public IDictionary<int, Action> ExcpetionMappings { get; }
+        private IDictionary<int, Action> _exceptionMappings;
+        public IDictionary<int, Action> ExceptionMappings
+        {
+            get
+            {
+                if(_exceptionMappings == null)
+                {
+                    // extract exception types
+                    _exceptionMappings = new Dictionary<int, Action>();
+                    CodeDocMethod.ExceptionDocumentation.ToList().ForEach(o =>
+                    {
+                        var exceptionType = MethodInfo.DeclaringType.Assembly.GetType(o.ExceptionType);
+                        var exceptionInstance = (Exception)Activator.CreateInstance(exceptionType);
+                        var httpStatusCode = exceptionInstance.Data["HttpStatusCode"] as int?;
+                        if (httpStatusCode != null)
+                        {
+                            ExceptionMappings[httpStatusCode.Value] = CreateExceptionThrower(exceptionType);
+                        }
+                    });
+                }
+                return _exceptionMappings;
+            }
+        }
 
-        public string OperationId { get; }
-        public string Method { get; }
-        public string Scheme { get; }
-        public string Host { get; }
-        public string Path { get; }
-        public IEnumerable<string> Produces { get; }
+        public string OperationId => OperationObject.OperationId;
+
+        private string _method;
+        public string Method
+        {
+            get
+            {
+                if(_method == null)
+                {
+                    _method = OperationObject.GetMethod();
+                }
+                return _method;
+            }
+        }
+
+        private string _scheme;
+        public string Scheme
+        {
+            get
+            {
+                if(_scheme == null)
+                {
+                    _scheme = OperationObject.Schemes?.FirstOrDefault() ??
+                        OperationObject.GetParent<SwaggerObject>().Schemes?.FirstOrDefault() ??
+                        "http";
+                }
+                return _scheme;
+            }
+        }
+
+        private string _host;
+        public string Host
+        {
+            get
+            {
+                if(_host == null)
+                {
+                    _host = OperationObject.GetParent<SwaggerObject>().Host;
+                }
+                return _host;
+            }
+        }
+
+        private string _path;
+        public string Path
+        {
+            get
+            {
+                if (_path == null)
+                {
+                    _path = OperationObject.GetAbsolutePath();
+                }
+                return _path;
+            }
+        }
+
+        private IEnumerable<string> _produces;
+        public IEnumerable<string> Produces
+        {
+            get
+            {
+                if(_produces == null)
+                {
+                    _produces = OperationObject.GetProduces();
+                }
+                return _produces;
+            }
+        }
+
         public IMethodBinder MethodBinder { get; }
 
         public async Task BindArgumentsAsync(IHttpRequest request, object[] args)
@@ -184,7 +255,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if(response.StatusCode != 200)
             {
                 Action exceptionAction;
-                if(ExcpetionMappings.TryGetValue(response.StatusCode, out exceptionAction))
+                if(ExceptionMappings.TryGetValue(response.StatusCode, out exceptionAction))
                 {
                     exceptionAction();
                 }

@@ -193,7 +193,7 @@ namespace SolidRpc.OpenApi.Generator
         {
             var codeGenerator = (ICSharpRepository)new CSharpRepository();
 
-            var model = OpenApiParser.ParseSwaggerSpec(codeSettings.SwaggerSpec);
+            var model = OpenApiParser.ParseOpenApiSpec(codeSettings.SwaggerSpec);
             if (model is SwaggerObject v2)
             {
                 new OpenApiCodeGeneratorV2(v2, codeSettings).GenerateCode(codeGenerator);

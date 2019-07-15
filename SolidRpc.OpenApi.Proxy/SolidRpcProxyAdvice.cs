@@ -1,59 +1,40 @@
 ﻿using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Proxy;
 using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.OpenApi.Model;
 using System;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Proxy
 {
-    public class SolidRpcProxyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
+    public class SolidRpcProxyAdvice<TObject, TMethod, TAdvice> : SolidRpcOpenApiAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        public SolidRpcProxyAdvice(ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger, IServiceProvider serviceProvider) {
-            Logger = logger;
+        public SolidRpcProxyAdvice(ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider) {
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             HttpMessageHandler = (HttpMessageHandler)serviceProvider.GetService(typeof(HttpMessageHandler));
         }
 
         public HttpMessageHandler HttpMessageHandler { get; }
 
         private ILogger Logger { get; }
-
+        public IMethodBinderStore MethodBinderStore { get; }
         public IMethodInfo MethodInfo { get; private set; }
 
         public void Configure(ISolidRpcProxyConfig config)
         {
-            if(config.OpenApiConfiguration == null)
-            {
-                // locate config base on assembly name
-                var assembly = typeof(TObject).Assembly;
-                var assemblyName = assembly.GetName().Name;
-                var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.json"));
-                if(resourceName == null)
-                {
-                    throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject).FullName}.");
-                }
-                using (var s = assembly.GetManifestResourceStream(resourceName))
-                {
-                    using (var sr = new StreamReader(s))
-                    {
-                        config.OpenApiConfiguration = sr.ReadToEnd();
-                    }
-                }
-            }
-            // use the swagger binder to setup the invocation
-            var swaggerConf = OpenApiParser.ParseSwaggerSpec(config.OpenApiConfiguration);
-            if(swaggerConf == null)
-            {
-                throw new Exception($"Cannot parse swagger configuration({config}).");
-            }
+            base.Configure(config);
+            var openApiConfig = config.OpenApiConfiguration;
             if(config.RootAddress != null)
             {
+                var swaggerConf = OpenApiParser.ParseOpenApiSpec(config.OpenApiConfiguration);
                 swaggerConf.SetSchemeAndHostAndPort(config.RootAddress);
+                openApiConfig = swaggerConf.WriteAsJsonString();
             }
-            MethodInfo = swaggerConf.GetMethodBinder().GetMethodInfo(config.InvocationConfiguration.MethodInfo);
+            MethodInfo = MethodBinderStore.GetMethodInfo(openApiConfig, config.InvocationConfiguration.MethodInfo);
         }
 
         private HttpClient CreateHttpClient()
@@ -68,7 +49,7 @@ namespace SolidRpc.OpenApi.Proxy
             }
         }
 
-        public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        public override async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             using (var httpClient = CreateHttpClient())
             {

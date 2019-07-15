@@ -1,13 +1,16 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.OpenApi.Binder.Http.Multipart;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Represents some HttpRequest data
@@ -49,6 +52,69 @@ namespace SolidRpc.OpenApi.Binder
             }
         }
 
+        public static async Task<IEnumerable<HttpRequestData>> ExtractContentData(MediaTypeHeaderValue mediaType, Stream body)
+        {
+            // extract body
+            if (mediaType == null)
+            {
+                return null;
+            }
+            var bodyData = new List<HttpRequestData>();
+            if (mediaType.MediaType == "multipart/form-data")
+            {
+                var boundary = MultipartRequestHelper.GetBoundary(mediaType, 70);
+                var reader = new MultipartReader(boundary, body);
+                var section = await reader.ReadNextSectionAsync();
+                while (section != null)
+                {
+                    var sectionMediaType = section.Headers.ContentType;
+                    var data = new HttpRequestDataBinary(sectionMediaType.MediaType, "body", (byte[])null);
+
+                    var stream = await section.ReadAsStreamAsync();
+                    data.SetBinaryData(section.Headers.ContentDisposition?.Name, stream);
+
+                    data.SetFilename(section.Headers.ContentDisposition?.FileName);
+
+                    bodyData.Add(data);
+
+                    section = await reader.ReadNextSectionAsync();
+                }
+            }
+            else if (mediaType.MediaType == "application/x-www-form-urlencoded")
+            {
+                // read the content as a query string
+                StreamReader sr;
+                if (mediaType.CharSet != null)
+                {
+                    sr = new StreamReader(body, Encoding.GetEncoding(mediaType.CharSet));
+                }
+                else
+                {
+                    sr = new StreamReader(body);
+                }
+                using (sr)
+                {
+                    var content = await sr.ReadToEndAsync();
+                    content.Split('&').ToList().ForEach(o =>
+                    {
+                        var values = o.Split('=');
+                        if (values.Length != 2)
+                        {
+                            throw new Exception("Cannot split values");
+                        }
+                        bodyData.Add(new HttpRequestDataString("text/plain", values[0], values[1]));
+
+                    });
+                }
+            }
+            else
+            {
+                var ms = new MemoryStream();
+                await body.CopyToAsync(ms);
+                bodyData.Add(new HttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
+            }
+            return bodyData;
+        }
         private static Type GetEnumType(Type type)
         {
             if (type.IsGenericType)

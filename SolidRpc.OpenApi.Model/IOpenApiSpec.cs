@@ -12,5 +12,11 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="rootAddress"></param>
         void SetSchemeAndHostAndPort(Uri rootAddress);
+
+        /// <summary>
+        /// Writes this spec as a json string
+        /// </summary>
+        /// <returns></returns>
+        string WriteAsJsonString();
     }
 }

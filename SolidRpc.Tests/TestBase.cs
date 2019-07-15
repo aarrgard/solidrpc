@@ -25,6 +25,18 @@ namespace SolidRpc.Tests
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="resourceName"></param>
+        /// <returns></returns>
+        protected string GetManifestResourceAsString(string resourceName)
+        {
+            using (var sr = new StreamReader(GetManifestResource(resourceName)))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
         protected DirectoryInfo GetProjectFolder(string projectName)
         {
             var dir = new DirectoryInfo(".");

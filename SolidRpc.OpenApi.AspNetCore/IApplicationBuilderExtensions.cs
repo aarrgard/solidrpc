@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.Core.Configuration.Runtime;
-using SolidRpc.OpenApi.AspNetCore;
 using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Model;
+using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,11 @@ namespace Microsoft.AspNetCore.Builder
             {
                 throw new Exception("No solid proxy configuration registered - please configure during startup.");
             }
+            var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
+            if (bindingStore == null)
+            {
+                throw new Exception("No method binding store registered - please configure during startup.");
+            }
 
             //
             // if we map the same path twice we remove old mappings. Extract all paths
@@ -34,14 +39,12 @@ namespace Microsoft.AspNetCore.Builder
             runtime.SolidConfigurationBuilder.AssemblyBuilders
                 .SelectMany(o => o.Interfaces)
                 .SelectMany(o => o.Methods)
-                .Where(o => o.IsAdviceConfigured<ISolidRpcAspNetCoreConfig>())
+                .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                 .ToList()
                 .ForEach(o =>
                 {
-                    var config = o.ConfigureAdvice<ISolidRpcAspNetCoreConfig>();
-                    var openApiSpec = OpenApiParser.ParseSwaggerSpec(config.OpenApiConfiguration);
-                    var methodBinder = openApiSpec.GetMethodBinder();
-                    var methodInfo = methodBinder.GetMethodInfo(o.MethodInfo);
+                    var config = o.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                    var methodInfo = bindingStore.GetMethodInfo(config.OpenApiConfiguration, o.MethodInfo);
                     dict[$"{methodInfo.Method}{methodInfo.Path}"] = methodInfo;
                 });
 
@@ -129,7 +132,7 @@ namespace Microsoft.AspNetCore.Builder
                 context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
 
                 // extract information from http context.
-                var request = new SolidRpc.OpenApi.Binder.HttpRequest();
+                var request = new SolidRpc.OpenApi.Binder.Http.HttpRequest();
                 await request.CopyFromAsync(context.Request);
 
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();

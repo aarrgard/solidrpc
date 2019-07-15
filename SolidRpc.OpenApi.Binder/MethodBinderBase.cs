@@ -10,12 +10,16 @@ namespace SolidRpc.OpenApi.Binder
     public abstract class MethodBinderBase : IMethodBinder
     {
 
-        protected MethodBinderBase()
+        protected MethodBinderBase(IOpenApiSpec openApiSpec, Assembly assembly)
         {
+            OpenApiSpec = openApiSpec;
+            Assembly = assembly;
             CachedBindings = new ConcurrentDictionary<MethodInfo, IMethodInfo>();
         }
 
-        public abstract IOpenApiSpec OpenApiSpec { get; }
+        public IOpenApiSpec OpenApiSpec { get; }
+
+        public Assembly Assembly { get; }
 
         private ConcurrentDictionary<MethodInfo, IMethodInfo> CachedBindings { get; }
 

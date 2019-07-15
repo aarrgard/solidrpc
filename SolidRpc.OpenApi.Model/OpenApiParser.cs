@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
+using System.Collections.Concurrent;
 using System.IO;
 
 namespace SolidRpc.OpenApi.Model
 {
     public class OpenApiParser
     {
+        protected static ConcurrentDictionary<string, IOpenApiSpec> s_ParsedDocs = new ConcurrentDictionary<string, IOpenApiSpec>();
         private static OpenApiParserV2 v2Parser = new OpenApiParserV2();
         private static OpenApiParserV3 v3Parser = new OpenApiParserV3();
 
@@ -15,7 +17,7 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public static IOpenApiSpec ParseSwaggerSpec(string json)
+        public static IOpenApiSpec ParseOpenApiSpec(string json)
         {
             var res = (IOpenApiSpec) v2Parser.ParseSwaggerDoc(json);
             if(res == null)
@@ -41,7 +43,7 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="swaggerSpec"></param>
         /// <returns></returns>
-        public string WriteSwaggerDoc(T swaggerSpec)
+        public static string WriteSwaggerDoc(T swaggerSpec)
         {
             var sw = new StringWriter();
             WriteSwaggerDoc(sw, swaggerSpec);
@@ -53,7 +55,7 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="sw"></param>
         /// <param name="swaggerSpec"></param>
-        private void WriteSwaggerDoc(TextWriter sw, T swaggerSpec)
+        private static void WriteSwaggerDoc(TextWriter sw, T swaggerSpec)
         {
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
@@ -72,7 +74,7 @@ namespace SolidRpc.OpenApi.Model
         {
             using (StreamReader sr = new StreamReader(s))
             {
-                return ParseSwaggerDoc(sr);
+                return ParseSwaggerDoc(sr.ReadToEnd());
             }
         }
 
@@ -84,11 +86,12 @@ namespace SolidRpc.OpenApi.Model
         /// <returns></returns>
         public T ParseSwaggerDoc(string s)
         {
-            using (StringReader sr = new StringReader(s))
-            {
-                return ParseSwaggerDoc(sr);
-            }
-
+            return (T)s_ParsedDocs.GetOrAdd(s, o => {
+                using (StringReader sr = new StringReader(o))
+                {
+                    return ParseSwaggerDoc(sr);
+                }
+            });
         }
 
         /// <summary>
@@ -97,7 +100,7 @@ namespace SolidRpc.OpenApi.Model
         /// <typeparam name="T"></typeparam>
         /// <param name="sr"></param>
         /// <returns></returns>
-        public T ParseSwaggerDoc(TextReader sr)
+        private T ParseSwaggerDoc(TextReader sr)
         {
             using (JsonReader reader = new JsonTextReader(sr))
             {

@@ -24,5 +24,10 @@ namespace SolidRpc.OpenApi.Model.V3
         {
             throw new NotImplementedException();
         }
+
+        public string WriteAsJsonString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

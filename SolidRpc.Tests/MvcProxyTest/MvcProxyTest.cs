@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Services;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
@@ -390,6 +391,7 @@ namespace SolidRpc.Tests.MvcProxyTest
 
             var sc = new ServiceCollection();
             sc.AddLogging(ConfigureLogging);
+            sc.AddSingleton<IMethodBinderStore, MethodBinderStore>();
             sc.AddTransient<T,T>();
             var proxyConf = sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxyCastleGenerator>()

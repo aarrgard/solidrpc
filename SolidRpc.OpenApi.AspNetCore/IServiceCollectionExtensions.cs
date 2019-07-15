@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.OpenApi.AspNetCore;
-using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Binder.Proxy;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -94,7 +93,7 @@ namespace System
                 .ConfigureInterface(mi.DeclaringType)
                 .ConfigureMethod(mi);
 
-            mc.ConfigureAdvice<ISolidRpcAspNetCoreConfig>()
+            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>()
                 .OpenApiConfiguration = config;
 
             //

@@ -1,12 +1,7 @@
-﻿using SolidRpc.OpenApi.Binder.Multipart;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Extension methods fro the http request

@@ -1,14 +1,13 @@
-﻿using SolidRpc.OpenApi.Binder.Multipart;
+﻿using SolidRpc.OpenApi.Binder.Http.Multipart;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Http
 {
     /// <summary>
     /// Extension methods fro the http request
@@ -48,67 +47,13 @@ namespace SolidRpc.OpenApi.Binder
             }
             target.Query = queryList;
 
-            // extract body
             if(source.ContentType != null)
             {
-                var bodyData = new List<HttpRequestData>();
                 var mediaType = MediaTypeHeaderValue.Parse(source.ContentType);
                 target.ContentType = mediaType.MediaType;
-                if (mediaType.MediaType == "multipart/form-data")
-                {
-                    var boundary = MultipartRequestHelper.GetBoundary(mediaType, 70);
-                    var reader = new MultipartReader(boundary, source.Body);
-                    var section = await reader.ReadNextSectionAsync();
-                    while (section != null)
-                    {
-                        var sectionMediaType = section.Headers.ContentType;
-                        var data = new HttpRequestDataBinary(sectionMediaType.MediaType, "body", (byte[])null);
-
-                        var stream = await section.ReadAsStreamAsync();
-                        data.SetBinaryData(section.Headers.ContentDisposition?.Name, stream);
-
-                        data.SetFilename(section.Headers.ContentDisposition?.FileName);
-
-                        bodyData.Add(data);
-
-                        section = await reader.ReadNextSectionAsync();
-                    }
-                }
-                else if (mediaType.MediaType == "application/x-www-form-urlencoded")
-                {
-                    // read the content as a query string
-                    StreamReader sr;
-                    if(mediaType.CharSet != null)
-                    {
-                        sr = new StreamReader(source.Body, Encoding.GetEncoding(mediaType.CharSet));
-                    }
-                    else
-                    {
-                        sr = new StreamReader(source.Body);
-                    }
-                    using (sr)
-                    {
-                        var content = await sr.ReadToEndAsync();
-                        content.Split('&').ToList().ForEach(o =>
-                        {
-                            var values = o.Split('=');
-                            if(values.Length != 2)
-                            {
-                                throw new Exception("Cannot split values");
-                            }
-                            bodyData.Add(new HttpRequestDataString("text/plain", values[0], values[1]));
-
-                        });
-                    }
-                }
-                else
-                {
-                    var ms = new MemoryStream();
-                    await source.Body.CopyToAsync(ms);
-                    bodyData.Add(new HttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
-                }
-                target.BodyData = bodyData;
+                target.BodyData = await HttpRequestData.ExtractContentData(mediaType, source.Body);
             }
         }
+
     }
 }

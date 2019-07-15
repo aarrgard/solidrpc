@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using SolidRpc.OpenApi.Binder.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.OpenApi.Binder.Proxy
 {
     /// <summary>
     /// Interface that exposes functionality to invoke a method in an IoC container.

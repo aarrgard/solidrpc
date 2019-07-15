@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Proxy;
 using SolidRpc.Test.Petstore.Services;
 using SolidRpc.Test.Petstore.Types;
@@ -134,6 +135,7 @@ namespace SolidRpc.Tests
             services.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             services.AddTransient<IPet, PetImpl>();
+            services.AddTransient<IMethodBinderStore, MethodBinderStore>();
             services.AddSolidRpcBindings(typeof(IPet).Assembly);
 
             return services.BuildServiceProvider();
@@ -169,6 +171,7 @@ namespace SolidRpc.Tests
             var sc = new ServiceCollection();
             sc.AddLogging(ConfigureLogging);
             sc.AddTransient<IPet, IPet>();
+            sc.AddTransient<IMethodBinderStore, MethodBinderStore>();
             sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)

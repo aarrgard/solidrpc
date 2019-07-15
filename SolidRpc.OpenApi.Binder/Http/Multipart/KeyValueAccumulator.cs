@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SolidRpc.OpenApi.Binder.Multipart
+namespace SolidRpc.OpenApi.Binder.Http.Multipart
 {
     public class KeyValueAccumulator<TKey, TValue>
     {
