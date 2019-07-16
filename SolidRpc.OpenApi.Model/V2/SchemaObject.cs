@@ -58,26 +58,5 @@ namespace SolidRpc.OpenApi.Model.V2
             var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
             return TypeExtensions.IsFileType(GetClrType().FullName, props);
         }
-
-        /// <summary>
-        /// Returns the clr type for this schema object.
-        /// </summary>
-        /// <returns></returns>
-        private Type GetClrType()
-        {
-            switch(Type)
-            {
-                case "string":
-                    switch(Format)
-                    {
-                        case "binary":
-                            return typeof(Stream);
-                        default:
-                            return typeof(string);
-                    }
-                default:
-                    return typeof(object);
-            }
-        }
     }
 }

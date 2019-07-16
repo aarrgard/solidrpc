@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -57,6 +58,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                 binderStatus.Append($"->param({param.Name})->#{prospects.Count}");
             }
 
+            prospects = prospects.Where(o => {
+                ResponseObject resp;
+                o.Responses.TryGetValue("200", out resp);
+                return TypeMatches(mi.ReturnType, resp?.Schema);        
+            }).ToList();
+
+            binderStatus.Append($"->returntype->#{prospects.Count}");
+
+
             if (prospects.Count != 1)
             {
                 if(mustExist)
@@ -77,7 +87,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             var prospect = parameters.FirstOrDefault(o => o.Name == parameter.Name);
             if(prospect != null)
             {
-                return true;
+                return TypeMatches(parameter.ParameterType, prospect);
             }
             if(parameter.IsOptional)
             {
@@ -93,6 +103,29 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     return true;
                 }
+            }
+            return false;
+        }
+
+        private bool TypeMatches(Type type, ItemBase item)
+        {
+            if(item == null)
+            {
+                return type == typeof(void) || type == typeof(Task);
+            }
+            item = item.GetRefSchema() ?? item;
+            var clrType = item.GetClrType();
+            if(type.IsTaskType(out Type taskType))
+            {
+                type = taskType;
+            }
+            if (type.IsAssignableFrom(clrType))
+            {
+                return true;
+            }
+            if(clrType == typeof(object))
+            {
+                return true;
             }
             return false;
         }

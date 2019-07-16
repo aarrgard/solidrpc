@@ -77,6 +77,7 @@ namespace System
             //
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
             // 
+            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
 
             return sc;

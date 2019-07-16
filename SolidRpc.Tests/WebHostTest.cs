@@ -119,6 +119,7 @@ namespace SolidRpc.Tests
             {
                 base.Dispose();
                 WebHost?.StopAsync().Wait();
+                WebHost?.Dispose();
             }
 
         }

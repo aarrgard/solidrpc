@@ -126,14 +126,19 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var args = await methodInfo.ExtractArgumentsAsync(request);
 
             // invoke
-            var proxy = (ISolidProxy)ServiceProvider.GetService(methodInfo.MethodInfo.DeclaringType);
+            var svc = ServiceProvider.GetService(methodInfo.MethodInfo.DeclaringType);
+            if (svc == null)
+            {
+                throw new Exception($"Failed to resolve service for type {methodInfo.MethodInfo.DeclaringType}");
+            }
+            var proxy = (ISolidProxy)svc;
             if (proxy == null)
             {
-                throw new Exception($"Failed to resolve proxy for type {methodInfo.MethodInfo.DeclaringType}");
+                throw new Exception($"Service for {methodInfo.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
             // return response
-            var resp = new SolidRpc.OpenApi.Binder.Http.HttpResponse();
+            var resp = new HttpResponse();
             try
             {
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);

@@ -33,7 +33,7 @@ namespace SolidRpc.OpenApi.Binder
                         .SelectMany(o => o.InvocationConfigurations)
                         .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                         .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())
-                        .Select(o => new { o.OpenApiConfiguration, o.InvocationConfiguration.MethodInfo.DeclaringType.Assembly })
+                        .Select(o => new { OpenApiConfiguration = o.GetOpenApiConfiguration(), o.InvocationConfiguration.MethodInfo.DeclaringType.Assembly })
                         .Distinct()
                         .ToList()
                         .ForEach(o => GetMethodBinder(o.OpenApiConfiguration, o.Assembly));
@@ -45,6 +45,8 @@ namespace SolidRpc.OpenApi.Binder
 
         public IMethodBinder GetMethodBinder(string openApiSpec, Assembly assembly)
         {
+            if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             var key = $"{assembly.GetName().FullName}:{assembly.GetName().Version}:{openApiSpec}";
             return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, assembly));
         }

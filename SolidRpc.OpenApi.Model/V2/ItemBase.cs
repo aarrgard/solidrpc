@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -106,6 +107,61 @@ namespace SolidRpc.OpenApi.Model.V2
                 return GetParent<SwaggerObject>().Definitions[key];
             }
             throw new Exception("Cannot find ref:" + Ref);
+        }
+
+        /// <summary>
+        /// Returns the clr type that this item represents.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetClrType()
+        {
+            var item = GetRefSchema() ?? this;
+            switch(item.Type)
+            {
+                case null:
+                case "":
+                case "object":
+                case "file":
+                    return typeof(object);
+                case "array":
+                    var arrayType = Items?.GetClrType();
+                    if(arrayType == null || arrayType == typeof(object))
+                    {
+                        return typeof(object);
+                    }
+                    return arrayType.MakeArrayType();
+                case "boolean":
+                    return typeof(bool);
+                case "number":
+                case "integer":
+                    switch (item.Format)
+                    {
+                        case "double":
+                            return typeof(double);
+                        case "float":
+                            return typeof(float);
+                        case "int32":
+                            return typeof(int);
+                        case "int64":
+                            return typeof(long);
+                    }
+                    break;
+                case "string":
+                    switch (Format)
+                    {
+                        case null:
+                        case "":
+                            return typeof(string);
+                        case "binary":
+                            return typeof(Stream);
+                        case "date-time":
+                            return typeof(DateTime);
+                        case "uuid":
+                            return typeof(Guid);
+                    }
+                    break;
+            }
+            throw new Exception($"Cannot determine type for {item.Type}/{item.Format}");
         }
 
         public string GetBaseType()

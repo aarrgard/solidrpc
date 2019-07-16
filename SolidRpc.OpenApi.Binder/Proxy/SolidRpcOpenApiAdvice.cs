@@ -19,24 +19,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public bool Configure(ISolidRpcOpenApiConfig config)
         {
-            if (config.OpenApiConfiguration == null)
-            {
-                // locate config base on assembly name
-                var assembly = typeof(TObject).Assembly;
-                var assemblyName = assembly.GetName().Name;
-                var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.json"));
-                if (resourceName == null)
-                {
-                    throw new Exception($"Solid proxy advice config does not contain a swagger spec for {typeof(TObject).FullName}.");
-                }
-                using (var s = assembly.GetManifestResourceStream(resourceName))
-                {
-                    using (var sr = new StreamReader(s))
-                    {
-                        config.OpenApiConfiguration = sr.ReadToEnd();
-                    }
-                }
-            }
+            config.GetOpenApiConfiguration();
             return false;
         }
         public virtual Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)

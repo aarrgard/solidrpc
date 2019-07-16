@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace System
 {
@@ -11,6 +12,7 @@ namespace System
     public static class TypeExtensions
     {
         private static readonly FileTypeHelper s_NotFileType = new FileTypeHelper(false, null, null, null, null,null,null);
+
 
         /// <summary>
         /// Contains information about a file type
@@ -292,6 +294,28 @@ namespace System
                 return false;
             }
             enumType = enumInterface.GetGenericArguments()[0];
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true if supplied task is a task type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="taskType"></param>
+        /// <returns></returns>
+        public static bool IsTaskType(this Type type, out Type taskType)
+        {
+            if(!type.IsGenericType)
+            {
+                taskType = null;
+                return false;
+            }
+            if(!typeof(Task<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+            {
+                taskType = null;
+                return false;
+            }
+            taskType = type.GetGenericArguments()[0];
             return true;
         }
     }
