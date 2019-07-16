@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Proxy;
-using System.IO;
+using System;
 using System.Linq;
 using System.Reflection;
 
-namespace System
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
@@ -55,13 +55,17 @@ namespace System
             //
             if (!sc.Any(o => typeof(IMethodInvoker) == o.ServiceType))
             {
-                sc.AddScoped<IMethodInvoker, MethodInvoker>();
+                sc.AddSingleton<IMethodInvoker, MethodInvoker>();
+            }
+            if (!sc.Any(o => typeof(IMethodBinderStore) == o.ServiceType))
+            {
+                sc.AddSingleton<IMethodBinderStore, MethodBinderStore>();
             }
 
             //
             // make sure that the declaring type has a registration
             //
-            if(!sc.Any(o => o.ServiceType == mi.DeclaringType))
+            if (!sc.Any(o => o.ServiceType == mi.DeclaringType))
             {
                 return sc;
             }
