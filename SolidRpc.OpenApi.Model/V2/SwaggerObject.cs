@@ -102,6 +102,8 @@ namespace SolidRpc.OpenApi.Model.V2
         [DataMember(Name = "externalDocs", EmitDefaultValue = false)]
         public ExternalDocumentationObject ExternalDocs { get; set; }
 
+        public string OpenApiVersion => "2.0";
+
         /// <summary>
         /// Updates the host and port so that it reflects the supplied address
         /// </summary>

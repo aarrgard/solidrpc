@@ -20,6 +20,10 @@ namespace SolidRpc.OpenApi.Model.V3
         [DataMember(Name = "swagger", IsRequired = true, EmitDefaultValue = false)]
         public string Openapi { get; set; }
 
+        public string OpenApiVersion => throw new NotImplementedException();
+
+        public string BasePath => "3.0";
+
         public void SetSchemeAndHostAndPort(Uri rootAddress)
         {
             throw new NotImplementedException();

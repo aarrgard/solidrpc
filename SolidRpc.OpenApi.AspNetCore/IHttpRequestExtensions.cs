@@ -14,6 +14,21 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// </summary>
     public static class IHttpRequestExtensions
     {
+
+        public static Uri GetUri(this Microsoft.AspNetCore.Http.HttpRequest request)
+        {
+            var uriBuilder = new UriBuilder();
+            uriBuilder.Scheme = request.Scheme;
+            uriBuilder.Host = request.Host.Host;
+            if(request.Host.Port != null)
+            {
+                uriBuilder.Port = request.Host.Port.Value;
+            }
+            uriBuilder.Path = $"{request.PathBase}{request.Path}";
+            uriBuilder.Query = request.QueryString.ToString();
+            return uriBuilder.Uri;
+        }
+
          /// <summary>
         /// 
         /// </summary>

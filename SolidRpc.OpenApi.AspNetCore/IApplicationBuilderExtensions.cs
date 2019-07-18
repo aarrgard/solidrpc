@@ -5,6 +5,7 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,45 @@ namespace Microsoft.AspNetCore.Builder
 {
     public static class IApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Exposes the open api config for supplied method binder.
+        /// </summary>
+        /// <param name="applicationBuilder"></param>
+        /// <param name="methodBinder"></param>
+        /// <returns></returns>
+
+        public static string UseOpenApiConfig(this IApplicationBuilder applicationBuilder, IMethodBinder methodBinder)
+        {
+            var name = methodBinder.Assembly.GetName();
+            var spec = methodBinder.OpenApiSpec;
+            var path = $"{spec.BasePath}/{name.Name}-v{spec.OpenApiVersion}-{name.Version}.json";
+            var paths = path.Split('/').Where(o => !string.IsNullOrEmpty(o));
+            MapPath(applicationBuilder, paths, methodBinder);
+            return path;
+        }
+
+        private static void MapPath(IApplicationBuilder applicationBuilder, IEnumerable<string> paths, IMethodBinder methodBinder)
+        {
+            if(paths.Count() == 1)
+            {
+                applicationBuilder.Run(async ctx =>
+                {
+                    var openApiSpec = methodBinder.OpenApiSpec;
+                    openApiSpec.SetSchemeAndHostAndPort(ctx.Request.GetUri());
+                    ctx.Response.StatusCode = 200;
+                    using (var sw = new StreamWriter(ctx.Response.Body))
+                    {
+                        ctx.Response.Headers["Content-Type"] = $"application/json; charset=\"{sw.Encoding.EncodingName}\"";
+                        await sw.WriteAsync(openApiSpec.WriteAsJsonString());
+                    }
+                });
+            }
+            else
+            {
+                applicationBuilder.Map($"/{paths.First()}", o => MapPath(o, paths.Skip(1), methodBinder));
+            }
+        }
+
         /// <summary>
         /// Binds all the solid rpc proxies that has an implementation on this server.
         /// </summary>
