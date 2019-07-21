@@ -29,8 +29,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var strConfig = config.OpenApiConfiguration;
             if (strConfig == null)
             {
+                var assemblies = config.Methods.Select(o => o.DeclaringType.Assembly).Distinct().ToList();
+                if(assemblies.Count != 1)
+                {
+                    throw new Exception("Configuration belongs to more than one assembly.");
+                }
                 // locate config base on assembly name
-                var assembly = config.InvocationConfiguration.MethodInfo.DeclaringType.Assembly;
+                var assembly = assemblies.First();
                 var assemblyName = assembly.GetName().Name;
                 var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.json"));
                 if (resourceName == null)

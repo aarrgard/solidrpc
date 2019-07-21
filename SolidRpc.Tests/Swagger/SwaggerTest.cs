@@ -176,7 +176,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
 
-            var req = new HttpRequest();
+            var req = new SolidHttpRequest();
             await smi.BindArgumentsAsync(req, new object[] { new string[] { "available", "pending" }, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual("/aarrgard/Test/1.0.0/pet/findByStatus", req.Path);
@@ -199,7 +199,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
 
             var petId = 3456L;
-            var req = new HttpRequest();
+            var req = new SolidHttpRequest();
             await smi.BindArgumentsAsync(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}",req.Path);
@@ -221,7 +221,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
 
             var petId = 3456L;
-            var req = new HttpRequest();
+            var req = new SolidHttpRequest();
             await smi.BindArgumentsAsync(req, new object[] { petId, "kalle", "available", CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
             Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
@@ -245,7 +245,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "file"));
 
             var petId = 3456L;
-            var req = new HttpRequest();
+            var req = new SolidHttpRequest();
             var data = new MemoryStream(new byte[] { 1, 2, 3, 4 });
             await smi.BindArgumentsAsync(req, new object[] { petId, "Image metadata", data, CancellationToken.None });
             Assert.AreEqual("POST", req.Method);
@@ -267,7 +267,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "body"));
 
-            var req = new HttpRequest();
+            var req = new SolidHttpRequest();
             var order = new Order()
             {
                 Id = 343,

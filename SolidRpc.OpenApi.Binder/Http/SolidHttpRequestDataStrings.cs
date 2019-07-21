@@ -8,7 +8,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Represents some HttpRequest data
     /// </summary>
-    public class HttpRequestDataString : HttpRequestData
+    public class HttpRequestDataString : SolidHttpRequestData
     {
         /// <summary>
         /// Constructs a new structure representing string data.

@@ -38,17 +38,17 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The path data. This information is extracted/populated by the binder. No
         /// need to populate from implementation.
         /// </summary>
-        IEnumerable<HttpRequestData> PathData { get; set; }
+        IEnumerable<SolidHttpRequestData> PathData { get; set; }
 
         /// <summary>
         /// The request headers
         /// </summary>
-        IEnumerable<HttpRequestData> Headers { get; set; }
+        IEnumerable<SolidHttpRequestData> Headers { get; set; }
 
         /// <summary>
         /// The request query string
         /// </summary>
-        IEnumerable<HttpRequestData> Query { get; set; }
+        IEnumerable<SolidHttpRequestData> Query { get; set; }
 
         /// <summary>
         /// The content type of the body data.
@@ -64,6 +64,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The data in the body. Check the ContentType to 
         /// determine how the data should be transmitted.
         /// </summary>
-        IEnumerable<HttpRequestData> BodyData { get; set; }
+        IEnumerable<SolidHttpRequestData> BodyData { get; set; }
     }
 }

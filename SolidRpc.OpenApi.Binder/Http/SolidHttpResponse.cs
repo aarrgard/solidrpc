@@ -5,7 +5,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Represents a response
     /// </summary>
-    public class HttpResponse : IHttpResponse
+    public class SolidHttpResponse : IHttpResponse
     {
         public Stream ResponseStream { get; set; }
         public int StatusCode { get; set; }

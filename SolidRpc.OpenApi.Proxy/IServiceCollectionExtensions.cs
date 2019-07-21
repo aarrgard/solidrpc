@@ -6,36 +6,56 @@ using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extension methods for the service collection.
+    /// </summary>
     public static class IServiceCollectionExtensions
     {
         /// <summary>
         /// Configures all the interfaces in supplied assembly
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sp"></param>
-        /// <param name="message"></param>
-        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly assembly)
+        /// <param name="sc"></param>
+        /// <param name="interfaceAssembly"></param>
+        /// <param name="implementationAssembly"></param>
+        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly interfaceAssembly, Assembly implementationAssembly = null)
         {
-            foreach (var t in assembly.GetTypes())
+            foreach (var t in interfaceAssembly.GetTypes())
             {
                 if(!t.IsInterface)
                 {
                     continue;
                 }
-                sc.AddSolidRpcBinding(t);
+                Type impl = null;
+                if(implementationAssembly != null)
+                {
+                    impl = implementationAssembly.GetTypes()
+                        .Where(o => t.IsAssignableFrom(o))
+                        .SingleOrDefault();
+                }
+                sc.AddSolidRpcBinding(t, impl);
             }
             return sc;
         }
 
         /// <summary>
-        /// Configures the supplied type so that it is exposed through the .net core http binding.
+        /// Configures the supplied type so that it is exposed in the binder.
         /// </summary>
         /// <param name="sc"></param>
-        /// <param name="t"></param>
+        /// <param name="interfaze"></param>
+        /// <param name="impl"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, Type t)
+        public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, Type interfaze, Type impl = null)
         {
-            foreach (var m in t.GetMethods())
+
+            //
+            // make sure that the type is registered
+            //
+            if(impl != null && !sc.Any(o => o.ServiceType == interfaze)) 
+            {
+                sc.AddTransient(interfaze, impl);
+            }
+
+            foreach (var m in interfaze.GetMethods())
             {
                 sc.AddSolidRpcBinding(m);
             }

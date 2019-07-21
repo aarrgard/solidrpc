@@ -11,7 +11,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="data"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static IEnumerable<T> As<T>(this IEnumerable<HttpRequestData> data, string name)
+        public static IEnumerable<T> As<T>(this IEnumerable<SolidHttpRequestData> data, string name)
         {
             return data.Where(o => o.Name == name).Select(o => o.As<T>());
         }
@@ -21,7 +21,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="data"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static T GetData<T>(this IEnumerable<HttpRequestData> data, string name)
+        public static T GetData<T>(this IEnumerable<SolidHttpRequestData> data, string name)
         {
             return data.Single(o => o.Name == name).As<T>(); ;
         }

@@ -10,6 +10,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     public interface IMethodInvoker
     {
         /// <summary>
+        /// The store that contains all the bindings
+        /// </summary>
+        IMethodBinderStore MethodBinderStore { get; }
+
+        /// <summary>
         /// Invokes the supplied request.
         /// </summary>
         /// <param name="request"></param>

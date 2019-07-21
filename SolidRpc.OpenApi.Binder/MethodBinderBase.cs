@@ -28,22 +28,7 @@ namespace SolidRpc.OpenApi.Binder
         {
             get
             {
-                if(_methodInfos == null)
-                {
-                    Assembly.GetTypes()
-                        .Where(o => o.IsInterface)
-                        .SelectMany(o => o.GetMethods())
-                        .ToList()
-                        .ForEach(o => {
-                            var mi = FindBinding(o, false);
-                            if(mi != null)
-                            {
-                                CachedBindings.GetOrAdd(o, mi);
-                            }
-                        });
-                    _methodInfos = CachedBindings.Values;
-                }
-                return _methodInfos;
+                 return CachedBindings.Values;
             }
         }
 

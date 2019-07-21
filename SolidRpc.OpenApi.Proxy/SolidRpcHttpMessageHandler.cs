@@ -16,17 +16,26 @@ namespace SolidRpc.OpenApi.Proxy
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
-        /// <param name="serviceProvider">The service provider for the services.</param>
+        /// <param name="methodInvoker">The method invoker.</param>
         public SolidRpcHttpMessageHandler(IMethodInvoker methodInvoker)
         {
             MethodInvoker = methodInvoker;
         }
 
+        /// <summary>
+        /// The method invoker
+        /// </summary>
         public IMethodInvoker MethodInvoker { get; }
 
+        /// <summary>
+        /// Sends the message.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var req = new HttpRequest();
+            var req = new SolidHttpRequest();
             await req.CopyFrom(request);
             var resp = await MethodInvoker.InvokeAsync(req, cancellationToken);
             var response = new HttpResponseMessage();

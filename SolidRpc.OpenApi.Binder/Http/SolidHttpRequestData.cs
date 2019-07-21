@@ -15,7 +15,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Represents some HttpRequest data
     /// </summary>
-    public abstract class HttpRequestData
+    public abstract class SolidHttpRequestData
     {
         private const string SystemBoolean = "System.Boolean";
         private const string SystemDouble = "System.Double";
@@ -31,16 +31,16 @@ namespace SolidRpc.OpenApi.Binder.Http
         private const string SystemIOStream = "System.IO.Stream";
         private const string SystemThreadingCancellationToken = "System.Threading.CancellationToken";
         
-        public static readonly IEnumerable<HttpRequestData> EmptyArray = new HttpRequestData[0];
+        public static readonly IEnumerable<SolidHttpRequestData> EmptyArray = new SolidHttpRequestData[0];
 
-        public static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
+        public static Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
         {
-            Func<IEnumerable<HttpRequestData>, object, HttpRequestData> subBinder;
+            Func<IEnumerable<SolidHttpRequestData>, object, SolidHttpRequestData> subBinder;
             switch(collectionFormat)
             {
                 case null:
                     subBinder = CreateBinder(contentType, name, parameterType);
-                    return (_, __) => new HttpRequestData[] { subBinder(_, __) };
+                    return (_, __) => new SolidHttpRequestData[] { subBinder(_, __) };
                 case "multi":
                     var binder = CreateEnumBinder(contentType, name, parameterType);
                     return (_, __) => binder(_, __);
@@ -52,14 +52,14 @@ namespace SolidRpc.OpenApi.Binder.Http
             }
         }
 
-        public static async Task<IEnumerable<HttpRequestData>> ExtractContentData(MediaTypeHeaderValue mediaType, Stream body)
+        public static async Task<IEnumerable<SolidHttpRequestData>> ExtractContentData(MediaTypeHeaderValue mediaType, Stream body)
         {
             // extract body
             if (mediaType == null)
             {
                 return null;
             }
-            var bodyData = new List<HttpRequestData>();
+            var bodyData = new List<SolidHttpRequestData>();
             if (mediaType.MediaType == "multipart/form-data")
             {
                 var boundary = MultipartRequestHelper.GetBoundary(mediaType, 70);
@@ -68,7 +68,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                 while (section != null)
                 {
                     var sectionMediaType = section.Headers.ContentType;
-                    var data = new HttpRequestDataBinary(sectionMediaType.MediaType, "body", (byte[])null);
+                    var data = new SolidHttpRequestDataBinary(sectionMediaType.MediaType, "body", (byte[])null);
 
                     var stream = await section.ReadAsStreamAsync();
                     data.SetBinaryData(section.Headers.ContentDisposition?.Name, stream);
@@ -111,7 +111,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 var ms = new MemoryStream();
                 await body.CopyToAsync(ms);
-                bodyData.Add(new HttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
+                bodyData.Add(new SolidHttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
             }
             return bodyData;
         }
@@ -127,31 +127,31 @@ namespace SolidRpc.OpenApi.Binder.Http
             return type.GetInterfaces().Select(o => GetEnumType(o)).Where(o => o != null).FirstOrDefault();
         }
 
-        private static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
         {
             var enumType = GetEnumType(type);
-            var m = typeof(HttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            var m = typeof(SolidHttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
                     .Where(o => o.Name == nameof(CreateEnumBinder))
                     .Where(o => o.GetParameters().Length == 2)
                     .Where(o => o.IsGenericMethod)
                     .Single();
-            return (Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+            return (Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
         }
 
-        private static Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
+        private static Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
         {
             var subBinder = CreateBinder(contentType, name, typeof(T));
             return (_,__) => ((IEnumerable<T>)__).Select(o => subBinder(_, o));
         }
 
-        private static Func<IEnumerable<HttpRequestData>, object, HttpRequestData> CreateBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<SolidHttpRequestData>, object, SolidHttpRequestData> CreateBinder(string contentType, string name, Type type)
         {
             if(type?.FullName == SystemIOStream)
             {
                 contentType = contentType ?? "application/octet-stream";
                 return (_, val) =>
                 {
-                    var retVal = new HttpRequestDataBinary(contentType, name, (Stream)val);
+                    var retVal = new SolidHttpRequestDataBinary(contentType, name, (Stream)val);
                     retVal.SetFilename("upload.tmp");
                     return retVal; ;
                 };
@@ -187,7 +187,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    return (_, val) => new HttpRequestDataBinary(contentType, name, JsonHelper.Serialize(val, type));
+                    return (_, val) => new SolidHttpRequestDataBinary(contentType, name, JsonHelper.Serialize(val, type));
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }
@@ -197,7 +197,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The name of the request data.
         /// </summary>
         /// <param name="name"></param>
-        public HttpRequestData(string contentType, string name)
+        public SolidHttpRequestData(string contentType, string name)
         {
             ContentType = contentType;
             Name = name;

@@ -6,11 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build045" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.Proxy\SolidRpc.OpenApi.Proxy.csproj" />
   </ItemGroup>
 
 </Project>

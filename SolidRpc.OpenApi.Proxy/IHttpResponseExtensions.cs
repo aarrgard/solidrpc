@@ -14,7 +14,8 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="target"></param>
+        /// <param name="source"></param>
         public static async Task CopyFrom(this IHttpResponse target, HttpResponseMessage source)
         {
             target.StatusCode = (int)source.StatusCode;
@@ -33,7 +34,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static async Task CopyTo(this IHttpResponse source, HttpResponseMessage target)
+        public static Task CopyTo(this IHttpResponse source, HttpResponseMessage target)
         {
             target.StatusCode = (HttpStatusCode)source.StatusCode;
             if (!string.IsNullOrEmpty(source.ContentType))
@@ -41,6 +42,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                 target.Content = new StreamContent(source.ResponseStream);
                 target.Content.Headers.ContentType = new MediaTypeHeaderValue(source.ContentType);
             }
+            return Task.CompletedTask;
         }
 
     }

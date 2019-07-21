@@ -47,7 +47,8 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
         public static void CopyTo(this IHttpRequest source, HttpRequestMessage target)
         {
             var builder = new UriBuilder
@@ -87,7 +88,8 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="target"></param>
+        /// <param name="source"></param>
         public static async Task CopyFrom(this IHttpRequest target, HttpRequestMessage source)
         {
             target.Method = source.Method.Method;
@@ -132,17 +134,17 @@ namespace SolidRpc.OpenApi.Binder.Http
             if(mediaType != null)
             {
                 target.ContentType = mediaType.MediaType;
-                target.BodyData = await HttpRequestData.ExtractContentData(mediaType, await source.Content.ReadAsStreamAsync());
+                target.BodyData = await SolidHttpRequestData.ExtractContentData(mediaType, await source.Content.ReadAsStreamAsync());
             }
         }
 
-        private static HttpContent CreateMultipartFormDataContent(IEnumerable<HttpRequestData> bodyData)
+        private static HttpContent CreateMultipartFormDataContent(IEnumerable<SolidHttpRequestData> bodyData)
         {
             var content = new MultipartFormDataContent();
             foreach(var d in bodyData)
             {
                 HttpContent part;
-                if (d is HttpRequestDataBinary binary)
+                if (d is SolidHttpRequestDataBinary binary)
                 {
                     part = new StreamContent(d.GetBinaryValue());
                     part.Headers.ContentType = new MediaTypeHeaderValue(binary.ContentType);
@@ -168,7 +170,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             return content;
         }
 
-        private static HttpContent CreateFormUrlEncodedContent(IEnumerable<HttpRequestData> bodyData)
+        private static HttpContent CreateFormUrlEncodedContent(IEnumerable<SolidHttpRequestData> bodyData)
         {
             FormUrlEncodedContent formContent;
             var data = bodyData.Select(o => new KeyValuePair<string, string>(o.Name, o.GetStringValue()));
@@ -176,7 +178,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             return formContent;
         }
 
-        private static HttpContent CreateBody(IEnumerable<HttpRequestData> bodyData)
+        private static HttpContent CreateBody(IEnumerable<SolidHttpRequestData> bodyData)
         {
             if(bodyData.Count() != 1)
             {

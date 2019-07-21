@@ -294,7 +294,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 throw new Exception($"Supplied request path({request.Path}) does not match operation path({OperationObject.GetAbsolutePath()})");
             }
-            var pathData = new List<HttpRequestData>();
+            var pathData = new List<SolidHttpRequestData>();
             for(int i = 0; i < patterns.Length; i++)
             {
                 var pattern = patterns[i];

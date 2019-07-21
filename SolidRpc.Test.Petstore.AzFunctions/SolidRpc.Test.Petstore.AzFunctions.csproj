@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build025" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctions\SolidRpc.OpenApi.AzFunctions.csproj" />
+    <ProjectReference Include="..\SolidRpc.Test.Petstore.Impl\SolidRpc.Test.Petstore.Impl.csproj" />
+    <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Function1\function.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Function1\run.csx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+</Project>

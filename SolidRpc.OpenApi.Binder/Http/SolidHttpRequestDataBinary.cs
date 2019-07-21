@@ -7,7 +7,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Represents some HttpRequest data
     /// </summary>
-    public class HttpRequestDataBinary : HttpRequestData
+    public class SolidHttpRequestDataBinary : SolidHttpRequestData
     {
         /// <summary>
         /// Constructs a new structure representing binary data.
@@ -15,7 +15,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="contentType"></param>
         /// <param name="name"></param>
         /// <param name="binaryData"></param>
-        public HttpRequestDataBinary(string contentType, string name, byte[] binaryData) : base(contentType, name)
+        public SolidHttpRequestDataBinary(string contentType, string name, byte[] binaryData) : base(contentType, name)
         {
             BinaryData = binaryData;
         }
@@ -25,7 +25,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="contentType"></param>
         /// <param name="name"></param>
         /// <param name="binaryData"></param>
-        public HttpRequestDataBinary(string contentType, string name, Stream stream) : base(contentType, name)
+        public SolidHttpRequestDataBinary(string contentType, string name, Stream stream) : base(contentType, name)
         {
             var ms = new MemoryStream();
             stream.CopyTo(ms);

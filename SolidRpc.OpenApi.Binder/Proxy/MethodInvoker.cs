@@ -70,6 +70,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
         }
 
+        private object _mutex = new object();
+        private PathSegment _rootSegment;
+
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
             IServiceProvider serviceProvider,
@@ -80,26 +83,41 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             ServiceProvider = serviceProvider;
             ProxyConfigurationStore = proxyConfigurationStore;
             MethodBinderStore = methodBinderStore;
-            RootSegment = new PathSegment();
-
-            ProxyConfigurationStore.ProxyConfigurations
-                .SelectMany(o => o.InvocationConfigurations)
-                .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
-                .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())
-                .ToList().ForEach(o =>
-            {
-                var mi = o.InvocationConfiguration.MethodInfo;
-                var methodInfo = MethodBinderStore.GetMethodInfo(o.OpenApiConfiguration, mi);
-                RootSegment.AddPath(methodInfo);
-                Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Path}.");
-            });
         }
 
         public ILogger Logger { get; }
         public IServiceProvider ServiceProvider { get; }
         public ISolidProxyConfigurationStore ProxyConfigurationStore { get; }
         public IMethodBinderStore MethodBinderStore { get; }
-        private PathSegment RootSegment { get; }
+        private PathSegment RootSegment
+        {
+            get
+            {
+                if(_rootSegment == null)
+                {
+                    lock(_mutex)
+                    {
+                        if(_rootSegment == null)
+                        {
+                            _rootSegment = new PathSegment();
+                            ProxyConfigurationStore.ProxyConfigurations
+                                .SelectMany(o => o.InvocationConfigurations)
+                                .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+                                .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())
+                                .ToList().ForEach(o =>
+                                {
+                                    var mi = o.InvocationConfiguration.MethodInfo;
+                                    var methodInfo = MethodBinderStore.GetMethodInfo(o.GetOpenApiConfiguration(), mi);
+                                    _rootSegment.AddPath(methodInfo);
+                                    Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Path}.");
+                                });
+
+                        }
+                    }
+                }
+                return _rootSegment;
+            }
+        }
 
         public Task<IHttpResponse> InvokeAsync(
             IHttpRequest request, 
@@ -110,7 +128,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             if(methodInfo == null)
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);
-                return Task.FromResult<IHttpResponse>(new HttpResponse()
+                return Task.FromResult<IHttpResponse>(new SolidHttpResponse()
                 {
                     StatusCode = 404
                 });
@@ -138,7 +156,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
 
             // return response
-            var resp = new HttpResponse();
+            var resp = new SolidHttpResponse();
             try
             {
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);

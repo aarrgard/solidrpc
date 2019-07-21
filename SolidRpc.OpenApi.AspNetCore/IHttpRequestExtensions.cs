@@ -1,10 +1,6 @@
-﻿using SolidRpc.OpenApi.Binder.Http.Multipart;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -41,7 +37,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             target.Path = $"{source.PathBase}{source.Path}";
 
             // extract headers
-            var headerList = new List<HttpRequestData>();
+            var headerList = new List<SolidHttpRequestData>();
             foreach (var h in source.Headers)
             {
                 foreach (var sv in h.Value)
@@ -52,7 +48,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             target.Headers = headerList;
 
             // extract query
-            var queryList = new List<HttpRequestData>();
+            var queryList = new List<SolidHttpRequestData>();
             foreach(var q in source.Query)
             {
                 foreach(var sv in q.Value)
@@ -66,7 +62,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 var mediaType = MediaTypeHeaderValue.Parse(source.ContentType);
                 target.ContentType = mediaType.MediaType;
-                target.BodyData = await HttpRequestData.ExtractContentData(mediaType, source.Body);
+                target.BodyData = await SolidHttpRequestData.ExtractContentData(mediaType, source.Body);
             }
         }
 

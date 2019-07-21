@@ -75,7 +75,12 @@ namespace Microsoft.AspNetCore.Builder
                 .ToList()
                 .ForEach(o =>
                 {
-                    dict[$"{o.Method}{o.Path}"] = o;
+                    var path = $"{o.Method}{o.Path}";
+                    if(dict.TryGetValue(path, out IMethodInfo oldBinding))
+                    {
+                        throw new Exception($"Cannot remap path {path} from {oldBinding.MethodInfo.DeclaringType} to {o.MethodInfo.DeclaringType}");
+                    }
+                    dict[path] = o;
                 });
 
             //
@@ -110,7 +115,7 @@ namespace Microsoft.AspNetCore.Builder
             // add handler for this path
             if (paths.TryGetValue(pathPrefix, out IMethodInfo methodInfo))
             {
-                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {methodInfo.OperationId}:{methodInfo.MethodInfo}");
+                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {methodInfo.OperationId}:{methodInfo.MethodInfo.DeclaringType.FullName}:{methodInfo.MethodInfo}");
                 ab.Run((ctx) => HandleInvocation(methodInfo, ctx));
             }
         }
@@ -161,7 +166,7 @@ namespace Microsoft.AspNetCore.Builder
                 context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
 
                 // extract information from http context.
-                var request = new SolidRpc.OpenApi.Binder.Http.HttpRequest();
+                var request = new SolidRpc.OpenApi.Binder.Http.SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);
 
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();

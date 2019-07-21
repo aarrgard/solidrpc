@@ -6,18 +6,18 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Implementation of the IHttpRequest object
     /// </summary>
-    public class HttpRequest : IHttpRequest
+    public class SolidHttpRequest : IHttpRequest
     {
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public HttpRequest()
+        public SolidHttpRequest()
         {
             CancellationToken = CancellationToken.None;
-            PathData = HttpRequestData.EmptyArray;
-            Headers = HttpRequestData.EmptyArray;
-            Query = HttpRequestData.EmptyArray;
-            BodyData = HttpRequestData.EmptyArray;
+            PathData = SolidHttpRequestData.EmptyArray;
+            Headers = SolidHttpRequestData.EmptyArray;
+            Query = SolidHttpRequestData.EmptyArray;
+            BodyData = SolidHttpRequestData.EmptyArray;
             Scheme = "http";
         }
 
@@ -49,17 +49,17 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// The path data
         /// </summary>
-        public IEnumerable<HttpRequestData> PathData { get; set; }
+        public IEnumerable<SolidHttpRequestData> PathData { get; set; }
 
         /// <summary>
         /// The headers
         /// </summary>
-        public IEnumerable<HttpRequestData> Headers { get; set; }
+        public IEnumerable<SolidHttpRequestData> Headers { get; set; }
 
         /// <summary>
         /// The query data
         /// </summary>
-        public IEnumerable<HttpRequestData> Query { get; set; }
+        public IEnumerable<SolidHttpRequestData> Query { get; set; }
 
         /// <summary>
         /// The content type
@@ -69,6 +69,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// Contains the data in the body.
         /// </summary>
-        public IEnumerable<HttpRequestData> BodyData { get; set; }
+        public IEnumerable<SolidHttpRequestData> BodyData { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             else
             {
-                HttpRequestDataBinder = HttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
+                HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
             }
         }
 
@@ -65,7 +65,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return new[] { MapScope(ParameterObject.In), ParameterObject.Name };
         }
 
-        private IEnumerable<HttpRequestData> SetFileData(string name, IEnumerable<HttpRequestData> formData, object value)
+        private IEnumerable<SolidHttpRequestData> SetFileData(string name, IEnumerable<SolidHttpRequestData> formData, object value)
         {
             var latest = GetLatestBinaryData(formData);
             switch (name.ToLower())
@@ -82,12 +82,12 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        private HttpRequestDataBinary GetLatestBinaryData(IEnumerable<HttpRequestData> formData)
+        private SolidHttpRequestDataBinary GetLatestBinaryData(IEnumerable<SolidHttpRequestData> formData)
         {
-            var latest = formData.OfType<HttpRequestDataBinary>().LastOrDefault();
+            var latest = formData.OfType<SolidHttpRequestDataBinary>().LastOrDefault();
             if(latest == null)
             {
-                latest = new HttpRequestDataBinary("application/octet-stream", "temp", (byte[])null);
+                latest = new SolidHttpRequestDataBinary("application/octet-stream", "temp", (byte[])null);
                 latest.SetFilename("upload.tmp");
             }
             return latest;
@@ -122,7 +122,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public IEnumerable<string> ArgumentPath { get; }
 
-        public Func<IEnumerable<HttpRequestData>, object, IEnumerable<HttpRequestData>> HttpRequestDataBinder { get; }
+        public Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> HttpRequestDataBinder { get; }
 
         public Task BindArgumentAsync(IHttpRequest request, object val)
         {
@@ -132,16 +132,16 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private object BindPath(Type type, object existingValue, IEnumerator<string> pathEnumerator, object value)
         {
-            if (typeof(IEnumerable<HttpRequestData>).IsAssignableFrom(type))
+            if (typeof(IEnumerable<SolidHttpRequestData>).IsAssignableFrom(type))
             {
-                var lst = ((IEnumerable<HttpRequestData>)existingValue).ToList();
+                var lst = ((IEnumerable<SolidHttpRequestData>)existingValue).ToList();
                 var requestData = HttpRequestDataBinder(lst, value);
                 lst.AddRange(requestData.Where(o => !lst.Contains(o)));
                 return lst;
             }
-            if (typeof(HttpRequestData).IsAssignableFrom(type))
+            if (typeof(SolidHttpRequestData).IsAssignableFrom(type))
             {
-                return HttpRequestDataBinder(HttpRequestData.EmptyArray, value).Single();
+                return HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value).Single();
             }
 
             // if we have reach end of path - return value
@@ -157,7 +157,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (typeof(string).IsAssignableFrom(type))
             {
                 var str = (string) existingValue;
-                var requestData = HttpRequestDataBinder(HttpRequestData.EmptyArray, value);
+                var requestData = HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value);
                 var strVals = requestData.Select(o => o.GetStringValue());
                 str = str.Replace($"{{{pathElement}}}", string.Join("", strVals));
                 return str;
@@ -191,7 +191,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             // if we have reach end of path - return value
             if (!pathEnumerator.MoveNext())
             {
-                if(val is IEnumerable<HttpRequestData> rdData2)
+                if(val is IEnumerable<SolidHttpRequestData> rdData2)
                 {
                     return ExtractData(rdData2);
                 }
@@ -202,7 +202,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return null;
             }
-            if(val is IEnumerable<HttpRequestData> rdEnum)
+            if(val is IEnumerable<SolidHttpRequestData> rdEnum)
             {
                 if(!filteredList)
                 {
@@ -229,7 +229,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return newValue;
         }
 
-        private object ExtractData(IEnumerable<HttpRequestData> vals)
+        private object ExtractData(IEnumerable<SolidHttpRequestData> vals)
         {
             Type enumType;
             if(!ParameterObject.IsBodyType() && ParameterInfo.ParameterType.GetEnumType(out enumType))
@@ -242,7 +242,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return ExtractData(vals.FirstOrDefault(), ParameterInfo.ParameterType);
         }
 
-        private object ExtractData(HttpRequestData valData, Type dataType)
+        private object ExtractData(SolidHttpRequestData valData, Type dataType)
         {
             if (valData == null)
             {
