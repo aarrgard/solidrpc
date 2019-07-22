@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.*" />
-    <PackageReference Include="microsoft.aspnetcore.mvc.core" Version="2.*" />
+    <PackageReference Include="microsoft.aspnetcore.mvc.core" Version="2.2.5" />
   </ItemGroup>
 
   <ItemGroup>
