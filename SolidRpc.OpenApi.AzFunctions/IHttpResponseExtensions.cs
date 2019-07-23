@@ -12,7 +12,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="source"></param>
         public static Task<IActionResult> CreateActionResult(this IHttpResponse source)
         {
             if(source.StatusCode == 200 && source.ContentType != null)

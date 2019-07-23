@@ -4,11 +4,8 @@ using SolidProxy.GeneratorCastle;
 using SolidRpc.Test.Petstore.Impl;
 using SolidRpc.Test.Petstore.Services;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using SolidRpc.OpenApi.Binder.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SolidRpc.OpenApi.AzFunctions;
+using System;
+using System.IO;
 
 [assembly: FunctionsStartup(typeof(MyNamespace.Startup))]
 
@@ -18,25 +15,33 @@ namespace MyNamespace
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddLogging(o => {
-                o.SetMinimumLevel(LogLevel.Trace);
-            });
-            builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
+            try
+            {
+                builder.Services.AddLogging(o => {
+                    o.SetMinimumLevel(LogLevel.Trace);
+                });
+                builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+                builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
 
-            base.Configure(builder);
+                base.Configure(builder);
+            }
+            catch (Exception e)
+            {
+                Log("Exception caught:" + e);
+            }
+            finally
+            {
+                Log("Configured");
+            }
         }
-        private async Task<IActionResult> Dummy(HttpRequest req, ILogger log)
+
+        private void Log(string msg)
         {
-            var rpcSetup = req.HttpContext.RequestServices.GetRequiredService<ISolidRpcSetup>();
-            var solidReq = new SolidHttpRequest();
-            await solidReq.CopyFromAsync(req);
-
-            var res = await rpcSetup.MethodInvoker.InvokeAsync(solidReq, req.HttpContext.RequestAborted);
-
-            log.LogInformation($"C# HTTP trigger function processed a request - {res.StatusCode}");
-
-            return await res.CreateActionResult();
+            var log = $"{typeof(Startup).Assembly.Location}.log.txt";
+            using (var sw = new FileInfo(log).AppendText())
+            {
+                sw.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.ffff")}{msg}");
+            }
         }
     }
 }

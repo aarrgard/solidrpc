@@ -1,0 +1,111 @@
+﻿using SolidRpc.OpenApi.AzFunctions.Functions.Model;
+using System;
+using System.IO;
+using System.Linq;
+
+namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
+{
+    /// <summary>
+    /// Represents a timer function
+    /// </summary>
+    public class AzTimerFunction : AzFunction, IAzTimerFunction
+    {
+
+        private static Function DefaultFunction()
+        {
+            return new Function()
+            {
+                GeneratedBy = $"{typeof(AzTimerFunction).Assembly.GetName().Name}-{typeof(AzTimerFunction).Assembly.GetName().Version}",
+                //ConfigurationSource = "attributes",
+                Disabled = false,
+                Bindings = new Binding[]
+                {
+                    new Binding()
+                    {
+                        Name ="myTimer",
+                        Type =  "timerTrigger",
+                        Direction = "in",
+                        Schedule = "0 0 0 1 1 0"
+                    }, new Binding()
+                    {
+                        Name ="serviceProvider",
+                        Type =  "inject"
+                    }, new Binding()
+                    {
+                        Name ="serviceType",
+                        Type =  "constant",
+                        Value = ""
+                    }, new Binding()
+                    {
+                        Name ="methodName",
+                        Type =  "constant",
+                        Value = ""
+                    }
+                },
+                ScriptFile = $"../bin/{typeof(TriggerFunction).Assembly.GetName().Name}.dll",
+                EntryPoint = $"{typeof(TriggerFunction).FullName}.Run"
+            };
+        }
+
+
+        /// <summary>
+        /// Constructs a new timer function.
+        /// </summary>
+        /// <param name="functionDir"></param>
+        public AzTimerFunction(DirectoryInfo functionDir) : base(functionDir, DefaultFunction())
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new timer function
+        /// </summary>
+        /// <param name="functionDir"></param>
+        /// <param name="functionJson"></param>
+        /// <param name="runCxs"></param>
+        public AzTimerFunction(DirectoryInfo functionDir, Function functionJson) : base(functionDir, functionJson)
+        {
+        }
+
+        /// <summary>
+        /// The trigger type
+        /// </summary>
+        public override string TriggerType => "timerTrigger";
+
+        /// <summary>
+        /// The schedule
+        /// </summary>
+        public string Schedule
+        {
+            get => TriggerBinding.Schedule;
+            set => TriggerBinding.Schedule = value;
+        }
+
+        /// <summary>
+        /// Should the trigger run on startup
+        /// </summary>
+        public bool RunOnStartup
+        {
+            get => TriggerBinding.RunOnStartup;
+            set => TriggerBinding.RunOnStartup = value;
+        }
+
+        /// <summary>
+        /// The service type
+        /// </summary>
+        public string ServiceType
+        {
+            get => Function.Bindings.Where(o => o.Name == "serviceType").First().Value;
+            set => Function.Bindings.Where(o => o.Name == "serviceType").First().Value = value;
+        }
+
+        /// <summary>
+        /// The method
+        /// </summary>
+        public string MethodName
+        {
+            get => Function.Bindings.Where(o => o.Name == "methodName").First().Value;
+            set => Function.Bindings.Where(o => o.Name == "methodName").First().Value = value;
+        }
+
+    }
+}

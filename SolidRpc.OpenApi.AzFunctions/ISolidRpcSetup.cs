@@ -1,4 +1,6 @@
 ﻿using SolidRpc.OpenApi.Binder.Proxy;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.AzFunctions
 {
@@ -8,8 +10,10 @@ namespace SolidRpc.OpenApi.AzFunctions
     public interface ISolidRpcSetup
     {
         /// <summary>
-        /// Returns the method invoker.
+        /// Performes the initialization work
         /// </summary>
-        IMethodInvoker MethodInvoker { get; }
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task Setup(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
