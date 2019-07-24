@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -16,7 +16,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         /// <param name="directory"></param>
         /// <param name="function"></param>
-        /// <param name="runCsx"></param>
         public AzFunction(DirectoryInfo directory, Function function)
         {
             Directory = directory;
@@ -54,22 +53,55 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public string FunctionJson {
             get
             {
-                var sw = new StringWriter();
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    var settings = new JsonSerializerSettings()
-                    {
-                        ContractResolver = NewtonsoftContractResolver.Instance,
-                        Formatting = Formatting.Indented
-                    };
-                    var serializer = JsonSerializer.Create(settings);
-                    serializer.Serialize(writer, Function);
-                }
-                return sw.ToString();
+                return SerializeFunctionJson(Function);
             }
             set
             {
-                Function = JsonConvert.DeserializeObject<Function>(value);
+                Function = DeserializeFunction(value);
+            }
+        }
+
+        private Function DeserializeFunction(string value)
+        {
+            return JsonConvert.DeserializeObject<Function>(value);
+        }
+
+        private string SerializeFunctionJson(Function function)
+        {
+            var sw = new StringWriter();
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                var settings = new JsonSerializerSettings()
+                {
+                    ContractResolver = NewtonsoftContractResolver.Instance,
+                    Formatting = Formatting.Indented
+                };
+                var serializer = JsonSerializer.Create(settings);
+                serializer.Serialize(writer, function);
+            }
+            return sw.ToString();
+        }
+
+        private string ReadFunctionJson()
+        {
+            var fi = new FileInfo(Path.Combine(Directory.FullName, "function.json"));
+            if(!fi.Exists)
+            {
+                return "";
+            }
+            using (var tr = fi.OpenText())
+            {
+                return tr.ReadToEnd();
+            }
+        }
+
+        private void WriteFunctionJson(string suffix)
+        {
+            var fi = new FileInfo(Path.Combine(Directory.FullName, "function.json"));
+            using (var tw = fi.CreateText())
+            {
+                tw.Write(SerializeFunctionJson(Function));
+                tw.Write(suffix);
             }
         }
 
@@ -84,32 +116,24 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Saves the run.csx and function.json files
         /// </summary>
-        public void Save(bool forceWrite = false)
+        public bool Save(bool forceWrite = false)
         {
             if(!Directory.Exists)
             {
                 Directory.Create();
             }
-            WriteFile(new FileInfo(Path.Combine(Directory.FullName, "function.json")), FunctionJson, forceWrite);
-        }
 
-        private void WriteFile(FileInfo fileInfo, string newContent, bool forceWrite)
-        {
-            if(!forceWrite && fileInfo.Exists)
+            if(forceWrite)
             {
-                using (var tr = fileInfo.OpenText())
-                {
-                    var existingContent = tr.ReadToEnd();
-                    if(existingContent.Equals(newContent))
-                    {
-                        return;
-                    }
-                }
+                WriteFunctionJson("  ");
+                return true;
             }
-            using (var tw = fileInfo.CreateText())
+            else if(false==string.Equals(FunctionJson, SerializeFunctionJson(DeserializeFunction(ReadFunctionJson()))))
             {
-                tw.Write(newContent);
+                WriteFunctionJson("");
+                return true;
             }
+            return false;
         }
     }
 }

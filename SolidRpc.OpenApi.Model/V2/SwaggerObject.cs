@@ -10,7 +10,13 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#swaggerObject"/>
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
-        public SwaggerObject(ModelBase parent) : base(parent) { }
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        public SwaggerObject(ModelBase parent) : base(parent)
+        {
+            Swagger = "2.0";
+        }
 
         /// <summary>
         /// Required. Specifies the Swagger Specification version being used. It can be used by the Swagger UI and other clients to interpret the API listing. The value MUST be "2.0".

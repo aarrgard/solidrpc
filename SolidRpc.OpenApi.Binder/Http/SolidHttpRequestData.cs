@@ -98,11 +98,23 @@ namespace SolidRpc.OpenApi.Binder.Http
                     content.Split('&').ToList().ForEach(o =>
                     {
                         var values = o.Split('=');
-                        if (values.Length != 2)
+                        if(values.Length == 0)
+                        {
+                            // no data
+                            return;
+                        }
+                        if (values.Length == 1)
+                        {
+                            bodyData.Add(new HttpRequestDataString("text/plain", values[0], true.ToString()));
+                        }
+                        else if (values.Length == 2)
+                        {
+                            bodyData.Add(new HttpRequestDataString("text/plain", values[0], values[1]));
+                        }
+                        else
                         {
                             throw new Exception("Cannot split values");
                         }
-                        bodyData.Add(new HttpRequestDataString("text/plain", values[0], values[1]));
 
                     });
                 }

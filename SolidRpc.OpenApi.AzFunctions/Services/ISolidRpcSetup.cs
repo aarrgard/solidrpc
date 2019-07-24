@@ -1,8 +1,7 @@
-﻿using SolidRpc.OpenApi.Binder.Proxy;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AzFunctions
+namespace SolidRpc.OpenApi.AzFunctions.Services
 {
     /// <summary>
     /// Interface that is used to setup the solid rpc infrastructure

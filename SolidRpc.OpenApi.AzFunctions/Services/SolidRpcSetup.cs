@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder.Proxy;
 
-namespace SolidRpc.OpenApi.AzFunctions
+namespace SolidRpc.OpenApi.AzFunctions.Services
 {
     /// <summary>
     /// The setup class
@@ -57,18 +55,56 @@ namespace SolidRpc.OpenApi.AzFunctions
         {
             var paths = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodInfos)
-                .Select(o => new { o.Path, Method = o.Method.ToLower() })
-                .GroupBy(o => o.Path)
+                .Select(o => new {
+                    Path = RemoveWildcardNames(o.Path),
+                    Method = o.Method.ToLower()
+                }).GroupBy(o => o.Path)
                 .ToList();
-            WriteHttpFunctions(paths.ToDictionary(o => o.Key, o => o.Select(o2 => o2.Method).ToList()));
+
+            var startTime = DateTime.Now;
+            var modified = WriteHttpFunctions(paths.ToDictionary(o => o.Key, o => o.Select(o2 => o2.Method).ToList()));
+
+            // if we have modified any methods - wait for the cancellation token to kick in
+            if(modified)
+            {
+                //CheckRestarting(cancellationToken);
+            }
             return Task.CompletedTask;
         }
 
-        private void WriteHttpFunctions(Dictionary<string, List<string>> pathsAndMethods)
+        private async Task CheckRestarting(CancellationToken cancellationToken)
+        {
+            await Task.Delay(5000, cancellationToken);
+            Logger.LogInformation("Host not restarting - writing changes to bin folder...");
+            FunctionHandler.Functions
+                .OfType<IAzTimerFunction>()
+                .Where(o => o.ServiceType == typeof(ISolidRpcSetup).FullName)
+                .Single()
+                .Save(true);
+        }
+
+        private string RemoveWildcardNames(string path)
+        {
+            var level = 0;
+            var sb = new StringBuilder();
+            for(int i = 0; i < path.Length; i++)
+            {
+                if (path[i] == '}') level--;
+                if(level == 0)
+                {
+                    sb.Append(path[i]);
+                }
+                if (path[i] == '{') level++;
+            }
+            return sb.ToString();
+        }
+
+        private bool WriteHttpFunctions(Dictionary<string, List<string>> pathsAndMethods)
         {
             var paths = pathsAndMethods.Keys.ToList();
             var functionNames = paths.Select(o => CreateFunctionName(o)).ToList();
             var functions = FunctionHandler.Functions.ToList();
+            var modified = false;
 
             for(int i = 0; i < paths.Count; i++)
             {
@@ -86,16 +122,39 @@ namespace SolidRpc.OpenApi.AzFunctions
                 }
                 httpFunction.Route = path;
                 httpFunction.Methods = pathsAndMethods[path];
-                httpFunction.Save();
+                if (httpFunction.Save())
+                {
+                    Logger.LogInformation($"Wrote new function.json for {functionName}.");
+                    modified = true;
+                }
             }
+            return modified;
         }
 
         private string CreateFunctionName(string path)
         {
-            return path.Replace("/", "")
-                .Replace(".", "_")
-                .Replace("{", "")
-                .Replace("}", "");
+            int argCount = 0;
+            var sb = new StringBuilder();
+            sb.Append("Http");
+            foreach(var c in path)
+            {
+                switch(c)
+                {
+                    case '}':
+                        break;
+                    case '.':
+                    case '/':
+                        sb.Append('_');
+                        break;
+                    case '{':
+                        sb.Append($"arg{argCount++}");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
         }
     }
 }

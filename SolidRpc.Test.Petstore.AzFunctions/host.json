@@ -4,5 +4,17 @@
     "http": {
       "routePrefix": ""
     }
+  },
+  "logging": {
+    "fileLoggingMode": "debugOnly",
+    "logLevel": {
+      "default": "Trace"
+    },
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "maxTelemetryItemsPerSecond": 5
+      }
+    }
   }
-}
+} 

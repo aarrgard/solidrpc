@@ -71,6 +71,13 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
                 if (lastDot == -1) throw new Exception("Cannot handle event name:" + name);
                 return name.Substring(0, lastDot);
             }
+            if (name.StartsWith("F:"))
+            {
+                name = name.Substring(2);
+                var lastDot = name.LastIndexOf('.');
+                if (lastDot == -1) throw new Exception("Cannot handle property name:" + name);
+                return name.Substring(0, lastDot);
+            }
             throw new Exception("Cannot handle name:" + name);
         }
 

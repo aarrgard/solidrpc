@@ -60,7 +60,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
             prospects = prospects.Where(o => {
                 ResponseObject resp;
-                o.Responses.TryGetValue("200", out resp);
+                o.GetResponses().TryGetValue("200", out resp);
                 return TypeMatches(mi.ReturnType, resp?.Schema);        
             }).ToList();
 

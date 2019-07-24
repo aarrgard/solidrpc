@@ -19,6 +19,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="serviceProvider"></param>
         /// <param name="serviceType"></param>
         /// <param name="methodName"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static async Task Run(TimerInfo myTimer, ILogger log, IServiceProvider serviceProvider, Type serviceType, string methodName, CancellationToken cancellationToken)
         {

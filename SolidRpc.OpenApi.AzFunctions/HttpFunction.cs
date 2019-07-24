@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
@@ -19,11 +20,11 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// </summary>
         /// <param name="req"></param>
         /// <param name="log"></param>
-        /// <param name="methodInvoker"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<IActionResult> Run(HttpRequest req, ILogger log, IMethodInvoker methodInvoker, CancellationToken cancellationToken)
+        public static async Task<IActionResult> Run(HttpRequest req, ILogger log, CancellationToken cancellationToken)
         {
+            var methodInvoker = req.HttpContext.RequestServices.GetRequiredService<IMethodInvoker>();
             var solidReq = new SolidHttpRequest();
             await solidReq.CopyFromAsync(req);
 

@@ -166,7 +166,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             catch (Exception ex)
             {
                 // handle exception
-                Logger.LogError(ex, "Service returned an excpetion - sending to client");
+                Logger.LogError(ex, "Service returned an exception - sending to client");
                 await methodInfo.BindResponseAsync(resp, ex, methodInfo.MethodInfo.ReturnType);
             }
             return resp;

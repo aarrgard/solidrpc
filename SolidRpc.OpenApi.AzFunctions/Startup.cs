@@ -1,11 +1,10 @@
 ﻿
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.OpenApi.AzFunctions.Functions;
-using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using System;
 using System.IO;
-using System.Linq;
+using System.Threading;
 
 namespace SolidRpc.OpenApi.AzFunctions
 {
@@ -23,35 +22,21 @@ namespace SolidRpc.OpenApi.AzFunctions
             //
             // make sure that there is an "Initialize" function
             //
-            var assemblyLocattion = new FileInfo(typeof(Startup).Assembly.Location);
-            if(!assemblyLocattion.Exists)
-            {
-                throw new Exception("Cannot find location of assebly.");
-            }
-            if(assemblyLocattion.Directory.Name != "bin")
-            {
-                throw new Exception("Assemblies are not placed in the bin folder.");
-            }
-            var funcHandler = new AzFunctionHandler(assemblyLocattion.Directory.Parent);
-            var initFunc = funcHandler.Functions.SingleOrDefault(o => o.Name == "Initialize");
-            if (initFunc != null && false == initFunc is IAzTimerFunction)
-            {
-                initFunc.Delete();
-                initFunc = null;
-            }
-            var timerFunc = (IAzTimerFunction)initFunc;
-            if (timerFunc == null)
-            {
-                timerFunc = funcHandler.CreateTimerFunction("Initialize");
-            }
-            timerFunc.RunOnStartup = true;
-            timerFunc.ServiceType = typeof(ISolidRpcSetup).FullName;
-            timerFunc.MethodName = nameof(ISolidRpcSetup.Setup);
-            timerFunc.Save();
+            builder.Services.AddStartupFunction<ISolidRpcSetup, SolidRpcSetup>(o => o.Setup(CancellationToken.None));
+            builder.Services.AddHttpFunction<ISolidRpcSetup, SolidRpcSetup>(o => o.Setup(CancellationToken.None));
+        }
 
-            builder.Services.AddSingleton<IAzFunctionHandler>(funcHandler);
-
-            builder.Services.AddSingleton<ISolidRpcSetup, SolidRpcSetup>();
+        /// <summary>
+        /// Support function for logging.
+        /// </summary>
+        /// <param name="msg"></param>
+        protected void Log(string msg)
+        {
+            var log = $"{typeof(Startup).Assembly.Location}.log.txt";
+            using (var sw = new FileInfo(log).AppendText())
+            {
+                sw.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.ffff")}{msg}");
+            }
         }
     }
 }

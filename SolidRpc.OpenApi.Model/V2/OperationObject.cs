@@ -90,6 +90,19 @@ namespace SolidRpc.OpenApi.Model.V2
         public IEnumerable<SecurityRequirementObject> Security { get; set; }
 
         /// <summary>
+        /// Returns the responses object.
+        /// </summary>
+        /// <returns></returns>
+        public ResponsesObject GetResponses()
+        {
+            if (Responses == null)
+            {
+                Responses = new ResponsesObject(this);
+            }
+            return Responses;
+        }
+
+        /// <summary>
         /// Adds a consumes content type
         /// </summary>
         /// <param name="contentType"></param>

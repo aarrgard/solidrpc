@@ -5,15 +5,31 @@ using System.Collections.Concurrent;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class NewtonsoftContractResolver : DefaultContractResolver
     {
         private static ConcurrentDictionary<Type, JsonContract> s_converters = new ConcurrentDictionary<Type, JsonContract>();
+
+        /// <summary>
+        /// 
+        /// </summary>
         public static NewtonsoftContractResolver Instance = new NewtonsoftContractResolver();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public NewtonsoftContractResolver()
         {
 
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objectType"></param>
+        /// <returns></returns>
         protected override JsonContract CreateContract(Type objectType)
         {
             return s_converters.GetOrAdd(objectType, CreateContractInternal);

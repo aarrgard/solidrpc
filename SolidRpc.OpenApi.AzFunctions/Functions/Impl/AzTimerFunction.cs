@@ -61,7 +61,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         /// <param name="functionDir"></param>
         /// <param name="functionJson"></param>
-        /// <param name="runCxs"></param>
         public AzTimerFunction(DirectoryInfo functionDir, Function functionJson) : base(functionDir, functionJson)
         {
         }

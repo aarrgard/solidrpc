@@ -4,16 +4,30 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SolidRpc.OpenApi.AzFunctions.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Extension("Inject")]
     public class InjectExtensionConfigProvider : IExtensionConfigProvider
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceScopeFactory"></param>
         public InjectExtensionConfigProvider(IServiceScopeFactory serviceScopeFactory)
         {
             ServiceScopeFactory = serviceScopeFactory;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceScopeFactory ServiceScopeFactory { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public void Initialize(ExtensionConfigContext context)
         {
             context.AddBindingRule<InjectAttribute>().Bind(new InjectBindingProvider(ServiceScopeFactory));

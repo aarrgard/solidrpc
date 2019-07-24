@@ -67,8 +67,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="sc"></param>
         /// <param name="mi"></param>
+        /// <param name="openApiConfiguration">The open api configuration to use - may be null to use the embedded api config.</param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi)
+        public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, string openApiConfiguration = null)
         {
             //
             // make sure that the method invoker is registered.
@@ -101,7 +102,7 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
             // 
-            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiConfiguration = openApiConfiguration;
             mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
 
             return sc;
