@@ -18,5 +18,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// The methods
         /// </summary>
         IEnumerable<string> Methods { get; set; }
+
+        /// <summary>
+        /// The authentication level
+        /// </summary>
+        string AuthLevel { get; set; }
     }
 }

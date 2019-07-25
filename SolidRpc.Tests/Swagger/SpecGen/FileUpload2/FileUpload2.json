@@ -15,7 +15,7 @@
         "description": "Uploads a file. This method will get a \"file\" parameter.",
         "operationId": "UploadFile",
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "produces": [
           "application/octet-stream"
@@ -23,9 +23,11 @@
         "parameters": [
           {
             "name": "fileData",
-            "in": "formData",
+            "in": "body",
             "required": false,
-            "type": "file"
+            "schema": {
+              "$ref": "#/definitions/FileData"
+            }
           }
         ],
         "responses": {
@@ -43,21 +45,27 @@
     "FileData": {
       "properties": {
         "ContentType": {
-          "type": "string",
-          "description": "The content type"
+          "$ref": "#/definitions/string",
+          "type": "string"
         },
         "FileName": {
-          "type": "string",
-          "description": "The file name"
+          "$ref": "#/definitions/string",
+          "type": "string"
         },
         "FileContent": {
+          "$ref": "#/definitions/System.IO.Stream",
           "type": "string",
-          "format": "binary",
-          "description": "The file content"
+          "format": "binary"
         }
       },
       "type": "object",
       "description": "Represents some file data"
+    },
+    "string": {
+      "type": "object"
+    },
+    "System.IO.Stream": {
+      "type": "object"
     }
   },
   "tags": [

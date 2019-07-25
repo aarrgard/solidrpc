@@ -22,19 +22,21 @@
         ],
         "parameters": [
           {
-            "name": "ct1",
+            "name": "body",
             "in": "body",
             "required": false,
             "schema": {
-              "$ref": "#/definitions/ComplexType1"
+              "properties": {
+                "simpleType": {
+                  "$ref": "#/definitions/string",
+                  "type": "string"
+                },
+                "ct1": {
+                  "$ref": "#/definitions/ComplexType1"
+                }
+              },
+              "type": "object"
             }
-          },
-          {
-            "name": "simpleType",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "description": ""
           }
         ],
         "responses": {
@@ -49,6 +51,9 @@
     }
   },
   "definitions": {
+    "string": {
+      "type": "object"
+    },
     "ComplexType1": {
       "properties": {
         "CT1": {

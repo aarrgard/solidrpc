@@ -212,48 +212,7 @@ namespace SolidRpc.OpenApi.Generator.V2
             }
             if (type.RuntimeType != null)
             {
-                if (type.RuntimeType == typeof(bool))
-                {
-                    itemBase.Type = "boolean";
-                    return;
-                }
-                else if (type.RuntimeType == typeof(string))
-                {
-                    itemBase.Type = "string";
-                    return;
-                }
-                else if (type.RuntimeType == typeof(short))
-                {
-                    itemBase.Type = "number";
-                    itemBase.Format = "int16";
-                    return;
-                }
-                else if (type.RuntimeType == typeof(int))
-                {
-                    itemBase.Type = "number";
-                    itemBase.Format = "int32";
-                    return;
-                }
-                else if (type.RuntimeType == typeof(long))
-                {
-                    itemBase.Type = "number";
-                    itemBase.Format = "int64";
-                    return;
-                }
-                else if (type.RuntimeType == typeof(System.IO.Stream))
-                {
-                    itemBase.Type = "string";
-                    itemBase.Format = "binary";
-                    return;
-                }
-                else if (type.RuntimeType == typeof(System.DateTime))
-                {
-                    itemBase.Type = "string";
-                    itemBase.Format = "date-time";
-                    return;
-                }
-
-                throw new NotImplementedException(type.RuntimeType.GetType().FullName);
+                SchemaObject.SetTypeInfo(itemBase, type.RuntimeType);
             }
             if (type.EnumerableType != null)
             {

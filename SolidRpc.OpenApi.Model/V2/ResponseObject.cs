@@ -38,19 +38,29 @@ namespace SolidRpc.OpenApi.Model.V2
         [DataMember(Name = "examples", EmitDefaultValue = false)]
         public ExampleObject examples { get; set; }
 
-        public string Status
+        /// <summary>
+        /// The status
+        /// </summary>
+        public string GetStatus()
         {
-            get
+            if (Parent is ResponsesObject defObj)
             {
-                if (Parent is ResponsesObject defObj)
-                {
-                    return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
-                }
-                else
-                {
-                    throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
-                }
+                return defObj.Where(o => ReferenceEquals(o.Value, this)).First().Key;
             }
+            else
+            {
+                throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
+            }
+        }
+
+        /// <summary>
+        /// Set the return type based on supplied type
+        /// </summary>
+        /// <param name="type"></param>
+        public void SetTypeInfo(Type type)
+        {
+            Description = $"The return type for {GetStatus()} responses.";
+            Schema = SchemaObject.CreateSchemaObject(this, type);
         }
     }
 }

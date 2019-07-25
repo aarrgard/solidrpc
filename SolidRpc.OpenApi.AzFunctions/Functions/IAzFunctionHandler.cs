@@ -24,5 +24,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <param name="name"></param>
         /// <returns></returns>
         IAzHttpFunction CreateHttpFunction(string name);
+
+        /// <summary>
+        /// Triggers a restart by writing some additional data to 
+        /// the end of a config file
+        /// </summary>
+        void TriggerRestart();
     }
 }

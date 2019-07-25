@@ -111,6 +111,62 @@ namespace SolidRpc.OpenApi.Model.V2
         public string OpenApiVersion => "2.0";
 
         /// <summary>
+        /// Returns the paths object.
+        /// </summary>
+        /// <returns></returns>
+        public PathsObject GetPaths()
+        {
+            if (Paths == null)
+            {
+                Paths = new PathsObject(this);
+            }
+            return Paths;
+        }
+
+        /// <summary>
+        /// Returns the path item
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public PathItemObject GetPath(string path)
+        {
+            var paths = GetPaths();
+            if (paths[path] == null)
+            {
+                paths[path] = new PathItemObject(this);
+            }
+            return paths[path];
+        }
+
+        /// <summary>
+        /// Returns the get operation.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public OperationObject GetGetOperation(string path)
+        {
+            var pathItem = GetPath(path);
+            if(pathItem.Get == null)
+            {
+                pathItem.Get = new OperationObject(pathItem);
+            }
+            return pathItem.Get;
+        }
+
+        /// <summary>
+        /// Returns the paths object.
+        /// </summary>
+        /// <returns></returns>
+        public ResponsesDefinitionsObject GetResponses()
+        {
+            if (Responses == null)
+            {
+                Responses = new ResponsesDefinitionsObject(this);
+            }
+            return Responses;
+        }
+
+        /// <summary>
         /// Updates the host and port so that it reflects the supplied address
         /// </summary>
         /// <param name="rootAddress"></param>

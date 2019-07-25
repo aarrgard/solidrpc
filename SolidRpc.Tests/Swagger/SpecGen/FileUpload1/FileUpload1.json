@@ -15,15 +15,31 @@
         "description": "Uploads a file. This method will get a \"file\" parameter.",
         "operationId": "UploadFile",
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
-            "name": "fileStream",
-            "in": "formData",
+            "name": "body",
+            "in": "body",
             "required": false,
-            "type": "file",
-            "description": "The file stream"
+            "schema": {
+              "properties": {
+                "fileStream": {
+                  "$ref": "#/definitions/System.IO.Stream",
+                  "type": "string",
+                  "format": "binary"
+                },
+                "fileName": {
+                  "$ref": "#/definitions/string",
+                  "type": "string"
+                },
+                "contentType": {
+                  "$ref": "#/definitions/string",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
           }
         ],
         "responses": {
@@ -32,6 +48,14 @@
           }
         }
       }
+    }
+  },
+  "definitions": {
+    "System.IO.Stream": {
+      "type": "object"
+    },
+    "string": {
+      "type": "object"
     }
   },
   "tags": [

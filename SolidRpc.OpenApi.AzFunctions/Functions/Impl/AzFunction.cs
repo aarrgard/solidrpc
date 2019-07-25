@@ -125,7 +125,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
             if(forceWrite)
             {
-                WriteFunctionJson("  ");
+                WriteFunctionJson($"//{DateTime.Now.ToString("yyyy-MM-dd:HH:mm:ss.fffff")}");
                 return true;
             }
             else if(false==string.Equals(FunctionJson, SerializeFunctionJson(DeserializeFunction(ReadFunctionJson()))))

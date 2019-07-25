@@ -30,6 +30,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         Methods = new [] { "get" }
                     }, new Binding()
                     {
+                        Name ="serviceProvider",
+                        Type =  "inject",
+                        Direction = "in"
+                    }, new Binding()
+                    {
                         Name ="$return",
                         Type =  "http",
                         Direction = "out"
@@ -118,6 +123,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         {
             get => TriggerBinding.Methods;
             set => TriggerBinding.Methods = value;
+        }
+
+        /// <summary>
+        /// The AuthLevel
+        /// </summary>
+        public string AuthLevel
+        {
+            get => TriggerBinding.AuthLevel;
+            set => TriggerBinding.AuthLevel = value;
         }
 
     }

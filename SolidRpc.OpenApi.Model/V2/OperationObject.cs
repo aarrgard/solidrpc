@@ -103,6 +103,21 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Returns the response object for supplied code.
+        /// </summary>
+        /// <param name="responseCode"></param>
+        /// <returns></returns>
+        public ResponseObject GetResponse(string responseCode)
+        {
+            var responses = GetResponses();
+            if (responses[responseCode] == null)
+            {
+                responses[responseCode] = new ResponseObject(responses);
+            }
+            return responses[responseCode];
+        }
+
+        /// <summary>
         /// Adds a consumes content type
         /// </summary>
         /// <param name="contentType"></param>
@@ -158,11 +173,6 @@ namespace SolidRpc.OpenApi.Model.V2
             throw new System.Exception("Cannot determine method.");
         }
 
-        public IEnumerable<ParameterObject> GetParameters()
-        {
-            return Parameters ?? EmptyParameterArray;
-        }
-
         /// <summary>
         /// The path to this operation.
         /// </summary>
@@ -195,6 +205,15 @@ namespace SolidRpc.OpenApi.Model.V2
                 return GetParent<SwaggerObject>().Produces ?? new string[0];
             }
             return Produces;
+        }
+
+        /// <summary>
+        /// Returns the parameters
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ParameterObject> GetParameters()
+        {
+            return Parameters ?? EmptyParameterArray;
         }
 
         /// <summary>

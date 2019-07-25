@@ -108,5 +108,20 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             var httpFunction = new AzHttpFunction(functionDir);
             return httpFunction;
         }
+
+        /// <summary>
+        /// triggers a restart of the application
+        /// </summary>
+        public void TriggerRestart()
+        {
+            var hostJson = new FileInfo(Path.Combine(BaseDir.FullName, "host.json"));
+            if(hostJson.Exists)
+            {
+                using (var sw = hostJson.AppendText())
+                {
+                    sw.WriteLine($"//{DateTime.Now.ToString("yyyyMMddHHmmssfffff")}");
+                }
+            }
+        }
     }
 }

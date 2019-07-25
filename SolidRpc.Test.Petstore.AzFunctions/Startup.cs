@@ -1,8 +1,7 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Test.Petstore.Impl;
-using SolidRpc.Test.Petstore.Services;
+using System;
 
 [assembly: FunctionsStartup(typeof(MyNamespace.Startup))]
 
@@ -12,10 +11,20 @@ namespace MyNamespace
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
-
-            base.Configure(builder);
+            try
+            {
+                builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+                //builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
+                base.Configure(builder);
+            }
+            catch (Exception e)
+            {
+                Log("Exception caught:" + e);
+            }
+            finally
+            {
+                Log("Configured");
+            }
         }
     }
 }

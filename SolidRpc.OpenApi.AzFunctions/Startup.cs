@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.OpenApi.AzFunctions.Services;
@@ -22,8 +23,11 @@ namespace SolidRpc.OpenApi.AzFunctions
             //
             // make sure that there is an "Initialize" function
             //
-            builder.Services.AddStartupFunction<ISolidRpcSetup, SolidRpcSetup>(o => o.Setup(CancellationToken.None));
-            builder.Services.AddHttpFunction<ISolidRpcSetup, SolidRpcSetup>(o => o.Setup(CancellationToken.None));
+            builder.Services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
+            builder.Services.GetSolidRpcStaticContent().AddContent(typeof(ISolidRpcHost).Assembly, "www", "/");
+            builder.Services.AddAzFunctionStartup<ISolidRpcHost, SolidRpcHost>(o => o.CheckConfig(null, CancellationToken.None), ServiceLifetime.Singleton);
+            builder.Services.AddAzFunctionHttp<ISolidRpcHost, SolidRpcHost>(o => o.CheckConfig(null, CancellationToken.None), ServiceLifetime.Singleton);
+            builder.Services.AddAzFunctionHttp<ISolidRpcStaticContent, SolidRpcStaticContent>(o => o.GetStaticContent(null, CancellationToken.None), ServiceLifetime.Singleton);
         }
 
         /// <summary>

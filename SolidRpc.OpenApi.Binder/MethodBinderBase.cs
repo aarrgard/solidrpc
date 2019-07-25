@@ -23,7 +23,6 @@ namespace SolidRpc.OpenApi.Binder
 
         public Assembly Assembly { get; }
 
-        private IEnumerable<IMethodInfo> _methodInfos;
         public IEnumerable<IMethodInfo> MethodInfos
         {
             get

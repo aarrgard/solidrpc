@@ -6,13 +6,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     /// <summary>
     /// Interface that is used to setup the solid rpc infrastructure
     /// </summary>
-    public interface ISolidRpcSetup
+    public interface ISolidRpcHost
     {
         /// <summary>
         /// Performes the initialization work
         /// </summary>
+        /// <param name="configurationHash"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task Setup(CancellationToken cancellationToken = default(CancellationToken));
+        Task CheckConfig(string configurationHash = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -18,7 +18,10 @@ namespace SolidRpc.OpenApi.Model
         {
             get
             {
-                return _container[key];
+                if(_container.TryGetValue(key, out T res)) {
+                    return res;
+                }
+                return default(T);
             }
             set
             {

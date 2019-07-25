@@ -108,6 +108,10 @@ namespace System
 
         private static FileTypeHelper CreateFileTypeHelper(Type arg)
         {
+            if(arg.IsTaskType(out Type taskType))
+            {
+                arg = taskType;
+            }
             //
             // we need an empty constructor
             //

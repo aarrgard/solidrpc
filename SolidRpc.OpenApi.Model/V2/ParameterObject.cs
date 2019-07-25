@@ -71,5 +71,15 @@ namespace SolidRpc.OpenApi.Model.V2
             var fileTypes = GetParent<OperationObject>().Parameters.Where(o => o.Type == "file").FirstOrDefault();
             return fileTypes?.Name;
         }
+
+        /// <summary>
+        /// Sets the type info
+        /// </summary>
+        /// <param name="parameterType"></param>
+        public void SetTypeInfo(Type parameterType)
+        {
+            In = "query";
+            Schema = SchemaObject.CreateSchemaObject(this, parameterType);
+        }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using SolidRpc.OpenApi.AzFunctions.Functions;
+﻿using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.IO;
@@ -15,6 +15,21 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        /// <summary>
+        /// Returns the static content provider.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static ISolidRpcStaticContent GetSolidRpcStaticContent(this IServiceCollection services)
+        {
+            var service = services.SingleOrDefault(o => o.ServiceType == typeof(ISolidRpcStaticContent));
+            if(service == null)
+            {
+                service = new ServiceDescriptor(typeof(ISolidRpcStaticContent), new SolidRpcStaticContent());
+                services.Add(service);
+            }
+            return (ISolidRpcStaticContent) service.ImplementationInstance;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -35,7 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     throw new Exception("Assemblies are not placed in the bin folder.");
                 }
                 funcHandler = new AzFunctionHandler(assemblyLocattion.Directory.Parent);
-                services.AddSingleton<IAzFunctionHandler>(funcHandler);
+                services.AddSingleton(funcHandler);
             }
             return funcHandler;
         }
@@ -47,9 +62,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TImpl"></typeparam>
         /// <param name="services"></param>
         /// <param name="invocation"></param>
+        /// <param name="serviceLifetime"></param>
         /// <returns></returns>
-        public static IServiceCollection AddStartupFunction<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation) where TService : class where TImpl : class,TService
+        public static IServiceCollection AddAzFunctionStartup<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TService : class where TImpl : class,TService
         {
+            services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
+
             var mi = GetMethodInfo(invocation);
             var functionName = $"Timer_{typeof(TService).FullName}.{mi.Name}".Replace(".", "_");
             var funcHandler = services.GetAzFunctionHandler();
@@ -69,7 +87,6 @@ namespace Microsoft.Extensions.DependencyInjection
             timerFunc.MethodName = mi.Name;
             timerFunc.Save();
 
-            services.AddTransient<TService, TImpl>();
             return services;
         }
 
@@ -79,13 +96,39 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TService"></typeparam>
         /// <typeparam name="TImpl"></typeparam>
         /// <param name="services"></param>
+        /// <param name="serviceLifetime"></param>
         /// <param name="invocation"></param>
         /// <returns></returns>
-        public static IServiceCollection AddHttpFunction<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation) where TService : class where TImpl : class, TService
+        public static IServiceCollection AddAzFunctionHttp<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TService : class where TImpl : class, TService
         {
+            services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
+
             var mi = GetMethodInfo(invocation);
             services.AddSolidRpcBinding(mi, CreateOpenApiConfig(mi));
             return services;
+        }
+
+        /// <summary>
+        /// Adds the transient service if not registered
+        /// </summary>
+        /// <typeparam name="TService"></typeparam>
+        /// <typeparam name="TImpl"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="serviceLifetime"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddServiceIfMissing<TService, TImpl>(this IServiceCollection services, ServiceLifetime serviceLifetime) where TService : class where TImpl : class, TService
+        {
+            var service = services.FirstOrDefault(o => o.ServiceType == typeof(TService));
+            if (service == null)
+            {
+                service = new ServiceDescriptor(typeof(TService), typeof(TImpl), serviceLifetime);
+                services.Add(service);
+            }
+            if(service.Lifetime != serviceLifetime)
+            {
+                throw new Exception($"Cannot change service lifetime from {service.Lifetime} to {serviceLifetime}");
+            }
+            return services; 
         }
 
         private static MethodInfo GetMethodInfo(LambdaExpression expr)
@@ -103,10 +146,17 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 BasePath = $"/{mi.DeclaringType.FullName.Replace('.', '/')}",
             };
-            so.Paths = new PathsObject(so);
-            so.Paths[$"/{mi.Name}"] = new PathItemObject(so.Paths);
-            so.Paths[$"/{mi.Name}"].Get = new OperationObject(so.Paths[$"/{mi.Name}"]);
-            so.Paths[$"/{mi.Name}"].Get.OperationId = mi.Name;
+
+            var op = so.GetGetOperation($"/{mi.Name}");
+            op.OperationId = mi.Name;
+
+            foreach(var p in mi.GetParameters())
+            {
+                var param = op.GetParameter(p.Name);
+                param.SetTypeInfo(p.ParameterType);
+            }
+            op.GetResponse("200").SetTypeInfo(mi.ReturnType);
+
             return so.WriteAsJsonString();
         }
     }

@@ -186,7 +186,7 @@ namespace SolidRpc.OpenApi.Model.V2
             }
             if (Parent is ResponseObject respObj)
             {
-                return $"Response{respObj.Status}";
+                return $"Response{respObj.GetStatus()}";
             }
             if (Parent is OperationObject opObj)
             {

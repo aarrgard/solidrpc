@@ -1,19 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Model.V2
 {
     /// <summary>
-    /// he Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. This object is based on the JSON Schema Specification Draft 4 and uses a predefined subset of it. On top of this subset, there are extensions provided by this specification to allow for more complete documentation.
+    /// The Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. This object is based on the JSON Schema Specification Draft 4 and uses a predefined subset of it. On top of this subset, there are extensions provided by this specification to allow for more complete documentation.
     /// Further information about the properties can be found in JSON Schema Core and JSON Schema Validation.Unless stated otherwise, the property definitions follow the JSON Schema specification as referenced here.
     /// The following properties are taken directly from the JSON Schema definition and follow the same specifications:
     /// </summary>
     /// <see cref="https://swagger.io/specification/v2/#schemaObject"/>
     public class SchemaObject : ItemsObject
     {
+        public static SchemaObject CreateSchemaObject(ModelBase parent, Type type)
+        {
+            if (type == typeof(void) || type == typeof(Task))
+            {
+                // skip
+            }
+            else
+            {
+                if (type.IsTaskType(out Type taskType))
+                {
+                    type = taskType;
+                }
+
+            }
+            var so = new SchemaObject(parent);
+            return so;
+        }
+
+        /// <summary>
+        /// Sets the type info based on supplied type
+        /// </summary>
+        /// <param name="itemBase"></param>
+        /// <param name="type"></param>
+        public static void SetTypeInfo(ItemBase itemBase, Type type)
+        {
+            if (type == typeof(bool))
+            {
+                itemBase.Type = "boolean";
+                return;
+            }
+            else if (type == typeof(string))
+            {
+                itemBase.Type = "string";
+                return;
+            }
+            else if (type == typeof(short))
+            {
+                itemBase.Type = "number";
+                itemBase.Format = "int16";
+                return;
+            }
+            else if (type == typeof(int))
+            {
+                itemBase.Type = "number";
+                itemBase.Format = "int32";
+                return;
+            }
+            else if (type == typeof(long))
+            {
+                itemBase.Type = "number";
+                itemBase.Format = "int64";
+                return;
+            }
+            else if (type == typeof(System.IO.Stream))
+            {
+                itemBase.Type = "string";
+                itemBase.Format = "binary";
+                return;
+            }
+            else if (type == typeof(System.DateTime))
+            {
+                itemBase.Type = "string";
+                itemBase.Format = "date-time";
+                return;
+            }
+
+            throw new NotImplementedException(type.GetType().FullName);
+        }
+
         public SchemaObject(ModelBase parent) : base(parent) { }
 
         [DataMember(Name = "discriminator", EmitDefaultValue = false)]

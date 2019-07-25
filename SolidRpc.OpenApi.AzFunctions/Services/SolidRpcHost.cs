@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SolidRpc.OpenApi.AzFunctions.Functions;
+using SolidRpc.OpenApi.AzFunctions.Types;
 using SolidRpc.OpenApi.Binder;
 
 namespace SolidRpc.OpenApi.AzFunctions.Services
@@ -13,19 +19,28 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     /// <summary>
     /// The setup class
     /// </summary>
-    public class SolidRpcSetup : ISolidRpcSetup
+    public class SolidRpcHost : ISolidRpcHost
     {
+        private static bool s_restartPending = false;
+
         /// <summary>
         /// Constructs a new instance
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="functionHandler"></param>
-        public SolidRpcSetup(ILogger<SolidRpcSetup> logger, IMethodBinderStore methodBinderStore, IAzFunctionHandler functionHandler)
+        /// <param name="contentTypeProvider"></param>
+        public SolidRpcHost(
+            ILogger<SolidRpcHost> logger, 
+            IMethodBinderStore methodBinderStore,
+            IAzFunctionHandler functionHandler,
+            IContentTypeProvider contentTypeProvider)
         {
+            s_restartPending = false;
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             FunctionHandler = functionHandler;
+            ContentTypeProvider = contentTypeProvider;
         }
 
         private ILogger Logger { get; }
@@ -40,6 +55,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// </summary>
         public IAzFunctionHandler FunctionHandler { get; }
 
+        /// <summary>
+        /// The content type provider.
+        /// </summary>
+        public IContentTypeProvider ContentTypeProvider { get; }
+
         private string CreateFunctionName(IMethodInfo o)
         {
             return $"{o.MethodBinder.Assembly.GetName().Name}.{o.OperationId}"
@@ -49,9 +69,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <summary>
         /// Perfomes the setup.
         /// </summary>
+        /// <param name="configurationHash"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task Setup(CancellationToken cancellationToken = default(CancellationToken))
+        public Task CheckConfig(string configurationHash, CancellationToken cancellationToken = default(CancellationToken))
         {
             var paths = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodInfos)
@@ -64,11 +85,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var startTime = DateTime.Now;
             var modified = WriteHttpFunctions(paths.ToDictionary(o => o.Key, o => o.Select(o2 => o2.Method).ToList()));
 
-            // if we have modified any methods - wait for the cancellation token to kick in
             if(modified)
             {
-                //CheckRestarting(cancellationToken);
+                FunctionHandler.TriggerRestart();
             }
+
             return Task.CompletedTask;
         }
 
@@ -78,7 +99,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             Logger.LogInformation("Host not restarting - writing changes to bin folder...");
             FunctionHandler.Functions
                 .OfType<IAzTimerFunction>()
-                .Where(o => o.ServiceType == typeof(ISolidRpcSetup).FullName)
+                .Where(o => o.ServiceType == typeof(ISolidRpcHost).FullName)
                 .Single()
                 .Save(true);
         }
@@ -120,15 +141,29 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 {
                     httpFunction = FunctionHandler.CreateHttpFunction(functionName);
                 }
+                httpFunction.AuthLevel = "Anonymous";
                 httpFunction.Route = path;
                 httpFunction.Methods = pathsAndMethods[path];
                 if (httpFunction.Save())
                 {
                     Logger.LogInformation($"Wrote new function.json for {functionName}.");
-                    modified = true;
+                    ScheduleRestart();
                 }
             }
             return modified;
+        }
+
+        private void ScheduleRestart()
+        {
+            Task.Run(async () =>
+            {
+                s_restartPending = true;
+                await Task.Delay(2000);
+                if (s_restartPending)
+                {
+                    FunctionHandler.TriggerRestart();
+                }
+            });
         }
 
         private string CreateFunctionName(string path)
