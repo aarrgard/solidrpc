@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SolidRpc.OpenApi.AzFunctions.Types
+namespace SolidRpc.OpenApi.AspNetCore.Types
 {
     /// <summary>
     /// Raised when the file content is not found

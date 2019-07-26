@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SolidRpc.OpenApi.AzFunctions.Types
+namespace SolidRpc.OpenApi.AspNetCore.Types
 {
     /// <summary>
     /// Represents a file content

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
-using SolidRpc.OpenApi.AzFunctions.Types;
+using SolidRpc.OpenApi.AspNetCore.Types;
 
-namespace SolidRpc.OpenApi.AzFunctions.Services
+namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>
     /// Contains the static content
@@ -108,7 +106,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     return path.Substring(o.AbsolutePath.Length).Replace('/', '.').Equals(o.PathName);
                 }).ToList();
 
-            if(staticFiles.Count != 1)
+            if(!staticFiles.Any())
             {
                 return (_, cancellationToken) => throw new FileContentNotFoundException();
             }

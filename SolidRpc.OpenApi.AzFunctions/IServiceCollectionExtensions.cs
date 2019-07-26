@@ -1,6 +1,5 @@
 ﻿using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
-using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.IO;
@@ -15,21 +14,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
-        /// <summary>
-        /// Returns the static content provider.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static ISolidRpcStaticContent GetSolidRpcStaticContent(this IServiceCollection services)
-        {
-            var service = services.SingleOrDefault(o => o.ServiceType == typeof(ISolidRpcStaticContent));
-            if(service == null)
-            {
-                service = new ServiceDescriptor(typeof(ISolidRpcStaticContent), new SolidRpcStaticContent());
-                services.Add(service);
-            }
-            return (ISolidRpcStaticContent) service.ImplementationInstance;
-        }
         /// <summary>
         /// 
         /// </summary>

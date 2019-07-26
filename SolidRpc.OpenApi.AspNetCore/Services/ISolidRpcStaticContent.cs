@@ -1,9 +1,9 @@
-﻿using SolidRpc.OpenApi.AzFunctions.Types;
+﻿using SolidRpc.OpenApi.AspNetCore.Types;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AzFunctions.Services
+namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>
     /// Accesses the static content
