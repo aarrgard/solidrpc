@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "Root URI to Redirector Trigger Function": {
+      "matchCondition": {
+        "route": "/{*path}",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/SolidRpc/OpenApi/AzFunctions/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
+    }
+  }
+}

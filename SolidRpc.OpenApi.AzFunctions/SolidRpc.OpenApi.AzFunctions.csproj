@@ -6,11 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="www\azf.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="www\azf.png" />
+    <EmbeddedResource Include="www\**\*" />
   </ItemGroup>
 
   <ItemGroup>
