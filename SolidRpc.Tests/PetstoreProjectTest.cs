@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Proxy;
 using SolidRpc.Test.Petstore.Services;

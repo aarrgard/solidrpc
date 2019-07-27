@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
+using System.IO;
 
 namespace SolidRpc.OpenApi.Binder.Http
 {

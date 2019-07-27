@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -132,14 +134,14 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private object BindPath(Type type, object existingValue, IEnumerator<string> pathEnumerator, object value)
         {
-            if (typeof(IEnumerable<SolidHttpRequestData>).IsAssignableFrom(type))
+            if (typeof(IEnumerable<IHttpRequestData>).IsAssignableFrom(type))
             {
                 var lst = ((IEnumerable<SolidHttpRequestData>)existingValue).ToList();
                 var requestData = HttpRequestDataBinder(lst, value);
                 lst.AddRange(requestData.Where(o => !lst.Contains(o)));
                 return lst;
             }
-            if (typeof(SolidHttpRequestData).IsAssignableFrom(type))
+            if (typeof(IHttpRequestData).IsAssignableFrom(type))
             {
                 return HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value).Single();
             }

@@ -1,7 +1,6 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder.Http
+namespace SolidRpc.Abstractions.OpenApi.Http
 {
     /// <summary>
     /// Interface that we use to access the data in the Http response

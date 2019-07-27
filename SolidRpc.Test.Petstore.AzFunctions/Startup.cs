@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.Impl;
 using SolidRpc.Test.Petstore.Services;
 using System;
@@ -19,6 +20,8 @@ namespace MyNamespace
 
                 builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
                 builder.Services.GetSolidRpcStaticContent().AddContent(typeof(PetImpl).Assembly, "www", "/");
+                builder.Services.AddSolidRpcBindings(typeof(SwaggerUI).Assembly);
+                builder.Services.GetSolidRpcStaticContent().AddContent(typeof(SwaggerUI).Assembly, "www", "/swagger");
 
                 base.Configure(builder);
             }

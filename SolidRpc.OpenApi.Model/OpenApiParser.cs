@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
 using System.IO;

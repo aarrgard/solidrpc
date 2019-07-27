@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SolidRpc.Abstractions.OpenApi.Model;
+using System;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.V3

@@ -1,8 +1,8 @@
-﻿using SolidRpc.OpenApi.Binder.Http;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.Abstractions.OpenApi.Binder
 {
     /// <summary>
     /// Represents a method argument.
@@ -26,6 +26,11 @@ namespace SolidRpc.OpenApi.Binder
         /// <param name="val"></param>
         Task BindArgumentAsync(IHttpRequest request, object val);
 
+        /// <summary>
+        /// Extracts the arguments from supplied request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         Task<object> ExtractArgumentAsync(IHttpRequest request);
     }
 }

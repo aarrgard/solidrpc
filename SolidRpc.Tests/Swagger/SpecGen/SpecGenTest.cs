@@ -50,6 +50,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             {
                 var dir = GetSpecGenFolder(folderName);
                 var openApiFile = $"{dir.Name}.json";
+
                 Program.MainWithExeptions(new[] {
                 "-code2openapi",
                 "-d", dir.FullName,

@@ -132,9 +132,36 @@ namespace SolidRpc.OpenApi.DotNetTool
             UpdateSettingsFromArguments(argSettings, settings);
 
             var spec = await gen.CreateOpenApiSpecFromCode(settings, project);
-            using (var fs = fileInfo.Create())
+            if (argSettings.TryGetValue("only-compare", out string onlyCompare) && onlyCompare.Equals("true", StringComparison.InvariantCultureIgnoreCase))
             {
-                await spec.FileStream.CopyToAsync(fs);
+                using (var fs = fileInfo.OpenRead())
+                {
+                    CompareStreams(fileInfo.FullName, spec.FileStream, fs);
+                }
+            }
+            else
+            {
+                using (var fs = fileInfo.Create())
+                {
+                    await spec.FileStream.CopyToAsync(fs);
+                }
+            }
+        }
+
+        private static void CompareStreams(string fileName,Stream s1, FileStream s2)
+        {
+            while(true)
+            {
+                var b1 = s1.ReadByte();
+                var b2 = s2.ReadByte();
+                if(b1 != b2)
+                {
+                    throw new Exception($"File {fileName} differs");
+                }
+                if(b1 == -1)
+                {
+                    return;
+                }
             }
         }
 

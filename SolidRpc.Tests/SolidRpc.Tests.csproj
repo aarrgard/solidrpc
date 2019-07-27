@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj" />

@@ -1,8 +1,8 @@
-﻿using SolidRpc.OpenApi.Binder.Http;
+﻿using SolidRpc.Abstractions.OpenApi.Binder;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder.Proxy
+namespace SolidRpc.Abstractions.OpenApi.Http
 {
     /// <summary>
     /// Interface that exposes functionality to invoke a method in an IoC container.
@@ -26,6 +26,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// Invokes the supplied request.
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="methodInfo"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
         Task<IHttpResponse> InvokeAsync(IHttpRequest request, IMethodInfo methodInfo, CancellationToken cancellation = default(CancellationToken));

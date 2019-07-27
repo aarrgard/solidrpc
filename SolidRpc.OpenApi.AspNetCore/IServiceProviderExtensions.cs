@@ -4,6 +4,9 @@ using System;
 
 namespace System
 {
+    /// <summary>
+    /// Extension methods for the service provider.
+    /// </summary>
     public static class IServiceProviderExtensions
     {
         /// <summary>
@@ -43,6 +46,7 @@ namespace System
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sp"></param>
+        /// <param name="e"></param>
         /// <param name="message"></param>
         public static void LogError<T>(this IServiceProvider sp, Exception e, string message)
         {

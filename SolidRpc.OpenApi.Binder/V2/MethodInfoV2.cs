@@ -1,4 +1,6 @@
-﻿using SolidRpc.OpenApi.Binder.Http;
+﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
 using System;
@@ -47,6 +49,18 @@ namespace SolidRpc.OpenApi.Binder.V2
                             In = "formData",
                             Name = parameterInfo.Name
                         };
+                    }
+                }
+                var bodyParam = parameters.FirstOrDefault(o => o.In == "body");
+                if (bodyParam != null)
+                {
+                    var schema = bodyParam.Schema.GetRefSchema() ?? bodyParam.Schema;
+                    if (schema != null)
+                    {
+                        if(schema.Properties.ContainsKey(parameter.Name))
+                        {
+                            return bodyParam;
+                        }
                     }
                 }
                 throw new Exception($"Cannot find parameter {parameterInfo.Name} among parameters({string.Join(",",parameters.Select(o => o.Name))}).");

@@ -6,8 +6,12 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
-using SolidRpc.OpenApi.AspNetCore.Types;
+using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.AspNetCore.Services;
 
+[assembly: SolidRpcAbstractionProvider(typeof(ISolidRpcStaticContent), typeof(SolidRpcStaticContent))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>
@@ -53,6 +57,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="absolutePath"></param>
         public void AddContent(Assembly assembly, string packagePath, string absolutePath)
         {
+            if(!absolutePath.EndsWith("/"))
+            {
+                absolutePath = absolutePath + "/";
+            }
             // get the name of the assemblt
             var assemblyName = assembly.GetName().Name;
             foreach(var resourceName in assembly.GetManifestResourceNames())

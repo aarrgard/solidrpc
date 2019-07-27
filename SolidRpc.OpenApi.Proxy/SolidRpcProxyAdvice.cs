@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Proxy;
-using SolidRpc.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.OpenApi.Model;
@@ -100,7 +101,7 @@ namespace SolidRpc.OpenApi.Proxy
 
                 var httpClientResponse = await httpClient.SendAsync(httpClientReq);
                 var httpResp = new SolidHttpResponse();
-                await httpResp.CopyFrom(httpClientResponse);
+                await httpResp.CopyFromAsync(httpClientResponse);
 
                 return MethodInfo.ExtractResponse<TAdvice>(httpResp);
             }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SolidRpc.OpenApi.AspNetCore.Types
+namespace SolidRpc.Abstractions.Types
 {
     /// <summary>
     /// Raised when the file content is not found

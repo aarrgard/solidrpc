@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Http

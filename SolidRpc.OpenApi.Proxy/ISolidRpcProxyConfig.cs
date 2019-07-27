@@ -1,4 +1,4 @@
-﻿using SolidRpc.OpenApi.Binder.Proxy;
+﻿using SolidRpc.Abstractions.OpenApi.Proxy;
 using System;
 
 namespace SolidRpc.OpenApi.Proxy

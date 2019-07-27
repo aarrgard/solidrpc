@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SolidRpc.OpenApi.Model
+namespace SolidRpc.Abstractions.OpenApi.Model
 {
     /// <summary>
     /// Interface implemented by the SwaggerObject structures in the model.

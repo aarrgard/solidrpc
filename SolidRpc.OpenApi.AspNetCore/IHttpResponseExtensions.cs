@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -11,7 +12,8 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
         public static async Task CopyFromAsync(this IHttpResponse target, Microsoft.AspNetCore.Http.HttpResponse source)
         {
             target.StatusCode = source.StatusCode;
@@ -26,7 +28,9 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static async Task CopyToAsync(this IHttpResponse source, Microsoft.AspNetCore.Http.HttpResponse target)
         {
             target.StatusCode = source.StatusCode;

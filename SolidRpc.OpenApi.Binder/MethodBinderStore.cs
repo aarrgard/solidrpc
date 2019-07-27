@@ -1,4 +1,6 @@
 ﻿using SolidProxy.Core.Configuration.Runtime;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.OpenApi.Model.V2;
 using System;

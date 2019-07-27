@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.Abstractions.OpenApi.Binder
 {
     /// <summary>
     /// A store that contains bindings for an assebly and open api configuration.

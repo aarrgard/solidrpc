@@ -1,6 +1,5 @@
-﻿using SolidRpc.OpenApi.Binder;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Binder.Proxy;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,10 +35,10 @@ namespace SolidRpc.OpenApi.Proxy
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var req = new SolidHttpRequest();
-            await req.CopyFrom(request);
+            await req.CopyFromAsync(request);
             var resp = await MethodInvoker.InvokeAsync(req, cancellationToken);
             var response = new HttpResponseMessage();
-            await resp.CopyTo(response);
+            await resp.CopyToAsync(response);
             return response;
         }
     }

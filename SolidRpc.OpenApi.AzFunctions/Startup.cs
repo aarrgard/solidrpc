@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Services;
 using System;

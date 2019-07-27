@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model;

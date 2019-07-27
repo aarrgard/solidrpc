@@ -3,7 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Binder.Proxy
+namespace SolidRpc.Abstractions.OpenApi.Proxy
+
 {
     /// <summary>
     /// Configures the bindings for the rpc proxy.
@@ -17,6 +18,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         string OpenApiConfiguration { get; set; }
     }
 
+    /// <summary>
+    /// Extension methods for the interface.
+    /// </summary>
     public static class ISolidRpcOpenApiConfigExtensions
     {
         /// <summary>

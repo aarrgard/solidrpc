@@ -1,10 +1,10 @@
-﻿using SolidRpc.OpenApi.Binder.Http;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.Abstractions.OpenApi.Binder
 {
     /// <summary>
     /// Represents the method info structure in a swagger specification.
@@ -59,7 +59,9 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// Binds the response
         /// </summary>
+        /// <param name="response"></param>
         /// <param name="obj"></param>
+        /// <param name="objType"></param>
         /// <returns></returns>
         Task BindResponseAsync(IHttpResponse response, object obj, Type objType);
 

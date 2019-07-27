@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Services;

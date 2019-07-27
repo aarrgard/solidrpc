@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -102,6 +103,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                 if (parameter.Name.Equals("contenttype", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return true;
+                }
+            }
+            var bodyParam = parameters.FirstOrDefault(o => o.In == "body");
+            if (bodyParam != null)
+            {
+                var schema = bodyParam.Schema.GetRefSchema() ?? bodyParam.Schema;
+                if(schema != null)
+                {
+                    return schema.Properties.ContainsKey(parameter.Name);
                 }
             }
             return false;

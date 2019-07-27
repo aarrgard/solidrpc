@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http.Multipart;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Represents some HttpRequest data
     /// </summary>
-    public abstract class SolidHttpRequestData
+    public abstract class SolidHttpRequestData : IHttpRequestData
     {
         private const string SystemBoolean = "System.Boolean";
         private const string SystemDouble = "System.Double";

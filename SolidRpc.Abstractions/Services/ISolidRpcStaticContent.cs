@@ -1,9 +1,9 @@
-﻿using SolidRpc.OpenApi.AspNetCore.Types;
+﻿using SolidRpc.Abstractions.Types;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AspNetCore.Services
+namespace SolidRpc.Abstractions.Services
 {
     /// <summary>
     /// Accesses the static content
@@ -14,9 +14,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// Adds a content mapping
         /// </summary>
         /// <param name="assembly"></param>
-        /// <param name="packageParh"></param>
+        /// <param name="packagePath"></param>
         /// <param name="absolutePath"></param>
-        void AddContent(Assembly assembly, string packageParh, string absolutePath);
+        void AddContent(Assembly assembly, string packagePath, string absolutePath);
 
         /// <summary>
         /// Returns the content for supplied file.

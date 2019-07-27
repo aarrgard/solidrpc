@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -49,17 +50,17 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// The path data
         /// </summary>
-        public IEnumerable<SolidHttpRequestData> PathData { get; set; }
+        public IEnumerable<IHttpRequestData> PathData { get; set; }
 
         /// <summary>
         /// The headers
         /// </summary>
-        public IEnumerable<SolidHttpRequestData> Headers { get; set; }
+        public IEnumerable<IHttpRequestData> Headers { get; set; }
 
         /// <summary>
         /// The query data
         /// </summary>
-        public IEnumerable<SolidHttpRequestData> Query { get; set; }
+        public IEnumerable<IHttpRequestData> Query { get; set; }
 
         /// <summary>
         /// The content type
@@ -69,6 +70,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// Contains the data in the body.
         /// </summary>
-        public IEnumerable<SolidHttpRequestData> BodyData { get; set; }
+        public IEnumerable<IHttpRequestData> BodyData { get; set; }
     }
 }

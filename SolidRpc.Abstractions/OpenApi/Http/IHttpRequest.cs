@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace SolidRpc.OpenApi.Binder.Http
+namespace SolidRpc.Abstractions.OpenApi.Http
 {
     /// <summary>
     /// Interface that we use to access the data in the Http request
@@ -38,17 +38,17 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The path data. This information is extracted/populated by the binder. No
         /// need to populate from implementation.
         /// </summary>
-        IEnumerable<SolidHttpRequestData> PathData { get; set; }
+        IEnumerable<IHttpRequestData> PathData { get; set; }
 
         /// <summary>
         /// The request headers
         /// </summary>
-        IEnumerable<SolidHttpRequestData> Headers { get; set; }
+        IEnumerable<IHttpRequestData> Headers { get; set; }
 
         /// <summary>
         /// The request query string
         /// </summary>
-        IEnumerable<SolidHttpRequestData> Query { get; set; }
+        IEnumerable<IHttpRequestData> Query { get; set; }
 
         /// <summary>
         /// The content type of the body data.
@@ -64,6 +64,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The data in the body. Check the ContentType to 
         /// determine how the data should be transmitted.
         /// </summary>
-        IEnumerable<SolidHttpRequestData> BodyData { get; set; }
+        IEnumerable<IHttpRequestData> BodyData { get; set; }
     }
 }

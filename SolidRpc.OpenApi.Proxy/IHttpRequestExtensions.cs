@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.Binder.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -7,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace SolidRpc.OpenApi.Binder.Http
+namespace SolidRpc.Abstractions.OpenApi.Http
 {
     /// <summary>
     /// Extension methods fro the http request
@@ -90,7 +92,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="target"></param>
         /// <param name="source"></param>
-        public static async Task CopyFrom(this IHttpRequest target, HttpRequestMessage source)
+        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source)
         {
             target.Method = source.Method.Method;
             var uri = source.RequestUri;
@@ -138,7 +140,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             }
         }
 
-        private static HttpContent CreateMultipartFormDataContent(IEnumerable<SolidHttpRequestData> bodyData)
+        private static HttpContent CreateMultipartFormDataContent(IEnumerable<IHttpRequestData> bodyData)
         {
             var content = new MultipartFormDataContent();
             foreach(var d in bodyData)
@@ -170,7 +172,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             return content;
         }
 
-        private static HttpContent CreateFormUrlEncodedContent(IEnumerable<SolidHttpRequestData> bodyData)
+        private static HttpContent CreateFormUrlEncodedContent(IEnumerable<IHttpRequestData> bodyData)
         {
             FormUrlEncodedContent formContent;
             var data = bodyData.Select(o => new KeyValuePair<string, string>(o.Name, o.GetStringValue()));
@@ -178,7 +180,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             return formContent;
         }
 
-        private static HttpContent CreateBody(IEnumerable<SolidHttpRequestData> bodyData)
+        private static HttpContent CreateBody(IEnumerable<IHttpRequestData> bodyData)
         {
             if(bodyData.Count() != 1)
             {

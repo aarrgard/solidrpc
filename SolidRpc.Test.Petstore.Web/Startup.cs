@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Test.Petstore.Impl;
 using SolidRpc.Test.Petstore.Services;
 using System.Linq;

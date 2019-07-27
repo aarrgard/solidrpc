@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SolidRpc.OpenApi.AspNetCore.Types
+namespace SolidRpc.Abstractions.Types
 {
     /// <summary>
     /// Represents a file content

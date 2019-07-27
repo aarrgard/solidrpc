@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Binder.Http
+namespace SolidRpc.Abstractions.OpenApi.Http
 {
     /// <summary>
     /// Extension methods fro the http request
@@ -16,7 +16,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="target"></param>
         /// <param name="source"></param>
-        public static async Task CopyFrom(this IHttpResponse target, HttpResponseMessage source)
+        public static async Task CopyFromAsync(this IHttpResponse target, HttpResponseMessage source)
         {
             target.StatusCode = (int)source.StatusCode;
             if (source.Content != null)
@@ -34,7 +34,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static Task CopyTo(this IHttpResponse source, HttpResponseMessage target)
+        public static Task CopyToAsync(this IHttpResponse source, HttpResponseMessage target)
         {
             target.StatusCode = (HttpStatusCode)source.StatusCode;
             if (!string.IsNullOrEmpty(source.ContentType))

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Builder
 {
+    /// <summary>
+    /// Extension methods for the application builder
+    /// </summary>
     public static class IApplicationBuilderExtensions
     {
         /// <summary>

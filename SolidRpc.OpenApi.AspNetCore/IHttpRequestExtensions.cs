@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -11,6 +12,11 @@ namespace SolidRpc.OpenApi.Binder.Http
     public static class IHttpRequestExtensions
     {
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public static Uri GetUri(this Microsoft.AspNetCore.Http.HttpRequest request)
         {
             var uriBuilder = new UriBuilder();
@@ -25,10 +31,12 @@ namespace SolidRpc.OpenApi.Binder.Http
             return uriBuilder.Uri;
         }
 
-         /// <summary>
+        /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="target"></param>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static async Task CopyFromAsync(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source)
         {
             target.Scheme = source.Scheme;

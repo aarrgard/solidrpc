@@ -1,8 +1,8 @@
-﻿using SolidRpc.OpenApi.Model;
+﻿using SolidRpc.Abstractions.OpenApi.Model;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace SolidRpc.OpenApi.Binder
+namespace SolidRpc.Abstractions.OpenApi.Binder
 {
     /// <summary>
     /// The method binder is responsible for binding MethodInfo structures to a swagger spec.
