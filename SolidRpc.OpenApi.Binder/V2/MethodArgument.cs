@@ -79,7 +79,20 @@ namespace SolidRpc.OpenApi.Binder.V2
                     latest.SetFilename((string)value);
                     return new[] { latest };
                 default:
-                    latest.SetBinaryData(name, (Stream)value);
+                    if(value is Stream stream)
+                    {
+                        latest.SetBinaryData(name, stream);
+                    }
+                    else if(value is byte[] bytes)
+                    {
+                        latest.SetBinaryData(name, new MemoryStream(bytes));
+                    }
+                    else
+                    {
+                        latest.SetBinaryData(name, TypeExtensions.GetFileTypeStreamData(value.GetType(), value));
+                        latest.SetContentType(TypeExtensions.GetFileTypeContentType(value.GetType(), value));
+                        latest.SetFilename(TypeExtensions.GetFileTypeFilename(value.GetType(), value));
+                    }
                     return new[] { latest };
             }
         }
@@ -265,6 +278,14 @@ namespace SolidRpc.OpenApi.Binder.V2
                     {
                         return JsonHelper.Deserialize(s, dataType);
                     }
+            }
+            if(dataType.IsFileType())
+            {
+                var data = Activator.CreateInstance(dataType);
+                dataType.SetFileTypeStreamData(data, valData.GetBinaryValue());
+                dataType.SetFileTypeContentType(data, valData.ContentType);
+                dataType.SetFileTypeFilename(data, valData.Filename);
+                return data;
             }
             throw new Exception("Cannot handle type:" + dataType);
         }

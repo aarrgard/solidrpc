@@ -13,6 +13,14 @@ namespace System
     {
         private static readonly FileTypeHelper s_NotFileType = new FileTypeHelper(false, null, null, null, null,null,null);
 
+        /// <summary>
+        /// The file type properties that can exist on a file type.
+        /// </summary>
+        public static IDictionary<string, Type> FileTypeProperties = new Dictionary<string, Type>() {
+            { "contenttype", typeof(string) },
+            { "filename", typeof(string) },
+            { "lastmodified", typeof(DateTime) },
+        };
 
         /// <summary>
         /// Contains information about a file type
@@ -91,19 +99,19 @@ namespace System
             {
                 return false;
             }
-            var contentTypeProp = propertyTypes.Where(o => string.Equals(o.Key, "contenttype", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-            var fileNameProp = propertyTypes.Where(o => string.Equals(o.Key, "filename", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
 
-            var keys = new[] { dataProp.Key, contentTypeProp.Key, fileNameProp.Key };
-            var isFileType = propertyTypes.Keys.All(o => keys.Contains(o));
-            if(isFileType)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var res = propertyTypes
+                .Where(o => {
+                    if(FileTypeProperties.TryGetValue(o.Key.ToLower(), out Type t))
+                    {
+                        return t == o.Value;
+                    }
+                    return false;
+                })
+                .Union(new [] { dataProp })
+                .ToList();
+
+            return res.Count == propertyTypes.Count;
         }
 
         private static FileTypeHelper CreateFileTypeHelper(Type arg)
@@ -237,11 +245,37 @@ namespace System
         /// <param name="type"></param>
         /// <param name="impl"></param>
         /// <param name="data"></param>
-        public static void SetStreamData(this Type type, object impl, Stream data)
+        public static void SetFileTypeStreamData(this Type type, object impl, Stream data)
         {
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             h.SetStreamData(impl, data);
+        }
+
+        /// <summary>
+        /// Set the stream data on supplied structure.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <param name="contentType"></param>
+        public static void SetFileTypeContentType(this Type type, object impl, string contentType)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            h.SetContentType(impl, contentType);
+        }
+
+        /// <summary>
+        /// Set the stream data on supplied structure.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <param name="fileName"></param>
+        public static void SetFileTypeFilename(this Type type, object impl, string fileName)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            h.SetFilename(impl, fileName);
         }
 
         /// <summary>
@@ -268,6 +302,19 @@ namespace System
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             return h.GetContentType(impl);
+        }
+
+        /// <summary>
+        /// Returns the filename
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <returns></returns>
+        public static string GetFileTypeFilename(this Type type, object impl)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            return h.GetFilename(impl);
         }
 
         /// <summary>

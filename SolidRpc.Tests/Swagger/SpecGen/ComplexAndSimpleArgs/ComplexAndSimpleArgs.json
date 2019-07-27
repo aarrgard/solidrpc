@@ -1,16 +1,16 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "OneComplexArg",
+    "title": "ComplexAndSimpleArgs",
     "version": "1.0.0"
   },
   "host": "localhost",
-  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/OneComplexArg",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/ComplexAndSimpleArgs",
   "paths": {
-    "/Services/IOneComplexArg/GetComplexType": {
+    "/Services/IComplexAndSimpleArgs/GetComplexType": {
       "post": {
         "tags": [
-          "IOneComplexArg"
+          "IComplexAndSimpleArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
         "operationId": "GetComplexType",
@@ -22,11 +22,20 @@
         ],
         "parameters": [
           {
-            "name": "ct1",
+            "name": "body",
             "in": "body",
             "required": false,
             "schema": {
-              "$ref": "#/definitions/ComplexType1"
+              "properties": {
+                "simpleType": {
+                  "$ref": "#/definitions/string",
+                  "type": "string"
+                },
+                "ct1": {
+                  "$ref": "#/definitions/ComplexType1"
+                }
+              },
+              "type": "object"
             }
           }
         ],
@@ -42,6 +51,9 @@
     }
   },
   "definitions": {
+    "string": {
+      "type": "object"
+    },
     "ComplexType1": {
       "properties": {
         "CT1": {
@@ -54,7 +66,7 @@
   },
   "tags": [
     {
-      "name": "IOneComplexArg",
+      "name": "IComplexAndSimpleArgs",
       "description": "Tests method with one complex type"
     }
   ]

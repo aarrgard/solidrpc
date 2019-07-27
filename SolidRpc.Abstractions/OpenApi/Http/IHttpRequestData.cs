@@ -9,9 +9,14 @@ namespace SolidRpc.Abstractions.OpenApi.Http
     public interface IHttpRequestData
     {
         /// <summary>
-        /// The content type
+        /// The content type - stored in the Content-Type header.
         /// </summary>
         string ContentType { get; }
+
+        /// <summary>
+        /// File filename - usually stored in the Content-Disposition header.
+        /// </summary>
+        string Filename { get; }
 
         /// <summary>
         /// The name of the data

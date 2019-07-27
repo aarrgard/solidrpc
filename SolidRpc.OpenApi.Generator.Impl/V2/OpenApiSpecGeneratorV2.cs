@@ -81,8 +81,23 @@ namespace SolidRpc.OpenApi.Generator.V2
             operationObject.Tags = new string[] { CreateTag(null, (ICSharpType)method.Parent).Name };
             operationObject.OperationId = method.Name;
             operationObject.Description = method.Comment?.Summary;
-            method.Parameters
-                .Where(o => o.ParameterType.RuntimeType != typeof(CancellationToken))
+
+            var parameters = method.Parameters
+                .Where(o => o.ParameterType.RuntimeType != typeof(CancellationToken));
+
+            if (parameters.Any(o => o.ParameterType.IsFileType))
+            {
+                parameters = parameters.Where(o =>
+                {
+                    if (TypeExtensions.FileTypeProperties.TryGetValue(o.Name.ToLower(), out Type t))
+                    {
+                        return o.ParameterType.RuntimeType != t;
+                    }
+                    return true;
+                });
+            }
+
+            parameters
                 .ToList()
                 .ForEach(o =>
                 {
@@ -90,7 +105,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                     //
                     // get the schema for the property
                     //
-                    var schema = GetSchema(operationObject, false, o.ParameterType);
+                    var schema = GetSchema(operationObject, true, o.ParameterType);
                     ParameterObject po;
                     if (schema.GetBaseType() == "object")
                     {
@@ -157,7 +172,7 @@ namespace SolidRpc.OpenApi.Generator.V2
             }
             if (operationObject.Responses.Any(o => o.Value.Schema?.Type == "file"))
             {
-                operationObject.AddProduces("application/octet-stream");
+                operationObject.AddProduces("*/*");
             }
             else if (operationObject.Responses.Where(o => o.Key == "200").Any(o => o.Value.Schema != null))
             {
@@ -202,8 +217,7 @@ namespace SolidRpc.OpenApi.Generator.V2
 
         private void SetItemProps(ItemBase itemBase, bool canHandleFile, ICSharpType type)
         {
-            var runtimeProps = type.Properties.ToDictionary(o => o.Name, o => o.PropertyType.RuntimeType);
-            if(TypeExtensions.IsFileType(type.FullName, runtimeProps))
+            if (type.IsFileType)
             {
                 if (canHandleFile)
                 {

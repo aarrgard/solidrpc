@@ -112,25 +112,62 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
+        public async Task TestFileUpload2()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestFileUpload2).Substring(4));
+                ctx.CreateServerInterceptor<FileUpload2.Services.IFileUpload>(
+                    o => o.UploadFile(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(2, args.Length);
+                        CompareStructs(CreateUpload2Struct(), args[0]);
+                        Assert.IsNotNull((CancellationToken)args[1]);
+                        return Task.FromResult(CreateUpload2Struct());
+                    });
+                ctx.AddOpenApiProxy<FileUpload2.Services.IFileUpload>(config);
+                await ctx.StartAsync();
+                var proxy = ctx.ServiceProvider.GetRequiredService<FileUpload2.Services.IFileUpload>();
+                var res = await proxy.UploadFile(CreateUpload2Struct());
+
+                CompareStructs(CreateUpload2Struct(), res);
+            }
+        }
+
+        private FileUpload2.Types.FileData CreateUpload2Struct()
+        {
+            return new FileUpload2.Types.FileData()
+            {
+                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                FileName = "filename.txt",
+                ContentType = "application/pdf"
+            };     
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
         public async Task TestOneComplexArg()
         {
             using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestOneComplexArg).Substring(4));
                 ctx.CreateServerInterceptor<OneComplexArg.Services.IOneComplexArg>(
-                    o => o.GetComplexType(null, null),
+                    o => o.GetComplexType(null),
                     config,
                     args =>
                     {
-                        Assert.AreEqual(2, args.Length);
-                        Assert.AreEqual("test", args[0]);
-                        Assert.IsNotNull((OneComplexArg.Types.ComplexType1)args[1]);
-                        return (OneComplexArg.Types.ComplexType1)args[1];
+                        Assert.AreEqual(1, args.Length);
+                        Assert.IsNotNull((OneComplexArg.Types.ComplexType1)args[0]);
+                        return (OneComplexArg.Types.ComplexType1)args[0];
                     });
                 ctx.AddOpenApiProxy<OneComplexArg.Services.IOneComplexArg>(config);
                 await ctx.StartAsync();
                 var proxy = ctx.ServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
-                var res = proxy.GetComplexType("test", new OneComplexArg.Types.ComplexType1());
+                var res = proxy.GetComplexType(new OneComplexArg.Types.ComplexType1());
             }
         }
     }

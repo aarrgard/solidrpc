@@ -13,6 +13,15 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp.Impl
         public Type RuntimeType { get; }
         public bool Initialized { get; set; }
 
+        public bool IsFileType
+        {
+            get
+            {
+                var runtimeProps = Properties.ToDictionary(o => o.Name, o => o.PropertyType.RuntimeType);
+                return TypeExtensions.IsFileType(FullName, runtimeProps);
+            }
+        }
+
         public void AddExtends(ICSharpType extType)
         {
             if(Members.OfType<ICSharpTypeExtends>().Where(o => o.Name == extType.FullName).Any())

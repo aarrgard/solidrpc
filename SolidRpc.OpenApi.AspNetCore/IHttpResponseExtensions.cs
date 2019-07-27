@@ -1,5 +1,7 @@
-﻿using SolidRpc.Abstractions.OpenApi.Http;
+﻿using Microsoft.Extensions.Primitives;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System.IO;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -24,6 +26,11 @@ namespace SolidRpc.OpenApi.Binder.Http
                 await source.Body.CopyToAsync(ms);
                 target.ResponseStream = new MemoryStream(ms.ToArray());
             }
+            if(source.Headers.TryGetValue("Content-Disposition", out StringValues cds))
+            {
+                var cd = ContentDispositionHeaderValue.Parse(cds);
+                target.Filename = cd.FileName;
+            }
         }
         /// <summary>
         /// 
@@ -34,7 +41,12 @@ namespace SolidRpc.OpenApi.Binder.Http
         public static async Task CopyToAsync(this IHttpResponse source, Microsoft.AspNetCore.Http.HttpResponse target)
         {
             target.StatusCode = source.StatusCode;
-            if(!string.IsNullOrEmpty(source.ContentType))
+            if (!string.IsNullOrEmpty(source.Filename))
+            {
+                var cd = new ContentDispositionHeaderValue("inline") { FileName = source.Filename };
+                target.Headers.Add("Content-Disposition", cd.ToString());
+            }
+            if (!string.IsNullOrEmpty(source.ContentType))
             {
                 target.ContentType = source.ContentType;
                 await source.ResponseStream.CopyToAsync(target.Body);

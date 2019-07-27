@@ -10,6 +10,10 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#responseObject"/>
     public class ResponseObject : ModelBase
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="parent"></param>
         public ResponseObject(ModelBase parent) : base(parent)
         {
 

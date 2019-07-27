@@ -10,6 +10,10 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#pathItemObject"/>
     public class PathItemObject : ModelBase
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="parent"></param>
         public PathItemObject(ModelBase parent) : base(parent)
         {
 

@@ -281,7 +281,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             if(Produces.Any())
             {
-                if (!Produces.Contains(response.ContentType))
+                if (!Produces.Any(o => ContentTypeMatches(o, response.ContentType)))
                 {
                     throw new Exception($"Operation does not support content type {response.ContentType}. Supported content types are {string.Join(",", Produces)}");
                 }
@@ -293,10 +293,39 @@ namespace SolidRpc.OpenApi.Binder.V2
                     {
                         return JsonHelper.Deserialize<T>(s);
                     }
-                default:
-                    throw new Exception("Cannot handle content type:"+response.ContentType);
-                    
             }
+            if(typeof(T).IsFileType())
+            {
+                var res = Activator.CreateInstance<T>();
+                typeof(T).SetFileTypeStreamData(res, response.ResponseStream);
+                typeof(T).SetFileTypeContentType(res, response.ContentType);
+                typeof(T).SetFileTypeFilename(res, response.Filename);
+                return res;
+            }
+            throw new Exception("Cannot handle content type:" + response.ContentType);
+        }
+
+        private bool ContentTypeMatches(string contentTypePattern, string contentType)
+        {
+            var contentTypePatternParts = (contentTypePattern ?? "").Split('/');
+            var contentTypeParts = (contentTypePattern ?? "").Split('/');
+            if(contentTypePatternParts.Length != contentTypeParts.Length)
+            {
+                return false;
+            }
+            for(int i = 0; i < contentTypePatternParts.Length; i++)
+            {
+                if (contentTypePatternParts[i].Equals("*"))
+                {
+                    continue;
+                }
+                if (contentTypePatternParts[i].Equals(contentTypeParts[i], StringComparison.InvariantCultureIgnoreCase))
+                {
+                    continue;
+                }
+                return false;
+            }
+            return true;
         }
 
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
@@ -354,6 +383,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 response.ContentType = returnType.GetFileTypeContentType(obj);
                 response.ResponseStream = returnType.GetFileTypeStreamData(obj);
+                response.Filename = returnType.GetFileTypeFilename(obj);
                 return Task.CompletedTask;
             }
 

@@ -22,6 +22,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             if (source.Content != null)
             {
                 target.ContentType = source.Content.Headers?.ContentType?.MediaType;
+                target.Filename = source.Content.Headers?.ContentDisposition?.FileName;
                 var ms = new MemoryStream();
                 await source.Content.CopyToAsync(ms);
                 target.ResponseStream = new MemoryStream(ms.ToArray());
@@ -41,6 +42,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 target.Content = new StreamContent(source.ResponseStream);
                 target.Content.Headers.ContentType = new MediaTypeHeaderValue(source.ContentType);
+            }
+            if (!string.IsNullOrEmpty(source.Filename))
+            {
+                target.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline") { FileName = source.Filename };
             }
             return Task.CompletedTask;
         }

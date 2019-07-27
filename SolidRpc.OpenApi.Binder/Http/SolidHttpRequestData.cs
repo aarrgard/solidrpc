@@ -226,6 +226,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         public string Name { get; protected set; }
 
+        /// <summary>
+        /// The name
+        /// </summary>
+        public string Filename { get; protected set; }
+
         protected Encoding GetEncoding(Encoding encoding)
         {
             return encoding ?? Encoding.UTF8;

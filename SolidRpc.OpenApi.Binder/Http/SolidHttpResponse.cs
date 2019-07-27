@@ -8,8 +8,24 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// </summary>
     public class SolidHttpResponse : IHttpResponse
     {
+        /// <summary>
+        /// The response stream
+        /// </summary>
         public Stream ResponseStream { get; set; }
+
+        /// <summary>
+        /// The status code.
+        /// </summary>
         public int StatusCode { get; set; }
+
+        /// <summary>
+        /// The content type
+        /// </summary>
         public string ContentType { get; set; }
+
+        /// <summary>
+        /// The file name
+        /// </summary>
+        public string Filename { get; set; }
     }
 }

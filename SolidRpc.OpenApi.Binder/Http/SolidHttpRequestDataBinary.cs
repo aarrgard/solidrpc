@@ -37,11 +37,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         public byte[] BinaryData { get; private set; }
 
-        /// <summary>
-        /// The filename for this binary data.
-        /// </summary>
-        public string Filename { get; private set; }
-
         public override Stream GetBinaryValue(Encoding encoding = null)
         {
             return new MemoryStream(BinaryData);

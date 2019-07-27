@@ -48,5 +48,10 @@ namespace SolidRpc.OpenApi.Generator.Model.CSharp
         /// Returns the task type - null if this is not a task.
         /// </summary>
         ICSharpType TaskType { get; }
+
+        /// <summary>
+        /// Returns true if this is a file type.
+        /// </summary>
+        bool IsFileType { get;  }
     }
 }
