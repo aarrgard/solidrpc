@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="V3\" />
+  </ItemGroup>
+
 </Project>

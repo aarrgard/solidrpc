@@ -3,13 +3,15 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Generator.Impl.Csproj;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
-using SolidRpc.OpenApi.Generator.V2;
-using SolidRpc.OpenApi.Generator.V3;
+using SolidRpc.OpenApi.Model.CSharp;
+using SolidRpc.OpenApi.Model.Generator.V2;
+using SolidRpc.OpenApi.Model.Generator.V3;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,20 +28,45 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
         public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen codeSettings, CancellationToken cancellationToken)
         {
             var model = OpenApiParser.ParseSpec(codeSettings.SwaggerSpec);
-            FileData projectZip;
+            ICSharpRepository codeRepo;
             if (model is SwaggerObject v2)
             {
-                projectZip = new OpenApiCodeGeneratorV2(v2, codeSettings).GenerateCode();
+                codeRepo = new OpenApiCodeGeneratorV2(v2, CopySettings<Model.Generator.SettingsCodeGen>(codeSettings)).GenerateCode();
             }
             else if (model is OpenAPIObject v3)
             {
-                projectZip = new OpenApiCodeGeneratorV3(v3, codeSettings).GenerateCode();
+                codeRepo = new OpenApiCodeGeneratorV3(v3, CopySettings<Model.Generator.SettingsCodeGen>(codeSettings)).GenerateCode();
             }
             else
             {
                 throw new Exception("Cannot parse swagger json.");
             }
+
+            var codeWriter = new CodeWriterZip(codeSettings.ProjectNamespace);
+            codeRepo.WriteCode(codeWriter);
+            codeWriter.Close();
+            codeWriter.ZipOutputStream.Close();
+
+            var projectZip = new FileData()
+            {
+                ContentType = "application/zip",
+                Filename = "project.zip",
+                FileStream = new MemoryStream(codeWriter.MemoryStream.ToArray())
+            };
+
+
             return ParseProjectZip(projectZip, cancellationToken);
+        }
+
+        private T CopySettings<T>(object codeSettings) where T : new()
+        {
+            var s = new T();
+            foreach(var pTarget in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                var pSource = codeSettings.GetType().GetProperty(pTarget.Name);
+                pTarget.SetValue(s, pSource.GetValue(codeSettings));
+            }
+            return s;
         }
 
         public Task<FileData> CreateOpenApiSpecFromCode(SettingsSpecGen settings, Project project, CancellationToken cancellationToken)

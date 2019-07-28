@@ -1,15 +1,11 @@
-﻿using SolidRpc.OpenApi.Generator.Impl;
-using SolidRpc.OpenApi.Generator.Types;
-using SolidRpc.OpenApi.Model;
-using SolidRpc.OpenApi.Model.Agnostic;
+﻿using SolidRpc.OpenApi.Model.Agnostic;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Generator
+namespace SolidRpc.OpenApi.Model.Generator
 {
     /// <summary>
     /// Code generator to create interfaces and classes from a swagger specification.
@@ -189,23 +185,11 @@ namespace SolidRpc.OpenApi.Generator
         /// <summary>
         /// Generates code 
         /// </summary>
-        /// <param name="codeSettings"></param>
-        public FileData GenerateCode()
+        public ICSharpRepository GenerateCode()
         {
             var codeGenerator = (ICSharpRepository)new CSharpRepository();
-
-
-            var codeWriter = new CodeWriterZip(CodeSettings.ProjectNamespace);
-            codeGenerator.WriteCode(codeWriter);
-            codeWriter.Close();
-            codeWriter.ZipOutputStream.Close();
-
-            return new FileData()
-            {
-                ContentType = "application/zip",
-                Filename = "project.zip",
-                FileStream = new MemoryStream(codeWriter.MemoryStream.ToArray())
-            };
+            GenerateCode(codeGenerator);
+            return codeGenerator;
         }
         protected abstract void GenerateCode(ICSharpRepository codeGenerator);
 

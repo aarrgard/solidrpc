@@ -13,8 +13,4 @@
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Generator\" />
-  </ItemGroup>
-
 </Project>

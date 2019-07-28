@@ -1,9 +1,8 @@
 ﻿using System;
-using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.V3;
 
-namespace SolidRpc.OpenApi.Generator.V3
+namespace SolidRpc.OpenApi.Model.Generator.V3
 
 {
     public class OpenApiCodeGeneratorV3 : OpenApiCodeGenerator
