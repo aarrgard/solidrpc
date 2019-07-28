@@ -1,6 +1,6 @@
 ﻿using System;
-using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.V3;
 
 namespace SolidRpc.OpenApi.Generator.V3

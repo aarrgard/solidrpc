@@ -1,8 +1,9 @@
-﻿using SolidRpc.OpenApi.Generator.Model.CSharp;
-using SolidRpc.OpenApi.Generator.Model.CSharp.Impl;
+﻿using SolidRpc.OpenApi.Generator.Impl;
 using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.Agnostic;
+using SolidRpc.OpenApi.Model.CSharp;
+using SolidRpc.OpenApi.Model.CSharp.Impl;
 using System;
 using System.Collections.Generic;
 using System.IO;
