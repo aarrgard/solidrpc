@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
+namespace SolidRpc.OpenApi.Model.Agnostic
 {
     /// <summary>
     /// Represents a swagger object.
@@ -90,6 +90,6 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
         /// <summary>
         /// The exception code if this is a type that should return a result.
         /// </summary>
-        public int? ExceptionCode { get; internal set; }
+        public int? ExceptionCode { get; set; }
     }
 }

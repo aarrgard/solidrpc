@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
+namespace SolidRpc.OpenApi.Model.Agnostic
 {
     /// <summary>
     /// Represents a charp description

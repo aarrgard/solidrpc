@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SolidRpc.OpenApi.Generator.Impl.Code.Binder;
 using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Model.Agnostic;
 using SolidRpc.OpenApi.Model.V2;
 
 namespace SolidRpc.OpenApi.Generator.V2

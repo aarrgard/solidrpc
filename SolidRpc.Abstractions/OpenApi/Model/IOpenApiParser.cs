@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
 
 namespace SolidRpc.Abstractions.OpenApi.Model
 {
@@ -15,5 +14,19 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <param name="json"></param>
         /// <returns></returns>
         IOpenApiSpec ParseSpec(string json);
+
+        /// <summary>
+        /// Creates a specification that contains the methods in supplied type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        IOpenApiSpec CreateSpecification(Type type);
+
+        /// <summary>
+        /// Creates a specification that contains the specified method.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        IOpenApiSpec CreateSpecification(MethodInfo method);
     }
 }

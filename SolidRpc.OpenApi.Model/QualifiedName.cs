@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Generator
+namespace SolidRpc.OpenApi.Model
 {
     /// <summary>
     /// Represents a qualified name

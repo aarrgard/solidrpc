@@ -1,11 +1,8 @@
-﻿using SolidRpc.OpenApi.Generator.Impl.Code.Binder;
-using SolidRpc.OpenApi.Generator.Model.CSharp;
+﻿using SolidRpc.OpenApi.Generator.Model.CSharp;
 using SolidRpc.OpenApi.Generator.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Generator.Types;
-using SolidRpc.OpenApi.Generator.V2;
 using SolidRpc.OpenApi.Model;
-using SolidRpc.OpenApi.Model.V2;
-using SolidRpc.OpenApi.Model.V3;
+using SolidRpc.OpenApi.Model.Agnostic;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,13 +57,13 @@ namespace SolidRpc.OpenApi.Generator
                     settings.CodeNamespace,
                     settings.ServiceNamespace,
                     InterfaceNameMapper(GetOperationTag(operation).Name));
-                return new Impl.Code.Binder.CSharpMethod()
+                return new OpenApi.Model.Agnostic.CSharpMethod()
                 {
                     Exceptions = operation.Exceptions.Select(o => DefinitionMapper(settings, o)),
                     ReturnType = DefinitionMapper(settings, operation.ReturnType),
                     InterfaceName = className,
                     MethodName = MethodNameMapper(operation.OperationId),
-                    Parameters = operation.Parameters.Select(o => new Impl.Code.Binder.CSharpMethodParameter()
+                    Parameters = operation.Parameters.Select(o => new OpenApi.Model.Agnostic.CSharpMethodParameter()
                     {
                         Name = o.Name,
                         ParameterType = DefinitionMapper(settings, o.ParameterType),
@@ -103,7 +100,7 @@ namespace SolidRpc.OpenApi.Generator
                 var csObj = new CSharpObject(className);
                 csObj.Description = swaggerDef.Description;
                 csObj.ExceptionCode = swaggerDef.ExceptionCode;
-                csObj.Properties = swaggerDef.Properties.Select(o => new Impl.Code.Binder.CSharpProperty()
+                csObj.Properties = swaggerDef.Properties.Select(o => new OpenApi.Model.Agnostic.CSharpProperty()
                 {
                     PropertyName = PropertyNameMapper(o.Name),
                     PropertyType = DefinitionMapper(settings, o.Type),
@@ -156,7 +153,7 @@ namespace SolidRpc.OpenApi.Generator
         /// <summary>
         /// Method to map from a swagger operation to a C# method
         /// </summary>
-        public Func<SettingsCodeGen, SwaggerOperation, Impl.Code.Binder.CSharpMethod> OperationMapper { get; set; }
+        public Func<SettingsCodeGen, SwaggerOperation, OpenApi.Model.Agnostic.CSharpMethod> OperationMapper { get; set; }
 
         /// <summary>
         /// Method to map from a swagger object to a c# object.

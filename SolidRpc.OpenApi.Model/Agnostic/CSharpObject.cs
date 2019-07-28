@@ -2,19 +2,27 @@
 using System.Collections.Generic;
 
 
-namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
+namespace SolidRpc.OpenApi.Model.Agnostic
 {
     /// <summary>
     /// Represents a c# object.
     /// </summary>
     public class CSharpObject
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="name"></param>
         public CSharpObject(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Properties = new List<CSharpProperty>();
         }
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="arrayElement"></param>
         public CSharpObject(CSharpObject arrayElement)
         {
             ArrayElement = arrayElement;
@@ -50,6 +58,6 @@ namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
         /// <summary>
         /// The exception code.
         /// </summary>
-        public int? ExceptionCode { get; internal set; }
+        public int? ExceptionCode { get; set; }
     }
 }

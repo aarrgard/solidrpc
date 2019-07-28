@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SolidRpc.OpenApi.Generator.Impl.Code.Binder
+namespace SolidRpc.OpenApi.Model.Agnostic
 {
     public class SwaggerOperation
     {

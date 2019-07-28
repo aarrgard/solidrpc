@@ -101,6 +101,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.GetSolidRpcServiceProvider<ISolidRpcStaticContent>();
         }
 
+        /// <summary>
+        /// Returns the static content provider.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IOpenApiParser GetSolidRpcOpenApiParser(this IServiceCollection services)
+        {
+            return services.GetSolidRpcServiceProvider<IOpenApiParser>();
+        }
+
 
         /// <summary>
         /// Configures all the interfaces in supplied assembly

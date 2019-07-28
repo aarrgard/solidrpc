@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions;
-using System.Linq;
+﻿using SolidRpc.OpenApi.SwaggerUI.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,8 +13,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TService"></typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSoldRpcSwaggerUI<TService>(this IServiceCollection services) where TService:class
+        public static IServiceCollection AddSoldRpcSwaggerUI(this IServiceCollection services)
         {
+            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ISwaggerUI));
+            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), openApiSpec.WriteAsJsonString());
             return services;
         }
     }

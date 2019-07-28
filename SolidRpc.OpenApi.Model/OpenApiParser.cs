@@ -4,7 +4,10 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 [assembly: SolidRpcAbstractionProvider(typeof(IOpenApiParser), typeof(OpenApiParser))]
 namespace SolidRpc.OpenApi.Model
@@ -17,12 +20,27 @@ namespace SolidRpc.OpenApi.Model
         private static OpenApiParserV2 v2Parser = new OpenApiParserV2();
         private static OpenApiParserV3 v3Parser = new OpenApiParserV3();
 
+        IOpenApiSpec IOpenApiParser.CreateSpecification(Type type)
+        {
+            return CreateSpecification(type.GetMethods());
+        }
+
+        IOpenApiSpec IOpenApiParser.CreateSpecification(MethodInfo method)
+        {
+            return CreateSpecification(new[] { method });
+        }
+
+        private IOpenApiSpec CreateSpecification(IEnumerable<MethodInfo> methods)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Parses the specification
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public IOpenApiSpec ParseSpec(string json)
+        IOpenApiSpec IOpenApiParser.ParseSpec(string json)
         {
             var res = (IOpenApiSpec)v2Parser.ParseSwaggerDoc(json);
             if (res == null)

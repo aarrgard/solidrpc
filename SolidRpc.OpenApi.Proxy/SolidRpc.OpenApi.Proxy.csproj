@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build049" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
   </ItemGroup>
 
