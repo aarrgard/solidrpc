@@ -8,6 +8,7 @@ using SolidRpc.OpenApi.Model;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SolidRpc.Abstractions.OpenApi.Model;
 
 namespace SolidRpc.OpenApi.Proxy
 {
@@ -26,31 +27,21 @@ namespace SolidRpc.OpenApi.Proxy
         /// <param name="logger"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="serviceProvider"></param>
-        public SolidRpcProxyAdvice(ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider) {
+        public SolidRpcProxyAdvice(
+            ILogger<SolidRpcProxyAdvice<TObject, TMethod, TAdvice>> logger,
+            IOpenApiParser openApiParser,
+            IMethodBinderStore methodBinderStore, 
+            IServiceProvider serviceProvider) {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            OpenApiParser = openApiParser;
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             HttpMessageHandler = (HttpMessageHandler)serviceProvider.GetService(typeof(HttpMessageHandler));
         }
-
-        /// <summary>
-        /// The message handler
-        /// </summary>
-        public HttpMessageHandler HttpMessageHandler { get; }
-
-        /// <summary>
-        /// The logger;
-        /// </summary>
+        private HttpMessageHandler HttpMessageHandler { get; }
         private ILogger Logger { get; }
-
-        /// <summary>
-        /// The binder store
-        /// </summary>
-        public IMethodBinderStore MethodBinderStore { get; }
-
-        /// <summary>
-        /// The method info
-        /// </summary>
-        public IMethodInfo MethodInfo { get; private set; }
+        private IOpenApiParser OpenApiParser { get; }
+        private IMethodBinderStore MethodBinderStore { get; }
+        private IMethodInfo MethodInfo { get; set; }
 
         /// <summary>
         /// Confugures the proxy
@@ -62,7 +53,7 @@ namespace SolidRpc.OpenApi.Proxy
             var openApiConfig = config.OpenApiConfiguration;
             if(config.RootAddress != null)
             {
-                var swaggerConf = OpenApiParser.ParseOpenApiSpec(config.OpenApiConfiguration);
+                var swaggerConf = OpenApiParser.ParseSpec(config.OpenApiConfiguration);
                 swaggerConf.SetSchemeAndHostAndPort(config.RootAddress);
                 openApiConfig = swaggerConf.WriteAsJsonString();
             }
@@ -94,7 +85,14 @@ namespace SolidRpc.OpenApi.Proxy
                 var httpReq = new SolidHttpRequest();
                 await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
 
-                Logger.LogTrace($"Sending data to {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
+                if(HttpMessageHandler == null)
+                {
+                    Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
+                }
+                else
+                {
+                    Logger.LogTrace($"Sending data to local handler. Emulating host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
+                }
 
                 var httpClientReq = new HttpRequestMessage();
                 httpReq.CopyTo(httpClientReq);

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build048" />
+    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build049" />
   </ItemGroup>
 
 </Project>

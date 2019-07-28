@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;

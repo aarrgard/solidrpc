@@ -295,7 +295,7 @@ namespace SolidRpc.Tests.Swagger
             var sc = new ServiceCollection();
             sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSingleton<IMethodBinderStore, MethodBinderStore>();
+            sc.AddSolidRpcSingletonServices();
             return sc.BuildServiceProvider().GetRequiredService<IMethodBinderStore>();
         }
     }

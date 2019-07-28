@@ -391,14 +391,16 @@ namespace SolidRpc.Tests.MvcProxyTest
             var openApiConfiguration = await AssertOk(resp);
 
             var sc = new ServiceCollection();
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddLogging(ConfigureLogging);
-            sc.AddSingleton<IMethodBinderStore, MethodBinderStore>();
+            sc.AddSolidRpcSingletonServices();
             sc.AddTransient<T,T>();
-            var proxyConf = sc.GetSolidConfigurationBuilder()
-                .SetGenerator<SolidProxyCastleGenerator>()
-                .ConfigureInterface<T>()
-                .ConfigureAdvice<ISolidRpcProxyConfig>();
-            proxyConf.OpenApiConfiguration = openApiConfiguration;
+            sc.AddSolidRpcBindings(typeof(T), typeof(T), openApiConfiguration)
+                .ToList().ForEach(c =>
+                {
+                    c.ConfigureAdvice<ISolidRpcProxyConfig>().OpenApiConfiguration = openApiConfiguration;
+                    c.ConfigureAdvice<ISolidRpcProxyConfig>().RootAddress = ctx.BaseAddress;
+                });
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));

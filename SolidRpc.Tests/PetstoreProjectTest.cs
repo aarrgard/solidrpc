@@ -172,7 +172,7 @@ namespace SolidRpc.Tests
             var sc = new ServiceCollection();
             sc.AddLogging(ConfigureLogging);
             sc.AddTransient<IPet, IPet>();
-            sc.AddTransient<IMethodBinderStore, MethodBinderStore>();
+            sc.AddSolidRpcSingletonServices();
             sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)

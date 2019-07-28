@@ -1,9 +1,11 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Generator;
 using SolidRpc.OpenApi.Generator.Impl.Services;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -170,6 +172,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             if(s_serviceProvider == null)
             {
                 var sc = new ServiceCollection();
+                sc.AddSingleton<IOpenApiParser, OpenApiParser>();
                 sc.AddTransient<IOpenApiGenerator, OpenApiGenerator>();
                 s_serviceProvider = sc.BuildServiceProvider();
             }

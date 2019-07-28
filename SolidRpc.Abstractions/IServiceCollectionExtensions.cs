@@ -1,9 +1,12 @@
-﻿using SolidRpc.Abstractions;
+﻿using SolidProxy.Core.Configuration.Builder;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -14,6 +17,8 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        private static bool s_assembliesLoaded = false;
+
         /// <summary>
         /// Returns the service provider for specified service.
         /// </summary>
@@ -48,6 +53,42 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddSingleton(typeof(TService), SolidRpcAbstractionProviderAttribute.GetImplemenationType<TService>());
             }
             return services;
+        }
+
+        /// <summary>
+        /// Adds the singleton services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcSingletonServices(this IServiceCollection services)
+        {
+            InitAssemblies();
+            services.RegisterSingletonService<IOpenApiParser>();
+            services.RegisterSingletonService<IMethodInvoker>();
+            services.RegisterSingletonService<IMethodBinderStore>();
+            return services;
+        }
+
+        private static void InitAssemblies()
+        {
+            if (s_assembliesLoaded) return;
+            LoadAssembly("SolidRpc.OpenApi.Model");
+            LoadAssembly("SolidRpc.OpenApi.Binder");
+            LoadAssembly("SolidRpc.OpenApi.AspNetCore", false);
+            LoadAssembly("SolidRpc.OpenApi.AzFunctions", false);
+            s_assembliesLoaded = true;
+        }
+
+        private static void LoadAssembly(string assemblyName, bool required = true)
+        {
+            try
+            {
+                Assembly.Load(assemblyName);
+            }
+            catch(Exception e)
+            {
+                if (required) throw;
+            }
         }
 
         /// <summary>
@@ -89,7 +130,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         .Where(o => o != t)
                         .SingleOrDefault();
                 }
-                sc.AddSolidRpcBinding(t, impl);
+                sc.AddSolidRpcBindings(t, impl);
             }
             return sc;
         }
@@ -100,8 +141,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="sc"></param>
         /// <param name="interfaze"></param>
         /// <param name="impl"></param>
+        /// <param name="openApiConfiguration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, Type interfaze, Type impl = null)
+        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings(this IServiceCollection sc, Type interfaze, Type impl = null, string openApiConfiguration = null)
         {
             //
             // make sure that the type is registered
@@ -111,11 +153,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 sc.AddTransient(interfaze, impl);
             }
 
-            foreach (var m in interfaze.GetMethods())
+            if (!sc.Any(o => o.ServiceType == interfaze))
             {
-                sc.AddSolidRpcBinding(m);
+                return new ISolidMethodConfigurationBuilder[0];
             }
-            return sc;
+
+            return interfaze.GetMethods()
+                .Select(m => sc.AddSolidRpcBinding(m, openApiConfiguration))
+                .ToList();
         }
 
         /// <summary>
@@ -125,21 +170,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="mi"></param>
         /// <param name="openApiConfiguration">The open api configuration to use - may be null to use the embedded api config.</param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, string openApiConfiguration = null)
+        public static ISolidMethodConfigurationBuilder AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, string openApiConfiguration = null)
         {
             //
-            // make sure that the method invoker is registered.
+            // make sure that the singleton services are registered
             //
-            sc.RegisterSingletonService<IMethodInvoker>();
-            sc.RegisterSingletonService<IMethodBinderStore>();
-
-            //
-            // make sure that the declaring type has a registration
-            //
-            if (!sc.Any(o => o.ServiceType == mi.DeclaringType))
-            {
-                return sc;
-            }
+            sc.AddSolidRpcSingletonServices();
 
             //
             // configure method
@@ -149,13 +185,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureInterface(mi.DeclaringType)
                 .ConfigureMethod(mi);
 
+            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiConfiguration = openApiConfiguration;
+
             //
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
             // 
-            mc.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiConfiguration = openApiConfiguration;
-            mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
+            var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
+            if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null)
+            {
+                mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
+            }
 
-            return sc;
+            return mc;
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.OpenApi.Binder.Proxy;
+using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Concurrent;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+[assembly: SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodBinderStore), typeof(MethodBinderStore))]
 namespace SolidRpc.OpenApi.Binder
 {
     /// <summary>
@@ -16,13 +18,15 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public class MethodBinderStore : IMethodBinderStore
     {
-        public MethodBinderStore(ISolidProxyConfigurationStore configStore)
+        public MethodBinderStore(ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
         {
             Bindings = new ConcurrentDictionary<string, IMethodBinder>();
             ConfigStore = configStore;
+            OpenApiParser = openApiParser;
         }
         private ConcurrentDictionary<string, IMethodBinder> Bindings { get; }
-        public ISolidProxyConfigurationStore ConfigStore { get; }
+        private ISolidProxyConfigurationStore ConfigStore { get; }
+        private IOpenApiParser OpenApiParser { get; }
 
         private IEnumerable<IMethodBinder> _methodBinders;
         public IEnumerable<IMethodBinder> MethodBinders
@@ -60,7 +64,7 @@ namespace SolidRpc.OpenApi.Binder
 
         private IMethodBinder CreateMethodBinder(string openApiSpec, Assembly assembly)
         {
-            var swaggerSpec = SolidRpc.OpenApi.Model.OpenApiParser.ParseOpenApiSpec(openApiSpec);
+            var swaggerSpec = OpenApiParser.ParseSpec(openApiSpec);
             if (swaggerSpec is SwaggerObject v2)
             {
                 var mb = new Binder.V2.MethodBinderV2(v2, assembly);

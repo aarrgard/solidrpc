@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidProxy.Core.Configuration.Builder;
+using SolidProxy.Core.Configuration.Runtime;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -17,8 +19,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -68,7 +72,7 @@ namespace SolidRpc.Tests
         /// </summary>
         public class TestHostContextKestrel : TestHostContext, IStartup
         {
-
+            private static int s_hostPort = 5000;
             /// <summary>
             /// Constructor
             /// </summary>
@@ -112,6 +116,7 @@ namespace SolidRpc.Tests
                 builder.ConfigureServices((sc) => {
                     sc.AddSingleton<IStartup>(this);
                 });
+                builder.UseUrls($"http://localhost:{s_hostPort++}");
                 return builder.Build();
             }
 
@@ -158,6 +163,7 @@ namespace SolidRpc.Tests
                 services.AddSingleton<HttpMessageHandler>(new SolidRpcHttpMessageHandler(serverProvider.GetRequiredService<IMethodInvoker>()));
                 return base.ConfigureClientServices(services);
             }
+
         }
 
         /// <summary>
@@ -363,24 +369,17 @@ namespace SolidRpc.Tests
             {
                 var configBuilder = services.GetSolidConfigurationBuilder()
                     .SetGenerator<SolidProxyCastleGenerator>();
-                services.AddScoped<IMethodInvoker, MethodInvoker>();
-                services.AddSingleton<IMethodBinderStore, MethodBinderStore>();
+                services.AddSolidRpcSingletonServices();
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
-                    if(!services.Any(s => s.ServiceType == m.MethodInfo.DeclaringType))
-                    {
-                        services.AddTransient(m.MethodInfo.DeclaringType, m.MethodInfo.DeclaringType);
-                    }
-                    var methodConf = configBuilder
-                        .ConfigureInterfaceAssembly(m.MethodInfo.DeclaringType.Assembly)
-                        .ConfigureInterface(m.MethodInfo.DeclaringType)
-                        .ConfigureMethod(m.MethodInfo);
+                    services.AddTransient(m.MethodInfo.DeclaringType);
+                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, m.OpenApiConfiguration);
+
                     var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
                     var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
                     serviceCalls.Add(new ServiceCall(m.MethodInfo, m.Callback));
                     interceptorConf.ServiceCalls = serviceCalls;
 
-                    methodConf.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiConfiguration = m.OpenApiConfiguration;
                 });
                 configBuilder.AddAdvice(typeof(ServiceInterceptorAdvice<,,>));
                 return WebHostTest.ConfigureServerServices(services);
@@ -477,6 +476,7 @@ namespace SolidRpc.Tests
         public virtual IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
             services.AddLogging(ConfigureLogging);
+            services.AddSolidRpcSingletonServices();
             return services.BuildServiceProvider();
         }
 
@@ -488,6 +488,7 @@ namespace SolidRpc.Tests
         public virtual void ConfigureClientServices(IServiceCollection services)
         {
             services.AddLogging(ConfigureLogging);
+            services.AddSolidRpcSingletonServices();
         }
 
         /// <summary>

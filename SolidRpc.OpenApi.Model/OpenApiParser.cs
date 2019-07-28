@@ -1,30 +1,36 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
 using System.IO;
 
+[assembly: SolidRpcAbstractionProvider(typeof(IOpenApiParser), typeof(OpenApiParser))]
 namespace SolidRpc.OpenApi.Model
 {
-    public class OpenApiParser
+    /// <summary>
+    /// A parser that parses open api specifications.
+    /// </summary>
+    public class OpenApiParser : IOpenApiParser
     {
         private static OpenApiParserV2 v2Parser = new OpenApiParserV2();
         private static OpenApiParserV3 v3Parser = new OpenApiParserV3();
 
         /// <summary>
-        /// Tries to parse the supplied json as a V2 then V3 spec
+        /// Parses the specification
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public static IOpenApiSpec ParseOpenApiSpec(string json)
+        public IOpenApiSpec ParseSpec(string json)
         {
-            var res = (IOpenApiSpec) v2Parser.ParseSwaggerDoc(json);
-            if(res == null)
+            var res = (IOpenApiSpec)v2Parser.ParseSwaggerDoc(json);
+            if (res == null)
             {
                 res = v3Parser.ParseSwaggerDoc(json);
             }
             return res;
-        } 
+        }
     }
 
     /// <summary>
@@ -66,7 +72,6 @@ namespace SolidRpc.OpenApi.Model
         /// <summary>
         /// Parses the supplied stream into a swagger doc.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="s"></param>
         /// <returns></returns>
         public T ParseSwaggerDoc(Stream s)
@@ -80,7 +85,6 @@ namespace SolidRpc.OpenApi.Model
         /// <summary>
         /// Parses the supplied stream into a swagger doc.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="s"></param>
         /// <returns></returns>
         public T ParseSwaggerDoc(string s)
@@ -95,7 +99,6 @@ namespace SolidRpc.OpenApi.Model
         /// <summary>
         /// Parses the supplied stream into a swagger doc.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="sr"></param>
         /// <returns></returns>
         private T ParseSwaggerDoc(TextReader sr)
@@ -109,6 +112,11 @@ namespace SolidRpc.OpenApi.Model
             }
         }
 
+        /// <summary>
+        /// Checks the version
+        /// </summary>
+        /// <param name="res"></param>
+        /// <returns></returns>
         protected abstract bool CheckVersion(T res);
     }
 }

@@ -16,6 +16,10 @@ namespace MyNamespace
         {
             try
             {
+                var preloaded = typeof(SolidRpc.OpenApi.Binder.Proxy.MethodInvoker).Assembly;
+                preloaded = typeof(SolidRpc.OpenApi.Binder.MethodBinderStore).Assembly;
+                preloaded = typeof(SolidRpc.OpenApi.AspNetCore.Services.SolidRpcStaticContent).Assembly;
+
                 builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
 
                 builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);

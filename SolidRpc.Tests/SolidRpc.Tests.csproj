@@ -20,8 +20,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0-rc003" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build025" />
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build048" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build026" />
+    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build049" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 

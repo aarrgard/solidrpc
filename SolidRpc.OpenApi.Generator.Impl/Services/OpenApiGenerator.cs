@@ -1,7 +1,12 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Generator.Impl.Csproj;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Generator.V2;
+using SolidRpc.OpenApi.Generator.V3;
+using SolidRpc.OpenApi.Model.V2;
+using SolidRpc.OpenApi.Model.V3;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,9 +17,28 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 {
     public class OpenApiGenerator : IOpenApiGenerator
     {
-        public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen settings, CancellationToken cancellationToken)
+        public OpenApiGenerator(IOpenApiParser openApiParser)
         {
-            var projectZip = OpenApiCodeGenerator.GenerateCode(settings);
+            OpenApiParser = openApiParser;
+        }
+        private IOpenApiParser OpenApiParser { get; }
+
+        public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen codeSettings, CancellationToken cancellationToken)
+        {
+            var model = OpenApiParser.ParseSpec(codeSettings.SwaggerSpec);
+            FileData projectZip;
+            if (model is SwaggerObject v2)
+            {
+                projectZip = new OpenApiCodeGeneratorV2(v2, codeSettings).GenerateCode();
+            }
+            else if (model is OpenAPIObject v3)
+            {
+                projectZip = new OpenApiCodeGeneratorV3(v3, codeSettings).GenerateCode();
+            }
+            else
+            {
+                throw new Exception("Cannot parse swagger json.");
+            }
             return ParseProjectZip(projectZip, cancellationToken);
         }
 

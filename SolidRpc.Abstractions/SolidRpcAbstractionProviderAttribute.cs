@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions.Services;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace SolidRpc.Abstractions
@@ -7,7 +6,7 @@ namespace SolidRpc.Abstractions
     /// <summary>
     /// Attribute that can be set on the SolidRpc hosting assemblies to define the 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class SolidRpcAbstractionProviderAttribute : Attribute
     {
         /// <summary>

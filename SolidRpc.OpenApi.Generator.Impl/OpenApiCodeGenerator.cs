@@ -148,6 +148,9 @@ namespace SolidRpc.OpenApi.Generator
             };
         }
 
+        /// <summary>
+        /// The settings
+        /// </summary>
         public SettingsCodeGen CodeSettings { get; }
 
         /// <summary>
@@ -189,25 +192,12 @@ namespace SolidRpc.OpenApi.Generator
         /// Generates code 
         /// </summary>
         /// <param name="codeSettings"></param>
-        public static FileData GenerateCode(SettingsCodeGen codeSettings)
+        public FileData GenerateCode()
         {
             var codeGenerator = (ICSharpRepository)new CSharpRepository();
 
-            var model = OpenApiParser.ParseOpenApiSpec(codeSettings.SwaggerSpec);
-            if (model is SwaggerObject v2)
-            {
-                new OpenApiCodeGeneratorV2(v2, codeSettings).GenerateCode(codeGenerator);
-            }
-            else if (model is OpenAPIObject v3)
-            {
-                new OpenApiCodeGeneratorV3(v3, codeSettings).GenerateCode(codeGenerator);
-            }
-            else
-            {
-                throw new Exception("Cannot parse swagger json.");
-            }
 
-            var codeWriter = new CodeWriterZip(codeSettings.ProjectNamespace);
+            var codeWriter = new CodeWriterZip(CodeSettings.ProjectNamespace);
             codeGenerator.WriteCode(codeWriter);
             codeWriter.Close();
             codeWriter.ZipOutputStream.Close();
