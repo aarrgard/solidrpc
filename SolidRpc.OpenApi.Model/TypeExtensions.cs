@@ -205,9 +205,9 @@ namespace System
                 .FirstOrDefault();
             Action<object, string> setFilename = (impl, filename) => { };
             Func<object, string> getFilename = (impl) => { return null; };
-            if (contentTypeProp != null)
+            if (filenameProp != null)
             {
-                setFilename = (impl, contentType) => filenameProp.SetValue(impl, contentType);
+                setFilename = (impl, fileName) => filenameProp.SetValue(impl, fileName);
                 getFilename = (impl) => (string)filenameProp.GetValue(impl);
             }
 

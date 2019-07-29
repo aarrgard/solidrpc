@@ -7,9 +7,9 @@
   "host": "localhost",
   "paths": {
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff": {
-      "post": {
+      "get": {
         "tags": [
-          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "operationId": "TestStuff",
         "responses": {
@@ -22,7 +22,7 @@
   },
   "tags": [
     {
-      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
     }
   ]
 }

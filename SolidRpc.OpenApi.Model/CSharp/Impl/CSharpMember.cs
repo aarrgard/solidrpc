@@ -174,11 +174,16 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             get
             {
-                var (genType, genArgs, rest) = CSharpRepository.ReadType(FullName);
+                var fullName = FullName;
+                if(fullName.EndsWith("[]"))
+                {
+                    return GetParent<ICSharpRepository>().GetType(fullName.Substring(0,fullName.Length-2)) ?? throw new Exception("Array type does not exist in repository.");
+                }
+                var (genType, genArgs, rest) = CSharpRepository.ReadType(fullName);
                 switch (genType)
                 {
                     case "System.Collections.Generic.IEnumerable":
-                        return GetParent<ICSharpRepository>().GetType(genArgs[0]);
+                        return GetParent<ICSharpRepository>().GetType(genArgs[0]) ?? throw new Exception("Generic argument does not exist in repository.");
                     default:
                         return null;
                 }

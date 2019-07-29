@@ -22,6 +22,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }
         }
 
+        public bool IsGenericType => Name.Contains('<');
+
         public void AddExtends(ICSharpType extType)
         {
             if(Members.OfType<ICSharpTypeExtends>().Where(o => o.Name == extType.FullName).Any())

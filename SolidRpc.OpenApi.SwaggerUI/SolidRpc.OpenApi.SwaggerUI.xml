@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SolidRpc.OpenApi.SwaggerUI</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+            <summary>
+            Extension methods or the service collections
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSoldRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the swagger UI to the service collection.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI">
+            <summary>
+            The swagger config
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
+            <summary>
+            Returns the index.html file.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetSwaggerUrls(System.Threading.CancellationToken)">
+            <summary>
+            Returns the swagger urls.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI">
+            <summary>
+            The swagger config
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
+            <summary>
+            Returns the index.hmtl file.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetSwaggerUrls(System.Threading.CancellationToken)">
+            <summary>
+            Returns the swagger urls.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.FileContent">
+            <summary>
+            Represents some file content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.Body">
+            <summary>
+            The file body.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.ContentType">
+            <summary>
+            The content type.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl">
+            <summary>
+            Represent a swagger url
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl.Name">
+            <summary>
+            The name of the url
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl.Url">
+            <summary>
+            The url
+            </summary>
+        </member>
+    </members>
+</doc>

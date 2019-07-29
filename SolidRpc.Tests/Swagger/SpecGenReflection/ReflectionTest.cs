@@ -1,19 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using SolidProxy.GeneratorCastle;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Model;
+﻿using NUnit.Framework;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Model.Generator;
 using SolidRpc.OpenApi.Model.Generator.V2;
-using SolidRpc.OpenApi.Model.V2;
-using SolidRpc.Tests.Swagger.CodeGen.Petstore.Services;
-using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System;
-using System.IO;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,6 +31,28 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// </summary>
             /// <returns></returns>
             Task<int> TestStuff2(int i, double d, string s, Uri u, Guid g);
+
+            /// <summary>
+            /// Some more testing
+            /// </summary>
+            /// <returns></returns>
+            Task<IEnumerable<TestStruct>> TestArray(TestStruct[] testStruct, Guid[] guids);
+        }
+
+        /// <summary>
+        /// The test struct
+        /// </summary>
+        public class TestStruct
+        {
+            /// <summary>
+            /// The int property
+            /// </summary>
+            public int IntProp { get; set; }
+
+            /// <summary>
+            /// Recursive property
+            /// </summary>
+            public IEnumerable<TestStruct> Recurse { get; set; }
         }
 
         /// <summary>
@@ -79,6 +91,19 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1AllMethods)}.json"), spec);
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1TestArray()
+        {
+            var cSharpRepository = new CSharpRepository();
+            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestArray)));
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
         }
     }
 }

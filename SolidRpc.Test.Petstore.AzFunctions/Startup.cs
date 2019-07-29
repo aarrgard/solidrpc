@@ -24,8 +24,8 @@ namespace MyNamespace
 
                 builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
                 builder.Services.GetSolidRpcStaticContent().AddContent(typeof(PetImpl).Assembly, "www", "/");
-                builder.Services.AddSolidRpcBindings(typeof(SwaggerUI).Assembly);
-                builder.Services.GetSolidRpcStaticContent().AddContent(typeof(SwaggerUI).Assembly, "www", "/swagger");
+
+                builder.Services.AddSoldRpcSwaggerUI();
 
                 base.Configure(builder);
             }

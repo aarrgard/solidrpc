@@ -9,7 +9,7 @@
           "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/SolidRpc/OpenApi/AspNetCore/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
     }
   }
 }

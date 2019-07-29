@@ -2,11 +2,15 @@
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model;
+using SolidRpc.OpenApi.Model.CSharp.Impl;
+using SolidRpc.OpenApi.Model.Generator;
+using SolidRpc.OpenApi.Model.Generator.V2;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.OpenApi.Model.V3;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 [assembly: SolidRpcAbstractionProvider(typeof(IOpenApiParser), typeof(OpenApiParser))]
@@ -32,7 +36,12 @@ namespace SolidRpc.OpenApi.Model
 
         private IOpenApiSpec CreateSpecification(IEnumerable<MethodInfo> methods)
         {
-            throw new NotImplementedException();
+            var cSharpRepository = new CSharpRepository();
+            methods.ToList().ForEach(o => CSharpReflectionParser.AddMethod(cSharpRepository, o));
+            return new OpenApiSpecGeneratorV2(new SettingsSpecGen()
+            {
+                BasePath = "/" + methods.First().DeclaringType.Assembly.GetName().Name.Replace('.', '/')
+            }).CreateSwaggerSpec(cSharpRepository);
         }
 
         /// <summary>

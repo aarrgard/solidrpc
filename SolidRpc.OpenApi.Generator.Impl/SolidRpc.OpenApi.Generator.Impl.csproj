@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="V2\**" />
     <Compile Remove="V3\**" />
+    <EmbeddedResource Remove="V2\**" />
     <EmbeddedResource Remove="V3\**" />
+    <None Remove="V2\**" />
     <None Remove="V3\**" />
   </ItemGroup>
 
@@ -18,10 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator\SolidRpc.OpenApi.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="V2\" />
   </ItemGroup>
 
 </Project>

@@ -41,17 +41,42 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             ICSharpType cSharpType;
             if (type.IsClass)
             {
-                cSharpType = cSharpRepository.GetClass(type.FullName);
+                cSharpType = cSharpRepository.GetClass(CreateTypeName(type));
+                if(!cSharpType.Properties.Any())
+                {
+                    type.GetProperties().ToList().ForEach(o =>
+                    {
+                        var propertyType = GetType(cSharpRepository, o.PropertyType);
+                        var cSharpProperty = new CSharpProperty(cSharpType, o.Name, propertyType);
+                        cSharpType.AddMember(cSharpProperty);
+                    });
+                }
             }
             else if (type.IsInterface)
             {
-                cSharpType = cSharpRepository.GetInterface(type.FullName);
+                cSharpType = cSharpRepository.GetInterface(CreateTypeName(type));
             }
             else
             {
-                cSharpType = cSharpRepository.GetType(type.FullName);
+                cSharpType = cSharpRepository.GetType(CreateTypeName(type));
+            }
+            if (type.IsGenericType)
+            {
+                type.GetGenericArguments().ToList().ForEach(o => GetType(cSharpRepository, o));
             }
             return cSharpType;
+        }
+
+        private static string CreateTypeName(Type type)
+        {
+            if(type.IsGenericType)
+            {
+                var genType = type.GetGenericTypeDefinition();
+                var genTypeName = genType.FullName;
+                genTypeName = genTypeName.Substring(0, genTypeName.IndexOf('`'));
+                return $"{genTypeName}<{string.Join(",",type.GetGenericArguments().Select(o => CreateTypeName(o)))}>";
+            }
+            return type.FullName;
         }
 
         /// <summary>

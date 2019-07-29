@@ -13,10 +13,9 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// Constructs a new instance
         /// </summary>
         /// <param name="settings"></param>
-        public OpenApiSpecGenerator(SettingsSpecGen settings)
+        public OpenApiSpecGenerator(SettingsSpecGen settings = null)
         {
             Settings = settings;
-
             TypeDefinitionNameMapper = c => {
                 var name = c.FullName;
                 if (name.StartsWith($"{Settings.ProjectNamespace}."))
@@ -36,6 +35,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                     name = name.Substring(Settings.TypeNamespace.Length + 1);
                 }
 
+                name = name.Replace('+', '.'); // fix inner class name problem. no + allowed
                 return name;
             };
             MapPath = s => $"/{s.Replace('.', '/')}";

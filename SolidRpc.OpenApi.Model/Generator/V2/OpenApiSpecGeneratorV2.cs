@@ -8,12 +8,31 @@ using System.Threading;
 
 namespace SolidRpc.OpenApi.Model.Generator.V2
 {
+    /// <summary>
+    /// Creates a swagger specification
+    /// </summary>
     public class OpenApiSpecGeneratorV2 : OpenApiSpecGenerator
     {
-        public OpenApiSpecGeneratorV2(SettingsSpecGen settings) : base(settings)
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        public OpenApiSpecGeneratorV2() : this(new SettingsSpecGen())
         {
         }
 
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        /// <param name="settings"></param>
+        public OpenApiSpecGeneratorV2(SettingsSpecGen settings = null) : base(settings)
+        {
+        }
+
+        /// <summary>
+        /// Returns all the interfaces in the repository
+        /// </summary>
+        /// <param name="cSharpRepository"></param>
+        /// <returns></returns>
         public IEnumerable<ICSharpInterface> GetInterfaces(ICSharpRepository cSharpRepository)
         {
             return cSharpRepository.Interfaces
@@ -39,7 +58,9 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             };
             swaggerObject.Info.License = CreateLicense(swaggerObject.Info);
             swaggerObject.Info.Contact = CreateContact(swaggerObject.Info);
-            swaggerObject.Tags = GetInterfaces(cSharpRepository).Select(o => CreateTag(swaggerObject, o));
+            swaggerObject.Tags = GetInterfaces(cSharpRepository)
+                .Where(o => !o.IsGenericType)
+                .Select(o => CreateTag(swaggerObject, o)).ToList();
             return swaggerObject;
         }
 
@@ -72,7 +93,22 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         private PathItemObject CreatePathItemObject(PathsObject paths, ICSharpMethod method)
         {
             var pathItemObject = new PathItemObject(paths);
-            pathItemObject.Post = CreateOperationObject(pathItemObject, method);
+            var operation = CreateOperationObject(pathItemObject, method);
+
+            var paramTypes = operation.GetParameters()
+                .Select(o => o.In)
+                .Distinct();
+            var mustBePost = paramTypes
+                .Where(o => o != "query")
+                .Any();
+            if (mustBePost)
+            {
+                pathItemObject.Post = operation;
+            }
+            else
+            {
+                pathItemObject.Get = operation;
+            }
             return pathItemObject;
         }
 
@@ -226,15 +262,15 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     return;
                 }
             }
-            if (type.RuntimeType != null)
-            {
-                SchemaObject.SetTypeInfo(itemBase, type.RuntimeType);
-            }
             if (type.EnumerableType != null)
             {
                 itemBase.Type = "array";
                 itemBase.Items = GetSchema(itemBase, canHandleFile, type.EnumerableType);
                 return;
+            }
+            else if (type.RuntimeType != null)
+            {
+                SchemaObject.SetTypeInfo(itemBase, type.RuntimeType);
             }
             else
             {

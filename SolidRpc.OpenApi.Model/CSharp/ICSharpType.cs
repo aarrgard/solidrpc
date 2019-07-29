@@ -53,5 +53,10 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// Returns true if this is a file type.
         /// </summary>
         bool IsFileType { get;  }
+
+        /// <summary>
+        /// Returns true if this is a generic type
+        /// </summary>
+        bool IsGenericType { get; }
     }
 }
