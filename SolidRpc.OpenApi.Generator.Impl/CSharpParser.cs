@@ -1,11 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Newtonsoft.Json;
-using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Generator.Types;
-using SolidRpc.OpenApi.Generator.V2;
-using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using System;
@@ -14,75 +10,34 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Generator
+namespace SolidRpc.OpenApi.Generator.Impl
 {
     /// <summary>
-    /// Base class for generating a OpenApi specification.
+    /// Class that transforms a csharp project to a charp repo.
     /// </summary>
-    public abstract class OpenApiSpecGenerator
+    public class CSharpParser
     {
         private enum NameScope { Namespace, Class, Interface };
-        public static FileData GenerateOpenApiSpec(SettingsSpecGen settings, Project project)
+
+        public static ICSharpRepository ParseProject(Project project)
         {
-            OpenApiSpecGenerator generator;
-            switch (settings.OpenApiVersion)
-            {
-                case "2.0":
-                    generator = new OpenApiSpecGeneratorV2(settings);
-                    break;
-                default:
-                    throw new Exception("Cannot handle swagger version:" + settings.OpenApiVersion);
-            }
-            return generator.GenerateSpec(project);
+            var cSharpRepository = new CSharpRepository();
+            var parser = new CSharpParser(cSharpRepository);
+            parser.ParseProjectInternal(project);
+            return cSharpRepository;
         }
 
-        public OpenApiSpecGenerator(SettingsSpecGen settings)
+        public CSharpParser(ICSharpRepository cSharpRepository)
         {
-            Settings = settings;
-            CSharpRepository = new CSharpRepository();
+            CSharpRepository = cSharpRepository;
             CompilationUnits = new ConcurrentDictionary<string, CompilationUnitSyntax>();
-
-            TypeDefinitionNameMapper = c => {
-                var name = c.FullName;
-                if (name.StartsWith($"{Settings.ProjectNamespace}."))
-                {
-                    name = name.Substring(Settings.ProjectNamespace.Length + 1);
-                }
-                if (name.StartsWith($"{Settings.CodeNamespace}."))
-                {
-                    name = name.Substring(Settings.CodeNamespace.Length + 1);
-                }
-                if (name.StartsWith($"{Settings.ServiceNamespace}."))
-                {
-                    name = name.Substring(Settings.ServiceNamespace.Length + 1);
-                }
-                else if (name.StartsWith($"{Settings.TypeNamespace}."))
-                {
-                    name = name.Substring(Settings.TypeNamespace.Length + 1);
-                }
-
-                return name;
-            };
-            MapPath = s => $"/{s.Replace('.', '/')}";
         }
 
-        public SettingsSpecGen Settings { get; }
+        private ConcurrentDictionary<string, CompilationUnitSyntax> CompilationUnits { get; }
 
-        public ConcurrentDictionary<string, CompilationUnitSyntax> CompilationUnits { get; }
+        private ICSharpRepository CSharpRepository { get; }
 
-        public ICSharpRepository CSharpRepository { get; }
-
-        /// <summary>
-        /// The function that maps a type definition on to a reference name.
-        /// </summary>
-        public Func<ICSharpType, string> TypeDefinitionNameMapper { get; set; }
-
-        /// <summary>
-        /// The function that maps the method name to a path.
-        /// </summary>
-        public Func<string, string> MapPath { get; set; }
-
-        protected virtual FileData GenerateSpec(Project project)
+        private ICSharpRepository ParseProjectInternal(Project project)
         {
             var csFiles = project.ProjectFiles
                 .Where(o => o.FileData.Filename.EndsWith(".cs", StringComparison.InvariantCultureIgnoreCase));
@@ -97,26 +52,8 @@ namespace SolidRpc.OpenApi.Generator
                 WalkMembers(cu.Members, Sweap2);
             }
 
-            var swaggerSpec = CreateSwaggerSpecFromTypesInRepo();
-            var ms = new MemoryStream();
-            using (var tw = new StreamWriter(ms))
-            {
-                var s = JsonSerializer.Create(new JsonSerializerSettings()
-                {
-                    ContractResolver = NewtonsoftContractResolver.Instance,
-                    Formatting = Formatting.Indented
-                });
-                s.Serialize(tw, swaggerSpec);
-            }
-            return new FileData()
-            {
-                ContentType = "application/json",
-                FileStream = new MemoryStream(ms.ToArray()),
-                Filename = $"{Settings.ProjectNamespace}.json"
-            };
+            return CSharpRepository;
         }
-
-        protected abstract IOpenApiSpec CreateSwaggerSpecFromTypesInRepo();
 
         private CompilationUnitSyntax GetCompilationUnit(ProjectFile csFile)
         {
@@ -181,7 +118,7 @@ namespace SolidRpc.OpenApi.Generator
                 var (className, nameScope) = GetClassOrInterfaceName(ids);
                 var m = GetMember(className, nameScope);
                 SetComment(member, m);
-             }
+            }
             if (member is ClassDeclarationSyntax cds)
             {
                 var (className, nameScope) = GetClassOrInterfaceName(cds);
@@ -226,7 +163,7 @@ namespace SolidRpc.OpenApi.Generator
             var propertyName = pds.Identifier.ToString();
 
             var property = new CSharpProperty(m, propertyName, propertyType);
-            SetComment(pds,property);
+            SetComment(pds, property);
             m.AddMember(property);
         }
 
@@ -250,7 +187,7 @@ namespace SolidRpc.OpenApi.Generator
             {
                 var parameterTypeName = GetFullName(o, o.Type.ToString());
                 var parameterType = CSharpRepository.GetType(parameterTypeName);
-                if(parameterType == null)
+                if (parameterType == null)
                 {
                     throw new Exception("Failed to find the type for " + parameterTypeName);
                 }
@@ -284,7 +221,7 @@ namespace SolidRpc.OpenApi.Generator
         {
             // handle generic types
             var (genType, genArgs, rest) = Model.CSharp.Impl.CSharpRepository.ReadType(typeName);
-            if(genArgs != null)
+            if (genArgs != null)
             {
                 var suffix = $"`{genArgs.Count}";
                 genType = $"{genType}{suffix}";
@@ -307,7 +244,7 @@ namespace SolidRpc.OpenApi.Generator
                 }
                 ns = ns.Substring(0, ns.LastIndexOf('.'));
 
-            } while (ns.LastIndexOf('.') > -1) ;
+            } while (ns.LastIndexOf('.') > -1);
 
             // use the "usings"
             foreach (var u in usings)
@@ -319,7 +256,7 @@ namespace SolidRpc.OpenApi.Generator
                 }
             }
             type = CSharpRepository.GetType(typeName);
-            if(type != null)
+            if (type != null)
             {
                 return type.FullName;
             }
@@ -328,7 +265,7 @@ namespace SolidRpc.OpenApi.Generator
 
         private (HashSet<string>, string) GetPrefixes(SyntaxNode member)
         {
-            if(member == null)
+            if (member == null)
             {
                 return (new HashSet<string>(), "");
             }

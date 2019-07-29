@@ -27,7 +27,8 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <summary>
         /// Writes this spec as a json string
         /// </summary>
+        /// <param name="formatted"></param>
         /// <returns></returns>
-        string WriteAsJsonString();
+        string WriteAsJsonString(bool formatted = false);
     }
 }

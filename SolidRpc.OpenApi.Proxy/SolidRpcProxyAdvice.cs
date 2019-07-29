@@ -4,7 +4,6 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
-using SolidRpc.OpenApi.Model;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,6 +24,7 @@ namespace SolidRpc.OpenApi.Proxy
         /// Constucts a new instance
         /// </summary>
         /// <param name="logger"></param>
+        /// <param name="openApiParser"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="serviceProvider"></param>
         public SolidRpcProxyAdvice(

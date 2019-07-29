@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.OpenApi.Binder.Http;
+﻿using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;

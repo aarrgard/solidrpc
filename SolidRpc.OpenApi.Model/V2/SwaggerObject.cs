@@ -109,6 +109,9 @@ namespace SolidRpc.OpenApi.Model.V2
         [DataMember(Name = "externalDocs", EmitDefaultValue = false)]
         public ExternalDocumentationObject ExternalDocs { get; set; }
 
+        /// <summary>
+        /// The openapi version
+        /// </summary>
         public string OpenApiVersion => "2.0";
 
         /// <summary>
@@ -181,9 +184,14 @@ namespace SolidRpc.OpenApi.Model.V2
             }
         }
 
-        public string WriteAsJsonString()
+        /// <summary>
+        /// Writes the swagger doc
+        /// </summary>
+        /// <param name="formatted"></param>
+        /// <returns></returns>
+        public string WriteAsJsonString(bool formatted = false)
         {
-            return OpenApiParserV2.WriteSwaggerDoc(this);
+            return OpenApiParserV2.WriteSwaggerDoc(this, formatted);
         }
     }
 }

@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="V3\**" />
+    <EmbeddedResource Remove="V3\**" />
+    <None Remove="V3\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.1.0" />
     <PackageReference Include="SharpZipLib" Version="1.1.0" />
   </ItemGroup>
@@ -15,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="V3\" />
+    <Folder Include="V2\" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,10 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Generator.Impl.Csproj;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.Generator.V2;
 using SolidRpc.OpenApi.Model.Generator.V3;
@@ -12,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,7 +74,23 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 
         public Task<FileData> CreateOpenApiSpecFromCode(SettingsSpecGen settings, Project project, CancellationToken cancellationToken)
         {
-            return Task.FromResult(OpenApiSpecGenerator.GenerateOpenApiSpec(settings, project));
+            var cSharpRepository = CSharpParser.ParseProject(project);
+            IOpenApiSpec openApiSpec;
+            switch (settings.OpenApiVersion)
+            {
+                case "2.0":
+                    openApiSpec = new OpenApiSpecGeneratorV2(CopySettings<Model.Generator.SettingsSpecGen>(settings)).CreateSwaggerSpec(cSharpRepository);
+                    break;
+                default:
+                    throw new Exception("Cannot handle swagger version:" + settings.OpenApiVersion);
+            }
+
+            return Task.FromResult(new FileData()
+            {
+                ContentType = "application/json",
+                FileStream = new MemoryStream(Encoding.UTF8.GetBytes(openApiSpec.WriteAsJsonString(true))),
+                Filename = $"{settings.ProjectNamespace}.json"
+            });
         }
 
         public Task<SettingsCodeGen> GetSettingsCodeGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default(CancellationToken))

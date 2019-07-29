@@ -1,0 +1,68 @@
+﻿using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.OpenApi.Model.CSharp;
+using SolidRpc.OpenApi.Model.Generator.V2;
+using System;
+
+namespace SolidRpc.OpenApi.Model.Generator
+{
+    /// <summary>
+    /// Base class for generating a OpenApi specification.
+    /// </summary>
+    public abstract class OpenApiSpecGenerator
+    {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="settings"></param>
+        public OpenApiSpecGenerator(SettingsSpecGen settings)
+        {
+            Settings = settings;
+
+            TypeDefinitionNameMapper = c => {
+                var name = c.FullName;
+                if (name.StartsWith($"{Settings.ProjectNamespace}."))
+                {
+                    name = name.Substring(Settings.ProjectNamespace.Length + 1);
+                }
+                if (name.StartsWith($"{Settings.CodeNamespace}."))
+                {
+                    name = name.Substring(Settings.CodeNamespace.Length + 1);
+                }
+                if (name.StartsWith($"{Settings.ServiceNamespace}."))
+                {
+                    name = name.Substring(Settings.ServiceNamespace.Length + 1);
+                }
+                else if (name.StartsWith($"{Settings.TypeNamespace}."))
+                {
+                    name = name.Substring(Settings.TypeNamespace.Length + 1);
+                }
+
+                return name;
+            };
+            MapPath = s => $"/{s.Replace('.', '/')}";
+        }
+
+        /// <summary>
+        /// The settings for spec generation.
+        /// </summary>
+        public SettingsSpecGen Settings { get; }
+
+        /// <summary>
+        /// The function that maps a type definition on to a reference name.
+        /// </summary>
+        public Func<ICSharpType, string> TypeDefinitionNameMapper { get; set; }
+
+        /// <summary>
+        /// The function that maps the method name to a path.
+        /// </summary>
+        public Func<string, string> MapPath { get; set; }
+
+        /// <summary>
+        /// Constructs an openapi spec from the supplied cSharpRepository.
+        /// </summary>
+        /// <param name="cSharpRepository"></param>
+        /// <returns></returns>
+        public abstract IOpenApiSpec CreateSwaggerSpec(ICSharpRepository cSharpRepository);
+
+    }
+}

@@ -56,8 +56,14 @@ namespace SolidRpc.OpenApi.Model
     /// </summary>
     public abstract class OpenApiParser<T> : OpenApiParser where T : IOpenApiSpec
     {
-        private static readonly JsonSerializerSettings s_settings = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings s_settingsCompact = new JsonSerializerSettings()
         {
+            Formatting = Formatting.None,
+            ContractResolver = NewtonsoftContractResolver.Instance
+        };
+        private static readonly JsonSerializerSettings s_settingsFormatted = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
             ContractResolver = NewtonsoftContractResolver.Instance
         };
 
@@ -65,11 +71,12 @@ namespace SolidRpc.OpenApi.Model
         /// Writes the supplied specification to string
         /// </summary>
         /// <param name="swaggerSpec"></param>
+        /// <param name="formatted"></param>
         /// <returns></returns>
-        public static string WriteSwaggerDoc(T swaggerSpec)
+        public static string WriteSwaggerDoc(T swaggerSpec, bool formatted = false)
         {
             var sw = new StringWriter();
-            WriteSwaggerDoc(sw, swaggerSpec);
+            WriteSwaggerDoc(sw, swaggerSpec, formatted);
             return sw.ToString();
         }
 
@@ -78,11 +85,12 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="sw"></param>
         /// <param name="swaggerSpec"></param>
-        private static void WriteSwaggerDoc(TextWriter sw, T swaggerSpec)
+        /// <param name="formatted"></param>
+        private static void WriteSwaggerDoc(TextWriter sw, T swaggerSpec, bool formatted)
         {
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
-                var serializer = JsonSerializer.Create(s_settings);
+                var serializer = JsonSerializer.Create(formatted ? s_settingsFormatted : s_settingsCompact);
                 serializer.Serialize(writer, swaggerSpec);
             }
         }
@@ -123,7 +131,7 @@ namespace SolidRpc.OpenApi.Model
         {
             using (JsonReader reader = new JsonTextReader(sr))
             {
-                var serializer = JsonSerializer.Create(s_settings);
+                var serializer = JsonSerializer.Create(s_settingsCompact);
                 var res = serializer.Deserialize<T>(reader);
                 if (!CheckVersion(res)) return default(T);
                 return res;

@@ -1,6 +1,4 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
-using SolidRpc.OpenApi.Generator.Types;
-using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.V2;
 using System;
@@ -8,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace SolidRpc.OpenApi.Generator.V2
+namespace SolidRpc.OpenApi.Model.Generator.V2
 {
     public class OpenApiSpecGeneratorV2 : OpenApiSpecGenerator
     {
@@ -16,13 +14,16 @@ namespace SolidRpc.OpenApi.Generator.V2
         {
         }
 
-        public IEnumerable<ICSharpInterface> Interfaces => CSharpRepository.Interfaces
+        public IEnumerable<ICSharpInterface> GetInterfaces(ICSharpRepository cSharpRepository)
+        {
+            return cSharpRepository.Interfaces
                 .Where(o => o.RuntimeType == null)
                 .Where(o => o.EnumerableType == null)
                 .Where(o => o.TaskType == null)
                 .OrderBy(o => o.FullName);
+        }
 
-        protected override IOpenApiSpec CreateSwaggerSpecFromTypesInRepo()
+        public override IOpenApiSpec CreateSwaggerSpec(ICSharpRepository cSharpRepository)
         {
             var swaggerObject = new SwaggerObject(null)
             {
@@ -30,7 +31,7 @@ namespace SolidRpc.OpenApi.Generator.V2
                 Host = "localhost",
                 BasePath = Settings.BasePath,
             };
-            swaggerObject.Paths = CreatePaths(swaggerObject);
+            swaggerObject.Paths = CreatePaths(cSharpRepository, swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)
             {
                 Title = Settings.Title,
@@ -38,7 +39,7 @@ namespace SolidRpc.OpenApi.Generator.V2
             };
             swaggerObject.Info.License = CreateLicense(swaggerObject.Info);
             swaggerObject.Info.Contact = CreateContact(swaggerObject.Info);
-            swaggerObject.Tags = Interfaces.Select(o => CreateTag(swaggerObject, o));
+            swaggerObject.Tags = GetInterfaces(cSharpRepository).Select(o => CreateTag(swaggerObject, o));
             return swaggerObject;
         }
 
@@ -51,10 +52,10 @@ namespace SolidRpc.OpenApi.Generator.V2
             };
         }
 
-        private PathsObject CreatePaths(SwaggerObject swaggerObject)
+        private PathsObject CreatePaths(ICSharpRepository cSharpRepository, SwaggerObject swaggerObject)
         {
             var paths = new PathsObject(swaggerObject);
-            Interfaces.SelectMany(o => o.Methods)
+            GetInterfaces(cSharpRepository).SelectMany(o => o.Methods)
                 .OrderBy(o => o.FullName)
                 .ToList().ForEach(o =>
             {
