@@ -183,7 +183,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
             var methodName = mds.Identifier.ToString();
 
             var method = new CSharpMethod(m, methodName, returnType);
-            method.Parameters = mds.ParameterList.Parameters.Select(o =>
+            mds.ParameterList.Parameters.ToList().ForEach(o =>
             {
                 var parameterTypeName = GetFullName(o, o.Type.ToString());
                 var parameterType = CSharpRepository.GetType(parameterTypeName);
@@ -194,8 +194,8 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
                 var parameterName = o.Identifier.ToString();
                 var optional = o.Default == null;
-                return new CSharpMethodParameter(method, parameterName, parameterType, optional);
-            }).ToList();
+                method.AddMember(new CSharpMethodParameter(method, parameterName, parameterType, optional));
+            });
 
             SetComment(mds, method);
             m.AddMember(method);

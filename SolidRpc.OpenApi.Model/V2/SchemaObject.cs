@@ -51,20 +51,32 @@ namespace SolidRpc.OpenApi.Model.V2
             }
             else if (type == typeof(short))
             {
-                itemBase.Type = "number";
+                itemBase.Type = "integer";
                 itemBase.Format = "int16";
                 return;
             }
             else if (type == typeof(int))
             {
-                itemBase.Type = "number";
+                itemBase.Type = "integer";
                 itemBase.Format = "int32";
                 return;
             }
             else if (type == typeof(long))
             {
-                itemBase.Type = "number";
+                itemBase.Type = "integer";
                 itemBase.Format = "int64";
+                return;
+            }
+            else if (type == typeof(float))
+            {
+                itemBase.Type = "number";
+                itemBase.Format = "float";
+                return;
+            }
+            else if (type == typeof(double))
+            {
+                itemBase.Type = "number";
+                itemBase.Format = "double";
                 return;
             }
             else if (type == typeof(System.IO.Stream))
@@ -79,8 +91,20 @@ namespace SolidRpc.OpenApi.Model.V2
                 itemBase.Format = "date-time";
                 return;
             }
+            else if (type == typeof(System.Uri))
+            {
+                itemBase.Type = "string";
+                itemBase.Format = "uri";
+                return;
+            }
+            else if (type == typeof(System.Guid))
+            {
+                itemBase.Type = "string";
+                itemBase.Format = "uuid";
+                return;
+            }
 
-            throw new NotImplementedException(type.GetType().FullName);
+            throw new NotImplementedException(type.FullName);
         }
 
         public SchemaObject(ModelBase parent) : base(parent) { }

@@ -1,0 +1,28 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+        ],
+        "operationId": "TestStuff",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+    }
+  ]
+}

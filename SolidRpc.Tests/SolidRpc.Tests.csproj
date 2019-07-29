@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Swagger\SpecGenReflection\TestEmptyRepo.json" />
+    <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
+    <None Remove="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Swagger\petstore.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestEmptyRepo.json" />
   </ItemGroup>
 
   <ItemGroup>

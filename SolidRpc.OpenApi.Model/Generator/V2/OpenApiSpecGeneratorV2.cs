@@ -34,8 +34,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             swaggerObject.Paths = CreatePaths(cSharpRepository, swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)
             {
-                Title = Settings.Title,
-                Version = Settings.Version,
+                Title = Settings.Title ?? "OpenApi",
+                Version = Settings.Version ?? "1.0.0",
             };
             swaggerObject.Info.License = CreateLicense(swaggerObject.Info);
             swaggerObject.Info.Contact = CreateContact(swaggerObject.Info);

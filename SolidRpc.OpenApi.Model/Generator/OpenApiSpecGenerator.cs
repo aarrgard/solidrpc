@@ -1,6 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
-using SolidRpc.OpenApi.Model.Generator.V2;
 using System;
 
 namespace SolidRpc.OpenApi.Model.Generator

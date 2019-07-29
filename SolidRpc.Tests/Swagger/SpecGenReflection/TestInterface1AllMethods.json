@@ -1,0 +1,105 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+        ],
+        "operationId": "TestStuff",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff2": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+        ],
+        "operationId": "TestStuff2",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "i": {
+                  "$ref": "#/definitions/System.Int32",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "d": {
+                  "$ref": "#/definitions/System.Double",
+                  "type": "number",
+                  "format": "double"
+                },
+                "s": {
+                  "$ref": "#/definitions/System.String",
+                  "type": "string"
+                },
+                "u": {
+                  "$ref": "#/definitions/System.Uri",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "g": {
+                  "$ref": "#/definitions/System.Guid",
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "$ref": "#/definitions/System.Int32",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "System.Int32": {
+      "type": "object"
+    },
+    "System.Double": {
+      "type": "object"
+    },
+    "System.String": {
+      "type": "object"
+    },
+    "System.Uri": {
+      "type": "object"
+    },
+    "System.Guid": {
+      "type": "object"
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+Interface1"
+    }
+  ]
+}
