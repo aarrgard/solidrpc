@@ -6,7 +6,7 @@
   },
   "host": "localhost",
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestArray": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestArray/{guids}": {
       "post": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
@@ -21,7 +21,7 @@
         "parameters": [
           {
             "name": "guids",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "array",
             "items": {

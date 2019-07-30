@@ -381,7 +381,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             var returnType = MethodInfo.ReturnType;
             if (returnType.IsFileType())
             {
-                response.ContentType = returnType.GetFileTypeContentType(obj);
+                var charSet = returnType.GetFileTypeCharSet(obj);
+                var retContentType = returnType.GetFileTypeContentType(obj);
+                if(!string.IsNullOrEmpty(charSet))
+                {
+                    retContentType = $"{retContentType}; charset=\"{charSet}\"";
+                }
+                response.ContentType = retContentType;
                 response.ResponseStream = returnType.GetFileTypeStreamData(obj);
                 response.Filename = returnType.GetFileTypeFilename(obj);
                 return Task.CompletedTask;

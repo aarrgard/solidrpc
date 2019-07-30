@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSoldRpcSwaggerUI(this IServiceCollection services)
+        public static IServiceCollection AddSolidRpcSwaggerUI(this IServiceCollection services)
         {
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ISwaggerUI));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();

@@ -11,7 +11,12 @@ namespace System
     /// </summary>
     public static class TypeExtensions
     {
-        private static readonly FileTypeHelper s_NotFileType = new FileTypeHelper(false, null, null, null, null,null,null);
+        private static readonly FileTypeHelper s_NotFileType = new FileTypeHelper(false, 
+            null, null, 
+            null, null,
+            null, null,
+            null, null
+        );
 
         /// <summary>
         /// The file type properties that can exist on a file type.
@@ -20,6 +25,7 @@ namespace System
             { "contenttype", typeof(string) },
             { "filename", typeof(string) },
             { "lastmodified", typeof(DateTime) },
+            { "charset", typeof(string) },
         };
 
         /// <summary>
@@ -34,7 +40,9 @@ namespace System
                 Action<object, string> setContentType,
                 Func<object, string> getContentType,
                 Action<object, string> setFilename,
-                Func<object, string> getFilename
+                Func<object, string> getFilename,
+                Action<object, string> setCharSet,
+                Func<object, string> getCharSet
                 )
             {
                 IsFileType = isFileType;
@@ -44,6 +52,8 @@ namespace System
                 GetContentType = getContentType;
                 SetFilename = setFilename;
                 GetFilename = getFilename;
+                SetCharSet = setCharSet;
+                GetCharSet = getCharSet;
             }
             /// <summary>
             /// Returns true if this type is a file type.
@@ -79,6 +89,16 @@ namespace System
             /// The method we use to set the stream data.
             /// </summary>
             public Func<object, string> GetFilename { get; }
+
+            /// <summary>
+            /// The method we use to set the stream data.
+            /// </summary>
+            public Action<object, string> SetCharSet { get; }
+
+            /// <summary>
+            /// The method we use to set the stream data.
+            /// </summary>
+            public Func<object, string> GetCharSet { get; }
         }
         private static ConcurrentDictionary<Type, FileTypeHelper> s_FileTypes = new ConcurrentDictionary<Type, FileTypeHelper>();
 
@@ -211,10 +231,26 @@ namespace System
                 getFilename = (impl) => (string)filenameProp.GetValue(impl);
             }
 
+            //
+            // handle charset
+            //
+            var charsetProp = arg.GetProperties()
+                .Where(o => string.Equals(o.Name, "charset", StringComparison.InvariantCultureIgnoreCase))
+                .Where(o => o.PropertyType == typeof(string))
+                .FirstOrDefault();
+            Action<object, string> setCharset = (impl, charset) => { };
+            Func<object, string> getCharset = (impl) => { return null; };
+            if (charsetProp != null)
+            {
+                setCharset = (impl, charset) => charsetProp.SetValue(impl, charset);
+                getCharset = (impl) => (string)charsetProp.GetValue(impl);
+            }
+
             var remainingProps = arg.GetProperties()
                 .Where(o => o != dataProp)
                 .Where(o => o != contentTypeProp)
                 .Where(o => o != filenameProp)
+                .Where(o => o != charsetProp)
                 .ToList();
 
             if(remainingProps.Count != 0)
@@ -225,7 +261,8 @@ namespace System
             return new FileTypeHelper(true,
                 setStreamData, getStreamData,
                 setContentType, getContentType,
-                setFilename, getFilename
+                setFilename, getFilename,
+                setCharset, getCharset
                 );
         }
 
@@ -279,6 +316,19 @@ namespace System
         }
 
         /// <summary>
+        /// Set the stream data on supplied structure.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <param name="charSet"></param>
+        public static void SetFileTypeCharSet(this Type type, object impl, string charSet)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            h.SetCharSet(impl, charSet);
+        }
+
+        /// <summary>
         /// Returns the stream data.
         /// </summary>
         /// <param name="type"></param>
@@ -315,6 +365,19 @@ namespace System
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             return h.GetFilename(impl);
+        }
+
+        /// <summary>
+        /// Returns the charset
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <returns></returns>
+        public static string GetFileTypeCharSet(this Type type, object impl)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            return h.GetCharSet(impl);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using System;
 using System.Collections.Generic;
@@ -122,6 +123,95 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     sw.WriteLine($"//{DateTime.Now.ToString("yyyyMMddHHmmssfffff")}");
                 }
             }
+        }
+
+        /// <summary>
+        /// Syncronizes the proxies file with the functions.
+        /// </summary>
+        public void SyncProxiesFile()
+        {
+            AzProxies proxies;
+            var fileInfo = new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json"));
+            using (var tr = fileInfo.OpenText())
+            {
+                using (JsonReader reader = new JsonTextReader(tr))
+                {
+                    var settings = new JsonSerializerSettings()
+                    {
+                        ContractResolver = NewtonsoftContractResolver.Instance
+                    };
+                    var serializer = JsonSerializer.Create(settings);
+                    proxies = serializer.Deserialize<AzProxies>(reader);
+                }
+            }
+
+            bool modified = false;
+            Functions.OfType<IAzHttpFunction>()
+                .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
+                .Distinct()
+                .GroupBy(o => o.Route)
+                .ToList().ForEach(o =>
+                {
+                    var route = o.Key;
+                    var methods = o.Select(o2 => o2.Method).ToList();
+
+                    modified = CreateProxy(proxies.Proxies, route, methods) || modified;
+                });
+
+            proxies.Proxies.Remove("StaticContent");
+            proxies.Proxies["StaticContent"] = new AzProxy()
+            {
+                MatchCondition = new AzProxyMatchCondition()
+                {
+                    Route = "/{*path}",
+                    Methods = new[] { "GET", "HEAD" }
+                },
+                BackendUri = $"http://%WEBSITE_HOSTNAME%/{typeof(ISolidRpcStaticContent).FullName.Replace('.', '/')}/{nameof(ISolidRpcStaticContent.GetStaticContent)}?path=/{{path}}"
+            };
+
+            var sw = new StringWriter();
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                var settings = new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    ContractResolver = NewtonsoftContractResolver.Instance
+                };
+                var serializer = JsonSerializer.Create(settings);
+                serializer.Serialize(writer, proxies);
+            }
+
+            if(modified)
+            {
+                using (var fs = fileInfo.CreateText())
+                {
+                    fs.Write(sw.ToString());
+                }
+            }
+        }
+
+        private bool CreateProxy(IDictionary<string, AzProxy> proxies, string route, IEnumerable<string> methods)
+        {
+            AzProxy proxy;
+            if (!proxies.TryGetValue(route, out proxy))
+            {
+                proxies[route] = proxy = new AzProxy();
+            }
+            bool modified = false;
+            proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
+            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, route);
+            proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
+            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%{route}");
+            return modified;
+        }
+
+        private T SetValue<T>(ref bool modified, T oldValue, T newValue)
+        {
+            if(!newValue.Equals(oldValue))
+            {
+                modified = true;
+            }
+            return newValue;
         }
     }
 }

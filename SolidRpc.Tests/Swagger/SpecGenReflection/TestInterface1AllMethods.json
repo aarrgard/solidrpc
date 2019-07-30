@@ -6,7 +6,7 @@
   },
   "host": "localhost",
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestArray": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestArray/{guids}": {
       "post": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
@@ -21,7 +21,7 @@
         "parameters": [
           {
             "name": "guids",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "array",
             "items": {
@@ -67,7 +67,7 @@
         }
       }
     },
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff2": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff2/{g}/{u}/{s}/{d}/{i}": {
       "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
@@ -79,34 +79,34 @@
         "parameters": [
           {
             "name": "g",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string",
             "format": "uuid"
           },
           {
             "name": "u",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string",
             "format": "uri"
           },
           {
             "name": "s",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "d",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "i",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "integer",
             "format": "int32"

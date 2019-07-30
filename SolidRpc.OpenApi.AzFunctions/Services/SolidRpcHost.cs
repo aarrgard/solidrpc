@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -81,7 +82,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var startTime = DateTime.Now;
             var modified = WriteHttpFunctions(paths.ToDictionary(o => o.Key, o => o.Select(o2 => o2.Method).ToList()));
 
-            if(modified)
+            FunctionHandler.SyncProxiesFile();
+
+            if (modified)
             {
                 FunctionHandler.TriggerRestart();
             }
@@ -137,7 +140,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 {
                     httpFunction = FunctionHandler.CreateHttpFunction(functionName);
                 }
-                httpFunction.AuthLevel = "Anonymous";
+                httpFunction.AuthLevel = "anonymous";
                 httpFunction.Route = path;
                 httpFunction.Methods = pathsAndMethods[path];
                 if (httpFunction.Save())

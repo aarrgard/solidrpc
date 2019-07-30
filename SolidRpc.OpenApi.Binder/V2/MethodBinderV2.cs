@@ -96,11 +96,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             if(parameters.Any(o => o.IsBinaryType()))
             {
-                if (parameter.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return true;
-                }
-                if (parameter.Name.Equals("contenttype", StringComparison.InvariantCultureIgnoreCase))
+                if(TypeExtensions.FileTypeProperties.Keys.Any(o => parameter.Name.Equals(o, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     return true;
                 }

@@ -78,19 +78,28 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             var paths = new PathsObject(swaggerObject);
             GetInterfaces(cSharpRepository).SelectMany(o => o.Methods)
                 .OrderBy(o => o.FullName)
-                .ToList().ForEach(o =>
+                .ToList().ForEach(m =>
             {
-                var path = MapPath(o.FullName);
+                var (pathItemObject, operation) = CreatePathItemObject(paths, m);
+                var path = MapPath(m.FullName);
+                operation.GetParameters()
+                    .Where(o => o.In == "path")
+                    .Select(o => o.Name)
+                    .ToList().ForEach(o =>
+                    {
+                        path = $"{path}/{{{o}}}";
+
+                    });
                 if(!string.IsNullOrEmpty(Settings.BasePath) && path.StartsWith(Settings.BasePath))
                 {
                     path = path.Substring(Settings.BasePath.Length);
                 }
-                paths[path] = CreatePathItemObject(paths, o);
+                paths[path] = pathItemObject;
             });
             return paths;
         }
 
-        private PathItemObject CreatePathItemObject(PathsObject paths, ICSharpMethod method)
+        private (PathItemObject, OperationObject) CreatePathItemObject(PathsObject paths, ICSharpMethod method)
         {
             var pathItemObject = new PathItemObject(paths);
             var operation = CreateOperationObject(pathItemObject, method);
@@ -100,6 +109,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 .Distinct();
             var mustBePost = paramTypes
                 .Where(o => o != "query")
+                .Where(o => o != "path")
                 .Any();
             if (mustBePost)
             {
@@ -109,7 +119,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             {
                 pathItemObject.Get = operation;
             }
-            return pathItemObject;
+            return (pathItemObject, operation);
         }
 
         private OperationObject CreateOperationObject(PathItemObject pathItemObject, ICSharpMethod method)
@@ -158,7 +168,14 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                         po = operationObject.GetParameter(o.Name);
                         po.Description = o.Comment?.Summary;
                         po.Required = !o.Optional;
-                        po.In = "query";
+                        if(po.Required)
+                        {
+                            po.In = "path";
+                        }
+                        else
+                        {
+                            po.In = "query";
+                        }
 
                         SetItemProps(po, true, o.ParameterType);
                     }

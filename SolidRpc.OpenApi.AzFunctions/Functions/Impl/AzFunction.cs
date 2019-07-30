@@ -103,6 +103,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 tw.Write(SerializeFunctionJson(Function));
                 tw.Write(suffix);
             }
+            var projectDir = fi.Directory?.Parent?.Parent?.Parent?.Parent;
+            if(projectDir == null || !projectDir.Exists)
+            {
+                return;
+            }
+            var projectHostFile = new FileInfo(Path.Combine(projectDir.FullName, "host.json"));
+            if(projectHostFile.Exists)
+            {
+
+            }
         }
 
         /// <summary>

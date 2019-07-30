@@ -30,5 +30,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// the end of a config file
         /// </summary>
         void TriggerRestart();
+
+        /// <summary>
+        /// Puts all the functions in the proxies file.
+        /// </summary>
+        void SyncProxiesFile();
     }
 }

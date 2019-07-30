@@ -90,7 +90,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
             reader.Read();
             if(existingValue == null)
             {
-                existingValue = Activator.CreateInstance(typeof(T), new object[] { null});
+                existingValue = Activator.CreateInstance(typeof(T));
             }
             while (reader.TokenType == JsonToken.PropertyName)
             {
@@ -107,7 +107,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
             return existingValue;
         }
 
-        private Tp Deserialize<Tp>(JsonReader r, JsonSerializer s)
+        private Tp Deserialize<Tp>(JsonReader r, object o, JsonSerializer s)
         {
             return s.Deserialize<Tp>(r);
         }

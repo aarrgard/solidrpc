@@ -1,4 +1,6 @@
-﻿namespace SolidRpc.OpenApi.SwaggerUI.Types
+﻿using System;
+
+namespace SolidRpc.OpenApi.SwaggerUI.Types
 {
     /// <summary>
     /// Represent a swagger url
@@ -13,6 +15,6 @@
         /// <summary>
         /// The url
         /// </summary>
-        public string Url { get; set; }
+        public Uri Url { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -79,6 +80,15 @@ namespace SolidRpc.OpenApi.Model.V2
                 }
                 throw new System.Exception("Cannot determine method.");
             }
+        }
+
+        /// <summary>
+        /// Returns the parameters. Empty array if null.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ParameterObject> GetParameters()
+        {
+            return Parameters ?? new ParameterObject[0];
         }
     }
 }

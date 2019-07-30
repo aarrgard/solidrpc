@@ -13,6 +13,11 @@ namespace SolidRpc.Abstractions.Types
         public Stream Content { get; set; }
 
         /// <summary>
+        /// The content charset
+        /// </summary>
+        public string CharSet { get; set; }
+
+        /// <summary>
         /// The content type.
         /// </summary>
         public string  ContentType { get; set; }

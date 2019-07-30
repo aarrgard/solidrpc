@@ -9,7 +9,7 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSoldRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Adds the swagger UI to the service collection.
             </summary>
@@ -35,15 +35,37 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetOpenApiSpec(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the openapi spec for supplied assembly name.
+            </summary>
+            <param name="assemblyName"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI">
             <summary>
             The swagger config
             </summary>
         </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="methodBinderStore"></param>
+        </member>
         <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
             <summary>
             Returns the index.hmtl file.
             </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetOpenApiSpec(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the openapi spec for specified assembly.
+            </summary>
+            <param name="assemblyName"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -53,21 +75,6 @@
             </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
-        </member>
-        <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.FileContent">
-            <summary>
-            Represents some file content
-            </summary>
-        </member>
-        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.Body">
-            <summary>
-            The file body.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.ContentType">
-            <summary>
-            The content type.
-            </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl">
             <summary>

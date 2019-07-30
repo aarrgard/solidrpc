@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Binder
 {
@@ -28,5 +31,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         IMethodInfo GetMethodInfo(string openApiSpec, MethodInfo methodInfo);
+
+        /// <summary>
+        /// Returns the uri to invoke the supplied method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression);
     }
 }

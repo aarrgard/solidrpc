@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "SolidRpc.Test.Petstore.AzFunctions": {
+      "commandName": "Project"
+    }
+  }
+}
