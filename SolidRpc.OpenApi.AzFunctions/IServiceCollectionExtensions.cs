@@ -88,8 +88,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
 
             var mi = GetMethodInfo(invocation);
-            services.AddSolidRpcBinding(mi, CreateOpenApiConfig(mi));
+            services.AddSolidRpcBinding(mi, GetBaseUrl, CreateOpenApiConfig(mi));
             return services;
+        }
+
+        private static Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

@@ -135,9 +135,9 @@ namespace SolidRpc.Tests
             services.AddLogging(ConfigureLogging);
             services.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
+            services.AddSolidRpcSingletonServices();
             services.AddTransient<IPet, PetImpl>();
-            services.AddTransient<IMethodBinderStore, MethodBinderStore>();
-            services.AddSolidRpcBindings(typeof(IPet).Assembly);
+            services.AddSolidRpcBindings(typeof(IPet).Assembly, null, GetBaseUrl);
 
             return services.BuildServiceProvider();
         }
@@ -159,11 +159,10 @@ namespace SolidRpc.Tests
             var host = builder.Build();
             await host.StartAsync();
 
-            Uri baseUri = null;
             var feature = host.ServerFeatures.Get<IServerAddressesFeature>();
             foreach (var addr in feature.Addresses)
             {
-                baseUri = new Uri(addr);
+                BaseUri = new Uri(addr);
             }
 
             //
@@ -177,7 +176,7 @@ namespace SolidRpc.Tests
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)
                 .ConfigureAdvice<ISolidRpcProxyConfig>()
-                .RootAddress = baseUri;
+                .BaseUriTransformer = GetBaseUrl;
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
 
@@ -185,6 +184,12 @@ namespace SolidRpc.Tests
             Assert.AreEqual(4711, (await petService.GetPetById(4711)).Id);
 
             await host.StopAsync();
+        }
+
+        private Uri BaseUri;
+        private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
+        {
+            return new Uri(BaseUri.ToString() + baseUri.AbsolutePath.Substring(1));
         }
     }
 }

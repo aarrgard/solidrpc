@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -12,10 +13,12 @@ namespace SolidRpc.OpenApi.Binder
     public abstract class MethodBinderBase : IMethodBinder
     {
 
-        protected MethodBinderBase(IOpenApiSpec openApiSpec, Assembly assembly)
+        protected MethodBinderBase(IServiceProvider serviceProvider, IOpenApiSpec openApiSpec, Assembly assembly, BaseUriTransformer baseUriTransformer)
         {
+            ServiceProvider = serviceProvider;
             OpenApiSpec = openApiSpec;
             Assembly = assembly;
+            BaseUriTransformer = baseUriTransformer ?? throw new ArgumentNullException(nameof(baseUriTransformer));
             CachedBindings = new ConcurrentDictionary<MethodInfo, IMethodInfo>();
         }
 
@@ -30,6 +33,10 @@ namespace SolidRpc.OpenApi.Binder
                  return CachedBindings.Values;
             }
         }
+
+        public BaseUriTransformer BaseUriTransformer { get; }
+
+        public IServiceProvider ServiceProvider { get; }
 
         private ConcurrentDictionary<MethodInfo, IMethodInfo> CachedBindings { get; }
 

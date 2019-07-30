@@ -217,9 +217,21 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 throw new ArgumentException($"Number of supplied arguments({args.Length}) does not match number of arguments in method({Arguments.Length}).");
             }
+
+            // create uri and transform it before setting data on the request
+            var uri = MethodBinder.BaseUriTransformer(MethodBinder.ServiceProvider, new Uri($"{Scheme}://{Host}{Path}"));
+
             request.Method = Method;
-            request.Scheme = Scheme;
-            request.HostAndPort = Host;
+            request.Scheme = uri.Scheme;
+            if(uri.IsDefaultPort)
+            {
+                request.HostAndPort = uri.Host;
+            }
+            else
+            {
+                request.HostAndPort =$"{uri.Host}:{uri.Port}";
+
+            }
             request.Path = Path;
 
             for (int i = 0; i < Arguments.Length; i++)

@@ -1,11 +1,12 @@
 ﻿using SolidProxy.Core.Configuration;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using System;
 using System.IO;
 using System.Linq;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
-
 {
+
     /// <summary>
     /// Configures the bindings for the rpc proxy.
     /// </summary>
@@ -16,6 +17,13 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// the assembly name where the method is defined will be used.
         /// </summary>
         string OpenApiConfiguration { get; set; }
+
+        /// <summary>
+        /// The method to transform the Uri. This delegate is invoked to determine
+        /// the base Uri for the service. Supplied uri is the one obtained from
+        /// the openapi config.
+        /// </summary>
+        BaseUriTransformer BaseUriTransformer { get; set; }
     }
 
     /// <summary>

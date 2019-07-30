@@ -395,11 +395,14 @@ namespace SolidRpc.Tests.MvcProxyTest
             sc.AddLogging(ConfigureLogging);
             sc.AddSolidRpcSingletonServices();
             sc.AddTransient<T,T>();
-            sc.AddSolidRpcBindings(typeof(T), typeof(T), openApiConfiguration)
+            sc.AddSolidRpcBindings(typeof(T), typeof(T), null, openApiConfiguration)
                 .ToList().ForEach(c =>
                 {
-                    c.ConfigureAdvice<ISolidRpcProxyConfig>().OpenApiConfiguration = openApiConfiguration;
-                    c.ConfigureAdvice<ISolidRpcProxyConfig>().RootAddress = ctx.BaseAddress;
+                    var conf = c.ConfigureAdvice<ISolidRpcProxyConfig>();
+                    conf.OpenApiConfiguration = openApiConfiguration;
+                    conf.BaseUriTransformer = (uriSp, uri) => {
+                        return new Uri(ctx.BaseAddress.ToString() + uri.AbsolutePath.Substring(1));
+                    };
                 });
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));

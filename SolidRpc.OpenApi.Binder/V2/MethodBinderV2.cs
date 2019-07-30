@@ -12,7 +12,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 {
     public class MethodBinderV2 : MethodBinderBase
     {
-        public MethodBinderV2(SwaggerObject schemaObject, Assembly assembly) : base(schemaObject, assembly)
+        public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly, BaseUriTransformer baseUriTransformer) : base(serviceProvider, schemaObject, assembly, baseUriTransformer)
         {
             SchemaObject = schemaObject;
             CodeDocRepo = new CodeDocRepository();

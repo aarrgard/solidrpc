@@ -8,6 +8,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 
 namespace SolidRpc.OpenApi.Proxy
 {
@@ -50,14 +51,7 @@ namespace SolidRpc.OpenApi.Proxy
         public void Configure(ISolidRpcProxyConfig config)
         {
             base.Configure(config);
-            var openApiConfig = config.OpenApiConfiguration;
-            if(config.RootAddress != null)
-            {
-                var swaggerConf = OpenApiParser.ParseSpec(config.OpenApiConfiguration);
-                swaggerConf.SetSchemeAndHostAndPort(config.RootAddress);
-                openApiConfig = swaggerConf.WriteAsJsonString();
-            }
-            MethodInfo = MethodBinderStore.GetMethodInfo(openApiConfig, config.InvocationConfiguration.MethodInfo);
+            MethodInfo = MethodBinderStore.GetMethodInfo(config.GetOpenApiConfiguration(), config.InvocationConfiguration.MethodInfo, config.BaseUriTransformer);
         }
 
         private HttpClient CreateHttpClient()

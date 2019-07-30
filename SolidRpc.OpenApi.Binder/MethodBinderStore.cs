@@ -21,15 +21,17 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public class MethodBinderStore : IMethodBinderStore
     {
-        public MethodBinderStore(ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
+        public MethodBinderStore(IServiceProvider serviceProvider, ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
         {
             Bindings = new ConcurrentDictionary<string, IMethodBinder>();
             ConfigStore = configStore;
             OpenApiParser = openApiParser;
+            ServiceProvider = serviceProvider;
         }
         private ConcurrentDictionary<string, IMethodBinder> Bindings { get; }
         private ISolidProxyConfigurationStore ConfigStore { get; }
         private IOpenApiParser OpenApiParser { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         private IEnumerable<IMethodBinder> _methodBinders;
         public IEnumerable<IMethodBinder> MethodBinders
@@ -48,7 +50,8 @@ namespace SolidRpc.OpenApi.Binder
                             var config = o.GetOpenApiConfiguration();
                             var method = o.InvocationConfiguration.MethodInfo;
                             var assembly = method.DeclaringType.Assembly;
-                            var methodBinder = GetMethodBinder(config, assembly);
+                            var uriTransformer = o.BaseUriTransformer;
+                            var methodBinder = GetMethodBinder(config, assembly, uriTransformer);
                             methodBinder.GetMethodInfo(method);
                         });
                     _methodBinders = Bindings.Values;
@@ -57,29 +60,30 @@ namespace SolidRpc.OpenApi.Binder
             }
         }
 
-        public IMethodBinder GetMethodBinder(string openApiSpec, Assembly assembly)
+        public IMethodBinder GetMethodBinder(string openApiSpec, Assembly assembly, BaseUriTransformer baseUriTransformer = null)
         {
             if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             var key = $"{assembly.GetName().FullName}:{assembly.GetName().Version}:{openApiSpec}";
-            return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, assembly));
+            return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, assembly, baseUriTransformer));
         }
 
-        private IMethodBinder CreateMethodBinder(string openApiSpec, Assembly assembly)
+        private IMethodBinder CreateMethodBinder(string openApiSpec, Assembly assembly, BaseUriTransformer baseUriTransformer)
         {
+            if (baseUriTransformer == null) baseUriTransformer = (sp, uri) => uri;
             var swaggerSpec = OpenApiParser.ParseSpec(openApiSpec);
             if (swaggerSpec is SwaggerObject v2)
             {
-                var mb = new Binder.V2.MethodBinderV2(v2, assembly);
+                var mb = new V2.MethodBinderV2(ServiceProvider, v2, assembly, baseUriTransformer);
                 return mb;
             }
             throw new NotImplementedException($"Cannot get binder for {swaggerSpec.GetType().FullName}");
         }
 
-        public IMethodInfo GetMethodInfo(string openApiSpec, MethodInfo methodInfo)
+        public IMethodInfo GetMethodInfo(string openApiSpec, MethodInfo methodInfo, BaseUriTransformer baseUriTransformer)
         {
             if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
-            return GetMethodBinder(openApiSpec, methodInfo.DeclaringType.Assembly).GetMethodInfo(methodInfo);
+            return GetMethodBinder(openApiSpec, methodInfo.DeclaringType.Assembly, baseUriTransformer).GetMethodInfo(methodInfo);
         }
 
         public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression)

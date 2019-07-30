@@ -1,7 +1,6 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.Impl;
 using SolidRpc.Test.Petstore.Services;
 using System;
@@ -16,16 +15,12 @@ namespace MyNamespace
         {
             try
             {
-                var preloaded = typeof(SolidRpc.OpenApi.Binder.Proxy.MethodInvoker).Assembly;
-                preloaded = typeof(SolidRpc.OpenApi.Binder.MethodBinderStore).Assembly;
-                preloaded = typeof(SolidRpc.OpenApi.AspNetCore.Services.SolidRpcStaticContent).Assembly;
-
                 builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
 
-                builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
+                builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly, GetBaseUrl);
                 builder.Services.GetSolidRpcStaticContent().AddContent(typeof(PetImpl).Assembly, "www", "/");
 
-                builder.Services.AddSolidRpcSwaggerUI();
+                builder.Services.AddSolidRpcSwaggerUI(GetBaseUrl);
 
                 base.Configure(builder);
             }
@@ -37,6 +32,11 @@ namespace MyNamespace
             {
                 Log("Configured");
             }
+        }
+
+        private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
+        {
+            throw new NotImplementedException();
         }
     }
 }

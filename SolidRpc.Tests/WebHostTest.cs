@@ -3,14 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using SolidProxy.Core.Configuration.Builder;
-using SolidProxy.Core.Configuration.Runtime;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.OpenApi.Proxy;
 using System;
 using System.Collections.Generic;
@@ -19,10 +15,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -144,7 +138,7 @@ namespace SolidRpc.Tests
             /// <param name="webHostTest"></param>
             public TestHostContextHttpMessageHandler(WebHostTest webHostTest) : base(webHostTest, new HttpClient())
             {
-
+                BaseAddress = new Uri("https://localhost/");
             }
 
             /// <summary>
@@ -373,7 +367,7 @@ namespace SolidRpc.Tests
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
                     services.AddTransient(m.MethodInfo.DeclaringType);
-                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, m.OpenApiConfiguration);
+                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, GetBaseUrl, m.OpenApiConfiguration);
 
                     var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
                     var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
@@ -383,6 +377,11 @@ namespace SolidRpc.Tests
                 });
                 configBuilder.AddAdvice(typeof(ServiceInterceptorAdvice<,,>));
                 return WebHostTest.ConfigureServerServices(services);
+            }
+
+            private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
+            {
+                return new Uri(BaseAddress.ToString() + baseUri.AbsolutePath.Substring(1));
             }
 
             /// <summary>
@@ -406,10 +405,7 @@ namespace SolidRpc.Tests
                     .ConfigureInterface<T>()
                     .ConfigureAdvice<ISolidRpcProxyConfig>();
                 conf.OpenApiConfiguration = openApiConfiguration;
-                ServerStartedEvent += rootAddress =>
-                {
-                    conf.RootAddress = rootAddress;
-                };
+                conf.BaseUriTransformer = GetBaseUrl;
 
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
