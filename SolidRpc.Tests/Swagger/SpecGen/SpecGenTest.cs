@@ -103,7 +103,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     });
                 ctx.AddOpenApiProxy<FileUpload1.Services.IFileUpload>(config);
                 await ctx.StartAsync();
-                var proxy = ctx.ServiceProvider.GetRequiredService<FileUpload1.Services.IFileUpload>();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload1.Services.IFileUpload>();
                 await proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
             }
         }
@@ -129,7 +129,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     });
                 ctx.AddOpenApiProxy<FileUpload2.Services.IFileUpload>(config);
                 await ctx.StartAsync();
-                var proxy = ctx.ServiceProvider.GetRequiredService<FileUpload2.Services.IFileUpload>();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload2.Services.IFileUpload>();
                 var res = await proxy.UploadFile(CreateUpload2Struct());
 
                 CompareStructs(CreateUpload2Struct(), res);
@@ -166,7 +166,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     });
                 ctx.AddOpenApiProxy<OneComplexArg.Services.IOneComplexArg>(config);
                 await ctx.StartAsync();
-                var proxy = ctx.ServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
                 var res = proxy.GetComplexType(new OneComplexArg.Types.ComplexType1());
             }
         }

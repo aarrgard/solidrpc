@@ -246,8 +246,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private object ExtractData(IEnumerable<SolidHttpRequestData> vals)
         {
-            Type enumType;
-            if(!ParameterObject.IsBodyType() && ParameterInfo.ParameterType.GetEnumType(out enumType))
+            if (!ParameterObject.IsBodyType() && ParameterInfo.ParameterType.GetEnumType(out Type enumType))
             {
                 var arr = vals.Select(o => ExtractData(o, enumType)).ToArray();
                 var typedArr = Array.CreateInstance(enumType, arr.Length);

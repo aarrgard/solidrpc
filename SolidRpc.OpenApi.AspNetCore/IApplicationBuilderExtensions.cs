@@ -27,7 +27,7 @@ namespace Microsoft.AspNetCore.Builder
         {
             var name = methodBinder.Assembly.GetName();
             var spec = methodBinder.OpenApiSpec;
-            var path = $"{spec.BasePath}/{name.Name}-v{spec.OpenApiVersion}-{name.Version}.json";
+            var path = $"{spec.BaseAddress.AbsolutePath}/{name.Name}-v{spec.OpenApiVersion}-{name.Version}.json";
             var paths = path.Split('/').Where(o => !string.IsNullOrEmpty(o));
             MapPath(applicationBuilder, paths, methodBinder);
             return path;

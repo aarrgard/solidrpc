@@ -75,7 +75,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
         }
 
-        private object _mutex = new object();
+        private readonly object _mutex = new object();
         private PathSegment _rootSegment;
 
         public MethodInvoker(
@@ -112,7 +112,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                                 .ToList().ForEach(o =>
                                 {
                                     var mi = o.InvocationConfiguration.MethodInfo;
-                                    var methodInfo = MethodBinderStore.GetMethodInfo(o.GetOpenApiConfiguration(), mi);
+                                    var methodInfo = MethodBinderStore.GetMethodInfo(o.GetOpenApiConfiguration(), mi, o.BaseUriTransformer);
                                     _rootSegment.AddPath(methodInfo);
                                     Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Path}.");
                                 });

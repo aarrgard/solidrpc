@@ -15,12 +15,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSwaggerUI(this IServiceCollection services, BaseUriTransformer baseUriTransformer)
+        public static IServiceCollection AddSolidRpcSwaggerUI(this IServiceCollection services, BaseUriTransformer baseUriTransformer = null)
         {
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ISwaggerUI));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();
-            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), baseUriTransformer, strOpenApiSpec);
-            services.GetSolidRpcStaticContent().AddContent(typeof(SwaggerUI).Assembly, "www", openApiSpec.BasePath);
+            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), strOpenApiSpec, baseUriTransformer);
+            services.GetSolidRpcStaticContent().AddContent(typeof(SwaggerUI).Assembly, "www", openApiSpec.BaseAddress.AbsolutePath);
             return services;
         }
     }

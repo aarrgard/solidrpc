@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
@@ -80,6 +81,8 @@ namespace SolidRpc.Tests
             /// </summary>
             public IWebHost WebHost { get; private set; }
 
+            public override IServiceProvider ServerServiceProvider => WebHost.Services;
+
             /// <summary>
             /// 
             /// </summary>
@@ -132,6 +135,7 @@ namespace SolidRpc.Tests
         /// </summary>
         public class TestHostContextHttpMessageHandler : TestHostContext
         {
+            private IServiceProvider _serverServiceProvider;
             /// <summary>
             /// Constructor
             /// </summary>
@@ -140,6 +144,8 @@ namespace SolidRpc.Tests
             {
                 BaseAddress = new Uri("https://localhost/");
             }
+
+            public override IServiceProvider ServerServiceProvider => _serverServiceProvider;
 
             /// <summary>
             /// 
@@ -152,9 +158,10 @@ namespace SolidRpc.Tests
                 // configure server services and use them from a singleton registration.
                 // 
                 var serverServices = new ServiceCollection();
-                var serverProvider = ConfigureServices(serverServices);
+                AddBaseAddress(serverServices, BaseAddress);
+                _serverServiceProvider = ConfigureServices(serverServices);
 
-                services.AddSingleton<HttpMessageHandler>(new SolidRpcHttpMessageHandler(serverProvider.GetRequiredService<IMethodInvoker>()));
+                services.AddSingleton<HttpMessageHandler>(new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>()));
                 return base.ConfigureClientServices(services);
             }
 
@@ -169,7 +176,7 @@ namespace SolidRpc.Tests
             /// Event raised when the server is started
             /// </summary>
             public event Action<Uri> ServerStartedEvent;
-            private IServiceProvider _serviceProvider;
+            private IServiceProvider _clientServiceProvider;
 
             /// <summary>
             /// Constructor
@@ -214,17 +221,22 @@ namespace SolidRpc.Tests
             /// <summary>
             /// The service provider for the test context.
             /// </summary>
-            public IServiceProvider ServiceProvider {
+            public IServiceProvider ClientServiceProvider {
                 get
                 {
-                    if(_serviceProvider == null)
+                    if(_clientServiceProvider == null)
                     {
                         throw new Exception("Context not started.");
 
                     }
-                    return _serviceProvider;
+                    return _clientServiceProvider;
                 }
             }
+
+            /// <summary>
+            /// Returns the server service provider
+            /// </summary>
+            public abstract IServiceProvider ServerServiceProvider { get; }
 
             /// <summary>
             /// Starts the conted
@@ -232,7 +244,7 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual Task StartAsync()
             {
-                _serviceProvider = ConfigureClientServices(ClientServices);
+                _clientServiceProvider = ConfigureClientServices(ClientServices);
                 return Task.CompletedTask;
             }
 
@@ -349,9 +361,21 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual IServiceProvider ConfigureClientServices(IServiceCollection services)
             {
+                AddBaseAddress(services, BaseAddress);
                 WebHostTest.ConfigureClientServices(services);
                 services.AddSingleton<IMethodBinderStore, MethodBinderStore>();
                 return services.BuildServiceProvider();
+            }
+
+            protected void AddBaseAddress(IServiceCollection services, Uri baseAddress)
+            {
+                if (BaseAddress == null) throw new Exception("No base address set");
+                var strBaseAddress = BaseAddress.ToString();
+                strBaseAddress = strBaseAddress.Substring(0, strBaseAddress.Length - 1);
+
+                var config = new ConfigurationBuilder();
+                config.AddInMemoryCollection(new Dictionary<string, string>() { { "urls", strBaseAddress } });
+                services.AddSingleton<IConfiguration>(config.Build());
             }
 
             /// <summary>
@@ -367,7 +391,7 @@ namespace SolidRpc.Tests
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
                     services.AddTransient(m.MethodInfo.DeclaringType);
-                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, GetBaseUrl, m.OpenApiConfiguration);
+                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, m.OpenApiConfiguration);
 
                     var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
                     var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
@@ -381,7 +405,9 @@ namespace SolidRpc.Tests
 
             private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
             {
-                return new Uri(BaseAddress.ToString() + baseUri.AbsolutePath.Substring(1));
+                var config = serviceProvider.GetRequiredService<IConfiguration>();
+                var url = config["urls"].Split(',').First();
+                return new Uri(url + baseUri.AbsolutePath);
             }
 
             /// <summary>

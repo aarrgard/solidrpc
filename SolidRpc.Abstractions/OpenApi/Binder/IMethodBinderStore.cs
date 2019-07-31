@@ -19,11 +19,14 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <summary>
         /// Returns the method info for supplied open api spec and reflected method
         /// </summary>
+        /// <param name="baseUriTransformer"></param>
         /// <param name="openApiSpec"></param>
         /// <param name="methodInfo"></param>
-        /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        IMethodInfo GetMethodInfo(string openApiSpec, MethodInfo methodInfo, BaseUriTransformer baseUriTransformer = null);
+        IMethodInfo GetMethodInfo(
+            string openApiSpec, 
+            MethodInfo methodInfo,
+            BaseUriTransformer baseUriTransformer = null);
 
         /// <summary>
         /// Returns the uri to invoke the supplied method.

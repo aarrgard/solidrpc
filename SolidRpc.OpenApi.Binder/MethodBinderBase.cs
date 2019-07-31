@@ -13,12 +13,11 @@ namespace SolidRpc.OpenApi.Binder
     public abstract class MethodBinderBase : IMethodBinder
     {
 
-        protected MethodBinderBase(IServiceProvider serviceProvider, IOpenApiSpec openApiSpec, Assembly assembly, BaseUriTransformer baseUriTransformer)
+        protected MethodBinderBase(IServiceProvider serviceProvider, IOpenApiSpec openApiSpec, Assembly assembly)
         {
             ServiceProvider = serviceProvider;
             OpenApiSpec = openApiSpec;
             Assembly = assembly;
-            BaseUriTransformer = baseUriTransformer ?? throw new ArgumentNullException(nameof(baseUriTransformer));
             CachedBindings = new ConcurrentDictionary<MethodInfo, IMethodInfo>();
         }
 
@@ -34,18 +33,16 @@ namespace SolidRpc.OpenApi.Binder
             }
         }
 
-        public BaseUriTransformer BaseUriTransformer { get; }
-
         public IServiceProvider ServiceProvider { get; }
 
         private ConcurrentDictionary<MethodInfo, IMethodInfo> CachedBindings { get; }
 
-        public IMethodInfo GetMethodInfo(MethodInfo methodInfo)
+        public IMethodInfo GetMethodInfo(MethodInfo methodInfo, BaseUriTransformer baseUriTransformer)
         {
-            return CachedBindings.GetOrAdd(methodInfo, o => FindBinding(o, true));
+            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, true));
         }
 
-        protected abstract IMethodInfo FindBinding(MethodInfo arg, bool mustExist);
+        protected abstract IMethodInfo CreateBinding(MethodInfo mi, bool mustExist);
     }
 }
 

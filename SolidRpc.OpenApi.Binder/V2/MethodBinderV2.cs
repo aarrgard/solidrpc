@@ -12,7 +12,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 {
     public class MethodBinderV2 : MethodBinderBase
     {
-        public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly, BaseUriTransformer baseUriTransformer) : base(serviceProvider, schemaObject, assembly, baseUriTransformer)
+        public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly) : base(serviceProvider, schemaObject, assembly)
         {
             SchemaObject = schemaObject;
             CodeDocRepo = new CodeDocRepository();
@@ -33,7 +33,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IList<OperationObject> Operations { get; }
 
-        protected override IMethodInfo FindBinding(MethodInfo mi, bool mustExist)
+        protected override IMethodInfo CreateBinding(MethodInfo mi, bool mustExist)
         {
             if(mi.DeclaringType.Assembly != Assembly)
             {

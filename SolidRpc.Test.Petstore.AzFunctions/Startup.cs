@@ -17,10 +17,10 @@ namespace MyNamespace
             {
                 builder.Services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
 
-                builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly, GetBaseUrl);
+                builder.Services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
                 builder.Services.GetSolidRpcStaticContent().AddContent(typeof(PetImpl).Assembly, "www", "/");
 
-                builder.Services.AddSolidRpcSwaggerUI(GetBaseUrl);
+                builder.Services.AddSolidRpcSwaggerUI();
 
                 base.Configure(builder);
             }

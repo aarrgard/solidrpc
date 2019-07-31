@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -164,6 +165,11 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual("#/definitions/Tag", swaggerSpec.Definitions["Pet"].Properties["tags"].Items.Ref);
         }
 
+        private Uri TransformUri(IServiceProvider serviceProvider, Uri baseUri)
+        {
+            return baseUri;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -293,8 +299,8 @@ namespace SolidRpc.Tests.Swagger
         private IMethodBinderStore GetMethodBinderStore()
         {
             var sc = new ServiceCollection();
-            sc.GetSolidConfigurationBuilder()
-                .SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcSingletonServices();
             return sc.BuildServiceProvider().GetRequiredService<IMethodBinderStore>();
         }

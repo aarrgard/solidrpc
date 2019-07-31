@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.V2
@@ -193,5 +194,46 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             return OpenApiParserV2.WriteSwaggerDoc(this, formatted);
         }
+
+        /// <summary>
+        /// Returns the schemes or empty array
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetSchemes()
+        {
+            return Schemes ?? new String[0];
+        }
+        /// <summary>
+        /// Returns the first scheme ordered descending.
+        /// "https", "http"
+        /// </summary>
+        /// <returns></returns>
+        public string GetScheme()
+        {
+            return GetSchemes().OrderByDescending(o => o).FirstOrDefault() ?? "http";
+        }
+
+        /// <summary>
+        /// Returns the host or "localhost" if not set.
+        /// </summary>
+        /// <returns></returns>
+        public string GetHost()
+        {
+            return Host ?? "localhost";
+        }
+
+        /// <summary>
+        /// Returns the BasePath or "/" if not set.
+        /// </summary>
+        /// <returns></returns>
+        public string GetBasePath()
+        {
+            return BasePath ?? "/";
+        }
+
+        /// <summary>
+        /// Returns the base address
+        /// </summary>
+        public Uri BaseAddress => new Uri($"{GetScheme()}://{GetHost()}{GetBasePath()}");
     }
 }

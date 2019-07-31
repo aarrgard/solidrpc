@@ -8,12 +8,11 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Services;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
@@ -391,18 +390,16 @@ namespace SolidRpc.Tests.MvcProxyTest
             var openApiConfiguration = await AssertOk(resp);
 
             var sc = new ServiceCollection();
+            sc.AddSingleton(ctx.ServerServiceProvider.GetRequiredService<IConfiguration>());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddLogging(ConfigureLogging);
             sc.AddSolidRpcSingletonServices();
             sc.AddTransient<T,T>();
-            sc.AddSolidRpcBindings(typeof(T), typeof(T), null, openApiConfiguration)
+            sc.AddSolidRpcBindings(typeof(T), typeof(T), openApiConfiguration, null)
                 .ToList().ForEach(c =>
                 {
                     var conf = c.ConfigureAdvice<ISolidRpcProxyConfig>();
                     conf.OpenApiConfiguration = openApiConfiguration;
-                    conf.BaseUriTransformer = (uriSp, uri) => {
-                        return new Uri(ctx.BaseAddress.ToString() + uri.AbsolutePath.Substring(1));
-                    };
                 });
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));

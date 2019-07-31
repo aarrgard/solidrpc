@@ -1,4 +1,7 @@
-﻿using SolidRpc.OpenApi.AzFunctions.Functions;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
 using SolidRpc.OpenApi.Model.V2;
 using System;
@@ -88,13 +91,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
 
             var mi = GetMethodInfo(invocation);
-            services.AddSolidRpcBinding(mi, GetBaseUrl, CreateOpenApiConfig(mi));
+            services.AddSolidRpcBinding(mi, CreateOpenApiConfig(mi));
             return services;
-        }
-
-        private static Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

@@ -51,7 +51,11 @@ namespace SolidRpc.OpenApi.Proxy
         public void Configure(ISolidRpcProxyConfig config)
         {
             base.Configure(config);
-            MethodInfo = MethodBinderStore.GetMethodInfo(config.GetOpenApiConfiguration(), config.InvocationConfiguration.MethodInfo, config.BaseUriTransformer);
+            MethodInfo = MethodBinderStore.GetMethodInfo(
+                config.GetOpenApiConfiguration(), 
+                config.InvocationConfiguration.MethodInfo,
+                config.BaseUriTransformer
+            );
         }
 
         private HttpClient CreateHttpClient()

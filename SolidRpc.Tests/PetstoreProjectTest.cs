@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -152,6 +153,7 @@ namespace SolidRpc.Tests
             // start server
             //
             var builder = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(new string[0]);
+            builder.UseUrls("http://localhost");
             builder.ConfigureLogging(ConfigureLogging);
             builder.ConfigureServices(_ => {
                 _.AddSingleton<IStartup>(this);
@@ -159,16 +161,14 @@ namespace SolidRpc.Tests
             var host = builder.Build();
             await host.StartAsync();
 
-            var feature = host.ServerFeatures.Get<IServerAddressesFeature>();
-            foreach (var addr in feature.Addresses)
-            {
-                BaseUri = new Uri(addr);
-            }
-
             //
             // configure the client
             //
             var sc = new ServiceCollection();
+
+            // copy the "urls" setting
+            sc.AddSingleton(host.Services.GetRequiredService<IConfiguration>());
+
             sc.AddLogging(ConfigureLogging);
             sc.AddTransient<IPet, IPet>();
             sc.AddSolidRpcSingletonServices();
@@ -186,10 +186,11 @@ namespace SolidRpc.Tests
             await host.StopAsync();
         }
 
-        private Uri BaseUri;
         private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
         {
-            return new Uri(BaseUri.ToString() + baseUri.AbsolutePath.Substring(1));
+            var config = serviceProvider.GetRequiredService<IConfiguration>();
+            var url = config["urls"];
+            return new Uri(url + baseUri.AbsolutePath);
         }
     }
 }

@@ -66,6 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterSingletonService<IOpenApiParser>();
             services.RegisterSingletonService<IMethodInvoker>();
             services.RegisterSingletonService<IMethodBinderStore>();
+            services.RegisterSingletonService<IBaseUriTransformer>();
             return services;
         }
 
@@ -141,7 +142,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         .Where(o => o != t)
                         .SingleOrDefault();
                 }
-                sc.AddSolidRpcBindings(t, impl, baseUriTransformer);
+                sc.AddSolidRpcBindings(t, impl, null, baseUriTransformer);
             }
             return sc;
         }
@@ -155,7 +156,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="openApiConfiguration"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings(this IServiceCollection sc, Type interfaze, Type impl = null, BaseUriTransformer baseUriTransformer = null, string openApiConfiguration = null)
+        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings(this IServiceCollection sc, Type interfaze, Type impl = null, string openApiConfiguration = null, BaseUriTransformer baseUriTransformer = null)
         {
             //
             // make sure that the type is registered
@@ -171,7 +172,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             return interfaze.GetMethods()
-                .Select(m => sc.AddSolidRpcBinding(m, baseUriTransformer, openApiConfiguration))
+                .Select(m => sc.AddSolidRpcBinding(m, openApiConfiguration, baseUriTransformer))
                 .ToList();
         }
 
@@ -183,7 +184,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="openApiConfiguration">The open api configuration to use - may be null to use the embedded api config.</param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static ISolidMethodConfigurationBuilder AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, BaseUriTransformer baseUriTransformer = null, string openApiConfiguration = null)
+        public static ISolidMethodConfigurationBuilder AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, string openApiConfiguration = null, BaseUriTransformer baseUriTransformer = null)
         {
             //
             // make sure that the singleton services are registered

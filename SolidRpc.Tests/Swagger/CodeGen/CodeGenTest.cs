@@ -458,9 +458,9 @@ namespace SolidRpc.Tests.Swagger.CodeGen
 
             await ctx.StartAsync();
 
-            var petProxy = ctx.ServiceProvider.GetRequiredService<Petstore.Services.IPet>();
-            var storeProxy = ctx.ServiceProvider.GetRequiredService<Petstore.Services.IStore>();
-            var userProxy = ctx.ServiceProvider.GetRequiredService<Petstore.Services.IUser>();
+            var petProxy = ctx.ClientServiceProvider.GetRequiredService<Petstore.Services.IPet>();
+            var storeProxy = ctx.ClientServiceProvider.GetRequiredService<Petstore.Services.IStore>();
+            var userProxy = ctx.ClientServiceProvider.GetRequiredService<Petstore.Services.IUser>();
             //
             // Pet
             //
@@ -533,7 +533,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
 
                 ctx.AddOpenApiProxy<UrlParam.Services.IUrlParam>(config);
                 await ctx.StartAsync();
-                var proxy = ctx.ServiceProvider.GetRequiredService<UrlParam.Services.IUrlParam>();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlParam.Services.IUrlParam>();
 
                 await proxy.ProxyIntegerInPath(3);
             }
