@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,27 @@ namespace Microsoft.AspNetCore.Builder
     /// </summary>
     public static class IApplicationBuilderExtensions
     {
+        private class PathHandler
+        {
+            /// <summary>
+            /// The method mapped to the path
+            /// </summary>
+            public IMethodInfo MethodInfo { get; set; }
+
+            public ISolidRpcStaticContent StaticContent { get; set; }
+
+            public override string ToString()
+            {
+                if(MethodInfo != null)
+                {
+                    return $"Operation:{MethodInfo.OperationId}:{MethodInfo.MethodInfo.DeclaringType.FullName}:{MethodInfo.MethodInfo}";
+                }
+                else
+                {
+                    return "Static";
+                }
+            }
+        }
         /// <summary>
         /// Exposes the open api config for supplied method binder.
         /// </summary>
@@ -62,6 +84,21 @@ namespace Microsoft.AspNetCore.Builder
         /// <returns></returns>
         public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder)
         {
+            var dict = new Dictionary<string, PathHandler>();
+
+            //
+            // map all static paths
+            //
+            var staticContent = applicationBuilder.ApplicationServices.GetService<ISolidRpcStaticContent>();
+            if (staticContent != null)
+            {
+                foreach(var path in staticContent.PathPrefixes)
+                {
+                    dict[$"GET{path}"] = new PathHandler() { StaticContent = staticContent };
+                    dict[$"HEAD{path}"] = new PathHandler() { StaticContent = staticContent };
+                }
+            }
+
             var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
             if (bindingStore == null)
             {
@@ -69,21 +106,19 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             //
-            // if we map the same path twice we remove old mappings. Extract all paths
-            // and map them accordingly.
+            // Extract all paths and map them accordingly.
             //
-            var dict = new Dictionary<string, IMethodInfo>();
             bindingStore.MethodBinders
                 .SelectMany(o => o.MethodInfos)
                 .ToList()
                 .ForEach(o =>
                 {
                     var path = $"{o.Method}{o.Path}";
-                    if(dict.TryGetValue(path, out IMethodInfo oldBinding))
+                    if(!dict.TryGetValue(path, out PathHandler binding))
                     {
-                        throw new Exception($"Cannot remap path {path} from {oldBinding.MethodInfo.DeclaringType} to {o.MethodInfo.DeclaringType}");
+                        dict[path] = binding = new PathHandler();
                     }
-                    dict[path] = o;
+                    binding.MethodInfo = o;
                 });
 
             //
@@ -98,9 +133,17 @@ namespace Microsoft.AspNetCore.Builder
             return applicationBuilder;
         }
 
-        private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, IMethodInfo> paths)
+        private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, PathHandler> paths)
         {
             //ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
+
+            if(paths.TryGetValue($"{pathPrefix}/", out PathHandler staticHandler))
+            {
+                if(staticHandler.StaticContent != null)
+                {
+                    ConnectStaticContent(ab);
+                }
+            }
 
             // drill down in sub paths
             var parts = paths.Select(o => o.Key)
@@ -116,11 +159,27 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             // add handler for this path
-            if (paths.TryGetValue(pathPrefix, out IMethodInfo methodInfo))
+            if (paths.TryGetValue(pathPrefix, out PathHandler pathHandler))
             {
-                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {methodInfo.OperationId}:{methodInfo.MethodInfo.DeclaringType.FullName}:{methodInfo.MethodInfo}");
-                ab.Run((ctx) => HandleInvocation(methodInfo, ctx));
+                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}");
+                if(pathHandler.MethodInfo != null)
+                {
+                    ab.Run((ctx) => HandleInvocation(pathHandler.MethodInfo, ctx));
+                }
+                else if (pathHandler.StaticContent != null)
+                {
+                    ConnectStaticContent(ab);
+                }
             }
+        }
+
+        private static void ConnectStaticContent(IApplicationBuilder ab)
+        {
+            ab.Use(async (ctx, next) =>
+            {
+                await next();
+                await HandleInvocation(ctx.RequestServices.GetRequiredService<ISolidRpcStaticContent>(), ctx);
+            });
         }
 
         private static bool IsMatch(HttpContext ctx, string segment, IEnumerable<string> fixedPaths)
@@ -152,6 +211,23 @@ namespace Microsoft.AspNetCore.Builder
                 return true;
             }
             return false;
+        }
+
+        private static async Task HandleInvocation(ISolidRpcStaticContent staticContent, HttpContext ctx)
+        {
+            if(ctx.Response.StatusCode != 404)
+            {
+                return;
+            }
+            // get content
+            var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
+            var content = await staticContent.GetStaticContent(path, ctx.RequestAborted);
+
+            // send response
+            ctx.Response.StatusCode = 200;
+            var charset = string.IsNullOrEmpty(content.CharSet) ? "" : $"; charset=\"{content.CharSet}\"";
+            ctx.Response.ContentType = $"{content.ContentType}{charset}";
+            await content.Content.CopyToAsync(ctx.Response.Body);
         }
 
         private static async Task HandleInvocation(IMethodInfo methodInfo, HttpContext context)

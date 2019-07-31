@@ -18,7 +18,7 @@
     "SolidRpc.Test.PetstoreWeb": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/swagger",
+      "launchUrl": "https://localhost:5001/SolidRpc/OpenApi/SwaggerUI/index.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using System;
+using System.Linq;
 
 [assembly:SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IBaseUriTransformer), typeof(ConfigurationBaseUriTransformer))]
 
@@ -21,16 +22,38 @@ namespace SolidRpc.OpenApi.Binder
         {
             Scheme = configuration[$"SolidRpc.BaseUriTransformer.Scheme"];
             Host = HostString.FromUriComponent(configuration[$"SolidRpc.BaseUriTransformer.Host"]);
-            var hostConfigSetting = configuration[$"SolidRpc.BaseUriTransformer.HostConfigSetting"];
-            if (!string.IsNullOrEmpty(hostConfigSetting))
+
+            if(string.IsNullOrEmpty(Host.Host))
             {
-                HostFromConfig = HostString.FromUriComponent(configuration[hostConfigSetting]);
+                var hostConfigSettings = configuration[$"SolidRpc.BaseUriTransformer.HostConfigSettings"] ?? "urls,WEBSITE_HOSTNAME";
+                if (!string.IsNullOrEmpty(hostConfigSettings))
+                {
+                    foreach(var hostConfigSetting in hostConfigSettings.Split(','))
+                    {
+                        if (!string.IsNullOrEmpty(configuration[hostConfigSetting]))
+                        {
+                            var hostString = configuration[hostConfigSetting]
+                                .Split(';')
+                                .OrderBy(o => o.StartsWith("https") ? 0 : 1)
+                                .First();
+                            if(Uri.TryCreate(hostString, UriKind.RelativeOrAbsolute, out Uri uri)) 
+                            {
+                                Scheme = uri.Scheme;
+                                Host = new HostString(uri.Host, uri.Port);
+                            }
+                            else
+                            {
+                                Host = HostString.FromUriComponent(hostString);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
         }
 
         private string Scheme { get; }
         private HostString Host { get; }
-        private HostString HostFromConfig { get; }
 
         Uri IBaseUriTransformer.TransformUri(Uri uri)
         {
@@ -39,24 +62,15 @@ namespace SolidRpc.OpenApi.Binder
             {
                 newUri.Scheme = Scheme;
             }
-            if (!string.IsNullOrEmpty(HostFromConfig.Host))
-            {
-                SetHostAndPort(newUri, HostFromConfig);
-            }
             if (!string.IsNullOrEmpty(Host.Host))
             {
-                SetHostAndPort(newUri, Host);
+                newUri.Host = Host.Host;
+                if (Host.Port != null)
+                {
+                    newUri.Port = Host.Port.Value;
+                }
             }
             return newUri.Uri;
-        }
-
-        private void SetHostAndPort(UriBuilder newUri, HostString host)
-        {
-            newUri.Host = host.Host;
-            if(host.Port != null)
-            {
-                newUri.Port = host.Port.Value;
-            }
         }
     }
 }

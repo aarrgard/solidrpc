@@ -99,6 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static ISolidRpcStaticContent GetSolidRpcStaticContent(this IServiceCollection services)
         {
+            services.AddSolidRpcSingletonServices();
             return services.GetSolidRpcServiceProvider<ISolidRpcStaticContent>();
         }
 
@@ -109,6 +110,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IOpenApiParser GetSolidRpcOpenApiParser(this IServiceCollection services)
         {
+            services.AddSolidRpcSingletonServices();
             return services.GetSolidRpcServiceProvider<IOpenApiParser>();
         }
 

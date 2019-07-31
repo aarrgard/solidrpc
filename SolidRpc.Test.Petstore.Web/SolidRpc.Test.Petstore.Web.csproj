@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore.Impl\SolidRpc.Test.Petstore.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
   </ItemGroup>

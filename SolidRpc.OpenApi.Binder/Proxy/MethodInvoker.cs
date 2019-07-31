@@ -164,6 +164,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var resp = new SolidHttpResponse();
             try
             {
+                Logger.LogTrace($"Invoking {methodInfo.MethodInfo.Name}()");
+                foreach(var arg in args)
+                {
+                    Logger.LogTrace($" - {arg}");
+                }
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
 
                 await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
