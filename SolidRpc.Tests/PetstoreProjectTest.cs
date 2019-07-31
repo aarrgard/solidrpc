@@ -153,7 +153,7 @@ namespace SolidRpc.Tests
             // start server
             //
             var builder = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(new string[0]);
-            builder.UseUrls("http://localhost");
+            builder.UseUrls("http://localhost:5004");
             builder.ConfigureLogging(ConfigureLogging);
             builder.ConfigureServices(_ => {
                 _.AddSingleton<IStartup>(this);
