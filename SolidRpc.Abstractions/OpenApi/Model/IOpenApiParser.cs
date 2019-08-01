@@ -16,17 +16,17 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         IOpenApiSpec ParseSpec(string json);
 
         /// <summary>
-        /// Creates a specification that contains the methods in supplied type.
+        /// Creates a specification that contains the methods in supplied types.
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="types"></param>
         /// <returns></returns>
-        IOpenApiSpec CreateSpecification(Type type);
+        IOpenApiSpec CreateSpecification(params Type[] types);
 
         /// <summary>
         /// Creates a specification that contains the specified method.
         /// </summary>
-        /// <param name="method"></param>
+        /// <param name="methods"></param>
         /// <returns></returns>
-        IOpenApiSpec CreateSpecification(MethodInfo method);
+        IOpenApiSpec CreateSpecification(params MethodInfo[] methods);
     }
 }

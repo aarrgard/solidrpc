@@ -29,15 +29,6 @@ namespace SolidRpc.Test.PetstoreWeb
             }
 
             app.UseSolidRpcProxies();
-
-            //app.UseSwaggerUI(swaggerConf =>
-            //{
-            //    app.ApplicationServices.GetRequiredService<IMethodBinderStore>()
-            //        .MethodBinders.ToList().ForEach(mb => {
-            //            var endpointUri = app.UseOpenApiConfig(mb);
-            //            swaggerConf.SwaggerEndpoint(endpointUri, $"{mb.Assembly.GetName().Name}");
-            //        });
-            //});
         }
     }
 }

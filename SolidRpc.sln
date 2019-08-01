@@ -42,9 +42,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctions", "SolidRpc.OpenApi.AzFunctions\SolidRpc.OpenApi.AzFunctions.csproj", "{851D2D87-9A7D-4F55-9D3F-C50A195FD60B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.SwaggerUI", "SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj", "{43CBD8CD-2871-490F-B96C-046B3EBC9E73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.SwaggerUI", "SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj", "{43CBD8CD-2871-490F-B96C-046B3EBC9E73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Abstractions", "SolidRpc.Abstractions\SolidRpc.Abstractions.csproj", "{5EB34918-62D9-4903-AE87-5BEED5AB00E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Abstractions", "SolidRpc.Abstractions\SolidRpc.Abstractions.csproj", "{5EB34918-62D9-4903-AE87-5BEED5AB00E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

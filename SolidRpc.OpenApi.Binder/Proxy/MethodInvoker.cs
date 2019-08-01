@@ -146,6 +146,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             IMethodInfo methodInfo, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
             var args = await methodInfo.ExtractArgumentsAsync(request);
 
             // invoke
@@ -164,11 +165,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var resp = new SolidHttpResponse();
             try
             {
-                Logger.LogTrace($"Invoking {methodInfo.MethodInfo.Name}()");
-                foreach(var arg in args)
-                {
-                    Logger.LogTrace($" - {arg}");
-                }
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
 
                 await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);

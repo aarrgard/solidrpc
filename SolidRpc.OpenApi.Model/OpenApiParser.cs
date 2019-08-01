@@ -24,14 +24,14 @@ namespace SolidRpc.OpenApi.Model
         private static OpenApiParserV2 v2Parser = new OpenApiParserV2();
         private static OpenApiParserV3 v3Parser = new OpenApiParserV3();
 
-        IOpenApiSpec IOpenApiParser.CreateSpecification(Type type)
+        IOpenApiSpec IOpenApiParser.CreateSpecification(params Type[] types)
         {
-            return CreateSpecification(type.GetMethods());
+            return CreateSpecification(types.SelectMany(o => o.GetMethods()));
         }
 
-        IOpenApiSpec IOpenApiParser.CreateSpecification(MethodInfo method)
+        IOpenApiSpec IOpenApiParser.CreateSpecification(params MethodInfo[] methods)
         {
-            return CreateSpecification(new[] { method });
+            return CreateSpecification(methods);
         }
 
         private IOpenApiSpec CreateSpecification(IEnumerable<MethodInfo> methods)

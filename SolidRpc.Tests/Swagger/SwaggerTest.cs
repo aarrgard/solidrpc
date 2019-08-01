@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -299,6 +300,10 @@ namespace SolidRpc.Tests.Swagger
         private IMethodBinderStore GetMethodBinderStore()
         {
             var sc = new ServiceCollection();
+            sc.AddLogging(o => {
+                o.SetMinimumLevel(LogLevel.Trace);
+                o.AddConsole();
+            });
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcSingletonServices();
