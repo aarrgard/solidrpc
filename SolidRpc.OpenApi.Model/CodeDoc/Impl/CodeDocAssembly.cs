@@ -19,7 +19,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
 
         public ICodeDocClass GetClassDocumentation(Type type)
         {
-            return ClassDoumentation.Where(o => o.ClassName == type.FullName)
+            return ClassDoumentation.Where(o => o.ClassName == type.FullName.Replace('+','.'))
                 .FirstOrDefault();
         }
 

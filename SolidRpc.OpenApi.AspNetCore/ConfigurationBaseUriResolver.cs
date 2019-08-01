@@ -36,8 +36,12 @@ namespace SolidRpc.OpenApi.Binder
                                 .Split(';')
                                 .OrderBy(o => o.StartsWith("https") ? 0 : 1)
                                 .First();
-                            if(Uri.TryCreate(hostString, UriKind.RelativeOrAbsolute, out Uri uri)) 
+                            if(hostString.StartsWith("http"))
                             {
+                                if(!Uri.TryCreate(hostString, UriKind.RelativeOrAbsolute, out Uri uri))
+                                {
+                                    throw new Exception($"Cannot parse uri:{hostString}");
+                                }
                                 Scheme = uri.Scheme;
                                 Host = new HostString(uri.Host, uri.Port);
                             }

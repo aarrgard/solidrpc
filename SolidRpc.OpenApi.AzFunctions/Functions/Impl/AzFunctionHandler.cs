@@ -2,6 +2,7 @@
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -207,11 +208,46 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
         private T SetValue<T>(ref bool modified, T oldValue, T newValue)
         {
+            if (ReferenceEquals(newValue, oldValue))
+            {
+                return newValue;
+            }
+            if (oldValue.GetType() == newValue.GetType())
+            {
+                if(typeof(IEnumerable).IsAssignableFrom(oldValue.GetType()))
+                {
+                    return SetValueEnum<T>(ref modified, (IEnumerable)oldValue, (IEnumerable)newValue);
+                }
+            }
             if(!newValue.Equals(oldValue))
             {
                 modified = true;
             }
             return newValue;
+        }
+        private T SetValueEnum<T>(ref bool modified, IEnumerable oldValue, IEnumerable newValue)
+        {
+            var o = oldValue.GetEnumerator();
+            var n = newValue.GetEnumerator();
+            while(o.MoveNext())
+            {
+                if(!n.MoveNext())
+                {
+                    modified = true;
+                    return (T)newValue;
+                }
+                if(false == (o?.Current?.Equals(n.Current) ?? false))
+                {
+                    modified = true;
+                    return (T)newValue;
+                }
+            }
+            if (n.MoveNext())
+            {
+                modified = true;
+                return (T)newValue;
+            }
+            return (T)oldValue;
         }
     }
 }

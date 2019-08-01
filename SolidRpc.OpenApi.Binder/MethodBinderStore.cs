@@ -65,7 +65,10 @@ namespace SolidRpc.OpenApi.Binder
 
         private IMethodBinder GetMethodBinder(BaseUriTransformer baseUriTransformer, string openApiSpec, Assembly assembly)
         {
-            if (baseUriTransformer == null) baseUriTransformer = (sp, uri) => sp.GetRequiredService<IBaseUriTransformer>().TransformUri(uri);
+            if (baseUriTransformer == null)
+            {
+                baseUriTransformer = (sp, uri) => sp.GetService<IBaseUriTransformer>()?.TransformUri(uri) ?? uri;
+            }
             if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             var originalSpec = OriginalSpecs.GetOrAdd(openApiSpec, _ => OpenApiParser.ParseSpec(_));

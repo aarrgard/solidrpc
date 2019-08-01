@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
@@ -90,7 +91,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return TypeMatches(parameter.ParameterType, prospect);
             }
-            if(parameter.IsOptional)
+            if(parameter.IsOptional || parameter.ParameterType == typeof(CancellationToken))
             {
                 return true;
             }
