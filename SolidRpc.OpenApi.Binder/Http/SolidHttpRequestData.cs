@@ -47,7 +47,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                     return (_, __) => binder(_, __);
                 case "csv":
                     var csvBinder = CreateBinder(contentType, name, typeof(string));
-                    return (_, __) => csvBinder(_, __).GetStringValue().Split(';').Select(o => new HttpRequestDataString("text/plain", name, o));
+                    return (_, __) => csvBinder(_, __).GetStringValue().Split(';').Select(o => new SolidHttpRequestDataString("text/plain", name, o));
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
@@ -106,11 +106,11 @@ namespace SolidRpc.OpenApi.Binder.Http
                         }
                         if (values.Length == 1)
                         {
-                            bodyData.Add(new HttpRequestDataString("text/plain", values[0], true.ToString()));
+                            bodyData.Add(new SolidHttpRequestDataString("text/plain", values[0], true.ToString()));
                         }
                         else if (values.Length == 2)
                         {
-                            bodyData.Add(new HttpRequestDataString("text/plain", values[0], values[1]));
+                            bodyData.Add(new SolidHttpRequestDataString("text/plain", values[0], values[1]));
                         }
                         else
                         {
@@ -179,23 +179,23 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemThreadingCancellationToken:
                             return (_, val) => null;
                         case SystemBoolean:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((bool)val) ? "true" : "false");
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((bool)val) ? "true" : "false");
                         case SystemDouble:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((double)val).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((double)val).ToString(CultureInfo.InvariantCulture));
                         case SystemSingle:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((float)val).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((float)val).ToString(CultureInfo.InvariantCulture));
                         case SystemInt16:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((short)val).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((short)val).ToString(CultureInfo.InvariantCulture));
                         case SystemInt32:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((int)val).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((int)val).ToString(CultureInfo.InvariantCulture));
                         case SystemInt64:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((long)val).ToString(CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((long)val).ToString(CultureInfo.InvariantCulture));
                         case SystemGuid:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((Guid)val).ToString());
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Guid)val).ToString());
                         case SystemDateTime:
-                            return (_, val) => new HttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
                         case SystemString:
-                            return (_, val) => new HttpRequestDataString(contentType, name, (string)val);
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, (string)val);
                         default:
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }

@@ -82,6 +82,9 @@ namespace SolidRpc.Tests
             /// </summary>
             public IWebHost WebHost { get; private set; }
 
+            /// <summary>
+            /// 
+            /// </summary>
             public override IServiceProvider ServerServiceProvider => WebHost.Services;
 
             /// <summary>
@@ -146,6 +149,9 @@ namespace SolidRpc.Tests
                 BaseAddress = new Uri("https://localhost/");
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
             public override IServiceProvider ServerServiceProvider => _serverServiceProvider;
 
             /// <summary>
@@ -368,6 +374,11 @@ namespace SolidRpc.Tests
                 return services.BuildServiceProvider();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="services"></param>
+            /// <param name="baseAddress"></param>
             protected void AddBaseAddress(IServiceCollection services, Uri baseAddress)
             {
                 if (BaseAddress == null) throw new Exception("No base address set");

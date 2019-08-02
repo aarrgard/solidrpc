@@ -10,8 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
-    <ProjectReference Include="..\SolidRpc.OpenApi.Proxy\SolidRpc.OpenApi.Proxy.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
   </ItemGroup>
 
 </Project>

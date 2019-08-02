@@ -249,7 +249,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             var contentTypeProspects = OperationObject.GetConsumes();
             if (contentTypeProspects.Contains("application/x-www-form-urlencoded"))
             {
-                if (request.BodyData.All(o => o.GetType() == typeof(HttpRequestDataString)))
+                if (request.BodyData.All(o => o.GetType() == typeof(SolidHttpRequestDataString)))
                 {
                     return "application/x-www-form-urlencoded";
                 }
@@ -348,7 +348,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 var pattern = patterns[i];
                 if(pattern.StartsWith("{") && pattern.EndsWith("}"))
                 {
-                    pathData.Add(new HttpRequestDataString("text/plain", pattern.Substring(1, pattern.Length - 2), pathElements[i]));
+                    pathData.Add(new SolidHttpRequestDataString("text/plain", pattern.Substring(1, pattern.Length - 2), pathElements[i]));
                 }
             }
             request.PathData = pathData;

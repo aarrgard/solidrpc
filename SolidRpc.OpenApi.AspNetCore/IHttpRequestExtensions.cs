@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
@@ -45,23 +46,23 @@ namespace SolidRpc.OpenApi.Binder.Http
             target.Path = $"{source.PathBase}{source.Path}";
 
             // extract headers
-            var headerList = new List<SolidHttpRequestData>();
+            var headerList = new List<IHttpRequestData>();
             foreach (var h in source.Headers)
             {
                 foreach (var sv in h.Value)
                 {
-                    headerList.Add(new HttpRequestDataString("text/plain", h.Key, sv));
+                    headerList.Add(new SolidHttpRequestDataString("text/plain", h.Key, sv));
                 }
             }
             target.Headers = headerList;
 
             // extract query
-            var queryList = new List<SolidHttpRequestData>();
+            var queryList = new List<IHttpRequestData>();
             foreach(var q in source.Query)
             {
                 foreach(var sv in q.Value)
                 {
-                    queryList.Add(new HttpRequestDataString("text/plain", q.Key, sv));
+                    queryList.Add(new SolidHttpRequestDataString("text/plain", q.Key, sv));
                 }
             }
             target.Query = queryList;

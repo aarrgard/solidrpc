@@ -115,11 +115,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 {
                     if (o.Length == 1)
                     {
-                        return new HttpRequestDataString("text/plain", HttpUtility.UrlDecode(o[0]), "");
+                        return new SolidHttpRequestDataString("text/plain", HttpUtility.UrlDecode(o[0]), "");
                     }
                     else if (o.Length == 2)
                     {
-                        return new HttpRequestDataString("text/plain", HttpUtility.UrlDecode(o[0]), HttpUtility.UrlDecode(o[1]));
+                        return new SolidHttpRequestDataString("text/plain", HttpUtility.UrlDecode(o[0]), HttpUtility.UrlDecode(o[1]));
                     }
                     else
                     {
@@ -128,7 +128,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 }).ToList();
             target.Headers = source.Headers
                 .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
-                .Select(o => new HttpRequestDataString("text/plain", o.Key, o.Value))
+                .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value))
                 .ToList();
 
             var mediaType = source.Content?.Headers?.ContentType;
@@ -158,7 +158,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                         content.Add(part, binary.Name, binary.Filename);
                     }
                 }
-                else if (d is HttpRequestDataString)
+                else if (d is SolidHttpRequestDataString)
                 {
                     part = new StringContent(d.GetStringValue());
                     content.Add(part, d.Name);

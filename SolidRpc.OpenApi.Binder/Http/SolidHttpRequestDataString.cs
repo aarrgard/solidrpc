@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -8,7 +6,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// <summary>
     /// Represents some HttpRequest data
     /// </summary>
-    public class HttpRequestDataString : SolidHttpRequestData
+    public class SolidHttpRequestDataString : SolidHttpRequestData
     {
         /// <summary>
         /// Constructs a new structure representing string data.
@@ -16,7 +14,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="contentType"></param>
         /// <param name="name"></param>
         /// <param name="stringData"></param>
-        public HttpRequestDataString(string contentType, string name, string stringData) : base(contentType, name)
+        public SolidHttpRequestDataString(string contentType, string name, string stringData) : base(contentType, name)
         {
             StringData = stringData;
         }
