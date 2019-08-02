@@ -206,7 +206,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             // if we have reach end of path - return value
             if (!pathEnumerator.MoveNext())
             {
-                if(val is IEnumerable<SolidHttpRequestData> rdData2)
+                if(val is IEnumerable<IHttpRequestData> rdData2)
                 {
                     return ExtractData(rdData2);
                 }
@@ -217,7 +217,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return null;
             }
-            if(val is IEnumerable<SolidHttpRequestData> rdEnum)
+            if(val is IEnumerable<IHttpRequestData> rdEnum)
             {
                 if(!filteredList)
                 {
@@ -244,7 +244,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return newValue;
         }
 
-        private object ExtractData(IEnumerable<SolidHttpRequestData> vals)
+        private object ExtractData(IEnumerable<IHttpRequestData> vals)
         {
             if (!ParameterObject.IsBodyType() && ParameterInfo.ParameterType.GetEnumType(out Type enumType))
             {
@@ -256,7 +256,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return ExtractData(vals.FirstOrDefault(), ParameterInfo.ParameterType);
         }
 
-        private object ExtractData(SolidHttpRequestData valData, Type dataType)
+        private object ExtractData(IHttpRequestData valData, Type dataType)
         {
             if (valData == null)
             {
