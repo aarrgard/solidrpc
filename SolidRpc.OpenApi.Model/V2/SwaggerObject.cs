@@ -235,5 +235,10 @@ namespace SolidRpc.OpenApi.Model.V2
         /// Returns the base address
         /// </summary>
         public Uri BaseAddress => new Uri($"{GetScheme()}://{GetHost()}{GetBasePath()}");
+
+        /// <summary>
+        /// Returns the title.
+        /// </summary>
+        public string Title => Info?.Title ?? "Unknown";
     }
 }

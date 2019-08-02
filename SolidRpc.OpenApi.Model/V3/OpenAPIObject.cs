@@ -24,6 +24,8 @@ namespace SolidRpc.OpenApi.Model.V3
 
         public Uri BaseAddress => new Uri("http://localhost");
 
+        public string Title => "Unknown";
+
         public void SetSchemeAndHostAndPort(Uri rootAddress)
         {
             throw new NotImplementedException();

@@ -1,5 +1,4 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
-using SolidRpc.Abstractions.OpenApi.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

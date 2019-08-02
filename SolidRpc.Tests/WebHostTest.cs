@@ -168,7 +168,7 @@ namespace SolidRpc.Tests
                 AddBaseAddress(serverServices, BaseAddress);
                 _serverServiceProvider = ConfigureServices(serverServices);
 
-                services.AddHttpClient("solidrpc").ConfigurePrimaryHttpMessageHandler(o =>
+                services.AddHttpClient("Swagger Petstore").ConfigurePrimaryHttpMessageHandler(o =>
                 {
                     return new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>());
                 });

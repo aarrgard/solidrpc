@@ -26,12 +26,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="serviceProvider"></param>
         public SolidRpcOpenApiAdvice(
             ILogger<SolidRpcOpenApiAdvice<TObject, TMethod, TAdvice>> logger,
-            IOpenApiParser openApiParser,
             IMethodBinderStore methodBinderStore,
             IHttpClientFactory httpClientFactory)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            OpenApiParser = openApiParser ?? throw new ArgumentNullException(nameof(openApiParser));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
@@ -55,18 +53,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             );
         }
 
-        private HttpClient CreateHttpClient()
-        {
-            if (HttpMessageHandler != null)
-            {
-                return new HttpClient(HttpMessageHandler);
-            }
-            else
-            {
-                return new HttpClient();
-            }
-        }
-
         /// <summary>
         /// Handles  the invocation
         /// </summary>
@@ -75,7 +61,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var httpClient = HttpClientFactory.CreateClient("solidrpc");
+            var httpClientName = MethodInfo.MethodBinder.OpenApiSpec.Title;
+            if(Logger.IsEnabled(LogLevel.Trace))
+            {
+                Logger.LogTrace($"Getting http client for '{httpClientName}'");
+            }
+            var httpClient = HttpClientFactory.CreateClient(httpClientName);
             var httpReq = new SolidHttpRequest();
             await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
 

@@ -14,6 +14,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         string OpenApiVersion { get; }
 
         /// <summary>
+        /// Returns the title of the spec.
+        /// </summary>
+        string Title { get; }
+
+        /// <summary>
         /// Returns the base path.
         /// </summary>
         Uri BaseAddress { get; }
