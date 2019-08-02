@@ -168,7 +168,10 @@ namespace SolidRpc.Tests
                 AddBaseAddress(serverServices, BaseAddress);
                 _serverServiceProvider = ConfigureServices(serverServices);
 
-                services.AddSingleton<HttpMessageHandler>(new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>()));
+                services.AddHttpClient("solidrpc").ConfigurePrimaryHttpMessageHandler(o =>
+                {
+                    return new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>());
+                });
                 return base.ConfigureClientServices(services);
             }
 
@@ -368,9 +371,9 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual IServiceProvider ConfigureClientServices(IServiceCollection services)
             {
+                services.AddHttpClient();
                 AddBaseAddress(services, BaseAddress);
                 WebHostTest.ConfigureClientServices(services);
-                services.AddSingleton<IMethodBinderStore, MethodBinderStore>();
                 return services.BuildServiceProvider();
             }
 
@@ -510,6 +513,7 @@ namespace SolidRpc.Tests
         public virtual IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
             services.AddLogging(ConfigureLogging);
+            services.AddHttpClient();
             services.AddSolidRpcSingletonServices();
             return services.BuildServiceProvider();
         }

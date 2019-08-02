@@ -8,6 +8,7 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -27,17 +28,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             ILogger<SolidRpcOpenApiAdvice<TObject, TMethod, TAdvice>> logger,
             IOpenApiParser openApiParser,
             IMethodBinderStore methodBinderStore,
-            IServiceProvider serviceProvider)
+            IHttpClientFactory httpClientFactory)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            OpenApiParser = openApiParser;
+            OpenApiParser = openApiParser ?? throw new ArgumentNullException(nameof(openApiParser));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
-            HttpMessageHandler = (HttpMessageHandler)serviceProvider.GetService(typeof(HttpMessageHandler));
+            HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
         private HttpMessageHandler HttpMessageHandler { get; }
         private ILogger Logger { get; }
         private IOpenApiParser OpenApiParser { get; }
         private IMethodBinderStore MethodBinderStore { get; }
+        public IHttpClientFactory HttpClientFactory { get; }
         private IMethodInfo MethodInfo { get; set; }
 
         /// <summary>
@@ -73,29 +75,27 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            using (var httpClient = CreateHttpClient())
+            var httpClient = HttpClientFactory.CreateClient("solidrpc");
+            var httpReq = new SolidHttpRequest();
+            await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
+
+            if (HttpMessageHandler == null)
             {
-                var httpReq = new SolidHttpRequest();
-                await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
-
-                if (HttpMessageHandler == null)
-                {
-                    Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
-                }
-                else
-                {
-                    Logger.LogTrace($"Sending data to local handler. Emulating host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
-                }
-
-                var httpClientReq = new HttpRequestMessage();
-                httpReq.CopyTo(httpClientReq);
-
-                var httpClientResponse = await httpClient.SendAsync(httpClientReq);
-                var httpResp = new SolidHttpResponse();
-                await httpResp.CopyFromAsync(httpClientResponse);
-
-                return MethodInfo.ExtractResponse<TAdvice>(httpResp);
+                Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
             }
+            else
+            {
+                Logger.LogTrace($"Sending data to local handler. Emulating host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
+            }
+
+            var httpClientReq = new HttpRequestMessage();
+            httpReq.CopyTo(httpClientReq);
+
+            var httpClientResponse = await httpClient.SendAsync(httpClientReq);
+            var httpResp = new SolidHttpResponse();
+            await httpResp.CopyFromAsync(httpClientResponse);
+
+            return MethodInfo.ExtractResponse<TAdvice>(httpResp);
         }
     }
 }

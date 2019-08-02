@@ -394,6 +394,7 @@ namespace SolidRpc.Tests.MvcProxyTest
             sc.AddSingleton(ctx.ServerServiceProvider.GetRequiredService<IConfiguration>());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddLogging(ConfigureLogging);
+            sc.AddHttpClient();
             sc.AddSolidRpcSingletonServices();
             sc.AddTransient<T,T>();
             sc.AddSolidRpcBindings(typeof(T), typeof(T), openApiConfiguration, null)

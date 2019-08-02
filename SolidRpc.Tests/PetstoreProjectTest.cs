@@ -167,6 +167,7 @@ namespace SolidRpc.Tests
             // copy the "urls" setting
             sc.AddSingleton(host.Services.GetRequiredService<IConfiguration>());
 
+            sc.AddHttpClient();
             sc.AddLogging(ConfigureLogging);
             sc.AddTransient<IPet, IPet>();
             sc.AddSolidRpcSingletonServices();
