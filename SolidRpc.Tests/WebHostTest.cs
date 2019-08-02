@@ -7,8 +7,9 @@ using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Proxy;
+using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -429,12 +430,12 @@ namespace SolidRpc.Tests
                 ClientServices.AddTransient<T, T>();
                 var conf = ClientServices.GetSolidConfigurationBuilder()
                     .ConfigureInterface<T>()
-                    .ConfigureAdvice<ISolidRpcProxyConfig>();
+                    .ConfigureAdvice<ISolidRpcOpenApiConfig>();
                 conf.OpenApiConfiguration = openApiConfiguration;
                 conf.BaseUriTransformer = GetBaseUrl;
 
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
-                ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
+                ClientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
             }
         }
 

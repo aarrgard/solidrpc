@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.Proxy
+namespace SolidRpc.OpenApi.Binder.Proxy
 {
     /// <summary>
     /// Message handler that can be registered in the IoC container to invoke services

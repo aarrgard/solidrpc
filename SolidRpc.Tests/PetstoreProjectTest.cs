@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.Test.Petstore.Services;
 using SolidRpc.Test.Petstore.Types;
 using System;
@@ -175,10 +173,10 @@ namespace SolidRpc.Tests
             sc.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)
-                .ConfigureAdvice<ISolidRpcProxyConfig>()
+                .ConfigureAdvice<ISolidRpcOpenApiConfig>()
                 .BaseUriTransformer = GetBaseUrl;
 
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var petService = sc.BuildServiceProvider().GetRequiredService<IPet>();
             Assert.AreEqual(4711, (await petService.GetPetById(4711)).Id);

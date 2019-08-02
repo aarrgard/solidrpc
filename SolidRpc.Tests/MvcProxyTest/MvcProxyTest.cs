@@ -13,7 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Services;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
 
@@ -398,12 +399,12 @@ namespace SolidRpc.Tests.MvcProxyTest
             sc.AddSolidRpcBindings(typeof(T), typeof(T), openApiConfiguration, null)
                 .ToList().ForEach(c =>
                 {
-                    var conf = c.ConfigureAdvice<ISolidRpcProxyConfig>();
+                    var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
                     conf.OpenApiConfiguration = openApiConfiguration;
                 });
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcProxyAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
             return sp.GetRequiredService<T>();

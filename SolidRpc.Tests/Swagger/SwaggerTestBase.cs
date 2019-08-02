@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SolidProxy.GeneratorCastle;
-using SolidRpc.OpenApi.Proxy;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 namespace SolidRpc.Tests.Swagger

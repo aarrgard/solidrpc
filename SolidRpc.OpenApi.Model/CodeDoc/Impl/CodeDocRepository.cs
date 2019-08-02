@@ -18,8 +18,8 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         public ICodeDocMethod GetMethodDoc(MethodInfo methodInfo)
         {
             var assemblyDoc = GetAssemblyDoc(methodInfo.DeclaringType.Assembly);
-            var classDoc = assemblyDoc?.GetClassDocumentation(methodInfo.DeclaringType);
-            return classDoc?.GetMethodDocumentation(methodInfo);
+            var classDoc = assemblyDoc.GetClassDocumentation(methodInfo.DeclaringType);
+            return classDoc.GetMethodDocumentation(methodInfo);
         }
 
         private ICodeDocAssembly GetAsseblyDocInternal(Assembly arg)

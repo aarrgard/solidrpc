@@ -18,7 +18,8 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <returns></returns>
         protected string SelectSingleNode(XmlNode xmlNode, string path)
         {
-            return xmlNode.SelectSingleNode(path)?.InnerText ?? throw new Exception("Failed to find path {path}");
+            if (xmlNode == null) throw new ArgumentNullException(nameof(xmlNode));
+            return xmlNode.SelectSingleNode(path)?.InnerText ?? throw new Exception($"Failed to find path {path}");
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <summary>
         /// Return the method name
         /// </summary>
-        /// <param name="xmlAttribute"></param>
+        /// <param name="nameAttr"></param>
         /// <returns></returns>
         protected string GetMethodName(string nameAttr)
         {

@@ -13,25 +13,20 @@ namespace SolidRpc.Tests.Swagger.Binder
     /// </summary>
     public class BinderTest : TestBase
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public interface IHelloWorld
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
         {
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
             Task<string> WriteHello(CancellationToken cancellationToken);
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
         }
 
         /// <summary>
         /// 
         /// </summary>
         [Test]
-        public void TestBindHelloWorld()
+        public void TestBindHelloWorldWithoutComments()
         {
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
