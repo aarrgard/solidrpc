@@ -176,12 +176,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.HttpFunction">
+        <member name="T:SolidRpc.OpenApi.AzFunctionsV1.HttpFunction">
             <summary>
             Handles timer triggers
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.HttpFunction.Run(System.Net.Http.HttpRequestMessage,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV1.HttpFunction.Run(System.Net.Http.HttpRequestMessage,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Threading.CancellationToken)">
             <summary>
             Runs the trigger logic.
             </summary>

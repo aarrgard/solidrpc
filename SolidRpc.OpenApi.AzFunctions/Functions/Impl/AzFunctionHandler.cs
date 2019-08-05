@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using System;
@@ -16,6 +17,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
+        private static readonly string DefaultHttpRoutePrefix = "/api";
+        private string _routePrefix = null;
 
         /// <summary>
         /// Constructs a new instance.
@@ -73,6 +76,32 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public Type TimerTriggerHandler => TriggerHandlers.GetOrAdd($".TimerFunction", _ => FindTriggerHandler(_));
 
+        /// <summary>
+        /// Returns the route prefix.
+        /// </summary>
+        public string HttpRoutePrefix
+        {
+            get
+            {
+                if(_routePrefix != null)
+                {
+                    return _routePrefix;
+                }
+                var hostJson = new FileInfo(Path.Combine(BaseDir.FullName, "host.json"));
+                if(!hostJson.Exists)
+                {
+                    return DefaultHttpRoutePrefix;
+                }
+                using (var tr = hostJson.OpenText())
+                {
+                    var json = JObject.Parse(tr.ReadToEnd());
+                    var routePrefix = json.SelectToken("extensions.http.routePrefix")?.ToObject<string>();
+                    _routePrefix = routePrefix ?? DefaultHttpRoutePrefix;
+                }
+                return _routePrefix;
+            }
+        }
+
         private Type FindTriggerHandler(string typeSuffix)
         {
             var triggerHandler = FunctionAssembly.GetTypes().Where(o => o.FullName.EndsWith(typeSuffix)).FirstOrDefault();
@@ -122,7 +151,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public IAzTimerFunction CreateTimerFunction(string functionName)
         {
             var functionDir = new DirectoryInfo(Path.Combine(BaseDir.FullName, functionName));
-            var timerFunction = new AzTimerFunction(functionDir);
+            var timerFunction = new AzTimerFunction(this, functionDir);
             return timerFunction;
         }
 
@@ -188,31 +217,53 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies = new AzProxies();
             }
 
-            bool modified = false;
-            Functions.OfType<IAzHttpFunction>()
-                .Where(o => o.GeneratedBy.StartsWith(typeof(AzFunctionHandler).Assembly.GetName().Name))
+            var routes = Functions.OfType<IAzHttpFunction>()
                 .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
                 .Distinct()
                 .GroupBy(o => o.Route)
-                .ToList().ForEach(o =>
-                {
-                    var route = o.Key;
-                    var methods = o.Select(o2 => o2.Method).ToList();
+                .ToList();
 
-                    modified = CreateProxy(proxies.Proxies, $"/{route}", methods) || modified;
+            bool modified = false;
+            var staticContentFunctionPath = "/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent";
+
+            // remove the routes that are not available
+            foreach (var proxy in proxies.Proxies.ToList())
+            {
+                if(proxy.Key == staticContentFunctionPath)
+                {
+                    continue;
+                }
+                if(!routes.Any(o => $"/{o.Key}" == proxy.Value.MatchCondition.Route))
+                {
+                    modified = true;
+                    proxies.Proxies.Remove(proxy);
+                }
+            }
+
+            // add new routes
+            routes.ForEach(o =>
+                {
+                    var route = $"/{o.Key}";
+                    var methods = o.Select(o2 => o2.Method).ToList();
+                    var proxyModified = CreateProxy(proxies.Proxies, route, methods);
+                    if(proxyModified && !modified && !route.Equals(staticContentFunctionPath))
+                    {
+                        modified = true;
+                    }
                 });
 
-            proxies.Proxies.Remove("StaticContent");
-
-            proxies.Proxies["StaticContent"] = new AzProxy()
+            // convert the path "/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent"
+            // to match /{*path}
+            if (proxies.Proxies.TryGetValue(staticContentFunctionPath, out AzProxy staticContentProxy))
             {
-                MatchCondition = new AzProxyMatchCondition()
-                {
-                    Route = "/{*path}",
-                    Methods = new[] { "GET", "HEAD" }
-                },
-                BackendUri = $"http://%WEBSITE_HOSTNAME%/api/{typeof(ISolidRpcStaticContent).FullName.Replace('.', '/')}/{nameof(ISolidRpcStaticContent.GetStaticContent)}?path=/{{path}}"
-            };
+                staticContentProxy.MatchCondition.Route = $"/{{*path}}";
+                staticContentProxy.BackendUri = $"http://%WEBSITE_HOSTNAME%{HttpRoutePrefix}{staticContentFunctionPath}?path=/{{path}}";
+
+                proxies.Proxies.Remove(staticContentFunctionPath);
+                proxies.Proxies[staticContentFunctionPath] = staticContentProxy;
+            }
+
+
             var sw = new StringWriter();
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
@@ -245,8 +296,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
             proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, route);
             proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
-            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%/api{route}");
-            return modified;
+            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%{HttpRoutePrefix}{route}");
+            if(modified)
+            {
+                return true;
+            }
+            return false;
         }
 
         private T SetValue<T>(ref bool modified, T oldValue, T newValue)

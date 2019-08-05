@@ -256,21 +256,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.HttpFunction">
-            <summary>
-            Handles timer triggers
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.HttpFunction.Run(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
-            <summary>
-            Runs the trigger logic.
-            </summary>
-            <param name="req"></param>
-            <param name="log"></param>
-            <param name="serviceProvider"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.TimerFunction">
             <summary>
             Handles timer triggers
@@ -285,6 +270,21 @@
             <param name="serviceProvider"></param>
             <param name="serviceType"></param>
             <param name="methodName"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctionsV2.HttpFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.HttpFunction.Run(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="req"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

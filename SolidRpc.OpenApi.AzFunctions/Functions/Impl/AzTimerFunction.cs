@@ -11,9 +11,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     public class AzTimerFunction : AzFunction, IAzTimerFunction
     {
 
-        private static Function DefaultFunction()
+        private static Function DefaultFunction(IAzFunctionHandler functionHandler)
         {
-            throw new System.Exception();
             return new Function()
             {
                 GeneratedBy = $"{typeof(AzTimerFunction).Assembly.GetName().Name}-{typeof(AzTimerFunction).Assembly.GetName().Version}",
@@ -43,8 +42,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         Value = ""
                     }
                 },
-                //ScriptFile = $"../bin/{typeof(TriggerFunction).Assembly.GetName().Name}.dll",
-                //EntryPoint = $"{typeof(TriggerFunction).FullName}.Run"
+                ScriptFile = $"../bin/{functionHandler.TimerTriggerHandler.Assembly.GetName().Name}.dll",
+                EntryPoint = $"{functionHandler.TimerTriggerHandler.FullName}.Run"
             };
         }
 
@@ -52,8 +51,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Constructs a new timer function.
         /// </summary>
+        /// <param name="functionHandler"></param>
         /// <param name="functionDir"></param>
-        public AzTimerFunction(DirectoryInfo functionDir) : base(functionDir, DefaultFunction())
+        public AzTimerFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir) : base(functionDir, DefaultFunction(functionHandler))
         {
         }
 

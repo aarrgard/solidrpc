@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.WebJobs.Host;
+﻿using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AzFunctions
+namespace SolidRpc.OpenApi.AzFunctionsV1
 {
     /// <summary>
     /// Handles timer triggers
@@ -26,14 +25,19 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
+            // copy data from req to generic structure
+            // skip api prefix.
+            var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
             var solidReq = new SolidHttpRequest();
-            await solidReq.CopyFromAsync(req, "/api");
+            await solidReq.CopyFromAsync(req, funcHandler.HttpRoutePrefix);
 
+            // invoke the method
             var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
             var res = await methodInvoker.InvokeAsync(solidReq, cancellationToken);
 
             log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
 
+            /// return the response.
             var httpResponse = new HttpResponseMessage();
             await res.CopyToAsync(httpResponse);
             return httpResponse;

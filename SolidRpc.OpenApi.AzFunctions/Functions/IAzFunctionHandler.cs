@@ -14,6 +14,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         IEnumerable<IAzFunction> Functions { get; }
 
         /// <summary>
+        /// Returns the http route prefix.
+        /// </summary>
+        string HttpRoutePrefix { get; }
+
+        /// <summary>
         /// Creates a new timer function
         /// </summary>
         /// <returns></returns>
@@ -41,5 +46,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Returns the http trigger handler.
         /// </summary>
         Type HttpTriggerHandler { get; }
+
+        /// <summary>
+        /// Returns the timer trigger handler.
+        /// </summary>
+        Type TimerTriggerHandler { get; }
     }
 }

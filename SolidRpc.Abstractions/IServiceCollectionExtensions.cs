@@ -28,16 +28,24 @@ namespace Microsoft.Extensions.DependencyInjection
         public static TService GetSolidRpcServiceProvider<TService>(this IServiceCollection services) where TService:class
         {
             var service = services.SingleOrDefault(o => o.ServiceType == typeof(TService));
-            if (service == null || service.ImplementationInstance == null)
+            if (service == null)
             {
-                if(service != null)
-                {
-                    services.Remove(service);
-                }
                 service = new ServiceDescriptor(typeof(TService), SolidRpcAbstractionProviderAttribute.CreateInstance<TService>());
                 services.Add(service);
             }
-            return (TService)service.ImplementationInstance;
+            if (service.ImplementationInstance != null)
+            {
+                return (TService)service.ImplementationInstance;
+            }
+            if (service.ImplementationType != null)
+            {
+                var impl = Activator.CreateInstance(service.ImplementationType); // create before remove...
+                services.Remove(service);
+                service = new ServiceDescriptor(typeof(TService), impl);
+                services.Add(service);
+                return (TService)service.ImplementationInstance;
+            }
+            throw new Exception("Service is not a singleton service provider.");
         }
 
         /// <summary>

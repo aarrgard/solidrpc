@@ -118,7 +118,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public string Route
         {
-            get => TriggerBinding.Route;
+            get => TriggerBinding.Route ?? Name;
             set => TriggerBinding.Route = SetRouteArgs(value);
         }
 

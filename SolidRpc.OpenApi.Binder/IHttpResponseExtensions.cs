@@ -41,7 +41,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             if (!string.IsNullOrEmpty(source.ContentType))
             {
                 target.Content = new StreamContent(source.ResponseStream);
-                target.Content.Headers.ContentType = new MediaTypeHeaderValue(source.ContentType);
+                target.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(source.ContentType);
             }
             if (!string.IsNullOrEmpty(source.Filename))
             {

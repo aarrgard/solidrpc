@@ -61,6 +61,11 @@
             Returns the functions
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.HttpRoutePrefix">
+            <summary>
+            Returns the http route prefix.
+            </summary>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateTimerFunction(System.String)">
             <summary>
             Creates a new timer function
@@ -88,6 +93,11 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.HttpTriggerHandler">
             <summary>
             Returns the http trigger handler.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.TimerTriggerHandler">
+            <summary>
+            Returns the timer trigger handler.
             </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzHttpFunction">
@@ -234,6 +244,11 @@
             Returns the http trigger handler
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.HttpRoutePrefix">
+            <summary>
+            Returns the route prefix.
+            </summary>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateTimerFunction(System.String)">
             <summary>
             Creates a timer function
@@ -301,10 +316,11 @@
             Represents a timer function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(System.IO.DirectoryInfo)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.IO.DirectoryInfo)">
             <summary>
             Constructs a new timer function.
             </summary>
+            <param name="functionHandler"></param>
             <param name="functionDir"></param>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(System.IO.DirectoryInfo,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
