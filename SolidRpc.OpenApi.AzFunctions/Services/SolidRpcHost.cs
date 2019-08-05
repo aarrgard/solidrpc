@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.AzFunctions.Functions;
-using SolidRpc.OpenApi.Binder;
 
 namespace SolidRpc.OpenApi.AzFunctions.Services
 {
@@ -30,14 +27,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         public SolidRpcHost(
             ILogger<SolidRpcHost> logger, 
             IMethodBinderStore methodBinderStore,
-            IAzFunctionHandler functionHandler,
-            IContentTypeProvider contentTypeProvider)
+            IAzFunctionHandler functionHandler)
         {
             s_restartPending = false;
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             FunctionHandler = functionHandler;
-            ContentTypeProvider = contentTypeProvider;
         }
 
         private ILogger Logger { get; }
@@ -51,12 +46,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// The function handler
         /// </summary>
         public IAzFunctionHandler FunctionHandler { get; }
-
-        /// <summary>
-        /// The content type provider.
-        /// </summary>
-        public IContentTypeProvider ContentTypeProvider { get; }
-
+        
         private string CreateFunctionName(IMethodInfo o)
         {
             return $"{o.MethodBinder.Assembly.GetName().Name}.{o.OperationId}"

@@ -13,6 +13,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
         private static Function DefaultFunction()
         {
+            throw new System.Exception();
             return new Function()
             {
                 GeneratedBy = $"{typeof(AzTimerFunction).Assembly.GetName().Name}-{typeof(AzTimerFunction).Assembly.GetName().Version}",
@@ -42,8 +43,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         Value = ""
                     }
                 },
-                ScriptFile = $"../bin/{typeof(TriggerFunction).Assembly.GetName().Name}.dll",
-                EntryPoint = $"{typeof(TriggerFunction).FullName}.Run"
+                //ScriptFile = $"../bin/{typeof(TriggerFunction).Assembly.GetName().Name}.dll",
+                //EntryPoint = $"{typeof(TriggerFunction).FullName}.Run"
             };
         }
 

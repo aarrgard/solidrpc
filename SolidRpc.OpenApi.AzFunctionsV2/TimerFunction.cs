@@ -9,7 +9,7 @@ namespace SolidRpc.OpenApi.AzFunctions
     /// <summary>
     /// Handles timer triggers
     /// </summary>
-    public static class TriggerFunction
+    public static class TimerFunction
     {
         /// <summary>
         /// Runs the trigger logic.

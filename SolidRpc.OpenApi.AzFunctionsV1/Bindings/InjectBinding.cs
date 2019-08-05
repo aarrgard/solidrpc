@@ -55,7 +55,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
         /// 
         /// </summary>
         public bool FromAttribute => true;
-
+ 
         /// <summary>
         /// 
         /// </summary>
@@ -64,7 +64,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
         /// <returns></returns>
         public Task<IValueProvider> BindAsync(object value, ValueBindingContext context)
         {
-            var scopedServiceProvider = ScopedServiceProviders.GetOrAdd(context.FunctionInstanceId, (_) => ServiceScopeFactory.CreateScope()).ServiceProvider;
+            var scopedServiceProvider = ScopedServiceProviders.GetOrAdd(context.FunctionInstanceId, (_) => ServiceScopeFactory.CreateScope()).ServiceProvider; 
             return Task.FromResult<IValueProvider>(new InjectValueProvider(context.FunctionInstanceId, this, scopedServiceProvider));
         }
 

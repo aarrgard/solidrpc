@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using SolidRpc.OpenApi.AzFunctions.Functions;
+﻿using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
 using SolidRpc.OpenApi.Model.V2;
+using SolidRpc.Test.Petstore.AzFunctions;
 using System;
 using System.IO;
 using System.Linq;
@@ -27,16 +25,23 @@ namespace Microsoft.Extensions.DependencyInjection
             var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(AzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
             if(funcHandler == null)
             {
-                var assemblyLocattion = new FileInfo(typeof(AzFunctionHandler).Assembly.Location);
-                if (!assemblyLocattion.Exists)
+                var assemblyLocation = new FileInfo(typeof(AzFunctionHandler).Assembly.Location);
+                if (!assemblyLocation.Exists)
                 {
                     throw new Exception("Cannot find location of assebly.");
                 }
-                if (assemblyLocattion.Directory.Name != "bin")
+                if (assemblyLocation.Directory.Name != "bin")
                 {
                     throw new Exception("Assemblies are not placed in the bin folder.");
                 }
-                funcHandler = new AzFunctionHandler(assemblyLocattion.Directory.Parent);
+
+                var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
+                var triggerAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(o => o != typeof(StartupSolidRpcServices).Assembly)
+                    .Where(o => o.GetName().Name.StartsWith(assemblyNamePrefix))
+                    .Single();
+ 
+                funcHandler = new AzFunctionHandler(assemblyLocation.Directory.Parent, triggerAssembly);
                 services.AddSingleton(funcHandler);
             }
             return funcHandler;
@@ -92,6 +97,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var mi = GetMethodInfo(invocation);
             services.AddSolidRpcBinding(mi, CreateOpenApiConfig(mi));
+
+            var funcHandler = services.GetAzFunctionHandler();
+
             return services;
         }
 

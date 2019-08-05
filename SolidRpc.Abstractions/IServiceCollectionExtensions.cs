@@ -77,6 +77,8 @@ namespace Microsoft.Extensions.DependencyInjection
             LoadAssembly("SolidRpc.OpenApi.Binder");
             LoadAssembly("SolidRpc.OpenApi.AspNetCore", false);
             LoadAssembly("SolidRpc.OpenApi.AzFunctions", false);
+            LoadAssembly("SolidRpc.OpenApi.AzFunctionsV1Extension", false);
+            LoadAssembly("SolidRpc.OpenApi.AzFunctionsV2Extension", false);
             s_assembliesLoaded = true;
         }
 
@@ -209,7 +211,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
             // 
             var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
-            if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null)
+            if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null || serviceRegistration.ImplementationFactory != null)
             {
                 mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
             }

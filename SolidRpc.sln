@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.Impl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.Web", "SolidRpc.Test.Petstore.Web\SolidRpc.Test.Petstore.Web.csproj", "{4A26BE79-EA44-43AF-99C1-3306DCB1E751}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctionsV2", "SolidRpc.OpenApi.AzFunctionsV2\SolidRpc.OpenApi.AzFunctionsV2.csproj", "{851D2D87-9A7D-4F55-9D3F-C50A195FD60B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctionsV2Extension", "SolidRpc.OpenApi.AzFunctionsV2\SolidRpc.OpenApi.AzFunctionsV2Extension.csproj", "{851D2D87-9A7D-4F55-9D3F-C50A195FD60B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.SwaggerUI", "SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj", "{43CBD8CD-2871-490F-B96C-046B3EBC9E73}"
 EndProject
@@ -45,6 +45,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFunctionsV1", "SolidRpc.Test.Petstore.AzFunctionsV1\SolidRpc.Test.Petstore.AzFunctionsV1.csproj", "{E3F10992-6BC2-4052-907B-1F1880F6AE4E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFunctionsV2", "SolidRpc.Test.Petstore.AzFunctionsV2\SolidRpc.Test.Petstore.AzFunctionsV2.csproj", "{83EEFBD3-E96C-41B0-8A51-A1670E00E493}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctionsV1Extension", "SolidRpc.OpenApi.AzFunctionsV1\SolidRpc.OpenApi.AzFunctionsV1Extension.csproj", "{61B9E70B-C449-4CEB-9B20-8445657AB52B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctions", "SolidRpc.OpenApi.AzFunctions\SolidRpc.OpenApi.AzFunctions.csproj", "{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +120,14 @@ Global
 		{83EEFBD3-E96C-41B0-8A51-A1670E00E493}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83EEFBD3-E96C-41B0-8A51-A1670E00E493}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83EEFBD3-E96C-41B0-8A51-A1670E00E493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61B9E70B-C449-4CEB-9B20-8445657AB52B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61B9E70B-C449-4CEB-9B20-8445657AB52B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61B9E70B-C449-4CEB-9B20-8445657AB52B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61B9E70B-C449-4CEB-9B20-8445657AB52B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +149,8 @@ Global
 		{5EB34918-62D9-4903-AE87-5BEED5AB00E5} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{E3F10992-6BC2-4052-907B-1F1880F6AE4E} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
 		{83EEFBD3-E96C-41B0-8A51-A1670E00E493} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
+		{61B9E70B-C449-4CEB-9B20-8445657AB52B} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}

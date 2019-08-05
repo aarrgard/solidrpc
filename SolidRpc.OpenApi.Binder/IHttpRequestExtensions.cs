@@ -91,7 +91,8 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// </summary>
         /// <param name="target"></param>
         /// <param name="source"></param>
-        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source)
+        /// <param name="ignorePathPrefix"></param>
+        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source, string ignorePathPrefix = "")
         {
             target.Method = source.Method.Method;
             var uri = source.RequestUri;
@@ -105,7 +106,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             }
             target.HostAndPort = uri.Host;
             target.Path = uri.AbsolutePath;
-
+            if(target.Path.StartsWith(ignorePathPrefix))
+            {
+                target.Path = target.Path.Substring(ignorePathPrefix.Length);
+            }
             target.Query = (uri.Query.StartsWith("?") ? uri.Query.Substring(1) : uri.Query)
                 .Split('&')
                 .Select(o => o.Split('='))

@@ -1,0 +1,44 @@
+﻿using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.AspNetCore.Services;
+using SolidRpc.OpenApi.AzFunctions.Services;
+using System.Threading;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
+
+namespace SolidRpc.Test.Petstore.AzFunctions
+{
+    /// <summary>
+    /// Base class to configure the soldi rpc services
+    /// </summary>
+    public class StartupSolidRpcServices 
+    {
+
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services"></param>
+        public virtual void ConfigureServices(IServiceCollection services)
+        {
+            if(!services.Any(o => o.ServiceType == typeof(IConfiguration)))
+            {
+                var cb = new ConfigurationBuilder();
+                services.AddSingleton<IConfiguration>(cb.Build());
+            }
+            if(!services.Any(o => o.ServiceType == typeof(ILogger)))
+            {
+                services.AddLogging(o => {
+                    o.SetMinimumLevel(LogLevel.Trace);
+                    o.AddProvider(new TraceWriterLoggerProvider());
+                });
+            }
+            services.AddSolidRpcSingletonServices();
+            services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
+
+            services.AddAzFunctionHttp<ISolidRpcHost, SolidRpcHost>(o => o.CheckConfig(null, CancellationToken.None), ServiceLifetime.Singleton);
+            services.AddAzFunctionHttp<ISolidRpcStaticContent, SolidRpcStaticContent>(o => o.GetStaticContent(null, CancellationToken.None), ServiceLifetime.Singleton);
+        }
+    }
+}

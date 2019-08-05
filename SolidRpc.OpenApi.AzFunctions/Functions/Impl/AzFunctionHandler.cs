@@ -3,9 +3,11 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 {
@@ -14,19 +16,33 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
+
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
         /// <param name="baseDir"></param>
-        public AzFunctionHandler(DirectoryInfo baseDir)
+        /// <param name="functionAssembly"></param>
+        public AzFunctionHandler(DirectoryInfo baseDir, Assembly functionAssembly)
         {
             BaseDir = baseDir;
+            FunctionAssembly = functionAssembly;
+            TriggerHandlers = new ConcurrentDictionary<string, Type>();
         }
 
         /// <summary>
         /// The base dir
         /// </summary>
         public DirectoryInfo BaseDir { get; }
+
+        /// <summary>
+        /// The function assembly
+        /// </summary>
+        public Assembly FunctionAssembly { get; }
+
+        /// <summary>
+        /// Contains the trigger handlers
+        /// </summary>
+        public ConcurrentDictionary<string, Type> TriggerHandlers { get;}
 
         /// <summary>
         /// Create a new instance
@@ -47,6 +63,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
+        /// <summary>
+        /// Returns the http trigger handler
+        /// </summary>
+        public Type HttpTriggerHandler => TriggerHandlers.GetOrAdd($".HttpFunction", _ => FindTriggerHandler(_));
+
+        /// <summary>
+        /// Returns the http trigger handler
+        /// </summary>
+        public Type TimerTriggerHandler => TriggerHandlers.GetOrAdd($".TimerFunction", _ => FindTriggerHandler(_));
+
+        private Type FindTriggerHandler(string typeSuffix)
+        {
+            var triggerHandler = FunctionAssembly.GetTypes().Where(o => o.FullName.EndsWith(typeSuffix)).FirstOrDefault();
+            if (triggerHandler == null)
+            {
+                throw new Exception($"Cannot find type that ends with {typeSuffix} in assembly {FunctionAssembly.GetName().Name}");
+            }
+            return triggerHandler;
+        }
 
         private bool GetFunction(DirectoryInfo d, out IAzFunction func)
         {
@@ -107,7 +142,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public IAzHttpFunction CreateHttpFunction(string functionName)
         {
             var functionDir = new DirectoryInfo(Path.Combine(BaseDir.FullName, functionName));
-            var httpFunction = new AzHttpFunction(functionDir);
+            var httpFunction = new AzHttpFunction(this, functionDir);
             return httpFunction;
         }
 
@@ -131,23 +166,31 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public void SyncProxiesFile()
         {
-            AzProxies proxies;
+            AzProxies proxies = null;
             var fileInfo = new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json"));
-            using (var tr = fileInfo.OpenText())
+            if(fileInfo.Exists)
             {
-                using (JsonReader reader = new JsonTextReader(tr))
+                using (var tr = fileInfo.OpenText())
                 {
-                    var settings = new JsonSerializerSettings()
+                    using (JsonReader reader = new JsonTextReader(tr))
                     {
-                        ContractResolver = NewtonsoftContractResolver.Instance
-                    };
-                    var serializer = JsonSerializer.Create(settings);
-                    proxies = serializer.Deserialize<AzProxies>(reader);
+                        var settings = new JsonSerializerSettings()
+                        {
+                            ContractResolver = NewtonsoftContractResolver.Instance
+                        };
+                        var serializer = JsonSerializer.Create(settings);
+                        proxies = serializer.Deserialize<AzProxies>(reader);
+                    }
                 }
+            }
+            if(proxies == null)
+            {
+                proxies = new AzProxies();
             }
 
             bool modified = false;
             Functions.OfType<IAzHttpFunction>()
+                .Where(o => o.GeneratedBy.StartsWith(typeof(AzFunctionHandler).Assembly.GetName().Name))
                 .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
                 .Distinct()
                 .GroupBy(o => o.Route)
@@ -156,10 +199,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     var route = o.Key;
                     var methods = o.Select(o2 => o2.Method).ToList();
 
-                    modified = CreateProxy(proxies.Proxies, route, methods) || modified;
+                    modified = CreateProxy(proxies.Proxies, $"/{route}", methods) || modified;
                 });
 
             proxies.Proxies.Remove("StaticContent");
+
             proxies.Proxies["StaticContent"] = new AzProxy()
             {
                 MatchCondition = new AzProxyMatchCondition()
@@ -167,9 +211,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     Route = "/{*path}",
                     Methods = new[] { "GET", "HEAD" }
                 },
-                BackendUri = $"http://%WEBSITE_HOSTNAME%/{typeof(ISolidRpcStaticContent).FullName.Replace('.', '/')}/{nameof(ISolidRpcStaticContent.GetStaticContent)}?path=/{{path}}"
+                BackendUri = $"http://%WEBSITE_HOSTNAME%/api/{typeof(ISolidRpcStaticContent).FullName.Replace('.', '/')}/{nameof(ISolidRpcStaticContent.GetStaticContent)}?path=/{{path}}"
             };
-
             var sw = new StringWriter();
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
@@ -202,7 +245,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
             proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, route);
             proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
-            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%{route}");
+            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%/api{route}");
             return modified;
         }
 
@@ -210,6 +253,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         {
             if (ReferenceEquals(newValue, oldValue))
             {
+                return newValue;
+            }
+            if(oldValue == null || newValue == null)
+            {
+                modified = true;
                 return newValue;
             }
             if (oldValue.GetType() == newValue.GetType())

@@ -1,5 +1,4 @@
-﻿using SolidRpc.OpenApi.Model;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
     public class CSharpRepository : ICSharpRepository, ICSharpMember
     {
+        private ConcurrentDictionary<string, Type> s_systemTypes = new ConcurrentDictionary<string, Type>();
 
         public static (string, IList<string>, string) ReadType(string fullName)
         {
@@ -160,44 +160,50 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         }
         private Type GetSystemType(string fullName)
         {
-            var systemAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(o => !o.IsDynamic)
-                .Where(o => o.IsFullyTrusted);
-            foreach (Assembly a in systemAssemblies)
-            {
-                foreach (Type t in a.GetTypes())
+            return s_systemTypes.GetOrAdd(fullName, _ => {
+                var systemAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(o => !o.IsDynamic)
+                    .Where(o => o.IsFullyTrusted);
+                foreach (Assembly a in systemAssemblies)
                 {
-                    if(!t.FullName.StartsWith("System."))
+                    try
                     {
-                        continue;
+                        foreach (Type t in a.GetTypes())
+                        {
+                            if (!t.FullName.StartsWith("System."))
+                            {
+                                continue;
+                            }
+                            if (t.FullName == fullName)
+                            {
+                                return t;
+                            }
+                        }
                     }
-                    if(t.FullName == fullName)
-                    {
-                        return t;
-                    }
+                    catch { }
                 }
-            }
-            switch (fullName)
-            {
-                case "void":
-                    return typeof(void);
-                case "bool":
-                    return typeof(bool);
-                case "short":
-                    return typeof(short);
-                case "int":
-                    return typeof(int);
-                case "long":
-                    return typeof(long);
-                case "float":
-                    return typeof(float);
-                case "double":
-                    return typeof(double);
-                case "string":
-                    return typeof(string);
-                default:
-                    return null;
-            }
+                switch (fullName)
+                {
+                    case "void":
+                        return typeof(void);
+                    case "bool":
+                        return typeof(bool);
+                    case "short":
+                        return typeof(short);
+                    case "int":
+                        return typeof(int);
+                    case "long":
+                        return typeof(long);
+                    case "float":
+                        return typeof(float);
+                    case "double":
+                        return typeof(double);
+                    case "string":
+                        return typeof(string);
+                    default:
+                        return null;
+                }
+            });
         }
 
         public T GetParent<T>() where T : ICSharpMember

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions
 {
@@ -35,5 +36,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Puts all the functions in the proxies file.
         /// </summary>
         void SyncProxiesFile();
+
+        /// <summary>
+        /// Returns the http trigger handler.
+        /// </summary>
+        Type HttpTriggerHandler { get; }
     }
 }

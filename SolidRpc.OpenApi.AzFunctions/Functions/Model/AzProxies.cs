@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
 {
@@ -10,6 +8,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
     /// </summary>
     public class AzProxies
     {
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        public AzProxies()
+        {
+            Proxies = new Dictionary<string, AzProxy>();
+        }
         /// <summary>
         /// The schema
         /// </summary>

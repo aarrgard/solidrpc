@@ -105,7 +105,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         if(_rootSegment == null)
                         {
                             _rootSegment = new PathSegment();
-                            ProxyConfigurationStore.ProxyConfigurations
+                            ProxyConfigurationStore.ProxyConfigurations.ToList()
                                 .SelectMany(o => o.InvocationConfigurations)
                                 .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                                 .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())

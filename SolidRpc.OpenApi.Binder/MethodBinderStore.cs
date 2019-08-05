@@ -43,7 +43,7 @@ namespace SolidRpc.OpenApi.Binder
             {
                 if(_methodBinders == null)
                 {
-                    ConfigStore.ProxyConfigurations
+                    ConfigStore.ProxyConfigurations.ToList()
                         .SelectMany(o => o.InvocationConfigurations)
                         .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                         .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())

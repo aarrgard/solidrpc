@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
@@ -13,7 +12,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     public class AzHttpFunction : AzFunction, IAzHttpFunction
     {
 
-        private static Function DefaultFunction()
+        private static Function DefaultFunction(IAzFunctionHandler functionHandler)
         {
             return new Function()
             {
@@ -40,16 +39,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         Direction = "out"
                     }
                 },
-                ScriptFile = $"../bin/{typeof(HttpFunction).Assembly.GetName().Name}.dll",
-                EntryPoint = $"{typeof(HttpFunction).FullName}.Run"
+                ScriptFile = $"../bin/{functionHandler.HttpTriggerHandler.Assembly.GetName().Name}.dll",
+                EntryPoint = $"{functionHandler.HttpTriggerHandler.FullName}.Run"
             };
         }
 
         /// <summary>
         /// Constructs a new instance
         /// </summary>
+        /// <param name="functionHandler"></param>
         /// <param name="dir"></param>
-        public AzHttpFunction(DirectoryInfo dir) : base(dir, DefaultFunction())
+        public AzHttpFunction(IAzFunctionHandler functionHandler, DirectoryInfo dir) : base(dir, DefaultFunction(functionHandler))
         {
         }
 
@@ -65,7 +65,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         private string SetRouteArgs(string route)
         {
             var args = GetRouteArgs(ref route);
-            // get route arg names
             return route;
         }
 
@@ -96,7 +95,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         break;
 
                 }
-                sbRoute.Append(c);
+                if (sbRoute.Length > 0 || c != '/')
+                {
+                    sbRoute.Append(c);
+                }
+            }
+            if(sbRoute.Length == 0)
+            {
+                sbRoute.Append("/");
             }
             route = sbRoute.ToString();
             return args;
