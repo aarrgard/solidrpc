@@ -95,14 +95,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         break;
 
                 }
-                if (sbRoute.Length > 0 || c != '/')
-                {
-                    sbRoute.Append(c);
-                }
-            }
-            if(sbRoute.Length == 0)
-            {
-                sbRoute.Append("/");
+                sbRoute.Append(c);
             }
             route = sbRoute.ToString();
             return args;

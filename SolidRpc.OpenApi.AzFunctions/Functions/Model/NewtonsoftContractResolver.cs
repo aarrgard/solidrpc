@@ -2,6 +2,8 @@
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
 {
@@ -37,7 +39,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
 
         private JsonContract CreateContractInternal(Type type)
         {
-            if(type.Assembly != GetType().Assembly)
+            var enumType = GetKeyValuePairEnumerableType(type);
+            if(enumType != null)
+            {
+                var t = enumType.GetGenericArguments()[1];
+                var converterType = typeof(NewtonsoftKVEConverter<>).MakeGenericType(t);
+                var contract = new JsonObjectContract(type);
+                contract.Converter = (JsonConverter)Activator.CreateInstance(converterType, type);
+                return contract;
+            }
+
+            if (type.Assembly != GetType().Assembly)
             {
                 return base.CreateContract(type);
             }
@@ -45,10 +57,31 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
             {
                 return base.CreateContract(type);
             }
-            var converterType = typeof(NewtonsoftConverter<>).MakeGenericType(type);
-            var contract = new JsonObjectContract(type);
-            contract.Converter = (JsonConverter) Activator.CreateInstance(converterType);
-            return contract;
+            {
+                var converterType = typeof(NewtonsoftConverter<>).MakeGenericType(type);
+                var contract = new JsonObjectContract(type);
+                contract.Converter = (JsonConverter)Activator.CreateInstance(converterType);
+                return contract;
+            }
+        }
+
+        private Type GetKeyValuePairEnumerableType(Type type)
+        {
+            var interfaces = type.GetInterfaces();
+
+            var enumTypes = interfaces
+                .Where(o => o.IsGenericType)
+                .Where(o => o.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                .Select(o => o.GetGenericArguments()[0]);
+
+            if (!enumTypes.Any()) return null;
+            enumTypes = enumTypes.Where(o => o.IsGenericType);
+            if (!enumTypes.Any()) return null;
+            enumTypes = enumTypes.Where(o => o.GetGenericTypeDefinition() == typeof(KeyValuePair<,>));
+            if (!enumTypes.Any()) return null;
+
+            return enumTypes.Where(o => o.GetGenericArguments()[0] == typeof(string))
+                .FirstOrDefault();
         }
     }
 }

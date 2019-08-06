@@ -17,7 +17,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
-        private static readonly string DefaultHttpRoutePrefix = "/api";
+        /// <summary>
+        /// The default route prefix
+        /// </summary>
+        public static readonly string DefaultHttpRoutePrefix = "/api";
+
         private string _routePrefix = null;
 
         /// <summary>
@@ -77,6 +81,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public Type TimerTriggerHandler => TriggerHandlers.GetOrAdd($".TimerFunction", _ => FindTriggerHandler(_));
 
         /// <summary>
+        /// Returns the http scheme
+        /// </summary>
+        public string HttpScheme
+        {
+            get
+            {
+                return "http";
+            }
+        }
+
+        /// <summary>
         /// Returns the route prefix.
         /// </summary>
         public string HttpRoutePrefix
@@ -95,8 +110,29 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 using (var tr = hostJson.OpenText())
                 {
                     var json = JObject.Parse(tr.ReadToEnd());
+                    // V2 - use extensions
                     var routePrefix = json.SelectToken("extensions.http.routePrefix")?.ToObject<string>();
-                    _routePrefix = routePrefix ?? DefaultHttpRoutePrefix;
+                    if (string.IsNullOrEmpty(routePrefix))
+                    {
+                        // V1 - use http directly
+                        routePrefix = json.SelectToken("http.routePrefix")?.ToObject<string>();
+                    }
+                    if (routePrefix == null)
+                    {
+                        routePrefix = DefaultHttpRoutePrefix;
+                    }
+                    else if (string.IsNullOrEmpty(routePrefix))
+                    {
+                        // use empty prefix;
+                    }
+                    else
+                    {
+                        if (!routePrefix.StartsWith("/"))
+                        {
+                            routePrefix = $"/{routePrefix}";
+                        }
+                    }
+                    _routePrefix = routePrefix;
                 }
                 return _routePrefix;
             }
@@ -197,7 +233,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         {
             AzProxies proxies = null;
             var fileInfo = new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json"));
-            if(fileInfo.Exists)
+            if (fileInfo.Exists)
             {
                 using (var tr = fileInfo.OpenText())
                 {
@@ -212,10 +248,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     }
                 }
             }
-            if(proxies == null)
+            if (proxies == null)
             {
                 proxies = new AzProxies();
             }
+
+            //proxies.SetSortedProxies();
 
             var routes = Functions.OfType<IAzHttpFunction>()
                 .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
@@ -224,16 +262,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 .ToList();
 
             bool modified = false;
-            var staticContentFunctionPath = "/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent";
+            //var staticContentFunctionRoute = "N/A";
+            var staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent";
 
             // remove the routes that are not available
             foreach (var proxy in proxies.Proxies.ToList())
             {
-                if(proxy.Key == staticContentFunctionPath)
+                // keep static content route
+                if (proxy.Key == staticContentFunctionRoute)
                 {
                     continue;
                 }
-                if(!routes.Any(o => $"/{o.Key}" == proxy.Value.MatchCondition.Route))
+                // remove proxy if route prefix is null
+                if (string.IsNullOrEmpty(HttpRoutePrefix))
+                {
+                    modified = true;
+                    proxies.Proxies.Remove(proxy);
+                }
+                // remove route if no function
+                if (!routes.Any(o => $"/{o.Key}" == proxy.Value.MatchCondition.Route))
                 {
                     modified = true;
                     proxies.Proxies.Remove(proxy);
@@ -242,25 +289,35 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
             // add new routes
             routes.ForEach(o =>
+            {
+                if (o.Key == staticContentFunctionRoute)
                 {
-                    var route = $"/{o.Key}";
-                    var methods = o.Select(o2 => o2.Method).ToList();
-                    var proxyModified = CreateProxy(proxies.Proxies, route, methods);
-                    if(proxyModified && !modified && !route.Equals(staticContentFunctionPath))
-                    {
-                        modified = true;
-                    }
-                });
+                    // use this route
+                }
+                else if (string.IsNullOrEmpty(HttpRoutePrefix))
+                {
+                    return;
+                }
+
+                var methods = o.Select(o2 => o2.Method).ToList();
+                var proxyModified = CreateProxy(proxies.Proxies, o.Key, methods);
+                if (proxyModified && !modified && !o.Key.Equals(staticContentFunctionRoute))
+                {
+                    modified = true;
+                }
+            });
 
             // convert the path "/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent"
             // to match /{*path}
-            if (proxies.Proxies.TryGetValue(staticContentFunctionPath, out AzProxy staticContentProxy))
+            var staticContentProxy = proxies.Proxies.FirstOrDefault(o => o.Key == staticContentFunctionRoute);
+            if (!string.IsNullOrEmpty(staticContentProxy.Key))
             {
-                staticContentProxy.MatchCondition.Route = $"/{{*path}}";
-                staticContentProxy.BackendUri = $"http://%WEBSITE_HOSTNAME%{HttpRoutePrefix}{staticContentFunctionPath}?path=/{{path}}";
+                staticContentProxy.Value.MatchCondition.Route = $"/{{*path}}";
+                staticContentProxy.Value.BackendUri = $"{HttpScheme}://%WEBSITE_HOSTNAME%{HttpRoutePrefix}/{staticContentFunctionRoute}?path=/{{path}}";
 
-                proxies.Proxies.Remove(staticContentFunctionPath);
-                proxies.Proxies[staticContentFunctionPath] = staticContentProxy;
+                // we want the wildcard proxy to be last.
+                proxies.Proxies.Remove(staticContentProxy);
+                proxies.Proxies.Add(staticContentProxy);
             }
 
 
@@ -285,18 +342,30 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
-        private bool CreateProxy(IDictionary<string, AzProxy> proxies, string route, IEnumerable<string> methods)
+
+        public string CreateRoute(string route)
         {
-            AzProxy proxy;
-            if (!proxies.TryGetValue(route, out proxy))
+            if (route.StartsWith("/"))
             {
-                proxies[route] = proxy = new AzProxy();
+                return route.Substring(1);
             }
+            return route;
+        }
+
+        private bool CreateProxy(IList<KeyValuePair<string, AzProxy>> proxies, string route, IEnumerable<string> methods)
+        {
+            var proxyKV = proxies.FirstOrDefault(o => o.Key == route);
+            if (string.IsNullOrEmpty(proxyKV.Key))
+            {
+                proxyKV = new KeyValuePair<string, AzProxy>(route, new AzProxy());
+                proxies.Add(proxyKV);
+            }
+            var proxy = proxyKV.Value;
             bool modified = false;
             proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
-            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, route);
+            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, $"/{route}");
             proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
-            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%{HttpRoutePrefix}{route}");
+            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, $"http://%WEBSITE_HOSTNAME%{HttpRoutePrefix}/{route}");
             if(modified)
             {
                 return true;

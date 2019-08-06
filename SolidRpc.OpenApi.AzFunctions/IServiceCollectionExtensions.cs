@@ -94,7 +94,24 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddAzFunctionHttp<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TService : class where TImpl : class, TService
         {
             services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
+            return services.AddAzFunctionHttpInternal(invocation);
+        }
 
+        /// <summary>
+        /// Adds an http function
+        /// </summary>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="invocation"></param>
+        /// <param name="implementationFactory"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddAzFunctionHttp<TService>(this IServiceCollection services, Expression<Action<TService>> invocation, Func<TService> implementationFactory) where TService : class
+        {
+            services.AddServiceIfMissing<TService>(implementationFactory);
+            return services.AddAzFunctionHttpInternal(invocation);
+        }
+        private static IServiceCollection AddAzFunctionHttpInternal<TService>(this IServiceCollection services, Expression<Action<TService>> invocation) where TService : class
+        {
             var mi = GetMethodInfo(invocation);
             services.AddSolidRpcBinding(mi, CreateOpenApiConfig(mi));
 
@@ -119,11 +136,34 @@ namespace Microsoft.Extensions.DependencyInjection
                 service = new ServiceDescriptor(typeof(TService), typeof(TImpl), serviceLifetime);
                 services.Add(service);
             }
-            if(service.Lifetime != serviceLifetime)
+            if (service.Lifetime != serviceLifetime)
             {
                 throw new Exception($"Cannot change service lifetime from {service.Lifetime} to {serviceLifetime}");
             }
-            return services; 
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the transient service if not registered
+        /// </summary>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="implementationFactory"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddServiceIfMissing<TService>(this IServiceCollection services, Func<TService> implementationFactory) where TService : class 
+        {
+            var service = services.FirstOrDefault(o => o.ServiceType == typeof(TService));
+            if (service == null)
+            {
+                var impl = implementationFactory();
+                service = new ServiceDescriptor(typeof(TService), impl);
+                services.Add(service);
+            }
+            if (service.Lifetime != ServiceLifetime.Singleton)
+            {
+                throw new Exception($"Cannot change service lifetime from {service.Lifetime} to {ServiceLifetime.Singleton}");
+            }
+            return services;
         }
 
         private static MethodInfo GetMethodInfo(LambdaExpression expr)

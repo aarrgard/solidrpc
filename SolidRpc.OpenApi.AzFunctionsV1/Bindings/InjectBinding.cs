@@ -15,7 +15,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        /// <param name="serviceScopeFactory"></param>
+        /// <param name="injectBindingProvider"></param>
         /// <param name="name"></param>
         /// <param name="type"></param>
         public InjectBinding(InjectBindingProvider injectBindingProvider, string name, Type type)

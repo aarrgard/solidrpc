@@ -61,6 +61,11 @@
             Returns the functions
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.HttpScheme">
+            <summary>
+            Returns the http scheme.
+            </summary>
+        </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.HttpRoutePrefix">
             <summary>
             Returns the http route prefix.
@@ -100,6 +105,7 @@
             Returns the timer trigger handler.
             </summary>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateRoute(System.String)" -->
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzHttpFunction">
             <summary>
             Represents a timer function
@@ -207,6 +213,11 @@
             The function handler
             </summary>
         </member>
+        <member name="F:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.DefaultHttpRoutePrefix">
+            <summary>
+            The default route prefix
+            </summary>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.#ctor(System.IO.DirectoryInfo,System.Reflection.Assembly)">
             <summary>
             Constructs a new instance.
@@ -242,6 +253,11 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.TimerTriggerHandler">
             <summary>
             Returns the http trigger handler
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.HttpScheme">
+            <summary>
+            Returns the http scheme
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.HttpRoutePrefix">
@@ -553,6 +569,47 @@
             <param name="value"></param>
             <param name="serializer"></param>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Model.NewtonsoftKVEConverter`1">
+            <summary>
+            The json converter.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Model.NewtonsoftKVEConverter`1.#ctor(System.Type)">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.NewtonsoftKVEConverter`1.CollectionType">
+            <summary>
+            The collection type.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Model.NewtonsoftKVEConverter`1.CanConvert(System.Type)">
+            <summary>
+            
+            </summary>
+            <param name="objectType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Model.NewtonsoftKVEConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="reader"></param>
+            <param name="objectType"></param>
+            <param name="existingValue"></param>
+            <param name="serializer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Model.NewtonsoftKVEConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            
+            </summary>
+            <param name="writer"></param>
+            <param name="value"></param>
+            <param name="serializer"></param>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Services.ISolidRpcHost">
             <summary>
             Interface that is used to setup the solid rpc infrastructure
@@ -578,7 +635,6 @@
             <param name="logger"></param>
             <param name="methodBinderStore"></param>
             <param name="functionHandler"></param>
-            <param name="contentTypeProvider"></param>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost.MethodBinderStore">
             <summary>
@@ -648,6 +704,16 @@
             <param name="invocation"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddAzFunctionHttp``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Linq.Expressions.Expression{System.Action{``0}},System.Func{``0})">
+            <summary>
+            Adds an http function
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <param name="services"></param>
+            <param name="invocation"></param>
+            <param name="implementationFactory"></param>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddServiceIfMissing``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
             <summary>
             Adds the transient service if not registered
@@ -656,6 +722,15 @@
             <typeparam name="TImpl"></typeparam>
             <param name="services"></param>
             <param name="serviceLifetime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddServiceIfMissing``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{``0})">
+            <summary>
+            Adds the transient service if not registered
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <param name="services"></param>
+            <param name="implementationFactory"></param>
             <returns></returns>
         </member>
     </members>

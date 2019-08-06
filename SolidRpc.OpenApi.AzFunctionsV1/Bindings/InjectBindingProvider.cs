@@ -37,7 +37,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
         /// <returns></returns>
         public Task<IBinding> TryCreateAsync(BindingProviderContext context)
         {
-            context.Parameter.Member.DeclaringType.Assembly.GetCustomAttributes(true).OfType<SolidRpcServiceCollectionAttribute>();
+            context.Parameter.Member.DeclaringType.Assembly.GetCustomAttributes(true).OfType<SolidRpcServiceCollectionAttribute>().ToList();
             return Task.FromResult<IBinding>(new InjectBinding(this, context.Parameter.Name, context.Parameter.ParameterType));
         }
     }

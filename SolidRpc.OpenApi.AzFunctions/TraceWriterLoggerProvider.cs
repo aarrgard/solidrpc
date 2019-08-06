@@ -20,17 +20,17 @@ namespace SolidRpc.Test.Petstore.AzFunctions
 
             public IDisposable BeginScope<TState>(TState state)
             {
-                throw new NotImplementedException();
+                return null;
             }
 
             public bool IsEnabled(LogLevel logLevel)
             {
-                throw new NotImplementedException();
+                return true;
             }
 
             public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             {
-                Console.WriteLine("TraceWriter:"+ formatter(state, exception));
+                //Console.WriteLine("TraceWriter:"+ formatter(state, exception));
             }
         }
 

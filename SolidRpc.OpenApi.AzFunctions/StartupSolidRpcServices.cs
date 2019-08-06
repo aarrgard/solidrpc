@@ -25,6 +25,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             if(!services.Any(o => o.ServiceType == typeof(IConfiguration)))
             {
                 var cb = new ConfigurationBuilder();
+                cb.AddEnvironmentVariables();
                 services.AddSingleton<IConfiguration>(cb.Build());
             }
             if(!services.Any(o => o.ServiceType == typeof(ILogger)))
@@ -38,7 +39,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
 
             services.AddAzFunctionHttp<ISolidRpcHost, SolidRpcHost>(o => o.CheckConfig(null, CancellationToken.None), ServiceLifetime.Singleton);
-            services.AddAzFunctionHttp<ISolidRpcStaticContent, SolidRpcStaticContent>(o => o.GetStaticContent(null, CancellationToken.None), ServiceLifetime.Singleton);
+            services.AddAzFunctionHttp<ISolidRpcStaticContent>(o => o.GetStaticContent(null, CancellationToken.None), () => new SolidRpcStaticContent());
         }
     }
 }

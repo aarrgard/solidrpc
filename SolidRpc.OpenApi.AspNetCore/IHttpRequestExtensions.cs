@@ -37,13 +37,18 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="target"></param>
         /// <param name="source"></param>
+        /// <param name="ignorePathPrefix"></param>
         /// <returns></returns>
-        public static async Task CopyFromAsync(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source)
+        public static async Task CopyFromAsync(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source, string ignorePathPrefix = "")
         {
             target.Scheme = source.Scheme;
             target.Method = source.Method;
             target.HostAndPort = source.Host.ToString();
             target.Path = $"{source.PathBase}{source.Path}";
+            if(target.Path.StartsWith(ignorePathPrefix))
+            {
+                target.Path = target.Path.Substring(ignorePathPrefix.Length);
+            }
 
             // extract headers
             var headerList = new List<IHttpRequestData>();

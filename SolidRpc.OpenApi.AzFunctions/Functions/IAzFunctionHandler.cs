@@ -14,6 +14,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         IEnumerable<IAzFunction> Functions { get; }
 
         /// <summary>
+        /// Returns the http scheme.
+        /// </summary>
+        string HttpScheme { get; }
+
+        /// <summary>
         /// Returns the http route prefix.
         /// </summary>
         string HttpRoutePrefix { get; }
@@ -51,5 +56,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Returns the timer trigger handler.
         /// </summary>
         Type TimerTriggerHandler { get; }
+
+        /// <summary>
+        /// Creates a vaid route from supplied route. V1 & V2 handles initial
+        /// slashes differently.
+        /// </summary>
+        /// <param name="route"></param>
+        /// <returns></returns>
+        string CreateRoute(string route);
     }
 }

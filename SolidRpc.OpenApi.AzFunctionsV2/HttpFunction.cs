@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Threading;
@@ -29,10 +30,12 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
             try
             {
                 req.HttpContext.RequestServices = serviceProvider;
-                var methodInvoker = req.HttpContext.RequestServices.GetRequiredService<IMethodInvoker>();
-                var solidReq = new SolidHttpRequest();
-                await solidReq.CopyFromAsync(req);
 
+                var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
+                var solidReq = new SolidHttpRequest();
+                await solidReq.CopyFromAsync(req, funcHandler.HttpRoutePrefix);
+
+                var methodInvoker = req.HttpContext.RequestServices.GetRequiredService<IMethodInvoker>();
                 var res = await methodInvoker.InvokeAsync(solidReq, req.HttpContext.RequestAborted);
 
                 log.LogInformation($"C# HTTP trigger function processed a request - {res.StatusCode}");

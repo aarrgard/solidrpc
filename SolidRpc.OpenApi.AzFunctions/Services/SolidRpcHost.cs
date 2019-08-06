@@ -23,7 +23,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <param name="logger"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="functionHandler"></param>
-        /// <param name="contentTypeProvider"></param>
         public SolidRpcHost(
             ILogger<SolidRpcHost> logger, 
             IMethodBinderStore methodBinderStore,
@@ -131,7 +130,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     httpFunction = FunctionHandler.CreateHttpFunction(functionName);
                 }
                 httpFunction.AuthLevel = "anonymous";
-                httpFunction.Route = path;
+                httpFunction.Route = FunctionHandler.CreateRoute(path);
                 httpFunction.Methods = pathsAndMethods[path];
                 if (httpFunction.Save())
                 {

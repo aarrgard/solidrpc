@@ -18,7 +18,7 @@
             <summary>
             Constructs a new instance
             </summary>
-            <param name="serviceScopeFactory"></param>
+            <param name="injectBindingProvider"></param>
             <param name="name"></param>
             <param name="type"></param>
         </member>

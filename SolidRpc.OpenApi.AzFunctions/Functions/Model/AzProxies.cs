@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
@@ -13,8 +14,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// </summary>
         public AzProxies()
         {
-            Proxies = new Dictionary<string, AzProxy>();
+            Proxies = new List<KeyValuePair<string, AzProxy>>();
         }
+
         /// <summary>
         /// The schema
         /// </summary>
@@ -25,7 +27,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// The schema
         /// </summary>
         [DataMember(Name = "proxies", EmitDefaultValue = false)]
-        public IDictionary<string, AzProxy> Proxies { get; set; }
+        public IList<KeyValuePair<string, AzProxy>> Proxies { get; set; }
 
+        //public void SetSortedProxies()
+        //{
+        //    var sortedProxies = Proxies as OrderedDictionary<string, AzProxy>;
+        //    if(sortedProxies == null)
+        //    {
+        //        sortedProxies = new OrderedDictionary<string, AzProxy>(Proxies);
+        //        Proxies = sortedProxies;
+        //    }
+        //}
     }
 }
