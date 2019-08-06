@@ -8,10 +8,6 @@
     <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="microsoft.aspnetcore.mvc.core" Version="2.2.5" />

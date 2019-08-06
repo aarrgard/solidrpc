@@ -1,4 +1,5 @@
 ﻿using SolidProxy.Core.Configuration.Builder;
+using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -17,6 +18,13 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        private class DummyServiceProvider : IServiceProvider
+        {
+            public object GetService(Type serviceType)
+            {
+                throw new NotImplementedException();
+            }
+        }
         private static bool s_assembliesLoaded = false;
 
         /// <summary>
@@ -45,7 +53,23 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.Add(service);
                 return (TService)service.ImplementationInstance;
             }
-            throw new Exception("Service is not a singleton service provider.");
+            var proxied = services.SingleOrDefault(o => o.ServiceType == typeof(ISolidProxied<TService>));
+            if(proxied != null)
+            {
+                if (proxied.ImplementationInstance != null)
+                {
+                    return ((ISolidProxied<TService>)proxied.ImplementationInstance).Service;
+                }
+                else if (proxied.ImplementationFactory != null)
+                {
+                    return ((ISolidProxied<TService>)proxied.ImplementationFactory(new DummyServiceProvider())).Service;
+                }
+                else
+                {
+                    throw new Exception("!!!");
+                }
+            }
+            throw new Exception($"Cannot find singleton service for {typeof(TService)}.");
         }
 
         /// <summary>
