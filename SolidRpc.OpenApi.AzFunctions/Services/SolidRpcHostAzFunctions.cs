@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 
 namespace SolidRpc.OpenApi.AzFunctions.Services
@@ -13,7 +16,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     /// <summary>
     /// The setup class
     /// </summary>
-    public class SolidRpcHost : ISolidRpcHost
+    public class SolidRpcHostAzFunctions : SolidRpcHost
     {
         private static bool s_restartPending = false;
 
@@ -23,10 +26,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <param name="logger"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="functionHandler"></param>
-        public SolidRpcHost(
+        public SolidRpcHostAzFunctions(
             ILogger<SolidRpcHost> logger, 
+            IConfiguration configuration,
             IMethodBinderStore methodBinderStore,
             IAzFunctionHandler functionHandler)
+            : base(logger, configuration)
         {
             s_restartPending = false;
             Logger = logger;
@@ -55,10 +60,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <summary>
         /// Perfomes the setup.
         /// </summary>
-        /// <param name="configurationHash"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task CheckConfig(string configurationHash, CancellationToken cancellationToken = default(CancellationToken))
+        public override Task IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
             var paths = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodInfos)

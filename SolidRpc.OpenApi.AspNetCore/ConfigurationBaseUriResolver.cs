@@ -47,6 +47,7 @@ namespace SolidRpc.OpenApi.Binder
                             }
                             else
                             {
+                                Scheme = "http";
                                 Host = HostString.FromUriComponent(hostString);
                             }
                             break;

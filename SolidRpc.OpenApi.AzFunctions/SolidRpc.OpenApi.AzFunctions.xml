@@ -213,11 +213,6 @@
             The function handler
             </summary>
         </member>
-        <member name="F:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.DefaultHttpRoutePrefix">
-            <summary>
-            The default route prefix
-            </summary>
-        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.#ctor(System.IO.DirectoryInfo,System.Reflection.Assembly)">
             <summary>
             Constructs a new instance.
@@ -610,25 +605,12 @@
             <param name="value"></param>
             <param name="serializer"></param>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.ISolidRpcHost">
-            <summary>
-            Interface that is used to setup the solid rpc infrastructure
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ISolidRpcHost.CheckConfig(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Performes the initialization work
-            </summary>
-            <param name="configurationHash"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost">
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions">
             <summary>
             The setup class
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost},SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
             <summary>
             Constructs a new instance
             </summary>
@@ -636,21 +618,20 @@
             <param name="methodBinderStore"></param>
             <param name="functionHandler"></param>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost.MethodBinderStore">
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.MethodBinderStore">
             <summary>
             The config store
             </summary>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost.FunctionHandler">
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.FunctionHandler">
             <summary>
             The function handler
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHost.CheckConfig(System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.IsAlive(System.Threading.CancellationToken)">
             <summary>
             Perfomes the setup.
             </summary>
-            <param name="configurationHash"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

@@ -1,0 +1,67 @@
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SolidRpc.OpenApi.AspNetCore.Services
+{
+    /// <summary>
+    /// Implements the logic for a solid rpc host
+    /// </summary>
+    public class SolidRpcHost : ISolidRpcHost
+    {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="configuration"></param>
+        public SolidRpcHost(ILogger<SolidRpcHost> logger, IConfiguration configuration)
+        {
+            HostId = Guid.NewGuid();
+            Logger = logger;
+            Configuration = configuration;
+        }
+
+        private ILogger Logger { get; }
+        private IConfiguration Configuration { get; }
+        private Guid HostId { get; }
+
+        /// <summary>
+        /// Returns the host configuration
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<IEnumerable<NameValuePair>> GetHostConfiguration(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            foreach(var o in Configuration.GetChildren())
+            {
+
+            }
+            return Task.FromResult<IEnumerable<NameValuePair>>(new NameValuePair[0]);
+        }
+
+        /// <summary>
+        /// Returns the host id
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<Guid> GetHostId(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(HostId);
+        }
+
+        /// <summary>
+        /// determines if this host is alive.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public virtual Task IsAlive(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.CompletedTask;
+        }
+    }
+}

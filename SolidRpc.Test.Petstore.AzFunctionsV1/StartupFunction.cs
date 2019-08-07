@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV1;
@@ -11,7 +12,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
         [FunctionName("StartupTimer")]
         public static Task RunTimer([TimerTrigger("0 0 0 1 1 0", RunOnStartup = true)] TimerInfo timerInfo, [Inject] ISolidRpcHost startup)
         {
-            return startup.CheckConfig();
+            return startup.IsAlive();
         }
 
         //[FunctionName("StartupHttp")]

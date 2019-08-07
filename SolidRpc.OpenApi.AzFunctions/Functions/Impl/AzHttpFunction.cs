@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 
@@ -97,7 +98,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 }
                 sbRoute.Append(c);
             }
+
             route = sbRoute.ToString();
+            // let the last arg get all the data
+            var lastArg = args.LastOrDefault();
+            if(lastArg != null && route.EndsWith($"/{{{lastArg}}}"))
+            {
+                route = route.Replace($"/{{{lastArg}}}", $"/{{*{lastArg}}}");
+            }
             return args;
         }
 

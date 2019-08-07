@@ -38,7 +38,11 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             services.AddSolidRpcSingletonServices();
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
 
-            services.AddAzFunctionHttp<ISolidRpcHost, SolidRpcHost>(o => o.CheckConfig(null, CancellationToken.None), ServiceLifetime.Singleton);
+            services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
+            var openApiParser = services.GetSolidRpcOpenApiParser();
+            var solidRpcHostSpec = openApiParser.CreateSpecification(typeof(ISolidRpcHost)).WriteAsJsonString();
+            services.AddSolidRpcBindings(typeof(ISolidRpcHost), typeof(SolidRpcHostAzFunctions), solidRpcHostSpec);
+
             services.AddAzFunctionHttp<ISolidRpcStaticContent>(o => o.GetStaticContent(null, CancellationToken.None), () => new SolidRpcStaticContent());
         }
     }

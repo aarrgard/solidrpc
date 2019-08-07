@@ -113,7 +113,8 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IServiceCollection AddAzFunctionHttpInternal<TService>(this IServiceCollection services, Expression<Action<TService>> invocation) where TService : class
         {
             var mi = GetMethodInfo(invocation);
-            services.AddSolidRpcBinding(mi, CreateOpenApiConfig(mi));
+            var openApiParser = services.GetSolidRpcOpenApiParser();
+            services.AddSolidRpcBinding(mi, openApiParser.CreateSpecification(mi).WriteAsJsonString());
 
             var funcHandler = services.GetAzFunctionHandler();
 
@@ -173,26 +174,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 return mce.Method;
             }
             throw new Exception("expression should be a method call.");
-        }
-
-        private static string CreateOpenApiConfig(MethodInfo mi)
-        {
-            var so = new SwaggerObject(null)
-            {
-                BasePath = $"/{mi.DeclaringType.FullName.Replace('.', '/')}",
-            };
-
-            var op = so.GetGetOperation($"/{mi.Name}");
-            op.OperationId = mi.Name;
-
-            foreach(var p in mi.GetParameters())
-            {
-                var param = op.GetParameter(p.Name);
-                param.SetTypeInfo(p.ParameterType);
-            }
-            op.GetResponse("200").SetTypeInfo(mi.ReturnType);
-
-            return so.WriteAsJsonString();
         }
     }
 }
