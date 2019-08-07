@@ -37,6 +37,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             }
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
+            services.GetAzFunctionHandler();
 
             services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
             var openApiParser = services.GetSolidRpcOpenApiParser();

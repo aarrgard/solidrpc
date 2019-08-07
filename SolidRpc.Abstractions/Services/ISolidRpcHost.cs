@@ -17,7 +17,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Security(Public = true)]
+        [Security(nameof(SolidRpcHostPermission))]
         Task<Guid> GetHostId(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Security(nameof(SolidRpcAdminPermission))]
+        [Security(nameof(SolidRpcHostPermission))]
         Task<IEnumerable<NameValuePair>> GetHostConfiguration(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Security(nameof(SolidRpcAdminPermission))]
+        [Security(nameof(SolidRpcHostPermission))]
         Task IsAlive(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

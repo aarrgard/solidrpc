@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions
 {
@@ -56,6 +57,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Returns the timer trigger handler.
         /// </summary>
         Type TimerTriggerHandler { get; }
+
+        /// <summary>
+        /// The location of the functions app
+        /// </summary>
+        DirectoryInfo BaseDir { get; }
+
+        /// <summary>
+        /// The development directory.
+        /// </summary>
+        DirectoryInfo DevDir { get; }
 
         /// <summary>
         /// Creates a vaid route from supplied route. V1 & V2 handles initial

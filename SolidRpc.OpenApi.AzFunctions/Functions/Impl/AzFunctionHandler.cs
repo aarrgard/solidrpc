@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using System;
 using System.Collections;
@@ -37,6 +36,31 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// The base dir
         /// </summary>
         public DirectoryInfo BaseDir { get; }
+
+        /// <summary>
+        /// Returns the dev dir if it exists
+        /// </summary>
+        public DirectoryInfo DevDir
+        {
+            get
+            {
+                var devDir = BaseDir.Parent;
+                while(devDir != null)
+                {
+                    if (!devDir.Exists)
+                    {
+                        return null;
+                    }
+                    if(new FileInfo(Path.Combine(devDir.FullName,"host.json")).Exists)
+                    {
+                        return null;
+                        //return devDir;
+                    }
+                    devDir = devDir.Parent;
+                }
+                return devDir;
+            }
+        }
 
         /// <summary>
         /// The function assembly
@@ -159,11 +183,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 var function = JsonConvert.DeserializeObject<Function>(strFunctionJson);
                 if (function.Bindings.Any(o => o.Type == "httpTrigger"))
                 {
-                    func = new AzHttpFunction(d, function);
+                    func = new AzHttpFunction(this, d.Name, function);
                 }
                 else if (function.Bindings.Any(o => o.Type == "timerTrigger"))
                 {
-                    func = new AzTimerFunction(d, function);
+                    func = new AzTimerFunction(this, d.Name, function);
                 }
                 else
                 {
@@ -183,8 +207,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <returns></returns>
         public IAzTimerFunction CreateTimerFunction(string functionName)
         {
-            var functionDir = new DirectoryInfo(Path.Combine(BaseDir.FullName, functionName));
-            var timerFunction = new AzTimerFunction(this, functionDir);
+            var timerFunction = new AzTimerFunction(this, functionName);
             return timerFunction;
         }
 
@@ -203,8 +226,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <returns></returns>
         public IAzHttpFunction CreateHttpFunction(string functionName)
         {
-            var functionDir = new DirectoryInfo(Path.Combine(BaseDir.FullName, functionName));
-            var httpFunction = new AzHttpFunction(this, functionDir);
+            var httpFunction = new AzHttpFunction(this, functionName);
             return httpFunction;
         }
 
@@ -228,11 +250,18 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public void SyncProxiesFile()
         {
-            AzProxies proxies = null;
-            var fileInfo = new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json"));
-            if (fileInfo.Exists)
+            SyncProxiesFile(new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json")));
+            if(DevDir.Exists)
             {
-                using (var tr = fileInfo.OpenText())
+                SyncProxiesFile(new FileInfo(Path.Combine(DevDir.FullName, "proxies.json")));
+            }
+        }
+        private void SyncProxiesFile(FileInfo proxiesFile)
+        {
+            AzProxies proxies = null;
+            if (proxiesFile.Exists)
+            {
+                using (var tr = proxiesFile.OpenText())
                 {
                     using (JsonReader reader = new JsonTextReader(tr))
                     {
@@ -326,7 +355,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
             if(modified)
             {
-                using (var fs = fileInfo.CreateText())
+                using (var fs = proxiesFile.CreateText())
                 {
                     fs.Write(sw.ToString());
                 }

@@ -46,7 +46,7 @@
             Removes this function.
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction.Save(System.Boolean)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction.Save">
             <summary>
             Writes the run.csx and function.json files
             </summary>
@@ -105,6 +105,16 @@
             Returns the timer trigger handler.
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.BaseDir">
+            <summary>
+            The location of the functions app
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.DevDir">
+            <summary>
+            The development directory.
+            </summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateRoute(System.String)" -->
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzHttpFunction">
             <summary>
@@ -156,21 +166,22 @@
             Base class for the functions
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.#ctor(System.IO.DirectoryInfo,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
             <summary>
             Constructs a new instance
             </summary>
-            <param name="directory"></param>
+            <param name="functionHandler"></param>
+            <param name="functionName"></param>
             <param name="function"></param>
-        </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Directory">
-            <summary>
-            The directory where the function resides
-            </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.TriggerType">
             <summary>
             The trigger type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.FunctionHandler">
+            <summary>
+            The function handler
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Name">
@@ -203,7 +214,12 @@
             Deletes the function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Save(System.Boolean)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Save">
+            <summary>
+            Saves the run.csx and function.json files
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Save(System.IO.FileInfo)">
             <summary>
             Saves the run.csx and function.json files
             </summary>
@@ -223,6 +239,11 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.BaseDir">
             <summary>
             The base dir
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.DevDir">
+            <summary>
+            Returns the dev dir if it exists
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.FunctionAssembly">
@@ -288,18 +309,19 @@
             Implements an azure function.
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.IO.DirectoryInfo)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
             <summary>
             Constructs a new instance
             </summary>
             <param name="functionHandler"></param>
-            <param name="dir"></param>
+            <param name="functionName"></param>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.#ctor(System.IO.DirectoryInfo,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
             <summary>
             Constructs a new instance
             </summary>
-            <param name="dir"></param>
+            <param name="functionHandler"></param>
+            <param name="functionName"></param>
             <param name="functionJson"></param>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.TriggerType">
@@ -327,18 +349,19 @@
             Represents a timer function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.IO.DirectoryInfo)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
             <summary>
             Constructs a new timer function.
             </summary>
             <param name="functionHandler"></param>
-            <param name="functionDir"></param>
+            <param name="functionName"></param>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(System.IO.DirectoryInfo,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
             <summary>
             Constructs a new timer function
             </summary>
-            <param name="functionDir"></param>
+            <param name="functionHandler"></param>
+            <param name="functionName"></param>
             <param name="functionJson"></param>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.TriggerType">

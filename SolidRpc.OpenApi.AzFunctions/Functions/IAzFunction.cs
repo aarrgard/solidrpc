@@ -32,6 +32,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// Writes the run.csx and function.json files
         /// </summary>
-        bool Save(bool forceWrite = false);
+        bool Save();
     }
 }

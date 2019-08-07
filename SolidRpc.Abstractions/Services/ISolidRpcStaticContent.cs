@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 namespace SolidRpc.Abstractions.Services
 {
     /// <summary>
-    /// Accesses the static content
+    /// Accesses the static content. The implementation of this interface is a singleton service
+    /// that provides access to static content. 
+    /// 
+    /// Static resources may be configured(added) during setup of the IoC container.
     /// </summary>
     public interface ISolidRpcStaticContent
     {

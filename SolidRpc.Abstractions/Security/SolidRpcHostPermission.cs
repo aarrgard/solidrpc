@@ -5,9 +5,9 @@ using System.Text;
 namespace SolidRpc.Abstractions.Security
 {
     /// <summary>
-    /// This permission grants access to some of the solid rpc admin functionality.
+    /// This permission grants access to some of the solid rpc host functionality.
     /// </summary>
-    public class SolidRpcAdminPermission
+    public class SolidRpcHostPermission
     {
     }
 }

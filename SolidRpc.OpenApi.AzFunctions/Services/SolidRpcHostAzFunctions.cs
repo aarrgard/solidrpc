@@ -85,17 +85,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             return Task.CompletedTask;
         }
 
-        private async Task CheckRestarting(CancellationToken cancellationToken)
-        {
-            await Task.Delay(5000, cancellationToken);
-            Logger.LogInformation("Host not restarting - writing changes to bin folder...");
-            FunctionHandler.Functions
-                .OfType<IAzTimerFunction>()
-                .Where(o => o.ServiceType == typeof(ISolidRpcHost).FullName)
-                .Single()
-                .Save(true);
-        }
-
         private string RemoveWildcardNames(string path)
         {
             var level = 0;
