@@ -35,8 +35,8 @@ namespace SolidRpc.Test.Petstore.AzFunctions
                     o.AddProvider(new TraceWriterLoggerProvider());
                 });
             }
-            services.AddSolidRpcSingletonServices();
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
+            services.AddSolidRpcSingletonServices();
 
             services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
             var openApiParser = services.GetSolidRpcOpenApiParser();

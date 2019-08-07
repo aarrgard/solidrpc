@@ -54,6 +54,27 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestOptionalParameter": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "operationId": "TestOptionalParameter",
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff": {
       "get": {
         "tags": [

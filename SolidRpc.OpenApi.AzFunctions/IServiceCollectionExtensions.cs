@@ -114,7 +114,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var mi = GetMethodInfo(invocation);
             var openApiParser = services.GetSolidRpcOpenApiParser();
-            services.AddSolidRpcBinding(mi, openApiParser.CreateSpecification(mi).WriteAsJsonString());
+            var openApiSpec = openApiParser.CreateSpecification(mi);
+            services.AddSolidRpcBinding(mi, openApiSpec.WriteAsJsonString());
 
             var funcHandler = services.GetAzFunctionHandler();
 

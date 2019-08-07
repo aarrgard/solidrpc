@@ -305,6 +305,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 typeof(T).SetFileTypeStreamData(res, response.ResponseStream);
                 typeof(T).SetFileTypeContentType(res, response.ContentType);
                 typeof(T).SetFileTypeFilename(res, response.Filename);
+                typeof(T).SetFileTypeLastModified(res, response.LastModified);
                 return res;
             }
             throw new Exception("Cannot handle content type:" + response.ContentType);

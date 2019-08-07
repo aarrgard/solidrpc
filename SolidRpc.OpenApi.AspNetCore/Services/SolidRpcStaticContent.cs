@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -124,12 +125,17 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 return (_, cancellationToken) => throw new FileContentNotFoundException();
             }
             var staticFile = staticFiles.First();
+
+            var assemblyLocation = new FileInfo(staticFile.Assembly.Location);
+            assemblyLocation = assemblyLocation.Exists ? assemblyLocation : null;
+
             return (_, cancellationToken) =>
             {
                 return Task.FromResult(new FileContent()
                 {
                     ContentType = staticFile.ContentType,
-                    Content = staticFile.Assembly.GetManifestResourceStream(staticFile.ResourceName)
+                    Content = staticFile.Assembly.GetManifestResourceStream(staticFile.ResourceName),
+                    LastModified = assemblyLocation?.LastWriteTime
                 });
             };
         }

@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.Types;
+﻿using SolidRpc.Abstractions.Security;
+using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -16,6 +17,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [Security(Public = true)]
         Task<Guid> GetHostId(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -23,6 +25,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [Security(nameof(SolidRpcAdminPermission))]
         Task<IEnumerable<NameValuePair>> GetHostConfiguration(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -30,6 +33,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [Security(nameof(SolidRpcAdminPermission))]
         Task IsAlive(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

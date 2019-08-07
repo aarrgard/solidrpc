@@ -37,11 +37,15 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <returns></returns>
         public Task<IEnumerable<NameValuePair>> GetHostConfiguration(CancellationToken cancellationToken = default(CancellationToken))
         {
+            var lst = new List<NameValuePair>();
             foreach(var o in Configuration.GetChildren())
             {
-
+                lst.Add(new NameValuePair() {
+                    Name = $"{o.Key}",
+                    Value = o.Value
+                });
             }
-            return Task.FromResult<IEnumerable<NameValuePair>>(new NameValuePair[0]);
+            return Task.FromResult<IEnumerable<NameValuePair>>(lst);
         }
 
         /// <summary>

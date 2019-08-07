@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SolidRpc.Abstractions.Types
 {
@@ -20,6 +21,11 @@ namespace SolidRpc.Abstractions.Types
         /// <summary>
         /// The content type.
         /// </summary>
-        public string  ContentType { get; set; }
+        public string ContentType { get; set; }
+
+        /// <summary>
+        /// The last modified date of the resource.
+        /// </summary>
+        public DateTime? LastModified { get; set; }
     }
 }

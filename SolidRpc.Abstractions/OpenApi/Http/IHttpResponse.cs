@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SolidRpc.Abstractions.OpenApi.Http
 {
@@ -21,6 +22,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// The filename - stored in Content-Disposition header
         /// </summary>
         string Filename { get; set; }
+
+        /// <summary>
+        /// Accessor for the "Last-Modified" header.
+        /// </summary>
+        DateTime? LastModified { get; set; }
 
         /// <summary>
         /// Returns the response stream

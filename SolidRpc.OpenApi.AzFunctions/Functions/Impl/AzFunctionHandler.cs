@@ -18,7 +18,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     public class AzFunctionHandler : IAzFunctionHandler
     {
         private static readonly string s_defaultHttpRoutePrefix = "/api";
-        private static readonly string s_staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent/{*arg0}";
+        private static readonly string s_staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent";
         private string _routePrefix = null;
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             if (route == s_staticContentFunctionRoute)
             {
                 route = $"{{*path}}";
-                backendUri = backendUri.Replace("{arg0}", "{path}").Replace("{*arg0}", "{path}");
+                backendUri = $"{backendUri}?path=/{{path}}";
             }
 
             var proxy = proxyKV.Value;

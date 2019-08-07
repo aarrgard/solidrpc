@@ -100,12 +100,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
 
             route = sbRoute.ToString();
-            // let the last arg get all the data
-            var lastArg = args.LastOrDefault();
-            if(lastArg != null && route.EndsWith($"/{{{lastArg}}}"))
-            {
-                route = route.Replace($"/{{{lastArg}}}", $"/{{*{lastArg}}}");
-            }
             return args;
         }
 

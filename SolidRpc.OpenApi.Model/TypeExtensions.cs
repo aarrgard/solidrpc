@@ -15,6 +15,7 @@ namespace System
             null, null, 
             null, null,
             null, null,
+            null, null,
             null, null
         );
 
@@ -24,7 +25,7 @@ namespace System
         public static IDictionary<string, Type> FileTypeProperties = new Dictionary<string, Type>() {
             { "contenttype", typeof(string) },
             { "filename", typeof(string) },
-            { "lastmodified", typeof(DateTime) },
+            { "lastmodified", typeof(DateTime?) },
             { "charset", typeof(string) },
         };
 
@@ -42,7 +43,9 @@ namespace System
                 Action<object, string> setFilename,
                 Func<object, string> getFilename,
                 Action<object, string> setCharSet,
-                Func<object, string> getCharSet
+                Func<object, string> getCharSet,
+                Action<object, DateTime?> setLastModified,
+                Func<object, DateTime?> getLastModified
                 )
             {
                 IsFileType = isFileType;
@@ -54,6 +57,8 @@ namespace System
                 GetFilename = getFilename;
                 SetCharSet = setCharSet;
                 GetCharSet = getCharSet;
+                SetLastModified = setLastModified;
+                GetLastModified = getLastModified;
             }
             /// <summary>
             /// Returns true if this type is a file type.
@@ -99,6 +104,16 @@ namespace System
             /// The method we use to set the stream data.
             /// </summary>
             public Func<object, string> GetCharSet { get; }
+
+            /// <summary>
+            /// The method we use to set the stream data.
+            /// </summary>
+            public Action<object, DateTime?> SetLastModified { get; }
+
+            /// <summary>
+            /// The method we use to set the stream data.
+            /// </summary>
+            public Func<object, DateTime?> GetLastModified { get; }
         }
         private static ConcurrentDictionary<Type, FileTypeHelper> s_FileTypes = new ConcurrentDictionary<Type, FileTypeHelper>();
 
@@ -246,11 +261,27 @@ namespace System
                 getCharset = (impl) => (string)charsetProp.GetValue(impl);
             }
 
+            //
+            // handle last modified
+            //
+            var lastModifiedProp = arg.GetProperties()
+                .Where(o => string.Equals(o.Name, "lastmodified", StringComparison.InvariantCultureIgnoreCase))
+                .Where(o => o.PropertyType == typeof(DateTime?))
+                .FirstOrDefault();
+            Action<object, DateTime?> setLastModified = (impl, dt) => { };
+            Func<object, DateTime?> getLastModified = (impl) => { return null; };
+            if (lastModifiedProp != null)
+            {
+                setLastModified = (impl, dt) => lastModifiedProp.SetValue(impl, dt);
+                getLastModified = (impl) => (DateTime?)lastModifiedProp.GetValue(impl);
+            }
+
             var remainingProps = arg.GetProperties()
                 .Where(o => o != dataProp)
                 .Where(o => o != contentTypeProp)
                 .Where(o => o != filenameProp)
                 .Where(o => o != charsetProp)
+                .Where(o => o != lastModifiedProp)
                 .ToList();
 
             if(remainingProps.Count != 0)
@@ -262,7 +293,8 @@ namespace System
                 setStreamData, getStreamData,
                 setContentType, getContentType,
                 setFilename, getFilename,
-                setCharset, getCharset
+                setCharset, getCharset,
+                setLastModified, getLastModified
                 );
         }
 
@@ -329,6 +361,19 @@ namespace System
         }
 
         /// <summary>
+        /// Set the stream data on supplied structure.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <param name="lastModified"></param>
+        public static void SetFileTypeLastModified(this Type type, object impl, DateTime? lastModified)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            h.SetLastModified(impl, lastModified);
+        }
+
+        /// <summary>
         /// Returns the stream data.
         /// </summary>
         /// <param name="type"></param>
@@ -378,6 +423,19 @@ namespace System
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             return h.GetCharSet(impl);
+        }
+
+        /// <summary>
+        /// Returns the last modified
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <returns></returns>
+        public static DateTime? GetFileTypeLastModified(this Type type, object impl)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            return h.GetLastModified(impl);
         }
 
         /// <summary>

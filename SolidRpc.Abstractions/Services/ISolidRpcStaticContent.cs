@@ -27,10 +27,13 @@ namespace SolidRpc.Abstractions.Services
 
         /// <summary>
         /// Returns the content for supplied file.
+        /// 
+        /// Note that the path is marked as optional(default value set). This is so that the parameter
+        /// is placed in the query string instead of path.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetStaticContent(string path, CancellationToken cancellationToken = default(CancellationToken));
+        Task<FileContent> GetStaticContent(string path = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -37,6 +37,13 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// </summary>
             /// <returns></returns>
             Task<IEnumerable<TestStruct>> TestArray(TestStruct[] testStruct, Guid[] guids);
+
+            /// <summary>
+            /// Optional parameters should be placed in the query.
+            /// </summary>
+            /// <param name="s"></param>
+            /// <returns></returns>
+            Task TestOptionalParameter(string s = null);
         }
 
         /// <summary>
@@ -104,6 +111,19 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1OptionalParameter()
+        {
+            var cSharpRepository = new CSharpRepository();
+            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestOptionalParameter)));
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1OptionalParameter)}.json"), spec);
         }
     }
 }
