@@ -29,7 +29,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV1
             // skip api prefix.
             var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
             var solidReq = new SolidHttpRequest();
-            await solidReq.CopyFromAsync(req, funcHandler.HttpRoutePrefix);
+            await solidReq.CopyFromAsync(req, funcHandler.GetPrefixMappings());
 
             // invoke the method
             var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();

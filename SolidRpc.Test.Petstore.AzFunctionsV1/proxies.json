@@ -3,114 +3,114 @@
   "proxies": {
     "aarrgard/Test/1.0.0/pet": {
       "matchCondition": {
-        "route": "/aarrgard/Test/1.0.0/pet",
+        "route": "/front/aarrgard/Test/1.0.0/pet",
         "methods": [
-          "PUT",
-          "POST"
+          "POST",
+          "PUT"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/aarrgard/Test/1.0.0/pet"
     },
     "aarrgard/Test/1.0.0/pet/{arg0}": {
       "matchCondition": {
-        "route": "/aarrgard/Test/1.0.0/pet/{arg0}",
+        "route": "/front/aarrgard/Test/1.0.0/pet/{arg0}",
         "methods": [
-          "GET",
           "DELETE",
+          "GET",
           "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/{arg0}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/aarrgard/Test/1.0.0/pet/{arg0}"
     },
     "aarrgard/Test/1.0.0/pet/{arg0}/uploadImage": {
       "matchCondition": {
-        "route": "/aarrgard/Test/1.0.0/pet/{arg0}/uploadImage",
+        "route": "/front/aarrgard/Test/1.0.0/pet/{arg0}/uploadImage",
         "methods": [
           "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/{arg0}/uploadImage"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/aarrgard/Test/1.0.0/pet/{arg0}/uploadImage"
     },
     "aarrgard/Test/1.0.0/pet/findByStatus": {
       "matchCondition": {
-        "route": "/aarrgard/Test/1.0.0/pet/findByStatus",
+        "route": "/front/aarrgard/Test/1.0.0/pet/findByStatus",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/findByStatus"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/aarrgard/Test/1.0.0/pet/findByStatus"
     },
     "aarrgard/Test/1.0.0/pet/findByTags": {
       "matchCondition": {
-        "route": "/aarrgard/Test/1.0.0/pet/findByTags",
+        "route": "/front/aarrgard/Test/1.0.0/pet/findByTags",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/findByTags"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/aarrgard/Test/1.0.0/pet/findByTags"
     },
     "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration": {
       "matchCondition": {
-        "route": "/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration",
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration"
     },
     "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId": {
       "matchCondition": {
-        "route": "/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId",
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId"
     },
     "SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive": {
       "matchCondition": {
-        "route": "/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive",
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive"
     },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml": {
       "matchCondition": {
-        "route": "/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml",
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
     },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}": {
       "matchCondition": {
-        "route": "/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}",
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}"
     },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls": {
       "matchCondition": {
-        "route": "/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
     },
     "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent": {
       "matchCondition": {
-        "route": "/{*path}",
+        "route": "/front/{*path}",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
     }
   }
 }

@@ -37,17 +37,23 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="target"></param>
         /// <param name="source"></param>
-        /// <param name="ignorePathPrefix"></param>
+        /// <param name="prefixMappings"></param>
         /// <returns></returns>
-        public static async Task CopyFromAsync(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source, string ignorePathPrefix = "")
+        public static async Task CopyFromAsync(this IHttpRequest target, Microsoft.AspNetCore.Http.HttpRequest source, IDictionary<string, string> prefixMappings = null)
         {
             target.Scheme = source.Scheme;
             target.Method = source.Method;
             target.HostAndPort = source.Host.ToString();
             target.Path = $"{source.PathBase}{source.Path}";
-            if(target.Path.StartsWith(ignorePathPrefix))
+            if (prefixMappings != null)
             {
-                target.Path = target.Path.Substring(ignorePathPrefix.Length);
+                foreach (var prefixMapping in prefixMappings)
+                {
+                    if (target.Path.StartsWith(prefixMapping.Key))
+                    {
+                        target.Path = $"{prefixMapping.Value}{target.Path.Substring(prefixMapping.Key.Length)}";
+                    }
+                }
             }
 
             // extract headers

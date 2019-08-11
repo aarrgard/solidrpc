@@ -11,25 +11,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// </summary>
     public abstract class AzFunction : IAzFunction
     {
-        private string functionName;
-
         /// <summary>
         /// Constructs a new instance
         /// </summary>
         /// <param name="functionHandler"></param>
-        /// <param name="functionName"></param>
+        /// <param name="functionDir"></param>
         /// <param name="function"></param>
-        public AzFunction(IAzFunctionHandler functionHandler, string functionName, Function function)
+        public AzFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir, Function function)
         {
-            FunctionHandler = functionHandler;
-            Name = functionName;
-            Function = function;
-        }
-
-        protected AzFunction(IAzFunctionHandler functionHandler, string functionName)
-        {
-            FunctionHandler = functionHandler;
-            this.functionName = functionName;
+            FunctionHandler = functionHandler ?? throw new ArgumentNullException(nameof(functionHandler));
+            FunctionDir = functionDir ?? throw new ArgumentNullException(nameof(functionDir));
+            Function = function ?? throw new ArgumentNullException(nameof(function));
         }
 
         /// <summary>
@@ -43,9 +35,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public IAzFunctionHandler FunctionHandler { get; }
 
         /// <summary>
+        /// The function dir
+        /// </summary>
+        public DirectoryInfo FunctionDir { get; }
+
+        /// <summary>
         /// The name of the function
         /// </summary>
-        public string Name { get; }
+        public string Name => FunctionDir.Name;
 
         /// <summary>
         /// The function
@@ -78,7 +75,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
         private Function DeserializeFunction(string value)
         {
-            return JsonConvert.DeserializeObject<Function>(value);
+            var sr = new StringReader(value);
+            using (JsonReader reader = new JsonTextReader(sr))
+            {
+                var settings = new JsonSerializerSettings()
+                {
+                    ContractResolver = NewtonsoftContractResolver.Instance,
+                    Formatting = Formatting.Indented
+                };
+                var serializer = JsonSerializer.Create(settings);
+                return serializer.Deserialize<Function>(reader);
+            }
         }
 
         private string SerializeFunctionJson(Function function)
@@ -114,30 +121,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
-        private void WriteFunctionJson()
-        {
-            WriteFunctionJson(new FileInfo(Path.Combine(FunctionHandler.BaseDir.FullName, Name, "function.json")));
-            if(FunctionHandler.DevDir != null)
-            {
-                WriteFunctionJson(new FileInfo(Path.Combine(FunctionHandler.DevDir.FullName, Name, "function.json")));
-            }
-        }
-
         private void WriteFunctionJson(FileInfo fi)
         {
             using (var tw = fi.CreateText())
             {
                 tw.Write(SerializeFunctionJson(Function));
-            }
-            var projectDir = fi.Directory?.Parent?.Parent?.Parent?.Parent;
-            if(projectDir == null || !projectDir.Exists)
-            {
-                return;
-            }
-            var projectHostFile = new FileInfo(Path.Combine(projectDir.FullName, "host.json"));
-            if(projectHostFile.Exists)
-            {
-
             }
         }
 
@@ -146,10 +134,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public void Delete()
         {
-            new DirectoryInfo(Path.Combine(FunctionHandler.BaseDir.FullName, Name)).Delete(true);
-            if (FunctionHandler.DevDir != null)
+            if (FunctionDir.Exists)
             {
-                new DirectoryInfo(Path.Combine(FunctionHandler.DevDir.FullName, Name)).Delete(true);
+                FunctionDir.Delete(true);
             }
         }
 
@@ -158,11 +145,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public bool Save()
         {
-            if (FunctionHandler.DevDir != null)
-            {
-                Save(new FileInfo(Path.Combine(FunctionHandler.DevDir.FullName, Name, "function.json")));
-            }
-            return Save(new FileInfo(Path.Combine(FunctionHandler.BaseDir.FullName, Name, "function.json")));
+            return Save(new FileInfo(Path.Combine(FunctionDir.FullName, "function.json")));
         }
         /// <summary>
         /// Saves the run.csx and function.json files
@@ -173,7 +156,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             {
                 fi.Directory.Create();
             }
-            if(false==string.Equals(FunctionJson, SerializeFunctionJson(DeserializeFunction(ReadFunctionJson(fi)))))
+            var newFunctionJson = FunctionJson;
+            var oldFunctionJson = SerializeFunctionJson(DeserializeFunction(ReadFunctionJson(fi)));
+            if (false==string.Equals(newFunctionJson, oldFunctionJson))
             {
                 WriteFunctionJson(fi);
                 return true;

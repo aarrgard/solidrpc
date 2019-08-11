@@ -19,7 +19,8 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         string Title { get; }
 
         /// <summary>
-        /// Returns the base path.
+        /// Returns the base address. This is the combination of
+        /// Scheme, Host, Port and BasePath.
         /// </summary>
         Uri BaseAddress { get; }
 
@@ -27,7 +28,7 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// Updates the spec so that the host and port are from the supplied address.
         /// </summary>
         /// <param name="rootAddress"></param>
-        void SetSchemeAndHostAndPort(Uri rootAddress);
+        void SetBaseAddress(Uri rootAddress);
 
         /// <summary>
         /// Writes this spec as a json string

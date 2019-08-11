@@ -26,7 +26,7 @@ namespace SolidRpc.OpenApi.Model.V3
 
         public string Title => "Unknown";
 
-        public void SetSchemeAndHostAndPort(Uri rootAddress)
+        public void SetBaseAddress(Uri baseAddress)
         {
             throw new NotImplementedException();
         }

@@ -7,11 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "anonymous",
       "methods": [
-        "delete",
-        "get",
         "post"
       ],
-      "route": "aarrgard/Test/1.0.0/pet/{arg0}"
+      "route": "aarrgard/Test/1.0.0/pet/{arg0}/uploadImage"
     },
     {
       "name": "serviceProvider",
@@ -24,6 +22,6 @@
       "type": "http"
     }
   ],
-  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV1Extension.dll",
-  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV1.HttpFunction.Run"
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.HttpFunction.Run"
 }

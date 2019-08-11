@@ -12,7 +12,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// Returns the functions
         /// </summary>
-        IEnumerable<IAzFunction> Functions { get; }
+        /// <param name="baseDir"></param>
+        /// <returns></returns>
+        IEnumerable<IAzFunction> GetFunctions(DirectoryInfo baseDir = null);
 
         /// <summary>
         /// Returns the http scheme.
@@ -22,20 +24,31 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// Returns the http route prefix.
         /// </summary>
-        string HttpRoutePrefix { get; }
+        string HttpRouteBackendPrefix { get; }
+
+        /// <summary>
+        /// The frontend prefix
+        /// </summary>
+        string HttpRouteFrontendPrefix { get; }
+
+        /// <summary>
+        /// Returns the prefix mappings
+        /// </summary>
+        /// <returns></returns>
+        IDictionary<string, string> GetPrefixMappings();
 
         /// <summary>
         /// Creates a new timer function
         /// </summary>
         /// <returns></returns>
-        IAzTimerFunction CreateTimerFunction(string name);
+        IAzTimerFunction CreateTimerFunction(DirectoryInfo baseDir, string name);
 
         /// <summary>
         /// Creates a http function
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        IAzHttpFunction CreateHttpFunction(string name);
+        IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string name);
 
         /// <summary>
         /// Triggers a restart by writing some additional data to 

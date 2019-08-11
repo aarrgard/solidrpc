@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,7 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
+using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
 
 namespace SolidRpc.OpenApi.AzFunctions.Services
 {
@@ -24,6 +26,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// Constructs a new instance
         /// </summary>
         /// <param name="logger"></param>
+        /// <param name="configuration"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="functionHandler"></param>
         public SolidRpcHostAzFunctions(
@@ -67,13 +70,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var paths = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodInfos)
                 .Select(o => new {
-                    Path = RemoveWildcardNames(o.Path),
+                    Path = FixupPath(o.Path),
                     Method = o.Method.ToLower()
                 }).GroupBy(o => o.Path)
                 .ToList();
 
             var startTime = DateTime.Now;
-            var modified = WriteHttpFunctions(paths.ToDictionary(o => o.Key, o => o.Select(o2 => o2.Method).ToList()));
+            var pathsAndMethods = paths.ToDictionary(o => o.Key, o => o.Select(o2 => o2.Method).ToList());
+            WriteHttpFunctions(FunctionHandler.DevDir, pathsAndMethods);
+            var modified = WriteHttpFunctions(FunctionHandler.BaseDir, pathsAndMethods);
 
             FunctionHandler.SyncProxiesFile();
 
@@ -85,8 +90,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             return Task.CompletedTask;
         }
 
-        private string RemoveWildcardNames(string path)
+        private string FixupPath(string path)
         {
+            //
+            // transform wildcard names
+            //
             var level = 0;
             var sb = new StringBuilder();
             for(int i = 0; i < path.Length; i++)
@@ -98,17 +106,33 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 }
                 if (path[i] == '{') level++;
             }
-            return sb.ToString();
+
+            path = sb.ToString();
+            // remove frontend prefix
+            if(path.StartsWith($"{FunctionHandler.HttpRouteFrontendPrefix}/"))
+            {
+                path = path.Substring(FunctionHandler.HttpRouteFrontendPrefix.Length + 1);
+            }
+            return path;
         }
 
-        private bool WriteHttpFunctions(Dictionary<string, List<string>> pathsAndMethods)
+        private bool WriteHttpFunctions(DirectoryInfo baseDir, Dictionary<string, List<string>> pathsAndMethods)
         {
             var paths = pathsAndMethods.Keys.ToList();
             var functionNames = paths.Select(o => CreateFunctionName(o)).ToList();
-            var functions = FunctionHandler.Functions.ToList();
+            var functions = FunctionHandler.GetFunctions(baseDir).ToList();
             var modified = false;
 
-            for(int i = 0; i < paths.Count; i++)
+            // remove functions that are not available any more
+            functions.Where(o => !functionNames.Contains(o.Name))
+                .Where(o => o.GeneratedBy?.StartsWith($"{typeof(AzTimerFunction).Assembly.GetName().Name}") ?? false)
+                .ToList()
+                .ForEach(o =>
+                {
+                    o.Delete();
+                });
+
+            for (int i = 0; i < paths.Count; i++)
             {
                 var path = paths[i];
                 var functionName = functionNames[i];
@@ -120,11 +144,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 }
                 if (httpFunction == null)
                 {
-                    httpFunction = FunctionHandler.CreateHttpFunction(functionName);
+                    httpFunction = FunctionHandler.CreateHttpFunction(baseDir, functionName);
                 }
                 httpFunction.AuthLevel = "anonymous";
                 httpFunction.Route = FunctionHandler.CreateRoute(path);
-                httpFunction.Methods = pathsAndMethods[path];
+                httpFunction.Methods = pathsAndMethods[path].OrderBy(o => o).ToArray();
                 if (httpFunction.Save())
                 {
                     Logger.LogInformation($"Wrote new function.json for {functionName}.");
@@ -151,7 +175,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         {
             int argCount = 0;
             var sb = new StringBuilder();
-            sb.Append("Http");
+            sb.Append("Http_");
             foreach(var c in path)
             {
                 switch(c)

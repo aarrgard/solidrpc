@@ -62,7 +62,8 @@ namespace Microsoft.AspNetCore.Builder
                 applicationBuilder.Run(async ctx =>
                 {
                     var openApiSpec = methodBinder.OpenApiSpec;
-                    openApiSpec.SetSchemeAndHostAndPort(ctx.Request.GetUri());
+                    throw new Exception("!!!");
+                    openApiSpec.SetBaseAddress(ctx.Request.GetUri());
                     ctx.Response.StatusCode = 200;
                     using (var sw = new StreamWriter(ctx.Response.Body))
                     {

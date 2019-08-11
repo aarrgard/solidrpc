@@ -174,15 +174,16 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <summary>
         /// Updates the host and port so that it reflects the supplied address
         /// </summary>
-        /// <param name="rootAddress"></param>
-        public void SetSchemeAndHostAndPort(Uri rootAddress)
+        /// <param name="basePath"></param>
+        public void SetBaseAddress(Uri basePath)
         {
-            Schemes = new[] { rootAddress.Scheme };
-            Host = rootAddress.Host;
-            if(!rootAddress.IsDefaultPort)
+            Schemes = new[] { basePath.Scheme };
+            Host = basePath.Host;
+            if(!basePath.IsDefaultPort)
             {
-                Host = $"{Host}:{rootAddress.Port}";
+                Host = $"{Host}:{basePath.Port}";
             }
+            BasePath = basePath.AbsolutePath;
         }
 
         /// <summary>

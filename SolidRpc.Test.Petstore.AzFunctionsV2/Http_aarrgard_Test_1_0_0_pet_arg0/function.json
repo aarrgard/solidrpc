@@ -24,6 +24,6 @@
       "type": "http"
     }
   ],
-  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV1Extension.dll",
-  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV1.HttpFunction.Run"
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.HttpFunction.Run"
 }

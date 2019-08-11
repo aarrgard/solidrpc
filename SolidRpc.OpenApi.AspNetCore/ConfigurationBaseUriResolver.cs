@@ -15,17 +15,38 @@ namespace SolidRpc.OpenApi.Binder
     public class ConfigurationBaseUriTransformer : IBaseUriTransformer
     {
         /// <summary>
+        /// The configuration variable that stores the path prefix
+        /// </summary>
+        public const string ConfigPathPrefix = "SolidRpc.BaseUriTransformer.PathPrefix";
+
+        /// <summary>
+        /// The configuration variable that stores the scheme
+        /// </summary>
+        public const string ConfigScheme = "SolidRpc.BaseUriTransformer.Scheme";
+
+        /// <summary>
+        /// The configuration variable that stores the scheme
+        /// </summary>
+        public const string ConfigHost = "SolidRpc.BaseUriTransformer.Host";
+
+        /// <summary>
+        /// The configuration variable that stores the variables to look for the host
+        /// </summary>
+        public const string ConfigHostSettings = "SolidRpc.BaseUriTransformer.HostConfigSettings";
+
+        /// <summary>
         /// Constructs a new instance of the uri transformer.
         /// </summary>
         /// <param name="configuration"></param>
         public ConfigurationBaseUriTransformer(IConfiguration configuration)
         {
-            Scheme = configuration[$"SolidRpc.BaseUriTransformer.Scheme"];
-            Host = HostString.FromUriComponent(configuration[$"SolidRpc.BaseUriTransformer.Host"]);
+            Scheme = configuration[ConfigScheme];
+            Host = HostString.FromUriComponent(configuration[ConfigHost]);
+            PathPrefix = configuration[ConfigPathPrefix];
 
-            if(string.IsNullOrEmpty(Host.Host))
+            if (string.IsNullOrEmpty(Host.Host))
             {
-                var hostConfigSettings = configuration[$"SolidRpc.BaseUriTransformer.HostConfigSettings"] ?? "urls,WEBSITE_HOSTNAME";
+                var hostConfigSettings = configuration[ConfigHostSettings] ?? "urls,WEBSITE_HOSTNAME";
                 if (!string.IsNullOrEmpty(hostConfigSettings))
                 {
                     foreach(var hostConfigSetting in hostConfigSettings.Split(','))
@@ -59,6 +80,7 @@ namespace SolidRpc.OpenApi.Binder
 
         private string Scheme { get; }
         private HostString Host { get; }
+        private string PathPrefix { get; }
 
         Uri IBaseUriTransformer.TransformUri(Uri uri)
         {
@@ -74,6 +96,10 @@ namespace SolidRpc.OpenApi.Binder
                 {
                     newUri.Port = Host.Port.Value;
                 }
+            }
+            if(!string.IsNullOrEmpty(PathPrefix))
+            {
+                newUri.Path = $"{PathPrefix}{newUri.Path}";
             }
             return newUri.Uri;
         }

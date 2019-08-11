@@ -7,6 +7,8 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using SolidRpc.OpenApi.Binder;
 
 namespace SolidRpc.Test.Petstore.AzFunctions
 {
@@ -22,10 +24,16 @@ namespace SolidRpc.Test.Petstore.AzFunctions
         /// <param name="services"></param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            if(!services.Any(o => o.ServiceType == typeof(IConfiguration)))
+            var azFuncHandler = services.GetAzFunctionHandler();
+
+            if (!services.Any(o => o.ServiceType == typeof(IConfiguration)))
             {
                 var cb = new ConfigurationBuilder();
                 cb.AddEnvironmentVariables();
+                cb.AddInMemoryCollection(new Dictionary<string, string>()
+                {
+                    { ConfigurationBaseUriTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
+                });
                 services.AddSingleton<IConfiguration>(cb.Build());
             }
             if(!services.Any(o => o.ServiceType == typeof(ILogger)))
@@ -37,7 +45,6 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             }
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
-            services.GetAzFunctionHandler();
 
             services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
             var openApiParser = services.GetSolidRpcOpenApiParser();

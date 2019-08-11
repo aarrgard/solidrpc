@@ -80,15 +80,15 @@ namespace SolidRpc.OpenApi.Binder
             if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
             var originalSpec = OriginalSpecs.GetOrAdd(openApiSpec, _ => OpenApiParser.ParseSpec(_));
-            var newUri = baseUriTransformer(ServiceProvider, originalSpec.BaseAddress);
-            var key = $"{newUri.ToString()}:{assembly.GetName().Name}:{assembly.GetName().Version}:{openApiSpec}";
-            return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, newUri, assembly));
+            var baseAddress = baseUriTransformer(ServiceProvider, originalSpec.BaseAddress);
+            var key = $"{baseAddress.ToString()}:{assembly.GetName().Name}:{assembly.GetName().Version}:{openApiSpec}";
+            return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, baseAddress, assembly));
         }
 
-        private IMethodBinder CreateMethodBinder(string openApiSpec, Uri newUri, Assembly assembly)
+        private IMethodBinder CreateMethodBinder(string openApiSpec, Uri baseAddress, Assembly assembly)
         {
             var swaggerSpec = OpenApiParser.ParseSpec(openApiSpec);
-            swaggerSpec.SetSchemeAndHostAndPort(newUri);
+            swaggerSpec.SetBaseAddress(baseAddress);
             if (swaggerSpec is SwaggerObject v2)
             {
                 var mb = new V2.MethodBinderV2(ServiceProvider, v2, assembly);

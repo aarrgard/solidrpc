@@ -18,6 +18,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     {
         private static readonly string s_defaultHttpRoutePrefix = "/api";
         private static readonly string s_staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent";
+        //private static readonly string s_staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent2";
         private string _routePrefix = null;
 
         /// <summary>
@@ -75,20 +76,21 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Create a new instance
         /// </summary>
-        public IEnumerable<IAzFunction> Functions
+        public IEnumerable<IAzFunction> GetFunctions(DirectoryInfo baseDir = null)
         {
-            get
+            if(baseDir == null)
             {
-                var functions = new List<IAzFunction>();
-                foreach(var d in BaseDir.GetDirectories())
-                {
-                    if(GetFunction(d, out IAzFunction func))
-                    {
-                        functions.Add(func);
-                    }
-                }
-                return functions;
+                baseDir = BaseDir;
             }
+            var functions = new List<IAzFunction>();
+            foreach(var d in baseDir.GetDirectories())
+            {
+                if(GetFunction(d, out IAzFunction func))
+                {
+                    functions.Add(func);
+                }
+            }
+            return functions;
         }
 
         /// <summary>
@@ -115,7 +117,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Returns the route prefix.
         /// </summary>
-        public string HttpRoutePrefix
+        public string HttpRouteBackendPrefix
         {
             get
             {
@@ -159,6 +161,29 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
+        /// <summary>
+        /// Returns the frontend prefix
+        /// </summary>
+        public string HttpRouteFrontendPrefix
+        {
+            get
+            {
+                return "/front";
+            }
+        }
+
+        /// <summary>
+        /// Returns the prefix mappings
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, string> GetPrefixMappings()
+        {
+            return new Dictionary<string, string>()
+            {
+                { HttpRouteBackendPrefix, HttpRouteFrontendPrefix }
+            };
+        }
+
         private Type FindTriggerHandler(string typeSuffix)
         {
             var triggerHandler = FunctionAssembly.GetTypes().Where(o => o.FullName.EndsWith(typeSuffix)).FirstOrDefault();
@@ -183,11 +208,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 var function = JsonConvert.DeserializeObject<Function>(strFunctionJson);
                 if (function.Bindings.Any(o => o.Type == "httpTrigger"))
                 {
-                    func = new AzHttpFunction(this, d.Name, function);
+                    func = new AzHttpFunction(this, d, function);
                 }
                 else if (function.Bindings.Any(o => o.Type == "timerTrigger"))
                 {
-                    func = new AzTimerFunction(this, d.Name, function);
+                    func = new AzTimerFunction(this, d, function);
                 }
                 else
                 {
@@ -205,9 +230,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Creates a timer function
         /// </summary>
         /// <returns></returns>
-        public IAzTimerFunction CreateTimerFunction(string functionName)
+        public IAzTimerFunction CreateTimerFunction(DirectoryInfo baseDir, string functionName)
         {
-            var timerFunction = new AzTimerFunction(this, functionName);
+            var timerFunction = new AzTimerFunction(this, new DirectoryInfo(Path.Combine(baseDir.FullName, functionName)));
             return timerFunction;
         }
 
@@ -224,9 +249,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         /// <param name="functionName"></param>
         /// <returns></returns>
-        public IAzHttpFunction CreateHttpFunction(string functionName)
+        public IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string functionName)
         {
-            var httpFunction = new AzHttpFunction(this, functionName);
+            var httpFunction = new AzHttpFunction(this, new DirectoryInfo(Path.Combine(baseDir.FullName, functionName)));
             return httpFunction;
         }
 
@@ -250,14 +275,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public void SyncProxiesFile()
         {
-            SyncProxiesFile(new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json")));
+            SyncProxiesFile(BaseDir);
             if(DevDir != null)
             {
-                SyncProxiesFile(new FileInfo(Path.Combine(DevDir.FullName, "proxies.json")));
+                SyncProxiesFile(DevDir);
             }
         }
-        private void SyncProxiesFile(FileInfo proxiesFile)
+        private void SyncProxiesFile(DirectoryInfo baseDir)
         {
+            var proxiesFile = new FileInfo(Path.Combine(baseDir.FullName, "proxies.json"));
             AzProxies proxies = null;
             if (proxiesFile.Exists)
             {
@@ -279,9 +305,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies = new AzProxies();
             }
 
-            //proxies.SetSortedProxies();
-
-            var routes = Functions.OfType<IAzHttpFunction>()
+            var routes = GetFunctions(baseDir).OfType<IAzHttpFunction>()
                 .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
                 .Distinct()
                 .GroupBy(o => o.Route)
@@ -298,13 +322,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     continue;
                 }
                 // remove proxy if route prefix is null
-                if (string.IsNullOrEmpty(HttpRoutePrefix))
+                if (string.IsNullOrEmpty(HttpRouteBackendPrefix))
                 {
                     modified = true;
                     proxies.Proxies.Remove(proxy);
                 }
                 // remove route if no function
-                if (!routes.Any(o => $"/{o.Key}" == proxy.Value.MatchCondition.Route))
+                if (!routes.Any(o => CreateFrontendRoute(o.Key) == proxy.Value.MatchCondition.Route))
                 {
                     modified = true;
                     proxies.Proxies.Remove(proxy);
@@ -318,7 +342,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 {
                     // use this route
                 }
-                else if (string.IsNullOrEmpty(HttpRoutePrefix))
+                else if (string.IsNullOrEmpty(HttpRouteBackendPrefix))
                 {
                     return;
                 }
@@ -381,7 +405,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies.Add(proxyKV);
             }
 
-            var backendUri = $"http://%WEBSITE_HOSTNAME%{HttpRoutePrefix}/{route}";
+            var backendUri = $"http://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{route}";
             if (route == s_staticContentFunctionRoute)
             {
                 route = $"{{*path}}";
@@ -391,7 +415,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             var proxy = proxyKV.Value;
             bool modified = false;
             proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
-            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, $"/{route}");
+            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, CreateFrontendRoute(route));
             proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
             proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, backendUri);
             if(modified)
@@ -399,6 +423,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 return true;
             }
             return false;
+        }
+
+        private string CreateFrontendRoute(string route)
+        {
+            return $"{HttpRouteFrontendPrefix}/{route}";
         }
 
         private T SetValue<T>(ref bool modified, T oldValue, T newValue)
