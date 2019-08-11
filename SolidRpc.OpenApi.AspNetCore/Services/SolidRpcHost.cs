@@ -1,12 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.AspNetCore.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+[assembly: SolidRpcAbstractionProvider(typeof(ISolidRpcHost), typeof(SolidRpcHost))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>

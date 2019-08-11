@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace SolidRpc.OpenApi.Model.CodeDoc
 {
@@ -20,5 +21,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         ICodeDocMethod GetMethodDoc(MethodInfo methodInfo);
+
+        /// <summary>
+        /// Returns the class doc for supplied type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ICodeDocClass GetClassDoc(Type type);
     }
 }

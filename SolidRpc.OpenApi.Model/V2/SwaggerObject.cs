@@ -183,7 +183,14 @@ namespace SolidRpc.OpenApi.Model.V2
             {
                 Host = $"{Host}:{basePath.Port}";
             }
-            BasePath = basePath.AbsolutePath;
+            if(basePath.AbsolutePath.EndsWith("/"))
+            {
+                BasePath = basePath.AbsolutePath.Substring(0, basePath.AbsolutePath.Length - 1);
+            }
+            else
+            {
+                BasePath = basePath.AbsolutePath;
+            }
         }
 
         /// <summary>

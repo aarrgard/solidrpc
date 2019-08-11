@@ -15,11 +15,17 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// </summary>
         /// <param name="xmlNode"></param>
         /// <param name="path"></param>
+        /// <param name="mustExist"></param>
         /// <returns></returns>
-        protected string SelectSingleNode(XmlNode xmlNode, string path)
+        protected string SelectSingleNode(XmlNode xmlNode, string path, bool mustExist = true)
         {
             if (xmlNode == null) throw new ArgumentNullException(nameof(xmlNode));
-            return xmlNode.SelectSingleNode(path)?.InnerText ?? throw new Exception($"Failed to find path {path}");
+            var nodeText = xmlNode.SelectSingleNode(path)?.InnerText?.Trim();
+            if (mustExist && nodeText == null)
+            {
+                throw new Exception($"Failed to find path {path}");
+            }
+            return nodeText;
         }
 
         /// <summary>

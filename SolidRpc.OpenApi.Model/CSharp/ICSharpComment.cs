@@ -7,7 +7,6 @@ namespace SolidRpc.OpenApi.Model.CSharp
     /// <summary>
     /// Represents a comment
     /// </summary>
-    /// <see cref=""/>
     public interface ICSharpComment
     {
         /// <summary>

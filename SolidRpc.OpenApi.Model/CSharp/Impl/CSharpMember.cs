@@ -205,6 +205,21 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
             }
         }
+        public ICSharpType NullableType
+        {
+            get
+            {
+                var (genType, genArgs, rest) = CSharpRepository.ReadType(FullName);
+                switch (genType)
+                {
+                    case "System.Nullable":
+                        return GetParent<ICSharpRepository>().GetType(genArgs[0]);
+                    default:
+                        return null;
+                }
+
+            }
+        }
 
         public virtual void GetNamespaces(ICollection<string> namespaces)
         {

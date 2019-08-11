@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 
 namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
@@ -21,6 +22,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         {
             AssemblyDocumentation = assemblyDocumentation;
             ClassName = className;
+            Comment = SelectSingleNode(XmlDocument, $"/doc/members/member[@name='T:{className}']/summary", false);
             MethodDocumentation = SelectXmlElements(XmlDocument, "/doc/members/member")
                 .Where(o => GetClassName(o.Attributes["name"].InnerText) == ClassName)
                 .Where(o => GetMethodName(o.Attributes["name"].InnerText) != null)
@@ -47,6 +49,11 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         public string ClassName { get; }
 
         /// <summary>
+        /// The comment for this type.
+        /// </summary>
+        public string Comment { get; }
+
+        /// <summary>
         /// All the method documentations.
         /// </summary>
         public IEnumerable<ICodeDocMethod> MethodDocumentation { get; }
@@ -55,6 +62,24 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// All the property documentations
         /// </summary>
         public IEnumerable<ICodeDocProperty> PropertyDocumentation { get; }
+
+        /// <summary>
+        /// Returns the code comments.
+        /// </summary>
+        public string CodeComments
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("<summary>");
+                sb.AppendLine(Comment);
+                sb.AppendLine("</summary>");
+                //ParameterDocumentation.ToList().ForEach(o => sb.Append("<param name=\"").Append(o.Name).Append("\">").Append(o.Comment).Append("</param>"));
+                //ExceptionDocumentation.ToList().ForEach(o => sb.Append("<exception cref=\"").Append(o.ExceptionType).Append("\">").Append(o.Comment).Append("</exception>"));
+                return sb.ToString();
+
+            }
+        }
 
 
         /// <summary>

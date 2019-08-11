@@ -4,10 +4,14 @@ namespace SolidRpc.OpenApi.Model.V2
 {
     /// <summary>
     /// Allows adding meta data to a single tag that is used by the Operation Object. It is not mandatory to have a Tag Object per tag used there.
+    /// <a href="https://swagger.io/specification/v2/#externalDocumentationObject"/>
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#externalDocumentationObject"/>
     public class ExternalDocumentationObject : ModelBase
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="parent"></param>
         public ExternalDocumentationObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// Required. The URL for the target documentation. Value MUST be in the format of a URL.

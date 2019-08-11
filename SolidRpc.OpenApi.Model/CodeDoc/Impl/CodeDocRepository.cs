@@ -6,19 +6,42 @@ using System.Xml;
 
 namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
 {
+    /// <summary>
+    /// Implements the logic for the code comment repository.
+    /// </summary>
     public class CodeDocRepository : ICodeDocRepository
     {
         private ConcurrentDictionary<Assembly, ICodeDocAssembly> s_AssemblyDocs = new ConcurrentDictionary<Assembly, ICodeDocAssembly>();
 
+        /// <summary>
+        /// Returns the assembly documentation
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
         public ICodeDocAssembly GetAssemblyDoc(Assembly assembly)
         {
             return s_AssemblyDocs.GetOrAdd(assembly, GetAsseblyDocInternal);
         }
 
+        /// <summary>
+        /// Returns the class doc
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public ICodeDocClass GetClassDoc(Type type)
+        {
+            var assemblyDoc = GetAssemblyDoc(type.Assembly);
+            return assemblyDoc.GetClassDocumentation(type);
+        }
+
+        /// <summary>
+        /// Returns the method doc
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
         public ICodeDocMethod GetMethodDoc(MethodInfo methodInfo)
         {
-            var assemblyDoc = GetAssemblyDoc(methodInfo.DeclaringType.Assembly);
-            var classDoc = assemblyDoc.GetClassDocumentation(methodInfo.DeclaringType);
+            var classDoc = GetClassDoc(methodInfo.DeclaringType);
             return classDoc.GetMethodDocumentation(methodInfo);
         }
 
@@ -51,13 +74,14 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
                     }
                 }
             }
-            if(docStream == null)
+            var xmlDocument = new XmlDocument();
+            if (docStream == null)
             {
-                throw new Exception($"Cannot find documentation for assembly @{xmlDocLocation.FullName} or as a resource {resName}");
+                return xmlDocument;
+                //throw new Exception($"Cannot find documentation for assembly @{xmlDocLocation.FullName} or as a resource {resName}");
             }
             using (docStream)
             {
-                var xmlDocument = new XmlDocument();
                 xmlDocument.Load(docStream);
                 return xmlDocument;
             }

@@ -130,6 +130,9 @@ namespace SolidRpc.OpenApi.Model.V2
         [DataMember(Name = "additionalProperties", EmitDefaultValue = false)]
         public SchemaObject AdditionalProperties { get; set; }
 
+        /// <summary>
+        /// Specifies if this object is required
+        /// </summary>
         [DataMember(Name = "required", EmitDefaultValue = false)]
         public IEnumerable<string> Required { get; set; }
 

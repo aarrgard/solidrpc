@@ -31,5 +31,10 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// The parameter documentation.
         /// </summary>
         IEnumerable<ICodeDocException> ExceptionDocumentation { get; }
+
+        /// <summary>
+        /// Returns the comments for this method.
+        /// </summary>
+        string CodeComments { get; }
     }
 }

@@ -12,20 +12,31 @@ namespace SolidRpc.Abstractions
         /// <summary>
         /// Returns the implementation type for suplied generic type.
         /// </summary>
+        /// <param name="serviceType"></param>
+        /// <returns></returns>
+        public static Type GetImplemenationType(Type serviceType)
+        {
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            var attrs = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(o => o.GetCustomAttributes(true))
+                .OfType<SolidRpcAbstractionProviderAttribute>()
+                .Where(o => o.ServiceType == serviceType)
+                .ToList();
+            if (!attrs.Any())
+            {
+                throw new Exception($"Cannot find service implementation for {serviceType.FullName}");
+            }
+            return attrs.First().ImplementationType;
+        }
+
+        /// <summary>
+        /// Returns the implementation type for suplied generic type.
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Type GetImplemenationType<T>()
         {
-            var attrs = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(o => o.GetCustomAttributes(true))
-                .OfType<SolidRpcAbstractionProviderAttribute>()
-                .Where(o => o.ServiceType == typeof(T))
-                .ToList();
-            if (!attrs.Any())
-            {
-                throw new Exception($"Cannot find service implementation for {typeof(T)}");
-            }
-            return attrs.First().ImplementationType;
+            return GetImplemenationType(typeof(T));
         }
 
         /// <summary>

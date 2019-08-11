@@ -4,10 +4,14 @@ namespace SolidRpc.OpenApi.Model.V2
 {
     /// <summary>
     /// DescribesThe object provides metadata about the API. The metadata can be used by the clients if needed, and can be presented in the Swagger-UI for convenience.
+    /// <a href="https://swagger.io/specification/v2/#infoObject"/>
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#infoObject"/>
     public class InfoObject : ModelBase
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="parent"></param>
         public InfoObject(ModelBase parent) : base(parent) { }
         /// <summary>
         /// Required. The title of the application.

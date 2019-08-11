@@ -34,5 +34,10 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         ICodeDocMethod GetMethodDocumentation(MethodInfo methodInfo);
+
+        /// <summary>
+        /// Returns the code comments.
+        /// </summary>
+        string CodeComments { get; }
     }
 }

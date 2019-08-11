@@ -18,6 +18,21 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        /// <summary>
+        /// Structure to specify which services that should be added on startup.
+        /// </summary>
+        public class RpcServiceConfiguration
+        {
+            /// <summary>
+            /// Should the rpc host services be added on startup.
+            /// </summary>
+            public bool AddRpcHostServices { get; set; }
+            /// <summary>
+            /// Should the rpc host services be added on startup.
+            /// </summary>
+            public bool AddStaticContentServices { get; set; }
+        }
+
         private class DummyServiceProvider : IServiceProvider
         {
             public object GetService(Type serviceType)
@@ -26,6 +41,37 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
         private static bool s_assembliesLoaded = false;
+
+        /// <summary>
+        /// Adds the rpc services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configurator"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcServices(this IServiceCollection services, Action<RpcServiceConfiguration> configurator)
+        {
+            var config = new RpcServiceConfiguration();
+            configurator(config);
+
+            var methods = (IEnumerable<MethodInfo>)new MethodInfo[0];
+            if (config.AddRpcHostServices)
+            {
+                methods = methods.Union(typeof(ISolidRpcHost).GetMethods());
+            }
+            if (config.AddStaticContentServices)
+            {
+                methods = methods.Union(typeof(ISolidRpcStaticContent).GetMethods().Where(o => o.Name == nameof(ISolidRpcStaticContent.GetStaticContent)));
+            }
+
+            var openApiParser = services.GetSolidRpcOpenApiParser();
+            var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
+            methods.ToList().ForEach(m =>
+            {
+                services.AddSolidRpcBinding(m, solidRpcHostSpec);
+            });
+
+            return services;
+        }
 
         /// <summary>
         /// Returns the service provider for specified service.
@@ -243,7 +289,16 @@ namespace Microsoft.Extensions.DependencyInjection
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
             // 
             var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
-            if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null || serviceRegistration.ImplementationFactory != null)
+            if(serviceRegistration == null)
+            {
+                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType(mi.DeclaringType);
+                if(implType != null)
+                {
+                    serviceRegistration = new ServiceDescriptor(mi.DeclaringType, implType, ServiceLifetime.Singleton);
+                    sc.Add(serviceRegistration);
+                }
+            }
+            if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null || serviceRegistration?.ImplementationFactory != null)
             {
                 mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
@@ -15,7 +16,6 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// </summary>
         /// <param name="classDocumentation"></param>
         /// <param name="nameAttr"></param>
-        /// <param name="xmlDocument"></param>
         public CodeDocMethod(CodeDocClass classDocumentation, string nameAttr)
         {
             ClassDocumentation = classDocumentation ?? throw new ArgumentNullException(nameof(classDocumentation));
@@ -64,5 +64,22 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// The exceptions
         /// </summary>
         public IEnumerable<ICodeDocException> ExceptionDocumentation { get; }
+
+        /// <summary>
+        /// Returns the code comments
+        /// </summary>'
+        public string CodeComments
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("<summary>");
+                sb.AppendLine(Comment);
+                sb.AppendLine("</summary>");
+                ParameterDocumentation.ToList().ForEach(o => sb.Append("<param name=\"").Append(o.Name).Append("\">").Append(o.Comment).Append("</param>"));
+                ExceptionDocumentation.ToList().ForEach(o => sb.Append("<exception cref=\"").Append(o.ExceptionType).Append("\">").Append(o.Comment).Append("</exception>"));
+                return sb.ToString();
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
+        "description": "Some more testing",
         "operationId": "TestArray",
         "consumes": [
           "application/json"
@@ -69,12 +70,14 @@
           }
         }
       },
-      "type": "object"
+      "type": "object",
+      "description": "The test struct"
     }
   },
   "tags": [
     {
-      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
     }
   ]
 }

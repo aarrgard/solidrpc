@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SolidRpc.OpenApi.Model.CodeDoc;
+using SolidRpc.OpenApi.Model.CodeDoc.Impl;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -12,6 +14,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
     /// </summary>
     public class CSharpReflectionParser
     {
+        private static ICodeDocRepository s_codeDocRepository = new CodeDocRepository();
+
         /// <summary>
         /// Adds the supplied method to the supplied repository.
         /// </summary>
@@ -22,14 +26,28 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             var returnType = GetType(cSharpRepository, method.ReturnType);
             var cSharpType = GetType(cSharpRepository, method.DeclaringType);
             var cSharpMethod = new CSharpMethod(cSharpType, method.Name, returnType);
+            cSharpMethod.ParseComment(s_codeDocRepository.GetMethodDoc(method).CodeComments);
             method.GetParameters().ToList().ForEach(o =>
             {
                 var parameterType = GetType(cSharpRepository, o.ParameterType);
-                var cSharpMethodParameter = new CSharpMethodParameter(cSharpMethod, o.Name, parameterType, o.IsOptional);
+                var cSharpMethodParameter = new CSharpMethodParameter(cSharpMethod, o.Name, parameterType, IsOptional(o));
                 cSharpMethod.AddMember(cSharpMethodParameter);
             });
 
             cSharpType.AddMember(cSharpMethod);
+        }
+
+        private static bool IsOptional(ParameterInfo o)
+        {
+            if(o.IsOptional)
+            {
+                return true;
+            }
+            if(o.ParameterType.IsNullableType(out Type nullableType))
+            {
+                return true;
+            }
+            return false;
         }
 
         private static ICSharpType GetType(ICSharpRepository cSharpRepository, Type type)
@@ -42,8 +60,9 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             if (type.IsClass)
             {
                 cSharpType = cSharpRepository.GetClass(CreateTypeName(type));
-                if(!cSharpType.Properties.Any())
+                if (cSharpType.Comment == null)
                 {
+                    cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
                     type.GetProperties().ToList().ForEach(o =>
                     {
                         var propertyType = GetType(cSharpRepository, o.PropertyType);
@@ -55,10 +74,18 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             else if (type.IsInterface)
             {
                 cSharpType = cSharpRepository.GetInterface(CreateTypeName(type));
+                if (cSharpType.Comment == null)
+                {
+                    cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
+                }
             }
             else
             {
                 cSharpType = cSharpRepository.GetType(CreateTypeName(type));
+                if (cSharpType.Comment == null)
+                {
+                    cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
+                }
             }
             if (type.IsGenericType)
             {

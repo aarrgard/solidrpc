@@ -44,6 +44,13 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// <param name="s"></param>
             /// <returns></returns>
             Task TestOptionalParameter(string s = null);
+
+            /// <summary>
+            /// Nullable parameters should be optional
+            /// </summary>
+            /// <param name="d"></param>
+            /// <returns></returns>
+            Task TestNullableParameter(DateTime? d);
         }
 
         /// <summary>
@@ -124,6 +131,19 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1OptionalParameter)}.json"), spec);
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1NullableParameter()
+        {
+            var cSharpRepository = new CSharpRepository();
+            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestNullableParameter)));
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1NullableParameter)}.json"), spec);
         }
     }
 }

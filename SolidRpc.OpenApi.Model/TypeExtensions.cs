@@ -470,24 +470,46 @@ namespace System
         }
 
         /// <summary>
-        /// Returns true if supplied task is a task type.
+        /// Returns true if supplied tyoe is a task type.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="taskType"></param>
         /// <returns></returns>
         public static bool IsTaskType(this Type type, out Type taskType)
         {
-            if(!type.IsGenericType)
+            if (!type.IsGenericType)
             {
                 taskType = null;
                 return false;
             }
-            if(!typeof(Task<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+            if (!typeof(Task<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
             {
                 taskType = null;
                 return false;
             }
             taskType = type.GetGenericArguments()[0];
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true if supplied type is a nullable type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="nullableType"></param>
+        /// <returns></returns>
+        public static bool IsNullableType(this Type type, out Type nullableType)
+        {
+            if (!type.IsGenericType)
+            {
+                nullableType = null;
+                return false;
+            }
+            if (!typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+            {
+                nullableType = null;
+                return false;
+            }
+            nullableType = type.GetGenericArguments()[0];
             return true;
         }
     }

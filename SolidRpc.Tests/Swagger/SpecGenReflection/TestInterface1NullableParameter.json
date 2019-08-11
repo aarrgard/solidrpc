@@ -6,19 +6,20 @@
   },
   "host": "localhost",
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestOptionalParameter": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestNullableParameter": {
       "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
-        "description": "Optional parameters should be placed in the query.",
-        "operationId": "TestOptionalParameter",
+        "description": "Nullable parameters should be optional",
+        "operationId": "TestNullableParameter",
         "parameters": [
           {
-            "name": "s",
+            "name": "d",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           }
         ],
         "responses": {

@@ -11,6 +11,7 @@
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
+        "description": "Some more testing",
         "operationId": "TestArray",
         "consumes": [
           "application/json"
@@ -54,11 +55,35 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestNullableParameter": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Nullable parameters should be optional",
+        "operationId": "TestNullableParameter",
+        "parameters": [
+          {
+            "name": "d",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestOptionalParameter": {
       "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
+        "description": "Optional parameters should be placed in the query.",
         "operationId": "TestOptionalParameter",
         "parameters": [
           {
@@ -80,6 +105,7 @@
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
+        "description": "Tests some stuff",
         "operationId": "TestStuff",
         "responses": {
           "200": {
@@ -93,6 +119,7 @@
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
+        "description": "Some more testing",
         "operationId": "TestStuff2",
         "produces": [
           "application/json"
@@ -159,12 +186,14 @@
           }
         }
       },
-      "type": "object"
+      "type": "object",
+      "description": "The test struct"
     }
   },
   "tags": [
     {
-      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
     }
   ]
 }

@@ -11,6 +11,7 @@
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
+        "description": "Tests some stuff",
         "operationId": "TestStuff",
         "responses": {
           "200": {
@@ -22,7 +23,8 @@
   },
   "tags": [
     {
-      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
     }
   ]
 }

@@ -16,7 +16,14 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <param name="xmlDocument"></param>
         public CodeDocAssembly(XmlDocument xmlDocument)
         {
-            Name = SelectSingleNode(xmlDocument, "/doc/assembly/name");
+            if(xmlDocument.SelectSingleNode("/doc/assembly/name") == null)
+            {
+                Name = "Unknown";
+            }
+            else
+            {
+                Name = SelectSingleNode(xmlDocument, "/doc/assembly/name");
+            }
             XmlDocument = xmlDocument;
             var classNames = SelectXmlElements(xmlDocument, "/doc/members/member")
                 .Select(o => GetClassName(o.Attributes["name"].InnerText))

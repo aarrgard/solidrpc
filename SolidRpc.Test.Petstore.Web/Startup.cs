@@ -16,8 +16,13 @@ namespace SolidRpc.Test.PetstoreWeb
         {
             services.AddLogging(o => o.SetMinimumLevel(LogLevel.Trace));
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            services.AddSolidRpcServices(o =>
+            {
+                o.AddRpcHostServices = true;
+                o.AddStaticContentServices = true;
+            });
             services.AddSolidRpcSwaggerUI();
-            services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
+            services.AddPetstore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

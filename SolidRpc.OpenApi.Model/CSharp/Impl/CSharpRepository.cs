@@ -6,10 +6,18 @@ using System.Reflection;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
+    /// <summary>
+    /// Implements the logic for the respository
+    /// </summary>
     public class CSharpRepository : ICSharpRepository, ICSharpMember
     {
         private ConcurrentDictionary<string, Type> s_systemTypes = new ConcurrentDictionary<string, Type>();
-
+        
+        /// <summary>
+        /// Parses supplied name into a generic representation.
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
         public static (string, IList<string>, string) ReadType(string fullName)
         {
             if (string.IsNullOrEmpty(fullName))
@@ -59,30 +67,73 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             return (genType, genArgs, rest);
         }
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
         public CSharpRepository()
         {
             Namespaces = new ConcurrentDictionary<string, ICSharpMember>();
             ClassesAndInterfaces = new ConcurrentDictionary<string, ICSharpMember>();
         }
+
+        /// <summary>
+        /// All the namespaces
+        /// </summary>
         public ConcurrentDictionary<string, ICSharpMember> Namespaces { get; }
 
+
+        /// <summary>
+        /// All the classes and interfaces 
+        /// </summary>
         public ConcurrentDictionary<string, ICSharpMember> ClassesAndInterfaces { get; }
 
+        /// <summary>
+        /// The parent
+        /// </summary>
         public ICSharpMember Parent => null;
 
+        /// <summary>
+        /// All the members(classes, interfaces and namespaces)
+        /// </summary>
         public IEnumerable<ICSharpMember> Members => Namespaces.Values.Union(ClassesAndInterfaces.Values);
 
+        /// <summary>
+        /// The name(empty)
+        /// </summary>
         public string Name => "";
 
+        /// <summary>
+        /// The full name(empty)
+        /// </summary>
         public string FullName => "";
 
+        /// <summary>
+        /// The comment(empty)
+        /// </summary>
         public ICSharpComment Comment => null;
+
+        /// <summary>
+        /// Parses supplied comment
+        /// </summary>
+        /// <param name="comment"></param>
         public void ParseComment(string comment) {  }
 
+        /// <summary>
+        /// Returns the classes
+        /// </summary>
         public IEnumerable<ICSharpClass> Classes => ClassesAndInterfaces.Values.OfType<ICSharpClass>();
 
+        /// <summary>
+        /// Returns the interfaces
+        /// </summary>
         public IEnumerable<ICSharpInterface> Interfaces => ClassesAndInterfaces.Values.OfType<ICSharpInterface>();
 
+
+        /// <summary>
+        /// Returns the namespace for supplied qualified name
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
         public ICSharpNamespace GetNamespace(string fullName)
         {
             return (ICSharpNamespace)Namespaces.GetOrAdd(fullName, _ =>
@@ -97,6 +148,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             });
         }
 
+
+        /// <summary>
+        /// Returns the class for supplied qualified name
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
         public ICSharpClass GetClass(string fullName)
         {
             var member = ClassesAndInterfaces.GetOrAdd(fullName, _ =>
@@ -112,6 +169,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             throw new Exception("Member is not a class:" + member.GetType().FullName);
         }
 
+
+        /// <summary>
+        /// Returns the interface for supplied qualified name
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
         public ICSharpInterface GetInterface(string fullName)
         {
             return (ICSharpInterface)ClassesAndInterfaces.GetOrAdd(fullName, _ =>
@@ -122,11 +185,21 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             });
         }
 
+        /// <summary>
+        /// Adds a member(not implemented)
+        /// </summary>
+        /// <param name="member"></param>
         public void AddMember(ICSharpMember member)
         {
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// Returns the type for supplied qualified name
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
         public ICSharpType GetType(string fullName)
         {
             if (ClassesAndInterfaces.TryGetValue(fullName, out ICSharpMember member))
@@ -206,11 +279,20 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             });
         }
 
+        /// <summary>
+        /// Returns the parent of supplied type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T GetParent<T>() where T : ICSharpMember
         {
             return default(T);
         }
 
+        /// <summary>
+        /// Emits the code in the repository to supplied writer.
+        /// </summary>
+        /// <param name="codeWriter"></param>
         public void WriteCode(ICodeWriter codeWriter)
         {
             var prospects = Members.OfType<ICSharpType>();
@@ -224,6 +306,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 });
         }
 
+        /// <summary>
+        /// populates supplied collection with all the namespaces.
+        /// </summary>
+        /// <param name="namespaces"></param>
         public void GetNamespaces(ICollection<string> namespaces)
         {
             throw new NotImplementedException();

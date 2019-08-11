@@ -40,7 +40,10 @@ namespace SolidRpc.OpenApi.Model
             methods.ToList().ForEach(o => CSharpReflectionParser.AddMethod(cSharpRepository, o));
             return new OpenApiSpecGeneratorV2(new SettingsSpecGen()
             {
-                BasePath = "/" + methods.First().DeclaringType.Assembly.GetName().Name.Replace('.', '/')
+                BasePath = "/" + methods.First().DeclaringType.Assembly.GetName().Name.Replace('.', '/'),
+                Version = methods.Select(o => o.DeclaringType.Assembly.GetName().Version.ToString()).FirstOrDefault() ?? "0.0.0.0",
+                Title = methods.Select(o => o.DeclaringType.Assembly.GetName().Name).FirstOrDefault() ?? "OpenApi",
+                Description = $"This OpenApi specification was generated from compiled code on {Environment.MachineName} {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}"
             }).CreateSwaggerSpec(cSharpRepository);
         }
 

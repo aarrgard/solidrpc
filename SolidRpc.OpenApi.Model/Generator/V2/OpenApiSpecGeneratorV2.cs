@@ -55,6 +55,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             {
                 Title = Settings.Title ?? "OpenApi",
                 Version = Settings.Version ?? "1.0.0",
+                Description = Settings.Description
             };
             swaggerObject.Info.License = CreateLicense(swaggerObject.Info);
             swaggerObject.Info.Contact = CreateContact(swaggerObject.Info);
@@ -283,6 +284,11 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             {
                 itemBase.Type = "array";
                 itemBase.Items = GetSchema(itemBase, canHandleFile, type.EnumerableType);
+                return;
+            }
+            else if (type.NullableType != null)
+            {
+                SetItemProps(itemBase, canHandleFile, type.NullableType);
                 return;
             }
             else if (type.RuntimeType != null)

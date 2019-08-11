@@ -50,6 +50,11 @@ namespace SolidRpc.OpenApi.Model.CSharp
         ICSharpType TaskType { get; }
 
         /// <summary>
+        /// Returns the nullable type - null if this is not a task.
+        /// </summary>
+        ICSharpType NullableType { get; }
+
+        /// <summary>
         /// Returns true if this is a file type.
         /// </summary>
         bool IsFileType { get;  }
