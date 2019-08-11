@@ -1,0 +1,27 @@
+{
+  "generatedBy": "SolidRpc.OpenApi.AzFunctions-1.0.0.0",
+  "bindings": [
+    {
+      "name": "req",
+      "direction": "in",
+      "type": "httpTrigger",
+      "authLevel": "anonymous",
+      "methods": [
+        "get"
+      ],
+      "route": "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration"
+    },
+    {
+      "name": "serviceProvider",
+      "direction": "in",
+      "type": "inject"
+    },
+    {
+      "name": "$return",
+      "direction": "out",
+      "type": "http"
+    }
+  ],
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV1Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV1.HttpFunction.Run"
+}

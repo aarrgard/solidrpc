@@ -22,6 +22,8 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public class MethodBinderStore : IMethodBinderStore
     {
+        private object _mutext = new object();
+
         public MethodBinderStore(IServiceProvider serviceProvider, ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
         {
             Bindings = new ConcurrentDictionary<string, IMethodBinder>();
@@ -43,21 +45,27 @@ namespace SolidRpc.OpenApi.Binder
             {
                 if(_methodBinders == null)
                 {
-                    ConfigStore.ProxyConfigurations.ToList()
-                        .SelectMany(o => o.InvocationConfigurations)
-                        .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
-                        .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())
-                        .ToList()
-                        .ForEach(o =>
+                    lock(_mutext)
+                    {
+                        if (_methodBinders == null)
                         {
-                            var config = o.GetOpenApiConfiguration();
-                            var method = o.InvocationConfiguration.MethodInfo;
-                            var assembly = method.DeclaringType.Assembly;
-                            var uriTransformer = o.BaseUriTransformer;
-                            var methodBinder = GetMethodBinder(uriTransformer, config, assembly);
-                            methodBinder.GetMethodInfo(method, uriTransformer);
-                        });
-                    _methodBinders = Bindings.Values;
+                            ConfigStore.ProxyConfigurations.ToList()
+                                .SelectMany(o => o.InvocationConfigurations)
+                                .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+                                .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())
+                                .ToList()
+                                .ForEach(o =>
+                                {
+                                    var config = o.GetOpenApiConfiguration();
+                                    var method = o.InvocationConfiguration.MethodInfo;
+                                    var assembly = method.DeclaringType.Assembly;
+                                    var uriTransformer = o.BaseUriTransformer;
+                                    var methodBinder = GetMethodBinder(uriTransformer, config, assembly);
+                                    methodBinder.GetMethodInfo(method, uriTransformer);
+                                });
+                            _methodBinders = Bindings.Values;
+                        }
+                    }
                 }
                 return _methodBinders;
             }

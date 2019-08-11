@@ -53,8 +53,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     }
                     if(new FileInfo(Path.Combine(devDir.FullName,"host.json")).Exists)
                     {
-                        return null;
-                        //return devDir;
+                        //return null;
+                        return devDir;
                     }
                     devDir = devDir.Parent;
                 }
@@ -251,7 +251,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public void SyncProxiesFile()
         {
             SyncProxiesFile(new FileInfo(Path.Combine(BaseDir.FullName, "proxies.json")));
-            if(DevDir.Exists)
+            if(DevDir != null)
             {
                 SyncProxiesFile(new FileInfo(Path.Combine(DevDir.FullName, "proxies.json")));
             }

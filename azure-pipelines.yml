@@ -11,8 +11,9 @@ trigger:
     - SolidRpc/*
  
 pool:
-  vmImage: 'Ubuntu-16.04'
-
+  #vmImage: 'Ubuntu-16.04' # does not include ".net framework 4.6.2""
+  vmImage: 'vs2015-win2012r2' # includes ".net framework 4.6.2""
+  
 variables:
   buildConfiguration: 'Release'
   projectFolder: '$(Build.SourcesDirectory)'
