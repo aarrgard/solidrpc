@@ -320,6 +320,7 @@
             <summary>
             Creates a http function
             </summary>
+            <param name="baseDir"></param>
             <param name="functionName"></param>
             <returns></returns>
         </member>

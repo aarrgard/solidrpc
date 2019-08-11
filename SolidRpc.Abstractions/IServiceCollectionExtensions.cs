@@ -128,7 +128,15 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (!services.Any(o => typeof(TService) == o.ServiceType))
             {
-                services.AddSingleton(typeof(TService), SolidRpcAbstractionProviderAttribute.GetImplemenationType<TService>());
+                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType<TService>();
+                if(implType.GetConstructor(Type.EmptyTypes) == null)
+                {
+                    services.AddSingleton(typeof(TService), implType);
+                }
+                else
+                {
+                    services.AddSingleton(typeof(TService), Activator.CreateInstance(implType));
+                }
             }
             return services;
         }
@@ -145,6 +153,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterSingletonService<IMethodInvoker>();
             services.RegisterSingletonService<IMethodBinderStore>();
             services.RegisterSingletonService<IBaseUriTransformer>();
+            services.RegisterSingletonService<ISolidRpcStaticContent>();
             return services;
         }
 
@@ -273,6 +282,18 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             sc.AddSolidRpcSingletonServices();
 
+            // check that we have an implementation.
+            var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
+            if (serviceRegistration == null)
+            {
+                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType(mi.DeclaringType);
+                if (implType != null)
+                {
+                    serviceRegistration = new ServiceDescriptor(mi.DeclaringType, implType, ServiceLifetime.Singleton);
+                    sc.Add(serviceRegistration);
+                }
+            }
+
             //
             // configure method
             //
@@ -288,16 +309,6 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
             // 
-            var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
-            if(serviceRegistration == null)
-            {
-                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType(mi.DeclaringType);
-                if(implType != null)
-                {
-                    serviceRegistration = new ServiceDescriptor(mi.DeclaringType, implType, ServiceLifetime.Singleton);
-                    sc.Add(serviceRegistration);
-                }
-            }
             if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null || serviceRegistration?.ImplementationFactory != null)
             {
                 mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));

@@ -1,0 +1,704 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SolidRpc.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+            <summary>
+            Extension methods fro the http request
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration">
+            <summary>
+            Structure to specify which services that should be added on startup.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration.AddRpcHostServices">
+            <summary>
+            Should the rpc host services be added on startup.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration.AddStaticContentServices">
+            <summary>
+            Should the rpc host services be added on startup.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration})">
+            <summary>
+            Adds the rpc services
+            </summary>
+            <param name="services"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Returns the service provider for specified service.
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Registers a singleton service provider.
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the singleton services
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcStaticContent(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Returns the static content provider.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcOpenApiParser(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Returns the static content provider.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+            <summary>
+            Configures all the interfaces in supplied assembly
+            </summary>
+            <param name="sc"></param>
+            <param name="interfaceAssembly"></param>
+            <param name="implementationAssembly"></param>
+            <param name="baseUriTransformer"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.String,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="interfaze"></param>
+            <param name="impl"></param>
+            <param name="openApiConfiguration"></param>
+            <param name="baseUriTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.String,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+            <summary>
+            Configures the suppllied method so that it is exposed through the .net core http binding.
+            </summary>
+            <param name="sc"></param>
+            <param name="mi"></param>
+            <param name="openApiConfiguration">The open api configuration to use - may be null to use the embedded api config.</param>
+            <param name="baseUriTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer">
+            <summary>
+            The method used to transform uri:s
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="baseUri"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IBaseUriTransformer">
+            <summary>
+            Interface that can be implemented to resolve the base uri.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IBaseUriTransformer.TransformUri(System.Uri)">
+            <summary>
+            The base uri.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument">
+            <summary>
+            Represents a method argument.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.Name">
+            <summary>
+            Returns the name of the argument.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.ArgumentPath">
+            <summary>
+            Specifies where this argument is located.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.BindArgumentAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Object)">
+            <summary>
+            Binds this argument to the supplied request.
+            </summary>
+            <param name="request"></param>
+            <param name="val"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.ExtractArgumentAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
+            <summary>
+            Extracts the arguments from supplied request.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder">
+            <summary>
+            The method binder is responsible for binding MethodInfo structures to a swagger spec.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.OpenApiSpec">
+            <summary>
+            The open api spec that this binder gets its information from
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.Assembly">
+            <summary>
+            The associated assembly.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.MethodInfos">
+            <summary>
+            Returns all the mapped methods
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.ServiceProvider">
+            <summary>
+            Returns the service provider.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.GetMethodInfo(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+            <summary>
+            Returns the method info from supplied specification.
+            </summary>
+            <param name="methodInfo"></param>
+            <param name="baseUriTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore">
+            <summary>
+            A store that contains bindings for an assebly and open api configuration.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.MethodBinders">
+            <summary>
+            Returns all the method binders.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetMethodInfo(System.String,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+            <summary>
+            Returns the method info for supplied open api spec and reflected method
+            </summary>
+            <param name="baseUriTransformer"></param>
+            <param name="openApiSpec"></param>
+            <param name="methodInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetUrlAsync``1(System.Linq.Expressions.Expression{System.Action{``0}})">
+            <summary>
+            Returns the uri to invoke the supplied method.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo">
+            <summary>
+            Represents the method info structure in a swagger specification.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.MethodBinder">
+            <summary>
+            The binder that this method information belongs to.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.MethodInfo">
+            <summary>
+            The method info structure this binding represents.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.OperationId">
+            <summary>
+            Returns the operation id for this method.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.Method">
+            <summary>
+            The method(POST,GET,HEAD,etc) to use when activating the method.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.Path">
+            <summary>
+            The path to thes method. This includes the basepath and the path element.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.Arguments">
+            <summary>
+            All the arguments.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.BindArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Object[])">
+            <summary>
+            Binds the arguments to the supplied request according to
+            the swagger spec.
+            </summary>
+            <param name="request"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.ExtractArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
+            <summary>
+            Extracts the arguments from supplied request.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.BindResponseAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Object,System.Type)">
+            <summary>
+            Binds the response
+            </summary>
+            <param name="response"></param>
+            <param name="obj"></param>
+            <param name="objType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.ExtractResponse``1(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
+            <summary>
+            Returns the respone.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="response"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
+            <summary>
+            Interface that we use to access the data in the Http request
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.CancellationToken">
+            <summary>
+            Returns the cancellation token
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Method">
+            <summary>
+            The method to use
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Scheme">
+            <summary>
+            The scheme to use.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.HostAndPort">
+            <summary>
+            The host to use.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Path">
+            <summary>
+            The path
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.PathData">
+            <summary>
+            The path data. This information is extracted/populated by the binder. No
+            need to populate from implementation.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Headers">
+            <summary>
+            The request headers
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Query">
+            <summary>
+            The request query string
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.ContentType">
+            <summary>
+            The content type of the body data.
+            
+            When composing a request a call that consumes 
+             - "application/x-www-form-urlencoded"
+             - "multipart/form-data"
+            will create the request accordingly.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.BodyData">
+            <summary>
+            The data in the body. Check the ContentType to 
+            determine how the data should be transmitted.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData">
+            <summary>
+            Represents some request data.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.ContentType">
+            <summary>
+            The content type - stored in the Content-Type header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Filename">
+            <summary>
+            File filename - usually stored in the Content-Disposition header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Name">
+            <summary>
+            The name of the data
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetStringValue(System.Text.Encoding)">
+            <summary>
+            The string representation
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetBinaryValue(System.Text.Encoding)">
+            <summary>
+            Returns the binary value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.As``1">
+            <summary>
+            Returns the data as supplied type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse">
+            <summary>
+            Interface that we use to access the data in the Http response
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.StatusCode">
+            <summary>
+            Returns the status code
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ContentType">
+            <summary>
+            Returns the content type - stored in the Content-Type header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Filename">
+            <summary>
+            The filename - stored in Content-Disposition header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.LastModified">
+            <summary>
+            Accessor for the "Last-Modified" header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ResponseStream">
+            <summary>
+            Returns the response stream
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker">
+            <summary>
+            Interface that exposes functionality to invoke a method in an IoC container.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.MethodBinderStore">
+            <summary>
+            The store that contains all the bindings
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.CancellationToken)">
+            <summary>
+            Invokes the supplied request.
+            </summary>
+            <param name="request"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo,System.Threading.CancellationToken)">
+            <summary>
+            Invokes the supplied request.
+            </summary>
+            <param name="request"></param>
+            <param name="methodInfo"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser">
+            <summary>
+            Interface used to handle open api specs
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.ParseSpec(System.String)">
+            <summary>
+            Parses upplied json to an open api spec.
+            </summary>
+            <param name="json"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.CreateSpecification(System.Type[])">
+            <summary>
+            Creates a specification that contains the methods in supplied types.
+            </summary>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.CreateSpecification(System.Reflection.MethodInfo[])">
+            <summary>
+            Creates a specification that contains the specified method.
+            </summary>
+            <param name="methods"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec">
+            <summary>
+            Interface implemented by the SwaggerObject structures in the model.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.OpenApiVersion">
+            <summary>
+            The openapi version of this specification
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.Title">
+            <summary>
+            Returns the title of the spec.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.BaseAddress">
+            <summary>
+            Returns the base address. This is the combination of
+            Scheme, Host, Port and BasePath.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetBaseAddress(System.Uri)">
+            <summary>
+            Updates the spec so that the host and port are from the supplied address.
+            </summary>
+            <param name="rootAddress"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.WriteAsJsonString(System.Boolean)">
+            <summary>
+            Writes this spec as a json string
+            </summary>
+            <param name="formatted"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig">
+            <summary>
+            Configures the bindings for the rpc proxy.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.OpenApiConfiguration">
+            <summary>
+            Sets the open api configuration to use. If not set the configuration matching
+            the assembly name where the method is defined will be used.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.BaseUriTransformer">
+            <summary>
+            The method to transform the Uri. This delegate is invoked to determine
+            the base Uri for the service. Supplied uri is the one obtained from
+            the openapi config.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions">
+            <summary>
+            Extension methods for the interface.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.GetOpenApiConfiguration(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Returns the open api configuration configured for the rpc scope.
+            </summary>
+            <param name="config"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.SecurityAttribute">
+            <summary>
+            The security attribute defines what permissions that are required to
+            accesss the data in these interfaces
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SecurityAttribute.#ctor(System.String[])">
+            <summary>
+            The permissions required to access this resource
+            </summary>
+            <param name="permissions"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.SecurityAttribute.Public">
+            <summary>
+            Specifies if this resource is public(ie no permissions required)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.SecurityAttribute.Permissions">
+            <summary>
+            The permissions required to access this resource
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Security.SolidRpcHostPermission">
+            <summary>
+            This permission grants access to some of the solid rpc host functionality.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
+            <summary>
+            Represents a solid rpc host.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.GetHostId(System.Threading.CancellationToken)">
+            <summary>
+            Returns the id of this host
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.GetHostConfiguration(System.Threading.CancellationToken)">
+            <summary>
+            Returns the host configuration.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.IsAlive(System.Threading.CancellationToken)">
+            <summary>
+            Function that determines if the host is alive.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcStaticContent">
+            <summary>
+            Accesses the static content. The implementation of this interface is a singleton service
+            that provides access to static content. 
+            
+            Static resources may be configured(added) during setup of the IoC container.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcStaticContent.AddContent(System.Reflection.Assembly,System.String,System.String)">
+            <summary>
+            Adds a content mapping
+            </summary>
+            <param name="assembly"></param>
+            <param name="packagePath"></param>
+            <param name="pathPrefix"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcStaticContent.PathPrefixes">
+            <summary>
+            These are all the registered paths.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcStaticContent.GetStaticContent(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the content for supplied file.
+            
+            Note that the path is marked as optional(default value set). This is so that the parameter
+            is placed in the query string instead of path.
+            </summary>
+            <param name="path"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute">
+            <summary>
+            Attribute that can be set on the SolidRpc hosting assemblies to define the 
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetImplemenationType(System.Type)">
+            <summary>
+            Returns the implementation type for suplied generic type.
+            </summary>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetImplemenationType``1">
+            <summary>
+            Returns the implementation type for suplied generic type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.CreateInstance``1">
+            <summary>
+            Constructs a new instance of specified type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.#ctor(System.Type,System.Type)">
+            <summary>
+            Constructs a new attribute
+            </summary>
+            <param name="serviceType"></param>
+            <param name="implementationType"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ServiceType">
+            <summary>
+            The interface type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ImplementationType">
+            <summary>
+            The implementation type.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.FileContent">
+            <summary>
+            Represents a file content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.Content">
+            <summary>
+            The file content.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.CharSet">
+            <summary>
+            The content charset
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.ContentType">
+            <summary>
+            The content type.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.LastModified">
+            <summary>
+            The last modified date of the resource.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.FileContentNotFoundException">
+            <summary>
+            Raised when the file content is not found
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentNotFoundException.#ctor">
+            <summary>
+            The file content
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.NameValuePair">
+            <summary>
+            Represents a name/value pair
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.NameValuePair.Name">
+            <summary>
+            The name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.NameValuePair.Value">
+            <summary>
+            The value
+            </summary>
+        </member>
+    </members>
+</doc>

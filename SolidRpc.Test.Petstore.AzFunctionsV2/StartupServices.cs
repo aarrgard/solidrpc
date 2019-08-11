@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.Test.Petstore.AzFunctions;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
+using System.Linq;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 
@@ -15,9 +16,9 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
-            var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcStaticContent>();
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
+            var services2 = services.Where(o => o.ServiceType == typeof(ISolidRpcStaticContent)).ToList();
         }
     }
 }

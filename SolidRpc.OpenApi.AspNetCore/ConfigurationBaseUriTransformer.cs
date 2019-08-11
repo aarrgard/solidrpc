@@ -68,7 +68,6 @@ namespace SolidRpc.OpenApi.Binder
                             }
                             else
                             {
-                                Scheme = "http";
                                 Host = HostString.FromUriComponent(hostString);
                             }
                             break;
@@ -88,6 +87,14 @@ namespace SolidRpc.OpenApi.Binder
             if (!string.IsNullOrEmpty(Scheme))
             {
                 newUri.Scheme = Scheme;
+                if (string.Equals(Scheme, "http", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    newUri.Port = 80;
+                }
+                if (string.Equals(Scheme, "https", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    newUri.Port = 443;
+                }
             }
             if (!string.IsNullOrEmpty(Host.Host))
             {

@@ -20,7 +20,7 @@
           "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/{arg0}"
+      "backendUri": "/test/aarrgard/Test/1.0.0/pet/{arg0}"
     },
     "aarrgard/Test/1.0.0/pet/{arg0}/uploadImage": {
       "matchCondition": {

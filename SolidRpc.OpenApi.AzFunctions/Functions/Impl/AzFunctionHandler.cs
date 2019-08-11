@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
+using SolidRpc.OpenApi.Binder;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -247,6 +248,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Creates a http function
         /// </summary>
+        /// <param name="baseDir"></param>
         /// <param name="functionName"></param>
         /// <returns></returns>
         public IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string functionName)
@@ -405,7 +407,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies.Add(proxyKV);
             }
 
-            var backendUri = $"http://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{route}";
+            var scheme = Environment.GetEnvironmentVariable(ConfigurationBaseUriTransformer.ConfigScheme) ?? "http";
+            var backendUri = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{route}";
+            //var backendUri = $"{HttpRouteBackendPrefix}/{route}";
             if (route == s_staticContentFunctionRoute)
             {
                 route = $"{{*path}}";

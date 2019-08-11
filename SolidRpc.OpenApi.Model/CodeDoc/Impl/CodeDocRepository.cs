@@ -52,28 +52,27 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
 
         private XmlDocument GetXmlDoc(Assembly arg)
         {
-            var xmlDocLocation = new FileInfo(Path.ChangeExtension(arg.Location, ".xml"));
-            var resName = $"{arg.GetName().Name}.xml";
             Stream docStream = null;
 
+            // look for resource
+            var resName = $"{arg.GetName().Name}.xml";
+            foreach (var name in arg.GetManifestResourceNames())
+            {
+                if (name.EndsWith(resName))
+                {
+                    docStream = arg.GetManifestResourceStream(resName);
+                    break;
+                }
+            }
+
             // look for the documentation where the assebly resides
-            if (xmlDocLocation.Exists)
+            var xmlDocLocation = new FileInfo(Path.ChangeExtension(arg.Location, ".xml"));
+            if (docStream == null && xmlDocLocation.Exists)
             {
                 // load from file
                 docStream = xmlDocLocation.OpenRead();
             }
-            else
-            {
-                // look for resource
-                foreach(var name in arg.GetManifestResourceNames())
-                {
-                    if(name.EndsWith(resName))
-                    {
-                        docStream = arg.GetManifestResourceStream(resName);
-                        break;
-                    }
-                }
-            }
+
             var xmlDocument = new XmlDocument();
             if (docStream == null)
             {

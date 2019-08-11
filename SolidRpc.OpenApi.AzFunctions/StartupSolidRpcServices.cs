@@ -45,12 +45,12 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             }
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
+            services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
             services.AddSolidRpcServices(o =>
             {
                 o.AddRpcHostServices = true;
                 o.AddStaticContentServices = true;
             });
-            services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
         }
     }
 }

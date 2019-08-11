@@ -278,7 +278,7 @@
             Handles timer triggers
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.HttpFunction.Run(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.HttpFunction.Run(System.Net.Http.HttpRequestMessage,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
             <summary>
             Runs the trigger logic.
             </summary>
@@ -287,17 +287,6 @@
             <param name="serviceProvider"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
-        </member>
-        <member name="T:SolidRpc.OpenApi.Binder.Http.IHttpResponseExtensions">
-            <summary>
-            Extension methods fro the http request
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Http.IHttpResponseExtensions.CreateActionResult(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
-            <summary>
-            
-            </summary>
-            <param name="source"></param>
         </member>
     </members>
 </doc>

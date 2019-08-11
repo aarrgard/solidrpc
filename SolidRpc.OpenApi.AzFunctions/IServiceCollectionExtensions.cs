@@ -25,6 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(AzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
             if(funcHandler == null)
             {
+                DirectoryInfo baseDir;
                 var assemblyLocation = new FileInfo(typeof(AzFunctionHandler).Assembly.Location);
                 if (!assemblyLocation.Exists)
                 {
@@ -32,7 +33,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
                 if (assemblyLocation.Directory.Name != "bin")
                 {
-                    throw new Exception("Assemblies are not placed in the bin folder.");
+                    //throw new Exception($"Assemblies are not placed in the bin folder({assemblyLocation.Directory.Name}/{assemblyLocation.Directory.FullName}).");
+                    baseDir = new DirectoryInfo("d:\\home\\site\\wwwroot");
+                }
+                else
+                {
+                    baseDir = assemblyLocation.Directory.Parent;
                 }
 
                 var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
@@ -41,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .Where(o => o.GetName().Name.StartsWith(assemblyNamePrefix))
                     .Single();
  
-                funcHandler = new AzFunctionHandler(assemblyLocation.Directory.Parent, triggerAssembly);
+                funcHandler = new AzFunctionHandler(baseDir, triggerAssembly);
                 services.AddSingleton(funcHandler);
             }
             return funcHandler;
