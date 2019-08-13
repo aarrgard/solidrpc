@@ -7,16 +7,30 @@ using SolidRpc.OpenApi.Model.V2;
 
 namespace SolidRpc.OpenApi.Model.Generator.V2
 {
+    /// <summary>
+    /// Creates code from a swagger spec
+    /// </summary>
     public class OpenApiCodeGeneratorV2 : OpenApiCodeGenerator
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="swaggerObject"></param>
+        /// <param name="codeSettings"></param>
         public OpenApiCodeGeneratorV2(SwaggerObject swaggerObject, SettingsCodeGen codeSettings)
             : base(codeSettings)
         {
             SwaggerObject = swaggerObject;
         }
 
+        /// <summary>
+        /// The swagger spec we are working on
+        /// </summary>
         public SwaggerObject SwaggerObject { get; }
 
+        /// <summary>
+        /// The operations
+        /// </summary>
         public IEnumerable<OperationObject> Operations => SwaggerObject.Paths
             .Values.SelectMany(o => new[] {
                 o.Delete,
@@ -28,6 +42,10 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 o.Put
             }).Where(o => o != null);
 
+        /// <summary>
+        /// Generates code into supplied code repository
+        /// </summary>
+        /// <param name="cSharpRepository"></param>
         protected override void GenerateCode(ICSharpRepository cSharpRepository)
         {
             // iterate all operations
@@ -43,24 +61,26 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 return OperationMapper(CodeSettings, swaggerOperation);
             }).ToList();
 
-            cSharpMethods.ForEach(o =>
+            cSharpMethods.ForEach(csm =>
             {
-                var i = cSharpRepository.GetInterface(o.InterfaceName);
+                var i = cSharpRepository.GetInterface(csm.InterfaceName);
 
-                var comment = $"<summary>{o.ClassSummary?.Summary}</summary>";
-                comment += $"<a href=\"{o.ClassSummary?.ExternalUri}\">{o.ClassSummary?.ExternalDescription}</a>";
-
+                // construct code comment for interface
+                var comment = $"<summary>{csm.ClassSummary?.Summary}</summary>";
+                comment += $"<a href=\"{csm.ClassSummary?.ExternalUri}\">{csm.ClassSummary?.ExternalDescription}</a>";
                 i.ParseComment(comment);
-                var returnType = (ICSharpType)GetClass(cSharpRepository, o.ReturnType);
+
+                // handle return type
+                var returnType = (ICSharpType)GetClass(cSharpRepository, csm.ReturnType);
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
                     returnType = CreateTask(returnType);
                 }
 
-                var m = new Model.CSharp.Impl.CSharpMethod(i, o.MethodName, returnType);
-                comment = $"<summary>{o.MethodSummary?.Summary}</summary>";
-                comment += $"<a href=\"{o.MethodSummary?.ExternalUri}\">{o.MethodSummary?.ExternalDescription}</a>";
-                foreach (var e in o.Exceptions)
+                // construct comment for method
+                comment = $"<summary>{csm.MethodSummary?.Summary}</summary>";
+                comment += $"<a href=\"{csm.MethodSummary?.ExternalUri}\">{csm.MethodSummary?.ExternalDescription}</a>";
+                foreach (var e in csm.Exceptions)
                 {
                     var ex = GetClass(cSharpRepository, e);
                     ex.AddExtends(cSharpRepository.GetClass(typeof(Exception).FullName));
@@ -69,17 +89,21 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     ctr.ParseComment("<summary>Constructs a new instance</summary>");
                     ex.AddMember(ctr);
                 }
+
+                var m = new Model.CSharp.Impl.CSharpMethod(i, csm.MethodName, returnType);
                 m.ParseComment(comment);
 
-                foreach (var p in o.Parameters)
+                foreach (var p in csm.Parameters.OrderBy(o => o.Optional ? 1 : 0))
                 {
                     var parameterType = GetClass(cSharpRepository, p.ParameterType);
-                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, p.Optional);
+                    string defaultValue = null;
+                    if (p.Optional)
+                    {
+                        defaultValue = $"default({parameterType.FullName})";
+                    }
+
+                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, p.Optional, defaultValue);
                     mp.ParseComment($"<summary>{p.Description}</summary>");
-                    //if(!p.Optional)
-                    //{
-                    //    csp.DefaultValue = $"default({csp.ParameterType.FullName})";
-                    //}
                     m.AddMember(mp);
                 }
                 if (CodeSettings.UseAsyncAwaitPattern)
@@ -104,6 +128,13 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         {
             if (op.Tags == null)
             {
+                var so = op.GetParent<SwaggerObject>();
+                return new[] { new SwaggerTag()
+                    {
+                        Name = so.Title,
+                        Description = SwaggerDescription.Create(so.Info?.Description, null, null)
+                    }
+                };
                 throw new ArgumentNullException(op.OperationId);
             }
             if(op.GetParent<SwaggerObject>().Tags == null)
@@ -270,6 +301,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeGuid);
                         case "binary":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeStream);
+                        case "uri":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeUri);
                         default:
                             throw new Exception("Cannot handle schema format:" + schema.Format);
                     }

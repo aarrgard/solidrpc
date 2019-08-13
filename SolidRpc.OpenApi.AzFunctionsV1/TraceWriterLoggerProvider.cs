@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
     /// </summary>
     public class TraceWriterLoggerProvider : ILoggerProvider
     {
-
+        
         private class TraceWriterLogger : ILogger
         {
             public TraceWriterLogger(TraceWriterLoggerProvider traceWriterLoggerProvider)

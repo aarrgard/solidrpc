@@ -9,6 +9,11 @@
       "commandName": "Project",
       "commandLineArgs": "-code2openapi SolidRpc.OpenApi.SwaggerUI.json",
       "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.SwaggerUI"
+    },
+    "DotNetTool - Security": {
+      "commandName": "Project",
+      "commandLineArgs": "-openapi2code Services\\IOAuth2Microsoft.json",
+      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Security"
     }
   }
 }

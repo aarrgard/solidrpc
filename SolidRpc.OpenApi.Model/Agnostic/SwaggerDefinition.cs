@@ -19,6 +19,7 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         public static string TypeStream = "System.IO.Stream";
         public static string TypeDateTime = "System.DateTime";
         public static string TypeGuid = "System.Guid";
+        public static string TypeUri = "System.Uri";
         public static string TypeTask = "System.Threading.Tasks.Task";
         public static string TypeCancellationToken = "System.Threading.CancellationToken";
 
@@ -34,6 +35,7 @@ namespace SolidRpc.OpenApi.Model.Agnostic
             TypeStream,
             TypeDateTime,
             TypeGuid,
+            TypeUri,
             TypeTask,
             TypeCancellationToken
         };

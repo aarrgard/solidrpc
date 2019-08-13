@@ -233,6 +233,10 @@ namespace Microsoft.Extensions.DependencyInjection
                         .Where(o => o != t)
                         .SingleOrDefault();
                 }
+                if(impl == null)
+                {
+                    continue;
+                }
                 sc.AddSolidRpcBindings(t, impl, null, baseUriTransformer);
             }
             return sc;
@@ -252,9 +256,9 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // make sure that the type is registered
             //
-            if (impl != null && !sc.Any(o => o.ServiceType == interfaze))
+            if (!sc.Any(o => o.ServiceType == interfaze))
             {
-                sc.AddTransient(interfaze, impl);
+                sc.AddTransient(interfaze, impl ?? interfaze);
             }
 
             if (!sc.Any(o => o.ServiceType == interfaze))

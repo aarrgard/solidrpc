@@ -191,5 +191,10 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Test.Petstore.AzFunctions.TraceWriterLoggerProvider">
+            <summary>
+            Implements logic so that the trace writer output is redirected to the logger.
+            </summary>
+        </member>
     </members>
 </doc>

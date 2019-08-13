@@ -205,13 +205,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen
 
             // await proxy.DeletePet(api_key, pet.Id);
             ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.DeletePet(null, 0, CancellationToken.None),
+                o => o.DeletePet(0, null, CancellationToken.None),
                 config,
                 args =>
                 {
                     Assert.AreEqual(3, args.Length);
-                    CompareStructs(api_key, args[0]);
-                    CompareStructs(pet.Id, args[1]);
+                    CompareStructs(pet.Id, args[0]);
+                    CompareStructs(api_key, args[1]);
                     CompareStructs(CancellationToken.None, args[2]);
                     return Task.CompletedTask;
                 });
@@ -465,7 +465,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             // Pet
             //
             await petProxy.AddPet(pet);
-            await petProxy.DeletePet(api_key, pet.Id);
+            await petProxy.DeletePet(pet.Id, api_key);
             CompareStructs(typeof(IEnumerable<Petstore.Services.IPet>), new[] { pet }, await petProxy.FindPetsByStatus(statuses));
             CompareStructs(typeof(IEnumerable<Petstore.Services.IPet>), new[] { pet }, await petProxy.FindPetsByTags(tags.Select(o => o.Name)));
             CompareStructs(pet, await petProxy.GetPetById(pet.Id));

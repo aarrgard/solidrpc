@@ -40,7 +40,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             {
                 services.AddLogging(o => {
                     o.SetMinimumLevel(LogLevel.Trace);
-                    o.AddProvider(new TraceWriterLoggerProvider());
+                    //o.AddProvider(new TraceWriterLoggerProvider());
                 });
             }
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());

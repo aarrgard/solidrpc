@@ -700,11 +700,6 @@
             </summary>
             <param name="services"></param>
         </member>
-        <member name="T:SolidRpc.Test.Petstore.AzFunctions.TraceWriterLoggerProvider">
-            <summary>
-            Implements logic so that the trace writer output is redirected to the logger.
-            </summary>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>
             Extension methods fro the http request

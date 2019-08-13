@@ -41,26 +41,39 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var strConfig = config.OpenApiConfiguration;
             if (strConfig == null)
             {
-                var assemblies = config.Methods.Select(o => o.DeclaringType.Assembly).Distinct().ToList();
-                if(assemblies.Count != 1)
+                foreach(var m in config.Methods)
                 {
-                    throw new Exception("Configuration belongs to more than one assembly.");
-                }
-                // locate config base on assembly name
-                var assembly = assemblies.First();
-                var assemblyName = assembly.GetName().Name;
-                var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.json"));
-                if (resourceName == null)
-                {
-                    throw new Exception($"The assembly({assembly.GetName()}) does not contain a swagger spec.");
-                }
-                using (var s = assembly.GetManifestResourceStream(resourceName))
-                {
-                    using (var sr = new StreamReader(s))
+                    var assembly = m.DeclaringType.Assembly;
+                    var assemblyName = assembly.GetName().Name;
+
+                    var endings = new[]
                     {
-                        config.OpenApiConfiguration = strConfig = sr.ReadToEnd();
+                        $"{m.DeclaringType.FullName}.json",
+                        $".{assemblyName}.json"
+                    };
+
+                    foreach(var ending in endings)
+                    {
+                        // locate config based on method name
+                        var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith(ending, StringComparison.InvariantCultureIgnoreCase));
+                        if (string.IsNullOrEmpty(resourceName))
+                        {
+                            continue;
+                        }
+                        using (var s = assembly.GetManifestResourceStream(resourceName))
+                        {
+                            using (var sr = new StreamReader(s))
+                            {
+                                strConfig = sr.ReadToEnd();
+                            }
+                        }
+                    }
+                    if (strConfig == null)
+                    {
+                        throw new Exception($"Failed to find configuration for method using patterns {string.Join(",", endings)}.");
                     }
                 }
+                config.OpenApiConfiguration = strConfig;
             }
             return strConfig;
         }

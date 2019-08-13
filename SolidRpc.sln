@@ -50,7 +50,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunction
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctions", "SolidRpc.OpenApi.AzFunctions\SolidRpc.OpenApi.AzFunctions.csproj", "{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Security", "SolidRpc.Security\SolidRpc.Security.csproj", "{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Security", "SolidRpc.Security\SolidRpc.Security.csproj", "{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Security.Impl", "SolidRpc.Security.Impl\SolidRpc.Security.Impl.csproj", "{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -134,6 +136,10 @@ Global
 		{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +164,7 @@ Global
 		{61B9E70B-C449-4CEB-9B20-8445657AB52B} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}

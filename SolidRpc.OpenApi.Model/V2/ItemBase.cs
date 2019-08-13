@@ -158,6 +158,8 @@ namespace SolidRpc.OpenApi.Model.V2
                             return typeof(DateTime);
                         case "uuid":
                             return typeof(Guid);
+                        case "uri":
+                            return typeof(Uri);
                     }
                     break;
             }

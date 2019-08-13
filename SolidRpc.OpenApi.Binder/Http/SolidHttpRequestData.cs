@@ -28,6 +28,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         private const string SystemInt64 = "System.Int64";
         private const string SystemGuid = "System.Guid";
         private const string SystemDateTime = "System.DateTime";
+        private const string SystemUri = "System.Uri";
         private const string SystemString = "System.String";
         private const string SystemIOStream = "System.IO.Stream";
         private const string SystemThreadingCancellationToken = "System.Threading.CancellationToken";
@@ -47,7 +48,10 @@ namespace SolidRpc.OpenApi.Binder.Http
                     return (_, __) => binder(_, __);
                 case "csv":
                     var csvBinder = CreateBinder(contentType, name, typeof(string));
-                    return (_, __) => csvBinder(_, __).GetStringValue().Split(';').Select(o => new SolidHttpRequestDataString("text/plain", name, o));
+                    return (_, __) => csvBinder(_, __).GetStringValue().Split(',').Select(o => new SolidHttpRequestDataString("text/plain", name, o));
+                case "ssv":
+                    var ssvBinder = CreateBinder(contentType, name, typeof(string));
+                    return (_, __) => ssvBinder(_, __).GetStringValue().Split(' ').Select(o => new SolidHttpRequestDataString("text/plain", name, o));
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
@@ -194,6 +198,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Guid)val).ToString());
                         case SystemDateTime:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+                        case SystemUri:
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Uri)val).ToString());
                         case SystemString:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, (string)val);
                         default:

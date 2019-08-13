@@ -54,14 +54,14 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <summary>
         /// Deletes a pet
         /// </summary>
-        /// <param name="api_key"></param>
         /// <param name="petId">Pet id to delete</param>
+        /// <param name="api_key"></param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">Pet not found</exception>
         Task DeletePet(
-            string api_key,
             long petId,
+            string api_key = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -85,8 +85,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">Invalid input</exception>
         Task UpdatePetWithForm(
             long petId,
-            string name,
-            string status,
+            string name = default(string),
+            string status = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -98,8 +98,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="cancellationToken"></param>
         Task<ApiResponse> UploadFile(
             long petId,
-            string additionalMetadata,
-            Stream file,
+            string additionalMetadata = default(string),
+            Stream file = default(Stream),
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

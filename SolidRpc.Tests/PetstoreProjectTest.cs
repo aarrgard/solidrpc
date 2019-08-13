@@ -135,8 +135,7 @@ namespace SolidRpc.Tests
             services.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             services.AddSolidRpcSingletonServices();
-            services.AddTransient<IPet, PetImpl>();
-            services.AddSolidRpcBindings(typeof(IPet).Assembly, null, GetBaseUrl);
+            services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), null, GetBaseUrl);
 
             return services.BuildServiceProvider();
         }
