@@ -18,7 +18,7 @@ namespace SolidRpc.Tests.Swagger
         /// <summary>
         /// Tests that the petstore json file is processed correctly.
         /// </summary>
-        [Test,Ignore("fix array bindings")]
+        [Test]
         public async Task TestMicrosoft()
         {
             var sc = new ServiceCollection();
@@ -34,7 +34,7 @@ namespace SolidRpc.Tests.Swagger
             var scopes = new[] { "test" };
             var redirect_uri = new Uri("http://test.com/test");
             var url = await binder.GetUrlAsync<IOAuth2Microsoft>(o => o.Authorize("common", clientId, response_type, scopes, nounce, redirect_uri, null, null, null, null, null, CancellationToken.None));
-            Assert.AreEqual("", url);
+            Assert.AreEqual("https://login.microsoftonline.com/common/oauth2/authorize?client_id=615993a8-66b3-40ce-a165-96a81edd3677&response_type=id_token&scope=test&nounce=nounce&redirect_uri=http://test.com/test&response_mode=&state=&prompt=&login_hint=&domain_hint=", url.ToString());
         }
     }
 }

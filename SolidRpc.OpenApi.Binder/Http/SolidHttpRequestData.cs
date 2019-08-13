@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -35,25 +36,115 @@ namespace SolidRpc.OpenApi.Binder.Http
         
         public static readonly IEnumerable<SolidHttpRequestData> EmptyArray = new SolidHttpRequestData[0];
 
-        public static Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
+        public static Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
         {
-            Func<IEnumerable<SolidHttpRequestData>, object, SolidHttpRequestData> subBinder;
-            switch(collectionFormat)
+            Func<IEnumerable<IHttpRequestData>, object, IHttpRequestData> subBinder;
+            switch (collectionFormat)
             {
                 case null:
                     subBinder = CreateBinder(contentType, name, parameterType);
-                    return (_, __) => new SolidHttpRequestData[] { subBinder(_, __) };
+                    return (_, __) => new IHttpRequestData[] { subBinder(_, __) };
                 case "multi":
                     var binder = CreateEnumBinder(contentType, name, parameterType);
                     return (_, __) => binder(_, __);
                 case "csv":
-                    var csvBinder = CreateBinder(contentType, name, typeof(string));
-                    return (_, __) => csvBinder(_, __).GetStringValue().Split(',').Select(o => new SolidHttpRequestDataString("text/plain", name, o));
+                    var csvBinder = CreateEnumBinder(contentType, name, parameterType);
+                    return (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join(",", csvBinder(_, __).Select(o => o.GetStringValue()))) };
                 case "ssv":
-                    var ssvBinder = CreateBinder(contentType, name, typeof(string));
-                    return (_, __) => ssvBinder(_, __).GetStringValue().Split(' ').Select(o => new SolidHttpRequestDataString("text/plain", name, o));
+                    var ssvBinder = CreateEnumBinder(contentType, name, parameterType);
+                    return (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join(" ", ssvBinder(_, __).Select(o => o.GetStringValue()))) };
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
+            }
+        }
+
+        public static Func<IEnumerable<IHttpRequestData>, object> CreateExtractor(string contentType, string name, Type parameterType, string collectionFormat)
+        {
+            Func<IHttpRequestData, object> subExtractor;
+            switch (collectionFormat)
+            {
+                case null:
+                    subExtractor = CreateExtractor(contentType, name, parameterType);
+                    return (_) => subExtractor(_.FirstOrDefault());
+                case "multi":
+                    var enumExtractor = CreateEnumExtractor(contentType, name, parameterType);
+                    return (_) => { return enumExtractor(_); };
+                case "csv":
+                    var csvExtractor = CreateEnumExtractor(contentType, name, parameterType);
+                    return (_) => { return csvExtractor(_.SelectMany(o => o.GetStringValue().Split(',').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                case "ssv":
+                    var ssvExtractor = CreateEnumExtractor(contentType, name, parameterType);
+                    return (_) => { return ssvExtractor(_.SelectMany(o => o.GetStringValue().Split(' ').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                default:
+                    throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
+            }
+        }
+
+        private static Func<IEnumerable<IHttpRequestData>, object> CreateEnumExtractor(string contentType, string name, Type type)
+        {
+            var enumType = GetEnumType(type);
+            var m = typeof(SolidHttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                     .Where(o => o.Name == nameof(CreateEnumExtractor))
+                     .Where(o => o.GetParameters().Length == 2)
+                     .Where(o => o.IsGenericMethod)
+                     .Single();
+            return (Func<IEnumerable<IHttpRequestData>, object>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+        }
+
+        private static Func<IEnumerable<IHttpRequestData>, IEnumerable<T>> CreateEnumExtractor<T>(string contentType, string name)
+        {
+            var subExtractor = CreateExtractor(contentType, name, typeof(T));
+            return (_) => {
+                var arr = _.Select(o => (T)subExtractor(o)).ToArray();
+                return arr;
+            };
+        }
+
+
+        private static Func<IHttpRequestData, object> CreateExtractor(string contentType, string name, Type type)
+        {
+            contentType = contentType ?? "application/json";
+            switch (contentType)
+            {
+                case "text/plain":
+                    switch (type?.FullName)
+                    {
+                        case null:
+                        case SystemThreadingCancellationToken:
+                            return (_) => CancellationToken.None;
+                        case SystemBoolean:
+                            return (_) => bool.Parse(_.GetStringValue());
+                        case SystemDouble:
+                            return (_) => double.Parse(_.GetStringValue());
+                        case SystemSingle:
+                            return (_) => float.Parse(_.GetStringValue());
+                        case SystemInt16:
+                            return (_) => short.Parse(_.GetStringValue());
+                        case SystemInt32:
+                            return (_) => int.Parse(_.GetStringValue());
+                        case SystemInt64:
+                            return (_) => long.Parse(_.GetStringValue());
+                        case SystemGuid:
+                            return (_) => Guid.Parse(_.GetStringValue());
+                        case SystemDateTime:
+                            return (_) => DateTime.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                        case SystemUri:
+                            return (_) => new Uri(_.GetStringValue());
+                        case SystemString:
+                            return (_) => _.GetStringValue();
+                        default:
+                            throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
+                    }
+                case "application/json":
+                    return (_) =>
+                    {
+                        using (var s = _.GetBinaryValue())
+                        {
+                            return JsonHelper.Deserialize(s, type);
+                        }
+                    };
+                default:
+                    throw new NotImplementedException("cannot handle content type:" + contentType);
             }
         }
 
@@ -144,7 +235,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             return type.GetInterfaces().Select(o => GetEnumType(o)).Where(o => o != null).FirstOrDefault();
         }
 
-        private static Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> CreateEnumBinder(string contentType, string name, Type type)
         {
             var enumType = GetEnumType(type);
             var m = typeof(SolidHttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
@@ -152,16 +243,16 @@ namespace SolidRpc.OpenApi.Binder.Http
                     .Where(o => o.GetParameters().Length == 2)
                     .Where(o => o.IsGenericMethod)
                     .Single();
-            return (Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+            return (Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
         }
 
-        private static Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
+        private static Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
         {
             var subBinder = CreateBinder(contentType, name, typeof(T));
             return (_,__) => ((IEnumerable<T>)__).Select(o => subBinder(_, o));
         }
 
-        private static Func<IEnumerable<SolidHttpRequestData>, object, SolidHttpRequestData> CreateBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<IHttpRequestData>, object, IHttpRequestData> CreateBinder(string contentType, string name, Type type)
         {
             if(type?.FullName == SystemIOStream)
             {

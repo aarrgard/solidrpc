@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "ArrayParam"
+  },
+  "host": "localhost:5001",
+  "schemes": [ "https" ],
+  "paths": {
+    "/ArrayParam": {
+      "get": {
+        "tags": [ "ArrayParam" ],
+        "summary": "Sends an array back and forth between client and server",
+        "operationId": "ProxyArrayInQuery",
+        "consumes": [],
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "description": "The array to proxy",
+            "required": true,
+            "type": "array",
+            "collectionFormat": "ssv",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "collectionFormat": "ssv",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

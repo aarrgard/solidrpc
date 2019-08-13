@@ -538,5 +538,35 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 await proxy.ProxyIntegerInPath(3);
             }
         }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestArrayParam()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestArrayParam).Substring(4));
+
+                // await proxy.DeletePet(api_key, pet.Id);
+                ctx.CreateServerInterceptor<ArrayParam.Services.IArrayParam>(
+                    o => o.ProxyArrayInQuery(null, CancellationToken.None),
+                    config,
+                    args =>
+                    {
+                        CompareStructs(new int[] { 5, 9 }, args[0]);
+                        CompareStructs(CancellationToken.None, args[1]);
+                        return Task.FromResult<IEnumerable<int>>((int[])args[0]);
+                    });
+
+
+                ctx.AddOpenApiProxy<ArrayParam.Services.IArrayParam>(config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<ArrayParam.Services.IArrayParam>();
+
+                await proxy.ProxyArrayInQuery(new int[] { 5, 9});
+            }
+        }
     }
 }

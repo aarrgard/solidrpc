@@ -35,11 +35,37 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (ParameterObject.IsBinaryType())
             {
                 HttpRequestDataBinder = (_, __) => SetFileData(ParameterObject.Name, _, __);
+                HttpRequestDataExtractor = GetFileData(contentType, ParameterObject.Name, ParameterInfo.ParameterType);
             }
             else
             {
                 HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
+                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
             }
+        }
+
+        private Func<IEnumerable<IHttpRequestData>, object> GetFileData(string contentType, string name, Type type)
+        {
+            if(type.IsFileType())
+            {
+                return (_) =>
+                {
+                    var valData = _.FirstOrDefault();
+                    var data = Activator.CreateInstance(type);
+                    type.SetFileTypeStreamData(data, valData.GetBinaryValue());
+                    type.SetFileTypeContentType(data, valData.ContentType);
+                    type.SetFileTypeFilename(data, valData.Filename);
+                    return data;
+                };
+            }
+            if (type.IsAssignableFrom(typeof(Stream)))
+            {
+                return (_) =>
+                {
+                    return _.FirstOrDefault()?.GetBinaryValue();
+                };
+            }
+            return SolidHttpRequestData.CreateExtractor(contentType, name, type, null);
         }
 
         private IEnumerable<string> GetArgumentPath()
@@ -67,7 +93,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return new[] { MapScope(ParameterObject.In), ParameterObject.Name };
         }
 
-        private IEnumerable<SolidHttpRequestData> SetFileData(string name, IEnumerable<SolidHttpRequestData> formData, object value)
+        private IEnumerable<IHttpRequestData> SetFileData(string name, IEnumerable<IHttpRequestData> formData, object value)
         {
             var latest = GetLatestBinaryData(formData);
             switch (name.ToLower())
@@ -97,7 +123,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        private SolidHttpRequestDataBinary GetLatestBinaryData(IEnumerable<SolidHttpRequestData> formData)
+        private SolidHttpRequestDataBinary GetLatestBinaryData(IEnumerable<IHttpRequestData> formData)
         {
             var latest = formData.OfType<SolidHttpRequestDataBinary>().LastOrDefault();
             if(latest == null)
@@ -137,7 +163,8 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public IEnumerable<string> ArgumentPath { get; }
 
-        public Func<IEnumerable<SolidHttpRequestData>, object, IEnumerable<SolidHttpRequestData>> HttpRequestDataBinder { get; }
+        public Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> HttpRequestDataBinder { get; }
+        public Func<IEnumerable<IHttpRequestData>, object> HttpRequestDataExtractor { get; }
 
         public Task BindArgumentAsync(IHttpRequest request, object val)
         {
@@ -149,7 +176,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         {
             if (typeof(IEnumerable<IHttpRequestData>).IsAssignableFrom(type))
             {
-                var lst = ((IEnumerable<SolidHttpRequestData>)existingValue).ToList();
+                var lst = ((IEnumerable<IHttpRequestData>)existingValue).ToList();
                 var requestData = HttpRequestDataBinder(lst, value);
                 lst.AddRange(requestData.Where(o => !lst.Contains(o)));
                 return lst;
@@ -208,7 +235,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if(val is IEnumerable<IHttpRequestData> rdData2)
                 {
-                    return ExtractData(rdData2);
+                    return HttpRequestDataExtractor(rdData2);
                 }
                 return val;
             }
@@ -242,51 +269,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             var propValue = prop.GetValue(val);
             var newValue = ExtractPath(request, pathEnumerator, filteredList, propValue);
             return newValue;
-        }
-
-        private object ExtractData(IEnumerable<IHttpRequestData> vals)
-        {
-            if (!ParameterObject.IsBodyType() && ParameterInfo.ParameterType.GetEnumType(out Type enumType))
-            {
-                var arr = vals.Select(o => ExtractData(o, enumType)).ToArray();
-                var typedArr = Array.CreateInstance(enumType, arr.Length);
-                arr.CopyTo(typedArr, 0);
-                return typedArr;
-            }
-            return ExtractData(vals.FirstOrDefault(), ParameterInfo.ParameterType);
-        }
-
-        private object ExtractData(IHttpRequestData valData, Type dataType)
-        {
-            if (valData == null)
-            {
-                return null;
-            }
-            if (dataType == typeof(Stream))
-            {
-                return valData.GetBinaryValue();
-            }
-            switch (valData.ContentType.ToLower())
-            {
-                case null:
-                case "text/plain":
-                case "application/octet-stream":
-                    return Convert.ChangeType(valData.GetStringValue(), dataType);
-                case "application/json":
-                    using (var s = valData.GetBinaryValue())
-                    {
-                        return JsonHelper.Deserialize(s, dataType);
-                    }
-            }
-            if(dataType.IsFileType())
-            {
-                var data = Activator.CreateInstance(dataType);
-                dataType.SetFileTypeStreamData(data, valData.GetBinaryValue());
-                dataType.SetFileTypeContentType(data, valData.ContentType);
-                dataType.SetFileTypeFilename(data, valData.Filename);
-                return data;
-            }
-            throw new Exception("Cannot handle type:" + dataType);
         }
     }
 }
