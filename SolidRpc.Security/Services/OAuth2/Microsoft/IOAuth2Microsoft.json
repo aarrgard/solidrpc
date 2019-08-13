@@ -1,7 +1,7 @@
 ﻿{
   "swagger": "2.0",
   "info": {
-    "title": "IOAuth2Microsoft",
+    "title": "OAuth2.Microsoft.IOAuth2Microsoft",
     "version": "1.0.0",
     "description": "Defines access to the microsoft oauth implementation"
   },
@@ -107,6 +107,186 @@
           }
         }
       }
+    },
+    "/{tenant}/v2.0/.well-known/openid-configuration": {
+      "get": {
+        "description": "Returns the openid configuration",
+        "operationId": "OpenIdConfiguration",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/OpenIDConnnectDiscovery"
+            }
+          }
+        }
+      }
+    },
+    "/{tenant}/discovery/v2.0/keys": {
+      "get": {
+        "description": "Returns the openid keys used for signing.",
+        "operationId": "OpenIdKeys",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/OpenIDKeys"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "OpenIDConnnectDiscovery": {
+      "properties": {
+        "issuer": {
+          "type": "string",
+          "format": "uri"
+        },
+        "authorization_endpoint": {
+          "type": "string",
+          "format": "uri"
+        },
+        "token_endpoint": {
+          "type": "string",
+          "format": "uri"
+        },
+        "userinfo_endpoint": {
+          "type": "string",
+          "format": "uri"
+        },
+        "jwks_uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "scopes_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "response_modes_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subject_types_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id_token_signing_alg_values_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "end_session_endpoint": {
+          "type": "string"
+        },
+        "response_types_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims_supported": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "request_uri_parameter_supported": {
+          "type": "boolean"
+        },
+        "http_logout_supported": {
+          "type": "boolean"
+        },
+        "frontchannel_logout_supported": {
+          "type": "boolean"
+        },
+        "rbac_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "msgraph_host": {
+          "type": "string"
+        },
+        "cloud_graph_host_name": {
+          "type": "string"
+        },
+        "cloud_instance_name": {
+          "type": "string"
+        },
+        "tenant_region_scope": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "OpenIDKeys": {
+      "properties": {
+        "Keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OpenIDKey"
+          }
+        }
+      },
+      "type": "object"
+    },
+    "OpenIDKey": {
+      "properties": {
+        "kty": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        },
+        "kid": {
+          "type": "string"
+        },
+        "k5t": {
+          "type": "string"
+        },
+        "n": {
+          "type": "string"
+        },
+        "e": {
+          "type": "string"
+        },
+        "x5c": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "issuer": {
+          "type": "string"
+        }
+      },
+      "type": "object"
     }
   }
 }

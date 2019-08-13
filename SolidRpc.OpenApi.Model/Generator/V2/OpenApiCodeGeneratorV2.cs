@@ -57,7 +57,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 swaggerOperation.OperationDescription = SwaggerDescription.Create($"{op.Summary} {op.Description}", op.ExternalDocs?.Description, op.ExternalDocs?.Url);
                 swaggerOperation.Exceptions = GetExceptions(swaggerOperation, op);
                 swaggerOperation.ReturnType = GetReturnType(swaggerOperation, op);
-                swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.Parameters);
+                swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.GetParameters());
                 return OperationMapper(CodeSettings, swaggerOperation);
             }).ToList();
 

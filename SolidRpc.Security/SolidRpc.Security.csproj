@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <None Remove="Services\IOAuth2Microsoft.json" />
+    <None Remove="Services\IOAuth2MicrosoftCallback.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Services\IOAuth2Microsoft.json" />
+    <EmbeddedResource Include="Services\OAuth2\Microsoft\IOAuth2MicrosoftCallback.json" />
+    <EmbeddedResource Include="Services\OAuth2\Microsoft\IOAuth2Microsoft.json" />
   </ItemGroup>
 
 </Project>

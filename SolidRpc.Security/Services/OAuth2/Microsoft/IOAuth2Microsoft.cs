@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-namespace SolidRpc.Security.Services {
+namespace SolidRpc.Security.Services.OAuth2.Microsoft {
     /// <summary>
     /// Defines access to the microsoft oauth implementation
     /// </summary>
@@ -34,6 +34,24 @@ namespace SolidRpc.Security.Services {
             string prompt = default(string),
             string login_hint = default(string),
             string domain_hint = default(string),
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Returns the openid configuration
+        /// </summary>
+        /// <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
+        /// <param name="cancellationToken"></param>
+        Task<SolidRpc.Security.Types.OpenIDConnnectDiscovery> OpenIdConfiguration(
+            string tenant,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Returns the openid keys used for signing.
+        /// </summary>
+        /// <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
+        /// <param name="cancellationToken"></param>
+        Task<SolidRpc.Security.Types.OpenIDKeys> OpenIdKeys(
+            string tenant,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

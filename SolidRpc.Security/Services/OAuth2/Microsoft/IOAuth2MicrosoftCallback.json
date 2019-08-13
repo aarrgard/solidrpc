@@ -1,0 +1,35 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "OAuth2.Microsoft.IOAuth2MicrosoftCallback",
+    "version": "1.0.0",
+    "description": "Defines logic for the callback from microsoft"
+  },
+  "host": "localhost",
+  "schemes": [ "https" ],
+  "basePath": "SolidRpc/Security/Services/OAuth2/Microsoft",
+  "paths": {
+    "/Login": {
+      "post": {
+        "description": "Callback when a user has logged in successfully.",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/Logout": {
+      "post": {
+        "description": "Callback when a user has logged out successfully.",
+        "operationId": "Logout",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

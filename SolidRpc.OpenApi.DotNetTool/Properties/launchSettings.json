@@ -12,7 +12,7 @@
     },
     "DotNetTool - Security": {
       "commandName": "Project",
-      "commandLineArgs": "-openapi2code Services\\IOAuth2Microsoft.json",
+      "commandLineArgs": "-openapi2code Services\\Oauth2\\Microsoft\\IOAuth2Microsoft.json Services\\Oauth2\\Microsoft\\IOAuth2MicrosoftCallback.json",
       "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Security"
     }
   }

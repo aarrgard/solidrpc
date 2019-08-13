@@ -315,7 +315,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // 
             if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null || serviceRegistration?.ImplementationFactory != null)
             {
-                mc.AddAdvice(typeof(SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice<,,>));
+                mc.AddAdvice(typeof(SolidProxyInvocationImplAdvice<,,>));
             }
 
             return mc;

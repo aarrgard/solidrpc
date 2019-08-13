@@ -168,6 +168,20 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public Task BindArgumentAsync(IHttpRequest request, object val)
         {
+            // check if required - if not and default value - dont bind
+            if(!ParameterObject.Required)
+            {
+                if (val == null)
+                {
+                    return Task.CompletedTask;
+                }
+                if (ParameterInfo.ParameterType.IsValueType && val == Activator.CreateInstance(ParameterInfo.ParameterType))
+                {
+                    return Task.CompletedTask;
+                }
+            }
+
+            // bind the argument
             BindPath(typeof(IHttpRequest), request, ArgumentPath.GetEnumerator(), val);
             return Task.CompletedTask;
         }

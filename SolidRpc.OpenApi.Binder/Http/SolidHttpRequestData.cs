@@ -53,6 +53,12 @@ namespace SolidRpc.OpenApi.Binder.Http
                 case "ssv":
                     var ssvBinder = CreateEnumBinder(contentType, name, parameterType);
                     return (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join(" ", ssvBinder(_, __).Select(o => o.GetStringValue()))) };
+                case "pipes":
+                    var pipesBinder = CreateEnumBinder(contentType, name, parameterType);
+                    return (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join("|", pipesBinder(_, __).Select(o => o.GetStringValue()))) };
+                case "tsv":
+                    var tsvBinder = CreateEnumBinder(contentType, name, parameterType);
+                    return (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join("\t", tsvBinder(_, __).Select(o => o.GetStringValue()))) };
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
@@ -75,6 +81,12 @@ namespace SolidRpc.OpenApi.Binder.Http
                 case "ssv":
                     var ssvExtractor = CreateEnumExtractor(contentType, name, parameterType);
                     return (_) => { return ssvExtractor(_.SelectMany(o => o.GetStringValue().Split(' ').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                case "pipes":
+                    var pipesExtractor = CreateEnumExtractor(contentType, name, parameterType);
+                    return (_) => { return pipesExtractor(_.SelectMany(o => o.GetStringValue().Split('|').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                case "tsv":
+                    var tsvExtractor = CreateEnumExtractor(contentType, name, parameterType);
+                    return (_) => { return tsvExtractor(_.SelectMany(o => o.GetStringValue().Split('\t').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }

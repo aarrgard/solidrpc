@@ -53,7 +53,15 @@ namespace SolidRpc.OpenApi.Model.Generator
                     settings.ProjectNamespace,
                     settings.CodeNamespace,
                     settings.ServiceNamespace,
-                    InterfaceNameMapper(GetOperationTag(operation).Name));
+                    GetOperationTag(operation).Name);
+
+                // Run the interface name mapper on the last name part
+                className = new QualifiedName(
+                    className.Names.Reverse().Skip(1).Reverse().Union(
+                        className.Names.Reverse().Take(1).Select(o => InterfaceNameMapper(o))
+                    ).ToArray()
+                );
+
                 return new OpenApi.Model.Agnostic.CSharpMethod()
                 {
                     Exceptions = operation.Exceptions.Select(o => DefinitionMapper(settings, o)),
