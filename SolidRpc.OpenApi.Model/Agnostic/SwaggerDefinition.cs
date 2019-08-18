@@ -9,6 +9,7 @@ namespace SolidRpc.OpenApi.Model.Agnostic
     /// </summary>
     public class SwaggerDefinition
     {
+
         public static string TypeVoid = "void";
         public static string TypeBoolean = "bool";
         public static string TypeString = "string";

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
@@ -86,7 +87,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private bool FindParameter(IEnumerable<ParameterObject> parameters, ParameterInfo parameter)
         {
-            var prospect = parameters.FirstOrDefault(o => o.Name == parameter.Name);
+            var prospect = parameters.FirstOrDefault(o => MethodBindingV2.NameMatches(o.Name, parameter.Name));
             if(prospect != null)
             {
                 return TypeMatches(parameter.ParameterType, prospect);

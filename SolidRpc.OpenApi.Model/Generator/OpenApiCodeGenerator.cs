@@ -1,9 +1,11 @@
-﻿using SolidRpc.OpenApi.Model.Agnostic;
+﻿using SolidRpc.Abstractions;
+using SolidRpc.OpenApi.Model.Agnostic;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.Generator
 {
@@ -28,12 +30,14 @@ namespace SolidRpc.OpenApi.Model.Generator
             }
             return letter + name;
         }
-        private static string CreateCamelCase(string token)
+        private static string CreateCamelCase(string token, bool capitalizeFirstChar)
         {
-            return string.Join("", token.Split(' ')
-                .SelectMany(o => o.Split('/'))
+            var words = token.Split(SolidRpcConstants.OpenApiWordSeparators)
                 .Where(o => !string.IsNullOrWhiteSpace(o))
-                .Select(o => CapitalizeFirstChar(o)));
+                .ToList();
+            return string.Join("", words.Take(1)
+                .Select(o => capitalizeFirstChar ? CapitalizeFirstChar(o) : o)
+                .Union(words.Skip(1).Select(o => CapitalizeFirstChar(o))));
         }
         private static string NameEndsWith(string name, string suffix)
         {
@@ -44,6 +48,10 @@ namespace SolidRpc.OpenApi.Model.Generator
             return name;
         }
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="codeSettings"></param>
         protected OpenApiCodeGenerator(SettingsCodeGen codeSettings)
         {
             CodeSettings = codeSettings;
@@ -70,7 +78,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                     MethodName = MethodNameMapper(operation.OperationId),
                     Parameters = operation.Parameters.Select(o => new OpenApi.Model.Agnostic.CSharpMethodParameter()
                     {
-                        Name = o.Name,
+                        Name = ParameterNameMapper(o.Name),
                         ParameterType = DefinitionMapper(settings, o.ParameterType),
                         Optional = !o.Required,
                         Description = o.Description
@@ -105,20 +113,31 @@ namespace SolidRpc.OpenApi.Model.Generator
                 var csObj = new CSharpObject(className);
                 csObj.Description = swaggerDef.Description;
                 csObj.ExceptionCode = swaggerDef.ExceptionCode;
-                csObj.Properties = swaggerDef.Properties.Select(o => new OpenApi.Model.Agnostic.CSharpProperty()
-                {
-                    PropertyName = PropertyNameMapper(o.Name),
-                    PropertyType = DefinitionMapper(settings, o.Type),
-                    Description = o.Description
+                csObj.Properties = swaggerDef.Properties.Select(o => {
+                    var ap = new OpenApi.Model.Agnostic.CSharpProperty()
+                    {
+                        PropertyName = PropertyNameMapper(o.Name),
+                        PropertyType = DefinitionMapper(settings, o.Type),
+                        Description = o.Description
+                    };
+                    if(o.Name != ap.PropertyName)
+                    {
+                        ap.DataMember = new CSharpDataMember()
+                        {
+                            Name = o.Name
+                        };
+                    }
+                    return ap;
                 });
                 csObj.AdditionalProperties = DefinitionMapper(settings, swaggerDef.AdditionalProperties);
                 return csObj;
             };
             InterfaceNameMapper = qn => NameStartsWithLetter(CapitalizeFirstChar(qn), 'I');
             ClassNameMapper = CapitalizeFirstChar;
-            MethodNameMapper = CapitalizeFirstChar;
-            PropertyNameMapper = CapitalizeFirstChar;
-            ExceptionNameMapper = (s) => { return NameEndsWith(CreateCamelCase(s), "Exception"); };
+            MethodNameMapper = (s) => { return CreateCamelCase(s, true); };
+            ParameterNameMapper = (s) => { return CreateCamelCase(s, false); };
+            PropertyNameMapper = (s) => { return CreateCamelCase(s, true); };
+            ExceptionNameMapper = (s) => { return NameEndsWith(CreateCamelCase(s, true), "Exception"); };
         }
 
         private SwaggerTag GetOperationTag(SwaggerOperation swaggerOperation)
@@ -171,6 +190,11 @@ namespace SolidRpc.OpenApi.Model.Generator
         public Func<string, string> MethodNameMapper { get; set; }
 
         /// <summary>
+        /// Function that maps one parameter name to another.
+        /// </summary>
+        public Func<string, string> ParameterNameMapper { get; set; }
+
+        /// <summary>
         /// Function that maps one interface name to another.
         /// </summary>
         public Func<string, string> InterfaceNameMapper { get; set; }
@@ -199,8 +223,20 @@ namespace SolidRpc.OpenApi.Model.Generator
             GenerateCode(codeGenerator);
             return codeGenerator;
         }
+
+        /// <summary>
+        /// Generates the code in supplied repository
+        /// </summary>
+        /// <param name="codeGenerator"></param>
         protected abstract void GenerateCode(ICSharpRepository codeGenerator);
 
+
+        /// <summary>
+        /// Returns the class that represents the supplied c# object.
+        /// </summary>
+        /// <param name="csharpRepository"></param>
+        /// <param name="cSharpObject"></param>
+        /// <returns></returns>
         protected ICSharpClass GetClass(ICSharpRepository csharpRepository, CSharpObject cSharpObject)
         {
             var cls = csharpRepository.GetClass(cSharpObject.Name);
@@ -220,6 +256,14 @@ namespace SolidRpc.OpenApi.Model.Generator
                     var propType = GetClass(csharpRepository, prop.PropertyType);
                     var csProp = new Model.CSharp.Impl.CSharpProperty(cls, prop.PropertyName, propType);
                     csProp.ParseComment($"<summary>{prop.Description}</summary>");
+                    if(prop.DataMember != null)
+                    {
+                        var attributeProps = new Dictionary<string, object>()
+                        {
+                            {  "Name", prop.DataMember.Name }
+                        };
+                        csProp.AddMember(new CSharpAttribute(csProp, typeof(DataMemberAttribute).FullName, attributeProps));
+                    }
                     cls.AddMember(csProp);
                 }
                 if (cSharpObject.ArrayElement != null)
@@ -231,6 +275,10 @@ namespace SolidRpc.OpenApi.Model.Generator
             return cls;
         }
 
+        /// <summary>
+        /// Adds some usings clauses to supplied member
+        /// </summary>
+        /// <param name="member"></param>
         protected void AddUsings(ICSharpType member)
         {
             var namespaces = new HashSet<string>();

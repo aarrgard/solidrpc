@@ -19,10 +19,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             ParameterObject = parameterObject ?? throw new ArgumentNullException(nameof(parameterObject));
             ParameterInfo = parameterInfo ?? throw new ArgumentNullException(nameof(parameterObject));
             ArgumentPath = GetArgumentPath();
-            if (parameterObject.Name != parameterInfo.Name)
-            {
-                throw new Exception("Name mismatch");
-            }
 
             var contentType = "text/plain";
             if(ParameterObject.In == "body")

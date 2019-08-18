@@ -5,9 +5,9 @@ using System.Text;
 namespace SolidRpc.OpenApi.Model.CSharp
 {
     /// <summary>
-    /// Represents an "extends" clause
+    /// Represents an attribute.
     /// </summary>
-    public interface ICSharpTypeExtends : ICSharpMember
+    public interface ICSharpAttribute : ICSharpMember
     {
     }
 }

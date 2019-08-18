@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.OpenApi.Model;
 using System;
 using System.IO;
 using System.Text;
@@ -7,6 +8,11 @@ namespace SolidRpc.OpenApi.Binder
 {
     public class JsonHelper
     {
+        private static readonly JsonSerializer s_serializer = new JsonSerializer()
+        {
+            ContractResolver = NewtonsoftContractResolver.Instance,
+        };
+
         public static T Deserialize<T>(Stream stream, Encoding encoding = null)
         {
             return (T)Deserialize(stream, typeof(T), encoding);
@@ -27,8 +33,7 @@ namespace SolidRpc.OpenApi.Binder
             {
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    var serializer = JsonSerializer.Create();
-                    return serializer.Deserialize(reader, objectType);
+                    return s_serializer.Deserialize(reader, objectType);
                 }
             }
         }
@@ -42,8 +47,7 @@ namespace SolidRpc.OpenApi.Binder
                 {
                     using (JsonWriter jsonWriter = new JsonTextWriter(sw))
                     {
-                        var serializer = JsonSerializer.Create();
-                        serializer.Serialize(jsonWriter, resp, objectType);
+                        s_serializer.Serialize(jsonWriter, resp, objectType);
                     }
                 }
                 return new MemoryStream(ms.ToArray());

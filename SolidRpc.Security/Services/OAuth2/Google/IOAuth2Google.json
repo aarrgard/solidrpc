@@ -273,29 +273,43 @@
     },
     "OpenIDKey": {
       "properties": {
+        "alg": {
+          "type": "string",
+          "description": "(Algorithm) Parameter"
+        },
         "kty": {
-          "type": "string"
+          "type": "string",
+          "description": "(Key Type) Parameter"
         },
         "use": {
-          "type": "string"
+          "type": "string",
+          "description": "(Public Key Use) Parameter"
         },
         "kid": {
-          "type": "string"
+          "type": "string",
+          "description": "(Key ID) Parameter"
         },
-        "k5t": {
-          "type": "string"
+        "x5u": {
+          "type": "string",
+          "format": "uri",
+          "description": "(X.509 URL) Parameter"
+        },
+        "x5t": {
+          "type": "string",
+          "description": "(X.509 Certificate SHA-1 Thumbprint) Parameter"
+        },
+        "x5c": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "(X.509 Certificate Chain) Parameter"
         },
         "n": {
           "type": "string"
         },
         "e": {
           "type": "string"
-        },
-        "x5c": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         },
         "issuer": {
           "type": "string"

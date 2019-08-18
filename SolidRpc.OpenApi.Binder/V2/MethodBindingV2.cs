@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
@@ -19,7 +20,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         public static ParameterObject GetParameterObject(OperationObject operationObject, ParameterInfo parameterInfo)
         {
             var parameters = operationObject.GetParameters()
-                .Where(o => o.Name == parameterInfo.Name);
+                .Where(o => NameMatches(o.Name,parameterInfo.Name));
             var parameter = parameters.FirstOrDefault();
             if(parameter == null)
             {
@@ -66,6 +67,25 @@ namespace SolidRpc.OpenApi.Binder.V2
                 throw new Exception($"Cannot find parameter {parameterInfo.Name} among parameters({string.Join(",",parameters.Select(o => o.Name))}).");
             }
             return parameter;
+        }
+
+        public static bool NameMatches(string opParamName, string clrParamName)
+        {
+            var opWords = opParamName.Split(SolidRpcConstants.OpenApiWordSeparators);
+            int idx = 0;
+            foreach (var opWord in opWords)
+            {
+                while (idx < clrParamName.Length && SolidRpcConstants.OpenApiWordSeparators.Any(o => o == clrParamName[idx]))
+                {
+                    idx++;
+                }
+                if (!clrParamName.Substring(idx).StartsWith(opWord, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false;
+                }
+                idx += opWord.Length;
+            }
+            return string.IsNullOrWhiteSpace(clrParamName.Substring(idx));
         }
 
         public MethodBindingV2(

@@ -8,26 +8,69 @@ using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model
 {
-    public class NewtonsoftConverter<T> : JsonConverter where T : ModelBase
+    /// <summary>
+    /// A converter for converting json into structured elements
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class NewtonsoftConverter<T> : JsonConverter
     {
+        /// <summary>
+        /// constructs a new instance
+        /// </summary>
         public NewtonsoftConverter()
         {
             ReadPropertyHandler = new ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>>();
             DynamicType = GetDynamicType(typeof(T));
             PropertyWriters = CreatePropertyWriters();
+            Constructor = CreateConstructor();
+        }
+
+        private Action<object, object> CreateSetParent(Type type)
+        {
+            if (typeof(ModelBase).IsAssignableFrom(typeof(T)))
+            {
+                if (typeof(ModelBase).IsAssignableFrom(type))
+                {
+                    return (v, p) => ((ModelBase)v).SetParent((ModelBase)p);
+                }
+                if (typeof(IEnumerable<ModelBase>).IsAssignableFrom(type))
+                {
+                    return (v, p) =>
+                    {
+                        ((IEnumerable<ModelBase>)v).ToList().ForEach(o => o.SetParent((ModelBase)p));
+                    };
+                }
+                return (v, p) => { };
+            }
+            return (v, p) => { };
+        }
+
+        private Func<T> CreateConstructor()
+        {
+            if(typeof(ModelBase).IsAssignableFrom(typeof(T)))
+            {
+                return () => (T)Activator.CreateInstance(typeof(T), new object[] { null });
+            }
+            else
+            {
+                return () => (T)Activator.CreateInstance(typeof(T));
+            }
         }
 
         private IEnumerable<Action<JsonWriter, object, JsonSerializer>> CreatePropertyWriters()
         {
             var pWriters = new List<Action<JsonWriter, object, JsonSerializer>>();
-            var props = typeof(T)
-                .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
-                .ToList();
 
-            foreach(var prop in props)
+            foreach(var prop in GetProperties())
             {
                 var attr = prop.GetCustomAttribute<DataMemberAttribute>();
+                if(attr == null)
+                {
+                    attr = new DataMemberAttribute()
+                    {
+                        Name = prop.Name
+                    };
+                }
                 var writeMethod = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(WriteProperty))
                     .MakeGenericMethod(prop.PropertyType);
@@ -51,6 +94,17 @@ namespace SolidRpc.OpenApi.Model
                 });
             }
             return pWriters;
+        }
+
+        private IEnumerable<PropertyInfo> GetProperties()
+        {
+            return typeof(T)
+                .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
+                .Where(o => o.CanRead)
+                .Where(o => o.GetMethod.GetParameters().Length == 0)
+                .Where(o => o.CanWrite)
+                .Where(o => o.SetMethod.GetParameters().Length == 1)
+                .ToList();
         }
 
         private void WriteDictionaryData<Tp>(JsonWriter writer, object o, JsonSerializer serializer)
@@ -90,9 +144,15 @@ namespace SolidRpc.OpenApi.Model
         }
 
         private ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>> ReadPropertyHandler { get; }
-        public IEnumerable<Action<JsonWriter, object, JsonSerializer>> PropertyWriters { get; }
+        private IEnumerable<Action<JsonWriter, object, JsonSerializer>> PropertyWriters { get; }
+        private Func<T> Constructor { get; }
         private Type DynamicType { get; }
 
+        /// <summary>
+        /// returns true if this converter can convert supplied object type.
+        /// </summary>
+        /// <param name="objectType"></param>
+        /// <returns></returns>
         public override bool CanConvert(Type objectType)
         {
             return typeof(T) == objectType;
@@ -100,14 +160,18 @@ namespace SolidRpc.OpenApi.Model
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if(reader.TokenType != JsonToken.StartObject)
+            if (reader.TokenType == JsonToken.Null)
+            {
+                return null;
+            }
+            if (reader.TokenType != JsonToken.StartObject)
             {
                 throw new Exception("Not start of object");
             }
             reader.Read();
             if(existingValue == null)
             {
-                existingValue = Activator.CreateInstance(typeof(T), new object[] { null});
+                existingValue = Constructor();
             }
             while (reader.TokenType == JsonToken.PropertyName)
             {
@@ -124,26 +188,27 @@ namespace SolidRpc.OpenApi.Model
             return existingValue;
         }
 
-        private Tp Deserialize<Tp>(JsonReader r, ModelBase parent, JsonSerializer s)
+        private object Deserialize<Tp>(JsonReader r, object parent, JsonSerializer s, Action<object, object> setParent)
         {
-            object val = s.Deserialize<Tp>(r);
-            if (val is ModelBase mb)
+            try
             {
-                mb.Parent = parent;
+                object val = s.Deserialize<Tp>(r);
+                setParent(val, parent);
+                return val;
             }
-            else if (val is IEnumerable<ModelBase> emb)
+            catch(Exception e)
             {
-                emb.ToList().ForEach(o => o.Parent = parent);
+                throw e;
             }
-            return (Tp)val;
-        }
+       }
 
         private Action<JsonReader, object, JsonSerializer> CreateReadPropertyHandler(string propertyName)
         {
-            var prop = typeof(T)
-                .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
-                .Where(o => string.Equals(o.GetCustomAttribute<DataMemberAttribute>().Name, propertyName))
+            var prop = GetProperties()
+                .Where(o => {
+                    var propName = o.GetCustomAttribute<DataMemberAttribute>()?.Name ?? o.Name;
+                    return string.Equals(propName, propertyName, StringComparison.InvariantCultureIgnoreCase);
+                })
                 .SingleOrDefault();
 
             if(prop != null)
@@ -151,9 +216,10 @@ namespace SolidRpc.OpenApi.Model
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(Deserialize))
                     .MakeGenericMethod(prop.PropertyType);
+                var sp = CreateSetParent(prop.PropertyType);
                 return (r, o, s) =>
                 {
-                    var val = m.Invoke(this, new[] { r, o, s });
+                    var val = m.Invoke(this, new[] { r, o, s, sp});
                     prop.SetValue(o, val);
                 };
             }
@@ -162,18 +228,19 @@ namespace SolidRpc.OpenApi.Model
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(ReadDictionaryData))
                     .MakeGenericMethod(DynamicType);
+                var sp = CreateSetParent(DynamicType);
                 return (r, o, s) =>
                 {
-                    m.Invoke(this, new[] { propertyName, r, o, s });
+                    m.Invoke(this, new[] { propertyName, r, o, s, sp });
                 };
             }
             throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName}");
         }
 
-        private void ReadDictionaryData<Tp>(string propertyName, JsonReader r, ModelBase o, JsonSerializer s) 
+        private void ReadDictionaryData<Tp>(string propertyName, JsonReader r, object o, JsonSerializer s, Action<object, object> setParent) 
         {
             var dict = (IDictionary<string, Tp>) o;
-            dict[propertyName] = Deserialize<Tp>(r, o, s);
+            dict[propertyName] = (Tp)Deserialize<Tp>(r, o, s, setParent);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

@@ -82,7 +82,7 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(new Uri("https://accounts.google.com/"), rootDoc.Issuer);
 
             var keysBinding = sp.GetRequiredService<IMethodBinderStore>().GetMethodBinding<IOAuth2Google>(o => o.OpenIdKeys(CancellationToken.None));
-            keysBinding.Address = rootDoc.Jwks_uri;
+            keysBinding.Address = rootDoc.JwksUri;
             //rootDoc.Jwks_uri
 
             var keys = await sp.GetRequiredService<IOAuth2Google>().OpenIdKeys();

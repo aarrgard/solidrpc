@@ -15,6 +15,11 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         public CSharpObject PropertyType { get; set; }
 
         /// <summary>
+        /// Information about the "DataMember" attribute.
+        /// </summary>
+        public CSharpDataMember DataMember { get; set; }
+        
+        /// <summary>
         /// The property name
         /// </summary>
         public string PropertyName { get; set; }

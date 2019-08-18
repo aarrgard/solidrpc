@@ -55,13 +55,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// Deletes a pet
         /// </summary>
         /// <param name="petId">Pet id to delete</param>
-        /// <param name="api_key"></param>
+        /// <param name="apiKey"></param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">Pet not found</exception>
         Task DeletePet(
             long petId,
-            string api_key = default(string),
+            string apiKey = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

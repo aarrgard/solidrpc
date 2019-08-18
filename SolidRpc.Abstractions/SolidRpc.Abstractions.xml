@@ -653,6 +653,16 @@
             The implementation type.
             </summary>
         </member>
+        <member name="T:SolidRpc.Abstractions.SolidRpcConstants">
+            <summary>
+            Contains some constants 
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.SolidRpcConstants.OpenApiWordSeparators">
+            <summary>
+            characters to be used when splittung up words in a openapi spec
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContent">
             <summary>
             Represents a file content

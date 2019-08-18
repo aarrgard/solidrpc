@@ -1,5 +1,8 @@
 ﻿namespace SolidRpc.OpenApi.Model.CSharp
 {
+    /// <summary>
+    /// The code writer is used to emit code to files.
+    /// </summary>
     public interface ICodeWriter
     {
         /// <summary>

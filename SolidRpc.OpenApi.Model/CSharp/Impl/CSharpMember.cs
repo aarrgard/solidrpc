@@ -276,16 +276,33 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             return fullName;
         }
 
+
+        /// <summary>
+        /// Writes the summary
+        /// </summary>
+        /// <param name="codeWriter"></param>
         protected void WriteSummary(ICodeWriter codeWriter)
         {
             var comment = Comment?.Summary ?? "";
             codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
             codeWriter.Emit($"/// {HttpUtility.HtmlEncode(comment)}{codeWriter.NewLine}");
             codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
-            if(Comment?.ExternalDoc != null)
+            if (Comment?.ExternalDoc != null)
             {
                 codeWriter.Emit($"/// <a href=\"{Comment.ExternalDoc.Url}\">{Comment.ExternalDoc.Description}</a>{codeWriter.NewLine}");
             }
+        }
+
+        /// <summary>
+        /// Writes the attributes
+        /// </summary>
+        /// <param name="codeWriter"></param>
+        protected void WriteAttributes(ICodeWriter codeWriter)
+        {
+            Members.OfType<ICSharpAttribute>().ToList().ForEach(o =>
+            {
+                o.WriteCode(codeWriter);
+            });
         }
 
     }

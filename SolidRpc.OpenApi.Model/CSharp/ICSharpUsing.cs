@@ -4,6 +4,9 @@ using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp
 {
+    /// <summary>
+    /// Represents a "using" clause.
+    /// </summary>
     public interface ICSharpUsing : ICSharpMember
     {
     }
