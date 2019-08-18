@@ -54,7 +54,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// </summary>
         public IAzFunctionHandler FunctionHandler { get; }
         
-        private string CreateFunctionName(IMethodInfo o)
+        private string CreateFunctionName(IMethodBinding o)
         {
             return $"{o.MethodBinder.Assembly.GetName().Name}.{o.OperationId}"
                 .Replace(".", "");
@@ -70,7 +70,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var paths = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodInfos)
                 .Select(o => new {
-                    Path = FixupPath(o.Path),
+                    Path = FixupPath(o.Address.LocalPath),
                     Method = o.Method.ToLower()
                 }).GroupBy(o => o.Path)
                 .ToList();

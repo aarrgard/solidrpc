@@ -35,12 +35,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             private IDictionary<string, PathSegment> SubSegments { get; }
 
-            public IMethodInfo MethodInfo { get; set; }
+            public IMethodBinding MethodInfo { get; set; }
 
-            public void AddPath(IMethodInfo methodInfo)
+            public void AddPath(IMethodBinding methodInfo)
             {
                 var work = this;
-                var segments = $"{methodInfo.Method}{methodInfo.Path}".Split('/');
+                var segments = $"{methodInfo.Method}{methodInfo.Address.LocalPath}".Split('/');
                 foreach(var segment in segments)
                 {
                     var key = segment;
@@ -57,7 +57,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 work.MethodInfo = methodInfo;
             }
 
-            public IMethodInfo GetMethodInfo(IEnumerable<string> segments)
+            public IMethodBinding GetMethodInfo(IEnumerable<string> segments)
             {
                 if (!segments.Any())
                 {
@@ -114,7 +114,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                                     var mi = o.InvocationConfiguration.MethodInfo;
                                     var methodInfo = MethodBinderStore.GetMethodInfo(o.GetOpenApiConfiguration(), mi, o.BaseUriTransformer);
                                     _rootSegment.AddPath(methodInfo);
-                                    Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Path}.");
+                                    Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Address.LocalPath}.");
                                 });
 
                         }
@@ -143,7 +143,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         public async Task<IHttpResponse> InvokeAsync(
             IHttpRequest request, 
-            IMethodInfo methodInfo, 
+            IMethodBinding methodInfo, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
             Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");

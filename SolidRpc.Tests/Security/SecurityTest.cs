@@ -10,6 +10,7 @@ using System.Diagnostics;
 using SolidRpc.Security.Services.OAuth2.Microsoft;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System.Linq;
+using SolidRpc.Security.Services.OAuth2.Google;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -61,7 +62,31 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual(new Uri("https://login.microsoftonline.com/{tenantid}/v2.0"), rootDoc.Issuer);
 
             var keys = await sp.GetRequiredService<IOAuth2Microsoft>().OpenIdKeys("common");
-            Assert.IsTrue ( keys.Keys.Count()>0);
+            Assert.IsTrue(keys.Keys.Count() > 0);
+        }
+        [Test]
+        public async Task TestGoogleDiscovery()
+        {
+            var sc = new ServiceCollection();
+            sc.AddLogging(ConfigureLogging);
+            sc.AddHttpClient();
+            sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcSecurity();
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+
+            var sp = sc.BuildServiceProvider();
+
+            // root doc
+            var rootDoc = await sp.GetRequiredService<IOAuth2Google>().OpenIdConfiguration();
+            Assert.AreEqual(new Uri("https://accounts.google.com/"), rootDoc.Issuer);
+
+            var keysBinding = sp.GetRequiredService<IMethodBinderStore>().GetMethodBinding<IOAuth2Google>(o => o.OpenIdKeys(CancellationToken.None));
+            keysBinding.Address = rootDoc.Jwks_uri;
+            //rootDoc.Jwks_uri
+
+            var keys = await sp.GetRequiredService<IOAuth2Google>().OpenIdKeys();
+            Assert.IsTrue(keys.Keys.Count() > 0);
         }
     }
 }

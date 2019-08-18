@@ -9,7 +9,7 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
     /// <summary>
     /// Represents the method info structure in a swagger specification.
     /// </summary>
-    public interface IMethodInfo
+    public interface IMethodBinding
     {
         /// <summary>
         /// The binder that this method information belongs to.
@@ -32,9 +32,9 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         string Method { get; }
 
         /// <summary>
-        /// The path to thes method. This includes the basepath and the path element.
+        /// The base address to this method.
         /// </summary>
-        string Path { get; }
+        Uri Address { get; set; }
 
         /// <summary>
         /// All the arguments.

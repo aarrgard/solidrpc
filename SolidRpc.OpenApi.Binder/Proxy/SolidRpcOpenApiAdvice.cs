@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private IOpenApiParser OpenApiParser { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         public IHttpClientFactory HttpClientFactory { get; }
-        private IMethodInfo MethodInfo { get; set; }
+        private IMethodBinding MethodInfo { get; set; }
 
         /// <summary>
         /// Confugures the proxy

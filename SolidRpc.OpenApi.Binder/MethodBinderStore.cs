@@ -91,13 +91,13 @@ namespace SolidRpc.OpenApi.Binder
             swaggerSpec.SetBaseAddress(baseAddress);
             if (swaggerSpec is SwaggerObject v2)
             {
-                var mb = new V2.MethodBinderV2(ServiceProvider, v2, assembly);
+                var mb = new V2.MethodBinderV2(v2, assembly);
                 return mb;
             }
             throw new NotImplementedException($"Cannot get binder for {swaggerSpec.GetType().FullName}");
         }
 
-        public IMethodInfo GetMethodInfo(string openApiSpec, MethodInfo methodInfo, BaseUriTransformer baseUriTransformer = null)
+        public IMethodBinding GetMethodInfo(string openApiSpec, MethodInfo methodInfo, BaseUriTransformer baseUriTransformer = null)
         {
             if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
             return GetMethodBinder(baseUriTransformer, openApiSpec, methodInfo.DeclaringType.Assembly).GetMethodInfo(methodInfo, baseUriTransformer);
@@ -145,6 +145,14 @@ namespace SolidRpc.OpenApi.Binder
                 args[i] = argExpression.Compile()();
             }
             return (mce.Method, args);
+        }
+
+        public IMethodBinding GetMethodBinding<T>(Expression<Action<T>> expression)
+        {
+            var (mi, args) = GetMethodInfoAndArguments(expression);
+            return MethodBinders.SelectMany(o => o.MethodInfos)
+                .Where(o => o.MethodInfo == mi)
+                .FirstOrDefault();
         }
     }
 }

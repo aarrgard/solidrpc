@@ -23,7 +23,7 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="openApiSpec"></param>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
-        IMethodInfo GetMethodInfo(
+        IMethodBinding GetMethodInfo(
             string openApiSpec, 
             MethodInfo methodInfo,
             BaseUriTransformer baseUriTransformer = null);
@@ -35,5 +35,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="expression"></param>
         /// <returns></returns>
         Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression);
+
+        /// <summary>
+        /// Returns the method info for the matching expressiong.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        IMethodBinding GetMethodBinding<T>(Expression<Action<T>> expression);
     }
 }

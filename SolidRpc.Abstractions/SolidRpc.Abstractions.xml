@@ -166,11 +166,6 @@
             Returns all the mapped methods
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.ServiceProvider">
-            <summary>
-            Returns the service provider.
-            </summary>
-        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.GetMethodInfo(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
             <summary>
             Returns the method info from supplied specification.
@@ -206,42 +201,50 @@
             <param name="expression"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetMethodBinding``1(System.Linq.Expressions.Expression{System.Action{``0}})">
+            <summary>
+            Returns the method info for the matching expressiong.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding">
             <summary>
             Represents the method info structure in a swagger specification.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.MethodBinder">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.MethodBinder">
             <summary>
             The binder that this method information belongs to.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.MethodInfo">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.MethodInfo">
             <summary>
             The method info structure this binding represents.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.OperationId">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.OperationId">
             <summary>
             Returns the operation id for this method.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.Method">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Method">
             <summary>
             The method(POST,GET,HEAD,etc) to use when activating the method.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.Path">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Address">
             <summary>
-            The path to thes method. This includes the basepath and the path element.
+            The base address to this method.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.Arguments">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Arguments">
             <summary>
             All the arguments.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.BindArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Object[])">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.BindArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Object[])">
             <summary>
             Binds the arguments to the supplied request according to
             the swagger spec.
@@ -249,14 +252,14 @@
             <param name="request"></param>
             <param name="args"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.ExtractArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.ExtractArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
             <summary>
             Extracts the arguments from supplied request.
             </summary>
             <param name="request"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.BindResponseAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Object,System.Type)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.BindResponseAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Object,System.Type)">
             <summary>
             Binds the response
             </summary>
@@ -265,7 +268,7 @@
             <param name="objType"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo.ExtractResponse``1(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.ExtractResponse``1(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
             <summary>
             Returns the respone.
             </summary>
@@ -423,7 +426,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Binder.IMethodInfo,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Threading.CancellationToken)">
             <summary>
             Invokes the supplied request.
             </summary>

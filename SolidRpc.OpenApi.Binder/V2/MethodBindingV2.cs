@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.V2
 {
-    public class MethodInfoV2 : IMethodInfo
+    public class MethodBindingV2 : IMethodBinding
     {
         public static ParameterObject GetParameterObject(OperationObject operationObject, ParameterInfo parameterInfo)
         {
@@ -68,7 +68,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return parameter;
         }
 
-        public MethodInfoV2(
+        public MethodBindingV2(
             IMethodBinder methodBinder, 
             OperationObject operationObject, 
             MethodInfo methodInfo, 
@@ -118,7 +118,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        IEnumerable<IMethodArgument> IMethodInfo.Arguments => Arguments;
+        IEnumerable<IMethodArgument> IMethodBinding.Arguments => Arguments;
 
         private IDictionary<int, Action> _exceptionMappings;
         public IDictionary<int, Action> ExceptionMappings
@@ -143,6 +143,8 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return _exceptionMappings;
             }
         }
+
+        public IMethodBinder MethodBinder { get; }
 
         public string OperationId => OperationObject.OperationId;
 
@@ -187,19 +189,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        private string _path;
-        public string Path
-        {
-            get
-            {
-                if (_path == null)
-                {
-                    _path = OperationObject.GetAbsolutePath();
-                }
-                return _path;
-            }
-        }
-
         private IEnumerable<string> _produces;
         public IEnumerable<string> Produces
         {
@@ -212,8 +201,21 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return _produces;
             }
         }
-
-        public IMethodBinder MethodBinder { get; }
+        private Uri _address;
+        public Uri Address {
+            get
+            {
+                if (_address == null)
+                {
+                    _address = OperationObject.GetAddress();
+                }
+                return _address;
+            }
+            set
+            {
+                _address = value ?? throw new ArgumentNullException();
+            }
+        }
 
         public async Task BindArgumentsAsync(IHttpRequest request, object[] args)
         {
@@ -223,9 +225,16 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
 
             request.Method = Method;
-            request.Scheme = Scheme;
-            request.HostAndPort = Host;
-            request.Path = Path;
+            request.Scheme = Address.Scheme;
+            if(Address.IsDefaultPort)
+            {
+                request.HostAndPort = Address.Host;
+            }
+            else
+            {
+                request.HostAndPort = $"{Address.Host}:{Address.Port}";
+            }
+            request.Path = Address.LocalPath;
 
             for (int i = 0; i < Arguments.Length; i++)
             {
@@ -337,11 +346,12 @@ namespace SolidRpc.OpenApi.Binder.V2
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {
             // create path data
-            var patterns = OperationObject.GetAbsolutePath().Split('/');
+            var path = OperationObject.GetAddress().LocalPath;
+            var patterns = path.Split('/');
             var pathElements = request.Path.Split('/');
             if(patterns.Length != pathElements.Length)
             {
-                throw new Exception($"Supplied request path({request.Path}) does not match operation path({OperationObject.GetAbsolutePath()})");
+                throw new Exception($"Supplied request path({request.Path}) does not match operation path({path})");
             }
             var pathData = new List<SolidHttpRequestData>();
             for(int i = 0; i < patterns.Length; i++)

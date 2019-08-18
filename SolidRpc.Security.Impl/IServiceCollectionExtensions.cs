@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Security.Services;
+using SolidRpc.Security.Services.OAuth2.Google;
 using SolidRpc.Security.Services.OAuth2.Microsoft;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcSingletonServices();
             services.AddSolidRpcBindings(typeof(IOAuth2Microsoft));
             services.AddSolidRpcBindings(typeof(IOAuth2MicrosoftCallback));
+
+            services.AddSolidRpcBindings(typeof(IOAuth2Google));
 
             return services;
         }

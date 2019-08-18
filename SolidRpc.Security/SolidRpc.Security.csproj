@@ -7,9 +7,11 @@
   <ItemGroup>
     <None Remove="Services\IOAuth2Microsoft.json" />
     <None Remove="Services\IOAuth2MicrosoftCallback.json" />
+    <None Remove="Services\OAuth2\Google\IOAuth2Google.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Services\OAuth2\Google\IOAuth2Google.json" />
     <EmbeddedResource Include="Services\OAuth2\Microsoft\IOAuth2MicrosoftCallback.json" />
     <EmbeddedResource Include="Services\OAuth2\Microsoft\IOAuth2Microsoft.json" />
   </ItemGroup>

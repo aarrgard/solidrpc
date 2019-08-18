@@ -28,6 +28,11 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
+        public Uri Revocation_endpoint { get; set; }
+    
+        /// <summary>
+        /// 
+        /// </summary>
         public Uri Jwks_uri { get; set; }
     
         /// <summary>
@@ -64,6 +69,16 @@ namespace SolidRpc.Security.Types {
         /// 
         /// </summary>
         public IEnumerable<string> Claims_supported { get; set; }
+    
+        /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable<string> Token_endpoint_auth_methods_supported { get; set; }
+    
+        /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable<string> Code_challenge_methods_supported { get; set; }
     
         /// <summary>
         /// 

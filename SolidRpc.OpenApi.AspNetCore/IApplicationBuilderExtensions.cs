@@ -22,7 +22,7 @@ namespace Microsoft.AspNetCore.Builder
             /// <summary>
             /// The method mapped to the path
             /// </summary>
-            public IMethodInfo MethodInfo { get; set; }
+            public IMethodBinding MethodInfo { get; set; }
 
             public ISolidRpcStaticContent StaticContent { get; set; }
 
@@ -75,7 +75,7 @@ namespace Microsoft.AspNetCore.Builder
                 .ToList()
                 .ForEach(o =>
                 {
-                    var path = $"{o.Method}{o.Path}";
+                    var path = $"{o.Method}{o.Address.LocalPath}";
                     if(!dict.TryGetValue(path, out PathHandler binding))
                     {
                         dict[path] = binding = new PathHandler();
@@ -192,7 +192,7 @@ namespace Microsoft.AspNetCore.Builder
             await content.Content.CopyToAsync(ctx.Response.Body);
         }
 
-        private static async Task HandleInvocation(IMethodInfo methodInfo, HttpContext context)
+        private static async Task HandleInvocation(IMethodBinding methodInfo, HttpContext context)
         {
             try
             {

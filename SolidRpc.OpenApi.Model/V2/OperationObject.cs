@@ -7,8 +7,8 @@ namespace SolidRpc.OpenApi.Model.V2
 {
     /// <summary>
     /// Describes a single API operation on a path.
+    /// <a href="https://swagger.io/specification/v2/#operationObject">see</a>
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#operationObject"/>
     public class OperationObject : ModelBase
     {
         /// <summary>
@@ -16,7 +16,12 @@ namespace SolidRpc.OpenApi.Model.V2
         /// </summary>
         public static readonly IEnumerable<ParameterObject> EmptyParameterArray = new ParameterObject[0];
 
+        /// <summary>
+        /// Constructs a new intance
+        /// </summary>
+        /// <param name="parent"></param>
         public OperationObject(ModelBase parent) : base(parent) { }
+
         /// <summary>
         /// A list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier.
         /// </summary>
@@ -182,13 +187,23 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
-        /// The path to this operation Including the base path
+        /// Returns the address to this operation
         /// </summary>
-        public string GetAbsolutePath()
+        /// <returns></returns>
+        public Uri GetAddress()
         {
-            return $"{GetParent<SwaggerObject>().BasePath}{GetPath()}";
+            var path = GetPath();
+            if(path.StartsWith("/"))
+            {
+                path = path.Substring(1);
+            }
+            return new Uri(GetParent<SwaggerObject>().BaseAddress, path);
         }
 
+        /// <summary>
+        /// Returns the consumes elemets - empty list if null
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> GetConsumes()
         {
             if (Consumes == null)
@@ -198,6 +213,10 @@ namespace SolidRpc.OpenApi.Model.V2
             return Consumes;
         }
 
+        /// <summary>
+        /// returns the produces elements - empty list if null
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> GetProduces()
         {
             if (Produces == null)

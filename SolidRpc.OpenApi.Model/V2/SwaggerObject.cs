@@ -236,7 +236,12 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <returns></returns>
         public string GetBasePath()
         {
-            return BasePath ?? "/";
+            var basePath = BasePath ?? "/";
+            if(!basePath.EndsWith("/"))
+            {
+                basePath = $"{basePath}/";
+            }
+            return basePath;
         }
 
         /// <summary>

@@ -29,6 +29,6 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="methodInfo"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<IHttpResponse> InvokeAsync(IHttpRequest request, IMethodInfo methodInfo, CancellationToken cancellation = default(CancellationToken));
+        Task<IHttpResponse> InvokeAsync(IHttpRequest request, IMethodBinding methodInfo, CancellationToken cancellation = default(CancellationToken));
     }
 }
