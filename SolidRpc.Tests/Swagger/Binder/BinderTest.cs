@@ -36,7 +36,7 @@ namespace SolidRpc.Tests.Swagger.Binder
 
             var sp = services.BuildServiceProvider();
             var store = sp.GetRequiredService<IMethodBinderStore>();
-            var methods = store.MethodBinders.SelectMany(o => o.MethodInfos).Select(o => o.MethodInfo.Name).ToList();
+            var methods = store.MethodBinders.SelectMany(o => o.MethodBindings).Select(o => o.MethodInfo.Name).ToList();
             Assert.AreEqual(1, methods.Count);
         }
     }

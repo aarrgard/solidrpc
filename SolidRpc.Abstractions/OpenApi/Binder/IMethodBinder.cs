@@ -23,7 +23,7 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <summary>
         /// Returns all the mapped methods
         /// </summary>
-        IEnumerable<IMethodBinding> MethodInfos { get; }
+        IEnumerable<IMethodBinding> MethodBindings { get; }
 
         /// <summary>
         /// Returns the method info from supplied specification.
@@ -31,6 +31,6 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="methodInfo"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        IMethodBinding GetMethodInfo(MethodInfo methodInfo, BaseUriTransformer baseUriTransformer);
+        IMethodBinding CreateMethodBinding(MethodInfo methodInfo, MethodAddressTransformer baseUriTransformer);
     }
 }

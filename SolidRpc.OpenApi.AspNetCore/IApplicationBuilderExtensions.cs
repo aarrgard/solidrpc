@@ -71,7 +71,8 @@ namespace Microsoft.AspNetCore.Builder
             // Extract all paths and map them accordingly.
             //
             bindingStore.MethodBinders
-                .SelectMany(o => o.MethodInfos)
+                .SelectMany(o => o.MethodBindings)
+                .Where(o => o.IsLocal)
                 .ToList()
                 .ForEach(o =>
                 {

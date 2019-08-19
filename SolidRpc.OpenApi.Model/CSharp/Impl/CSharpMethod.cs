@@ -67,7 +67,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             });
             Comment.Exceptions.ToList().ForEach(e =>
             {
-                codeWriter.Emit($"/// <exception cref=\"{SimplifyName(e.Cref)}\">{e.Description}</exception>{codeWriter.NewLine}");
+                codeWriter.Emit($"/// <exception cref=\"{e.Cref}\">{e.Description}</exception>{codeWriter.NewLine}");
             });
             codeWriter.Emit($"{SimplifyName(ReturnType.FullName)} {Name}(");
             for (int i = 0; i < parameters.Count; i++)
@@ -90,7 +90,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="namespaces"></param>
         public override void GetNamespaces(ICollection<string> namespaces)
         {
-            namespaces.Add(ReturnType.Namespace.FullName);
+            AddNamespacesFromName(namespaces, ReturnType);
             base.GetNamespaces(namespaces);
         }
     }

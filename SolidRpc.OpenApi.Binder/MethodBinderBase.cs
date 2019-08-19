@@ -24,7 +24,7 @@ namespace SolidRpc.OpenApi.Binder
 
         public Assembly Assembly { get; }
 
-        public IEnumerable<IMethodBinding> MethodInfos
+        public IEnumerable<IMethodBinding> MethodBindings
         {
             get
             {
@@ -34,12 +34,12 @@ namespace SolidRpc.OpenApi.Binder
 
         private ConcurrentDictionary<MethodInfo, IMethodBinding> CachedBindings { get; }
 
-        public IMethodBinding GetMethodInfo(MethodInfo methodInfo, BaseUriTransformer baseUriTransformer)
+        public IMethodBinding CreateMethodBinding(MethodInfo methodInfo, MethodAddressTransformer methodAddressTransformer)
         {
-            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, true));
+            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, methodAddressTransformer, true));
         }
 
-        protected abstract IMethodBinding CreateBinding(MethodInfo mi, bool mustExist);
+        protected abstract IMethodBinding CreateBinding(MethodInfo mi, MethodAddressTransformer methodAddressTransformer, bool mustExist);
     }
 }
 

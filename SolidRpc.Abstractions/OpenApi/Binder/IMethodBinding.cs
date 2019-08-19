@@ -22,6 +22,12 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         MethodInfo MethodInfo { get; }
         
         /// <summary>
+        /// Returns true if the underlying method ends in an 
+        /// InvocationAdvice. False otherwise.
+        /// </summary>
+        bool IsLocal { get; }
+
+        /// <summary>
         /// Returns the operation id for this method.
         /// </summary>
         string OperationId { get; }

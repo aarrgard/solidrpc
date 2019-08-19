@@ -1,0 +1,127 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Google.IGoogleLocal",
+    "version": "1.0.0",
+    "description": "Defines logic for the callback from google"
+  },
+  "host": "localhost",
+  "schemes": [ "https" ],
+  "basePath": "/SolidRpc/Security/Services/Google",
+  "paths": {
+    "/LoginProvider": {
+      "get": {
+        "description": "Returns the login provider information",
+        "operationId": "LoginProvider",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/LoginProvider"
+            }
+          }
+        }
+      }
+    },
+    "/LoginScript": {
+      "get": {
+        "description": "Returns the script to embed to enable login",
+        "operationId": "LoginScript",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/WebContent"
+            }
+          }
+        }
+      }
+    },
+    "/LoggedIn": {
+      "post": {
+        "description": "Callback when a user has logged in successfully.",
+        "operationId": "LoggedIn",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/LoggedOut": {
+      "post": {
+        "description": "Callback when a user has logged out successfully.",
+        "operationId": "LoggedOut",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "WebContent": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "format": "binary"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "charSet": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginProvider": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the provider"
+        },
+        "status": {
+          "type": "string",
+          "description": "The user status @ the provider. LoggedIn or NotLoggedIn"
+        },
+        "script": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "The script uris"
+        },
+        "meta": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LoginProviderMeta"
+          },
+          "description": "The script uris"
+        },
+        "buttonHtml": {
+          "type": "string",
+          "description": "The html for the login button"
+        }
+      }
+    },
+    "LoginProviderMeta": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the meta data"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the meta data"
+        }
+      },
+      "description": "The meta structure is placed in the header section of a html document"
+    }
+    }
+  }
+}

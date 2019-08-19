@@ -2,11 +2,12 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-namespace SolidRpc.Security.Services.OAuth2.Microsoft {
+using SolidRpc.Security.Types;
+namespace SolidRpc.Security.Services.Microsoft {
     /// <summary>
     /// Defines access to the microsoft oauth implementation
     /// </summary>
-    public interface IOAuth2Microsoft {
+    public interface IMicrosoftRemote {
         /// <summary>
         /// When your web app needs to authenticate the user, it can direct the user to the /authorize endpoint. This request is similar to the first leg of the OAuth 2.0 authorization code flow, with these important distinctions:
         /// </summary>
@@ -41,7 +42,7 @@ namespace SolidRpc.Security.Services.OAuth2.Microsoft {
         /// </summary>
         /// <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
         /// <param name="cancellationToken"></param>
-        Task<SolidRpc.Security.Types.OpenIDConnnectDiscovery> OpenIdConfiguration(
+        Task<OpenIDConnnectDiscovery> OpenIdConfiguration(
             string tenant,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -50,7 +51,7 @@ namespace SolidRpc.Security.Services.OAuth2.Microsoft {
         /// </summary>
         /// <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
         /// <param name="cancellationToken"></param>
-        Task<SolidRpc.Security.Types.OpenIDKeys> OpenIdKeys(
+        Task<OpenIDKeys> OpenIdKeys(
             string tenant,
             CancellationToken cancellationToken = default(CancellationToken));
     

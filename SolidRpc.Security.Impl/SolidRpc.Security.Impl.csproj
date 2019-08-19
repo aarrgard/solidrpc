@@ -5,8 +5,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\Facebook\FacebookLocal.LoginScript.js" />
+    <None Remove="Services\Google\GoogleLocal.LoginScript.js" />
+    <None Remove="Services\SolidRpcSecurity.LoginPage.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\Google\GoogleLocal.LoginScript.js" />
+    <EmbeddedResource Include="Services\SolidRpcSecurity.LoginPage.html" />
+    <EmbeddedResource Include="Services\Facebook\FacebookLocal.LoginScript.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Federated\" />
   </ItemGroup>
 
 </Project>

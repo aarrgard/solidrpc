@@ -1,0 +1,101 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "ISolidRpcSecurity",
+    "version": "1.0.0",
+    "description": "Defines logic for solid rpc security"
+  },
+  "host": "localhost",
+  "schemes": [ "https" ],
+  "basePath": "/SolidRpc/Security/Services",
+  "paths": {
+    "/LoginPage": {
+      "get": {
+        "description": "Returns the login page",
+        "operationId": "LoginPage",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/WebContent"
+            }
+          }
+        }
+      }
+    },
+    "/LoginScripts": {
+      "get": {
+        "description": "Returns the script paths to use for logging in.",
+        "operationId": "LoginScripts",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/LoginProviders": {
+      "get": {
+        "description": "Returns the status at each login provider",
+        "operationId": "LoginProviders",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LoginProvider"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "WebContent": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "format": "binary"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "charSet": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginProvider": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the provider"
+        },
+        "status": {
+          "type": "string",
+          "description": "The user status @ the provider. LoggedIn or NotLoggedIn"
+        },
+        "scriptUri": {
+          "type": "string",
+          "format": "uri",
+          "description": "The script uri"
+        },
+        "buttonHtml": {
+          "type": "string",
+          "description": "The html for the login button"
+        }
+      }
+    }
+  }
+}

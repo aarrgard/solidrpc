@@ -226,10 +226,31 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             Members.ToList().ForEach(o => o.GetNamespaces(namespaces));
         }
 
+        protected void AddNamespacesFromName(ICollection<string> namespaces, ICSharpType csType)
+        {
+            namespaces.Add(csType.Namespace.FullName);
+            var genArgs = csType.GetGenericArguments();
+            if(genArgs != null)
+            {
+                foreach (var genType in genArgs)
+                {
+                    AddNamespacesFromName(namespaces, genType);
+                }
+            }
+        }
+
         public abstract void WriteCode(ICodeWriter codeWriter);
 
         protected string SimplifyName(string fullName)
         {
+            //
+            // handle default(xxx)
+            //
+            if (fullName.StartsWith("default(") && fullName.EndsWith(")"))
+            {
+                return $"default({SimplifyName(fullName.Substring(8, fullName.Length - 9))})";
+            }
+
             // find all usings in parents 
             var usings = new HashSet<string>();
             var work = Parent;
@@ -238,41 +259,27 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 work.Members.OfType<ICSharpUsing>().ToList().ForEach(o => usings.Add(o.Name));
                 work = work.Parent;
             }
-            var prefix = usings.Where(o => fullName.StartsWith($"{o}."))
+
+            var (typeName, genArgs, rest) = CSharpRepository.ReadType(fullName);
+
+            var prefix = usings.Where(o => typeName.StartsWith($"{o}."))
                 .OrderByDescending(o => o.Length)
                 .FirstOrDefault();
             if (prefix != null)
             {
-                var prospect = fullName.Substring(prefix.Length + 1);
-                if(prospect.IndexOf('<') != -1)
+                var simplifiedName = typeName.Substring(prefix.Length + 1);
+                if(genArgs != null)
                 {
-                    prospect = prospect.Substring(0, prospect.IndexOf('<'));
+                    simplifiedName = $"{simplifiedName}<{string.Join(",", genArgs.Select(o => SimplifyName(o)))}>";
                 }
-                if (prospect.IndexOf('.') == -1)
-                {
-                    fullName = fullName.Substring(prefix.Length + 1);
-                }
+                simplifiedName = $"{simplifiedName}{rest}";
+                return simplifiedName;
             }
             if(fullName.StartsWith("System.Collections.Generic.IEnumerable<"))
             {
                 throw new Exception();
             }
-            //
-            // handle generic types
-            //
-            var genStart = fullName.IndexOf('<');
-            var genEnd = fullName.LastIndexOf('>');
-            if (genStart > -1 && genEnd > -1)
-            {
-                return $"{fullName.Substring(0, genStart + 1)}{SimplifyName(fullName.Substring(genStart + 1, genEnd - genStart - 1))}{fullName.Substring(genEnd)}";
-            }
-            //
-            // handle default(xxx)
-            //
-            if (fullName.StartsWith("default(") && fullName.EndsWith(")"))
-            {
-                return $"default({SimplifyName(fullName.Substring(8, fullName.Length - 9))})";
-            }
+
             return fullName;
         }
 

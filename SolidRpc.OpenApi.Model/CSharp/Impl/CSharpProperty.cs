@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
@@ -49,7 +50,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="namespaces"></param>
         public override void GetNamespaces(ICollection<string> namespaces)
         {
-            namespaces.Add(PropertyType.Namespace.FullName);
+            AddNamespacesFromName(namespaces, PropertyType);
             base.GetNamespaces(namespaces);
         }
     }

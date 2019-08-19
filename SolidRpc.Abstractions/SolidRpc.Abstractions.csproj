@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build056" />
+    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build059" />
   </ItemGroup>
 
 </Project>

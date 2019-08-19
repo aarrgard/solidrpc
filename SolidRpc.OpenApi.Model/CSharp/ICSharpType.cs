@@ -63,5 +63,11 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// Returns true if this is a generic type
         /// </summary>
         bool IsGenericType { get; }
+
+        /// <summary>
+        /// Returns the generic arguments - null if type is not a generic type.
+        /// </summary>
+        /// <returns></returns>
+        ICollection<ICSharpType> GetGenericArguments();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -56,6 +57,37 @@ namespace System
                 return;
             }
             logger.LogError(e, message);
+        }
+
+        /// <summary>
+        /// Configures the supplied options from the configuration(if it exists)
+        /// </summary>
+        /// <param name="sp"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static IServiceProvider ConfigureOptions<T>(this IServiceProvider sp, T options)
+        {
+            if (options == null) return sp;
+            var config = sp.GetService<IConfiguration>();
+            var name = options.GetType().Name;
+            foreach(var prop in options.GetType().GetProperties())
+            {
+                if (!prop.CanWrite)
+                {
+                    continue;
+                }
+                if (!prop.CanRead)
+                {
+                    continue;
+                }
+                var val = config[$"{name}:{prop.Name}"];
+                if(!string.IsNullOrWhiteSpace(val))
+                {
+                    var propVal = Convert.ChangeType(val, prop.PropertyType);
+                    prop.SetValue(options, propVal);
+                }
+            }
+            return sp;
         }
     }
 }

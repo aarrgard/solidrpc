@@ -5,15 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\Facebook\IFacebookLocal.json" />
+    <None Remove="Services\Facebook\IFacebookRemote.json" />
+    <None Remove="Services\Google\IGoogleLocal.json" />
+    <None Remove="Services\Google\IGoogleRemote.json" />
     <None Remove="Services\IOAuth2Microsoft.json" />
     <None Remove="Services\IOAuth2MicrosoftCallback.json" />
-    <None Remove="Services\OAuth2\Google\IOAuth2Google.json" />
+    <None Remove="Services\ISolidRpcSecurity.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Services\OAuth2\Google\IOAuth2Google.json" />
-    <EmbeddedResource Include="Services\OAuth2\Microsoft\IOAuth2MicrosoftCallback.json" />
-    <EmbeddedResource Include="Services\OAuth2\Microsoft\IOAuth2Microsoft.json" />
+    <EmbeddedResource Include="Services\Facebook\IFacebookRemote.json" />
+    <EmbeddedResource Include="Services\Facebook\IFacebookLocal.json" />
+    <EmbeddedResource Include="Services\Google\IGoogleRemote.json" />
+    <EmbeddedResource Include="Services\Google\IGoogleLocal.json" />
+    <EmbeddedResource Include="Services\ISolidRpcSecurity.json" />
+    <EmbeddedResource Include="Services\Microsoft\IMicrosoftLocal.json" />
+    <EmbeddedResource Include="Services\Microsoft\IMicrosoftRemote.json" />
   </ItemGroup>
 
 </Project>

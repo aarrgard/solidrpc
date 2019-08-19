@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Test.Petstore.Impl;
-using SolidRpc.Test.Petstore.Services;
 using Microsoft.Extensions.Logging;
 
 namespace SolidRpc.Test.PetstoreWeb
@@ -22,6 +21,18 @@ namespace SolidRpc.Test.PetstoreWeb
                 o.AddStaticContentServices = true;
             });
             services.AddSolidRpcSwaggerUI();
+            services.AddSolidRpcSecurityFacebook((sp, conf) =>
+            {
+                sp.ConfigureOptions(conf);
+            });
+            services.AddSolidRpcSecurityGoogle((sp, conf) =>
+            {
+                sp.ConfigureOptions(conf);
+            });
+            services.AddSolidRpcSecurityMicrosoft((sp, conf) =>
+            {
+                sp.ConfigureOptions(conf);
+            });
             services.AddPetstore();
         }
 

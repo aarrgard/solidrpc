@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
@@ -14,8 +13,9 @@ namespace SolidRpc.OpenApi.Binder.V2
 {
     public class MethodBinderV2 : MethodBinderBase
     {
-        public MethodBinderV2(SwaggerObject schemaObject, Assembly assembly) : base(schemaObject, assembly)
+        public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly) : base(schemaObject, assembly)
         {
+            ServiceProvider = serviceProvider;
             SchemaObject = schemaObject;
             CodeDocRepo = new CodeDocRepository();
 
@@ -30,12 +30,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             }).Where(o => o != null).ToList();
         }
 
+        public IServiceProvider ServiceProvider { get; }
         private SwaggerObject SchemaObject { get; }
         private CodeDocRepository CodeDocRepo { get; }
 
         private IList<OperationObject> Operations { get; }
 
-        protected override IMethodBinding CreateBinding(MethodInfo mi, bool mustExist)
+        protected override IMethodBinding CreateBinding(MethodInfo mi, MethodAddressTransformer methodAddressTransformer, bool mustExist)
         {
             if(mi.DeclaringType.Assembly != Assembly)
             {
@@ -81,7 +82,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     return null;
                 }
             }
-            return new MethodBindingV2(this, prospects.Single(), mi, CodeDocRepo.GetMethodDoc(mi));
+            return new MethodBindingV2(this, prospects.Single(), mi, CodeDocRepo.GetMethodDoc(mi), methodAddressTransformer);
 
         }
 

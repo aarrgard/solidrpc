@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SolidRpc.Security.Types;
 namespace SolidRpc.Security.Types {
     /// <summary>
     /// success
@@ -7,7 +8,7 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable<SolidRpc.Security.Types.OpenIDKey> Keys { get; set; }
+        public IEnumerable<OpenIDKey> Keys { get; set; }
     
     }
 }

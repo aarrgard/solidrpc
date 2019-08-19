@@ -1,7 +1,7 @@
 ﻿{
   "swagger": "2.0",
   "info": {
-    "title": "OAuth2.Microsoft.IOAuth2Microsoft",
+    "title": "Microsoft.IMicrosoftRemote",
     "version": "1.0.0",
     "description": "Defines access to the microsoft oauth implementation"
   },

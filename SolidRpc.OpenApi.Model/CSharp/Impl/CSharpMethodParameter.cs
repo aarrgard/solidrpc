@@ -29,7 +29,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
         public override void GetNamespaces(ICollection<string> namespaces)
         {
-            namespaces.Add(ParameterType.Namespace.FullName);
+            AddNamespacesFromName(namespaces, ParameterType);
             base.GetNamespaces(namespaces);
         }
     }

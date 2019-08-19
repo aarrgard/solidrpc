@@ -122,14 +122,17 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         }
 
         /// <summary>
-        /// Returns the openapi spec for specified assembly.
+        /// Returns the openapi spec for specified assembly and openapi spec
         /// </summary>
         /// <param name="assemblyName"></param>
+        /// <param name="openApiTitle"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<FileContent> GetOpenApiSpec(string assemblyName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiTitle, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var binders = MethodBinderStore.MethodBinders.Where(o => o.Assembly.GetName().Name == assemblyName);
+            var binders = MethodBinderStore.MethodBinders
+                .Where(o => o.Assembly.GetName().Name == assemblyName)
+                .Where(o => o.OpenApiSpec.Title == openApiTitle);
             if(!binders.Any())
             {
                 throw new FileContentNotFoundException();
@@ -155,10 +158,16 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             foreach (var mb in MethodBinderStore.MethodBinders)
             {
                 var assemblyName = mb.Assembly.GetName().Name;
+                var openApiTitle = mb.OpenApiSpec.Title;
+                var name = openApiTitle;
+                if(!name.StartsWith(assemblyName))
+                {
+                    name = $"{assemblyName}.{name}";
+                }
                 swaggerUrls.Add(new SwaggerUrl()
                 {
-                    Name = mb.Assembly.GetName().Name,
-                    Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, cancellationToken))
+                    Name = name,
+                    Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, openApiTitle, cancellationToken))
                 });
             }
             return swaggerUrls;

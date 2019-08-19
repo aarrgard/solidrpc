@@ -9,7 +9,7 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Adds the swagger UI to the service collection.
             </summary>
@@ -36,11 +36,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetOpenApiSpec(System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetOpenApiSpec(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Returns the openapi spec for supplied assembly name.
             </summary>
             <param name="assemblyName"></param>
+            <param name="openApiTitle"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -62,11 +63,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetOpenApiSpec(System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetOpenApiSpec(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
-            Returns the openapi spec for specified assembly.
+            Returns the openapi spec for specified assembly and openapi spec
             </summary>
             <param name="assemblyName"></param>
+            <param name="openApiTitle"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

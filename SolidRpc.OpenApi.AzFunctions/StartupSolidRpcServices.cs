@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
                 cb.AddEnvironmentVariables();
                 cb.AddInMemoryCollection(new Dictionary<string, string>()
                 {
-                    { ConfigurationBaseUriTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
+                    { ConfigurationMethodAddressTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
                 });
                 services.AddSingleton<IConfiguration>(cb.Build());
             }

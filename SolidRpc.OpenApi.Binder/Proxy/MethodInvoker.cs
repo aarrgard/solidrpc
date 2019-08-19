@@ -107,12 +107,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                             _rootSegment = new PathSegment();
                             ProxyConfigurationStore.ProxyConfigurations.ToList()
                                 .SelectMany(o => o.InvocationConfigurations)
+                                .Where(o => o.GetSolidInvocationAdvices().OfType<ISolidProxyInvocationAdvice>().Any())
                                 .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                                 .Select(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>())
                                 .ToList().ForEach(o =>
                                 {
                                     var mi = o.InvocationConfiguration.MethodInfo;
-                                    var methodInfo = MethodBinderStore.GetMethodInfo(o.GetOpenApiConfiguration(), mi, o.BaseUriTransformer);
+                                    var methodInfo = MethodBinderStore.CreateMethodBinding(o.GetOpenApiConfiguration(), mi, o.MethodAddressTransformer);
                                     _rootSegment.AddPath(methodInfo);
                                     Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Address.LocalPath}.");
                                 });

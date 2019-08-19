@@ -4,3 +4,4 @@ bin
 package-lock.json
 node_modules
 
+/SolidRpc.Tests/appsettings_local.json

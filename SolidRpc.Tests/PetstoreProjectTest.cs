@@ -10,6 +10,7 @@ using SolidRpc.Test.Petstore.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -174,7 +175,7 @@ namespace SolidRpc.Tests
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)
                 .ConfigureAdvice<ISolidRpcOpenApiConfig>()
-                .BaseUriTransformer = GetBaseUrl;
+                .MethodAddressTransformer = GetBaseUrl;
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
@@ -184,11 +185,11 @@ namespace SolidRpc.Tests
             await host.StopAsync();
         }
 
-        private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
+        private Task<Uri> GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
         {
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             var url = config["urls"];
-            return new Uri(url + baseUri.AbsolutePath);
+            return Task.FromResult(new Uri(url + baseUri.AbsolutePath));
         }
     }
 }

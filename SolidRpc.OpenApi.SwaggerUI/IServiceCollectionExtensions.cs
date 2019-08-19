@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSwaggerUI(this IServiceCollection services, BaseUriTransformer baseUriTransformer = null)
+        public static IServiceCollection AddSolidRpcSwaggerUI(this IServiceCollection services, MethodAddressTransformer baseUriTransformer = null)
         {
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ISwaggerUI));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();

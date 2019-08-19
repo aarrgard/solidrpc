@@ -69,7 +69,7 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Configures all the interfaces in supplied assembly
             </summary>
@@ -78,7 +78,7 @@
             <param name="implementationAssembly"></param>
             <param name="baseUriTransformer"></param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.String,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
@@ -89,7 +89,7 @@
             <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.String,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Configures the suppllied method so that it is exposed through the .net core http binding.
             </summary>
@@ -99,22 +99,15 @@
             <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer">
-            <summary>
-            The method used to transform uri:s
-            </summary>
-            <param name="serviceProvider"></param>
-            <param name="baseUri"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IBaseUriTransformer">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
             <summary>
             Interface that can be implemented to resolve the base uri.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IBaseUriTransformer.TransformUri(System.Uri)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.TransformUriAsync(System.Uri,System.Reflection.MethodInfo)">
             <summary>
-            The base uri.
+            Returns the uri for supplied method. If no method is supplied
+            the base address for the open api spec is determined.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument">
@@ -161,12 +154,12 @@
             The associated assembly.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.MethodInfos">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.MethodBindings">
             <summary>
             Returns all the mapped methods
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.GetMethodInfo(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBinding(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Returns the method info from supplied specification.
             </summary>
@@ -184,7 +177,7 @@
             Returns all the method binders.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetMethodInfo(System.String,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.BaseUriTransformer)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
@@ -209,6 +202,13 @@
             <param name="expression"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetMethodBinding(System.Reflection.MethodInfo)">
+            <summary>
+            Returns the method info for the supplied method.
+            </summary>
+            <param name="methodInfo"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding">
             <summary>
             Represents the method info structure in a swagger specification.
@@ -222,6 +222,12 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.MethodInfo">
             <summary>
             The method info structure this binding represents.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.IsLocal">
+            <summary>
+            Returns true if the underlying method ends in an 
+            InvocationAdvice. False otherwise.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.OperationId">
@@ -274,6 +280,15 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="response"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer">
+            <summary>
+            The method used to transform uri:s
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="originalUri"></param>
+            <param name="methodInfo">The method to resolve the uri for(may be null)</param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
@@ -506,7 +521,7 @@
             the assembly name where the method is defined will be used.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.BaseUriTransformer">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.MethodAddressTransformer">
             <summary>
             The method to transform the Uri. This delegate is invoked to determine
             the base Uri for the service. Supplied uri is the one obtained from

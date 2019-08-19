@@ -1,4 +1,7 @@
-﻿using SolidRpc.Abstractions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SolidProxy.Core.Configuration.Runtime;
+using SolidProxy.Core.Proxy;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
@@ -12,6 +15,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SolidRpc.OpenApi.Binder.V2
 {
@@ -89,15 +93,17 @@ namespace SolidRpc.OpenApi.Binder.V2
         }
 
         public MethodBindingV2(
-            IMethodBinder methodBinder, 
+            MethodBinderV2 methodBinder, 
             OperationObject operationObject, 
             MethodInfo methodInfo, 
-            ICodeDocMethod codeDocMethod)
+            ICodeDocMethod codeDocMethod,
+            MethodAddressTransformer methodAddressTransformer)
         {
             MethodBinder = methodBinder ?? throw new ArgumentNullException(nameof(methodBinder));
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
+            MethodAddressTransformer = methodAddressTransformer;
         }
 
         private Action CreateExceptionThrower(Type exceptionType)
@@ -120,6 +126,8 @@ namespace SolidRpc.OpenApi.Binder.V2
         public OperationObject OperationObject { get; }
 
         public MethodInfo MethodInfo { get; }
+
+        public MethodAddressTransformer MethodAddressTransformer { get; }
 
         private IMethodArgument[] _arguments;
         public IMethodArgument[] Arguments
@@ -164,7 +172,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        public IMethodBinder MethodBinder { get; }
+        public MethodBinderV2 MethodBinder { get; }
+        IMethodBinder IMethodBinding.MethodBinder => MethodBinder;
 
         public string OperationId => OperationObject.OperationId;
 
@@ -196,19 +205,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        private string _host;
-        public string Host
-        {
-            get
-            {
-                if(_host == null)
-                {
-                    _host = OperationObject.GetParent<SwaggerObject>().Host;
-                }
-                return _host;
-            }
-        }
-
         private IEnumerable<string> _produces;
         public IEnumerable<string> Produces
         {
@@ -227,13 +223,34 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if (_address == null)
                 {
-                    _address = OperationObject.GetAddress();
+                    var address = OperationObject.GetAddress();
+                    if(MethodAddressTransformer != null)
+                    {
+                        address = MethodAddressTransformer(MethodBinder.ServiceProvider, address, MethodInfo).Result;
+                    }
+                    _address = address;
+
                 }
                 return _address;
             }
             set
             {
                 _address = value ?? throw new ArgumentNullException();
+            }
+        }
+
+        private bool? _isLocal;
+        public bool IsLocal
+        {
+            get
+            {
+                if(!_isLocal.HasValue)
+                {
+                    var proxy = (ISolidProxy)MethodBinder.ServiceProvider.GetService(MethodInfo.DeclaringType);
+                    var advicePipeline = proxy.GetInvocationAdvices(MethodInfo);
+                    _isLocal = advicePipeline.OfType<ISolidProxyInvocationAdvice>().Any();
+                }
+                return _isLocal.Value;
             }
         }
 
@@ -263,7 +280,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
             foreach(var pathData in request.PathData)
             {
-                request.Path = request.Path.Replace($"{{{pathData.Name}}}", pathData.GetStringValue());
+                request.Path = request.Path.Replace($"{{{pathData.Name}}}", HttpUtility.UrlEncode(pathData.GetStringValue()));
             }
 
             request.ContentType = GetContentTypeBasedOnConsumesAndData(request);
@@ -322,6 +339,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             switch (response.ContentType.ToLower())
             {
+                case "text/javascript":
                 case "application/json":
                     using (var s = response.ResponseStream)
                     {
@@ -379,7 +397,9 @@ namespace SolidRpc.OpenApi.Binder.V2
                 var pattern = patterns[i];
                 if(pattern.StartsWith("{") && pattern.EndsWith("}"))
                 {
-                    pathData.Add(new SolidHttpRequestDataString("text/plain", pattern.Substring(1, pattern.Length - 2), pathElements[i]));
+                    var name = pattern.Substring(1, pattern.Length - 2);
+                    var data = HttpUtility.UrlDecode(pathElements[i]);
+                    pathData.Add(new SolidHttpRequestDataString("text/plain", name, data));
                 }
             }
             request.PathData = pathData;

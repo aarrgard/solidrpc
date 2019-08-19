@@ -6,11 +6,12 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using SolidRpc.Security.Services.OAuth2.Microsoft;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System.Linq;
-using SolidRpc.Security.Services.OAuth2.Google;
+using SolidRpc.Security.Services.Microsoft;
+using SolidRpc.Security.Services.Google;
+using SolidRpc.Security.Services.Facebook;
+using SolidRpc.Security.Impl.Services.Facebook;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -40,7 +41,7 @@ namespace SolidRpc.Tests.Swagger
             var redirect_uri = new Uri("https://arr1-petstore.azurewebsites.net/front/microsoft/login");
             var response_mode = "form_post";
             var state = "234322";
-            var url = await binder.GetUrlAsync<IOAuth2Microsoft>(o => o.Authorize("common", clientId, response_type, scopes, nounce, redirect_uri, response_mode, state, null, null, null, CancellationToken.None));
+            var url = await binder.GetUrlAsync<IMicrosoftRemote>(o => o.Authorize("common", clientId, response_type, scopes, nounce, redirect_uri, response_mode, state, null, null, null, CancellationToken.None));
             //Process.Start(new ProcessStartInfo("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", url.ToString()));
             Assert.AreEqual("https://login.microsoftonline.com/common/oauth2/authorize?client_id=615993a8-66b3-40ce-a165-96a81edd3677&response_type=id_token&scope=openid&nounce=234324&redirect_uri=https://arr1-petstore.azurewebsites.net/front/microsoft/login&response_mode=form_post&state=234322", url.ToString());
         }
@@ -58,12 +59,13 @@ namespace SolidRpc.Tests.Swagger
             var sp = sc.BuildServiceProvider();
 
             // root doc
-            var rootDoc = await sp.GetRequiredService<IOAuth2Microsoft>().OpenIdConfiguration("common");
+            var rootDoc = await sp.GetRequiredService<IMicrosoftRemote>().OpenIdConfiguration("common");
             Assert.AreEqual(new Uri("https://login.microsoftonline.com/{tenantid}/v2.0"), rootDoc.Issuer);
 
-            var keys = await sp.GetRequiredService<IOAuth2Microsoft>().OpenIdKeys("common");
+            var keys = await sp.GetRequiredService<IMicrosoftRemote>().OpenIdKeys("common");
             Assert.IsTrue(keys.Keys.Count() > 0);
         }
+
         [Test]
         public async Task TestGoogleDiscovery()
         {
@@ -78,15 +80,41 @@ namespace SolidRpc.Tests.Swagger
             var sp = sc.BuildServiceProvider();
 
             // root doc
-            var rootDoc = await sp.GetRequiredService<IOAuth2Google>().OpenIdConfiguration();
+            var rootDoc = await sp.GetRequiredService<IGoogleRemote>().OpenIdConfiguration();
             Assert.AreEqual(new Uri("https://accounts.google.com/"), rootDoc.Issuer);
 
-            var keysBinding = sp.GetRequiredService<IMethodBinderStore>().GetMethodBinding<IOAuth2Google>(o => o.OpenIdKeys(CancellationToken.None));
-            keysBinding.Address = rootDoc.JwksUri;
-            //rootDoc.Jwks_uri
-
-            var keys = await sp.GetRequiredService<IOAuth2Google>().OpenIdKeys();
+            var keys = await sp.GetRequiredService<IGoogleRemote>().OpenIdKeys();
             Assert.IsTrue(keys.Keys.Count() > 0);
+
+        }
+
+        [Test]
+        public async Task TestFacebook()
+        {
+            var sc = new ServiceCollection();
+            sc.AddLogging(ConfigureLogging);
+            sc.AddHttpClient();
+
+            var cb = new ConfigurationBuilder();
+            cb.AddJsonFile("appsettings_local.json", false);
+            sc.AddSingleton<IConfiguration>(cb.Build());
+
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcSecurityFacebook((_, conf) =>
+            {
+                _.ConfigureOptions(conf); 
+            });
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+
+            var sp = sc.BuildServiceProvider();
+
+            // root doc
+            var fbConf = sp.GetRequiredService<FacebookOptions>();
+            var fb = sp.GetRequiredService<IFacebookRemote>();
+            var at = "EAAjG2EhdEDgBACsHZBhizQDnxXshewlUHTWfjfXJs0khHFZBL7qH9o36XWQDzwLmZAW5dZAmOsx1Y3LUBSxCbbpU5CW9uXIXwjTT1yYqSvK72roN6I6nbvpgdeRhUBF4sXgdZAwVtJjFYlatfuA6j1O0zF8mCMUKQDMH7pnhLBkQrfrDudp0mesyKsrqYpUQEPlStR0eqDgZDZD";
+            var accessToken = await fb.GetAccessToken(fbConf.AppId, fbConf.AppSecret, "client_credentials");
+            var debugToken = await fb.GetDebugToken(at, accessToken.AccessToken);
+            Assert.AreEqual(fbConf.AppId, debugToken.Data.AppId.ToString());
         }
     }
 }

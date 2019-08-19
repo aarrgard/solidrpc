@@ -1,7 +1,7 @@
 ﻿{
   "swagger": "2.0",
   "info": {
-    "title": "OAuth2.Google.IOAuth2Google",
+    "title": "Google.IGoogleRemote",
     "version": "1.0.0",
     "description": "Defines access to the google oauth implementation"
   },

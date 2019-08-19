@@ -4,15 +4,17 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using System;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
-[assembly:SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IBaseUriTransformer), typeof(ConfigurationBaseUriTransformer))]
+[assembly:SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer))]
 
 namespace SolidRpc.OpenApi.Binder
 {
     /// <summary>
     /// Implements the uri transformer
     /// </summary>
-    public class ConfigurationBaseUriTransformer : IBaseUriTransformer
+    public class ConfigurationMethodAddressTransformer : IMethodAddressTransformer
     {
         /// <summary>
         /// The configuration variable that stores the path prefix
@@ -38,7 +40,7 @@ namespace SolidRpc.OpenApi.Binder
         /// Constructs a new instance of the uri transformer.
         /// </summary>
         /// <param name="configuration"></param>
-        public ConfigurationBaseUriTransformer(IConfiguration configuration)
+        public ConfigurationMethodAddressTransformer(IConfiguration configuration)
         {
             Scheme = configuration[ConfigScheme];
             Host = HostString.FromUriComponent(configuration[ConfigHost]);
@@ -81,8 +83,16 @@ namespace SolidRpc.OpenApi.Binder
         private HostString Host { get; }
         private string PathPrefix { get; }
 
-        Uri IBaseUriTransformer.TransformUri(Uri uri)
+        Task<Uri> IMethodAddressTransformer.TransformUriAsync(Uri uri, MethodInfo methodInfo)
         {
+            //
+            // we are only interested in transforming the base path
+            // of the open api spec. not individual methods.
+            //
+            if(methodInfo != null)
+            {
+                return Task.FromResult(uri);
+            }
             var newUri = new UriBuilder(uri);
             if (!string.IsNullOrEmpty(Scheme))
             {
@@ -108,7 +118,7 @@ namespace SolidRpc.OpenApi.Binder
             {
                 newUri.Path = $"{PathPrefix}{newUri.Path}";
             }
-            return newUri.Uri;
+            return Task.FromResult(newUri.Uri);
         }
     }
 }

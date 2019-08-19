@@ -1,28 +1,33 @@
-﻿using SolidRpc.Security.Security;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-
-namespace SolidRpc.Security.Services
-{
+using SolidRpc.Security.Types;
+using System.Threading;
+using System.Collections.Generic;
+using System;
+namespace SolidRpc.Security.Services {
     /// <summary>
-    /// This service handles the 
+    /// Defines logic for solid rpc security
     /// </summary>
-    public interface ISolidRpcSecurity
-    {
+    public interface ISolidRpcSecurity {
         /// <summary>
-        /// Returns the values(permissions) that the authenticated user or client is granted.
+        /// Returns the login page
         /// </summary>
-        /// <param name="attribute"></param>
-        /// <param name="key"></param>
-        /// <param name="values"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Security(nameof(SolidRpcSecurityPermission))]
-        Task<IEnumerable<string>> IsAllowedAccess(
-            string attribute, 
-            string key, 
-            IEnumerable<string> values, 
+        Task<WebContent> LoginPage(
             CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Returns the script paths to use for logging in.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task<IEnumerable<Uri>> LoginScripts(
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Returns the status at each login provider
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task<IEnumerable<LoginProvider>> LoginProviders(
+            CancellationToken cancellationToken = default(CancellationToken));
+    
     }
 }

@@ -7,11 +7,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build033" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build036" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctionsV1\SolidRpc.OpenApi.AzFunctionsV1Extension.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
+    <ProjectReference Include="..\SolidRpc.Security.Impl\SolidRpc.Security.Impl.csproj" />
+    <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore.Impl\SolidRpc.Test.Petstore.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
   </ItemGroup>

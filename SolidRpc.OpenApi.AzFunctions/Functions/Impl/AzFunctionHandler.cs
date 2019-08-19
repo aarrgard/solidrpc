@@ -407,7 +407,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies.Add(proxyKV);
             }
 
-            var scheme = Environment.GetEnvironmentVariable(ConfigurationBaseUriTransformer.ConfigScheme) ?? "http";
+            var scheme = Environment.GetEnvironmentVariable(ConfigurationMethodAddressTransformer.ConfigScheme) ?? "http";
             var backendUri = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{route}";
             //var backendUri = $"{HttpRouteBackendPrefix}/{route}";
             if (route == s_staticContentFunctionRoute)

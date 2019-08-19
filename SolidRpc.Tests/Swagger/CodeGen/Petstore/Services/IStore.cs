@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.GetInventory;
 using System.Threading;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// Returns pet inventories by status Returns a map of status codes to quantities
         /// </summary>
         /// <param name="cancellationToken"></param>
-        Task<SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.GetInventory.Response200> GetInventory(
+        Task<Response200> GetInventory(
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

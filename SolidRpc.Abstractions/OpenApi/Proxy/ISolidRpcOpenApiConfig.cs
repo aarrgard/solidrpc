@@ -23,7 +23,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// the base Uri for the service. Supplied uri is the one obtained from
         /// the openapi config.
         /// </summary>
-        BaseUriTransformer BaseUriTransformer { get; set; }
+        MethodAddressTransformer MethodAddressTransformer { get; set; }
     }
 
     /// <summary>

@@ -2,11 +2,12 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using System.Threading;
-namespace SolidRpc.Security.Services.OAuth2.Google {
+using SolidRpc.Security.Types;
+namespace SolidRpc.Security.Services.Google {
     /// <summary>
     /// Defines access to the google oauth implementation
     /// </summary>
-    public interface IOAuth2Google {
+    public interface IGoogleRemote {
         /// <summary>
         /// Authorizes a user @ google
         /// </summary>
@@ -44,14 +45,14 @@ namespace SolidRpc.Security.Services.OAuth2.Google {
         /// Returns the openid configuration
         /// </summary>
         /// <param name="cancellationToken"></param>
-        Task<SolidRpc.Security.Types.OpenIDConnnectDiscovery> OpenIdConfiguration(
+        Task<OpenIDConnnectDiscovery> OpenIdConfiguration(
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
         /// Returns the openid keys used for signing.
         /// </summary>
         /// <param name="cancellationToken"></param>
-        Task<SolidRpc.Security.Types.OpenIDKeys> OpenIdKeys(
+        Task<OpenIDKeys> OpenIdKeys(
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

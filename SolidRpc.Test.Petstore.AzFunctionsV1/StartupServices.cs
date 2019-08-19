@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.Test.Petstore.AzFunctions;
 using SolidRpc.Test.Petstore.AzFunctionsV1;
+using System;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 
@@ -18,6 +19,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
             var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcStaticContent>();
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
+            services.AddSolidRpcSecurityGoogle((sp, conf) => { sp.ConfigureOptions(conf); });
         }
     }
 }

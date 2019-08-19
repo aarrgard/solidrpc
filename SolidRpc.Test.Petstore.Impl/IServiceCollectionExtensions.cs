@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IServiceCollection AddPetstore(this IServiceCollection services, BaseUriTransformer baseUriTransformer = null)
+        public static IServiceCollection AddPetstore(this IServiceCollection services, MethodAddressTransformer baseUriTransformer = null)
         {
             services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
             services.GetSolidRpcStaticContent().AddContent(typeof(PetImpl).Assembly, "www", "/");

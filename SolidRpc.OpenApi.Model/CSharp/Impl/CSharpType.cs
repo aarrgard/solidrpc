@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
@@ -36,6 +37,13 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public override void AddMember(ICSharpMember member)
         {
             ProtectedMembers.Add(member);
+        }
+
+        public ICollection<ICSharpType> GetGenericArguments()
+        {
+            var (typeName, genArgs, rest) = CSharpRepository.ReadType(FullName);
+            var repo = GetParent<ICSharpRepository>();
+            return genArgs?.Select(o => repo.GetType(o)).ToList();
         }
 
         public override void WriteCode(ICodeWriter codeWriter)

@@ -85,15 +85,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
     },
-    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}"
-    },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls": {
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
@@ -102,6 +93,78 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
+    },
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}"
+    },
+    "SolidRpc/Security/Services/Google/LoggedIn": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Google/LoggedIn",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoggedIn"
+    },
+    "SolidRpc/Security/Services/Google/LoggedOut": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Google/LoggedOut",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoggedOut"
+    },
+    "SolidRpc/Security/Services/Google/LoginProvider": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Google/LoginProvider",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoginProvider"
+    },
+    "SolidRpc/Security/Services/Google/LoginScript": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Google/LoginScript",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoginScript"
+    },
+    "SolidRpc/Security/Services/LoginPage": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginPage",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/LoginPage"
+    },
+    "SolidRpc/Security/Services/LoginProviders": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginProviders",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/LoginProviders"
+    },
+    "SolidRpc/Security/Services/LoginScripts": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginScripts",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/LoginScripts"
     },
     "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent": {
       "matchCondition": {

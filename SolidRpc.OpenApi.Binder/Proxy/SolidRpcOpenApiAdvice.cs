@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private IOpenApiParser OpenApiParser { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         public IHttpClientFactory HttpClientFactory { get; }
-        private IMethodBinding MethodInfo { get; set; }
+        private IMethodBinding MethodBinding { get; set; }
 
         /// <summary>
         /// Confugures the proxy
@@ -46,10 +46,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="config"></param>
         public void Configure(ISolidRpcOpenApiConfig config)
         {
-            MethodInfo = MethodBinderStore.GetMethodInfo(
+            MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.GetOpenApiConfiguration(),
                 config.InvocationConfiguration.MethodInfo,
-                config.BaseUriTransformer
+                config.MethodAddressTransformer
             );
         }
 
@@ -61,14 +61,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var httpClientName = MethodInfo.MethodBinder.OpenApiSpec.Title;
+            var httpClientName = MethodBinding.MethodBinder.OpenApiSpec.Title;
             if(Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Getting http client for '{httpClientName}'");
             }
             var httpClient = HttpClientFactory.CreateClient(httpClientName);
             var httpReq = new SolidHttpRequest();
-            await MethodInfo.BindArgumentsAsync(httpReq, invocation.Arguments);
+            await MethodBinding.BindArgumentsAsync(httpReq, invocation.Arguments);
 
             if (HttpMessageHandler == null)
             {
@@ -86,7 +86,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var httpResp = new SolidHttpResponse();
             await httpResp.CopyFromAsync(httpClientResponse);
 
-            return MethodInfo.ExtractResponse<TAdvice>(httpResp);
+            return MethodBinding.ExtractResponse<TAdvice>(httpResp);
         }
     }
 }

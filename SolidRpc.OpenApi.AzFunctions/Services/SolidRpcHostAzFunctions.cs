@@ -68,7 +68,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         public override Task IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
             var paths = MethodBinderStore.MethodBinders
-                .SelectMany(o => o.MethodInfos)
+                .SelectMany(o => o.MethodBindings)
+                .Where(o => o.IsLocal)
                 .Select(o => new {
                     Path = FixupPath(o.Address.LocalPath),
                     Method = o.Method.ToLower()

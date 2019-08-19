@@ -23,10 +23,10 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="openApiSpec"></param>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
-        IMethodBinding GetMethodInfo(
+        IMethodBinding CreateMethodBinding(
             string openApiSpec, 
             MethodInfo methodInfo,
-            BaseUriTransformer baseUriTransformer = null);
+            MethodAddressTransformer baseUriTransformer = null);
 
         /// <summary>
         /// Returns the uri to invoke the supplied method.
@@ -43,5 +43,12 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="expression"></param>
         /// <returns></returns>
         IMethodBinding GetMethodBinding<T>(Expression<Action<T>> expression);
+
+        /// <summary>
+        /// Returns the method info for the supplied method.
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        IMethodBinding GetMethodBinding(MethodInfo methodInfo);
     }
 }

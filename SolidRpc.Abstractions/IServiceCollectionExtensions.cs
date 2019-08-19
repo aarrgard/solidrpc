@@ -152,7 +152,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterSingletonService<IOpenApiParser>();
             services.RegisterSingletonService<IMethodInvoker>();
             services.RegisterSingletonService<IMethodBinderStore>();
-            services.RegisterSingletonService<IBaseUriTransformer>();
+            services.RegisterSingletonService<IMethodAddressTransformer>();
             services.RegisterSingletonService<ISolidRpcStaticContent>();
             return services;
         }
@@ -211,7 +211,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="interfaceAssembly"></param>
         /// <param name="implementationAssembly"></param>
         /// <param name="baseUriTransformer"></param>
-        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly interfaceAssembly, Assembly implementationAssembly = null, BaseUriTransformer baseUriTransformer = null)
+        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly interfaceAssembly, Assembly implementationAssembly = null, MethodAddressTransformer baseUriTransformer = null)
         {
             // use the interface as implementation
             if (implementationAssembly == null)
@@ -251,7 +251,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="openApiConfiguration"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings(this IServiceCollection sc, Type interfaze, Type impl = null, string openApiConfiguration = null, BaseUriTransformer baseUriTransformer = null)
+        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings(this IServiceCollection sc, Type interfaze, Type impl = null, string openApiConfiguration = null, MethodAddressTransformer baseUriTransformer = null)
         {
             //
             // make sure that the type is registered
@@ -279,7 +279,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="openApiConfiguration">The open api configuration to use - may be null to use the embedded api config.</param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static ISolidMethodConfigurationBuilder AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, string openApiConfiguration = null, BaseUriTransformer baseUriTransformer = null)
+        public static ISolidMethodConfigurationBuilder AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, string openApiConfiguration = null, MethodAddressTransformer baseUriTransformer = null)
         {
             //
             // make sure that the singleton services are registered
@@ -308,7 +308,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             openApiProxyConfig.OpenApiConfiguration = openApiConfiguration;
-            openApiProxyConfig.BaseUriTransformer = baseUriTransformer;
+            openApiProxyConfig.MethodAddressTransformer = baseUriTransformer;
 
             //
             // make sure that the implementation is wrapped in a proxy by adding the invocation advice.

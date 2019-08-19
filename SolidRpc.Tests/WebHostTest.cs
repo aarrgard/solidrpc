@@ -418,11 +418,11 @@ namespace SolidRpc.Tests
                 return WebHostTest.ConfigureServerServices(services);
             }
 
-            private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri)
+            private Task<Uri> GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
             {
                 var config = serviceProvider.GetRequiredService<IConfiguration>();
                 var url = config["urls"].Split(',').First();
-                return new Uri(url + baseUri.AbsolutePath);
+                return Task.FromResult(new Uri(url + baseUri.AbsolutePath));
             }
 
             /// <summary>
@@ -446,7 +446,7 @@ namespace SolidRpc.Tests
                     .ConfigureInterface<T>()
                     .ConfigureAdvice<ISolidRpcOpenApiConfig>();
                 conf.OpenApiConfiguration = openApiConfiguration;
-                conf.BaseUriTransformer = GetBaseUrl;
+                conf.MethodAddressTransformer = GetBaseUrl;
 
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
