@@ -32,11 +32,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.14.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0-rc003" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build036" />
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build059" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build040" />
+    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build063" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 

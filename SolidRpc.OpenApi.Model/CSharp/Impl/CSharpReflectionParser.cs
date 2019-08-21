@@ -54,7 +54,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             if(type.IsTaskType(out Type taskType))
             {
-                type = taskType;
+                type = taskType ?? type; // null means just Task not Task<T>
             }
             ICSharpType cSharpType;
             if (type.IsClass)

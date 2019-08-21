@@ -8,6 +8,7 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -413,7 +414,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return args;
         }
 
-        public Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
+        public async Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
         {
             response.StatusCode = 200;
 
@@ -428,7 +429,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     response.StatusCode = respCode.Value;
                 }
-                return Task.CompletedTask;
+                return;
             }
 
             //
@@ -446,7 +447,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 response.ContentType = retContentType;
                 response.ResponseStream = returnType.GetFileTypeStreamData(obj);
                 response.Filename = returnType.GetFileTypeFilename(obj);
-                return Task.CompletedTask;
+                return;
             }
 
             string contentType = null;
@@ -465,7 +466,12 @@ namespace SolidRpc.OpenApi.Binder.V2
                     throw new Exception("Cannot handle content type:" + contentType);
             }
 
-            return Task.CompletedTask;
+            return;
+        }
+
+        private Func<object, Task<object>> CreateExtractor<T>()
+        {
+            return async (o) => await (Task<T>)o;
         }
     }
 }

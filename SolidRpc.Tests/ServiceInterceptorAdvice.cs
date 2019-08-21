@@ -55,7 +55,10 @@ namespace SolidRpc.Tests
     public class ServiceInterceptorAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
         private static Func<TMethod, Task<TAdvice>> s_TMethodToTAdviceConverter = TypeConverter.CreateConverter<TMethod, Task<TAdvice>>();
+        public ServiceInterceptorAdvice()
+        {
 
+        }
         /// <summary>
         /// The service calls
         /// </summary>
@@ -67,6 +70,10 @@ namespace SolidRpc.Tests
         /// <param name="config"></param>
         public void Configure(IServiceInterceptorAdviceConfig config)
         {
+            if (ServiceCalls != null)
+            {
+                throw new Exception("Service calls exists");
+            }
             ServiceCalls = config.ServiceCalls ?? new ServiceCall[0];
         }
 

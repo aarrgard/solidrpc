@@ -153,7 +153,7 @@ namespace System
         {
             if(arg.IsTaskType(out Type taskType))
             {
-                arg = taskType;
+                arg = taskType ?? arg;
             }
             //
             // we need an empty constructor
@@ -480,7 +480,7 @@ namespace System
             if (!type.IsGenericType)
             {
                 taskType = null;
-                return false;
+                return type == typeof(Task);
             }
             if (!typeof(Task<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
             {

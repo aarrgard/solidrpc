@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidProxy.Core.IoC;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -405,9 +406,12 @@ namespace SolidRpc.Tests
                 services.AddSolidRpcSingletonServices();
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
-                    services.AddTransient(m.MethodInfo.DeclaringType);
+                    if(!services.Any(o => o.ServiceType == m.MethodInfo.DeclaringType))
+                    {
+                        services.AddTransient(m.MethodInfo.DeclaringType);
+                    }
                     var methodConf = services.AddSolidRpcBinding(m.MethodInfo, m.OpenApiConfiguration);
-
+                    
                     var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
                     var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
                     serviceCalls.Add(new ServiceCall(m.MethodInfo, m.Callback));

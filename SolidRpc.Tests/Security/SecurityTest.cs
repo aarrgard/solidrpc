@@ -30,7 +30,7 @@ namespace SolidRpc.Tests.Swagger
             sc.AddLogging(ConfigureLogging);
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcSecurity();
+            sc.AddSolidRpcSecurityMicrosoft((_, conf) => _.ConfigureOptions(conf));
 
             var sp = sc.BuildServiceProvider();
             var binder = sp.GetRequiredService<IMethodBinderStore>();
@@ -53,7 +53,7 @@ namespace SolidRpc.Tests.Swagger
             sc.AddHttpClient();
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcSecurity();
+            sc.AddSolidRpcSecurityMicrosoft((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
@@ -74,7 +74,7 @@ namespace SolidRpc.Tests.Swagger
             sc.AddHttpClient();
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcSecurity();
+            sc.AddSolidRpcSecurityGoogle((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
@@ -88,7 +88,7 @@ namespace SolidRpc.Tests.Swagger
 
         }
 
-        [Test]
+        [Test, Ignore("requires secrets")]
         public async Task TestFacebook()
         {
             var sc = new ServiceCollection();
@@ -100,10 +100,7 @@ namespace SolidRpc.Tests.Swagger
             sc.AddSingleton<IConfiguration>(cb.Build());
 
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcSecurityFacebook((_, conf) =>
-            {
-                _.ConfigureOptions(conf); 
-            });
+            sc.AddSolidRpcSecurityFacebook((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();

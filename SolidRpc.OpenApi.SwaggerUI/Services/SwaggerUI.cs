@@ -170,7 +170,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, openApiTitle, cancellationToken))
                 });
             }
-            return swaggerUrls;
+            return swaggerUrls.OrderBy(o => o.Name);
         }
     }
 }
