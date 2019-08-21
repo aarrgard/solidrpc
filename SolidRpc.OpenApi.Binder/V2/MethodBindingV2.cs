@@ -435,18 +435,17 @@ namespace SolidRpc.OpenApi.Binder.V2
             //
             // map return types
             //
-            var returnType = MethodInfo.ReturnType;
-            if (returnType.IsFileType())
+            if (objType.IsFileType())
             {
-                var charSet = returnType.GetFileTypeCharSet(obj);
-                var retContentType = returnType.GetFileTypeContentType(obj);
+                var charSet = objType.GetFileTypeCharSet(obj);
+                var retContentType = objType.GetFileTypeContentType(obj);
                 if(!string.IsNullOrEmpty(charSet))
                 {
                     retContentType = $"{retContentType}; charset=\"{charSet}\"";
                 }
                 response.ContentType = retContentType;
-                response.ResponseStream = returnType.GetFileTypeStreamData(obj);
-                response.Filename = returnType.GetFileTypeFilename(obj);
+                response.ResponseStream = objType.GetFileTypeStreamData(obj);
+                response.Filename = objType.GetFileTypeFilename(obj);
                 return;
             }
 

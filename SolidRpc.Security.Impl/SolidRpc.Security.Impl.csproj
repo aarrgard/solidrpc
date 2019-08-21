@@ -1,28 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Services\Facebook\FacebookLocal.LoginScript.js" />
-    <None Remove="Services\Google\GoogleLocal.LoginScript.js" />
-    <None Remove="Services\SolidRpcSecurity.LoginPage.html" />
+    <Compile Remove="react\build\**" />
+    <EmbeddedResource Remove="react\build\**" />
+    <None Remove="react\build\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Services\Google\GoogleLocal.LoginScript.js" />
-    <EmbeddedResource Include="Services\SolidRpcSecurity.LoginPage.html" />
-    <EmbeddedResource Include="Services\Facebook\FacebookLocal.LoginScript.js" />
+    <Compile Remove="react\node_modules\**" />
+    <EmbeddedResource Remove="react\node_modules\**" />
+    <None Remove="react\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="www\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Federated\" />
   </ItemGroup>
 
 </Project>

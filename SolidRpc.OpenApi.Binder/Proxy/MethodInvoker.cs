@@ -168,7 +168,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
 
-                await methodInfo.BindResponseAsync(resp, res, methodInfo.MethodInfo.ReturnType);
+                //
+                // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
+                //
+                var resType = methodInfo.MethodInfo.ReturnType;
+                if (resType.IsTaskType(out Type taskType))
+                {
+                    resType = taskType ?? resType;
+                }
+                //
+                // bind the response
+                //
+                await methodInfo.BindResponseAsync(resp, res, resType);
             }
             catch (Exception ex)
             {
