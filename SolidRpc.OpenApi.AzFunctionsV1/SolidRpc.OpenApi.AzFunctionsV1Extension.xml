@@ -196,5 +196,17 @@
             Implements logic so that the trace writer output is redirected to the logger.
             </summary>
         </member>
+        <member name="M:SolidRpc.Test.Petstore.AzFunctions.TraceWriterLoggerProvider.CreateLogger(System.String)">
+            <summary>
+            Creates a logger
+            </summary>
+            <param name="categoryName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.AzFunctions.TraceWriterLoggerProvider.Dispose">
+            <summary>
+            Disposes of the logger provider
+            </summary>
+        </member>
     </members>
 </doc>

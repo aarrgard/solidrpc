@@ -46,6 +46,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// Creates a http function
         /// </summary>
+        /// <param name="baseDir"></param>
         /// <param name="name"></param>
         /// <returns></returns>
         IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string name);
@@ -82,7 +83,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         DirectoryInfo DevDir { get; }
 
         /// <summary>
-        /// Creates a vaid route from supplied route. V1 & V2 handles initial
+        /// Creates a vaid route from supplied route. V1 &amp; V2 handles initial
         /// slashes differently.
         /// </summary>
         /// <param name="route"></param>

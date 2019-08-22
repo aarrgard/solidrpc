@@ -34,14 +34,21 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             }
         }
 
+        /// <summary>
+        /// Creates a logger
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns></returns>
         public ILogger CreateLogger(string categoryName)
         {
             return new TraceWriterLogger(this);
         }
 
+        /// <summary>
+        /// Disposes of the logger provider
+        /// </summary>
         public void Dispose()
         {
-            throw new System.NotImplementedException();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Microsoft.AspNetCore.Builder
             /// </summary>
             public IMethodBinding MethodInfo { get; set; }
 
-            public ISolidRpcStaticContent StaticContent { get; set; }
+            public ISolidRpcContentHandler ContentHandler { get; set; }
 
             public override string ToString()
             {
@@ -51,14 +51,15 @@ namespace Microsoft.AspNetCore.Builder
             //
             // map all static paths
             //
-            var staticContent = applicationBuilder.ApplicationServices.GetService<ISolidRpcStaticContent>();
-            if (staticContent != null)
+            var contentHandler = applicationBuilder.ApplicationServices.GetService<ISolidRpcContentHandler>();
+            if (contentHandler == null)
             {
-                foreach(var path in staticContent.PathPrefixes)
-                {
-                    dict[$"GET{path}"] = new PathHandler() { StaticContent = staticContent };
-                    dict[$"HEAD{path}"] = new PathHandler() { StaticContent = staticContent };
-                }
+                throw new Exception("No content handler registered - have you configured the solid rpc services?.");
+            }
+            foreach (var path in contentHandler.PathPrefixes)
+            {
+                dict[$"GET{path}"] = new PathHandler() { ContentHandler = contentHandler };
+                dict[$"HEAD{path}"] = new PathHandler() { ContentHandler = contentHandler };
             }
 
             var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
@@ -102,9 +103,9 @@ namespace Microsoft.AspNetCore.Builder
 
             if(paths.TryGetValue($"{pathPrefix}/", out PathHandler staticHandler))
             {
-                if(staticHandler.StaticContent != null)
+                if(staticHandler.ContentHandler != null)
                 {
-                    ConnectStaticContent(ab);
+                    ConnectStaticContent(ab, staticHandler.ContentHandler);
                 }
             }
 
@@ -129,19 +130,19 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     ab.Run((ctx) => HandleInvocation(pathHandler.MethodInfo, ctx));
                 }
-                else if (pathHandler.StaticContent != null)
+                else if (pathHandler.ContentHandler != null)
                 {
-                    ConnectStaticContent(ab);
+                    ConnectStaticContent(ab, pathHandler.ContentHandler);
                 }
             }
         }
 
-        private static void ConnectStaticContent(IApplicationBuilder ab)
+        private static void ConnectStaticContent(IApplicationBuilder ab, ISolidRpcContentHandler contentHandler)
         {
             ab.Use(async (ctx, next) =>
             {
                 await next();
-                await HandleInvocation(ctx.RequestServices.GetRequiredService<ISolidRpcStaticContent>(), ctx);
+                await HandleInvocation(contentHandler, ctx);
             });
         }
 
@@ -176,7 +177,7 @@ namespace Microsoft.AspNetCore.Builder
             return false;
         }
 
-        private static async Task HandleInvocation(ISolidRpcStaticContent staticContent, HttpContext ctx)
+        private static async Task HandleInvocation(ISolidRpcContentHandler contentHandler, HttpContext ctx)
         {
             if(ctx.Response.StatusCode != 404)
             {
@@ -184,7 +185,7 @@ namespace Microsoft.AspNetCore.Builder
             }
             // get content
             var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
-            var content = await staticContent.GetStaticContent(path, ctx.RequestAborted);
+            var content = await contentHandler.GetContent(path, ctx.RequestAborted);
 
             // send response
             ctx.Response.StatusCode = 200;

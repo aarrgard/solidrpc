@@ -7,6 +7,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
     /// </summary>
     public interface IOpenApiSpec
     {
+        /// <summary>
+        /// Clones this open api spec
+        /// </summary>
+        /// <returns></returns>
+        IOpenApiSpec Clone();
 
         /// <summary>
         /// The openapi version of this specification
@@ -36,5 +41,12 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <param name="formatted"></param>
         /// <returns></returns>
         string WriteAsJsonString(bool formatted = false);
+
+        /// <summary>
+        /// Sets the associated external documentation.
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="indexHtmlPath"></param>
+        void SetExternalDoc(string description, Uri indexHtmlPath);
     }
 }

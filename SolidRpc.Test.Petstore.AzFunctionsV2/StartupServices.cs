@@ -18,7 +18,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             base.ConfigureServices(services);
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
-            var services2 = services.Where(o => o.ServiceType == typeof(ISolidRpcStaticContent)).ToList();
         }
     }
 }

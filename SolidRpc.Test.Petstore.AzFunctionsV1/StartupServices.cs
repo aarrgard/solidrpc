@@ -16,7 +16,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
-            var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcStaticContent>();
+            var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcContentHandler>();
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
             services.AddSolidRpcSecurityGoogle((sp, conf) => { sp.ConfigureOptions(conf); });

@@ -245,6 +245,27 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Clones this swagger spec
+        /// </summary>
+        /// <returns></returns>
+        public IOpenApiSpec Clone()
+        {
+            return (new OpenApiParserV2()).ParseSwaggerDoc(WriteAsJsonString());
+        }
+
+        /// <summary>
+        /// Sets the external documentation
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="indexHtmlPath"></param>
+        public void SetExternalDoc(string description, Uri indexHtmlPath)
+        {
+            ExternalDocs = new ExternalDocumentationObject(this);
+            ExternalDocs.Description = description;
+            ExternalDocs.Url = indexHtmlPath.ToString();
+        }
+
+        /// <summary>
         /// Returns the base address
         /// </summary>
         public Uri BaseAddress => new Uri($"{GetScheme()}://{GetHost()}{GetBasePath()}");

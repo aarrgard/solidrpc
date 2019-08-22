@@ -55,7 +55,7 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcStaticContent(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcContentStore(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Returns the static content provider.
             </summary>
@@ -481,6 +481,12 @@
             Interface implemented by the SwaggerObject structures in the model.
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.Clone">
+            <summary>
+            Clones this open api spec
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.OpenApiVersion">
             <summary>
             The openapi version of this specification
@@ -509,6 +515,13 @@
             </summary>
             <param name="formatted"></param>
             <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetExternalDoc(System.String,System.Uri)">
+            <summary>
+            Sets the associated external documentation.
+            </summary>
+            <param name="description"></param>
+            <param name="indexHtmlPath"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig">
             <summary>
@@ -567,6 +580,49 @@
             This permission grants access to some of the solid rpc host functionality.
             </summary>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
+            <summary>
+            The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
+            
+            This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.GetContent(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the content for supplied path.
+            
+            Note that the path is marked as optional(default value set). This is so that the parameter
+            is placed in the query string instead of path.
+            </summary>
+            <param name="path">The path to get the content for</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.PathPrefixes">
+            <summary>
+            Returns all the path prefixes. If content is added by using relative
+            paths then all the assemly base paths are returned from this property.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentStore">
+            <summary>
+            The implementation of this interface is a singleton service
+            that provides access to static content. 
+            
+            Static resources may be configured(added) during setup of the IoC container.
+            
+            If no path prefix is specified all the registered paths for the assebly is used at
+            runtime to determine if the content should be delivered.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.String)">
+            <summary>
+            Adds a content mapping. 
+            </summary>
+            <param name="assembly">The assebly that contains the content</param>
+            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+            <param name="pathPrefix">The absolute path to use to obtain the content. Null means relative to the base paths of the assembly.</param>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
             <summary>
             Represents a solid rpc host.
@@ -590,38 +646,6 @@
             <summary>
             Function that determines if the host is alive.
             </summary>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcStaticContent">
-            <summary>
-            Accesses the static content. The implementation of this interface is a singleton service
-            that provides access to static content. 
-            
-            Static resources may be configured(added) during setup of the IoC container.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcStaticContent.AddContent(System.Reflection.Assembly,System.String,System.String)">
-            <summary>
-            Adds a content mapping
-            </summary>
-            <param name="assembly"></param>
-            <param name="packagePath"></param>
-            <param name="pathPrefix"></param>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcStaticContent.PathPrefixes">
-            <summary>
-            These are all the registered paths.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcStaticContent.GetStaticContent(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Returns the content for supplied file.
-            
-            Note that the path is marked as optional(default value set). This is so that the parameter
-            is placed in the query string instead of path.
-            </summary>
-            <param name="path"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

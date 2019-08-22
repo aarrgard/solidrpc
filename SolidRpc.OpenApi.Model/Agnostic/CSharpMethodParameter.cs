@@ -1,5 +1,8 @@
 ﻿namespace SolidRpc.OpenApi.Model.Agnostic
 {
+    /// <summary>
+    /// Represents a c# method parameter
+    /// </summary>
     public class CSharpMethodParameter
     {
         /// <summary>

@@ -14,9 +14,14 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         /// </summary>
         public string Summary { get; set; }
 
-
+        /// <summary>
+        /// The external uri
+        /// </summary>
         public string ExternalUri { get; set; }
 
+        /// <summary>
+        /// The external desciption
+        /// </summary>
         public string ExternalDescription { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.SwaggerUI.Types;
 
@@ -20,12 +22,14 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// Constructs a new instance
         /// </summary>
         /// <param name="methodBinderStore"></param>
-        public SwaggerUI(IMethodBinderStore methodBinderStore)
+        public SwaggerUI(IMethodBinderStore methodBinderStore, ISolidRpcContentHandler contentHandler)
         {
             MethodBinderStore = methodBinderStore;
+            ContentHandler = contentHandler;
         }
 
         private IMethodBinderStore MethodBinderStore { get; }
+        private ISolidRpcContentHandler ContentHandler { get; }
         private IConfiguration Configuration { get; }
 
         /// <summary>
@@ -128,8 +132,11 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <param name="openApiTitle"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiTitle, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiTitle, CancellationToken cancellationToken = default(CancellationToken))
         {
+            //
+            // find the bindings
+            //
             var binders = MethodBinderStore.MethodBinders
                 .Where(o => o.Assembly.GetName().Name == assemblyName)
                 .Where(o => o.OpenApiSpec.Title == openApiTitle);
@@ -137,14 +144,33 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             {
                 throw new FileContentNotFoundException();
             }
-            var json = binders.First().OpenApiSpec.WriteAsJsonString();
+            var openApiSpec = binders.First().OpenApiSpec;
+            //
+            // check if there is any content associated
+            //
+            if(ContentHandler.PathPrefixes.Any(o => o == openApiSpec.BaseAddress.AbsolutePath))
+            {
+                try
+                {
+                    var indexHtmlPath = new Uri(openApiSpec.BaseAddress, "index.html");
+                    var indexHtmlContent = await ContentHandler.GetContent(indexHtmlPath.AbsolutePath);
+                    openApiSpec = openApiSpec.Clone();
+                    openApiSpec.SetExternalDoc("Navigate to the site", indexHtmlPath);
+                }
+                catch(FileContentNotFoundException)
+                {
+                    
+                }
+            }
+
+            var json = openApiSpec.WriteAsJsonString();
             var encoding = Encoding.UTF8;
-            return Task.FromResult(new FileContent()
+            return new FileContent()
             {
                 CharSet = encoding.HeaderName,
                 Content = new MemoryStream(encoding.GetBytes(json)),
                 ContentType = "application/json"
-            });
+            };
         }
 
         /// <summary>

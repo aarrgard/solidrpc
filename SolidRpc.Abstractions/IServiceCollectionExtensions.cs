@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             if (config.AddStaticContentServices)
             {
-                methods = methods.Union(typeof(ISolidRpcStaticContent).GetMethods().Where(o => o.Name == nameof(ISolidRpcStaticContent.GetStaticContent)));
+                methods = methods.Union(typeof(ISolidRpcContentStore).GetMethods().Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent)));
             }
 
             var openApiParser = services.GetSolidRpcOpenApiParser();
@@ -131,11 +131,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType<TService>();
                 if(implType.GetConstructor(Type.EmptyTypes) == null)
                 {
-                    services.AddSingleton(typeof(TService), implType);
+                    services.AddSingleton(implType, implType);
+                    services.AddSingleton(typeof(TService), _ => _.GetService(implType));
                 }
                 else
                 {
-                    services.AddSingleton(typeof(TService), Activator.CreateInstance(implType));
+                    var impl = Activator.CreateInstance(implType);
+                    services.AddSingleton(implType, impl);
+                    services.AddSingleton(typeof(TService), impl);
                 }
             }
             return services;
@@ -153,7 +156,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterSingletonService<IMethodInvoker>();
             services.RegisterSingletonService<IMethodBinderStore>();
             services.RegisterSingletonService<IMethodAddressTransformer>();
-            services.RegisterSingletonService<ISolidRpcStaticContent>();
+            services.RegisterSingletonService<ISolidRpcContentStore>();
+            services.RegisterSingletonService<ISolidRpcContentHandler>();
             return services;
         }
 
@@ -186,10 +190,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static ISolidRpcStaticContent GetSolidRpcStaticContent(this IServiceCollection services)
+        public static ISolidRpcContentStore GetSolidRpcContentStore(this IServiceCollection services)
         {
             services.AddSolidRpcSingletonServices();
-            return services.GetSolidRpcServiceProvider<ISolidRpcStaticContent>();
+            return services.GetSolidRpcServiceProvider<ISolidRpcContentStore>();
         }
 
         /// <summary>

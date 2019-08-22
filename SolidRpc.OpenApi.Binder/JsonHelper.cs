@@ -2,8 +2,11 @@
 using SolidRpc.OpenApi.Model;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SolidRpc.OpenApi.Binder
@@ -13,6 +16,7 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public class JsonHelper
     {
+        private static ConcurrentDictionary<Type, Func<object, object>> s_makeArray = new ConcurrentDictionary<Type, Func<object, object>>();
         private static readonly JsonSerializer s_serializer = new JsonSerializer()
         {
             ContractResolver = NewtonsoftContractResolver.Instance,
@@ -40,7 +44,7 @@ namespace SolidRpc.OpenApi.Binder
         public static object Deserialize(Stream stream, Type objectType, Encoding encoding = null)
         {
             StreamReader sr;
-            if(encoding == null)
+            if (encoding == null)
             {
                 sr = new StreamReader(stream);
             }
@@ -65,18 +69,20 @@ namespace SolidRpc.OpenApi.Binder
         /// <returns></returns>
         public static Stream Serialize(object obj, Type objectType)
         {
+            obj = s_makeArray.GetOrAdd(objectType, _ =>
+            {
+                if (_.IsGenericType && _.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    return (Func<object, object>) typeof(JsonHelper).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                        .Single(o => o.Name == nameof(MakeArray))
+                        .MakeGenericMethod(objectType.GetGenericArguments()[0])
+                        .CreateDelegate(typeof(Func<object, object>));
+                }
+                return o => o;
+            })(obj);
+
             // convert enumerable types into arrays.
             // this is to create concrete object if a linq enum is supplied.
-            if(objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-            {
-                var lst = new List<object>();
-                foreach(var o in ((IEnumerable)obj))
-                {
-                    lst.Add(o);
-                }
-                obj = Array.CreateInstance(objectType.GetGenericArguments()[0], lst.Count);
-                lst.CopyTo((object[])obj);
-            }
             using (var ms = new MemoryStream())
             {
                 var enc = Encoding.UTF8;
@@ -90,5 +96,10 @@ namespace SolidRpc.OpenApi.Binder
                 return new MemoryStream(ms.ToArray());
             }
         }
+
+        private static object MakeArray<T>(object e)
+        {
+            return ((IEnumerable<T>)e).ToArray();
+        } 
     }
 }

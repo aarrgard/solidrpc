@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services)
         {
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity));
-            services.GetSolidRpcStaticContent().AddContent(typeof(ILoginProvider).Assembly, "www", "/");
+            services.GetSolidRpcContentStore().AddContent(typeof(ILoginProvider).Assembly, "www");
             return services;
         }
 

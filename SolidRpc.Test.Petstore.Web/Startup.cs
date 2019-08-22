@@ -33,7 +33,7 @@ namespace SolidRpc.Test.PetstoreWeb
             {
                 sp.ConfigureOptions(conf);
             });
-            //services.AddPetstore();
+            services.AddPetstore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

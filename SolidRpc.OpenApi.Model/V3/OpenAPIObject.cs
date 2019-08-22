@@ -26,7 +26,17 @@ namespace SolidRpc.OpenApi.Model.V3
 
         public string Title => "Unknown";
 
+        public IOpenApiSpec Clone()
+        {
+            throw new NotImplementedException();
+        }
+
         public void SetBaseAddress(Uri baseAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetExternalDoc(string description, Uri indexHtmlPath)
         {
             throw new NotImplementedException();
         }

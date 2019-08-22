@@ -388,7 +388,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
-
+        /// <summary>
+        /// Creates a route
+        /// </summary>
+        /// <param name="route"></param>
+        /// <returns></returns>
         public string CreateRoute(string route)
         {
             if (route.StartsWith("/"))

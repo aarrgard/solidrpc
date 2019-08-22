@@ -94,6 +94,7 @@
             <summary>
             Creates a http function
             </summary>
+            <param name="baseDir"></param>
             <param name="name"></param>
             <returns></returns>
         </member>
@@ -128,7 +129,14 @@
             The development directory.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateRoute(System.String)" -->
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateRoute(System.String)">
+            <summary>
+            Creates a vaid route from supplied route. V1 &amp; V2 handles initial
+            slashes differently.
+            </summary>
+            <param name="route"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzHttpFunction">
             <summary>
             Represents a timer function
@@ -333,6 +341,13 @@
             <summary>
             Syncronizes the proxies file with the functions.
             </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateRoute(System.String)">
+            <summary>
+            Creates a route
+            </summary>
+            <param name="route"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction">
             <summary>

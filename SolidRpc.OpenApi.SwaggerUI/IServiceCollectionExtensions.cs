@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();
 
             services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), strOpenApiSpec, baseUriTransformer);
-            services.GetSolidRpcStaticContent().AddContent(typeof(SwaggerUI).Assembly, "www", openApiSpec.BaseAddress.AbsolutePath);
+            services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www");
             return services;
         }
     }

@@ -50,7 +50,7 @@
             The swagger config
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler)">
             <summary>
             Constructs a new instance
             </summary>
