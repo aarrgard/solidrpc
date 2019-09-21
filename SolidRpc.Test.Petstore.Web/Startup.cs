@@ -20,7 +20,10 @@ namespace SolidRpc.Test.PetstoreWeb
                 o.AddRpcHostServices = true;
                 o.AddStaticContentServices = true;
             });
-            services.AddSolidRpcSwaggerUI();
+            services.AddSolidRpcSwaggerUI(o => {
+                o.DefaultOpenApiSpec = "SolidRpc.NpmGenerator";
+            });
+            services.AddSolidRpcNpmGenerator();
             services.AddSolidRpcSecurityFacebook((sp, conf) =>
             {
                 sp.ConfigureOptions(conf);

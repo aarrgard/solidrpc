@@ -16,14 +16,10 @@
   <PropertyGroup>
     <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="SolidRpc.Test.Petstore.json" />
-  </ItemGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="$(AssemblyName).xml" />
-    <EmbeddedResource Include="SolidRpc.Test.Petstore.json" />
+    <EmbeddedResource Include="$(AssemblyName).json" />
   </ItemGroup>
 
   <ItemGroup>

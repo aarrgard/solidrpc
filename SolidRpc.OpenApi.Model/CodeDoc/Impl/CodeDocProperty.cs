@@ -1,18 +1,39 @@
 ﻿using System;
+using System.Text;
 using System.Xml;
 
 namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
 {
+    /// <summary>
+    /// Represents a property description
+    /// </summary>
     public class CodeDocProperty : CodeDocMember, ICodeDocProperty
     {
-
-        public CodeDocProperty(CodeDocClass codeDocClass, string nameAttr)
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="classDocumentation"></param>
+        /// <param name="nameAttr"></param>
+        public CodeDocProperty(CodeDocClass classDocumentation, string nameAttr)
         {
-            CodeDocClass = codeDocClass;
+            ClassDocumentation = classDocumentation ?? throw new ArgumentNullException(nameof(classDocumentation));
             Name = GetPropertyName(nameAttr);
+            var methodNode = XmlDocument.SelectSingleNode($"/doc/members/member[@name='{nameAttr}']");
+            if (methodNode == null)
+            {
+                Summary = "";
+                return;
+            }
+            Summary = SelectSingleNode(methodNode, "summary");
         }
 
-        private CodeDocClass CodeDocClass { get; }
+        private CodeDocClass ClassDocumentation { get; }
+        ICodeDocClass ICodeDocProperty.ClassDocumentation => ClassDocumentation;
+
+        /// <summary>
+        /// The underlying xml document
+        /// </summary>
+        public XmlDocument XmlDocument => ClassDocumentation.XmlDocument;
 
         /// <summary>
         /// The name of the property
@@ -20,8 +41,20 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         public string Name { get; }
 
         /// <summary>
-        /// The comment
-        /// </summary>
-        public string Comment => throw new System.NotImplementedException();
+        /// Returns the code comments
+        /// </summary>'
+        public string CodeComments
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("<summary>");
+                sb.AppendLine(Summary);
+                sb.AppendLine("</summary>");
+                return sb.ToString();
+            }
+        }
+
+        public string Summary { get; private set; }
     }
 }

@@ -45,6 +45,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             return classDoc.GetMethodDocumentation(methodInfo);
         }
 
+        public ICodeDocProperty GetPropertyDoc(PropertyInfo pi)
+        {
+            var classDoc = GetClassDoc(pi.DeclaringType);
+            return classDoc.GetPropertyDocumentation(pi);
+        }
+
         private ICodeDocAssembly GetAsseblyDocInternal(Assembly arg)
         {
             return new CodeDocAssembly(GetXmlDoc(arg));

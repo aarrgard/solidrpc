@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
     <ProjectReference Include="..\SolidRpc.Security.Impl\SolidRpc.Security.Impl.csproj" />

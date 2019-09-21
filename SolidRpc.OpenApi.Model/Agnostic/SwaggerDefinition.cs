@@ -9,21 +9,62 @@ namespace SolidRpc.OpenApi.Model.Agnostic
     /// </summary>
     public class SwaggerDefinition
     {
-
+        /// <summary>
+        /// The void type
+        /// </summary>
         public static string TypeVoid = "void";
+        /// <summary>
+        /// The bool type
+        /// </summary>
         public static string TypeBoolean = "bool";
+        /// <summary>
+        /// The string type
+        /// </summary>
         public static string TypeString = "string";
+        /// <summary>
+        /// The int type
+        /// </summary>
         public static string TypeInt = "int";
+        /// <summary>
+        /// The long type
+        /// </summary>
         public static string TypeLong = "long";
+        /// <summary>
+        /// The float type
+        /// </summary>
         public static string TypeFloat = "float";
+        /// <summary>
+        /// The double type
+        /// </summary>
         public static string TypeDouble = "double";
+        /// <summary>
+        /// The stream type
+        /// </summary>
         public static string TypeStream = "System.IO.Stream";
+        /// <summary>
+        /// The date time type
+        /// </summary>
         public static string TypeDateTime = "System.DateTime";
+        /// <summary>
+        /// The guid type
+        /// </summary>
         public static string TypeGuid = "System.Guid";
+        /// <summary>
+        /// The uri type
+        /// </summary>
         public static string TypeUri = "System.Uri";
+        /// <summary>
+        /// The task type
+        /// </summary>
         public static string TypeTask = "System.Threading.Tasks.Task";
+        /// <summary>
+        /// The cancellation token type.
+        /// </summary>
         public static string TypeCancellationToken = "System.Threading.CancellationToken";
 
+        /// <summary>
+        /// The reserved names.
+        /// </summary>
         public static IEnumerable<string> ReservedNames = new string[]
         {
             TypeVoid,
@@ -41,6 +82,11 @@ namespace SolidRpc.OpenApi.Model.Agnostic
             TypeCancellationToken
         };
 
+        /// <summary>
+        /// Constrcuts a new instance
+        /// </summary>
+        /// <param name="swaggerOperation"></param>
+        /// <param name="name"></param>
         public SwaggerDefinition(SwaggerOperation swaggerOperation, string name)
         {
             SwaggerOperation = swaggerOperation;
@@ -49,6 +95,10 @@ namespace SolidRpc.OpenApi.Model.Agnostic
             Properties = new List<SwaggerProperty>();
         }
 
+        /// <summary>
+        /// Constrcuts a new instance
+        /// </summary>
+        /// <param name="arrayType"></param>
         public SwaggerDefinition(SwaggerDefinition arrayType) : this(arrayType.SwaggerOperation, arrayType.Name)
         {
             ArrayType = arrayType;

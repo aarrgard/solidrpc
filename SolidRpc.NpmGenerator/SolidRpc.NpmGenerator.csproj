@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="node_modules\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Services\NpmGenerator.CompilerScript.js" />
+    <None Remove="Services\NpmGenerator.CreateTypeTs.SolidRpc.ts" />
+    <None Remove="Services\NpmGenerator.NpmScript.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(AssemblyName).xml" />
+    <EmbeddedResource Include="$(AssemblyName).json" />
+    <EmbeddedResource Include="NpmGenerator.NpmScript.js" />
+    <EmbeddedResource Include="NpmGenerator.SolidRpc.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
+    <PackageReference Include="SharpZipLib" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
+  </ItemGroup>
+
+</Project>

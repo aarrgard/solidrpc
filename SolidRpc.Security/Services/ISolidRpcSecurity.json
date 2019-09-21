@@ -41,6 +41,20 @@
         }
       }
     },
+    "/LoginScript": {
+      "get": {
+        "description": "Returns the script to embedd to enable login",
+        "operationId": "LoginScript",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/WebContent"
+            }
+          }
+        }
+      }
+    },
     "/LoginProviders": {
       "get": {
         "description": "Returns the status at each login provider",
@@ -57,9 +71,37 @@
           }
         }
       }
+    },
+    "/Profile": {
+      "get": {
+        "description": "Returns the current profile claims",
+        "operationId": "Profile",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Claim"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
+    "Claim": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "WebContent": {
       "type": "object",
       "properties": {
@@ -86,16 +128,40 @@
           "type": "string",
           "description": "The user status @ the provider. LoggedIn or NotLoggedIn"
         },
-        "scriptUri": {
-          "type": "string",
-          "format": "uri",
-          "description": "The script uri"
+        "script": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "The script uris"
+        },
+        "meta": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LoginProviderMeta"
+          },
+          "description": "The script uris"
         },
         "buttonHtml": {
           "type": "string",
           "description": "The html for the login button"
         }
       }
+    },
+    "LoginProviderMeta": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the meta data"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the meta data"
+        }
+      },
+      "description": "The meta structure is placed in the header section of a html document"
     }
   }
 }

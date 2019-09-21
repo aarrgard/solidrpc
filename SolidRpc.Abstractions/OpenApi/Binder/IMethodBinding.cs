@@ -38,6 +38,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         string Method { get; }
 
         /// <summary>
+        /// The path relative to the base path of the binder.
+        /// </summary>
+        string Path { get; }
+
+        /// <summary>
         /// The base address to this method.
         /// </summary>
         Uri Address { get; set; }

@@ -12,18 +12,25 @@ namespace SolidRpc.Abstractions.Services
     /// 
     /// Static resources may be configured(added) during setup of the IoC container.
     /// 
-    /// If no path prefix is specified all the registered paths for the assebly is used at
+    /// If no path prefix is specified all the registered paths for the assembly are used at
     /// runtime to determine if the content should be delivered.
     /// </summary>
     public interface ISolidRpcContentStore
     {
+        /// <summary>
+        /// Adds a content mapping. 
+        /// </summary>
+        /// <param name="contentAssembly">The assebly that contains the content</param>
+        /// <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+        /// <param name="pathPrefix">The absolute path to use to obtain the content.</param>
+        void AddContent(Assembly contentAssembly, string assemblyRelativeName, string pathPrefix);
 
         /// <summary>
         /// Adds a content mapping. 
         /// </summary>
-        /// <param name="assembly">The assebly that contains the content</param>
+        /// <param name="contentAssembly">The assebly that contains the content</param>
         /// <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
-        /// <param name="pathPrefix">The absolute path to use to obtain the content. Null means relative to the base paths of the assembly.</param>
-        void AddContent(Assembly assembly, string assemblyRelativeName, string pathPrefix = null);
-     }
+        /// <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
+        void AddContent(Assembly contentAssembly, string assemblyRelativeName, Assembly apiAssembly);
+    }
 }

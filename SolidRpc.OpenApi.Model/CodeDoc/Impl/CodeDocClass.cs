@@ -22,7 +22,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         {
             AssemblyDocumentation = assemblyDocumentation;
             ClassName = className;
-            Comment = SelectSingleNode(XmlDocument, $"/doc/members/member[@name='T:{className}']/summary", false);
+            Summary = SelectSingleNode(XmlDocument, $"/doc/members/member[@name='T:{className}']/summary", false);
             MethodDocumentation = SelectXmlElements(XmlDocument, "/doc/members/member")
                 .Where(o => GetClassName(o.Attributes["name"].InnerText) == ClassName)
                 .Where(o => GetMethodName(o.Attributes["name"].InnerText) != null)
@@ -51,7 +51,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <summary>
         /// The comment for this type.
         /// </summary>
-        public string Comment { get; }
+        public string Summary { get; }
 
         /// <summary>
         /// All the method documentations.
@@ -72,7 +72,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("<summary>");
-                sb.AppendLine(Comment);
+                sb.AppendLine(Summary);
                 sb.AppendLine("</summary>");
                 //ParameterDocumentation.ToList().ForEach(o => sb.Append("<param name=\"").Append(o.Name).Append("\">").Append(o.Comment).Append("</param>"));
                 //ExceptionDocumentation.ToList().ForEach(o => sb.Append("<exception cref=\"").Append(o.ExceptionType).Append("\">").Append(o.Comment).Append("</exception>"));
@@ -100,5 +100,17 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             return methodDoc;
         }
 
+        public ICodeDocProperty GetPropertyDocumentation(PropertyInfo pi)
+        {
+            var paramDoc = PropertyDocumentation
+                .Where(o => o.Name == pi.Name)
+                .FirstOrDefault();
+
+            if (paramDoc == null)
+            {
+                paramDoc = new CodeDocProperty(this, $"M:{ClassName}.{pi.Name}");
+            }
+            return paramDoc;
+        }
     }
 }

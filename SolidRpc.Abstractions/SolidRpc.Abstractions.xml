@@ -125,6 +125,28 @@
             Specifies where this argument is located.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.Location">
+            <summary>
+            The location of the argument, May be either:
+            * path
+            * query
+            * header
+            * formData
+            * body (one)
+            * body-inline(several)
+            The formData, body and body-inline cannot be combined.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.ParameterInfo">
+            <summary>
+            The parameter info.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.Optional">
+            <summary>
+            Specifies if this argument is optional
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodArgument.BindArgumentAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Object)">
             <summary>
             Binds this argument to the supplied request.
@@ -238,6 +260,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Method">
             <summary>
             The method(POST,GET,HEAD,etc) to use when activating the method.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Path">
+            <summary>
+            The path relative to the base path of the binder.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Address">
@@ -611,7 +638,7 @@
             
             Static resources may be configured(added) during setup of the IoC container.
             
-            If no path prefix is specified all the registered paths for the assebly is used at
+            If no path prefix is specified all the registered paths for the assembly are used at
             runtime to determine if the content should be delivered.
             </summary>
         </member>
@@ -619,9 +646,17 @@
             <summary>
             Adds a content mapping. 
             </summary>
-            <param name="assembly">The assebly that contains the content</param>
+            <param name="contentAssembly">The assebly that contains the content</param>
             <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
-            <param name="pathPrefix">The absolute path to use to obtain the content. Null means relative to the base paths of the assembly.</param>
+            <param name="pathPrefix">The absolute path to use to obtain the content.</param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.Reflection.Assembly)">
+            <summary>
+            Adds a content mapping. 
+            </summary>
+            <param name="contentAssembly">The assebly that contains the content</param>
+            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+            <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
             <summary>
@@ -722,6 +757,11 @@
             The content type.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.FileName">
+            <summary>
+            The file name
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.Types.FileContent.LastModified">
             <summary>
             The last modified date of the resource.
@@ -751,6 +791,195 @@
             <summary>
             The value
             </summary>
+        </member>
+        <member name="T:System.TypeExtensions">
+            <summary>
+            Contains extension methods for the Type
+            </summary>
+        </member>
+        <member name="F:System.TypeExtensions.FileTypeProperties">
+            <summary>
+            The file type properties that can exist on a file type.
+            </summary>
+        </member>
+        <member name="T:System.TypeExtensions.FileTypeHelper">
+            <summary>
+            Contains information about a file type
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.IsFileType">
+            <summary>
+            Returns true if this type is a file type.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.SetStreamData">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.GetStreamData">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.SetContentType">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.GetContentType">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.SetFilename">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.GetFilename">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.SetCharSet">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.GetCharSet">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.SetLastModified">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.GetLastModified">
+            <summary>
+            The method we use to set the stream data.
+            </summary>
+        </member>
+        <member name="M:System.TypeExtensions.IsFileType(System.String,System.Collections.Generic.Dictionary{System.String,System.Type})">
+            <summary>
+            Returns true if the type is a file type.
+            </summary>
+            <param name="typeName"></param>
+            <param name="propertyTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsFileType(System.Type)">
+            <summary>
+            Returns true if the supplied type is a  file type
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.SetFileTypeStreamData(System.Type,System.Object,System.IO.Stream)">
+            <summary>
+            Set the stream data on supplied structure.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:System.TypeExtensions.SetFileTypeContentType(System.Type,System.Object,System.String)">
+            <summary>
+            Set the stream data on supplied structure.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <param name="contentType"></param>
+        </member>
+        <member name="M:System.TypeExtensions.SetFileTypeFilename(System.Type,System.Object,System.String)">
+            <summary>
+            Set the stream data on supplied structure.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <param name="fileName"></param>
+        </member>
+        <member name="M:System.TypeExtensions.SetFileTypeCharSet(System.Type,System.Object,System.String)">
+            <summary>
+            Set the stream data on supplied structure.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <param name="charSet"></param>
+        </member>
+        <member name="M:System.TypeExtensions.SetFileTypeLastModified(System.Type,System.Object,System.Nullable{System.DateTime})">
+            <summary>
+            Set the stream data on supplied structure.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <param name="lastModified"></param>
+        </member>
+        <member name="M:System.TypeExtensions.GetFileTypeStreamData(System.Type,System.Object)">
+            <summary>
+            Returns the stream data.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.GetFileTypeContentType(System.Type,System.Object)">
+            <summary>
+            Returns the content type.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.GetFileTypeFilename(System.Type,System.Object)">
+            <summary>
+            Returns the filename
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.GetFileTypeCharSet(System.Type,System.Object)">
+            <summary>
+            Returns the charset
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.GetFileTypeLastModified(System.Type,System.Object)">
+            <summary>
+            Returns the last modified
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsEnumType(System.Type,System.Type@)">
+            <summary>
+            Returns true if the type is an enum
+            </summary>
+            <param name="type"></param>
+            <param name="enumType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsTaskType(System.Type,System.Type@)">
+            <summary>
+            Returns true if supplied tyoe is a task type.
+            </summary>
+            <param name="type"></param>
+            <param name="taskType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsNullableType(System.Type,System.Type@)">
+            <summary>
+            Returns true if supplied type is a nullable type.
+            </summary>
+            <param name="type"></param>
+            <param name="nullableType"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

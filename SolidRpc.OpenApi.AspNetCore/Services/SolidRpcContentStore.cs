@@ -20,13 +20,59 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public class StaticContent
         {
             /// <summary>
-            /// The path prefix. If not set(null) - the base paths of the assebly will be used.
+            /// Constructs a new instalce
             /// </summary>
-            public string PathPrefix { get; set; }
-            public string PathName { get; set; }
-            public Assembly Assembly { get; set; }
-            public string ResourceName { get; set; }
-            public string ContentType { get; set; }
+            /// <param name="assembly"></param>
+            /// <param name="resourceName"></param>
+            /// <param name="pathName"></param>
+            /// <param name="absolutePath"></param>
+            /// <param name="apiAssembly"></param>
+            /// <param name="contentType"></param>
+            public StaticContent(
+                Assembly assembly, 
+                string resourceName, 
+                string pathName, 
+                string absolutePath, 
+                Assembly apiAssembly,
+                string contentType)
+            {
+                Assembly = assembly;
+                ResourceName = resourceName;
+                PathName = pathName;
+                PathPrefix = absolutePath;
+                ApiAssembly = apiAssembly;
+                ContentType = contentType;
+
+            }
+            /// <summary>
+            /// The path prefix. 
+            /// </summary>
+            public string PathPrefix { get; }
+
+            /// <summary>
+            /// The api assembly.
+            /// </summary>
+            public Assembly ApiAssembly { get; }
+
+            /// <summary>
+            /// The path name
+            /// </summary>
+            public string PathName { get; }
+
+            /// <summary>
+            /// The assembly where the resource resides
+            /// </summary>
+            public Assembly Assembly { get;}
+            
+            /// <summary>
+            /// The resource name
+            /// </summary>
+            public string ResourceName { get; }
+
+            /// <summary>
+            /// Thwe content type.
+            /// </summary>
+            public string ContentType { get; }
         }
         /// <summary>
         /// Constructs a new instance
@@ -43,6 +89,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         public IContentTypeProvider ContentTypeProvider { get; }
 
+        /// <summary>
+        /// The registered contents
+        /// </summary>
         public IList<StaticContent> StaticContents { get; }
 
         /// <summary>
@@ -53,16 +102,32 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// Adds some content
         /// </summary>
-        /// <param name="assembly"></param>
-        /// <param name="packagePath"></param>
+        /// <param name="contentAssembly"></param>
+        /// <param name="assemblyRelativeName"></param>
         /// <param name="absolutePath"></param>
-        public void AddContent(Assembly assembly, string packagePath, string absolutePath)
+        public void AddContent(Assembly contentAssembly, string assemblyRelativeName, string absolutePath)
+        {
+            AddContentInternal(contentAssembly, assemblyRelativeName, null, absolutePath);
+        }
+
+        /// <summary>
+        /// Adds a content
+        /// </summary>
+        /// <param name="contentAssembly"></param>
+        /// <param name="assemblyRelativeName"></param>
+        /// <param name="apiAssembly"></param>
+        public void AddContent(Assembly contentAssembly, string assemblyRelativeName, Assembly apiAssembly)
+        {
+            AddContentInternal(contentAssembly, assemblyRelativeName, apiAssembly, null);
+        }
+
+        private void AddContentInternal(Assembly assembly, string assemblyRelativeName, Assembly apiAssembly, string absolutePath)
         {
             //
             // avoid duplicate registrations
             //
-            var regKey = $"{assembly.GetName().FullName}:{packagePath}:{absolutePath}";
-            if(Registrations.Contains(regKey))
+            var regKey = $"{assembly.GetName().Name}:{assemblyRelativeName}:{apiAssembly?.GetName()?.Name}:{absolutePath}";
+            if (Registrations.Contains(regKey))
             {
                 return;
             }
@@ -70,31 +135,24 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
             // get the name of the assemblt
             var assemblyName = assembly.GetName().Name;
-            foreach(var resourceName in assembly.GetManifestResourceNames())
+            foreach (var resourceName in assembly.GetManifestResourceNames())
             {
                 var pathName = resourceName;
-                if(pathName.StartsWith(assemblyName, StringComparison.InvariantCultureIgnoreCase))
+                if (pathName.StartsWith(assemblyName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     pathName = pathName.Substring(assemblyName.Length);
                 }
-                if(!pathName.StartsWith($".{packagePath}.", StringComparison.InvariantCultureIgnoreCase))
+                if (!pathName.StartsWith($".{assemblyRelativeName}.", StringComparison.InvariantCultureIgnoreCase))
                 {
                     continue;
                 }
-                pathName = pathName.Substring(packagePath.Length + 2);
+                pathName = pathName.Substring(assemblyRelativeName.Length + 2);
                 string contentType;
                 if (!ContentTypeProvider.TryGetContentType(pathName, out contentType))
                 {
                     contentType = "application/octet-stream";
                 }
-                StaticContents.Add(new StaticContent()
-                {
-                    Assembly = assembly,
-                    ResourceName = resourceName,
-                    PathName = pathName.ToLower(),
-                    PathPrefix = absolutePath,
-                    ContentType = contentType
-                });
+                StaticContents.Add(new StaticContent(assembly, resourceName, pathName.ToLower(), absolutePath, apiAssembly, contentType));
             }
         }
     }

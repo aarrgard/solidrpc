@@ -20,7 +20,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// <summary>
         /// The comment.
         /// </summary>
-        string Comment { get; }
+        string Summary { get; }
 
         /// <summary>
         /// The parameter documentation.
@@ -36,5 +36,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// Returns the comments for this method.
         /// </summary>
         string CodeComments { get; }
+
+        /// <summary>
+        /// Returns the parameter documentation for supplied paramter name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        ICodeDocParameter GetParameterDocumentation(string name);
     }
 }

@@ -37,24 +37,48 @@
         }
       }
     },
-    "/LoggedIn": {
-      "post": {
+    "/LoggedIn/{accessToken}": {
+      "get": {
         "description": "Callback when a user has logged in successfully.",
         "operationId": "LoggedIn",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accessToken",
+            "description": "The the access token for the logged in user",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "success"
+            "description": "New access token",
+            "schema": {
+              "type": "string"
+            }
           }
         }
       }
     },
-    "/LoggedOut": {
-      "post": {
+    "/LoggedOut/{accessToken}": {
+      "get": {
         "description": "Callback when a user has logged out successfully.",
         "operationId": "LoggedOut",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "accessToken",
+            "description": "The the access token for the logged out in user",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "success"
+            "description": "New access token",
+            "schema": {
+              "type": "string"
+            }
           }
         }
       }
@@ -122,6 +146,6 @@
       },
       "description": "The meta structure is placed in the header section of a html document"
     }
-    }
+  }
   }
 }

@@ -75,7 +75,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             else
             {
                 return MethodBinderStore.MethodBinders
-                        .Where(mb => mb.Assembly == c.Assembly)
+                        .Where(mb => mb.Assembly == c.ApiAssembly)
                         .Select(o => o.OpenApiSpec.BaseAddress.AbsolutePath);                    
             }
         }

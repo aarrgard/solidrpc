@@ -1,0 +1,618 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SolidRpc.Security</name>
+    </assembly>
+    <members>
+        <member name="T:SolidRpc.Security.Security.SecurityAttribute">
+            <summary>
+            The security attribute defines what permissions that are required to
+            accesss the data in these interfaces
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Security.SecurityAttribute.#ctor(System.String[])">
+            <summary>
+            The permissions required to access this resource
+            </summary>
+            <param name="permissions"></param>
+        </member>
+        <member name="P:SolidRpc.Security.Security.SecurityAttribute.Public">
+            <summary>
+            Specifies if this resource is public(ie no permissions required)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Security.SecurityAttribute.Permissions">
+            <summary>
+            The permissions required to access this resource
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Security.SolidRpcSecurityPermission">
+            <summary>
+            This permission grants access to the security services.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Services.Facebook.IFacebookLocal">
+            <summary>
+            Defines logic for the callback from facebook
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Facebook.IFacebookLocal.LoginProvider(System.Threading.CancellationToken)">
+            <summary>
+            Returns the login provider information
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Facebook.IFacebookLocal.LoginScript(System.Threading.CancellationToken)">
+            <summary>
+            Returns the script to embedd to enable login
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Facebook.IFacebookLocal.LoggedIn(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Callback when a user has logged in successfully.
+            </summary>
+            <param name="accessToken">The the access token for the logged in user</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Facebook.IFacebookLocal.LoggedOut(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Callback when a user has logged out successfully.
+            </summary>
+            <param name="accessToken">The the access token for the logged out in user</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.Facebook.IFacebookRemote">
+            <summary>
+            Defines logic @ facebook
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Facebook.IFacebookRemote.GetAccessToken(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Obtains an access token for the application
+            </summary>
+            <param name="clientId">The app id</param>
+            <param name="clientSecret">The app secret</param>
+            <param name="grantType">The grant type - client_credentials</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Facebook.IFacebookRemote.GetDebugToken(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns information about supplied access token
+            </summary>
+            <param name="inputToken">The token to get the information about</param>
+            <param name="accessToken">The access token</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.Google.IGoogleLocal">
+            <summary>
+            Defines logic for the callback from google
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleLocal.LoginProvider(System.Threading.CancellationToken)">
+            <summary>
+            Returns the login provider information
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleLocal.LoginScript(System.Threading.CancellationToken)">
+            <summary>
+            Returns the script to embed to enable login
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleLocal.LoggedIn(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Callback when a user has logged in successfully.
+            </summary>
+            <param name="accessToken">The the access token for the logged in user</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleLocal.LoggedOut(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Callback when a user has logged out successfully.
+            </summary>
+            <param name="accessToken">The the access token for the logged out in user</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.Google.IGoogleRemote">
+            <summary>
+            Defines access to the google oauth implementation
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleRemote.Authorize(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.String,System.Uri,System.String,System.String,System.String,System.String,System.Boolean,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Authorizes a user @ google
+            </summary>
+            <param name="clientId">The client ID string that you obtain from the API Console, as described in Obtain OAuth 2.0 credentials.</param>
+            <param name="responseType">The client ID string that you obtain from the API Console, as described in Obtain OAuth 2.0 credentials.</param>
+            <param name="scope">The client ID string that you obtain from the API Console, as described in Obtain OAuth 2.0 credentials.</param>
+            <param name="nounce">A random value generated by your app that enables replay protection.</param>
+            <param name="redirectUri">should be the HTTP endpoint on your server that will receive the response from Google. The value must exactly match one of the authorized redirect URIs for the OAuth 2.0 client, which you configured in the API Console. If this value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch' error.</param>
+            <param name="state">An opaque string that is round-tripped in the protocol; that is to say, it is returned as a URI parameter in the Basic flow, and in the URI #fragment in the Implicit flow. The state can be useful for correlating requests and responses. Because your redirect_uri can be guessed, using a state value can increase your assurance that an incoming connection is the result of an authentication request. If you generate a random string or encode the hash of some client state (e.g., a cookie) in this state variable, you can validate the response to additionally ensure that the request and response originated in the same browser. This provides protection against attacks such as cross-site request forgery.</param>
+            <param name="prompt"></param>
+            <param name="display">An ASCII string value for specifying how the authorization server displays the authentication and consent user interface pages. The following values are specified, and accepted by the Google servers, but do not have any effect on its behavior: page, popup, touch, and wap.</param>
+            <param name="loginHint">can be the user's email address or the sub string, which is equivalent to the user's Google ID. If you do not provide a login_hint and the user is currently logged in, the consent screen includes a request for approval to release the user’s email address to your app</param>
+            <param name="includeGrantedScopes">If this is provided with the value true, and the authorization request is granted, the authorization will include any previous authorizations granted to this user/application combination for other scopes; see Incremental Authorization. Note that you cannot do incremental authorization with the Installed App flow.</param>
+            <param name="accessType">The allowed values are offline and online. The effect is documented in Offline Access; if an access token is being requested, the client does not receive a refresh token unless offline is specified.</param>
+            <param name="openidRealm">openid.realm is a parameter from the OpenID 2.0 protocol, not from OAuth 2.0. It is used in OpenID 2.0 requests to signify the URL-space for which an authentication request is valid. Use openid.realm if you are migrating an existing application from OpenID 2.0 to OpenID Connect.</param>
+            <param name="hd">The hd (hosted domain) parameter streamlines the login process for G Suite hosted accounts. By including the domain of the G Suite user (for example, mycollege.edu), you can indicate that the account selection UI should be optimized for accounts at that domain. To optimize for G Suite accounts generally instead of just one domain, use an asterisk: hd=*. Don't rely on this UI optimization to control who can access your app, as client-side requests can be modified. Be sure to validate that the returned ID token has an hd claim value that matches what you expect (e.g. mycolledge.edu). Unlike the request parameter, the ID token claim is contained within a security token from Google, so the value can be trusted.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleRemote.OpenIdConfiguration(System.Threading.CancellationToken)">
+            <summary>
+            Returns the openid configuration
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Google.IGoogleRemote.OpenIdKeys(System.Threading.CancellationToken)">
+            <summary>
+            Returns the openid keys used for signing.
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.ISolidRpcSecurity">
+            <summary>
+            Defines logic for solid rpc security
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.LoginPage(System.Threading.CancellationToken)">
+            <summary>
+            Returns the login page
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.LoginScripts(System.Threading.CancellationToken)">
+            <summary>
+            Returns the script paths to use for logging in.
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.LoginScript(System.Threading.CancellationToken)">
+            <summary>
+            Returns the script to embedd to enable login
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.LoginProviders(System.Threading.CancellationToken)">
+            <summary>
+            Returns the status at each login provider
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.Profile(System.Threading.CancellationToken)">
+            <summary>
+            Returns the current profile claims
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.Microsoft.IMicrosoftLocal">
+            <summary>
+            Defines logic for the callback from microsoft
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftLocal.LoginProvider(System.Threading.CancellationToken)">
+            <summary>
+            Returns the login provider information
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftLocal.LoginScript(System.Threading.CancellationToken)">
+            <summary>
+            Returns the script to embedd to enable login
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftLocal.LoggedIn(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Callback when a user has logged in successfully.
+            </summary>
+            <param name="accessToken">The the access token for the logged in user</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftLocal.LoggedOut(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Callback when a user has logged out successfully.
+            </summary>
+            <param name="accessToken">The the access token for the logged out user</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.Microsoft.IMicrosoftRemote">
+            <summary>
+            Defines access to the microsoft oauth implementation
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftRemote.Authorize(System.String,System.Guid,System.Collections.Generic.IEnumerable{System.String},System.Uri,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            When your web app needs to authenticate the user, it can direct the user to the /authorize endpoint. This request is similar to the first leg of the OAuth 2.0 authorization code flow, with these important distinctions:
+            </summary>
+            <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
+            <param name="clientId">The Application (client) ID that the Azure portal – App registrations experience assigned to your app.</param>
+            <param name="responseType">Must include id_token for OpenID Connect sign-in. It might also include other response_type values, such as code.</param>
+            <param name="redirectUri">The redirect URI of your app, where authentication responses can be sent and received by your app. It must exactly match one of the redirect URIs you registered in the portal, except that it must be URL encoded. If not present, the endpoint will pick one registered redirect_uri at random to send the user back to.</param>
+            <param name="scope">The redirect URI of your app, where authentication responses can be sent and received by your app. It must exactly match one of the redirect URIs you registered in the portal, except that it must be URL encoded. If not present, the endpoint will pick one registered redirect_uri at random to send the user back to.</param>
+            <param name="nounce">A value included in the request, generated by the app, that will be included in the resulting id_token value as a claim. The app can verify this value to mitigate token replay attacks. The value typically is a randomized, unique string that can be used to identify the origin o</param>
+            <param name="responseMode">Specifies the method that should be used to send the resulting authorization code back to your app. Can be form_post or fragment. For web applications, we recommend using response_mode=form_post, to ensure the most secure transfer of tokens to your application.</param>
+            <param name="state">A value included in the request, generated by the app, that will be included in the resulting id_token value as a claim. The app can verify this value to mitigate token replay attacks. The value typically is a randomized, unique string that can be used to identify the origin o</param>
+            <param name="resource">The App ID URI of the target web API (secured resource). To find the App ID URI, in the Azure Portal, click Azure Active Directory, click Application registrations, open the application's Settings page, then click Properties. It may also be an external resource like https://graph.microsoft.com. This is required in one of either the authorization or token requests. To ensure fewer authentication prompts place it in the authorization request to ensure consent is received from the user.</param>
+            <param name="prompt">Indicates the type of user interaction that is required. The only valid values at this time are login, none, and consent. The prompt=login claim forces the user to enter their credentials on that request, which negates single sign-on. The prompt=none claim is the opposite. This claim ensures that the user isn't presented with any interactive prompt at. If the request can't be completed silently via single sign-on, the Microsoft identity platform endpoint returns an error. The prompt=consent claim triggers the OAuth consent dialog after the user signs in. The dialog asks the user to grant permissions to the app.</param>
+            <param name="loginHint">You can use this parameter to pre-fill the username and email address field of the sign-in page for the user, if you know the username ahead of time. Often, apps use this parameter during reauthentication, after already extracting the username from an earlier sign-in by using the preferred_username claim.</param>
+            <param name="domainHint">The realm of the user in a federated directory. This skips the email-based discovery process that the user goes through on the sign-in page, for a slightly more streamlined user experience. For tenants that are federated through an on-premises directory like AD FS, this often results in a seamless sign-in because of the existing login session.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftRemote.OpenIdConfiguration(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the openid configuration
+            </summary>
+            <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.Microsoft.IMicrosoftRemote.OpenIdKeys(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the openid keys used for signing.
+            </summary>
+            <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Types.Claim">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.Claim.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.Claim.Value">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.FacebookAccessToken">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookAccessToken.AccessToken">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookAccessToken.TokenType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.FacebookDebugToken">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugToken.Data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.FacebookDebugTokenData">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.AppId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.Application">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.DataAccessExpiresAt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.Error">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.ExpiresAt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.IsValid">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.Scopes">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenData.UserId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.FacebookDebugTokenDataError">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenDataError.Code">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenDataError.Message">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.FacebookDebugTokenDataError.Subcode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.LoginProvider">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProvider.Name">
+            <summary>
+            The name of the provider
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProvider.Status">
+            <summary>
+            The user status @ the provider. LoggedIn or NotLoggedIn
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProvider.Script">
+            <summary>
+            The script uris
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProvider.Meta">
+            <summary>
+            The script uris
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProvider.ButtonHtml">
+            <summary>
+            The html for the login button
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.LoginProviderMeta">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProviderMeta.Name">
+            <summary>
+            The name of the meta data
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.LoginProviderMeta.Content">
+            <summary>
+            The content of the meta data
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.OpenIDConnnectDiscovery">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.Issuer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.AuthorizationEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.TokenEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.UserinfoEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.RevocationEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.JwksUri">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ScopesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ResponseModesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.SubjectTypesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.IdTokenSigningAlgValuesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.EndSessionEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ResponseTypesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ClaimsSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.TokenEndpointAuthMethodsSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.CodeChallengeMethodsSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.RequestUriParameterSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.HttpLogoutSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.FrontchannelLogoutSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.RbacUrl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.MsgraphHost">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.CloudGraphHostName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.CloudInstanceName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.TenantRegionScope">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.OpenIDKey">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.Alg">
+            <summary>
+            (Algorithm) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.Kty">
+            <summary>
+            (Key Type) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.Use">
+            <summary>
+            (Public Key Use) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.Kid">
+            <summary>
+            (Key ID) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.X5u">
+            <summary>
+            (X.509 URL) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.X5t">
+            <summary>
+            (X.509 Certificate SHA-1 Thumbprint) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.X5c">
+            <summary>
+            (X.509 Certificate Chain) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.N">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.E">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKey.Issuer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.OpenIDKeys">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDKeys.Keys">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.WebContent">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.WebContent.Content">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.WebContent.ContentType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.WebContent.CharSet">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>

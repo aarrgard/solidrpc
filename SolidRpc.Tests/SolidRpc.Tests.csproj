@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿  <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NpmGenerator\node_modules\**" />
+    <EmbeddedResource Remove="NpmGenerator\node_modules\**" />
+    <None Remove="NpmGenerator\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="NpmGenerator\TestCreateTypescript.ts" />
     <None Remove="Swagger\SpecGenReflection\TestEmptyRepo.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1NullableParameter.json" />
@@ -28,11 +35,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0-rc003" />
     <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build040" />
@@ -42,6 +50,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
+    <ProjectReference Include="..\SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj" />
@@ -55,11 +64,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="NpmGenerator\dist\" />
     <Folder Include="Swagger\CodeGen\Local\" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="NpmGenerator\TestCreateTypescript.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsettings_local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NpmGenerator\**\*.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="node_modules\typescript\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

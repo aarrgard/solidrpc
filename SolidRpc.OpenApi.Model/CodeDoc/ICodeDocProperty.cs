@@ -6,13 +6,23 @@
     public interface ICodeDocProperty
     {
         /// <summary>
+        /// The class documentation that this property belongs to.
+        /// </summary>
+        ICodeDocClass ClassDocumentation { get; }
+
+        /// <summary>
         /// The property name.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// The comment.
+        /// Returns the comments for this property.
         /// </summary>
-        string Comment { get; }
+        string CodeComments { get; }
+
+        /// <summary>
+        /// The summary in the comment
+        /// </summary>
+        string Summary { get; }
     }
 }

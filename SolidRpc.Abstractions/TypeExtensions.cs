@@ -444,7 +444,7 @@ namespace System
         /// <param name="type"></param>
         /// <param name="enumType"></param>
         /// <returns></returns>
-        public static bool GetEnumType(this Type type, out Type enumType)
+        public static bool IsEnumType(this Type type, out Type enumType)
         {
             if (!type.IsGenericType)
             {

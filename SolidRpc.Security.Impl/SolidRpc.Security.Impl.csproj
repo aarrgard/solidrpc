@@ -6,18 +6,28 @@
 
   <ItemGroup>
     <Compile Remove="react\build\**" />
+    <Compile Remove="Services\node_modules\**" />
     <EmbeddedResource Remove="react\build\**" />
+    <EmbeddedResource Remove="Services\node_modules\**" />
     <None Remove="react\build\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="react\node_modules\**" />
-    <EmbeddedResource Remove="react\node_modules\**" />
-    <None Remove="react\node_modules\**" />
+    <Compile Remove="**\node_modules\**" />
+    <EmbeddedResource Remove="**\node_modules\**" />
+    <None Remove="**\node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="www\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\Facebook\FacebookLocal.LoginScript.js" />
+    <EmbeddedResource Include="Services\Google\GoogleLocal.LoginScript.js" />
+    <EmbeddedResource Include="Services\Microsoft\MicrosoftLocal.LoginScript.js" />
+    <EmbeddedResource Include="Services\SolidRpcSecurity.LoginScript.js" />
+    <EmbeddedResource Include="Services\SolidRpcSecurity.LoginPage.html" />
   </ItemGroup>
 
   <ItemGroup>

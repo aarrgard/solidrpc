@@ -36,7 +36,19 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         ICodeDocMethod GetMethodDocumentation(MethodInfo methodInfo);
 
         /// <summary>
-        /// Returns the code comments.
+        /// Returns the property documentation for supplied property.
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        ICodeDocProperty GetPropertyDocumentation(PropertyInfo pi);
+
+        /// <summary>
+        /// Returns the summary
+        /// </summary>
+        string Summary { get; }
+
+        /// <summary>
+        /// Returns the code comments. These are the comments associated with the class.
         /// </summary>
         string CodeComments { get; }
     }

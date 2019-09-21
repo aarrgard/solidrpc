@@ -19,12 +19,18 @@ namespace Microsoft.AspNetCore.Builder
     {
         private class PathHandler
         {
+            public PathHandler(params string[] allowedCorsOrigins)
+            {
+                AllowedCorsOrigins = allowedCorsOrigins;
+            }
+
             /// <summary>
             /// The method mapped to the path
             /// </summary>
             public IMethodBinding MethodInfo { get; set; }
 
             public ISolidRpcContentHandler ContentHandler { get; set; }
+            public IEnumerable<string> AllowedCorsOrigins { get; }
 
             public override string ToString()
             {
@@ -43,9 +49,15 @@ namespace Microsoft.AspNetCore.Builder
         /// Binds all the solid rpc proxies that has an implementation on this server.
         /// </summary>
         /// <param name="applicationBuilder"></param>
+        /// <param name="allowedCorsOrigins"></param>
         /// <returns></returns>
-        public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder, params string[] allowedCorsOrigins)
         {
+            // if no allowed CORS origins supplied - add the wildcard
+            if(!allowedCorsOrigins.Any())
+            {
+                allowedCorsOrigins = new[] { "*" };
+            }
             var dict = new Dictionary<string, PathHandler>();
 
             //
@@ -58,8 +70,8 @@ namespace Microsoft.AspNetCore.Builder
             }
             foreach (var path in contentHandler.PathPrefixes)
             {
-                dict[$"GET{path}"] = new PathHandler() { ContentHandler = contentHandler };
-                dict[$"HEAD{path}"] = new PathHandler() { ContentHandler = contentHandler };
+                dict[$"GET{path}"] = new PathHandler("*") { ContentHandler = contentHandler };
+                dict[$"HEAD{path}"] = new PathHandler("*") { ContentHandler = contentHandler };
             }
 
             var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
@@ -80,7 +92,15 @@ namespace Microsoft.AspNetCore.Builder
                     var path = $"{o.Method}{o.Address.LocalPath}";
                     if(!dict.TryGetValue(path, out PathHandler binding))
                     {
-                        dict[path] = binding = new PathHandler();
+                        dict[path] = binding = new PathHandler(allowedCorsOrigins);
+                    }
+                    binding.MethodInfo = o;
+
+                    //register an "options" handler
+                    path = $"OPTIONS{o.Address.LocalPath}";
+                    if (!dict.TryGetValue(path, out binding))
+                    {
+                        dict[path] = binding = new PathHandler(allowedCorsOrigins);
                     }
                     binding.MethodInfo = o;
                 });
@@ -105,7 +125,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 if(staticHandler.ContentHandler != null)
                 {
-                    ConnectStaticContent(ab, staticHandler.ContentHandler);
+                    ConnectStaticContent(staticHandler.AllowedCorsOrigins, ab, staticHandler.ContentHandler);
                 }
             }
 
@@ -128,21 +148,21 @@ namespace Microsoft.AspNetCore.Builder
                 ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}");
                 if(pathHandler.MethodInfo != null)
                 {
-                    ab.Run((ctx) => HandleInvocation(pathHandler.MethodInfo, ctx));
+                    ab.Run((ctx) => HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.MethodInfo, ctx));
                 }
                 else if (pathHandler.ContentHandler != null)
                 {
-                    ConnectStaticContent(ab, pathHandler.ContentHandler);
+                    ConnectStaticContent(pathHandler.AllowedCorsOrigins, ab, pathHandler.ContentHandler);
                 }
             }
         }
 
-        private static void ConnectStaticContent(IApplicationBuilder ab, ISolidRpcContentHandler contentHandler)
+        private static void ConnectStaticContent(IEnumerable<string> allowedCorsOrigins, IApplicationBuilder ab, ISolidRpcContentHandler contentHandler)
         {
             ab.Use(async (ctx, next) =>
             {
                 await next();
-                await HandleInvocation(contentHandler, ctx);
+                await HandleInvocation(allowedCorsOrigins, contentHandler, ctx);
             });
         }
 
@@ -177,7 +197,7 @@ namespace Microsoft.AspNetCore.Builder
             return false;
         }
 
-        private static async Task HandleInvocation(ISolidRpcContentHandler contentHandler, HttpContext ctx)
+        private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, ISolidRpcContentHandler contentHandler, HttpContext ctx)
         {
             if(ctx.Response.StatusCode != 404)
             {
@@ -194,7 +214,7 @@ namespace Microsoft.AspNetCore.Builder
             await content.Content.CopyToAsync(ctx.Response.Body);
         }
 
-        private static async Task HandleInvocation(IMethodBinding methodInfo, HttpContext context)
+        private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, IMethodBinding methodInfo, HttpContext context)
         {
             try
             {
@@ -203,6 +223,25 @@ namespace Microsoft.AspNetCore.Builder
                 //
                 if (context.Request.Path != "")
                 {
+                    return;
+                }
+
+                //
+                // handle the access-control(CORS) request for this invocation
+                //
+                if(!CheckCorsIsValid(allowedCorsOrigins, methodInfo, context))
+                {
+                    return;
+                }
+
+                //
+                // if the supplied method does not match the handler - return.
+                // This is the case with "OPTIONS" in cors preflight
+                //
+                if(methodInfo.Method != context.Request.Method)
+                {
+                    context.Response.StatusCode = 204; // No content
+                    AddAllowedCorsHeaders(context);
                     return;
                 }
 
@@ -216,6 +255,7 @@ namespace Microsoft.AspNetCore.Builder
                 var response = await methodInvoker.InvokeAsync(request, methodInfo, context.RequestAborted);
 
                 // send data back
+                AddAllowedCorsHeaders(context);
                 await response.CopyToAsync(context.Response);
             }
             catch (Exception e)
@@ -223,6 +263,43 @@ namespace Microsoft.AspNetCore.Builder
                 context.RequestServices.LogError<IApplicationBuilder>(e, "Failed to invoke service");
                 throw;
             }
+        }
+
+        private static void AddAllowedCorsHeaders(HttpContext context)
+        {
+            var origin = context.Request.Headers["origin"];
+            if(string.IsNullOrEmpty(origin))
+            {
+                return;
+            }
+            if (!string.IsNullOrEmpty(origin))
+            {
+                context.Response.Headers["Access-Control-Allow-Origin"] = origin;
+            }
+            var accessControlRequestHeaders = context.Request.Headers["Access-Control-Request-Headers"];
+            if (!string.IsNullOrEmpty(accessControlRequestHeaders))
+            {
+                context.Response.Headers["Access-Control-Allow-Headers"] = accessControlRequestHeaders;
+            }
+            var accessControlRequestMethod = context.Request.Headers["Access-Control-Request-Method"];
+            if (!string.IsNullOrEmpty(accessControlRequestMethod))
+            {
+                context.Response.Headers["Access-Control-Allow-Method"] = accessControlRequestMethod;
+            }
+            context.Response.Headers["Access-Control-Max-Age"] = "86400";
+        }
+
+        private static bool CheckCorsIsValid(IEnumerable<string> allowedCorsOrigins, IMethodBinding methodInfo, HttpContext context)
+        {
+            var origin = context.Request.Headers["origin"];
+            if(!allowedCorsOrigins.Contains("*") && !allowedCorsOrigins.Any(o => origin.ToString().StartsWith(o)))
+            {
+                // request not allowed
+                context.Response.StatusCode = 401;
+                context.RequestServices.LogInformation<IApplicationBuilder>($"Rejecting request. {origin} not part of allowed origins {string.Join(",", allowedCorsOrigins)}");
+                return false;
+            }
+            return true;
         }
     }
 }

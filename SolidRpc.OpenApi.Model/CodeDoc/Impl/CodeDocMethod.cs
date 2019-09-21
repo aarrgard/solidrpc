@@ -23,12 +23,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             var methodNode = XmlDocument.SelectSingleNode($"/doc/members/member[@name='{nameAttr}']");
             if(methodNode == null)
             {
-                Comment = "";
+                Summary = "";
                 ParameterDocumentation = new ICodeDocParameter[0];
                 ExceptionDocumentation = new ICodeDocException[0];
                 return;
             }
-            Comment = SelectSingleNode(methodNode, "summary");
+            Summary = SelectSingleNode(methodNode, "summary");
             ParameterDocumentation = SelectXmlElements(methodNode, "param")
                 .Select(o => new CodeDocParameter(this, o.Attributes["name"]?.InnerText, o.InnerText))
                 .ToList();
@@ -53,7 +53,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <summary>
         /// The comment
         /// </summary>
-        public string Comment { get; }
+        public string Summary { get; }
 
         /// <summary>
         /// The parameter definitions
@@ -74,12 +74,17 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("<summary>");
-                sb.AppendLine(Comment);
+                sb.AppendLine(Summary);
                 sb.AppendLine("</summary>");
-                ParameterDocumentation.ToList().ForEach(o => sb.Append("<param name=\"").Append(o.Name).Append("\">").Append(o.Comment).Append("</param>"));
+                ParameterDocumentation.ToList().ForEach(o => sb.Append("<param name=\"").Append(o.Name).Append("\">").Append(o.Summary).Append("</param>"));
                 ExceptionDocumentation.ToList().ForEach(o => sb.Append("<exception cref=\"").Append(o.ExceptionType).Append("\">").Append(o.Comment).Append("</exception>"));
                 return sb.ToString();
             }
+        }
+
+        public ICodeDocParameter GetParameterDocumentation(string name)
+        {
+            return ParameterDocumentation.FirstOrDefault(o => o.Name == name);
         }
     }
 }

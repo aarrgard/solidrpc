@@ -49,6 +49,10 @@ namespace SolidRpc.Tests.Swagger
             //await sp.GetRequiredService<IMicrosoftRemote>().Authorize("common", clientId, response_type, redirect_uri, null, nounce, response_mode, state);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task TestMicrosoftDiscovery()
         {
@@ -70,6 +74,10 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsTrue(keys.Keys.Count() > 0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task TestGoogleDiscovery()
         {
@@ -91,7 +99,11 @@ namespace SolidRpc.Tests.Swagger
             Assert.IsTrue(keys.Keys.Count() > 0);
 
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [Test, Ignore("requires secrets")]
         public async Task TestFacebook()
         {

@@ -23,10 +23,24 @@ namespace SolidRpc.Security.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
+        /// Returns the script to embedd to enable login
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task<WebContent> LoginScript(
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
         /// Returns the status at each login provider
         /// </summary>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<LoginProvider>> LoginProviders(
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Returns the current profile claims
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task<IEnumerable<Claim>> Profile(
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

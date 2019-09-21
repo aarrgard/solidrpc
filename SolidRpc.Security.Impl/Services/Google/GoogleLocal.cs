@@ -10,21 +10,21 @@ using System.Threading.Tasks;
 
 namespace SolidRpc.Security.Impl.Services.Google
 {
-    public class GoogleLocal : IGoogleLocal, ILoginProvider
+    public class GoogleLocal : LoginProviderBase, IGoogleLocal
     {
         public GoogleLocal(GoogleOptions googleOptions, IMethodBinderStore methodBinderStore)
         {
             GoogleOptions = googleOptions;
             MethodBinderStore = methodBinderStore;
         }
-        public string ProviderName => "Google";
+        public override string ProviderName => "Google";
 
         public GoogleOptions GoogleOptions { get; }
 
         public IMethodBinderStore MethodBinderStore { get; }
         public string ButtonHtml => $"<div class=\"g-signin2\" data-onsuccess=\"onSignIn\" data-theme=\"dark\"></div>";
 
-        public async Task<LoginProvider> LoginProvider(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<LoginProvider> LoginProvider(CancellationToken cancellationToken = default(CancellationToken))
         {
             return new LoginProvider()  
             {
@@ -49,34 +49,19 @@ namespace SolidRpc.Security.Impl.Services.Google
             };
         }
 
-        public Task LoggedIn(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> LoggedIn(string accessToken, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
-        public Task LoggedOut(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> LoggedOut(string accessToken, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
-        public async Task<WebContent> LoginScript(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<WebContent> LoginScript(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var resName = GetType().Assembly.GetManifestResourceNames().Single(o => o.EndsWith("GoogleLocal.LoginScript.js", StringComparison.InvariantCultureIgnoreCase));
-            using (var res = GetType().Assembly.GetManifestResourceStream(resName))
-            {
-                using (var sr = new StreamReader(res))
-                {
-                    var script = sr.ReadToEnd();
-                    
-                    var enc = Encoding.UTF8;
-                    return new WebContent()
-                    {
-                        Content = new MemoryStream(enc.GetBytes(script)),
-                        ContentType = "text/html",
-                        CharSet = enc.HeaderName
-                    };
-                }
-            }
+            return GetManifestResourceAsWebContent("GoogleLocal.LoginScript.js");
         }
     }
 }

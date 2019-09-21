@@ -3,6 +3,18 @@
     text-align: center;
 }
 
+.userinfo {
+    float: left;
+    width: 75%;
+    overflow: hidden;
+}
+
+.login {
+    float: left;
+    width: 25%;
+    overflow: hidden;
+}
+
 h1 {
     margin: 0;
 }

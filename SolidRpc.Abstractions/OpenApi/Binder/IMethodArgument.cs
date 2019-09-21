@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Binder
@@ -18,6 +19,28 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// Specifies where this argument is located.
         /// </summary>
         IEnumerable<string> ArgumentPath { get; }
+
+        /// <summary>
+        /// The location of the argument, May be either:
+        /// * path
+        /// * query
+        /// * header
+        /// * formData
+        /// * body (one)
+        /// * body-inline(several)
+        /// The formData, body and body-inline cannot be combined.
+        /// </summary>
+        string Location { get; }
+
+        /// <summary>
+        /// The parameter info.
+        /// </summary>
+        ParameterInfo ParameterInfo { get; }
+
+        /// <summary>
+        /// Specifies if this argument is optional
+        /// </summary>
+        bool Optional { get; }
 
         /// <summary>
         /// Binds this argument to the supplied request.

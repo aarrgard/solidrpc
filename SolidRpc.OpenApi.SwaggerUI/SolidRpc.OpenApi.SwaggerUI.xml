@@ -9,11 +9,12 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidRpc.OpenApi.SwaggerUI.SwaggerOptions},SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Adds the swagger UI to the service collection.
             </summary>
             <param name="services"></param>
+            <param name="configurator"></param>
             <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>
@@ -50,11 +51,13 @@
             The swagger config
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.OpenApi.SwaggerUI.SwaggerOptions,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler)">
             <summary>
             Constructs a new instance
             </summary>
+            <param name="swaggerOptions"></param>
             <param name="methodBinderStore"></param>
+            <param name="contentHandler"></param>
         </member>
         <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
             <summary>
@@ -78,6 +81,16 @@
             </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.SwaggerUI.SwaggerOptions">
+            <summary>
+            Defines some swagger options
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.SwaggerOptions.DefaultOpenApiSpec">
+            <summary>
+            The default open api spec
+            </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl">
             <summary>

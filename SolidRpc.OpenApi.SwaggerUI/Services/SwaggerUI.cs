@@ -21,13 +21,17 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <summary>
         /// Constructs a new instance
         /// </summary>
+        /// <param name="swaggerOptions"></param>
         /// <param name="methodBinderStore"></param>
-        public SwaggerUI(IMethodBinderStore methodBinderStore, ISolidRpcContentHandler contentHandler)
+        /// <param name="contentHandler"></param>
+        public SwaggerUI(SwaggerOptions swaggerOptions, IMethodBinderStore methodBinderStore, ISolidRpcContentHandler contentHandler)
         {
+            SwaggerOptions = swaggerOptions;
             MethodBinderStore = methodBinderStore;
             ContentHandler = contentHandler;
         }
 
+        private SwaggerOptions SwaggerOptions { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
         private IConfiguration Configuration { get; }
@@ -196,7 +200,9 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, openApiTitle, cancellationToken))
                 });
             }
-            return swaggerUrls.OrderBy(o => o.Name);
+            return swaggerUrls
+                .OrderBy(o => o.Name == SwaggerOptions.DefaultOpenApiSpec ? 0 : 1)
+                .ThenBy(o => o.Name);
         }
     }
 }

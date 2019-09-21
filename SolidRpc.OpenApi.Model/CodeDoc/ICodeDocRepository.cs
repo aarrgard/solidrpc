@@ -23,6 +23,13 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         ICodeDocMethod GetMethodDoc(MethodInfo methodInfo);
 
         /// <summary>
+        /// Returns the code documentation for supplied property
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        ICodeDocProperty GetPropertyDoc(PropertyInfo pi);
+
+        /// <summary>
         /// Returns the class doc for supplied type
         /// </summary>
         /// <param name="type"></param>

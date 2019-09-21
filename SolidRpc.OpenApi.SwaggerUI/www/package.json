@@ -1,26 +1,26 @@
 {
-  "_from": "swagger-ui-dist@^3.23.1",
-  "_id": "swagger-ui-dist@3.23.1",
+  "_from": "swagger-ui-dist@3.23.9",
+  "_id": "swagger-ui-dist@3.23.9",
   "_inBundle": false,
-  "_integrity": "sha512-chMAB3JY3tJGLtswyBJGWa5L0nghbImUtFpy2CupswVVC1UsSmVwOI69oOQ1sCxEzQfC2DCu0jUD/x5SjNs+zw==",
+  "_integrity": "sha512-YfE6T0ls96vZhziGlEwdlqRH5S5IrpLSG3XWYHRHtOQ8npd7xGEEOUJL3xOypvB4/iE6yvxodc4SALZ5nILqkw==",
   "_location": "/swagger-ui-dist",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "swagger-ui-dist@^3.23.1",
+    "raw": "swagger-ui-dist@3.23.9",
     "name": "swagger-ui-dist",
     "escapedName": "swagger-ui-dist",
-    "rawSpec": "^3.23.1",
+    "rawSpec": "3.23.9",
     "saveSpec": null,
-    "fetchSpec": "^3.23.1"
+    "fetchSpec": "3.23.9"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-3.23.1.tgz",
-  "_shasum": "0f548d269dd959ba4f92a9b9df0376d32e8456f6",
-  "_spec": "swagger-ui-dist@^3.23.1",
+  "_resolved": "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-3.23.9.tgz",
+  "_shasum": "653fb081166ff5ec5e297901f08df917b8fe4fbd",
+  "_spec": "swagger-ui-dist@3.23.9",
   "_where": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.SwaggerUI",
   "bugs": {
     "url": "https://github.com/swagger-api/swagger-ui/issues"
@@ -67,5 +67,5 @@
     "type": "git",
     "url": "git+ssh://git@github.com/swagger-api/swagger-ui.git"
   },
-  "version": "3.23.1"
+  "version": "3.23.9"
 }

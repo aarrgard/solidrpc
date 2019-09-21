@@ -14,6 +14,11 @@
       "commandName": "Project",
       "commandLineArgs": "-openapi2code Services\\ISolidRpcSecurity.json Services\\Microsoft\\IMicrosoftRemote.json Services\\Microsoft\\IMicrosoftLocal.json Services\\Google\\IGoogleRemote.json Services\\Google\\IGoogleLocal.json Services\\Facebook\\IFacebookRemote.json Services\\Facebook\\IFacebookLocal.json",
       "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Security"
+    },
+    "DotNetTool - NpmGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "-openapi2code SolidRpc.NpmGenerator.json",
+      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.NpmGenerator"
     }
   }
 }

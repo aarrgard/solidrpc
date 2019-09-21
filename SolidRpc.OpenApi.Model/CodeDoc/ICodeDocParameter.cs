@@ -16,8 +16,8 @@
         string Name { get; }
 
         /// <summary>
-        /// The comment.
+        /// The summary
         /// </summary>
-        string Comment { get; }
+        string Summary { get; }
     }
 }

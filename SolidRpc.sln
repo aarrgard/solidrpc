@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Tests", "SolidRpc.Tests\SolidRpc.Tests.csproj", "{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}"
 EndProject
@@ -52,7 +52,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunction
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Security", "SolidRpc.Security\SolidRpc.Security.csproj", "{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Security.Impl", "SolidRpc.Security.Impl\SolidRpc.Security.Impl.csproj", "{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Security.Impl", "SolidRpc.Security.Impl\SolidRpc.Security.Impl.csproj", "{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.NpmGenerator", "SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj", "{C7459947-EF3B-4058-BDA5-A0BC4816D860}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,6 +142,10 @@ Global
 		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7459947-EF3B-4058-BDA5-A0BC4816D860}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7459947-EF3B-4058-BDA5-A0BC4816D860}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7459947-EF3B-4058-BDA5-A0BC4816D860}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7459947-EF3B-4058-BDA5-A0BC4816D860}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +171,7 @@ Global
 		{DAE5ABB7-842D-44EA-BBE5-1926BEE38BC9} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{C443DA6F-4096-4A75-B7A0-A6E9DA8CBB73} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{68F8EDB2-4E33-4B39-99BE-F7DE613E8B65} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{C7459947-EF3B-4058-BDA5-A0BC4816D860} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}

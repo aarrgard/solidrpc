@@ -255,6 +255,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
+        public string Path => OperationObject.GetPath()?.Substring(1);
+
         public async Task BindArgumentsAsync(IHttpRequest request, object[] args)
         {
             if(args.Length != Arguments.Length)

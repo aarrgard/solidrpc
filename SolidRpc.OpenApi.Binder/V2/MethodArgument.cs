@@ -150,12 +150,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                     throw new Exception("Cannot handle scope:" + scope);
             }
         }
+        public string Location => ParameterObject.In;
 
         public ParameterObject ParameterObject { get; }
 
         public ParameterInfo ParameterInfo { get; }
 
         public string Name => ParameterObject.Name;
+
+        public bool Optional => !ParameterObject.Required;
 
         public IEnumerable<string> ArgumentPath { get; }
 

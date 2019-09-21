@@ -23,11 +23,26 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configurator"></param>
+        /// <param name="addStaticContent"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services)
+        public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = default)
         {
+            if(configurator != null)
+            {
+                services.AddSingleton(sp =>
+                {
+                    var opts = new SolidRpcSecurityOptions();
+                    configurator(sp, opts);
+                    return opts;
+                });
+            }
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity));
-            services.GetSolidRpcContentStore().AddContent(typeof(ILoginProvider).Assembly, "www");
+            var sc = new SolidRpcSecurityOptions();
+            configurator?.Invoke(null, sc);
+            if (sc.AddStaticContent)
+            {
+                services.GetSolidRpcContentStore().AddContent(typeof(ILoginProvider).Assembly, "www", typeof(ISolidRpcSecurity).Assembly);
+            }
             return services;
         }
 

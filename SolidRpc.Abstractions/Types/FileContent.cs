@@ -24,6 +24,11 @@ namespace SolidRpc.Abstractions.Types
         public string ContentType { get; set; }
 
         /// <summary>
+        /// The file name
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
         /// The last modified date of the resource.
         /// </summary>
         public DateTime? LastModified { get; set; }

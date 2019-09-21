@@ -1,24 +1,28 @@
 {
-  "name": "react-social-login-buttons-by-michalszorad",
+  "name": "solidrpc-security-impl",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
   "main": "src/index.js",
   "homepage": ".",
   "dependencies": {
+    "oidc-client": "^1.9.1",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-scripts": "2.1.8",
-    "react-social-login-buttons": "3.0.0"
+    "react-social-login-buttons": "3.0.0",
+    "solidrpc": "https://localhost:5001/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/SolidRpc",
+    "solidrpc-security": "https://localhost:5001/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/SolidRpc.Security"
   },
   "devDependencies": {
     "typescript": "3.3.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start DESKTOP-7O2KCUK",
     "build": "react-scripts build && cp -R ./build ../www",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "compile": "tsc"
   },
   "browserslist": [
     ">0.2%",

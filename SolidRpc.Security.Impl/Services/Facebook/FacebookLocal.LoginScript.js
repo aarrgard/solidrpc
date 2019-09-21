@@ -14,9 +14,16 @@
       
   };
 
+var ns = SolidRpc.declareNamespace('SolidRpc.Security.Login.Facebook');
+
 function statusChangeCallback(response) {
-    console.log('status:' + response.status);
-    console.log('accessToken:' + response.authResponse.accessToken);
+    
+    if (response.status === 'connected') {
+        window.SolidRpc.Security.doLogin('Facebook', '{loggedin-postback}'.replace('{accessToken}', response.authResponse.accessToken));
+    }
+    else {
+        console.log('facebook staus:' + response.status);
+    }
 }
 
 function checkLoginState() {
@@ -31,3 +38,13 @@ function checkLoginState() {
      js.src = "https://connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
+
+
+function solidRpcDoFacebookLogin() {
+    console.log('logging in to facebook');
+    FB.login(statusChangeCallback);
+}
+
+function solidRpcDoFacebookLogout(accessToken) {
+    console.log('logging out from facebook');
+}
