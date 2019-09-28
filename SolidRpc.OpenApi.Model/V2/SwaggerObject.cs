@@ -291,7 +291,10 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <returns></returns>
         public IOpenApiSpec Clone()
         {
-            return (new OpenApiParserV2()).ParseSwaggerDoc(WriteAsJsonString());
+            var clone = (new OpenApiParserV2()).ParseSwaggerDoc(WriteAsJsonString());
+            clone._openApiSpecResolver = _openApiSpecResolver;
+            clone._openApiSpecResolverAddress = _openApiSpecResolverAddress;
+            return clone;
         }
 
         /// <summary>

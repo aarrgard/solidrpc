@@ -140,7 +140,18 @@ namespace SolidRpc.OpenApi.Binder
         {
             if (methodAddressTransformer == null)
             {
-                return openApiSpec;
+                methodAddressTransformer = (sp, uri, mi) =>
+                {
+                    var trans = (IMethodAddressTransformer)sp.GetService(typeof(IMethodAddressTransformer));
+                    if(trans != null)
+                    {
+                        return trans.TransformUriAsync(uri, mi);
+                    }
+                    else
+                    {
+                        return Task.FromResult(uri);
+                    }
+                };
             }
             var newBaseAddress = methodAddressTransformer(ServiceProvider, openApiSpec.BaseAddress, null).Result;
             if (newBaseAddress == openApiSpec.BaseAddress)
@@ -150,8 +161,7 @@ namespace SolidRpc.OpenApi.Binder
             var key = $"{newBaseAddress.ToString()}{openApiSpec.GetHashCode()}";
             IOpenApiSpec newParsedSpec;
             if(!ParsedSpecs.TryGetValue(key, out newParsedSpec)) {
-                newParsedSpec = openApiSpec.Clone();
-                newParsedSpec.SetBaseAddress(newBaseAddress);
+                newParsedSpec = openApiSpec.SetBaseAddress(newBaseAddress);
                 ParsedSpecs[key] = newParsedSpec;
             }
             return newParsedSpec;

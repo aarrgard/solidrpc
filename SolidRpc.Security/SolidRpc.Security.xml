@@ -261,12 +261,12 @@
         </member>
         <member name="P:SolidRpc.Security.Types.Claim.Name">
             <summary>
-            
+            The name of the claim
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.Claim.Value">
             <summary>
-            
+            The value of the claim
             </summary>
         </member>
         <member name="T:SolidRpc.Security.Types.FacebookAccessToken">

@@ -140,10 +140,10 @@ namespace SolidRpc.Tests.NpmGenerator
             var npmGenerator = sp.GetRequiredService<INpmGenerator>();
 
             var ts = await npmGenerator.CreateTypesTs(typeof(ISolidRpcSecurity).Assembly.GetName().Name);
-            using (var fs = new FileInfo(@"C:\Development\github\solidrpc\SolidRpc.Tests\NpmGenerator\src\types.ts").CreateText())
-            {
-                fs.Write(ts);
-            }
+            //using (var fs = new FileInfo(@"C:\Development\github\solidrpc\SolidRpc.Tests\NpmGenerator\src\types.ts").CreateText())
+            //{
+            //    fs.Write(ts);
+            //}
             var tsTemplate = GetManifestResourceAsString("TestCreateTypescript.ts");
 
             Assert.AreEqual(tsTemplate, ts);

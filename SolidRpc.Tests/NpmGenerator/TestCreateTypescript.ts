@@ -1204,11 +1204,11 @@ export namespace Security {
                 return null;
             }
             /**
-             * 
+             * The name of the claim
              */
             Name: string;
             /**
-             * 
+             * The value of the claim
              */
             Value: string;
         }
