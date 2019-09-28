@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +34,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="npm\providers\dist\" />
   </ItemGroup>
 
 </Project>

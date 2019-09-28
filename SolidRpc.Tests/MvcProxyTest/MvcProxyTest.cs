@@ -401,7 +401,7 @@ namespace SolidRpc.Tests.MvcProxyTest
                 .ToList().ForEach(c =>
                 {
                     var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                    conf.OpenApiConfiguration = openApiConfiguration;
+                    conf.OpenApiSpec = openApiConfiguration;
                 });
 
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));

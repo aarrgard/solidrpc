@@ -12,12 +12,28 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#swaggerObject"/>
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
+        private IOpenApiSpecResolver _openApiSpecResolver;
+
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
         public SwaggerObject(ModelBase parent) : base(parent)
         {
             Swagger = "2.0";
+        }
+
+        /// <summary>
+        /// Returns the specification resolver.
+        /// </summary>
+        public IOpenApiSpecResolver OpenApiSpecResolver => _openApiSpecResolver;
+
+        /// <summary>
+        /// Sets the open api spec resolver
+        /// </summary>
+        /// <param name="openApiSpecResolver"></param>
+        public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver)
+        {
+            _openApiSpecResolver = openApiSpecResolver;
         }
 
         /// <summary>
@@ -175,22 +191,27 @@ namespace SolidRpc.OpenApi.Model.V2
         /// Updates the host and port so that it reflects the supplied address
         /// </summary>
         /// <param name="basePath"></param>
-        public void SetBaseAddress(Uri basePath)
+        public IOpenApiSpec SetBaseAddress(Uri basePath)
         {
-            Schemes = new[] { basePath.Scheme };
-            Host = basePath.Host;
+            var newHost = basePath.Host;
             if(!basePath.IsDefaultPort)
             {
-                Host = $"{Host}:{basePath.Port}";
+                newHost = $"{Host}:{basePath.Port}";
             }
-            if(basePath.AbsolutePath.EndsWith("/"))
+            string newBasePath;
+            if (basePath.AbsolutePath.EndsWith("/"))
             {
-                BasePath = basePath.AbsolutePath.Substring(0, basePath.AbsolutePath.Length - 1);
+                newBasePath = basePath.AbsolutePath.Substring(0, basePath.AbsolutePath.Length - 1);
             }
             else
             {
-                BasePath = basePath.AbsolutePath;
+                newBasePath = basePath.AbsolutePath;
             }
+            var newSwaggerObject = (SwaggerObject)Clone();
+            newSwaggerObject.Host = newHost;
+            newSwaggerObject.BasePath = newBasePath;
+            newSwaggerObject.Schemes = new[] { basePath.Scheme };
+            return newSwaggerObject;
         }
 
         /// <summary>

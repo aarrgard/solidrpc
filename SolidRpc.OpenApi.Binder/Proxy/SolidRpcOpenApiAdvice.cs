@@ -35,7 +35,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         }
         private HttpMessageHandler HttpMessageHandler { get; }
         private ILogger Logger { get; }
-        private IOpenApiParser OpenApiParser { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         public IHttpClientFactory HttpClientFactory { get; }
         private IMethodBinding MethodBinding { get; set; }
@@ -47,7 +46,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public void Configure(ISolidRpcOpenApiConfig config)
         {
             MethodBinding = MethodBinderStore.CreateMethodBinding(
-                config.GetOpenApiConfiguration(),
+                config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
                 config.MethodAddressTransformer
             );

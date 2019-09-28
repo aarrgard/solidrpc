@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,9 +21,13 @@
     <None Remove="Swagger\SpecGenReflection\TestInterface1OptionalParameter.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
+    <None Remove="Swagger\TestSwaggerSpecExternalFileReference.json" />
+    <None Remove="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
+    <EmbeddedResource Include="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
     <EmbeddedResource Include="Swagger\petstore.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
@@ -64,7 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NpmGenerator\dist\" />
     <Folder Include="Swagger\CodeGen\Local\" />
   </ItemGroup>
 

@@ -9,17 +9,17 @@ export class Login extends React.Component {
         this.state = {
             providers: []
         };
-        var sec = new Security.Services.SolidRpcSecurityImpl();
-        sec.LoginProviders().subscribe(providers => {
+        Security.Services.SolidRpcSecurityInstance.LoginProvidersObservable.subscribe(providers => {
             this.setState({ providers: providers });
         });
+        Security.Services.SolidRpcSecurityInstance.LoginProviders().subscribe();
     }
 
     createButtons() {
         let buttons = [];
         for (let idx in this.state.providers) {
             var provider = this.state.providers[idx];
-            buttons.push(<LoginButton key={provider.Name} provider={provider.Name} />);
+            buttons.push(<LoginButton key={provider.Name} provider={provider} />);
         }
         return buttons;
     }

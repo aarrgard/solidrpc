@@ -12,7 +12,7 @@ namespace SolidRpc.Security.Impl.Services
     public abstract class LoginProviderBase : ILoginProvider
     {
 
-        public static Task<WebContent> GetManifestResourceAsWebContent(string resourceName, IEnumerable<KeyValuePair<string, string>> replace = default)
+        public static Task<WebContent> GetManifestResourceAsWebContent(string resourceName, IEnumerable<KeyValuePair<string, string>> replace = null)
         {
             var contentType = "application/octet-stream";
             if (resourceName.EndsWith(".js", StringComparison.InvariantCultureIgnoreCase))

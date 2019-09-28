@@ -11,9 +11,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <summary>
         /// Parses upplied json to an open api spec.
         /// </summary>
-        /// <param name="json"></param>
+        /// <param name="specResolver">The spec resolver.</param>
+        /// <param name="address">the address of the json to parse.</param>
+        /// <param name="json">The json to parse</param>
         /// <returns></returns>
-        IOpenApiSpec ParseSpec(string json);
+        IOpenApiSpec ParseSpec(IOpenApiSpecResolver specResolver, string address, string json);
 
         /// <summary>
         /// Creates a specification that contains the methods in supplied types.

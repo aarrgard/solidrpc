@@ -449,7 +449,7 @@ namespace SolidRpc.Tests
                 var conf = ClientServices.GetSolidConfigurationBuilder()
                     .ConfigureInterface<T>()
                     .ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                conf.OpenApiConfiguration = openApiConfiguration;
+                conf.OpenApiSpec = openApiConfiguration;
                 conf.MethodAddressTransformer = GetBaseUrl;
 
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));

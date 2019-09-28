@@ -30,7 +30,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 
         public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen codeSettings, CancellationToken cancellationToken)
         {
-            var model = OpenApiParser.ParseSpec(codeSettings.SwaggerSpec);
+            var model = OpenApiParser.ParseSpec(null, null, codeSettings.SwaggerSpec);
             ICSharpRepository codeRepo;
             if (model is SwaggerObject v2)
             {
@@ -79,7 +79,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             switch (settings.OpenApiVersion)
             {
                 case "2.0":
-                    openApiSpec = new OpenApiSpecGeneratorV2(CopySettings<Model.Generator.SettingsSpecGen>(settings)).CreateSwaggerSpec(cSharpRepository);
+                    openApiSpec = new OpenApiSpecGeneratorV2(CopySettings<Model.Generator.SettingsSpecGen>(settings)).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
                     break;
                 default:
                     throw new Exception("Cannot handle swagger version:" + settings.OpenApiVersion);

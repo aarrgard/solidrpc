@@ -42,7 +42,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 .OrderBy(o => o.FullName);
         }
 
-        public override IOpenApiSpec CreateSwaggerSpec(ICSharpRepository cSharpRepository)
+        public override IOpenApiSpec CreateSwaggerSpec(IOpenApiSpecResolver openApiSpecResolver, ICSharpRepository cSharpRepository)
         {
             var swaggerObject = new SwaggerObject(null)
             {
@@ -50,6 +50,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 Host = "localhost",
                 BasePath = Settings.BasePath,
             };
+            swaggerObject.SetOpenApiSpecResolver(openApiSpecResolver);
             swaggerObject.Paths = CreatePaths(cSharpRepository, swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)
             {

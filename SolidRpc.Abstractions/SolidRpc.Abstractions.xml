@@ -203,9 +203,9 @@
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
-            <param name="baseUriTransformer"></param>
-            <param name="openApiSpec"></param>
+            <param name="openApiSpec">The openapi spec to use. If null we search the assembly.</param>
             <param name="methodInfo"></param>
+            <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetUrlAsync``1(System.Linq.Expressions.Expression{System.Action{``0}})">
@@ -482,11 +482,13 @@
             Interface used to handle open api specs
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.ParseSpec(System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.ParseSpec(SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver,System.String,System.String)">
             <summary>
             Parses upplied json to an open api spec.
             </summary>
-            <param name="json"></param>
+            <param name="specResolver">The spec resolver.</param>
+            <param name="address">the address of the json to parse.</param>
+            <param name="json">The json to parse</param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.CreateSpecification(System.Type[])">
@@ -514,6 +516,17 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.OpenApiSpecResolver">
+            <summary>
+            Returns the spec resolver used to find this spec.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetOpenApiSpecResolver(SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver)">
+            <summary>
+            Sets the openapi resolver
+            </summary>
+            <param name="openApiSpecResolver"></param>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.OpenApiVersion">
             <summary>
             The openapi version of this specification
@@ -533,6 +546,8 @@
         <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetBaseAddress(System.Uri)">
             <summary>
             Updates the spec so that the host and port are from the supplied address.
+            If the root address matches this spec then this spec is returned. Otherwise
+            this spec is clone:ed and updated.
             </summary>
             <param name="rootAddress"></param>
         </member>
@@ -550,15 +565,29 @@
             <param name="description"></param>
             <param name="indexHtmlPath"></param>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver">
+            <summary>
+            This interface defines the logic assocated
+            with resolving referenced specifications.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver.TryResolveApiSpec(System.String,SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec@)">
+            <summary>
+            Resolves the specification at supplied address.
+            </summary>
+            <param name="address"></param>
+            <param name="openApiSpec"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig">
             <summary>
             Configures the bindings for the rpc proxy.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.OpenApiConfiguration">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.OpenApiSpec">
             <summary>
-            Sets the open api configuration to use. If not set the configuration matching
-            the assembly name where the method is defined will be used.
+            Sets the open api specification to use. If not set the specification matching
+            the method name or assembly name where the method is defined will be used.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.MethodAddressTransformer">
@@ -567,18 +596,6 @@
             the base Uri for the service. Supplied uri is the one obtained from
             the openapi config.
             </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions">
-            <summary>
-            Extension methods for the interface.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.GetOpenApiConfiguration(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
-            <summary>
-            Returns the open api configuration configured for the rpc scope.
-            </summary>
-            <param name="config"></param>
-            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">
             <summary>

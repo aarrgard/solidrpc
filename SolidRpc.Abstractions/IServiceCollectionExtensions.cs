@@ -153,6 +153,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             InitAssemblies();
             services.RegisterSingletonService<IOpenApiParser>();
+            services.RegisterSingletonService<IOpenApiSpecResolver>();
             services.RegisterSingletonService<IMethodInvoker>();
             services.RegisterSingletonService<IMethodBinderStore>();
             services.RegisterSingletonService<IMethodAddressTransformer>();
@@ -311,7 +312,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureMethod(mi);
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-            openApiProxyConfig.OpenApiConfiguration = openApiConfiguration;
+            openApiProxyConfig.OpenApiSpec = openApiConfiguration;
             openApiProxyConfig.MethodAddressTransformer = baseUriTransformer;
 
             //

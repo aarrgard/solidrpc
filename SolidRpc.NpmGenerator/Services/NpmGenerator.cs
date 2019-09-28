@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -247,7 +246,7 @@ module.exports = {{
         /// <param name="npmPackage"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<NpmPackage> RunNpm(string npmCommmand, NpmPackage npmPackage, CancellationToken cancellationToken = default)
+        public async Task<NpmPackage> RunNpm(string npmCommmand, NpmPackage npmPackage, CancellationToken cancellationToken = default(CancellationToken))
         {
             // explode supplied package in a 
             // new temp folder and compile there
@@ -274,6 +273,7 @@ module.exports = {{
 
                 nodeServicesOptions.ProjectPath = Path.Combine(tmpDir.FullName, "package");
                 nodeServicesOptions.WatchFileExtensions = new string[0];
+                nodeServicesOptions.InvocationTimeoutMilliseconds = 5 * 60 * 1000;
                 using (var nodeService = NodeServicesFactory.CreateNodeServices(nodeServicesOptions))
                 {
                     var resultCode = await nodeService.InvokeAsync<int>(
@@ -466,7 +466,7 @@ module.exports = {{
         /// <param name="assemblyName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<CodeNamespace> CreateCodeNamespace(string assemblyName, CancellationToken cancellationToken = default)
+        public Task<CodeNamespace> CreateCodeNamespace(string assemblyName, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.FromResult(CodeNamespaceGenerator.CreateCodeNamespace(assemblyName));
         }
@@ -477,7 +477,7 @@ module.exports = {{
         /// <param name="assemblyName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> CreateTypesTs(string assemblyName, CancellationToken cancellationToken = default)
+        public async Task<string> CreateTypesTs(string assemblyName, CancellationToken cancellationToken = default(CancellationToken))
         {
             //
             // create static package

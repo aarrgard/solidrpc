@@ -38,9 +38,14 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         protected override IMethodBinding CreateBinding(MethodInfo mi, MethodAddressTransformer methodAddressTransformer, bool mustExist)
         {
-            if(mi.DeclaringType.Assembly != Assembly)
+            if (mi == null) throw new ArgumentNullException(nameof(mi));
+            if (mi.DeclaringType.Assembly != Assembly)
             {
                 throw new ArgumentException("Method does not belong to assembly.");
+            }
+            if (methodAddressTransformer == null)
+            {
+                methodAddressTransformer = (_, uri, __) => Task.FromResult(uri);
             }
 
             var prospects = Operations;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -101,12 +102,33 @@ namespace SolidRpc.OpenApi.Model.V2
             {
                 return null;
             }
-            if (Ref.StartsWith("#/definitions/"))
+            var hashIdx = Ref.IndexOf('#');
+            if(hashIdx == -1)
             {
-                var key = Ref.Substring("#/definitions/".Length);
-                return GetParent<SwaggerObject>().Definitions[key];
+                throw new Exception($"Reference({Ref}) does not contain a hash");
             }
-            throw new Exception("Cannot find ref:" + Ref);
+            var filePath = Ref.Substring(0, hashIdx);
+            var refSource = GetParent<SwaggerObject>();
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                // reference to other file
+
+                if(refSource.OpenApiSpecResolver.TryResolveApiSpec(filePath, out IOpenApiSpec refSpec))
+                {
+                    refSource = (SwaggerObject) refSpec;
+                }
+                else
+                {
+                    throw new Exception($"Could not find referenced file: {filePath}");
+                }
+            }
+            var nodePath = Ref.Substring(hashIdx + 1);
+            if (!nodePath.StartsWith("/definitions/"))
+            {
+                throw new Exception("Cannot find ref:" + Ref);
+            }
+            var key = nodePath.Substring("/definitions/".Length);
+            return refSource.Definitions[key];
         }
 
         /// <summary>

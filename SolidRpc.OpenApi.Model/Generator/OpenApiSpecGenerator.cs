@@ -59,9 +59,10 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// <summary>
         /// Constructs an openapi spec from the supplied cSharpRepository.
         /// </summary>
+        /// <param name="openApiSpecResolver"></param>
         /// <param name="cSharpRepository"></param>
         /// <returns></returns>
-        public abstract IOpenApiSpec CreateSwaggerSpec(ICSharpRepository cSharpRepository);
+        public abstract IOpenApiSpec CreateSwaggerSpec(IOpenApiSpecResolver openApiSpecResolver, ICSharpRepository cSharpRepository);
 
     }
 }

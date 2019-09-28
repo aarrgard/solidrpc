@@ -40,19 +40,14 @@ namespace SolidRpc.OpenApi.Model
             methods.ToList().ForEach(o => CSharpReflectionParser.AddMethod(cSharpRepository, o));
             return new OpenApiSpecGeneratorV2(new SettingsSpecGen()
             {
-                BasePath = "/" + methods.First().DeclaringType.Assembly.GetName().Name.Replace('.', '/'),
+                BasePath = methods.Select(o => "/" + o.DeclaringType.Assembly.GetName().Name.Replace('.', '/')).FirstOrDefault() ?? null,
                 Version = methods.Select(o => o.DeclaringType.Assembly.GetName().Version.ToString()).FirstOrDefault() ?? "0.0.0.0",
                 Title = methods.Select(o => o.DeclaringType.Assembly.GetName().Name).FirstOrDefault() ?? "OpenApi",
                 Description = $"This OpenApi specification was generated from compiled code on {Environment.MachineName} {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}"
-            }).CreateSwaggerSpec(cSharpRepository);
+            }).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
         }
 
-        /// <summary>
-        /// Parses the specification
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        IOpenApiSpec IOpenApiParser.ParseSpec(string json)
+        IOpenApiSpec IOpenApiParser.ParseSpec(IOpenApiSpecResolver specResolver, string address, string json)
         {
             var res = (IOpenApiSpec)v2Parser.ParseSwaggerDoc(json);
             if (res == null)
@@ -112,22 +107,8 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public T ParseSwaggerDoc(Stream s)
-        {
-            using (StreamReader sr = new StreamReader(s))
-            {
-                return ParseSwaggerDoc(sr.ReadToEnd());
-            }
-        }
-
-        /// <summary>
-        /// Parses the supplied stream into a swagger doc.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
         public T ParseSwaggerDoc(string s)
         {
-
             using (StringReader sr = new StringReader(s))
             {
                 return ParseSwaggerDoc(sr);

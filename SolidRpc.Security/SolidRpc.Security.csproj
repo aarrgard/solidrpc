@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -14,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Services\CommonDefinitions.json" />
     <None Remove="Services\Facebook\IFacebookLocal.json" />
     <None Remove="Services\Facebook\IFacebookRemote.json" />
     <None Remove="Services\Google\IGoogleLocal.json" />
@@ -24,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Services\CommonDefinitions.json" />
     <EmbeddedResource Include="Services\Facebook\IFacebookRemote.json" />
     <EmbeddedResource Include="Services\Facebook\IFacebookLocal.json" />
     <EmbeddedResource Include="Services\Google\IGoogleRemote.json" />

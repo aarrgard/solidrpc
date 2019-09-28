@@ -1,5 +1,6 @@
 import { default as CancellationToken } from 'cancellationtoken';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { share } from 'rxjs/operators'
 import { SolidRpc } from 'solidrpc';
 export namespace Security {
     export namespace Services {
@@ -16,12 +17,20 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.LoginProvider>;
                 /**
+                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 */
+                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.WebContent>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 */
+                LoginScriptObservable : Observable<Security.Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -32,6 +41,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string>;
                 /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<string>;
+                /**
                  * Callback when a user has logged out successfully.
                  * @param accessToken The the access token for the logged out in user
                  * @param cancellationToken 
@@ -40,11 +53,26 @@ export namespace Security {
                     accessToken : string,
                     cancellationToken? : CancellationToken
                 ): Observable<string>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 */
+                LoggedOutObservable : Observable<string>;
             }
             /**
              * Defines logic for the callback from facebook
              */
             export class FacebookLocalImpl  extends SolidRpc.RpcServiceImpl implements IFacebookLocal {
+                constructor() {
+                    super();
+                    this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
+                    this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
+                    this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                    this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
+                    this.LoggedInSubject = new Subject<string>();
+                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
+                    this.LoggedOutSubject = new Subject<string>();
+                    this.LoggedOutObservable = this.LoggedOutSubject.asObservable().pipe(share());
+                }
                 /**
                  * Returns the login provider information
                  * @param cancellationToken 
@@ -59,8 +87,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoginProviderSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 */
+                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                private LoginProviderSubject : Subject<Security.Types.LoginProvider>;
                 /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
@@ -75,8 +108,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoginScriptSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 */
+                LoginScriptObservable : Observable<Security.Types.WebContent>;
+                private LoginScriptSubject : Subject<Security.Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -94,8 +132,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoggedInSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<string>;
+                private LoggedInSubject : Subject<string>;
                 /**
                  * Callback when a user has logged out successfully.
                  * @param accessToken The the access token for the logged out in user
@@ -113,9 +156,18 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoggedOutSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 */
+                LoggedOutObservable : Observable<string>;
+                private LoggedOutSubject : Subject<string>;
             }
+            /**
+             * Instance for the IFacebookLocal type. Implemented by the FacebookLocalImpl
+             */
+            export var FacebookLocalInstance : IFacebookLocal = new FacebookLocalImpl();
             /**
              * Defines logic @ facebook
              */
@@ -134,6 +186,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.FacebookAccessToken>;
                 /**
+                 * This observable is hot and monitors all the responses from the GetAccessToken invocations.
+                 */
+                GetAccessTokenObservable : Observable<Security.Types.FacebookAccessToken>;
+                /**
                  * Returns information about supplied access token
                  * @param inputToken 
                  * @param accessToken 
@@ -144,11 +200,22 @@ export namespace Security {
                     accessToken : string,
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.FacebookDebugToken>;
+                /**
+                 * This observable is hot and monitors all the responses from the GetDebugToken invocations.
+                 */
+                GetDebugTokenObservable : Observable<Security.Types.FacebookDebugToken>;
             }
             /**
              * Defines logic @ facebook
              */
             export class FacebookRemoteImpl  extends SolidRpc.RpcServiceImpl implements IFacebookRemote {
+                constructor() {
+                    super();
+                    this.GetAccessTokenSubject = new Subject<Security.Types.FacebookAccessToken>();
+                    this.GetAccessTokenObservable = this.GetAccessTokenSubject.asObservable().pipe(share());
+                    this.GetDebugTokenSubject = new Subject<Security.Types.FacebookDebugToken>();
+                    this.GetDebugTokenObservable = this.GetDebugTokenSubject.asObservable().pipe(share());
+                }
                 /**
                  * Obtains an access token for the application
                  * @param clientId 
@@ -173,8 +240,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.GetAccessTokenSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the GetAccessToken invocations.
+                 */
+                GetAccessTokenObservable : Observable<Security.Types.FacebookAccessToken>;
+                private GetAccessTokenSubject : Subject<Security.Types.FacebookAccessToken>;
                 /**
                  * Returns information about supplied access token
                  * @param inputToken 
@@ -196,9 +268,18 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.GetDebugTokenSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the GetDebugToken invocations.
+                 */
+                GetDebugTokenObservable : Observable<Security.Types.FacebookDebugToken>;
+                private GetDebugTokenSubject : Subject<Security.Types.FacebookDebugToken>;
             }
+            /**
+             * Instance for the IFacebookRemote type. Implemented by the FacebookRemoteImpl
+             */
+            export var FacebookRemoteInstance : IFacebookRemote = new FacebookRemoteImpl();
         }
         export namespace Google {
             /**
@@ -213,12 +294,20 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.LoginProvider>;
                 /**
+                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 */
+                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                /**
                  * Returns the script to embed to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.WebContent>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 */
+                LoginScriptObservable : Observable<Security.Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -229,6 +318,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string>;
                 /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<string>;
+                /**
                  * Callback when a user has logged out successfully.
                  * @param accessToken The the access token for the logged out in user
                  * @param cancellationToken 
@@ -237,11 +330,26 @@ export namespace Security {
                     accessToken : string,
                     cancellationToken? : CancellationToken
                 ): Observable<string>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 */
+                LoggedOutObservable : Observable<string>;
             }
             /**
              * Defines logic for the callback from google
              */
             export class GoogleLocalImpl  extends SolidRpc.RpcServiceImpl implements IGoogleLocal {
+                constructor() {
+                    super();
+                    this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
+                    this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
+                    this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                    this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
+                    this.LoggedInSubject = new Subject<string>();
+                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
+                    this.LoggedOutSubject = new Subject<string>();
+                    this.LoggedOutObservable = this.LoggedOutSubject.asObservable().pipe(share());
+                }
                 /**
                  * Returns the login provider information
                  * @param cancellationToken 
@@ -256,8 +364,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoginProviderSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 */
+                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                private LoginProviderSubject : Subject<Security.Types.LoginProvider>;
                 /**
                  * Returns the script to embed to enable login
                  * @param cancellationToken 
@@ -272,8 +385,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoginScriptSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 */
+                LoginScriptObservable : Observable<Security.Types.WebContent>;
+                private LoginScriptSubject : Subject<Security.Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -291,8 +409,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoggedInSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<string>;
+                private LoggedInSubject : Subject<string>;
                 /**
                  * Callback when a user has logged out successfully.
                  * @param accessToken The the access token for the logged out in user
@@ -310,9 +433,18 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoggedOutSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 */
+                LoggedOutObservable : Observable<string>;
+                private LoggedOutSubject : Subject<string>;
             }
+            /**
+             * Instance for the IGoogleLocal type. Implemented by the GoogleLocalImpl
+             */
+            export var GoogleLocalInstance : IGoogleLocal = new GoogleLocalImpl();
             /**
              * Defines access to the google oauth implementation
              */
@@ -351,6 +483,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<void>;
                 /**
+                 * This observable is hot and monitors all the responses from the Authorize invocations.
+                 */
+                AuthorizeObservable : Observable<void>;
+                /**
                  * Returns the openid configuration
                  * @param cancellationToken 
                  */
@@ -358,17 +494,34 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.OpenIDConnnectDiscovery>;
                 /**
+                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
+                 */
+                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                /**
                  * Returns the openid keys used for signing.
                  * @param cancellationToken 
                  */
                 OpenIdKeys(
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.OpenIDKeys>;
+                /**
+                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
+                 */
+                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
             }
             /**
              * Defines access to the google oauth implementation
              */
             export class GoogleRemoteImpl  extends SolidRpc.RpcServiceImpl implements IGoogleRemote {
+                constructor() {
+                    super();
+                    this.AuthorizeSubject = new Subject<void>();
+                    this.AuthorizeObservable = this.AuthorizeSubject.asObservable().pipe(share());
+                    this.OpenIdConfigurationSubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                    this.OpenIdConfigurationObservable = this.OpenIdConfigurationSubject.asObservable().pipe(share());
+                    this.OpenIdKeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                    this.OpenIdKeysObservable = this.OpenIdKeysSubject.asObservable().pipe(share());
+                }
                 /**
                  * Authorizes a user @ google
                  * @param clientId 
@@ -423,8 +576,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.AuthorizeSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the Authorize invocations.
+                 */
+                AuthorizeObservable : Observable<void>;
+                private AuthorizeSubject : Subject<void>;
                 /**
                  * Returns the openid configuration
                  * @param cancellationToken 
@@ -439,8 +597,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.OpenIdConfigurationSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
+                 */
+                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                private OpenIdConfigurationSubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the openid keys used for signing.
                  * @param cancellationToken 
@@ -455,9 +618,18 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.OpenIdKeysSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
+                 */
+                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
+                private OpenIdKeysSubject : Subject<Security.Types.OpenIDKeys>;
             }
+            /**
+             * Instance for the IGoogleRemote type. Implemented by the GoogleRemoteImpl
+             */
+            export var GoogleRemoteInstance : IGoogleRemote = new GoogleRemoteImpl();
         }
         export namespace Microsoft {
             /**
@@ -472,12 +644,20 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.LoginProvider>;
                 /**
+                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 */
+                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.WebContent>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 */
+                LoginScriptObservable : Observable<Security.Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -488,6 +668,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string>;
                 /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<string>;
+                /**
                  * Callback when a user has logged out successfully.
                  * @param accessToken The the access token for the logged out user
                  * @param cancellationToken 
@@ -496,11 +680,26 @@ export namespace Security {
                     accessToken : string,
                     cancellationToken? : CancellationToken
                 ): Observable<string>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 */
+                LoggedOutObservable : Observable<string>;
             }
             /**
              * Defines logic for the callback from microsoft
              */
             export class MicrosoftLocalImpl  extends SolidRpc.RpcServiceImpl implements IMicrosoftLocal {
+                constructor() {
+                    super();
+                    this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
+                    this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
+                    this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                    this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
+                    this.LoggedInSubject = new Subject<string>();
+                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
+                    this.LoggedOutSubject = new Subject<string>();
+                    this.LoggedOutObservable = this.LoggedOutSubject.asObservable().pipe(share());
+                }
                 /**
                  * Returns the login provider information
                  * @param cancellationToken 
@@ -515,8 +714,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoginProviderSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 */
+                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                private LoginProviderSubject : Subject<Security.Types.LoginProvider>;
                 /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
@@ -531,8 +735,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoginScriptSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 */
+                LoginScriptObservable : Observable<Security.Types.WebContent>;
+                private LoginScriptSubject : Subject<Security.Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -550,8 +759,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoggedInSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<string>;
+                private LoggedInSubject : Subject<string>;
                 /**
                  * Callback when a user has logged out successfully.
                  * @param accessToken The the access token for the logged out user
@@ -569,9 +783,18 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.LoggedOutSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 */
+                LoggedOutObservable : Observable<string>;
+                private LoggedOutSubject : Subject<string>;
             }
+            /**
+             * Instance for the IMicrosoftLocal type. Implemented by the MicrosoftLocalImpl
+             */
+            export var MicrosoftLocalInstance : IMicrosoftLocal = new MicrosoftLocalImpl();
             /**
              * Defines access to the microsoft oauth implementation
              */
@@ -608,6 +831,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<void>;
                 /**
+                 * This observable is hot and monitors all the responses from the Authorize invocations.
+                 */
+                AuthorizeObservable : Observable<void>;
+                /**
                  * Returns the openid configuration
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
                  * @param cancellationToken 
@@ -617,6 +844,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.OpenIDConnnectDiscovery>;
                 /**
+                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
+                 */
+                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                /**
                  * Returns the openid keys used for signing.
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
                  * @param cancellationToken 
@@ -625,11 +856,24 @@ export namespace Security {
                     tenant : string,
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.OpenIDKeys>;
+                /**
+                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
+                 */
+                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
             }
             /**
              * Defines access to the microsoft oauth implementation
              */
             export class MicrosoftRemoteImpl  extends SolidRpc.RpcServiceImpl implements IMicrosoftRemote {
+                constructor() {
+                    super();
+                    this.AuthorizeSubject = new Subject<void>();
+                    this.AuthorizeObservable = this.AuthorizeSubject.asObservable().pipe(share());
+                    this.OpenIdConfigurationSubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                    this.OpenIdConfigurationObservable = this.OpenIdConfigurationSubject.asObservable().pipe(share());
+                    this.OpenIdKeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                    this.OpenIdKeysObservable = this.OpenIdKeysSubject.asObservable().pipe(share());
+                }
                 /**
                  * When your web app needs to authenticate the user, it can direct the user to the /authorize endpoint. This request is similar to the first leg of the OAuth 2.0 authorization code flow, with these important distinctions:
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
@@ -681,8 +925,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.AuthorizeSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the Authorize invocations.
+                 */
+                AuthorizeObservable : Observable<void>;
+                private AuthorizeSubject : Subject<void>;
                 /**
                  * Returns the openid configuration
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
@@ -700,8 +949,13 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.OpenIdConfigurationSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
+                 */
+                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                private OpenIdConfigurationSubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the openid keys used for signing.
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
@@ -719,9 +973,18 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    });
+                    }, this.OpenIdKeysSubject);
                 }
+                /**
+                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
+                 */
+                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
+                private OpenIdKeysSubject : Subject<Security.Types.OpenIDKeys>;
             }
+            /**
+             * Instance for the IMicrosoftRemote type. Implemented by the MicrosoftRemoteImpl
+             */
+            export var MicrosoftRemoteInstance : IMicrosoftRemote = new MicrosoftRemoteImpl();
         }
         /**
          * Defines logic for solid rpc security
@@ -735,12 +998,20 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Security.Types.WebContent>;
             /**
+             * This observable is hot and monitors all the responses from the LoginPage invocations.
+             */
+            LoginPageObservable : Observable<Security.Types.WebContent>;
+            /**
              * Returns the script paths to use for logging in.
              * @param cancellationToken 
              */
             LoginScripts(
                 cancellationToken? : CancellationToken
             ): Observable<string[]>;
+            /**
+             * This observable is hot and monitors all the responses from the LoginScripts invocations.
+             */
+            LoginScriptsObservable : Observable<string[]>;
             /**
              * Returns the script to embedd to enable login
              * @param cancellationToken 
@@ -749,6 +1020,10 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Security.Types.WebContent>;
             /**
+             * This observable is hot and monitors all the responses from the LoginScript invocations.
+             */
+            LoginScriptObservable : Observable<Security.Types.WebContent>;
+            /**
              * Returns the status at each login provider
              * @param cancellationToken 
              */
@@ -756,17 +1031,38 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Security.Types.LoginProvider[]>;
             /**
+             * This observable is hot and monitors all the responses from the LoginProviders invocations.
+             */
+            LoginProvidersObservable : Observable<Security.Types.LoginProvider[]>;
+            /**
              * Returns the current profile claims
              * @param cancellationToken 
              */
             Profile(
                 cancellationToken? : CancellationToken
             ): Observable<Security.Types.Claim[]>;
+            /**
+             * This observable is hot and monitors all the responses from the Profile invocations.
+             */
+            ProfileObservable : Observable<Security.Types.Claim[]>;
         }
         /**
          * Defines logic for solid rpc security
          */
         export class SolidRpcSecurityImpl  extends SolidRpc.RpcServiceImpl implements ISolidRpcSecurity {
+            constructor() {
+                super();
+                this.LoginPageSubject = new Subject<Security.Types.WebContent>();
+                this.LoginPageObservable = this.LoginPageSubject.asObservable().pipe(share());
+                this.LoginScriptsSubject = new Subject<string[]>();
+                this.LoginScriptsObservable = this.LoginScriptsSubject.asObservable().pipe(share());
+                this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
+                this.LoginProvidersSubject = new Subject<Security.Types.LoginProvider[]>();
+                this.LoginProvidersObservable = this.LoginProvidersSubject.asObservable().pipe(share());
+                this.ProfileSubject = new Subject<Security.Types.Claim[]>();
+                this.ProfileObservable = this.ProfileSubject.asObservable().pipe(share());
+            }
             /**
              * Returns the login page
              * @param cancellationToken 
@@ -781,8 +1077,13 @@ export namespace Security {
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                });
+                }, this.LoginPageSubject);
             }
+            /**
+             * This observable is hot and monitors all the responses from the LoginPage invocations.
+             */
+            LoginPageObservable : Observable<Security.Types.WebContent>;
+            private LoginPageSubject : Subject<Security.Types.WebContent>;
             /**
              * Returns the script paths to use for logging in.
              * @param cancellationToken 
@@ -797,8 +1098,13 @@ export namespace Security {
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                });
+                }, this.LoginScriptsSubject);
             }
+            /**
+             * This observable is hot and monitors all the responses from the LoginScripts invocations.
+             */
+            LoginScriptsObservable : Observable<string[]>;
+            private LoginScriptsSubject : Subject<string[]>;
             /**
              * Returns the script to embedd to enable login
              * @param cancellationToken 
@@ -813,8 +1119,13 @@ export namespace Security {
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                });
+                }, this.LoginScriptSubject);
             }
+            /**
+             * This observable is hot and monitors all the responses from the LoginScript invocations.
+             */
+            LoginScriptObservable : Observable<Security.Types.WebContent>;
+            private LoginScriptSubject : Subject<Security.Types.WebContent>;
             /**
              * Returns the status at each login provider
              * @param cancellationToken 
@@ -829,8 +1140,13 @@ export namespace Security {
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                });
+                }, this.LoginProvidersSubject);
             }
+            /**
+             * This observable is hot and monitors all the responses from the LoginProviders invocations.
+             */
+            LoginProvidersObservable : Observable<Security.Types.LoginProvider[]>;
+            private LoginProvidersSubject : Subject<Security.Types.LoginProvider[]>;
             /**
              * Returns the current profile claims
              * @param cancellationToken 
@@ -845,9 +1161,18 @@ export namespace Security {
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                });
+                }, this.ProfileSubject);
             }
+            /**
+             * This observable is hot and monitors all the responses from the Profile invocations.
+             */
+            ProfileObservable : Observable<Security.Types.Claim[]>;
+            private ProfileSubject : Subject<Security.Types.Claim[]>;
         }
+        /**
+         * Instance for the ISolidRpcSecurity type. Implemented by the SolidRpcSecurityImpl
+         */
+        export var SolidRpcSecurityInstance : ISolidRpcSecurity = new SolidRpcSecurityImpl();
     }
     export namespace Types {
         /**

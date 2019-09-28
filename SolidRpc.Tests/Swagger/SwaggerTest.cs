@@ -3,9 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Services;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
@@ -15,6 +13,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.OpenApi.Model;
 
 namespace SolidRpc.Tests.Swagger
 {
@@ -29,7 +29,20 @@ namespace SolidRpc.Tests.Swagger
         [Test]
         public void TestPetStore()
         {
-            var swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(GetManifestResource("petstore.json"));
+            var sc = new ServiceCollection();
+            sc.AddSolidRpcServices(o => { });
+            var sp = sc.BuildServiceProvider();
+            var res = sp.GetRequiredService<OpenApiSpecResolverAssembly>();
+            res.AddAssemblyResources(GetType().Assembly);
+            SwaggerObject swaggerSpec;
+            if(res.TryResolveApiSpec("petstore.json", out IOpenApiSpec resolvedSpec))
+            {
+                swaggerSpec = (SwaggerObject)resolvedSpec;
+            }
+            else
+            {
+                throw new Exception();
+            }
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
 
@@ -166,11 +179,6 @@ namespace SolidRpc.Tests.Swagger
             Assert.AreEqual("#/definitions/Tag", swaggerSpec.Definitions["Pet"].Properties["tags"].Items.Ref);
         }
 
-        private Uri TransformUri(IServiceProvider serviceProvider, Uri baseUri)
-        {
-            return baseUri;
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -210,7 +218,7 @@ namespace SolidRpc.Tests.Swagger
             var req = new SolidHttpRequest();
             await smi.BindArgumentsAsync(req, new object[] { petId, CancellationToken.None });
             Assert.AreEqual("GET", req.Method);
-            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}",req.Path);
+            Assert.AreEqual($"/aarrgard/Test/1.0.0/pet/{petId}", req.Path);
         }
 
         /// <summary>
@@ -300,7 +308,8 @@ namespace SolidRpc.Tests.Swagger
         private IMethodBinderStore GetMethodBinderStore()
         {
             var sc = new ServiceCollection();
-            sc.AddLogging(o => {
+            sc.AddLogging(o =>
+            {
                 o.SetMinimumLevel(LogLevel.Trace);
                 o.AddConsole();
             });
@@ -308,6 +317,46 @@ namespace SolidRpc.Tests.Swagger
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcSingletonServices();
             return sc.BuildServiceProvider().GetRequiredService<IMethodBinderStore>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Test]
+        public async Task TestSwaggerSpecReferenceToExternalFile()
+        {
+            var sc = new ServiceCollection();
+            sc.AddSolidRpcServices(o => { });
+            var sp = sc.BuildServiceProvider();
+            var res = sp.GetRequiredService<OpenApiSpecResolverAssembly>();
+            res.AddAssemblyResources(GetType().Assembly);
+            SwaggerObject swaggerSpec;
+            if (res.TryResolveApiSpec("TestSwaggerSpecReferenceToExternalFile.json", out IOpenApiSpec resolvedSpec))
+            {
+                swaggerSpec = (SwaggerObject)resolvedSpec;
+            }
+            else
+            {
+                throw new Exception();
+            }
+
+            var responses = swaggerSpec.Paths.SelectMany(o =>
+            {
+                return new[]
+                {
+                    o.Value.Get,
+                    o.Value.Patch,
+                    o.Value.Post,
+                    o.Value.Head,
+                    o.Value.Put
+                };
+            }).Where(o => o != null)
+            .SelectMany(o => o.GetResponses().Values)
+            .Select(o => o.Schema.GetRefSchema() ?? o.Schema)
+            .Select(o => (o.Items != null) ? o.Items.GetRefSchema() ?? o.Items : o)
+            .ToList();
+            Assert.IsTrue(responses.All(o => o.Ref == null));
+            Assert.AreEqual(5, responses.Count);
         }
     }
 }

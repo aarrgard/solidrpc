@@ -10,9 +10,9 @@ namespace SolidRpc.OpenApi.Model.V3
     /// <see cref="https://swagger.io/specification/#oasObject"/>
     public class OpenAPIObject : ModelBase, IOpenApiSpec
     {
-        public OpenAPIObject(ModelBase parent) : base(parent)
+        public OpenAPIObject(IOpenApiSpecResolver openApiSpecResolver) : base(null)
         {
-
+            OpenApiSpecResolver = openApiSpecResolver;
         }
         /// <summary>
         /// REQUIRED. This string MUST be the semantic version number of the OpenAPI Specification version that the OpenAPI document uses. The openapi field SHOULD be used by tooling specifications and clients to interpret the OpenAPI document. This is not related to the API info.version string.
@@ -26,17 +26,24 @@ namespace SolidRpc.OpenApi.Model.V3
 
         public string Title => "Unknown";
 
+        public IOpenApiSpecResolver OpenApiSpecResolver { get; set; }
+
         public IOpenApiSpec Clone()
         {
             throw new NotImplementedException();
         }
 
-        public void SetBaseAddress(Uri baseAddress)
+        public IOpenApiSpec SetBaseAddress(Uri baseAddress)
         {
             throw new NotImplementedException();
         }
 
         public void SetExternalDoc(string description, Uri indexHtmlPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver)
         {
             throw new NotImplementedException();
         }

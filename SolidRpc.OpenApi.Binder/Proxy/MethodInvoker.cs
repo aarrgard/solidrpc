@@ -113,7 +113,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                                 .ToList().ForEach(o =>
                                 {
                                     var mi = o.InvocationConfiguration.MethodInfo;
-                                    var methodInfo = MethodBinderStore.CreateMethodBinding(o.GetOpenApiConfiguration(), mi, o.MethodAddressTransformer);
+                                    var methodInfo = MethodBinderStore.CreateMethodBinding(o.OpenApiSpec, mi, o.MethodAddressTransformer);
                                     _rootSegment.AddPath(methodInfo);
                                     Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Address.LocalPath}.");
                                 });

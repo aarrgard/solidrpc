@@ -14,6 +14,17 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         IOpenApiSpec Clone();
 
         /// <summary>
+        /// Returns the spec resolver used to find this spec.
+        /// </summary>
+        IOpenApiSpecResolver OpenApiSpecResolver { get; }
+
+        /// <summary>
+        /// Sets the openapi resolver
+        /// </summary>
+        /// <param name="openApiSpecResolver"></param>
+        void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver);
+
+        /// <summary>
         /// The openapi version of this specification
         /// </summary>
         string OpenApiVersion { get; }
@@ -31,9 +42,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
 
         /// <summary>
         /// Updates the spec so that the host and port are from the supplied address.
+        /// If the root address matches this spec then this spec is returned. Otherwise
+        /// this spec is clone:ed and updated.
         /// </summary>
         /// <param name="rootAddress"></param>
-        void SetBaseAddress(Uri rootAddress);
+        IOpenApiSpec SetBaseAddress(Uri rootAddress);
 
         /// <summary>
         /// Writes this spec as a json string

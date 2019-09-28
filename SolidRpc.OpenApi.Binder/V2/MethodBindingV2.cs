@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SolidProxy.Core.Configuration.Runtime;
-using SolidProxy.Core.Proxy;
+﻿using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -8,7 +6,6 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -104,7 +101,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
-            MethodAddressTransformer = methodAddressTransformer;
+            MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodInfo));
         }
 
         private Action CreateExceptionThrower(Type exceptionType)
@@ -128,7 +125,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public MethodInfo MethodInfo { get; }
 
-        public MethodAddressTransformer MethodAddressTransformer { get; }
+        private MethodAddressTransformer MethodAddressTransformer { get; }
 
         private IMethodArgument[] _arguments;
         public IMethodArgument[] Arguments
@@ -227,7 +224,14 @@ namespace SolidRpc.OpenApi.Binder.V2
                     var address = OperationObject.GetAddress();
                     if(MethodAddressTransformer != null)
                     {
-                        address = MethodAddressTransformer(MethodBinder.ServiceProvider, address, MethodInfo).Result;
+                        try
+                        {
+                            address = MethodAddressTransformer(MethodBinder.ServiceProvider, address, MethodInfo).Result;
+                        }
+                        catch (Exception e)
+                        {
+                            throw;
+                        }
                     }
                     _address = address;
 

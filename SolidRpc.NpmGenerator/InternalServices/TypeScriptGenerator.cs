@@ -21,9 +21,10 @@ namespace SolidRpc.NpmGenerator.InternalServices
             rootNamespace = FindRootNamespace(rootNamespace);
             var sb = new StringBuilder();
             sb.AppendLine("import { default as CancellationToken } from 'cancellationtoken';");
-            sb.AppendLine("import { Observable } from 'rxjs';");
+            sb.AppendLine("import { Observable, Subject } from 'rxjs';");
+            sb.AppendLine("import { share } from 'rxjs/operators'");
             sb.AppendLine("import { SolidRpc } from 'solidrpc';");
-            
+
 
             CreateTypesTs(rootNamespace, sb, "", rootNamespace);
             return sb.ToString();
@@ -31,7 +32,7 @@ namespace SolidRpc.NpmGenerator.InternalServices
 
         private CodeNamespace FindRootNamespace(CodeNamespace codeNamespace)
         {
-            if (codeNamespace.Types != null && codeNamespace.Types.Any()) 
+            if (codeNamespace.Types != null && codeNamespace.Types.Any())
             {
                 return codeNamespace;
             }
@@ -56,14 +57,37 @@ namespace SolidRpc.NpmGenerator.InternalServices
             });
             (codeNamespace.Types ?? new CodeType[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
-                    CreateTypesTsClass(rootNamespace, code, nsIndentation, o);
+                CreateTypesTsClass(rootNamespace, code, nsIndentation, o);
             });
             (codeNamespace.Interfaces ?? new CodeInterface[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
                 CreateTypesTsInterface(rootNamespace, code, nsIndentation, o);
                 CreateTypesTsClass(rootNamespace, code, nsIndentation, o);
+                CreateTypesTsInstance(rootNamespace, code, nsIndentation, o);
             });
             code.Append(indentation).AppendLine($"}}");
+        }
+
+        private void CreateTypesTsInstance(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeInterface interfaze)
+        {
+            var className = CreateClassName(interfaze.Name);
+            var instanceName = className;
+            if(instanceName.EndsWith("Impl"))
+            {
+                instanceName = instanceName.Substring(0, instanceName.Length - "Impl".Length);
+            }
+            instanceName = instanceName + "Instance";
+            CreteJsComment(code, indentation, $"Instance for the {interfaze.Name} type. Implemented by the {className}");
+            code.Append(indentation).AppendLine($"export var {instanceName} : {interfaze.Name} = new {className}();");
+        }
+
+        private string CreateClassName(string typeName)
+        {
+            if (typeName.StartsWith("I"))
+            {
+                typeName = typeName.Substring(1);
+            }
+            return $"{typeName}Impl";
         }
 
         private void CreateTypesTsInterface(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeInterface interfaze)
@@ -72,9 +96,9 @@ namespace SolidRpc.NpmGenerator.InternalServices
             code.Append(indentation).AppendLine($"export interface {interfaze.Name} {{");
             var interfazeIndentation = CreateIndentation(indentation);
             (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
+                var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
                 CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
                 code.Append(interfazeIndentation).Append($"{m.Name}(");
-
                 bool firstArg = true;
                 (m.Arguments ?? new CodeMethodArg[0]).ToList().ForEach(a =>
                 {
@@ -87,7 +111,13 @@ namespace SolidRpc.NpmGenerator.InternalServices
                 {
                     code.AppendLine().Append(interfazeIndentation);
                 }
-                code.AppendLine($"): Observable<{CreateTypescriptType(rootNamespace, m.ReturnType)}>;");
+                code.AppendLine($"): Observable<{tsReturnType}>;");
+
+                //
+                // hot observable
+                //
+                CreteJsComment(code, interfazeIndentation, $"This observable is hot and monitors all the responses from the {m.Name} invocations.");
+                code.Append(interfazeIndentation).AppendLine($"{m.Name}Observable : Observable<{tsReturnType}>;");
             });
             code.Append(indentation).AppendLine($"}}");
         }
@@ -104,9 +134,27 @@ namespace SolidRpc.NpmGenerator.InternalServices
             code.Append(indentation).AppendLine($"export class {className}  extends SolidRpc.RpcServiceImpl implements {interfaze.Name} {{");
             {
                 var interfazeIndentation = CreateIndentation(indentation);
+                //
+                // constructor
+                //
+                code.Append(interfazeIndentation).AppendLine($"constructor() {{");
+                {
+                    var ctorIndentation = CreateIndentation(interfazeIndentation);
+                    code.Append(ctorIndentation).AppendLine($"super();");
+                    (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m =>
+                    {
+                        var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
+                        code.Append(ctorIndentation).AppendLine($"this.{m.Name}Subject = new Subject<{tsReturnType}>();");
+                        code.Append(ctorIndentation).AppendLine($"this.{m.Name}Observable = this.{m.Name}Subject.asObservable().pipe(share());");
+                    });
+                }
+                code.Append(interfazeIndentation).AppendLine($"}}");
 
+                //
                 // methods
+                //
                 (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
+                    var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
                     CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
                     code.Append(interfazeIndentation).Append($"{m.Name}(");
                     string cancellationTokenArgName = "null";
@@ -127,7 +175,6 @@ namespace SolidRpc.NpmGenerator.InternalServices
                     {
                         code.AppendLine().Append(interfazeIndentation);
                     }
-                    var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
                     code.AppendLine($"): Observable<{tsReturnType}> {{");
                     {
                         var codeIndentation = CreateIndentation(interfazeIndentation);
@@ -203,9 +250,18 @@ namespace SolidRpc.NpmGenerator.InternalServices
                             code.Append(respIndentation).AppendLine($"}}");
 
                         }
-                        code.Append(codeIndentation).AppendLine($"}});");
+                        code.Append(codeIndentation).AppendLine($"}}, this.{m.Name}Subject);");
+
                         code.Append(interfazeIndentation).AppendLine($"}}");
                     }
+
+                    //
+                    // hot observable
+                    //
+                    CreteJsComment(code, interfazeIndentation, $"This observable is hot and monitors all the responses from the {m.Name} invocations.");
+                    code.Append(interfazeIndentation).AppendLine($"{m.Name}Observable : Observable<{tsReturnType}>;");
+                    code.Append(interfazeIndentation).AppendLine($"private {m.Name}Subject : Subject<{tsReturnType}>;");
+
                 });
             }
             code.Append(indentation).AppendLine($"}}");

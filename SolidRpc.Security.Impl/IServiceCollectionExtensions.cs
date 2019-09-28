@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configurator"></param>
         /// <param name="addStaticContent"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = default)
+        public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
         {
             if(configurator != null)
             {

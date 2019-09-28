@@ -44,7 +44,7 @@ namespace SolidRpc.Security.Impl.Services
             return await Task.WhenAll(loginProviders.Select(o => o.LoginProvider(cancellationToken)));
         }
 
-        public Task<WebContent> LoginScript(CancellationToken cancellationToken = default)
+        public Task<WebContent> LoginScript(CancellationToken cancellationToken = default(CancellationToken))
         {
             var binder = MethodBinderStore.GetMethodBinding<ISolidRpcSecurity>(o => o.LoginProviders(cancellationToken));
             var auth = binder.MethodBinder.OpenApiSpec.BaseAddress;
@@ -66,9 +66,12 @@ namespace SolidRpc.Security.Impl.Services
             });
         }
 
-        public Task<IEnumerable<Claim>> Profile(CancellationToken cancellationToken = default)
+        public Task<IEnumerable<Claim>> Profile(CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            return Task.FromResult<IEnumerable<Claim>>(new[] {
+                new Claim() {Name = "test", Value = "test"},
+                new Claim() {Name = "test2", Value = "test2"},
+            });
         }
     }
 }

@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "cancellationtoken": "^2.0.1",
+    "rxjs": "^6.5.3",
+    "solidrpc": "https://localhost:5001/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/SolidRpc"
+  },
+  "deprecated": false,
+  "devDependencies": {
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.8"
+  },
+  "name": "solidrpc-security-impl-providers",
+  "scripts": {
+    "all": "npm run webpack && npm run copy-all",
+    "webpack": "webpack --mode production",
+    "copy-all": "npm run copy-solidrpc && npm run copy-facebook && npm run copy-google && npm run copy-microsoft",
+    "copy-solidrpc": "cp ./dist/SolidRpcSecurity.LoginScript.js ../../Services",
+    "copy-facebook": "cp ./dist/FacebookLocal.LoginScript.js ../../Services/Facebook",
+    "copy-google": "cp ./dist/GoogleLocal.LoginScript.js ../../Services/Google",
+    "copy-microsoft": "cp ./dist/MicrosoftLocal.LoginScript.js ../../Services/Microsoft"
+  },
+  "types": "./src/types.d.ts",
+  "version": "1.0.0"
+}
