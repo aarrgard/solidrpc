@@ -46,10 +46,12 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// Creates a swagger specification from supplied project.
         /// </summary>
         /// <param name="settings">The settings for generating the code</param>
+        /// <param name="project">The project to analyze</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Project> CreateCodeFromOpenApiSpec(
-            SettingsCodeGen settings, 
+            SettingsCodeGen settings,
+            Project project,
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// <summary>
         /// The swagger json.
         /// </summary>
-        public string SwaggerSpec { get; set; }
+        public string SwaggerSpecFile { get; set; }
 
         /// <summary>
         /// Specifies if we should use the async/await pattern. Setting this 

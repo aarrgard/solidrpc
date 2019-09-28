@@ -15,7 +15,8 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// </summary>
         /// <param name="address"></param>
         /// <param name="openApiSpec"></param>
+        /// <param name="basePath"></param>
         /// <returns></returns>
-        bool TryResolveApiSpec(string address, out IOpenApiSpec openApiSpec);
+        bool TryResolveApiSpec(string address, out IOpenApiSpec openApiSpec, string basePath = null);
     }
 }

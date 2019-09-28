@@ -54,6 +54,7 @@ namespace SolidRpc.OpenApi.Model
             {
                 res = v3Parser.ParseSwaggerDoc(json);
             }
+            res.SetOpenApiSpecResolver(specResolver, address);
             return res;
         }
     }

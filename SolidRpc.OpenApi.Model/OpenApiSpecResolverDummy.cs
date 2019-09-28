@@ -21,8 +21,9 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="address"></param>
         /// <param name="openApiSpec"></param>
+        /// <param name="basePath"></param>
         /// <returns></returns>
-        public bool TryResolveApiSpec(string address, out IOpenApiSpec openApiSpec)
+        public bool TryResolveApiSpec(string address, out IOpenApiSpec openApiSpec, string basePath = null)
         {
             throw new Exception("No resolver registered.");
         }

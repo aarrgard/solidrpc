@@ -521,11 +521,17 @@
             Returns the spec resolver used to find this spec.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetOpenApiSpecResolver(SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver)">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.OpenApiSpecResolverAddress">
             <summary>
-            Sets the openapi resolver
+            Returns the address in the resolver where we can find this spec
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetOpenApiSpecResolver(SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver,System.String)">
+            <summary>
+            Sets the openapi resolver and the address of this specification.
             </summary>
             <param name="openApiSpecResolver"></param>
+            <param name="openApiSpecResolverAddress"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.OpenApiVersion">
             <summary>
@@ -571,12 +577,13 @@
             with resolving referenced specifications.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver.TryResolveApiSpec(System.String,SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec@)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver.TryResolveApiSpec(System.String,SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec@,System.String)">
             <summary>
             Resolves the specification at supplied address.
             </summary>
             <param name="address"></param>
             <param name="openApiSpec"></param>
+            <param name="basePath"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig">

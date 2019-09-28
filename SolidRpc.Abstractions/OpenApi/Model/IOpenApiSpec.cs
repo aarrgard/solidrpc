@@ -19,10 +19,16 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         IOpenApiSpecResolver OpenApiSpecResolver { get; }
 
         /// <summary>
-        /// Sets the openapi resolver
+        /// Returns the address in the resolver where we can find this spec
+        /// </summary>
+        string OpenApiSpecResolverAddress { get; }
+
+        /// <summary>
+        /// Sets the openapi resolver and the address of this specification.
         /// </summary>
         /// <param name="openApiSpecResolver"></param>
-        void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver);
+        /// <param name="openApiSpecResolverAddress"></param>
+        void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver, string openApiSpecResolverAddress);
 
         /// <summary>
         /// The openapi version of this specification

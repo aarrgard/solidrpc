@@ -28,9 +28,14 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
         }
         private IOpenApiParser OpenApiParser { get; }
 
-        public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen codeSettings, CancellationToken cancellationToken)
+        public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen codeSettings, Project project, CancellationToken cancellationToken)
         {
-            var model = OpenApiParser.ParseSpec(null, null, codeSettings.SwaggerSpec);
+            var openApiSpecResolver = new OpenApiSpecResolverProject(OpenApiParser, project);
+            IOpenApiSpec model;
+            if (!openApiSpecResolver.TryResolveApiSpec(codeSettings.SwaggerSpecFile, out model))
+            {
+                throw new Exception($"Failed to find/parse file {codeSettings.SwaggerSpecFile}");
+            }
             ICSharpRepository codeRepo;
             if (model is SwaggerObject v2)
             {

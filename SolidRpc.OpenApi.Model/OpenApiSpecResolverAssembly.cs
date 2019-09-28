@@ -1,7 +1,6 @@
 ﻿using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -21,9 +20,9 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         public OpenApiSpecResolverAssembly(IOpenApiParser openApiParser)
         {
+            OpenApiParser = openApiParser ?? throw new System.ArgumentNullException(nameof(openApiParser));
             OpenApiSpecs = new ConcurrentDictionary<string, IOpenApiSpec>();
             Assemblies = new HashSet<Assembly>();
-            OpenApiParser = openApiParser ?? throw new System.ArgumentNullException(nameof(openApiParser));
         }
 
         private ConcurrentDictionary<string, IOpenApiSpec> OpenApiSpecs { get; }
@@ -67,8 +66,9 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <param name="address"></param>
         /// <param name="openApiSpec"></param>
+        /// <param name="basePath"></param>
         /// <returns></returns>
-        public bool TryResolveApiSpec(string address, out IOpenApiSpec openApiSpec)
+        public bool TryResolveApiSpec(string address, out IOpenApiSpec openApiSpec, string basePath = null)
         {
             openApiSpec = OpenApiSpecs.GetOrAdd(address, _ => {
                 var (a, resName) = GetManifestResource(address);
@@ -77,7 +77,7 @@ namespace SolidRpc.OpenApi.Model
                 using (var sr = new StreamReader(s))
                 {
                     var spec = OpenApiParser.ParseSpec(this, address, sr.ReadToEnd());
-                    spec.SetOpenApiSpecResolver(this);
+                    spec.SetOpenApiSpecResolver(this, address);
                     return spec;
                 }
             });

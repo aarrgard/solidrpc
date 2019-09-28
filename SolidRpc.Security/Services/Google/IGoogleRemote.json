@@ -131,7 +131,7 @@
           "200": {
             "description": "success",
             "schema": {
-              "$ref": "#/definitions/OpenIDConnnectDiscovery"
+              "$ref": "../CommonDefinitions.json#/definitions/OpenIDConnnectDiscovery"
             }
           }
         }
@@ -147,7 +147,7 @@
           "200": {
             "description": "success",
             "schema": {
-              "$ref": "#/definitions/OpenIDKeys"
+              "$ref": "../CommonDefinitions.json#/definitions/OpenIDKeys"
             }
           }
         }
@@ -155,167 +155,5 @@
     }
   },
   "definitions": {
-    "OpenIDConnnectDiscovery": {
-      "properties": {
-        "issuer": {
-          "type": "string",
-          "format": "uri"
-        },
-        "authorization_endpoint": {
-          "type": "string",
-          "format": "uri"
-        },
-        "token_endpoint": {
-          "type": "string",
-          "format": "uri"
-        },
-        "userinfo_endpoint": {
-          "type": "string",
-          "format": "uri"
-        },
-        "revocation_endpoint": {
-          "type": "string",
-          "format": "uri"
-        },
-        "jwks_uri": {
-          "type": "string",
-          "format": "uri"
-        },
-        "scopes_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "response_modes_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "subject_types_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "id_token_signing_alg_values_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "end_session_endpoint": {
-          "type": "string"
-        },
-        "response_types_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "claims_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "token_endpoint_auth_methods_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "code_challenge_methods_supported": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "request_uri_parameter_supported": {
-          "type": "boolean"
-        },
-        "http_logout_supported": {
-          "type": "boolean"
-        },
-        "frontchannel_logout_supported": {
-          "type": "boolean"
-        },
-        "rbac_url": {
-          "type": "string",
-          "format": "uri"
-        },
-        "msgraph_host": {
-          "type": "string"
-        },
-        "cloud_graph_host_name": {
-          "type": "string"
-        },
-        "cloud_instance_name": {
-          "type": "string"
-        },
-        "tenant_region_scope": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "OpenIDKeys": {
-      "properties": {
-        "Keys": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/OpenIDKey"
-          }
-        }
-      },
-      "type": "object"
-    },
-    "OpenIDKey": {
-      "properties": {
-        "alg": {
-          "type": "string",
-          "description": "(Algorithm) Parameter"
-        },
-        "kty": {
-          "type": "string",
-          "description": "(Key Type) Parameter"
-        },
-        "use": {
-          "type": "string",
-          "description": "(Public Key Use) Parameter"
-        },
-        "kid": {
-          "type": "string",
-          "description": "(Key ID) Parameter"
-        },
-        "x5u": {
-          "type": "string",
-          "format": "uri",
-          "description": "(X.509 URL) Parameter"
-        },
-        "x5t": {
-          "type": "string",
-          "description": "(X.509 Certificate SHA-1 Thumbprint) Parameter"
-        },
-        "x5c": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "(X.509 Certificate Chain) Parameter"
-        },
-        "n": {
-          "type": "string"
-        },
-        "e": {
-          "type": "string"
-        },
-        "issuer": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    }
   }
 }

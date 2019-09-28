@@ -50,7 +50,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 Host = "localhost",
                 BasePath = Settings.BasePath,
             };
-            swaggerObject.SetOpenApiSpecResolver(openApiSpecResolver);
+            swaggerObject.SetOpenApiSpecResolver(openApiSpecResolver, "");
             swaggerObject.Paths = CreatePaths(cSharpRepository, swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)
             {

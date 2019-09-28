@@ -113,7 +113,7 @@ namespace System.IO
         {
             var extensions = new[]
             {
-                ".cs", ".csproj"
+                ".cs", ".json", ".csproj"
             };
             foreach (var subDir in dir.GetDirectories())
             {

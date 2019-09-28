@@ -36,4 +36,8 @@
     <EmbeddedResource Include="Services\Microsoft\IMicrosoftRemote.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Types\" />
+  </ItemGroup>
+
 </Project>

@@ -28,6 +28,8 @@ namespace SolidRpc.OpenApi.Model.V3
 
         public IOpenApiSpecResolver OpenApiSpecResolver { get; set; }
 
+        public string OpenApiSpecResolverAddress => throw new NotImplementedException();
+
         public IOpenApiSpec Clone()
         {
             throw new NotImplementedException();
@@ -43,7 +45,7 @@ namespace SolidRpc.OpenApi.Model.V3
             throw new NotImplementedException();
         }
 
-        public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver)
+        public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver, string address)
         {
             throw new NotImplementedException();
         }

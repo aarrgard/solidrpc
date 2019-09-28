@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model.Agnostic;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.V2;
@@ -248,18 +249,32 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             }
             if(!string.IsNullOrEmpty(schema.Ref))
             {
-                var prefix = "#/definitions/";
-                if (schema.Ref.StartsWith(prefix))
+                var parts = schema.Ref.Split('#');
+                if(parts.Length != 2)
                 {
-                    refKey = schema.Ref.Substring(prefix.Length);
-                    var d = SwaggerObject.Definitions[refKey];
-                    var rd = GetSwaggerDefinition(null, d, refs, refKey);
-                    return rd;
+                    throw new Exception($"Cannot handle ref {schema.Ref}");
                 }
-                else
+                var schemaHolder = (IOpenApiSpec)schema.GetParent<SwaggerObject>();
+                if (!string.IsNullOrEmpty(parts[0]))
                 {
-                    throw new Exception("Cannot handle ref.");
+                    if(!schemaHolder.OpenApiSpecResolver.TryResolveApiSpec(parts[0], out schemaHolder, schemaHolder.OpenApiSpecResolverAddress))
+                    {
+                        throw new Exception($"Cannot find open api spec {parts[0]}");
+                    }
                 }
+                var prefix = "/definitions/";
+                if (!parts[1].StartsWith(prefix))
+                {
+                    throw new Exception($"Cannot find open api spec {parts[0]}");
+                }
+                refKey = parts[1].Substring(prefix.Length);
+                var d = ((SwaggerObject)schemaHolder).GetDefinitions()[refKey];
+                if(d == null)
+                {
+                    throw new Exception($"Cannot find open api definition {parts[1]} in file {schemaHolder.OpenApiSpecResolverAddress}");
+                }
+                var rd = GetSwaggerDefinition(null, d, refs, refKey);
+                return rd;
             }
             switch(schema.Type)
             {

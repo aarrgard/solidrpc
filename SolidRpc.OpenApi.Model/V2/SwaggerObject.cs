@@ -12,7 +12,8 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <see cref="https://swagger.io/specification/v2/#swaggerObject"/>
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
-        private IOpenApiSpecResolver _openApiSpecResolver;
+        private IOpenApiSpecResolver _openApiSpecResolver = new OpenApiSpecResolverDummy();
+        private string _openApiSpecResolverAddress = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Constructs a new instance.
@@ -28,12 +29,18 @@ namespace SolidRpc.OpenApi.Model.V2
         public IOpenApiSpecResolver OpenApiSpecResolver => _openApiSpecResolver;
 
         /// <summary>
+        /// Returns the address for this spec.
+        /// </summary>
+        public string OpenApiSpecResolverAddress => _openApiSpecResolverAddress;
+
+        /// <summary>
         /// Sets the open api spec resolver
         /// </summary>
         /// <param name="openApiSpecResolver"></param>
-        public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver)
+        public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver, string address)
         {
             _openApiSpecResolver = openApiSpecResolver;
+            _openApiSpecResolverAddress = address;
         }
 
         /// <summary>
@@ -130,6 +137,19 @@ namespace SolidRpc.OpenApi.Model.V2
         /// The openapi version
         /// </summary>
         public string OpenApiVersion => "2.0";
+
+        /// <summary>
+        /// Returns the definitions object.
+        /// </summary>
+        /// <returns></returns>
+        public DefinitionsObject GetDefinitions()
+        {
+            if(Definitions == null)
+            {
+                Definitions = new DefinitionsObject(this);
+            }
+            return Definitions;
+        }
 
         /// <summary>
         /// Returns the paths object.
