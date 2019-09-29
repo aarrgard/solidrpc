@@ -246,7 +246,7 @@ namespace SolidRpc.OpenApi.Model.V2
             if(parameter == null)
             {
                 parameter = new ParameterObject(this) { Name = parameterName };
-                Parameters = new[] { parameter }.Union(Parameters?? ParameterObject.EmptyList).ToList();
+                Parameters = (Parameters ?? ParameterObject.EmptyList).Union(new[] { parameter }).ToList();
             }
             return parameter;
         }

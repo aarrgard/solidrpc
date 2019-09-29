@@ -126,7 +126,7 @@ namespace SolidRpc.OpenApi.Binder
             return GetOpenApiSpec(parsedSpec, methodAddressTransformer);
         }
 
-        private IOpenApiSpecResolver GetOpenApiSpecResolver(Assembly assembly)
+        public IOpenApiSpecResolver GetOpenApiSpecResolver(Assembly assembly)
         {
             return SpecResolvers.GetOrAdd(assembly.GetName().Name, _ =>
             {

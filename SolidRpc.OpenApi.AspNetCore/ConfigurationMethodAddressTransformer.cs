@@ -27,7 +27,7 @@ namespace SolidRpc.OpenApi.Binder
         public const string ConfigScheme = "SolidRpc.BaseUriTransformer.Scheme";
 
         /// <summary>
-        /// The configuration variable that stores the scheme
+        /// The configuration variable that stores the host
         /// </summary>
         public const string ConfigHost = "SolidRpc.BaseUriTransformer.Host";
 

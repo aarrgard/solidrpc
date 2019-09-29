@@ -11,7 +11,10 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "https://localhost:44367/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml",
       "environmentVariables": {
+        "IISExpressPath": "https://localhost:44367/",
+        "SolidRpc.BaseUriTransformer.HostConfigSettings": "IISExpressPath",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

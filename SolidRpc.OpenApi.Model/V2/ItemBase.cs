@@ -221,5 +221,10 @@ namespace SolidRpc.OpenApi.Model.V2
                 throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
             }
         }
+
+        internal IEnumerable<object> ExpandItemBase(ItemBase o)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

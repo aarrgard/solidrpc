@@ -29,10 +29,10 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// Returns the openapi spec for supplied assembly name.
         /// </summary>
         /// <param name="assemblyName"></param>
-        /// <param name="openApiTitle"></param>
+        /// <param name="openApiSpecResolverAddress">The name of the openapi resource</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiTitle, CancellationToken cancellationToken = default(CancellationToken));
+        Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiSpecResolverAddress, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

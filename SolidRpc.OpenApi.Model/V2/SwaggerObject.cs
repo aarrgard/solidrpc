@@ -216,7 +216,7 @@ namespace SolidRpc.OpenApi.Model.V2
             var newHost = basePath.Host;
             if(!basePath.IsDefaultPort)
             {
-                newHost = $"{Host}:{basePath.Port}";
+                newHost = $"{basePath.Host}:{basePath.Port}";
             }
             string newBasePath;
             if (basePath.AbsolutePath.EndsWith("/"))
@@ -307,6 +307,75 @@ namespace SolidRpc.OpenApi.Model.V2
             ExternalDocs = new ExternalDocumentationObject(this);
             ExternalDocs.Description = description;
             ExternalDocs.Url = indexHtmlPath.ToString();
+        }
+       
+        /// <summary>
+        /// Returns all the operations in this spec
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<OperationObject> GetOperations()
+        {
+            return GetPaths().Select(o => o.Value).SelectMany(o => new[] {
+                o.Delete,
+                o.Get,
+                o.Head,
+                o.Options,
+                o.Patch,
+                o.Post,
+                o.Put,
+            }).Where(o => o != null);
+        }
+
+        /// <summary>
+        /// Returns all the item bases in this spec
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ItemBase> GetItemBases()
+        {
+            var itemBases = GetOperations().SelectMany(o => o.GetParameters().OfType<ItemBase>())
+                .Union(GetOperations().SelectMany(o => o.GetResponses().Select(o2 => o2.Value.Schema)));
+            return itemBases.Where(o => o != null).SelectMany(o => ExpandItemBase(o));
+        }
+
+        private IEnumerable<ItemBase> ExpandItemBase(ItemBase itemBase)
+        {
+            return new[]
+            {
+                itemBase
+            };
+        }
+
+        /// <summary>
+        /// removes the relative paths in all the references.
+        /// </summary>
+        public void RemoveRelativeRefPaths()
+        {
+            // find all the refs
+            GetItemBases().ToList().ForEach(o =>
+            {
+                o.Ref = RemoveRelativeRefPaths(o.Ref);
+            });
+        }
+
+        private string RemoveRelativeRefPaths(string r)
+        {
+            if(r == null)
+            {
+                return r;
+            }
+            if (r.StartsWith("#"))
+            {
+                return r;
+            }
+            if (r.StartsWith("./"))
+            {
+                return RemoveRelativeRefPaths(r.Substring(2));
+            }
+            if (r.StartsWith("../"))
+            {
+                return RemoveRelativeRefPaths(r.Substring(3));
+            }
+            return r;
         }
 
         /// <summary>

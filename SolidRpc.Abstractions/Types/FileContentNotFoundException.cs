@@ -7,12 +7,25 @@ namespace SolidRpc.Abstractions.Types
     /// </summary>
     public class FileContentNotFoundException : Exception
     {
+        private void Init()
+        {
+            Data["HttpStatusCode"] = 404;
+        }
+
         /// <summary>
         /// The file content
         /// </summary>
         public FileContentNotFoundException()
         {
-            Data["HttpStatusCode"] = 404;
+            Init();
+        }
+
+        /// <summary>
+        /// The file content
+        /// </summary>
+        public FileContentNotFoundException(string message) : base(message)
+        {
+            Init();
         }
     }
 }

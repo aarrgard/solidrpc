@@ -67,5 +67,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <param name="description"></param>
         /// <param name="indexHtmlPath"></param>
         void SetExternalDoc(string description, Uri indexHtmlPath);
+
+        /// <summary>
+        /// Removes all the relative paths in the refs. ie. a reference
+        /// to ../../test.json#/definitions/x will become test.json#/definitions/x
+        /// </summary>
+        void RemoveRelativeRefPaths();
     }
 }

@@ -22,19 +22,19 @@
         ],
         "parameters": [
           {
+            "name": "simpleType",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
             "name": "ct1",
             "in": "body",
             "required": false,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
             }
-          },
-          {
-            "name": "simpleType",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "description": ""
           }
         ],
         "responses": {

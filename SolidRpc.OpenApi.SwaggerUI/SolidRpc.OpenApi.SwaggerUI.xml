@@ -42,7 +42,7 @@
             Returns the openapi spec for supplied assembly name.
             </summary>
             <param name="assemblyName"></param>
-            <param name="openApiTitle"></param>
+            <param name="openApiSpecResolverAddress">The name of the openapi resource</param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -71,7 +71,7 @@
             Returns the openapi spec for specified assembly and openapi spec
             </summary>
             <param name="assemblyName"></param>
-            <param name="openApiTitle"></param>
+            <param name="openApiSpecResolverAddress">The address of the openapi spec</param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

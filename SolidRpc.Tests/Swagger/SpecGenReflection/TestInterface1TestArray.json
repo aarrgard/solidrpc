@@ -21,16 +21,6 @@
         ],
         "parameters": [
           {
-            "name": "guids",
-            "in": "path",
-            "required": true,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
             "name": "testStruct",
             "in": "body",
             "required": false,
@@ -39,6 +29,16 @@
               "items": {
                 "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStruct"
               }
+            }
+          },
+          {
+            "name": "guids",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],

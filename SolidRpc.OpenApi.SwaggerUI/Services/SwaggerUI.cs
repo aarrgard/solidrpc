@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.SwaggerUI.Types;
@@ -133,22 +134,43 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// Returns the openapi spec for specified assembly and openapi spec
         /// </summary>
         /// <param name="assemblyName"></param>
-        /// <param name="openApiTitle"></param>
+        /// <param name="openApiSpecResolverAddress">The address of the openapi spec</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiTitle, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiSpecResolverAddress, CancellationToken cancellationToken = default(CancellationToken))
         {
             //
-            // find the bindings
+            // search for the spec using existing bindings.
             //
-            var binders = MethodBinderStore.MethodBinders
+            var openApiSpec = MethodBinderStore.MethodBinders
                 .Where(o => o.Assembly.GetName().Name == assemblyName)
-                .Where(o => o.OpenApiSpec.Title == openApiTitle);
-            if(!binders.Any())
+                .Select(o => o.OpenApiSpec)
+                .Where(o => o.OpenApiSpecResolverAddress == openApiSpecResolverAddress)
+                .FirstOrDefault();
+
+            //
+            // Spec may be imported from other bindings.
+            //
+            if(openApiSpec == null)
             {
-                throw new FileContentNotFoundException();
+                //
+                // find the assembly - must be part of the bindings!
+                //
+                var assembly = MethodBinderStore.MethodBinders
+                    .Where(o => o.Assembly.GetName().Name == assemblyName)
+                    .Select(o => o.Assembly).FirstOrDefault();
+                if (assembly == null)
+                {
+                    throw new FileContentNotFoundException("Assembly not part of any bindings.");
+                }
+
+                var openApiSpecResolver = MethodBinderStore.GetOpenApiSpecResolver(assembly);
+                if (!openApiSpecResolver.TryResolveApiSpec(openApiSpecResolverAddress, out openApiSpec))
+                {
+                    throw new FileContentNotFoundException("Cannot find open api spec in assembly.");
+                }
             }
-            var openApiSpec = binders.First().OpenApiSpec;
+
             //
             // check if there is any content associated
             //
@@ -188,16 +210,16 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             foreach (var mb in MethodBinderStore.MethodBinders)
             {
                 var assemblyName = mb.Assembly.GetName().Name;
-                var openApiTitle = mb.OpenApiSpec.Title;
-                var name = openApiTitle;
-                if(!name.StartsWith(assemblyName))
+                var openApiSpecResolverAddress = mb.OpenApiSpec.OpenApiSpecResolverAddress;
+                var name = mb.OpenApiSpec.Title;
+                if (!name.StartsWith(assemblyName))
                 {
                     name = $"{assemblyName}.{name}";
                 }
                 swaggerUrls.Add(new SwaggerUrl()
                 {
                     Name = name,
-                    Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, openApiTitle, cancellationToken))
+                    Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, cancellationToken))
                 });
             }
             return swaggerUrls

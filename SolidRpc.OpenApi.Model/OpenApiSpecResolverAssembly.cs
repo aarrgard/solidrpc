@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -78,6 +79,7 @@ namespace SolidRpc.OpenApi.Model
                 {
                     var spec = OpenApiParser.ParseSpec(this, address, sr.ReadToEnd());
                     spec.SetOpenApiSpecResolver(this, address);
+                    spec.RemoveRelativeRefPaths();
                     return spec;
                 }
             });

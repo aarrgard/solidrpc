@@ -35,6 +35,11 @@ namespace SolidRpc.OpenApi.Model.V3
             throw new NotImplementedException();
         }
 
+        public void RemoveRelativeRefPaths()
+        {
+            throw new NotImplementedException();
+        }
+
         public IOpenApiSpec SetBaseAddress(Uri baseAddress)
         {
             throw new NotImplementedException();

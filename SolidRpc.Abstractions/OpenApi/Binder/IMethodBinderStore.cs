@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,6 +12,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
     /// </summary>
     public interface IMethodBinderStore
     {
+        /// <summary>
+        /// Returns the open api spec resolver for supplied assembly.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        IOpenApiSpecResolver GetOpenApiSpecResolver(Assembly assembly);
+
         /// <summary>
         /// Returns all the method binders.
         /// </summary>

@@ -194,6 +194,13 @@
             A store that contains bindings for an assebly and open api configuration.
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetOpenApiSpecResolver(System.Reflection.Assembly)">
+            <summary>
+            Returns the open api spec resolver for supplied assembly.
+            </summary>
+            <param name="assembly"></param>
+            <returns></returns>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.MethodBinders">
             <summary>
             Returns all the method binders.
@@ -571,6 +578,12 @@
             <param name="description"></param>
             <param name="indexHtmlPath"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.RemoveRelativeRefPaths">
+            <summary>
+            Removes all the relative paths in the refs. ie. a reference
+            to ../../test.json#/definitions/x will become test.json#/definitions/x
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver">
             <summary>
             This interface defines the logic assocated
@@ -797,6 +810,11 @@
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.Types.FileContentNotFoundException.#ctor">
+            <summary>
+            The file content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentNotFoundException.#ctor(System.String)">
             <summary>
             The file content
             </summary>
