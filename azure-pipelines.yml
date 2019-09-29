@@ -76,7 +76,7 @@ steps:
 #
 # Pack it in a nuget assembly and copy to artifacts folder, then push it
 #
-- script: dotnet pack --no-build --include-source --include-symbols
+- script: dotnet pack --configuration $(buildConfiguration) --no-build --include-source --include-symbols
   displayName: 'Nuget - Create packages'
   workingDirectory: $(projectFolder)
 
