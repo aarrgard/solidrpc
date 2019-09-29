@@ -1,0 +1,55 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "ISolidRpcSecurityClient",
+    "version": "1.0.0",
+    "description": "Defines logic for solid rpc security clients"
+  },
+  "host": "localhost",
+  "schemes": [ "https" ],
+  "basePath": "/SolidRpc/Security/Services",
+  "paths": {
+    "/Client": {
+      "get": {
+        "description": "Returns all the registered clients",
+        "operationId": "GetClient",
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The client ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Client"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Client": {
+      "type": "object",
+      "description": "Represents a client",
+      "properties": {
+        "client_id": {
+          "description": "The id of the client",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the client",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

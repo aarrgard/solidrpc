@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Security.Impl.InternalServices;
 using SolidRpc.Security.Impl.Services;
 using SolidRpc.Security.Impl.Services.Facebook;
 using SolidRpc.Security.Impl.Services.Google;
@@ -9,6 +10,7 @@ using SolidRpc.Security.Services.Google;
 using SolidRpc.Security.Services.Microsoft;
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -27,7 +29,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
         {
-            if(configurator != null)
+            services.AddSingleton<IOpenIDKeyStore, OpenIDKeyStore>();
+            services.AddSingleton<IAccessTokenFactory, AccessTokenFactory>();
+
+            if (configurator != null)
             {
                 services.AddSingleton(sp =>
                 {
@@ -36,7 +41,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     return opts;
                 });
             }
+
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity));
+            services.GetSolidRpcContentStore().AddMapping(
+                "/.well-known/openid-configuration", 
+                (sp) => sp.GetRequiredService<IMethodBinderStore>().GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2Discovery(CancellationToken.None)));
             var sc = new SolidRpcSecurityOptions();
             configurator?.Invoke(null, sc);
             if (sc.AddStaticContent)

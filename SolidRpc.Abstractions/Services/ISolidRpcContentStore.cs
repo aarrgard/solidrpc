@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.Types;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -32,5 +33,12 @@ namespace SolidRpc.Abstractions.Services
         /// <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
         /// <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
         void AddContent(Assembly contentAssembly, string assemblyRelativeName, Assembly apiAssembly);
+
+        /// <summary>
+        /// Use this method to expose a static path to a dynamic resource.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="mapping"></param>
+        void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping);
     }
 }

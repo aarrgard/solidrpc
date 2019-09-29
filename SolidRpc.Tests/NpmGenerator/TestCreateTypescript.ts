@@ -1045,6 +1045,102 @@ export namespace Security {
              * This observable is hot and monitors all the responses from the Profile invocations.
              */
             ProfileObservable : Observable<Security.Types.Claim[]>;
+            /**
+             * Returns the /.well-known/openid-configuration file
+             * @param cancellationToken 
+             */
+            OAuth2Discovery(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.OpenIDConnnectDiscovery>;
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
+             */
+            OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+            /**
+             * Returns the keys
+             * @param cancellationToken 
+             */
+            OAuth2Keys(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.OpenIDKeys>;
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
+             */
+            OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
+            /**
+             * authenticates a user
+             * @param cancellationToken 
+             */
+            OAuth2TokenGet(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.TokenResponse>;
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
+             */
+            OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
+            /**
+             * authenticates a user
+             * @param grantType 
+             * @param clientId 
+             * @param clientSecret 
+             * @param username The user name
+             * @param password The the user password
+             * @param scope The the scopes
+             * @param code The the code
+             * @param redirectUri 
+             * @param codeVerifier 
+             * @param refreshToken 
+             * @param cancellationToken 
+             */
+            OAuth2TokenPost(
+                grantType? : string,
+                clientId? : string,
+                clientSecret? : string,
+                username? : string,
+                password? : string,
+                scope? : string[],
+                code? : string,
+                redirectUri? : string,
+                codeVerifier? : string,
+                refreshToken? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.TokenResponse>;
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
+             */
+            OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
+            /**
+             * authorizes a user
+             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
+             * @param responseType 
+             * @param clientId 
+             * @param redirectUri 
+             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+             * @param cancellationToken 
+             */
+            OAuth2AuthorizeGet(
+                scope : string[],
+                responseType : string,
+                clientId : string,
+                redirectUri? : string,
+                state? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.WebContent>;
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
+             */
+            OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
+            /**
+             * authorizes a user
+             * @param cancellationToken 
+             */
+            OAuth2AuthorizePost(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.WebContent>;
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
+             */
+            OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
         }
         /**
          * Defines logic for solid rpc security
@@ -1062,6 +1158,18 @@ export namespace Security {
                 this.LoginProvidersObservable = this.LoginProvidersSubject.asObservable().pipe(share());
                 this.ProfileSubject = new Subject<Security.Types.Claim[]>();
                 this.ProfileObservable = this.ProfileSubject.asObservable().pipe(share());
+                this.OAuth2DiscoverySubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                this.OAuth2DiscoveryObservable = this.OAuth2DiscoverySubject.asObservable().pipe(share());
+                this.OAuth2KeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                this.OAuth2KeysObservable = this.OAuth2KeysSubject.asObservable().pipe(share());
+                this.OAuth2TokenGetSubject = new Subject<Security.Types.TokenResponse>();
+                this.OAuth2TokenGetObservable = this.OAuth2TokenGetSubject.asObservable().pipe(share());
+                this.OAuth2TokenPostSubject = new Subject<Security.Types.TokenResponse>();
+                this.OAuth2TokenPostObservable = this.OAuth2TokenPostSubject.asObservable().pipe(share());
+                this.OAuth2AuthorizeGetSubject = new Subject<Security.Types.WebContent>();
+                this.OAuth2AuthorizeGetObservable = this.OAuth2AuthorizeGetSubject.asObservable().pipe(share());
+                this.OAuth2AuthorizePostSubject = new Subject<Security.Types.WebContent>();
+                this.OAuth2AuthorizePostObservable = this.OAuth2AuthorizePostSubject.asObservable().pipe(share());
             }
             /**
              * Returns the login page
@@ -1168,6 +1276,168 @@ export namespace Security {
              */
             ProfileObservable : Observable<Security.Types.Claim[]>;
             private ProfileSubject : Subject<Security.Types.Claim[]>;
+            /**
+             * Returns the /.well-known/openid-configuration file
+             * @param cancellationToken 
+             */
+            OAuth2Discovery(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.OpenIDConnnectDiscovery> {
+                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/discovery';
+                return this.request<Security.Types.OpenIDConnnectDiscovery>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                    if(code == 200) {
+                        return new Security.Types.OpenIDConnnectDiscovery(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.OAuth2DiscoverySubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
+             */
+            OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+            private OAuth2DiscoverySubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
+            /**
+             * Returns the keys
+             * @param cancellationToken 
+             */
+            OAuth2Keys(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.OpenIDKeys> {
+                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/keys';
+                return this.request<Security.Types.OpenIDKeys>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                    if(code == 200) {
+                        return new Security.Types.OpenIDKeys(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.OAuth2KeysSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
+             */
+            OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
+            private OAuth2KeysSubject : Subject<Security.Types.OpenIDKeys>;
+            /**
+             * authenticates a user
+             * @param cancellationToken 
+             */
+            OAuth2TokenGet(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.TokenResponse> {
+                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/token';
+                return this.request<Security.Types.TokenResponse>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                    if(code == 200) {
+                        return new Security.Types.TokenResponse(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.OAuth2TokenGetSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
+             */
+            OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
+            private OAuth2TokenGetSubject : Subject<Security.Types.TokenResponse>;
+            /**
+             * authenticates a user
+             * @param grantType 
+             * @param clientId 
+             * @param clientSecret 
+             * @param username The user name
+             * @param password The the user password
+             * @param scope The the scopes
+             * @param code The the code
+             * @param redirectUri 
+             * @param codeVerifier 
+             * @param refreshToken 
+             * @param cancellationToken 
+             */
+            OAuth2TokenPost(
+                grantType? : string,
+                clientId? : string,
+                clientSecret? : string,
+                username? : string,
+                password? : string,
+                scope? : string[],
+                code? : string,
+                redirectUri? : string,
+                codeVerifier? : string,
+                refreshToken? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.TokenResponse> {
+                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/token';
+                return this.request<Security.Types.TokenResponse>('post', uri, null, null, null, cancellationToken, function(code, data) {
+                    if(code == 200) {
+                        return new Security.Types.TokenResponse(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.OAuth2TokenPostSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
+             */
+            OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
+            private OAuth2TokenPostSubject : Subject<Security.Types.TokenResponse>;
+            /**
+             * authorizes a user
+             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
+             * @param responseType 
+             * @param clientId 
+             * @param redirectUri 
+             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+             * @param cancellationToken 
+             */
+            OAuth2AuthorizeGet(
+                scope : string[],
+                responseType : string,
+                clientId : string,
+                redirectUri? : string,
+                state? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.WebContent> {
+                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/authorize';
+                return this.request<Security.Types.WebContent>('get', uri, {
+                    'scope': scope,
+                    'response_type': responseType,
+                    'client_id': clientId,
+                    'redirect_uri': redirectUri,
+                    'state': state,
+}, null, null, cancellationToken, function(code, data) {
+                    if(code == 200) {
+                        return new Security.Types.WebContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.OAuth2AuthorizeGetSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
+             */
+            OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
+            private OAuth2AuthorizeGetSubject : Subject<Security.Types.WebContent>;
+            /**
+             * authorizes a user
+             * @param cancellationToken 
+             */
+            OAuth2AuthorizePost(
+                cancellationToken? : CancellationToken
+            ): Observable<Security.Types.WebContent> {
+                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/authorize';
+                return this.request<Security.Types.WebContent>('post', uri, null, null, null, cancellationToken, function(code, data) {
+                    if(code == 200) {
+                        return new Security.Types.WebContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.OAuth2AuthorizePostSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
+             */
+            OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
+            private OAuth2AuthorizePostSubject : Subject<Security.Types.WebContent>;
         }
         /**
          * Instance for the ISolidRpcSecurity type. Implemented by the SolidRpcSecurityImpl
@@ -1417,7 +1687,7 @@ export namespace Security {
             Subcode: number;
         }
         /**
-         * success
+         * 
          */
         export class LoginProvider {
             constructor(obj?: any) {
@@ -1542,6 +1812,9 @@ export namespace Security {
                         case "scopes_supported":
                             if (obj.scopes_supported) { this.ScopesSupported = Array.from(obj.scopes_supported).map(o => o.toString()); }
                             break;
+                        case "grant_types_supported":
+                            if (obj.grant_types_supported) { this.GrantTypesSupported = Array.from(obj.grant_types_supported).map(o => o.toString()); }
+                            break;
                         case "response_modes_supported":
                             if (obj.response_modes_supported) { this.ResponseModesSupported = Array.from(obj.response_modes_supported).map(o => o.toString()); }
                             break;
@@ -1606,6 +1879,7 @@ export namespace Security {
                 if(this.RevocationEndpoint) { arr.push('revocation_endpoint: '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
                 if(this.JwksUri) { arr.push('jwks_uri: '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
                 if(this.ScopesSupported) { arr.push('scopes_supported: '); this.ScopesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.GrantTypesSupported) { arr.push('grant_types_supported: '); this.GrantTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
                 if(this.ResponseModesSupported) { arr.push('response_modes_supported: '); this.ResponseModesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
                 if(this.SubjectTypesSupported) { arr.push('subject_types_supported: '); this.SubjectTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
                 if(this.IdTokenSigningAlgValuesSupported) { arr.push('id_token_signing_alg_values_supported: '); this.IdTokenSigningAlgValuesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
@@ -1627,19 +1901,19 @@ export namespace Security {
                 return null;
             }
             /**
-             * 
+             * REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
              */
             Issuer: string;
             /**
-             * 
+             * REQUIRED. URL of the OP's OAuth 2.0 Authorization Endpoint [OpenID.Core].
              */
             AuthorizationEndpoint: string;
             /**
-             * 
+             * URL of the OP's OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
              */
             TokenEndpoint: string;
             /**
-             * 
+             * RECOMMENDED. URL of the OP's UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
              */
             UserinfoEndpoint: string;
             /**
@@ -1647,13 +1921,17 @@ export namespace Security {
              */
             RevocationEndpoint: string;
             /**
-             * 
+             * REQUIRED. URL of the OP's JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server's encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key's intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
              */
             JwksUri: string;
             /**
-             * 
+             * RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
              */
             ScopesSupported: string[];
+            /**
+             * OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is ["authorization_code", "implicit"]"
+             */
+            GrantTypesSupported: string[];
             /**
              * 
              */
@@ -1671,7 +1949,7 @@ export namespace Security {
              */
             EndSessionEndpoint: string;
             /**
-             * 
+             * REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
              */
             ResponseTypesSupported: string[];
             /**
@@ -1848,6 +2126,67 @@ export namespace Security {
              * 
              */
             Keys: Security.Types.OpenIDKey[];
+        }
+        /**
+         * success
+         */
+        export class TokenResponse {
+            constructor(obj?: any) {
+                for(let prop in obj) {
+                    switch(prop) {
+                        case "access_token":
+                            if (obj.access_token) { this.AccessToken = obj.access_token.toString(); }
+                            break;
+                        case "token_type":
+                            if (obj.token_type) { this.TokenType = obj.token_type.toString(); }
+                            break;
+                        case "expires_in":
+                            if (obj.expires_in) { this.ExpiresIn = obj.expires_in.toString(); }
+                            break;
+                        case "refresh_token":
+                            if (obj.refresh_token) { this.RefreshToken = obj.refresh_token.toString(); }
+                            break;
+                        case "scope":
+                            if (obj.scope) { this.Scope = Array.from(obj.scope).map(o => o.toString()); }
+                            break;
+                    }
+                }
+            }
+            toJson(arr: string[]): string {
+                let returnString = false
+                if(arr == null) {
+                    arr = [];
+                    returnString = false;
+                }
+                if(this.AccessToken) { arr.push('access_token: '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
+                if(this.TokenType) { arr.push('token_type: '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
+                if(this.ExpiresIn) { arr.push('expires_in: '); arr.push(JSON.stringify(this.ExpiresIn)); arr.push(','); } 
+                if(this.RefreshToken) { arr.push('refresh_token: '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
+                if(this.Scope) { arr.push('scope: '); this.Scope.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                arr.push('}');
+                if(returnString) return arr.join("");
+                return null;
+            }
+            /**
+             * REQUIRED.  The access token issued by the authorization server.
+             */
+            AccessToken: string;
+            /**
+             * REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive.
+             */
+            TokenType: string;
+            /**
+             * RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value '3600' denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value.
+             */
+            ExpiresIn: string;
+            /**
+             * OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6.
+             */
+            RefreshToken: string;
+            /**
+             * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
+             */
+            Scope: string[];
         }
         /**
          * success

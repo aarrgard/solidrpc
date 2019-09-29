@@ -29,5 +29,10 @@ namespace SolidRpc.Abstractions.Services
         /// paths then all the assemly base paths are returned from this property.
         /// </summary>
         IEnumerable<string> PathPrefixes { get; }
+
+        /// <summary>
+        /// Returns all the path mappings.
+        /// </summary>
+        IEnumerable<NameValuePair> PathMappings { get; }
     }
 }

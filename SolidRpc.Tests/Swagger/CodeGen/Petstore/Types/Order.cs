@@ -8,37 +8,37 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="id")]
+        [DataMember(Name="id",EmitDefaultValue=false)]
         public long Id { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="petId")]
+        [DataMember(Name="petId",EmitDefaultValue=false)]
         public long PetId { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="quantity")]
+        [DataMember(Name="quantity",EmitDefaultValue=false)]
         public int Quantity { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="shipDate")]
+        [DataMember(Name="shipDate",EmitDefaultValue=false)]
         public DateTime ShipDate { get; set; }
     
         /// <summary>
         /// Order Status
         /// </summary>
-        [DataMember(Name="status")]
+        [DataMember(Name="status",EmitDefaultValue=false)]
         public string Status { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="complete")]
+        [DataMember(Name="complete",EmitDefaultValue=false)]
         public bool Complete { get; set; }
     
     }

@@ -133,6 +133,7 @@ namespace SolidRpc.Tests
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(ConfigureLogging);
+            services.AddHttpClient();
             services.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             services.AddSolidRpcSingletonServices();

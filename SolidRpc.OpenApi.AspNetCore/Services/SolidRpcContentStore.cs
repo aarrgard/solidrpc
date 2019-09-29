@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services;
@@ -80,6 +81,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public SolidRpcContentStore()
         {
             StaticContents = new List<StaticContent>();
+            DynamicContents = new Dictionary<string, Func<IServiceProvider, Task<Uri>>>();
             ContentTypeProvider = new FileExtensionContentTypeProvider();
             Registrations = new HashSet<string>();
         }
@@ -93,6 +95,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// The registered contents
         /// </summary>
         public IList<StaticContent> StaticContents { get; }
+
+        /// <summary>
+        /// The registered contents
+        /// </summary>
+        public IDictionary<string, Func<IServiceProvider, Task<Uri>>> DynamicContents { get; }
 
         /// <summary>
         /// Keeps track of registrations so that we do not add resources more than once.
@@ -154,6 +161,16 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 }
                 StaticContents.Add(new StaticContent(assembly, resourceName, pathName.ToLower(), absolutePath, apiAssembly, contentType));
             }
+        }
+
+        /// <summary>
+        /// Adds a dynamic mapping between supplied path and the mapping function.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="mapping"></param>
+        public void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping)
+        {
+            DynamicContents[path] = mapping;
         }
     }
 }

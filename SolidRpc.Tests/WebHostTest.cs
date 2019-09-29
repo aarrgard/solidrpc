@@ -11,6 +11,7 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Proxy;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -541,21 +542,24 @@ namespace SolidRpc.Tests
         {
             app.UseDeveloperExceptionPage();
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger(c =>
+            if(app.ApplicationServices.GetService(typeof(ISwaggerProvider)) != null)
             {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => {
-                    swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new string[] { httpReq.Scheme };
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger(c =>
+                {
+                    c.PreSerializeFilters.Add((swaggerDoc, httpReq) => {
+                        swaggerDoc.Host = httpReq.Host.Value;
+                        swaggerDoc.Schemes = new string[] { httpReq.Scheme };
+                    });
                 });
-            });
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
+            }
 
             app.UseSolidRpcProxies();
         }

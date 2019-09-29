@@ -7,19 +7,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="code")]
+        [DataMember(Name="code",EmitDefaultValue=false)]
         public int Code { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="type")]
+        [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="message")]
+        [DataMember(Name="message",EmitDefaultValue=false)]
         public string Message { get; set; }
     
     }

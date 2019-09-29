@@ -7,13 +7,13 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="access_token")]
+        [DataMember(Name="access_token",EmitDefaultValue=false)]
         public string AccessToken { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="token_type")]
+        [DataMember(Name="token_type",EmitDefaultValue=false)]
         public string TokenType { get; set; }
     
     }

@@ -75,6 +75,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 codeWriter.Emit(value.ToString());
                 codeWriter.Emit("\"");
             }
+            else if (value is bool b)
+            {
+                codeWriter.Emit(b ? "true" : "false");
+            }
             else
             {
                 codeWriter.Emit(value.ToString());

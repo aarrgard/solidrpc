@@ -7,13 +7,13 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// The name of the meta data
         /// </summary>
-        [DataMember(Name="name")]
+        [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
     
         /// <summary>
         /// The content of the meta data
         /// </summary>
-        [DataMember(Name="content")]
+        [DataMember(Name="content",EmitDefaultValue=false)]
         public string Content { get; set; }
     
     }

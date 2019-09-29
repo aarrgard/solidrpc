@@ -9,55 +9,55 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="app_id")]
+        [DataMember(Name="app_id",EmitDefaultValue=false)]
         public long AppId { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="type")]
+        [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="application")]
+        [DataMember(Name="application",EmitDefaultValue=false)]
         public string Application { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="data_access_expires_at")]
+        [DataMember(Name="data_access_expires_at",EmitDefaultValue=false)]
         public long DataAccessExpiresAt { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="error")]
+        [DataMember(Name="error",EmitDefaultValue=false)]
         public FacebookDebugTokenDataError Error { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="expires_at")]
+        [DataMember(Name="expires_at",EmitDefaultValue=false)]
         public long ExpiresAt { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="is_valid")]
+        [DataMember(Name="is_valid",EmitDefaultValue=false)]
         public bool IsValid { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="scopes")]
+        [DataMember(Name="scopes",EmitDefaultValue=false)]
         public IEnumerable<string> Scopes { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="user_id")]
+        [DataMember(Name="user_id",EmitDefaultValue=false)]
         public long UserId { get; set; }
     
     }

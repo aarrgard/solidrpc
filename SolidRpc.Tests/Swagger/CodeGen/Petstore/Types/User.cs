@@ -7,49 +7,49 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="id")]
+        [DataMember(Name="id",EmitDefaultValue=false)]
         public long Id { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="username")]
+        [DataMember(Name="username",EmitDefaultValue=false)]
         public string Username { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="firstName")]
+        [DataMember(Name="firstName",EmitDefaultValue=false)]
         public string FirstName { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="lastName")]
+        [DataMember(Name="lastName",EmitDefaultValue=false)]
         public string LastName { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="email")]
+        [DataMember(Name="email",EmitDefaultValue=false)]
         public string Email { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="password")]
+        [DataMember(Name="password",EmitDefaultValue=false)]
         public string Password { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="phone")]
+        [DataMember(Name="phone",EmitDefaultValue=false)]
         public string Phone { get; set; }
     
         /// <summary>
         /// User Status
         /// </summary>
-        [DataMember(Name="userStatus")]
+        [DataMember(Name="userStatus",EmitDefaultValue=false)]
         public int UserStatus { get; set; }
     
     }

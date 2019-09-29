@@ -9,19 +9,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
         /// <summary>
         /// Value1
         /// </summary>
-        [DataMember(Name="value1")]
+        [DataMember(Name="value1",EmitDefaultValue=false)]
         public string Value1 { get; set; }
     
         /// <summary>
         /// Value2
         /// </summary>
-        [DataMember(Name="value2")]
+        [DataMember(Name="value2",EmitDefaultValue=false)]
         public string Value2 { get; set; }
     
         /// <summary>
         /// The children
         /// </summary>
-        [DataMember(Name="children")]
+        [DataMember(Name="children",EmitDefaultValue=false)]
         public IEnumerable<ComplexObject1> Children { get; set; }
     
     }

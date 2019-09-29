@@ -260,7 +260,8 @@ namespace SolidRpc.OpenApi.Model.Generator
                     {
                         var attributeProps = new Dictionary<string, object>()
                         {
-                            {  "Name", prop.DataMember.Name }
+                            {  "Name", prop.DataMember.Name },
+                            {  "EmitDefaultValue", false },
                         };
                         csProp.AddMember(new CSharpAttribute(csProp, typeof(DataMemberAttribute).FullName, attributeProps));
                     }

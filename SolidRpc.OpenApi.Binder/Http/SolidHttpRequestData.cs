@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SolidRpc.OpenApi.Binder.Http
 {
@@ -125,25 +126,25 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemThreadingCancellationToken:
                             return (_) => CancellationToken.None;
                         case SystemBoolean:
-                            return (_) => bool.Parse(_.GetStringValue());
+                            return (_) => bool.Parse(_?.GetStringValue() ?? "0");
                         case SystemDouble:
-                            return (_) => double.Parse(_.GetStringValue());
+                            return (_) => double.Parse(_?.GetStringValue() ?? "0");
                         case SystemSingle:
-                            return (_) => float.Parse(_.GetStringValue());
+                            return (_) => float.Parse(_?.GetStringValue() ?? "0");
                         case SystemInt16:
-                            return (_) => short.Parse(_.GetStringValue());
+                            return (_) => short.Parse(_?.GetStringValue() ?? "0");
                         case SystemInt32:
-                            return (_) => int.Parse(_.GetStringValue());
+                            return (_) => int.Parse(_?.GetStringValue() ?? "0");
                         case SystemInt64:
-                            return (_) => long.Parse(_.GetStringValue());
+                            return (_) => long.Parse(_?.GetStringValue() ?? "0");
                         case SystemGuid:
-                            return (_) => Guid.Parse(_.GetStringValue());
+                            return (_) => Guid.Parse(_?.GetStringValue() ?? "0");
                         case SystemDateTime:
-                            return (_) => DateTime.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                            return (_) => _ == null ? DateTime.MinValue : DateTime.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
                         case SystemUri:
-                            return (_) => new Uri(_.GetStringValue());
+                            return (_) => _ == null ? null : new Uri(_.GetStringValue());
                         case SystemString:
-                            return (_) => _.GetStringValue();
+                            return (_) => _?.GetStringValue();
                         default:
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
@@ -217,7 +218,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                         }
                         else if (values.Length == 2)
                         {
-                            bodyData.Add(new SolidHttpRequestDataString("text/plain", values[0], values[1]));
+                            bodyData.Add(new SolidHttpRequestDataString("text/plain", values[0], HttpUtility.UrlDecode(values[1])));
                         }
                         else
                         {

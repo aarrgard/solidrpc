@@ -8,7 +8,7 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="data")]
+        [DataMember(Name="data",EmitDefaultValue=false)]
         public FacebookDebugTokenData Data { get; set; }
     
     }

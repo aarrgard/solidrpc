@@ -13,7 +13,7 @@ using SolidRpc.Security.Services.Google;
 using SolidRpc.Security.Services.Facebook;
 using SolidRpc.Security.Impl.Services.Facebook;
 
-namespace SolidRpc.Tests.Swagger
+namespace SolidRpc.Tests.Security
 {
     /// <summary>
     /// Tests security functionality.

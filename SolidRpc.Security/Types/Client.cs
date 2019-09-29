@@ -1,17 +1,17 @@
 using System.Runtime.Serialization;
-namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
+namespace SolidRpc.Security.Types {
     /// <summary>
     /// 
     /// </summary>
-    public class Tag {
+    public class Client {
         /// <summary>
-        /// 
+        /// The id of the client
         /// </summary>
-        [DataMember(Name="id",EmitDefaultValue=false)]
-        public long Id { get; set; }
+        [DataMember(Name="client_id",EmitDefaultValue=false)]
+        public string ClientId { get; set; }
     
         /// <summary>
-        /// 
+        /// The name of the client
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

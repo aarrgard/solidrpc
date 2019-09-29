@@ -8,6 +8,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,16 +24,26 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// The content handler
         /// </summary>
+        /// <param name="serviceProvider"></param>
         /// <param name="contentStore"></param>
         /// <param name="methodBinderStore"></param>
-        public SolidRpcContentHandler(SolidRpcContentStore contentStore, IMethodBinderStore methodBinderStore)
+        public SolidRpcContentHandler(
+            IServiceProvider serviceProvider,
+            SolidRpcContentStore contentStore, 
+            IMethodBinderStore methodBinderStore,
+            IHttpClientFactory httpClientFactory)
         {
+            ServiceProvider = serviceProvider;
             ContentStore = contentStore;
             MethodBinderStore = methodBinderStore;
+            HttpClientFactory = httpClientFactory;
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
+
+        private IServiceProvider ServiceProvider { get; }
         private SolidRpcContentStore ContentStore { get; }
         private IMethodBinderStore MethodBinderStore { get; }
+        private IHttpClientFactory HttpClientFactory { get; }
 
         /// <summary>
         /// The static files configured for this host
@@ -49,6 +61,20 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             }
         }
 
+        /// <summary>
+        /// Returns the path mappings
+        /// </summary>
+        public IEnumerable<NameValuePair> PathMappings
+        {
+            get
+            {
+                return ContentStore.DynamicContents.Select(o => new NameValuePair()
+                {
+                    Name = o.Key,
+                    Value = o.Value(ServiceProvider).ToString()
+                });
+            }
+        }
 
         /// <summary>
         /// Returns 
@@ -82,6 +108,31 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
         private Func<string, CancellationToken, Task<FileContent>> GetStaticContentInternal(string path)
         {
+            //
+            // check path mappings
+            //
+            if(ContentStore.DynamicContents.TryGetValue(path, out Func<IServiceProvider, Task<Uri>> fetcher))
+            {
+                return async (_, cancellationToken) =>
+                {
+                    var uri = await fetcher(ServiceProvider);
+                    var httpClient = HttpClientFactory.CreateClient();
+                    var resp = await httpClient.GetAsync(uri, cancellationToken);
+                    var ms = new MemoryStream();
+                    await resp.Content.CopyToAsync(ms);
+
+                    return new FileContent()
+                    {
+                        Content = new MemoryStream(ms.ToArray()),
+                        CharSet = resp.Content?.Headers?.ContentType?.CharSet,
+                        ContentType = resp.Content?.Headers?.ContentType?.MediaType
+                    };
+                };
+            }
+
+            //
+            // check static content
+            //
             var pathMappings = ContentStore.StaticContents.SelectMany(o => GetPathPrefixes(o).Select(o2 => new
             {
                 PathPrefix = o2,
@@ -96,7 +147,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
             if (!staticFiles.Any())
             {
-                return (_, cancellationToken) => throw new FileContentNotFoundException();
+                return (_, cancellationToken) =>
+                {
+                    throw new FileContentNotFoundException($"Cannot locate resource {_}");
+                };
             }
             var staticFile = staticFiles.First();
 

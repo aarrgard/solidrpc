@@ -9,37 +9,37 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="id")]
+        [DataMember(Name="id",EmitDefaultValue=false)]
         public long Id { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="category")]
+        [DataMember(Name="category",EmitDefaultValue=false)]
         public Category Category { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="name")]
+        [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="photoUrls")]
+        [DataMember(Name="photoUrls",EmitDefaultValue=false)]
         public IEnumerable<string> PhotoUrls { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="tags")]
+        [DataMember(Name="tags",EmitDefaultValue=false)]
         public IEnumerable<Tag> Tags { get; set; }
     
         /// <summary>
         /// pet status in the store
         /// </summary>
-        [DataMember(Name="status")]
+        [DataMember(Name="status",EmitDefaultValue=false)]
         public string Status { get; set; }
     
     }

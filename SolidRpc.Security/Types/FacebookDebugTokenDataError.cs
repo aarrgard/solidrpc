@@ -7,19 +7,19 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="code")]
+        [DataMember(Name="code",EmitDefaultValue=false)]
         public long Code { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="message")]
+        [DataMember(Name="message",EmitDefaultValue=false)]
         public string Message { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
-        [DataMember(Name="subcode")]
+        [DataMember(Name="subcode",EmitDefaultValue=false)]
         public long Subcode { get; set; }
     
     }

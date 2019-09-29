@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,11 @@ namespace Microsoft.AspNetCore.Builder
             {
                 dict[$"GET{path}"] = new PathHandler("*") { ContentHandler = contentHandler };
                 dict[$"HEAD{path}"] = new PathHandler("*") { ContentHandler = contentHandler };
+            }
+            foreach (var path in contentHandler.PathMappings)
+            {
+                dict[$"GET{path.Name}"] = new PathHandler("*") { ContentHandler = contentHandler };
+                dict[$"HEAD{path.Name}"] = new PathHandler("*") { ContentHandler = contentHandler };
             }
 
             var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
@@ -203,15 +209,22 @@ namespace Microsoft.AspNetCore.Builder
             {
                 return;
             }
-            // get content
-            var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
-            var content = await contentHandler.GetContent(path, ctx.RequestAborted);
+            try
+            {
+                // get content
+                var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
+                var content = await contentHandler.GetContent(path, ctx.RequestAborted);
 
-            // send response
-            ctx.Response.StatusCode = 200;
-            var charset = string.IsNullOrEmpty(content.CharSet) ? "" : $"; charset=\"{content.CharSet}\"";
-            ctx.Response.ContentType = $"{content.ContentType}{charset}";
-            await content.Content.CopyToAsync(ctx.Response.Body);
+                // send response
+                ctx.Response.StatusCode = 200;
+                var charset = string.IsNullOrEmpty(content.CharSet) ? "" : $"; charset=\"{content.CharSet}\"";
+                ctx.Response.ContentType = $"{content.ContentType}{charset}";
+                await content.Content.CopyToAsync(ctx.Response.Body);
+            } 
+            catch(FileContentNotFoundException)
+            {
+                ctx.Response.StatusCode = 404;
+            }
         }
 
         private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, IMethodBinding methodInfo, HttpContext context)

@@ -186,6 +186,69 @@
             </summary>
             <param name="cancellationToken"></param>
         </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.OAuth2Discovery(System.Threading.CancellationToken)">
+            <summary>
+            Returns the /.well-known/openid-configuration file
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.OAuth2Keys(System.Threading.CancellationToken)">
+            <summary>
+            Returns the keys
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.OAuth2TokenGet(System.Threading.CancellationToken)">
+            <summary>
+            authenticates a user
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.OAuth2TokenPost(System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            authenticates a user
+            </summary>
+            <param name="grantType">The the grant type</param>
+            <param name="clientId">The the client id</param>
+            <param name="clientSecret">The client secret</param>
+            <param name="username">The user name</param>
+            <param name="password">The the user password</param>
+            <param name="scope">The the scopes</param>
+            <param name="code">The the code</param>
+            <param name="redirectUri">The the redirect uri</param>
+            <param name="codeVerifier">The the code verifier</param>
+            <param name="refreshToken">The the refresh token</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.OAuth2AuthorizeGet(System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            authorizes a user
+            </summary>
+            <param name="scope">REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.</param>
+            <param name="responseType">REQUIRED. OAuth 2.0 Response Type value that determines the authorization processing flow to be used, including what parameters are returned from the endpoints used. When using the Authorization Code Flow, this value is code.</param>
+            <param name="clientId">REQUIRED. OAuth 2.0 Client Identifier valid at the Authorization Server.</param>
+            <param name="redirectUri">REQUIRED. Redirection URI to which the response will be sent. This URI MUST exactly match one of the Redirection URI values for the Client pre-registered at the OpenID Provider, with the matching performed as described in Section 6.2.1 of [RFC3986] (Simple String Comparison). When using this flow, the Redirection URI SHOULD use the https scheme; however, it MAY use the http scheme, provided that the Client Type is confidential, as defined in Section 2.1 of OAuth 2.0, and provided the OP allows the use of http Redirection URIs in this case. The Redirection URI MAY use an alternate scheme, such as one that is intended to identify a callback into a native application.</param>
+            <param name="state">RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurity.OAuth2AuthorizePost(System.Threading.CancellationToken)">
+            <summary>
+            authorizes a user
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Security.Services.ISolidRpcSecurityClient">
+            <summary>
+            Defines logic for solid rpc security clients
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Security.Services.ISolidRpcSecurityClient.GetClient(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns all the registered clients
+            </summary>
+            <param name="clientId">The client ID.</param>
+            <param name="cancellationToken"></param>
+        </member>
         <member name="T:SolidRpc.Security.Services.Microsoft.IMicrosoftLocal">
             <summary>
             Defines logic for the callback from microsoft
@@ -254,6 +317,11 @@
             <param name="tenant">You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers</param>
             <param name="cancellationToken"></param>
         </member>
+        <member name="T:SolidRpc.Security.Types.AuthorizeResponse">
+            <summary>
+            success
+            </summary>
+        </member>
         <member name="T:SolidRpc.Security.Types.Claim">
             <summary>
             
@@ -267,6 +335,21 @@
         <member name="P:SolidRpc.Security.Types.Claim.Value">
             <summary>
             The value of the claim
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.Client">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.Client.ClientId">
+            <summary>
+            The id of the client
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.Client.Name">
+            <summary>
+            The name of the client
             </summary>
         </member>
         <member name="T:SolidRpc.Security.Types.FacebookAccessToken">
@@ -366,7 +449,7 @@
         </member>
         <member name="T:SolidRpc.Security.Types.LoginProvider">
             <summary>
-            success
+            
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.LoginProvider.Name">
@@ -416,22 +499,22 @@
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.Issuer">
             <summary>
-            
+            REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.AuthorizationEndpoint">
             <summary>
-            
+            REQUIRED. URL of the OP&#39;s OAuth 2.0 Authorization Endpoint [OpenID.Core].
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.TokenEndpoint">
             <summary>
-            
+            URL of the OP&#39;s OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.UserinfoEndpoint">
             <summary>
-            
+            RECOMMENDED. URL of the OP&#39;s UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.RevocationEndpoint">
@@ -441,12 +524,17 @@
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.JwksUri">
             <summary>
-            
+            REQUIRED. URL of the OP&#39;s JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server&#39;s encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key&#39;s intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ScopesSupported">
             <summary>
-            
+            RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.GrantTypesSupported">
+            <summary>
+            OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is [&quot;authorization_code&quot;, &quot;implicit&quot;]&quot;
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ResponseModesSupported">
@@ -471,7 +559,7 @@
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ResponseTypesSupported">
             <summary>
-            
+            REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.OpenIDConnnectDiscovery.ClaimsSupported">
@@ -592,6 +680,36 @@
         <member name="P:SolidRpc.Security.Types.OpenIDKeys.Keys">
             <summary>
             
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Security.Types.TokenResponse">
+            <summary>
+            success
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.TokenResponse.AccessToken">
+            <summary>
+            REQUIRED.  The access token issued by the authorization server.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.TokenResponse.TokenType">
+            <summary>
+            REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.TokenResponse.ExpiresIn">
+            <summary>
+            RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value &#39;3600&#39; denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.TokenResponse.RefreshToken">
+            <summary>
+            OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.TokenResponse.Scope">
+            <summary>
+            OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
             </summary>
         </member>
         <member name="T:SolidRpc.Security.Types.WebContent">
