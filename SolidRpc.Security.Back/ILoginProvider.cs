@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.Services
+namespace SolidRpc.Security.Back.Services
 {
     /// <summary>
     /// Interface implemented by all the login providers.

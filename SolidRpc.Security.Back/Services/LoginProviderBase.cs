@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.Services
+namespace SolidRpc.Security.Back.Services
 {
     public abstract class LoginProviderBase : ILoginProvider
     {

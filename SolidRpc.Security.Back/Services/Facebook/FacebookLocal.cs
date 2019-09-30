@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.Services.Facebook
+namespace SolidRpc.Security.Back.Services.Facebook
 {
     public class FacebookLocal : LoginProviderBase, IFacebookLocal
     {

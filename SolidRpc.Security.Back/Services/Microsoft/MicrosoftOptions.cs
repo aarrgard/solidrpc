@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.Security.Impl.Services.Microsoft
+namespace SolidRpc.Security.Back.Services.Microsoft
 {
     /// <summary>
     /// Contains options for the Microsoft integration

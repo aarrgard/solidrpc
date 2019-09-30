@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.Services.Microsoft
+namespace SolidRpc.Security.Back.Services.Microsoft
 {
     public class MicrosoftLocal : LoginProviderBase, IMicrosoftLocal
     {

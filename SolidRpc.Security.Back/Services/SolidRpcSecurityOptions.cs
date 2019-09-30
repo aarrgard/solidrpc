@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.Security.Impl.Services
+namespace SolidRpc.Security.Back.Services
 {
     /// <summary>
     /// Contains options for the 

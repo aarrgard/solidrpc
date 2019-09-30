@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Security.Impl.InternalServices;
+using SolidRpc.Security.Back.InternalServices;
 using SolidRpc.Security.Services;
 using SolidRpc.Security.Types;
 using System;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.Services
+namespace SolidRpc.Security.Back.Services
 {
     public class SolidRpcSecurity : ISolidRpcSecurity
     {

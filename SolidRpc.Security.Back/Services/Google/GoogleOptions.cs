@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.Security.Impl.Services.Google
+namespace SolidRpc.Security.Back.Services.Google
 {
     /// <summary>
     /// Contains options for the google integration

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SolidRpc.Security.Impl.InternalServices
+namespace SolidRpc.Security.Back.InternalServices
 {
     /// <summary>
     /// This interface defines logic to interact with the jwt token factory.

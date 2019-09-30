@@ -13,7 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctionsV1\SolidRpc.OpenApi.AzFunctionsV1Extension.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
-    <ProjectReference Include="..\SolidRpc.Security.Impl\SolidRpc.Security.Impl.csproj" />
+    <ProjectReference Include="..\SolidRpc.Security.Back\SolidRpc.Security.Back.csproj" />
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore.Impl\SolidRpc.Test.Petstore.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />

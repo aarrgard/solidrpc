@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.Services.Google
+namespace SolidRpc.Security.Back.Services.Google
 {
     public class GoogleLocal : LoginProviderBase, IGoogleLocal
     {

@@ -2,7 +2,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace SolidRpc.Security.Impl.InternalServices
+namespace SolidRpc.Security.Back.InternalServices
 {
     /// <summary>
     /// Represents a jwt access token.

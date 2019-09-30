@@ -1,9 +1,9 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Security.Impl.InternalServices;
-using SolidRpc.Security.Impl.Services;
-using SolidRpc.Security.Impl.Services.Facebook;
-using SolidRpc.Security.Impl.Services.Google;
-using SolidRpc.Security.Impl.Services.Microsoft;
+using SolidRpc.Security.Back.InternalServices;
+using SolidRpc.Security.Back.Services;
+using SolidRpc.Security.Back.Services.Facebook;
+using SolidRpc.Security.Back.Services.Google;
+using SolidRpc.Security.Back.Services.Microsoft;
 using SolidRpc.Security.Services;
 using SolidRpc.Security.Services.Facebook;
 using SolidRpc.Security.Services.Google;

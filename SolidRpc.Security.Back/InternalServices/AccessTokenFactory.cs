@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.InternalServices
+namespace SolidRpc.Security.Back.InternalServices
 {
     /// <summary>
     /// Implements the jwt token factory

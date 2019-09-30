@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.Security.Impl.Services.Facebook
+namespace SolidRpc.Security.Back.Services.Facebook
 {
     /// <summary>
     /// The options for using the facebook login

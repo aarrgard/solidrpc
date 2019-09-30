@@ -11,7 +11,7 @@ using System.Linq;
 using SolidRpc.Security.Services.Microsoft;
 using SolidRpc.Security.Services.Google;
 using SolidRpc.Security.Services.Facebook;
-using SolidRpc.Security.Impl.Services.Facebook;
+using SolidRpc.Security.Back.Services.Facebook;
 
 namespace SolidRpc.Tests.Security
 {

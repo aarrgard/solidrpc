@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Impl.InternalServices
+namespace SolidRpc.Security.Back.InternalServices
 {
     /// <summary>
     /// The keystore contains all the active keys.
