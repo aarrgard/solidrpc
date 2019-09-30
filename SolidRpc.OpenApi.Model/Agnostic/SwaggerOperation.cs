@@ -41,5 +41,10 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         /// The description
         /// </summary>
         public SwaggerDescription OperationDescription { get; set; }
+
+        /// <summary>
+        /// The security definitions
+        /// </summary>
+        public IEnumerable<IDictionary<string, IEnumerable<string>>> Security { get; set; }
     }
 }

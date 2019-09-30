@@ -84,7 +84,8 @@ namespace SolidRpc.OpenApi.Model.Generator
                         Description = o.Description
                     }).ToList(),
                     ClassSummary = MapDescription(GetOperationTag(operation).Description),
-                    MethodSummary = MapDescription(operation.OperationDescription)
+                    MethodSummary = MapDescription(operation.OperationDescription),
+                    SecurityAttribute = MapSecurity(operation.Security)
                 };
             };
             DefinitionMapper = (settings, swaggerDef) =>
@@ -138,6 +139,25 @@ namespace SolidRpc.OpenApi.Model.Generator
             ParameterNameMapper = (s) => { return CreateCamelCase(s, false); };
             PropertyNameMapper = (s) => { return CreateCamelCase(s, true); };
             ExceptionNameMapper = (s) => { return NameEndsWith(CreateCamelCase(s, true), "Exception"); };
+            SecurityDefinitionMapper = (s) => { return NameEndsWith(CreateCamelCase(s, true), "Attribute"); };
+        }
+
+        private IEnumerable<IDictionary<string, IEnumerable<string>>> MapSecurity(IEnumerable<IDictionary<string, IEnumerable<string>>> security)
+        {
+            return security.Select(o => MapSecurity(o)).ToList();
+        }
+
+        private IDictionary<string, IEnumerable<string>> MapSecurity(IDictionary<string, IEnumerable<string>> security)
+        {
+            return security.ToList().ToDictionary(o => {
+                var className = new QualifiedName(
+                      CodeSettings.ProjectNamespace,
+                      CodeSettings.CodeNamespace,
+                      CodeSettings.SecurityNamespace,
+                      SecurityDefinitionMapper(o.Key));
+
+                return className.ToString();
+            }, o => o.Value);
         }
 
         private SwaggerTag GetOperationTag(SwaggerOperation swaggerOperation)
@@ -213,6 +233,11 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// Function that maps the description of the return type on to an exception name.
         /// </summary>
         public Func<string, string> ExceptionNameMapper { get; set; }
+
+        /// <summary>
+        /// Function that maps the name of a security definition on to a class name(Attribute).
+        /// </summary>
+        public Func<string, string> SecurityDefinitionMapper { get; set; }
 
         /// <summary>
         /// Generates code 

@@ -51,5 +51,10 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         /// The summary for the method
         /// </summary>
         public CSharpDescription MethodSummary { get; set; }
+
+        /// <summary>
+        /// The security attribute
+        /// </summary>
+        public IEnumerable<IDictionary<string, IEnumerable<string>>> SecurityAttribute { get; set; }
     }
 }

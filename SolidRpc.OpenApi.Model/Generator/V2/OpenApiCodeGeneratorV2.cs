@@ -49,6 +49,24 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         /// <param name="cSharpRepository"></param>
         protected override void GenerateCode(ICSharpRepository cSharpRepository)
         {
+            //
+            // map security definitions on to attributes
+            //  
+            SwaggerObject.GetSecurityDefinitions().ToList().ForEach(o =>
+            {
+                var className = new QualifiedName(
+                      CodeSettings.ProjectNamespace,
+                      CodeSettings.CodeNamespace,
+                      CodeSettings.SecurityNamespace,
+                      SecurityDefinitionMapper(o.Key));
+
+                var securityAttribute = cSharpRepository.GetClass(className);
+                securityAttribute.AddExtends(cSharpRepository.GetClass(typeof(Attribute).FullName));
+
+                var scopes = new CSharp.Impl.CSharpProperty(securityAttribute, "Scopes", cSharpRepository.GetClass(typeof(string[]).FullName));
+                securityAttribute.AddMember(scopes);
+            });
+
             // iterate all operations
             var cSharpMethods = Operations.Select(op =>
             {
@@ -59,6 +77,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 swaggerOperation.Exceptions = GetExceptions(swaggerOperation, op);
                 swaggerOperation.ReturnType = GetReturnType(swaggerOperation, op);
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.GetParameters());
+                swaggerOperation.Security = CreateSecurity(op.Security);
                 return OperationMapper(CodeSettings, swaggerOperation);
             }).ToList();
 
@@ -94,6 +113,20 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 var m = new Model.CSharp.Impl.CSharpMethod(i, csm.MethodName, returnType);
                 m.ParseComment(comment);
 
+                foreach (var attrGroup in csm.SecurityAttribute)
+                {
+                    foreach (var attr in attrGroup)
+                    {
+                        var attrData = new Dictionary<string, object>();
+                        if(attr.Value.Any())
+                        {
+                            attrData["Scopes"] = attr.Value;
+                        }
+                        var csAttr = new Model.CSharp.Impl.CSharpAttribute(m, attr.Key, attrData);
+                        m.AddMember(csAttr);
+                    }
+                }
+
                 foreach (var p in csm.Parameters.OrderBy(o => o.Optional ? 1 : 0))
                 {
                     var parameterType = GetClass(cSharpRepository, p.ParameterType);
@@ -124,6 +157,15 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 GetClass(cSharpRepository, cSharpObject);
             });
           }
+
+        private IEnumerable<IDictionary<string, IEnumerable<string>>> CreateSecurity(IEnumerable<SecurityRequirementObject> security)
+        {
+            if(security == null)
+            {
+                return new IDictionary<string, IEnumerable<string>>[0];
+            }
+            return security.Select(o => (IDictionary<string, IEnumerable<string>>)o.ToDictionary(o2 => o2.Key, o2 => o2.Value)).ToArray();
+        }
 
         private IEnumerable<SwaggerTag> GetTags(OperationObject op)
         {

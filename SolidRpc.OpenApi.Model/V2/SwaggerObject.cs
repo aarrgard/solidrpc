@@ -387,5 +387,18 @@ namespace SolidRpc.OpenApi.Model.V2
         /// Returns the title.
         /// </summary>
         public string Title => Info?.Title ?? "Unknown";
+
+        /// <summary>
+        /// Returns the security definitions object. Creates one if null.
+        /// </summary>
+        /// <returns></returns>
+        public SecurityDefinitionsObject GetSecurityDefinitions()
+        {
+            if(SecurityDefinitions == null)
+            {
+                SecurityDefinitions = new SecurityDefinitionsObject(this);
+            }
+            return SecurityDefinitions;
+        }
     }
 }

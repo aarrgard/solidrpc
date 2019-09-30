@@ -75,6 +75,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 codeWriter.Emit(value.ToString());
                 codeWriter.Emit("\"");
             }
+            else if (value is IEnumerable<string> strArr)
+            {
+                codeWriter.Emit("new [] {");
+                codeWriter.Emit(string.Join(",", strArr.Select(o => $"\"{o}\"")));
+                codeWriter.Emit("}");
+            }
             else if (value is bool b)
             {
                 codeWriter.Emit(b ? "true" : "false");

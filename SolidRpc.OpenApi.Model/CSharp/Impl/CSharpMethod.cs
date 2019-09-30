@@ -69,6 +69,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 codeWriter.Emit($"/// <exception cref=\"{e.Cref}\">{e.Description}</exception>{codeWriter.NewLine}");
             });
+            Members.OfType<ICSharpAttribute>().ToList().ForEach(o => o.WriteCode(codeWriter));
             codeWriter.Emit($"{SimplifyName(ReturnType.FullName)} {Name}(");
             for (int i = 0; i < parameters.Count; i++)
             {

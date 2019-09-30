@@ -16,6 +16,7 @@ namespace SolidRpc.OpenApi.Model.Generator
         {
             TypeNamespace = "Types";
             ServiceNamespace = "Services";
+            SecurityNamespace = "Security";
         }
         /// <summary>
         /// The namespace that the project belongs to. This namespace 
@@ -38,6 +39,11 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// The namespace to append to the root namespace for all the services(interfaces)
         /// </summary>
         public string ServiceNamespace { get; set; }
+
+        /// <summary>
+        /// The namespace where the security attributes are stored
+        /// </summary>
+        public string SecurityNamespace { get; set; }
 
     }
 }

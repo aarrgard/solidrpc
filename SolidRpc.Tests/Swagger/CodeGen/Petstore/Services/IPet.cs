@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using SolidRpc.Tests.Swagger.CodeGen.Petstore.Security;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System.Threading;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="body">Pet object that needs to be added to the store</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.AddPet.InvalidInputException">Invalid input</exception>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task AddPet(
             Pet body,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -27,6 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.UpdatePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.UpdatePet.PetNotFoundException">Pet not found</exception>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.UpdatePet.ValidationException">Validation exception</exception>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task UpdatePet(
             Pet body,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -37,6 +40,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="status">Status values that need to be considered for filter</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.FindPetsByStatus.InvalidStatusValueException">Invalid status value</exception>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task<IEnumerable<Pet>> FindPetsByStatus(
             IEnumerable<string> status,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -47,6 +51,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="tags">Tags to filter by</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.FindPetsByTags.InvalidTagValueException">Invalid tag value</exception>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task<IEnumerable<Pet>> FindPetsByTags(
             IEnumerable<string> tags,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -59,6 +64,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">Pet not found</exception>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task DeletePet(
             long petId,
             string apiKey = default(string),
@@ -71,6 +77,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.GetPetById.InvalidIDSuppliedException">Invalid ID supplied</exception>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.GetPetById.PetNotFoundException">Pet not found</exception>
+        [ApiKey]
         Task<Pet> GetPetById(
             long petId,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -83,6 +90,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="status">Updated status of the pet</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">Invalid input</exception>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task UpdatePetWithForm(
             long petId,
             string name = default(string),
@@ -96,6 +104,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
         /// <param name="additionalMetadata">Additional data to pass to server</param>
         /// <param name="file">file to upload</param>
         /// <param name="cancellationToken"></param>
+        [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task<ApiResponse> UploadFile(
             long petId,
             string additionalMetadata = default(string),

@@ -44,10 +44,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
            }
 
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
-            path = Path.Combine(path, "Swagger");
-            path = Path.Combine(path, "CodeGen");
-            path = Path.Combine(path, "Local");
-            path = Path.Combine(path, "swagger.json");
+            path = Path.Combine(path, "Swagger", "CodeGen", "Local", "swagger.json");
             var fi = new FileInfo(path);
             using (var tw = fi.CreateText())
             {
@@ -62,8 +59,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         public void TestCodeGen()
         {
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
-            path = Path.Combine(path, "Swagger");
-            path = Path.Combine(path, "CodeGen");
+            path = Path.Combine(path, "Swagger", "CodeGen");
             var dir = new DirectoryInfo(path);
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
