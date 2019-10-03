@@ -336,6 +336,10 @@ namespace SolidRpc.Tests
                 {
                     return ((DateTime)(object)value).ToString("yyyy-MM-ddTHH:mm:ss");
                 }
+                if (typeof(DateTimeOffset) == typeof(T))
+                {
+                    return ((DateTimeOffset)(object)value).ToString("yyyy-MM-ddTHH:mm:sszzz");
+                }
                 if (typeof(int) == typeof(T))
                 {
                     return value.ToString();

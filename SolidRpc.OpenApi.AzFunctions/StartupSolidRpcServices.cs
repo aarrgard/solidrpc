@@ -43,6 +43,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
                     //o.AddProvider(new TraceWriterLoggerProvider());
                 });
             }
+            services.AddHttpClient();
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
             services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();

@@ -31,6 +31,6 @@ namespace SolidRpc.Abstractions.Types
         /// <summary>
         /// The last modified date of the resource.
         /// </summary>
-        public DateTime? LastModified { get; set; }
+        public DateTimeOffset? LastModified { get; set; }
     }
 }

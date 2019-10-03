@@ -176,8 +176,10 @@ namespace SolidRpc.OpenApi.Model.V2
                             return typeof(string);
                         case "binary":
                             return typeof(Stream);
-                        case "date-time":
+                        case "date":
                             return typeof(DateTime);
+                        case "date-time":
+                            return typeof(DateTimeOffset);
                         case "uuid":
                             return typeof(Guid);
                         case "uri":

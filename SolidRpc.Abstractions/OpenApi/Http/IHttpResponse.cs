@@ -26,7 +26,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <summary>
         /// Accessor for the "Last-Modified" header.
         /// </summary>
-        DateTime? LastModified { get; set; }
+        DateTimeOffset? LastModified { get; set; }
 
         /// <summary>
         /// Returns the response stream

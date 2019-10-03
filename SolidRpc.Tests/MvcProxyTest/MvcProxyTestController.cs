@@ -162,6 +162,17 @@ namespace SolidRpc.Tests.MvcProxyTest
         }
 
         /// <summary>
+        /// Sends a datetimeoffset back and forth between client and server
+        /// </summary>
+        /// <param name="d">The datetime to proxy</param>
+        /// <returns>the supplied datetime</returns>
+        [HttpGet]
+        public Task<DateTimeOffset> ProxyDateTimeOffsetInQuery([FromQuery]DateTimeOffset d)
+        {
+            return Task.FromResult(d);
+        }
+
+        /// <summary>
         /// Sends a datetime back and forth between client and server
         /// </summary>
         /// <param name="d">The datetime to proxy</param>

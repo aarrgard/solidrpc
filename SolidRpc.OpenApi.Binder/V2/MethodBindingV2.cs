@@ -452,6 +452,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 response.ContentType = retContentType;
                 response.ResponseStream = objType.GetFileTypeStreamData(obj);
                 response.Filename = objType.GetFileTypeFilename(obj);
+                response.LastModified = objType.GetFileTypeLastModified(obj);
                 return;
             }
 

@@ -491,7 +491,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             CompareStructs(api_key, await userProxy.LoginUser(users[0].Username, users[0].Password));
             await userProxy.LogoutUser();
 
-            //
+
             // Exception
             //
             try

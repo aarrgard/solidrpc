@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             await req.CopyFromAsync(request);
             var resp = await MethodInvoker.InvokeAsync(req, cancellationToken);
             var response = new HttpResponseMessage();
-            await resp.CopyToAsync(response);
+            await resp.CopyToAsync(response, request);
             return response;
         }
     }

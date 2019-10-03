@@ -963,7 +963,7 @@
             <param name="impl"></param>
             <param name="charSet"></param>
         </member>
-        <member name="M:System.TypeExtensions.SetFileTypeLastModified(System.Type,System.Object,System.Nullable{System.DateTime})">
+        <member name="M:System.TypeExtensions.SetFileTypeLastModified(System.Type,System.Object,System.Nullable{System.DateTimeOffset})">
             <summary>
             Set the stream data on supplied structure.
             </summary>

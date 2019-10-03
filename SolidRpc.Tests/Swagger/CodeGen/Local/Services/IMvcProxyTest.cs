@@ -127,12 +127,21 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
+        /// Sends a datetimeoffset back and forth between client and server
+        /// </summary>
+        /// <param name="d">The datetime to proxy</param>
+        /// <param name="cancellationToken"></param>
+        Task<DateTimeOffset> ProxyDateTimeOffsetInQuery(
+            DateTimeOffset d = default(DateTimeOffset),
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
         /// Sends a datetime back and forth between client and server
         /// </summary>
         /// <param name="d">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<DateTime> ProxyDateTimeInQuery(
-            DateTime d = default(DateTime),
+        Task<DateTimeOffset> ProxyDateTimeInQuery(
+            DateTimeOffset d = default(DateTimeOffset),
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -140,8 +149,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// </summary>
         /// <param name="dArr">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<DateTime>> ProxyDateTimeArrayInQuery(
-            IEnumerable<DateTime> dArr = default(IEnumerable<DateTime>),
+        Task<IEnumerable<DateTimeOffset>> ProxyDateTimeArrayInQuery(
+            IEnumerable<DateTimeOffset> dArr = default(IEnumerable<DateTimeOffset>),
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -149,8 +158,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// </summary>
         /// <param name="dArr">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<DateTime>> ProxyDateTimeArrayInForm(
-            IEnumerable<DateTime> dArr = default(IEnumerable<DateTime>),
+        Task<IEnumerable<DateTimeOffset>> ProxyDateTimeArrayInForm(
+            IEnumerable<DateTimeOffset> dArr = default(IEnumerable<DateTimeOffset>),
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

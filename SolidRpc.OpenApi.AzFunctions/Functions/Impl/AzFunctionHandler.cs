@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using SolidRpc.OpenApi.Binder;
 using System;
@@ -18,8 +19,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     public class AzFunctionHandler : IAzFunctionHandler
     {
         private static readonly string s_defaultHttpRoutePrefix = "/api";
-        private static readonly string s_staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent";
-        //private static readonly string s_staticContentFunctionRoute = "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent2";
+        private static readonly string s_staticContentFunctionRoute = $"{typeof(ISolidRpcContentHandler).FullName.Replace('.', '/')}/{nameof(ISolidRpcContentHandler.GetContent)}";
         private string _routePrefix = null;
 
         /// <summary>
@@ -346,6 +346,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 }
                 else if (string.IsNullOrEmpty(HttpRouteBackendPrefix))
                 {
+                    // if the backend prefix is empty - dont proxy - causes circular calls
                     return;
                 }
 
@@ -413,17 +414,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
             var scheme = Environment.GetEnvironmentVariable(ConfigurationMethodAddressTransformer.ConfigScheme) ?? "http";
             var backendUri = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{route}";
-            //var backendUri = $"{HttpRouteBackendPrefix}/{route}";
+            var frontEndRoute = CreateFrontendRoute(route);
             if (route == s_staticContentFunctionRoute)
             {
-                route = $"{{*path}}";
-                backendUri = $"{backendUri}?path=/{{path}}";
+                frontEndRoute = CreateFrontendRoute("{*path}");
+                backendUri = $"{backendUri}?path={CreateFrontendRoute("{path}")}";
             }
 
             var proxy = proxyKV.Value;
             bool modified = false;
             proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
-            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, CreateFrontendRoute(route));
+            proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, frontEndRoute);
             proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
             proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, backendUri);
             if(modified)

@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             if (config.AddStaticContentServices)
             {
-                methods = methods.Union(typeof(ISolidRpcContentStore).GetMethods().Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent)));
+                methods = methods.Union(typeof(ISolidRpcContentHandler).GetMethods().Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent)));
             }
 
             var openApiParser = services.GetSolidRpcOpenApiParser();

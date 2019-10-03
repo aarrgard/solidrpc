@@ -30,6 +30,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         private const string SystemInt64 = "System.Int64";
         private const string SystemGuid = "System.Guid";
         private const string SystemDateTime = "System.DateTime";
+        private const string SystemDateTimeOffset = "System.DateTimeOffset";
         private const string SystemUri = "System.Uri";
         private const string SystemString = "System.String";
         private const string SystemIOStream = "System.IO.Stream";
@@ -141,6 +142,12 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_) => Guid.Parse(_?.GetStringValue() ?? "0");
                         case SystemDateTime:
                             return (_) => _ == null ? DateTime.MinValue : DateTime.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                        case SystemDateTimeOffset:
+                            return (_) =>
+                            {
+                                if (_ == null) return DateTimeOffset.MinValue;
+                                return DateTimeOffset.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+                            };
                         case SystemUri:
                             return (_) => _ == null ? null : new Uri(_.GetStringValue());
                         case SystemString:
@@ -302,6 +309,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Guid)val).ToString());
                         case SystemDateTime:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+                        case SystemDateTimeOffset:
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTimeOffset)val).ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
                         case SystemUri:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Uri)val).ToString());
                         case SystemString:

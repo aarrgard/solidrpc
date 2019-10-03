@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}"
+      "route": "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}"
     },
     {
       "name": "serviceProvider",

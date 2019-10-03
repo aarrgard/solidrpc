@@ -352,8 +352,10 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     {
                         case null:
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeString);
-                        case "date-time":
+                        case "date":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDateTime);
+                        case "date-time":
+                            return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDateTimeOffset);
                         case "uuid":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeGuid);
                         case "binary":

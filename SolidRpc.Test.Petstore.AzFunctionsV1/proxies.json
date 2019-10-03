@@ -103,24 +103,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}"
     },
-    "SolidRpc/Security/Services/Google/LoggedIn": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Google/LoggedIn",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoggedIn"
-    },
-    "SolidRpc/Security/Services/Google/LoggedOut": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Google/LoggedOut",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoggedOut"
-    },
     "SolidRpc/Security/Services/Google/LoginProvider": {
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Google/LoginProvider",
@@ -166,14 +148,88 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/LoginScripts"
     },
-    "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent": {
+    "SolidRpc/Security/Services/Google/LoggedIn/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Google/LoggedIn/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoggedIn/{arg0}"
+    },
+    "SolidRpc/Security/Services/Google/LoggedOut/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Google/LoggedOut/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Google/LoggedOut/{arg0}"
+    },
+    "SolidRpc/Security/Services/LoginScript": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginScript",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/LoginScript"
+    },
+    "SolidRpc/Security/Services/oauth2/authorize": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/authorize",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/oauth2/authorize"
+    },
+    "SolidRpc/Security/Services/oauth2/discovery": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/discovery",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/oauth2/discovery"
+    },
+    "SolidRpc/Security/Services/oauth2/keys": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/keys",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/oauth2/keys"
+    },
+    "SolidRpc/Security/Services/oauth2/token": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/token",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/oauth2/token"
+    },
+    "SolidRpc/Security/Services/Profile": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Profile",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Profile"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent": {
       "matchCondition": {
         "route": "/front/{*path}",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=/front/{path}"
     }
   }
 }

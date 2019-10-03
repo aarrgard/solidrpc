@@ -7,9 +7,10 @@
       "type": "httpTrigger",
       "authLevel": "anonymous",
       "methods": [
-        "get"
+        "get",
+        "post"
       ],
-      "route": "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent"
+      "route": "SolidRpc/Security/Services/oauth2/token"
     },
     {
       "name": "serviceProvider",

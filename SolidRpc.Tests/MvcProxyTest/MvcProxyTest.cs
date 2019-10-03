@@ -228,12 +228,30 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
-                var dateTime = new DateTime(2019, 05, 25, 17, 32, 44);
+                var dateTime = new DateTimeOffset(2019, 05, 25, 17, 32, 44, TimeSpan.Zero); // Newtonsoft converts dates to UTC
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
                 Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:ss")}\"", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
                 Assert.AreEqual(dateTime, await sp.ProxyDateTimeInQuery(dateTime));
+            }
+        }
+
+        /// <summary>
+        /// Sends a datetime back and forth between client and server
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task TestProxyDateTimeOffset()
+        {
+            using (var ctx = await StartKestrelHostContextAsync())
+            {
+                var dateTime = new DateTimeOffset(2019, 05, 25, 17, 32, 44, new TimeSpan(1,0,0));
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeOffsetInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
+                Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:ss+02:00")}\"", await AssertOk(resp));
+
+                //var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                //Assert.AreEqual(dateTime, await sp.ProxyDateTimeOffsetInQuery(dateTime));
             }
         }
 
@@ -246,15 +264,15 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = await  StartKestrelHostContextAsync())
             {
-                var dateTimeArr = new DateTime[] {
-                    new DateTime(2019, 05, 25, 17, 32, 44),
-                    new DateTime(2019, 05, 25, 17, 32, 47),
+                var dateTimeArr = new DateTimeOffset[] {
+                    new DateTimeOffset(2019, 05, 25, 17, 32, 44, TimeSpan.Zero),
+                    new DateTimeOffset(2019, 05, 25, 17, 32, 47, TimeSpan.Zero),
                 };
-                var nvps = dateTimeArr.Select(o => new KeyValuePair<string, DateTime>("dArr", o));
+                var nvps = dateTimeArr.Select(o => new KeyValuePair<string, DateTimeOffset>("dArr", o)).ToList();
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeArrayInQuery)}", nvps);
-                Assert.AreEqual($"[\"{dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}\",\"{dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}\"]", await AssertOk(resp));
+                Assert.AreEqual($"[\"{dateTimeArr[0].ToLocalTime().ToString("yyy-MM-ddTHH:mm:sszzz")}\",\"{dateTimeArr[1].ToLocalTime().ToString("yyy-MM-ddTHH:mm:sszzz")}\"]", await AssertOk(resp));
                 resp = await ctx.PostResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeArrayInForm)}", nvps);
-                Assert.AreEqual($"[\"{dateTimeArr[0].ToString("yyy-MM-ddTHH:mm:ss")}\",\"{dateTimeArr[1].ToString("yyy-MM-ddTHH:mm:ss")}\"]", await AssertOk(resp));
+                Assert.AreEqual($"[\"{dateTimeArr[0].ToLocalTime().ToString("yyy-MM-ddTHH:mm:sszzz")}\",\"{dateTimeArr[1].ToLocalTime().ToString("yyy-MM-ddTHH:mm:sszzz")}\"]", await AssertOk(resp));
 
                 var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
                 Assert.AreEqual(dateTimeArr, await sp.ProxyDateTimeArrayInQuery(dateTimeArr));

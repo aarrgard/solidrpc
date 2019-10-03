@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
 
             /// return the response.
             var httpResponse = new HttpResponseMessage();
-            await res.CopyToAsync(httpResponse);
+            await res.CopyToAsync(httpResponse, req);
             return httpResponse;
         }
     }

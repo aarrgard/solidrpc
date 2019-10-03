@@ -124,7 +124,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var functions = FunctionHandler.GetFunctions(baseDir).ToList();
             var modified = false;
 
+            //
             // remove functions that are not available any more
+            //
             functions.Where(o => !functionNames.Contains(o.Name))
                 .Where(o => o.GeneratedBy?.StartsWith($"{typeof(AzTimerFunction).Assembly.GetName().Name}") ?? false)
                 .ToList()
@@ -133,6 +135,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     o.Delete();
                 });
 
+            //
+            // add / modify functions
+            //
             for (int i = 0; i < paths.Count; i++)
             {
                 var path = paths[i];

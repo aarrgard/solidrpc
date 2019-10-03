@@ -7,9 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "anonymous",
       "methods": [
-        "post"
+        "get"
       ],
-      "route": "SolidRpc/Security/Services/Google/LoggedIn"
+      "route": "SolidRpc/Security/Services/Google/LoggedOut/{arg0}"
     },
     {
       "name": "serviceProvider",

@@ -46,6 +46,10 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         /// </summary>
         public static string TypeDateTime = "System.DateTime";
         /// <summary>
+        /// The date time type
+        /// </summary>
+        public static string TypeDateTimeOffset = "System.DateTimeOffset";
+        /// <summary>
         /// The guid type
         /// </summary>
         public static string TypeGuid = "System.Guid";
@@ -76,6 +80,7 @@ namespace SolidRpc.OpenApi.Model.Agnostic
             TypeDouble,
             TypeStream,
             TypeDateTime,
+            TypeDateTimeOffset,
             TypeGuid,
             TypeUri,
             TypeTask,

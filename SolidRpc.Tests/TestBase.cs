@@ -103,6 +103,11 @@ namespace SolidRpc.Tests
                 Assert.AreEqual(o1, o2);
                 return;
             }
+            if (typeof(DateTimeOffset).IsAssignableFrom(t))
+            {
+                Assert.AreEqual(o1, o2);
+                return;
+            }
             if (typeof(string).IsAssignableFrom(t))
             {
                 Assert.AreEqual(o1, o2);

@@ -20,7 +20,7 @@
           "POST"
         ]
       },
-      "backendUri": "/test/aarrgard/Test/1.0.0/pet/{arg0}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/{arg0}"
     },
     "aarrgard/Test/1.0.0/pet/{arg0}/uploadImage": {
       "matchCondition": {
@@ -85,15 +85,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
     },
-    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}"
-    },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls": {
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
@@ -103,14 +94,23 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
     },
-    "SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent": {
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent": {
       "matchCondition": {
         "route": "/front/{*path}",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcStaticContent/GetStaticContent?path=/{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=/front/{path}"
     }
   }
 }

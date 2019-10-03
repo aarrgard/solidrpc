@@ -25,7 +25,7 @@ namespace System
         public static IDictionary<string, Type> FileTypeProperties = new Dictionary<string, Type>() {
             { "contenttype", typeof(string) },
             { "filename", typeof(string) },
-            { "lastmodified", typeof(DateTime?) },
+            { "lastmodified", typeof(DateTimeOffset?) },
             { "charset", typeof(string) },
         };
 
@@ -44,8 +44,8 @@ namespace System
                 Func<object, string> getFilename,
                 Action<object, string> setCharSet,
                 Func<object, string> getCharSet,
-                Action<object, DateTime?> setLastModified,
-                Func<object, DateTime?> getLastModified
+                Action<object, DateTimeOffset?> setLastModified,
+                Func<object, DateTimeOffset?> getLastModified
                 )
             {
                 IsFileType = isFileType;
@@ -108,12 +108,12 @@ namespace System
             /// <summary>
             /// The method we use to set the stream data.
             /// </summary>
-            public Action<object, DateTime?> SetLastModified { get; }
+            public Action<object, DateTimeOffset?> SetLastModified { get; }
 
             /// <summary>
             /// The method we use to set the stream data.
             /// </summary>
-            public Func<object, DateTime?> GetLastModified { get; }
+            public Func<object, DateTimeOffset?> GetLastModified { get; }
         }
         private static ConcurrentDictionary<Type, FileTypeHelper> s_FileTypes = new ConcurrentDictionary<Type, FileTypeHelper>();
 
@@ -266,14 +266,14 @@ namespace System
             //
             var lastModifiedProp = arg.GetProperties()
                 .Where(o => string.Equals(o.Name, "lastmodified", StringComparison.InvariantCultureIgnoreCase))
-                .Where(o => o.PropertyType == typeof(DateTime?))
+                .Where(o => o.PropertyType == typeof(DateTimeOffset?))
                 .FirstOrDefault();
-            Action<object, DateTime?> setLastModified = (impl, dt) => { };
-            Func<object, DateTime?> getLastModified = (impl) => { return null; };
+            Action<object, DateTimeOffset?> setLastModified = (impl, dt) => { };
+            Func<object, DateTimeOffset?> getLastModified = (impl) => { return null; };
             if (lastModifiedProp != null)
             {
                 setLastModified = (impl, dt) => lastModifiedProp.SetValue(impl, dt);
-                getLastModified = (impl) => (DateTime?)lastModifiedProp.GetValue(impl);
+                getLastModified = (impl) => (DateTimeOffset?)lastModifiedProp.GetValue(impl);
             }
 
             var remainingProps = arg.GetProperties()
@@ -366,7 +366,7 @@ namespace System
         /// <param name="type"></param>
         /// <param name="impl"></param>
         /// <param name="lastModified"></param>
-        public static void SetFileTypeLastModified(this Type type, object impl, DateTime? lastModified)
+        public static void SetFileTypeLastModified(this Type type, object impl, DateTimeOffset? lastModified)
         {
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
@@ -431,7 +431,7 @@ namespace System
         /// <param name="type"></param>
         /// <param name="impl"></param>
         /// <returns></returns>
-        public static DateTime? GetFileTypeLastModified(this Type type, object impl)
+        public static DateTimeOffset? GetFileTypeLastModified(this Type type, object impl)
         {
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
