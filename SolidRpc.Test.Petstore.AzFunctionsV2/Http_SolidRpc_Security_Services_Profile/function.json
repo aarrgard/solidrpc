@@ -7,9 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "anonymous",
       "methods": [
-        "post"
+        "get"
       ],
-      "route": "aarrgard/Test/1.0.0/pet/{arg0}/uploadImage"
+      "route": "SolidRpc/Security/Services/Profile"
     },
     {
       "name": "serviceProvider",

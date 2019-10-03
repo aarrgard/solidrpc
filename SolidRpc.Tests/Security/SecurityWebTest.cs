@@ -23,7 +23,7 @@ namespace SolidRpc.Tests.Security
         }
         public override IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
-            services.AddSolidRpcSecurity();
+            services.AddSolidRpcSecurityBackend();
             return base.ConfigureServerServices(services);
         }
 

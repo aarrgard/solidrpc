@@ -7,11 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "anonymous",
       "methods": [
-        "delete",
-        "get",
-        "post"
+        "get"
       ],
-      "route": "aarrgard/Test/1.0.0/pet/{arg0}"
+      "route": "SolidRpc/Security/Services/LoginScript"
     },
     {
       "name": "serviceProvider",

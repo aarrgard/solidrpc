@@ -1,53 +1,13 @@
 {
-  "$schema": "http://json.schemastore.org/proxies",
   "proxies": {
-    "aarrgard/Test/1.0.0/pet": {
+    "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent": {
       "matchCondition": {
-        "route": "/front/aarrgard/Test/1.0.0/pet",
-        "methods": [
-          "POST",
-          "PUT"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet"
-    },
-    "aarrgard/Test/1.0.0/pet/{arg0}": {
-      "matchCondition": {
-        "route": "/front/aarrgard/Test/1.0.0/pet/{arg0}",
-        "methods": [
-          "DELETE",
-          "GET",
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/{arg0}"
-    },
-    "aarrgard/Test/1.0.0/pet/{arg0}/uploadImage": {
-      "matchCondition": {
-        "route": "/front/aarrgard/Test/1.0.0/pet/{arg0}/uploadImage",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/{arg0}/uploadImage"
-    },
-    "aarrgard/Test/1.0.0/pet/findByStatus": {
-      "matchCondition": {
-        "route": "/front/aarrgard/Test/1.0.0/pet/findByStatus",
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/findByStatus"
-    },
-    "aarrgard/Test/1.0.0/pet/findByTags": {
-      "matchCondition": {
-        "route": "/front/aarrgard/Test/1.0.0/pet/findByTags",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/aarrgard/Test/1.0.0/pet/findByTags"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent"
     },
     "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration": {
       "matchCondition": {
@@ -85,15 +45,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
     },
-    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
-    },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}": {
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}",
@@ -103,14 +54,115 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}"
     },
-    "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent": {
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
+    },
+    "SolidRpc/Security/Services/LoginPage": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginPage",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginPage"
+    },
+    "SolidRpc/Security/Services/LoginProviders": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginProviders",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginProviders"
+    },
+    "SolidRpc/Security/Services/LoginScript": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginScript",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScript"
+    },
+    "SolidRpc/Security/Services/LoginScripts": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginScripts",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScripts"
+    },
+    "SolidRpc/Security/Services/oauth2/authorize": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/authorize",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/authorize"
+    },
+    "SolidRpc/Security/Services/oauth2/discovery": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/discovery",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/discovery"
+    },
+    "SolidRpc/Security/Services/oauth2/keys": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/keys",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/keys"
+    },
+    "SolidRpc/Security/Services/oauth2/token": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/oauth2/token",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/token"
+    },
+    "SolidRpc/Security/Services/Profile": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Profile",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Profile"
+    },
+    ".well-known/openid-configuration": {
+      "matchCondition": {
+        "route": "/.well-known/openid-configuration",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://localhost:7071/front/SolidRpc/Security/Services/oauth2/discovery"
+    },
+    "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=/front/{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path={HttpRouteFrontendPrefix}{path}"
     }
   }
 }

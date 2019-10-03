@@ -41,8 +41,9 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
+        /// <param name="includeQueryString">Shoukd the query string be included</param>
         /// <returns></returns>
-        Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression);
+        Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true);
 
         /// <summary>
         /// Returns the method info for the matching expressiong.

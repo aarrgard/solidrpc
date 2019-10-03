@@ -36,7 +36,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
             var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcContentHandler>();
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
-            services.AddSolidRpcSecurityGoogle((sp, conf) => { sp.ConfigureOptions(conf); });
+            services.AddSolidRpcSecurityBackendGoogle((sp, conf) => { sp.ConfigureOptions(conf); });
         }
     }
 }

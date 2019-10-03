@@ -32,8 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
-    <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
+    <ProjectReference Include="..\SolidRpc.Security.Front\SolidRpc.Security.Front.csproj" />
   </ItemGroup>
 
   <ItemGroup>

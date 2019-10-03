@@ -27,6 +27,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="serviceProvider"></param>
         /// <param name="contentStore"></param>
         /// <param name="methodBinderStore"></param>
+        /// <param name="httpClientFactory"></param>
         public SolidRpcContentHandler(
             IServiceProvider serviceProvider,
             SolidRpcContentStore contentStore, 
@@ -64,16 +65,17 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// Returns the path mappings
         /// </summary>
-        public IEnumerable<NameValuePair> PathMappings
+        public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(CancellationToken cancellationToken)
         {
-            get
+            var tasks = ContentStore.DynamicContents.Select(async o =>
             {
-                return ContentStore.DynamicContents.Select(o => new NameValuePair()
+                return new NameValuePair()
                 {
                     Name = o.Key,
-                    Value = o.Value(ServiceProvider).ToString()
-                });
-            }
+                    Value = (await o.Value(ServiceProvider)).ToString()
+                };
+            });
+            return (await Task.WhenAll(tasks));
         }
 
         /// <summary>

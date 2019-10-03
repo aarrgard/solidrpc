@@ -215,12 +215,13 @@
             <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetUrlAsync``1(System.Linq.Expressions.Expression{System.Action{``0}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetUrlAsync``1(System.Linq.Expressions.Expression{System.Action{``0}},System.Boolean)">
             <summary>
             Returns the uri to invoke the supplied method.
             </summary>
             <typeparam name="T"></typeparam>
             <param name="expression"></param>
+            <param name="includeQueryString">Shoukd the query string be included</param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetMethodBinding``1(System.Linq.Expressions.Expression{System.Action{``0}})">
@@ -668,7 +669,7 @@
             paths then all the assemly base paths are returned from this property.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.PathMappings">
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.GetPathMappingsAsync(System.Threading.CancellationToken)">
             <summary>
             Returns all the path mappings.
             </summary>

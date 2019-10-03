@@ -33,39 +33,28 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             ILogger<SolidRpcHost> logger, 
             IConfiguration configuration,
             IMethodBinderStore methodBinderStore,
+            ISolidRpcContentHandler contentHandler,
             IAzFunctionHandler functionHandler)
             : base(logger, configuration)
         {
             s_restartPending = false;
             Logger = logger;
             MethodBinderStore = methodBinderStore;
+            ContentHandler = contentHandler;
             FunctionHandler = functionHandler;
         }
 
         private ILogger Logger { get; }
-
-        /// <summary>
-        /// The config store
-        /// </summary>
-        public IMethodBinderStore MethodBinderStore { get; }
-
-        /// <summary>
-        /// The function handler
-        /// </summary>
-        public IAzFunctionHandler FunctionHandler { get; }
-        
-        private string CreateFunctionName(IMethodBinding o)
-        {
-            return $"{o.MethodBinder.Assembly.GetName().Name}.{o.OperationId}"
-                .Replace(".", "");
-        }
+        private IMethodBinderStore MethodBinderStore { get; }
+        private ISolidRpcContentHandler ContentHandler { get; }
+        private IAzFunctionHandler FunctionHandler { get; }
 
         /// <summary>
         /// Perfomes the setup.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task IsAlive(CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task IsAlive(CancellationToken cancellationToken = default(CancellationToken))
         {
             var paths = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodBindings)
@@ -81,14 +70,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             WriteHttpFunctions(FunctionHandler.DevDir, pathsAndMethods);
             var modified = WriteHttpFunctions(FunctionHandler.BaseDir, pathsAndMethods);
 
-            FunctionHandler.SyncProxiesFile();
+            var staticRoutes = await ContentHandler.GetPathMappingsAsync(cancellationToken); 
+            FunctionHandler.SyncProxiesFile(staticRoutes.ToDictionary(o => o.Name, o => o.Value));
 
             if (modified)
             {
                 FunctionHandler.TriggerRestart();
             }
-
-            return Task.CompletedTask;
         }
 
         private string FixupPath(string path)

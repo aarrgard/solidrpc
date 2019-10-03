@@ -184,7 +184,7 @@ namespace SolidRpc.OpenApi.Binder
             return methodBinder.CreateMethodBinding(methodInfo, baseUriTransformer);
         }
 
-        public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression)
+        public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true)
         {
             // find the binding
             var (mi, args) = GetMethodInfoAndArguments(expression);
@@ -207,7 +207,10 @@ namespace SolidRpc.OpenApi.Binder
                 uriBuilder.Port = int.Parse(hostParts[1]);
             }
             uriBuilder.Path = req.Path;
-            uriBuilder.Query = string.Join("&", req.Query.Select(o => $"{o.Name}={o.GetStringValue()}"));
+            if(includeQueryString)
+            {
+                uriBuilder.Query = string.Join("&", req.Query.Select(o => $"{o.Name}={o.GetStringValue()}"));
+            }
             return uriBuilder.Uri;
         }
 

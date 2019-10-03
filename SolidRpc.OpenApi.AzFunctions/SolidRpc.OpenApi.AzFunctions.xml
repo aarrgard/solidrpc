@@ -104,7 +104,7 @@
             the end of a config file
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Puts all the functions in the proxies file.
             </summary>
@@ -337,7 +337,7 @@
             triggers a restart of the application
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Syncronizes the proxies file with the functions.
             </summary>
@@ -678,7 +678,7 @@
             The setup class
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
             <summary>
             Constructs a new instance
             </summary>
@@ -686,16 +686,6 @@
             <param name="configuration"></param>
             <param name="methodBinderStore"></param>
             <param name="functionHandler"></param>
-        </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.MethodBinderStore">
-            <summary>
-            The config store
-            </summary>
-        </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.FunctionHandler">
-            <summary>
-            The function handler
-            </summary>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.IsAlive(System.Threading.CancellationToken)">
             <summary>

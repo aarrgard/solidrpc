@@ -224,12 +224,30 @@
     },
     "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent": {
       "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent"
+    },
+    ".well-known/openid-configuration": {
+      "matchCondition": {
+        "route": "/.well-known/openid-configuration",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://localhost:7071/front/SolidRpc/Security/Services/oauth2/discovery"
+    },
+    "front/{path}": {
+      "matchCondition": {
         "route": "/front/{*path}",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=/front/{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path={HttpRouteFrontendPrefix}{path}"
     }
   }
 }

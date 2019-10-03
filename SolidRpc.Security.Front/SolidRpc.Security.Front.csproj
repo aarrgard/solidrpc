@@ -5,4 +5,9 @@
     <LangVersion>7</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
+    <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
+  </ItemGroup>
+
 </Project>

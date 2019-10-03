@@ -269,7 +269,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         private static Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> CreateEnumBinder<T>(string contentType, string name)
         {
             var subBinder = CreateBinder(contentType, name, typeof(T));
-            return (_,__) => ((IEnumerable<T>)__).Select(o => subBinder(_, o));
+            return (rd, e) =>
+            {
+                if (e == null) return EmptyArray;
+                return ((IEnumerable<T>)e).Select(o => subBinder(rd, o));
+            };
         }
 
         private static Func<IEnumerable<IHttpRequestData>, object, IHttpRequestData> CreateBinder(string contentType, string name, Type type)

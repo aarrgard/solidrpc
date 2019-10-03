@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "aarrgard/Test/1.0.0/pet/findByStatus"
+      "route": "SolidRpc/Security/Services/LoginProviders"
     },
     {
       "name": "serviceProvider",

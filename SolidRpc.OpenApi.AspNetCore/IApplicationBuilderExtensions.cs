@@ -74,7 +74,7 @@ namespace Microsoft.AspNetCore.Builder
                 dict[$"GET{path}"] = new PathHandler("*") { ContentHandler = contentHandler };
                 dict[$"HEAD{path}"] = new PathHandler("*") { ContentHandler = contentHandler };
             }
-            foreach (var path in contentHandler.PathMappings)
+            foreach (var path in contentHandler.GetPathMappingsAsync().Result)
             {
                 dict[$"GET{path.Name}"] = new PathHandler("*") { ContentHandler = contentHandler };
                 dict[$"HEAD{path.Name}"] = new PathHandler("*") { ContentHandler = contentHandler };

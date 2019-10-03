@@ -7,9 +7,10 @@
       "type": "httpTrigger",
       "authLevel": "anonymous",
       "methods": [
-        "get"
+        "get",
+        "post"
       ],
-      "route": "aarrgard/Test/1.0.0/pet/findByTags"
+      "route": "SolidRpc/Security/Services/oauth2/token"
     },
     {
       "name": "serviceProvider",

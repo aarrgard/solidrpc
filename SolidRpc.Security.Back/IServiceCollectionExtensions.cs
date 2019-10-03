@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configurator"></param>
         /// <param name="addStaticContent"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurity(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
+        public static IServiceCollection AddSolidRpcSecurityBackend(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
         {
             services.AddSingleton<IOpenIDKeyStore, OpenIDKeyStore>();
             services.AddSingleton<IAccessTokenFactory, AccessTokenFactory>();
@@ -61,9 +61,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurityMicrosoft(this IServiceCollection services, Action<IServiceProvider, MicrosoftOptions> configurator)
+        public static IServiceCollection AddSolidRpcSecurityBackendMicrosoft(this IServiceCollection services, Action<IServiceProvider, MicrosoftOptions> configurator)
         {
-            services.AddSolidRpcSecurity();
+            services.AddSolidRpcSecurityBackend();
 
             services.AddSingleton(sp =>
             {
@@ -85,9 +85,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurityFacebook(this IServiceCollection services, Action<IServiceProvider, FacebookOptions> configurator)
+        public static IServiceCollection AddSolidRpcSecurityBackendFacebook(this IServiceCollection services, Action<IServiceProvider, FacebookOptions> configurator)
         {
-            services.AddSolidRpcSecurity();
+            services.AddSolidRpcSecurityBackend();
 
             services.AddSingleton(sp =>
             {
@@ -109,9 +109,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurityGoogle(this IServiceCollection services, Action<IServiceProvider, GoogleOptions> configurator)
+        public static IServiceCollection AddSolidRpcSecurityBackendGoogle(this IServiceCollection services, Action<IServiceProvider, GoogleOptions> configurator)
         {
-            services.AddSolidRpcSecurity();
+            services.AddSolidRpcSecurityBackend();
 
             services.AddSingleton(sp =>
             {

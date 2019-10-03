@@ -78,8 +78,9 @@ namespace SolidRpc.Security.Back.Services
         {
             var doc = new OpenIDConnnectDiscovery();
             doc.Issuer = new Uri(await TokenFactory.GetIssuer(cancellationToken));
-            doc.JwksUri = await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2Keys(cancellationToken));
-            doc.TokenEndpoint = await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2TokenGet(cancellationToken));
+            doc.JwksUri = await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2Keys(cancellationToken), false);
+            doc.AuthorizationEndpoint = await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2AuthorizeGet(null, null, null, null, null, cancellationToken), false);
+            doc.TokenEndpoint = await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2TokenGet(cancellationToken), false);
             return doc;
         }
 
