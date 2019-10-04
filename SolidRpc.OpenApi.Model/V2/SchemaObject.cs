@@ -88,7 +88,7 @@ namespace SolidRpc.OpenApi.Model.V2
             else if (type == typeof(System.DateTime))
             {
                 itemBase.Type = "string";
-                itemBase.Format = "date";
+                itemBase.Format = "date-time";
                 return;
             }
             else if (type == typeof(System.DateTimeOffset))
