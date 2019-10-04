@@ -19,6 +19,39 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IServiceCollectionExtensions
     {
         /// <summary>
+        /// Adds the service if type is missing in the collection.
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSingletonIfMissing<T1, T2>(this IServiceCollection services) where T1 : class where T2 : class, T1
+        {
+            if (!services.Any(o => o.ServiceType == typeof(T1)))
+            {
+                return services.AddSingleton<T1, T2>();
+            }
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the factory if it is missing.
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="factory"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSingletonIfMissing<T1>(this IServiceCollection services, Func<IServiceProvider, T1> factory) where T1 : class
+        {
+            if (!services.Any(o => o.ServiceType == typeof(T1)))
+            {
+                return services.AddSingleton(factory);
+            }
+            return services;
+        }
+
+
+        /// <summary>
         /// Structure to specify which services that should be added on startup.
         /// </summary>
         public class RpcServiceConfiguration

@@ -9,6 +9,24 @@
             Extension methods fro the http request
             </summary>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``2(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the service if type is missing in the collection.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,``0})">
+            <summary>
+            Adds the factory if it is missing.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <param name="services"></param>
+            <param name="factory"></param>
+            <returns></returns>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration">
             <summary>
             Structure to specify which services that should be added on startup.

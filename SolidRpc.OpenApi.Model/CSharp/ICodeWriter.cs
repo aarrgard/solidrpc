@@ -25,7 +25,7 @@
         /// <summary>
         /// Indents 
         /// </summary>
-        void Indent();
+        void Indent(string indentation = null);
 
         /// <summary>
         /// Unindent

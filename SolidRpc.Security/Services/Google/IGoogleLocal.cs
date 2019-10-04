@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Security.Types;
 using System.Threading;
@@ -5,6 +6,7 @@ namespace SolidRpc.Security.Services.Google {
     /// <summary>
     /// Defines logic for the callback from google
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IGoogleLocal {
         /// <summary>
         /// Returns the login provider information

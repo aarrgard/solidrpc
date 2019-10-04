@@ -1,11 +1,13 @@
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System;
 using SolidRpc.Security.Types;
 namespace SolidRpc.Security.Types {
     /// <summary>
-    /// 
+    /// success
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class LoginProvider {
         /// <summary>
         /// The name of the provider

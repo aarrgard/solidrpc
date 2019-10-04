@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidRpc.Security.Back.InternalServices
+namespace SolidRpc.Security.Front.InternalServices
 {
     /// <summary>
     /// Represents a security token

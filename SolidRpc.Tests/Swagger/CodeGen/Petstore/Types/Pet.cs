@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
     /// 
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Pet {
         /// <summary>
         /// 

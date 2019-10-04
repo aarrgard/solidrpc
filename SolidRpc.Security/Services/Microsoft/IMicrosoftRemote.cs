@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ namespace SolidRpc.Security.Services.Microsoft {
     /// <summary>
     /// Defines access to the microsoft oauth implementation
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IMicrosoftRemote {
         /// <summary>
         /// When your web app needs to authenticate the user, it can direct the user to the /authorize endpoint. This request is similar to the first leg of the OAuth 2.0 authorization code flow, with these important distinctions:

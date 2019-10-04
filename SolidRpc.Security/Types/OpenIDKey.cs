@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ namespace SolidRpc.Security.Types {
     /// <summary>
     /// 
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class OpenIDKey {
         /// <summary>
         /// (Algorithm) Parameter

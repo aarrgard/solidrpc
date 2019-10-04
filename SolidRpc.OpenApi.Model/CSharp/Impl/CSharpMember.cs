@@ -291,13 +291,15 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         protected void WriteSummary(ICodeWriter codeWriter)
         {
             var comment = Comment?.Summary ?? "";
-            codeWriter.Emit($"/// <summary>{codeWriter.NewLine}");
-            codeWriter.Emit($"/// {HttpUtility.HtmlEncode(comment)}{codeWriter.NewLine}");
-            codeWriter.Emit($"/// </summary>{codeWriter.NewLine}");
+            codeWriter.Indent("/// ");
+            codeWriter.Emit($"<summary>{codeWriter.NewLine}");
+            codeWriter.Emit($"{HttpUtility.HtmlEncode(comment)}{codeWriter.NewLine}");
+            codeWriter.Emit($"</summary>{codeWriter.NewLine}");
             if (Comment?.ExternalDoc != null)
             {
-                codeWriter.Emit($"/// <a href=\"{Comment.ExternalDoc.Url}\">{Comment.ExternalDoc.Description}</a>{codeWriter.NewLine}");
+                codeWriter.Emit($"<a href=\"{Comment.ExternalDoc.Url}\">{Comment.ExternalDoc.Description}</a>{codeWriter.NewLine}");
             }
+            codeWriter.Unindent();
         }
 
         /// <summary>

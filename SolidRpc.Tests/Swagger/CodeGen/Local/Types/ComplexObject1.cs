@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
@@ -5,6 +6,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
     /// <summary>
     /// Success
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ComplexObject1 {
         /// <summary>
         /// Value1

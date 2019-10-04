@@ -1,0 +1,61 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Oidc.IOidcClient",
+    "version": "1.0.0",
+    "description": "Defines logic for the oidc client."
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "basePath": "/SolidRpc/Security/Services/Oidc",
+  "paths": {
+    "/Settings": {
+      "get": {
+        "description": "Returns the settings for the client. Usually invoked from a javascript web app. \nThese settings does not contain the secret which the client should keep for itself. \nIt does however contain a \"redirect_uri\" that is valid for this client.",
+        "operationId": "Settings",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/Settings"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Settings": {
+      "type": "object",
+      "description": "The settings for an oidc client. Should be compatible with the 'oidc-client-js'",
+      "properties": {
+        "authority": {
+          "description": "The authority to use",
+          "type": "string"
+        },
+        "client_id": {
+          "description": "The id of the client",
+          "type": "string"
+        },
+        "response_type": {
+          "description": "The response type",
+          "type": "string"
+        },
+        "scope": {
+          "description": "The scopes that should be supplied",
+          "type": "string"
+        },
+        "redirect_uri": {
+          "description": "The the address to redirect to",
+          "type": "string"
+        },
+        "post_logout_redirect_uri": {
+          "description": "The address to call when logging out.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,15 +1,15 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Security.Services;
+using SolidRpc.Security.Front.InternalServices;
+using SolidRpc.Security.Services.Oidc;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Security.Back.InternalServices
+namespace SolidRpc.Security.Front.InternalServices
 {
     /// <summary>
     /// Implements the jwt token factory
@@ -34,7 +34,7 @@ namespace SolidRpc.Security.Back.InternalServices
 
         public async Task<IAccessToken> CreateAccessToken(ClaimsIdentity claimsIdentity, CancellationToken cancellationToken)
         {
-            var issuer = await GetIssuer(cancellationToken);
+            var issuer = await GetIssuerAsync(cancellationToken);
 
             var signingKey = await KeyStore.GetSigningPrivateKey(cancellationToken);
             var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha512Signature);
@@ -53,7 +53,7 @@ namespace SolidRpc.Security.Back.InternalServices
             return new JwtAccessToken((JwtSecurityToken)plainToken);
         }
 
-        public async Task<string> GetIssuer(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetIssuerAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if(_issuer != null)
             {
@@ -61,7 +61,7 @@ namespace SolidRpc.Security.Back.InternalServices
             }
             else
             {
-                var issuer = (await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2Discovery(cancellationToken))).ToString();
+                var issuer = (await MethodBinderStore.GetUrlAsync<IOidcServer>(o => o.OAuth2Discovery(cancellationToken))).ToString();
                 issuer = issuer.Substring(0, issuer.IndexOf('/', "https://".Length));
                 _issuer = issuer;
                 return issuer;

@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System.Threading;
@@ -7,6 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
     /// Operations about user
     /// </summary>
     /// <a href="http://swagger.io">Find out more about our store</a>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IUser {
         /// <summary>
         /// Create user This can only be done by the logged in user.

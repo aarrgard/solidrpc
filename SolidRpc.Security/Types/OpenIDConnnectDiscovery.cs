@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ namespace SolidRpc.Security.Types {
     /// <summary>
     /// success
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class OpenIDConnnectDiscovery {
         /// <summary>
         /// REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.

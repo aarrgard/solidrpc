@@ -84,6 +84,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             cSharpMethods.ForEach(csm =>
             {
                 var i = cSharpRepository.GetInterface(csm.InterfaceName);
+                AddCodeGeneratorAttribute(i);
 
                 // construct code comment for interface
                 var comment = $"<summary>{csm.ClassSummary?.Summary}</summary>";
@@ -122,7 +123,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                         {
                             attrData["Scopes"] = attr.Value;
                         }
-                        var csAttr = new Model.CSharp.Impl.CSharpAttribute(m, attr.Key, attrData);
+                        var csAttr = new Model.CSharp.Impl.CSharpAttribute(m, attr.Key, null, attrData);
                         m.AddMember(csAttr);
                     }
                 }

@@ -1,9 +1,11 @@
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 namespace SolidRpc.Security.Types {
     /// <summary>
     /// success
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class TokenResponse {
         /// <summary>
         /// REQUIRED.  The access token issued by the authorization server.

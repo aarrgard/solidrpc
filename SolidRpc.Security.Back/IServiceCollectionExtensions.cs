@@ -1,14 +1,16 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Security.Back.InternalServices;
 using SolidRpc.Security.Back.Services;
 using SolidRpc.Security.Back.Services.Facebook;
 using SolidRpc.Security.Back.Services.Google;
 using SolidRpc.Security.Back.Services.Microsoft;
+using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services;
 using SolidRpc.Security.Services.Facebook;
 using SolidRpc.Security.Services.Google;
 using SolidRpc.Security.Services.Microsoft;
+using SolidRpc.Security.Services.Oidc;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,8 +31,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurityBackend(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
         {
-            services.AddSingleton<IOpenIDKeyStore, OpenIDKeyStore>();
-            services.AddSingleton<IAccessTokenFactory, AccessTokenFactory>();
+            if(!services.Any(o => o.ServiceType == typeof(IOidcClient)))
+            {
+                throw new Exception("You need to add the security frontend before adding the backend.");
+            }
 
             if (configurator != null)
             {
@@ -42,10 +46,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             }
 
+            services.AddSolidRpcBindings(typeof(IOidcServer), typeof(OidcServer));
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity));
             services.GetSolidRpcContentStore().AddMapping(
                 "/.well-known/openid-configuration", 
-                (sp) => sp.GetRequiredService<IMethodBinderStore>().GetUrlAsync<ISolidRpcSecurity>(o => o.OAuth2Discovery(CancellationToken.None)));
+                (sp) => sp.GetRequiredService<IMethodBinderStore>().GetUrlAsync<IOidcServer>(o => o.OAuth2Discovery(CancellationToken.None)));
             var sc = new SolidRpcSecurityOptions();
             configurator?.Invoke(null, sc);
             if (sc.AddStaticContent)
@@ -63,7 +68,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurityBackendMicrosoft(this IServiceCollection services, Action<IServiceProvider, MicrosoftOptions> configurator)
         {
-            services.AddSolidRpcSecurityBackend();
+            if (!services.Any(o => o.ServiceType == typeof(IOidcServer)))
+            {
+                throw new Exception("You need to add the security backend before adding the backend provider.");
+            }
 
             services.AddSingleton(sp =>
             {
@@ -87,7 +95,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurityBackendFacebook(this IServiceCollection services, Action<IServiceProvider, FacebookOptions> configurator)
         {
-            services.AddSolidRpcSecurityBackend();
+            if (!services.Any(o => o.ServiceType == typeof(IOidcServer)))
+            {
+                throw new Exception("You need to add the security backend before adding the backend provider.");
+            }
 
             services.AddSingleton(sp =>
             {
@@ -111,7 +122,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurityBackendGoogle(this IServiceCollection services, Action<IServiceProvider, GoogleOptions> configurator)
         {
-            services.AddSolidRpcSecurityBackend();
+            if (!services.Any(o => o.ServiceType == typeof(IOidcServer)))
+            {
+                throw new Exception("You need to add the security backend before adding the backend provider.");
+            }
 
             services.AddSingleton(sp =>
             {

@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using SolidRpc.OpenApi.Model.CSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SolidRpc.OpenApi.Generator.Impl
@@ -11,7 +12,8 @@ namespace SolidRpc.OpenApi.Generator.Impl
         {
             ProjectNamespace = projectNamespace ?? "";
             IndentationString = "    ";
-            CurrentIndentation = "";
+            IndentationStack = new Stack<string>();
+            IndentationStack.Push("");
             MemoryStream = new MemoryStream();
             ZipOutputStream = new ZipOutputStream(MemoryStream);
         }
@@ -23,7 +25,8 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
         public string IndentationString { get; private set; }
 
-        public string CurrentIndentation { get; private set; }
+        private Stack<string> IndentationStack { get; set; }
+        private string CurrentIndentation => IndentationStack.Peek();
 
         public TextWriter CurrentWriter { get; private set; }
 
@@ -56,13 +59,20 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 CurrentWriter.Flush();
                 CurrentWriter = null;
                 ZipOutputStream.CloseEntry();
-                CurrentIndentation = "";
+                while(IndentationStack.Count > 1)
+                {
+                    IndentationStack.Pop();
+                }
                 IndentOnNextEmit = false;
             }
         }
 
         public void Emit(string txt)
         {
+            if(txt == null)
+            {
+                return;
+            }
             if (IndentOnNextEmit)
             {
                 CurrentWriter.Write(NewLine);
@@ -81,14 +91,19 @@ namespace SolidRpc.OpenApi.Generator.Impl
             CurrentWriter.Write(txt);
         }
 
-        public void Indent()
+        public void Indent(string indentation = null)
         {
-            CurrentIndentation = CurrentIndentation + IndentationString;
+            if (indentation == null) indentation = IndentationString;
+            IndentationStack.Push(CurrentIndentation + indentation);
         }
 
         public void Unindent()
         {
-            CurrentIndentation = CurrentIndentation.Substring(0, CurrentIndentation.Length - IndentationString.Length);
+            if(IndentationStack.Count <= 1)
+            {
+                throw new Exception("Cannot pop more indentations than you push.");
+            }
+            IndentationStack.Pop();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
     /// <summary>
     /// 
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IMvcProxyTest {
         /// <summary>
         /// Sends a boolean back and forth between client and server

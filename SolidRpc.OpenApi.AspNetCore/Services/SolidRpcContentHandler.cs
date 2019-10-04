@@ -72,7 +72,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 return new NameValuePair()
                 {
                     Name = o.Key,
-                    Value = (await o.Value(ServiceProvider)).ToString()
+                    Value = (await o.Value(ServiceProvider))?.ToString()
                 };
             });
             return (await Task.WhenAll(tasks));

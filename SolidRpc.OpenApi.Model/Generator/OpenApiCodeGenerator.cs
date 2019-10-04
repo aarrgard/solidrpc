@@ -268,6 +268,7 @@ namespace SolidRpc.OpenApi.Model.Generator
             if(!cls.Initialized)
             {
                 cls.Initialized = true;
+                AddCodeGeneratorAttribute(cls);
                 cls.ParseComment($"<summary>{cSharpObject.Description}</summary>");
                 if (cSharpObject.AdditionalProperties != null)
                 {
@@ -288,7 +289,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                             {  "Name", prop.DataMember.Name },
                             {  "EmitDefaultValue", false },
                         };
-                        csProp.AddMember(new CSharpAttribute(csProp, typeof(DataMemberAttribute).FullName, attributeProps));
+                        csProp.AddMember(new CSharpAttribute(csProp, typeof(DataMemberAttribute).FullName, null, attributeProps));
                     }
                     cls.AddMember(csProp);
                 }
@@ -299,6 +300,21 @@ namespace SolidRpc.OpenApi.Model.Generator
                 AddUsings(cls);
             }
             return cls;
+        }
+
+        /// <summary>
+        /// Adds the code generator attribute.
+        /// </summary>
+        /// <param name="t"></param>
+        protected void AddCodeGeneratorAttribute(ICSharpType t)
+        {
+            if (t.Members.OfType<CSharp.ICSharpAttribute>().Any())
+            {
+                return;
+            }
+            var args = new object[] { GetType().Name, GetType().Assembly.GetName().Version.ToString() };
+            var attr = new CSharp.Impl.CSharpAttribute(t, "System.CodeDom.Compiler.GeneratedCodeAttribute", args, null);
+            t.AddMember(attr);
         }
 
         /// <summary>

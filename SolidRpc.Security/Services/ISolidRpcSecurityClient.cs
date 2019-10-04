@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using SolidRpc.Security.Types;
@@ -6,6 +7,7 @@ namespace SolidRpc.Security.Services {
     /// <summary>
     /// Defines logic for solid rpc security clients
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ISolidRpcSecurityClient {
         /// <summary>
         /// Returns all the registered clients

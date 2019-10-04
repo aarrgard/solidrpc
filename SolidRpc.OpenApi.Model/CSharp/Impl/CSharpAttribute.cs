@@ -14,11 +14,18 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="name"></param>
+        /// <param name="args">The constructor args</param>
         /// <param name="attributeData"></param>
-        public CSharpAttribute(ICSharpMember parent, string name, IDictionary<string, object> attributeData) : base(parent, name)
+        public CSharpAttribute(ICSharpMember parent, string name, object[] args, IDictionary<string, object> attributeData) : base(parent, name)
         {
-            AttributeData = attributeData;
+            Args = args ?? new object[0];
+            AttributeData = attributeData ?? new Dictionary<string, object>();
         }
+
+        /// <summary>
+        /// The constructor args
+        /// </summary>
+        public object[] Args { get; }
 
         /// <summary>
         /// The properties or the member
@@ -47,10 +54,19 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 name = name.Substring(0, name.Length - "Attribute".Length);
             }
             codeWriter.Emit($"[{SimplifyName(name)}");
-            if(AttributeData.Any())
+            if(AttributeData.Any() || Args.Any())
             {
                 codeWriter.Emit("(");
                 var dataWritten = false;
+                foreach(var arg in Args)
+                {
+                    if (dataWritten)
+                    {
+                        codeWriter.Emit(",");
+                    }
+                    WriteAttributeData(codeWriter, arg);
+                    dataWritten = true;
+                }
                 foreach (var data in AttributeData)
                 {
                     if(dataWritten)

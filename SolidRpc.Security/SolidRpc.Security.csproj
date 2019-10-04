@@ -22,6 +22,8 @@
     <None Remove="Services\Google\IGoogleRemote.json" />
     <None Remove="Services\IOAuth2Microsoft.json" />
     <None Remove="Services\IOAuth2MicrosoftCallback.json" />
+    <None Remove="Services\IOidcClient.json" />
+    <None Remove="Services\IOidcServer.json" />
     <None Remove="Services\ISolidRpcSecurity.json" />
     <None Remove="Services\ISolidRpcSecurityClient.json" />
   </ItemGroup>
@@ -32,6 +34,8 @@
     <EmbeddedResource Include="Services\Facebook\IFacebookLocal.json" />
     <EmbeddedResource Include="Services\Google\IGoogleRemote.json" />
     <EmbeddedResource Include="Services\Google\IGoogleLocal.json" />
+    <EmbeddedResource Include="Services\Oidc\IOidcServer.json" />
+    <EmbeddedResource Include="Services\Oidc\IOidcClient.json" />
     <EmbeddedResource Include="Services\ISolidRpcSecurityClient.json" />
     <EmbeddedResource Include="Services\ISolidRpcSecurity.json" />
     <EmbeddedResource Include="Services\Microsoft\IMicrosoftLocal.json" />

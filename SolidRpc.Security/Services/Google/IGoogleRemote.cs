@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
@@ -7,6 +8,7 @@ namespace SolidRpc.Security.Services.Google {
     /// <summary>
     /// Defines access to the google oauth implementation
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IGoogleRemote {
         /// <summary>
         /// Authorizes a user @ google

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SolidRpc.Security.Back.InternalServices
+namespace SolidRpc.Security.Front.InternalServices
 {
     /// <summary>
     /// This interface defines logic to interact with the jwt token factory.
@@ -17,7 +17,7 @@ namespace SolidRpc.Security.Back.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetIssuer(CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetIssuerAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the public signing keys.

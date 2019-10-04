@@ -31,6 +31,8 @@ namespace SolidRpc.Tests.Security
             sc.AddHttpClient();
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcSecurityFrontend();
+            sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
@@ -61,6 +63,8 @@ namespace SolidRpc.Tests.Security
             sc.AddHttpClient();
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcSecurityFrontend();
+            sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
@@ -86,6 +90,8 @@ namespace SolidRpc.Tests.Security
             sc.AddHttpClient();
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcSecurityFrontend();
+            sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendGoogle((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
@@ -116,6 +122,8 @@ namespace SolidRpc.Tests.Security
             sc.AddSingleton<IConfiguration>(cb.Build());
 
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcSecurityFrontend();
+            sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendFacebook((_, conf) => _.ConfigureOptions(conf));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 

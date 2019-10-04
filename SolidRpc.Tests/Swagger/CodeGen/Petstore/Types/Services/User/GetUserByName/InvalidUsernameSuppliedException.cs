@@ -1,7 +1,9 @@
+using System.CodeDom.Compiler;
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.User.GetUserByName {
     /// <summary>
     /// Invalid username supplied
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class InvalidUsernameSuppliedException : System.Exception {
         /// <summary>
         /// Constructs a new instance

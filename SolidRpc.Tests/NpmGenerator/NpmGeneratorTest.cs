@@ -125,6 +125,7 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcNpmGenerator();
+            sc.AddSolidRpcSecurityFrontend();
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((o, opts) =>
             {

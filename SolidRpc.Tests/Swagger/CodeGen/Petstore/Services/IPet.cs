@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Security;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
@@ -9,6 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
     /// Everything about your Pets
     /// </summary>
     /// <a href="http://swagger.io">Find out more</a>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPet {
         /// <summary>
         /// Add a new pet to the store

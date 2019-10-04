@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Security.Types;
 using System.Threading;
@@ -5,6 +6,7 @@ namespace SolidRpc.Security.Services.Facebook {
     /// <summary>
     /// Defines logic @ facebook
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IFacebookRemote {
         /// <summary>
         /// Obtains an access token for the application

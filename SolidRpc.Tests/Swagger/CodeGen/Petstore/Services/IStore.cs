@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.Store.GetInventory;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Security;
@@ -7,6 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Services {
     /// <summary>
     /// Access to Petstore orders
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IStore {
         /// <summary>
         /// Returns pet inventories by status Returns a map of status codes to quantities

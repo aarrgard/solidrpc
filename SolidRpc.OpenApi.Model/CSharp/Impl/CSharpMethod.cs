@@ -63,7 +63,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             WriteSummary(codeWriter);
             parameters.ForEach(p =>
             {
-                codeWriter.Emit($"/// <param name=\"{p.Name}\">{p.Comment?.Summary}</param>{codeWriter.NewLine}");
+                codeWriter.Emit($"/// <param name=\"{p.Name}\">");
+                codeWriter.Indent("///");
+                codeWriter.Emit(p.Comment?.Summary);
+                codeWriter.Unindent();
+                codeWriter.Emit($"</param>{codeWriter.NewLine}");
             });
             Comment.Exceptions.ToList().ForEach(e =>
             {
