@@ -67,6 +67,8 @@ steps:
 #
 - task: DotNetCoreCLI@2
   displayName: Test - Run test projects
+  variables:
+    MSBUILDDISABLENODEREUSE: 1    
   inputs:
     command: test
     projects: '$(projectFolder)/**/*Tests/*.csproj'
