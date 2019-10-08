@@ -246,9 +246,9 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
-                var dateTime = new DateTimeOffset(2019, 05, 25, 17, 32, 44, new TimeSpan(1,0,0));
+                var dateTime = new DateTimeOffset(2019, 05, 25, 17, 32, 44, DateTimeOffset.Now.Offset);
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeOffsetInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
-                Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:ss+02:00")}\"", await AssertOk(resp));
+                Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:sszzz")}\"", await AssertOk(resp));
 
                 //var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
                 //Assert.AreEqual(dateTime, await sp.ProxyDateTimeOffsetInQuery(dateTime));

@@ -215,9 +215,10 @@ namespace SolidRpc.OpenApi.DotNetTool
 
             if(argSettings.ContainsKey("only-compare") && bool.Parse(argSettings["only-compare"]))
             {
-                if(await projectDir.FileDataZipDiffers(projectZip))
+                var filesThatDiffers = await projectDir.FileDataZipDiffers(projectZip);
+                if (filesThatDiffers.Count > 0)
                 {
-                    throw new Exception("File differs!");
+                    throw new Exception($"Files differs({string.Join(",", filesThatDiffers)})!");
                 }
             }
             else

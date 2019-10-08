@@ -986,6 +986,346 @@ export namespace Security {
              */
             export var MicrosoftRemoteInstance : IMicrosoftRemote = new MicrosoftRemoteImpl();
         }
+        export namespace Oidc {
+            /**
+             * Defines logic for the oidc client.
+             */
+            export interface IOidcClient {
+                /**
+                 * Returns the settings for the client. Usually invoked from a javascript web app.                 *             These settings does not contain the secret which the client should keep for itself.                 *             It does however contain a "redirect_uri" that is valid for this client.
+                 * @param cancellationToken 
+                 */
+                Settings(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.Settings>;
+                /**
+                 * This observable is hot and monitors all the responses from the Settings invocations.
+                 */
+                SettingsObservable : Observable<Security.Types.Settings>;
+            }
+            /**
+             * Defines logic for the oidc client.
+             */
+            export class OidcClientImpl  extends SolidRpc.RpcServiceImpl implements IOidcClient {
+                constructor() {
+                    super();
+                    this.SettingsSubject = new Subject<Security.Types.Settings>();
+                    this.SettingsObservable = this.SettingsSubject.asObservable().pipe(share());
+                }
+                /**
+                 * Returns the settings for the client. Usually invoked from a javascript web app.                 *             These settings does not contain the secret which the client should keep for itself.                 *             It does however contain a "redirect_uri" that is valid for this client.
+                 * @param cancellationToken 
+                 */
+                Settings(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.Settings> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/Settings';
+                    return this.request<Security.Types.Settings>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.Settings(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.SettingsSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the Settings invocations.
+                 */
+                SettingsObservable : Observable<Security.Types.Settings>;
+                private SettingsSubject : Subject<Security.Types.Settings>;
+            }
+            /**
+             * Instance for the IOidcClient type. Implemented by the OidcClientImpl
+             */
+            export var OidcClientInstance : IOidcClient = new OidcClientImpl();
+            /**
+             * Defines logic for the oidc server
+             */
+            export interface IOidcServer {
+                /**
+                 * Returns the /.well-known/openid-configuration file
+                 * @param cancellationToken 
+                 */
+                OAuth2Discovery(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.OpenIDConnnectDiscovery>;
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
+                 */
+                OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                /**
+                 * Returns the keys
+                 * @param cancellationToken 
+                 */
+                OAuth2Keys(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.OpenIDKeys>;
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
+                 */
+                OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
+                /**
+                 * authenticates a user
+                 * @param cancellationToken 
+                 */
+                OAuth2TokenGet(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.TokenResponse>;
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
+                 */
+                OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
+                /**
+                 * authenticates a user
+                 * @param grantType 
+                 * @param clientId 
+                 * @param clientSecret 
+                 * @param username The user name
+                 * @param password The the user password
+                 * @param scope The the scopes
+                 * @param code The the code
+                 * @param redirectUri 
+                 * @param codeVerifier 
+                 * @param refreshToken 
+                 * @param cancellationToken 
+                 */
+                OAuth2TokenPost(
+                    grantType? : string,
+                    clientId? : string,
+                    clientSecret? : string,
+                    username? : string,
+                    password? : string,
+                    scope? : string[],
+                    code? : string,
+                    redirectUri? : string,
+                    codeVerifier? : string,
+                    refreshToken? : string,
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.TokenResponse>;
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
+                 */
+                OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
+                /**
+                 * authorizes a user
+                 * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
+                 * @param responseType 
+                 * @param clientId 
+                 * @param redirectUri 
+                 * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+                 * @param cancellationToken 
+                 */
+                OAuth2AuthorizeGet(
+                    scope : string[],
+                    responseType : string,
+                    clientId : string,
+                    redirectUri? : string,
+                    state? : string,
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.WebContent>;
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
+                 */
+                OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
+                /**
+                 * authorizes a user
+                 * @param cancellationToken 
+                 */
+                OAuth2AuthorizePost(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.WebContent>;
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
+                 */
+                OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
+            }
+            /**
+             * Defines logic for the oidc server
+             */
+            export class OidcServerImpl  extends SolidRpc.RpcServiceImpl implements IOidcServer {
+                constructor() {
+                    super();
+                    this.OAuth2DiscoverySubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                    this.OAuth2DiscoveryObservable = this.OAuth2DiscoverySubject.asObservable().pipe(share());
+                    this.OAuth2KeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                    this.OAuth2KeysObservable = this.OAuth2KeysSubject.asObservable().pipe(share());
+                    this.OAuth2TokenGetSubject = new Subject<Security.Types.TokenResponse>();
+                    this.OAuth2TokenGetObservable = this.OAuth2TokenGetSubject.asObservable().pipe(share());
+                    this.OAuth2TokenPostSubject = new Subject<Security.Types.TokenResponse>();
+                    this.OAuth2TokenPostObservable = this.OAuth2TokenPostSubject.asObservable().pipe(share());
+                    this.OAuth2AuthorizeGetSubject = new Subject<Security.Types.WebContent>();
+                    this.OAuth2AuthorizeGetObservable = this.OAuth2AuthorizeGetSubject.asObservable().pipe(share());
+                    this.OAuth2AuthorizePostSubject = new Subject<Security.Types.WebContent>();
+                    this.OAuth2AuthorizePostObservable = this.OAuth2AuthorizePostSubject.asObservable().pipe(share());
+                }
+                /**
+                 * Returns the /.well-known/openid-configuration file
+                 * @param cancellationToken 
+                 */
+                OAuth2Discovery(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.OpenIDConnnectDiscovery> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/discovery';
+                    return this.request<Security.Types.OpenIDConnnectDiscovery>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.OpenIDConnnectDiscovery(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.OAuth2DiscoverySubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
+                 */
+                OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                private OAuth2DiscoverySubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
+                /**
+                 * Returns the keys
+                 * @param cancellationToken 
+                 */
+                OAuth2Keys(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.OpenIDKeys> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/keys';
+                    return this.request<Security.Types.OpenIDKeys>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.OpenIDKeys(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.OAuth2KeysSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
+                 */
+                OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
+                private OAuth2KeysSubject : Subject<Security.Types.OpenIDKeys>;
+                /**
+                 * authenticates a user
+                 * @param cancellationToken 
+                 */
+                OAuth2TokenGet(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.TokenResponse> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
+                    return this.request<Security.Types.TokenResponse>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.TokenResponse(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.OAuth2TokenGetSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
+                 */
+                OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
+                private OAuth2TokenGetSubject : Subject<Security.Types.TokenResponse>;
+                /**
+                 * authenticates a user
+                 * @param grantType 
+                 * @param clientId 
+                 * @param clientSecret 
+                 * @param username The user name
+                 * @param password The the user password
+                 * @param scope The the scopes
+                 * @param code The the code
+                 * @param redirectUri 
+                 * @param codeVerifier 
+                 * @param refreshToken 
+                 * @param cancellationToken 
+                 */
+                OAuth2TokenPost(
+                    grantType? : string,
+                    clientId? : string,
+                    clientSecret? : string,
+                    username? : string,
+                    password? : string,
+                    scope? : string[],
+                    code? : string,
+                    redirectUri? : string,
+                    codeVerifier? : string,
+                    refreshToken? : string,
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.TokenResponse> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
+                    return this.request<Security.Types.TokenResponse>('post', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.TokenResponse(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.OAuth2TokenPostSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
+                 */
+                OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
+                private OAuth2TokenPostSubject : Subject<Security.Types.TokenResponse>;
+                /**
+                 * authorizes a user
+                 * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
+                 * @param responseType 
+                 * @param clientId 
+                 * @param redirectUri 
+                 * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+                 * @param cancellationToken 
+                 */
+                OAuth2AuthorizeGet(
+                    scope : string[],
+                    responseType : string,
+                    clientId : string,
+                    redirectUri? : string,
+                    state? : string,
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.WebContent> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
+                    return this.request<Security.Types.WebContent>('get', uri, {
+                        'scope': scope,
+                        'response_type': responseType,
+                        'client_id': clientId,
+                        'redirect_uri': redirectUri,
+                        'state': state,
+}, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.WebContent(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.OAuth2AuthorizeGetSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
+                 */
+                OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
+                private OAuth2AuthorizeGetSubject : Subject<Security.Types.WebContent>;
+                /**
+                 * authorizes a user
+                 * @param cancellationToken 
+                 */
+                OAuth2AuthorizePost(
+                    cancellationToken? : CancellationToken
+                ): Observable<Security.Types.WebContent> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
+                    return this.request<Security.Types.WebContent>('post', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return new Security.Types.WebContent(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.OAuth2AuthorizePostSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
+                 */
+                OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
+                private OAuth2AuthorizePostSubject : Subject<Security.Types.WebContent>;
+            }
+            /**
+             * Instance for the IOidcServer type. Implemented by the OidcServerImpl
+             */
+            export var OidcServerInstance : IOidcServer = new OidcServerImpl();
+        }
         /**
          * Defines logic for solid rpc security
          */
@@ -1045,102 +1385,6 @@ export namespace Security {
              * This observable is hot and monitors all the responses from the Profile invocations.
              */
             ProfileObservable : Observable<Security.Types.Claim[]>;
-            /**
-             * Returns the /.well-known/openid-configuration file
-             * @param cancellationToken 
-             */
-            OAuth2Discovery(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.OpenIDConnnectDiscovery>;
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
-             */
-            OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
-            /**
-             * Returns the keys
-             * @param cancellationToken 
-             */
-            OAuth2Keys(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.OpenIDKeys>;
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
-             */
-            OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
-            /**
-             * authenticates a user
-             * @param cancellationToken 
-             */
-            OAuth2TokenGet(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.TokenResponse>;
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
-             */
-            OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
-            /**
-             * authenticates a user
-             * @param grantType 
-             * @param clientId 
-             * @param clientSecret 
-             * @param username The user name
-             * @param password The the user password
-             * @param scope The the scopes
-             * @param code The the code
-             * @param redirectUri 
-             * @param codeVerifier 
-             * @param refreshToken 
-             * @param cancellationToken 
-             */
-            OAuth2TokenPost(
-                grantType? : string,
-                clientId? : string,
-                clientSecret? : string,
-                username? : string,
-                password? : string,
-                scope? : string[],
-                code? : string,
-                redirectUri? : string,
-                codeVerifier? : string,
-                refreshToken? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.TokenResponse>;
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
-             */
-            OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
-            /**
-             * authorizes a user
-             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
-             * @param responseType 
-             * @param clientId 
-             * @param redirectUri 
-             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
-             * @param cancellationToken 
-             */
-            OAuth2AuthorizeGet(
-                scope : string[],
-                responseType : string,
-                clientId : string,
-                redirectUri? : string,
-                state? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent>;
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
-             */
-            OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
-            /**
-             * authorizes a user
-             * @param cancellationToken 
-             */
-            OAuth2AuthorizePost(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent>;
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
-             */
-            OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
         }
         /**
          * Defines logic for solid rpc security
@@ -1158,18 +1402,6 @@ export namespace Security {
                 this.LoginProvidersObservable = this.LoginProvidersSubject.asObservable().pipe(share());
                 this.ProfileSubject = new Subject<Security.Types.Claim[]>();
                 this.ProfileObservable = this.ProfileSubject.asObservable().pipe(share());
-                this.OAuth2DiscoverySubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
-                this.OAuth2DiscoveryObservable = this.OAuth2DiscoverySubject.asObservable().pipe(share());
-                this.OAuth2KeysSubject = new Subject<Security.Types.OpenIDKeys>();
-                this.OAuth2KeysObservable = this.OAuth2KeysSubject.asObservable().pipe(share());
-                this.OAuth2TokenGetSubject = new Subject<Security.Types.TokenResponse>();
-                this.OAuth2TokenGetObservable = this.OAuth2TokenGetSubject.asObservable().pipe(share());
-                this.OAuth2TokenPostSubject = new Subject<Security.Types.TokenResponse>();
-                this.OAuth2TokenPostObservable = this.OAuth2TokenPostSubject.asObservable().pipe(share());
-                this.OAuth2AuthorizeGetSubject = new Subject<Security.Types.WebContent>();
-                this.OAuth2AuthorizeGetObservable = this.OAuth2AuthorizeGetSubject.asObservable().pipe(share());
-                this.OAuth2AuthorizePostSubject = new Subject<Security.Types.WebContent>();
-                this.OAuth2AuthorizePostObservable = this.OAuth2AuthorizePostSubject.asObservable().pipe(share());
             }
             /**
              * Returns the login page
@@ -1276,168 +1508,6 @@ export namespace Security {
              */
             ProfileObservable : Observable<Security.Types.Claim[]>;
             private ProfileSubject : Subject<Security.Types.Claim[]>;
-            /**
-             * Returns the /.well-known/openid-configuration file
-             * @param cancellationToken 
-             */
-            OAuth2Discovery(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.OpenIDConnnectDiscovery> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/discovery';
-                return this.request<Security.Types.OpenIDConnnectDiscovery>('get', uri, null, null, null, cancellationToken, function(code, data) {
-                    if(code == 200) {
-                        return new Security.Types.OpenIDConnnectDiscovery(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.OAuth2DiscoverySubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
-             */
-            OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
-            private OAuth2DiscoverySubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
-            /**
-             * Returns the keys
-             * @param cancellationToken 
-             */
-            OAuth2Keys(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.OpenIDKeys> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/keys';
-                return this.request<Security.Types.OpenIDKeys>('get', uri, null, null, null, cancellationToken, function(code, data) {
-                    if(code == 200) {
-                        return new Security.Types.OpenIDKeys(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.OAuth2KeysSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
-             */
-            OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
-            private OAuth2KeysSubject : Subject<Security.Types.OpenIDKeys>;
-            /**
-             * authenticates a user
-             * @param cancellationToken 
-             */
-            OAuth2TokenGet(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.TokenResponse> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/token';
-                return this.request<Security.Types.TokenResponse>('get', uri, null, null, null, cancellationToken, function(code, data) {
-                    if(code == 200) {
-                        return new Security.Types.TokenResponse(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.OAuth2TokenGetSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
-             */
-            OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
-            private OAuth2TokenGetSubject : Subject<Security.Types.TokenResponse>;
-            /**
-             * authenticates a user
-             * @param grantType 
-             * @param clientId 
-             * @param clientSecret 
-             * @param username The user name
-             * @param password The the user password
-             * @param scope The the scopes
-             * @param code The the code
-             * @param redirectUri 
-             * @param codeVerifier 
-             * @param refreshToken 
-             * @param cancellationToken 
-             */
-            OAuth2TokenPost(
-                grantType? : string,
-                clientId? : string,
-                clientSecret? : string,
-                username? : string,
-                password? : string,
-                scope? : string[],
-                code? : string,
-                redirectUri? : string,
-                codeVerifier? : string,
-                refreshToken? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.TokenResponse> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/token';
-                return this.request<Security.Types.TokenResponse>('post', uri, null, null, null, cancellationToken, function(code, data) {
-                    if(code == 200) {
-                        return new Security.Types.TokenResponse(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.OAuth2TokenPostSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
-             */
-            OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
-            private OAuth2TokenPostSubject : Subject<Security.Types.TokenResponse>;
-            /**
-             * authorizes a user
-             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
-             * @param responseType 
-             * @param clientId 
-             * @param redirectUri 
-             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
-             * @param cancellationToken 
-             */
-            OAuth2AuthorizeGet(
-                scope : string[],
-                responseType : string,
-                clientId : string,
-                redirectUri? : string,
-                state? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/authorize';
-                return this.request<Security.Types.WebContent>('get', uri, {
-                    'scope': scope,
-                    'response_type': responseType,
-                    'client_id': clientId,
-                    'redirect_uri': redirectUri,
-                    'state': state,
-}, null, null, cancellationToken, function(code, data) {
-                    if(code == 200) {
-                        return new Security.Types.WebContent(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.OAuth2AuthorizeGetSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
-             */
-            OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
-            private OAuth2AuthorizeGetSubject : Subject<Security.Types.WebContent>;
-            /**
-             * authorizes a user
-             * @param cancellationToken 
-             */
-            OAuth2AuthorizePost(
-                cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/oauth2/authorize';
-                return this.request<Security.Types.WebContent>('post', uri, null, null, null, cancellationToken, function(code, data) {
-                    if(code == 200) {
-                        return new Security.Types.WebContent(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.OAuth2AuthorizePostSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
-             */
-            OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
-            private OAuth2AuthorizePostSubject : Subject<Security.Types.WebContent>;
         }
         /**
          * Instance for the ISolidRpcSecurity type. Implemented by the SolidRpcSecurityImpl
@@ -1687,7 +1757,7 @@ export namespace Security {
             Subcode: number;
         }
         /**
-         * 
+         * success
          */
         export class LoginProvider {
             constructor(obj?: any) {
@@ -2126,6 +2196,75 @@ export namespace Security {
              * 
              */
             Keys: Security.Types.OpenIDKey[];
+        }
+        /**
+         * success
+         */
+        export class Settings {
+            constructor(obj?: any) {
+                for(let prop in obj) {
+                    switch(prop) {
+                        case "authority":
+                            if (obj.authority) { this.Authority = obj.authority.toString(); }
+                            break;
+                        case "client_id":
+                            if (obj.client_id) { this.ClientId = obj.client_id.toString(); }
+                            break;
+                        case "response_type":
+                            if (obj.response_type) { this.ResponseType = obj.response_type.toString(); }
+                            break;
+                        case "scope":
+                            if (obj.scope) { this.Scope = obj.scope.toString(); }
+                            break;
+                        case "redirect_uri":
+                            if (obj.redirect_uri) { this.RedirectUri = obj.redirect_uri.toString(); }
+                            break;
+                        case "post_logout_redirect_uri":
+                            if (obj.post_logout_redirect_uri) { this.PostLogoutRedirectUri = obj.post_logout_redirect_uri.toString(); }
+                            break;
+                    }
+                }
+            }
+            toJson(arr: string[]): string {
+                let returnString = false
+                if(arr == null) {
+                    arr = [];
+                    returnString = false;
+                }
+                if(this.Authority) { arr.push('authority: '); arr.push(JSON.stringify(this.Authority)); arr.push(','); } 
+                if(this.ClientId) { arr.push('client_id: '); arr.push(JSON.stringify(this.ClientId)); arr.push(','); } 
+                if(this.ResponseType) { arr.push('response_type: '); arr.push(JSON.stringify(this.ResponseType)); arr.push(','); } 
+                if(this.Scope) { arr.push('scope: '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
+                if(this.RedirectUri) { arr.push('redirect_uri: '); arr.push(JSON.stringify(this.RedirectUri)); arr.push(','); } 
+                if(this.PostLogoutRedirectUri) { arr.push('post_logout_redirect_uri: '); arr.push(JSON.stringify(this.PostLogoutRedirectUri)); arr.push(','); } 
+                arr.push('}');
+                if(returnString) return arr.join("");
+                return null;
+            }
+            /**
+             * The authority to use
+             */
+            Authority: string;
+            /**
+             * The id of the client
+             */
+            ClientId: string;
+            /**
+             * The response type
+             */
+            ResponseType: string;
+            /**
+             * The scopes that should be supplied
+             */
+            Scope: string;
+            /**
+             * The the address to redirect to
+             */
+            RedirectUri: string;
+            /**
+             * The address to call when logging out.
+             */
+            PostLogoutRedirectUri: string;
         }
         /**
          * success

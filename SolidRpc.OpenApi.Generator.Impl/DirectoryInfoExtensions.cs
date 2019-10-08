@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using SolidRpc.OpenApi.Generator.Types;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,14 +27,14 @@ namespace System.IO
         /// <param name="dir"></param>
         /// <param name="zip"></param>
         /// <returns></returns>
-        public static Task<bool> FileDataZipDiffers(this DirectoryInfo dir, FileData zip)
+        public static Task<ICollection<string>> FileDataZipDiffers(this DirectoryInfo dir, FileData zip)
         {
             return HandleFileDataZip(dir, zip, false);
         }
 
-        private static async Task<bool> HandleFileDataZip(DirectoryInfo dir, FileData zip, bool replaceFilesThatDiffers)
+        private static async Task<ICollection<string>> HandleFileDataZip(DirectoryInfo dir, FileData zip, bool replaceFilesThatDiffers)
         {
-            bool differs = false;
+            var modifiedFiles = new List<string>();
             using (var zos = new ZipInputStream(zip.FileStream))
             {
                 ZipEntry ze;
@@ -49,17 +50,21 @@ namespace System.IO
                     var ms = new MemoryStream();
                     await zos.CopyToAsync(ms);
                     var newFileContent = ms.ToArray();
-                    differs = await FileDiffers(fi, newFileContent) | differs;
+                    var differs = await FileDiffers(fi, newFileContent);
                     if (differs && replaceFilesThatDiffers)
                     {
-                        using (var fs = fi.Create())
+                        modifiedFiles.Add(ze.Name);
+                        if(replaceFilesThatDiffers)
                         {
-                            await fs.WriteAsync(newFileContent, 0, newFileContent.Length);
+                            using (var fs = fi.Create())
+                            {
+                                await fs.WriteAsync(newFileContent, 0, newFileContent.Length);
+                            }
                         }
                     }
                 }
             }
-            return differs;
+            return modifiedFiles;
         }
 
         private static async Task<bool> FileDiffers(FileInfo fi, byte[] newFileContent)
