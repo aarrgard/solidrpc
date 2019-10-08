@@ -19,7 +19,6 @@ variables:
   buildConfiguration: 'Release'
   projectFolder: '$(Build.SourcesDirectory)'
   solidCIPowershellFolder: $(projectFolder)
-  MSBUILDDISABLENODEREUSE: 1    
 
 steps:
 
@@ -59,7 +58,7 @@ steps:
 #
 # Build stuff
 #
-- script: dotnet build --configuration $(buildConfiguration)
+- script: dotnet build SolidRpc.sln --configuration $(buildConfiguration)
   displayName: 'Build - dotnet build $(buildConfiguration)'
   workingDirectory: $(projectFolder)
 
@@ -77,7 +76,7 @@ steps:
 #
 # Pack it in a nuget assembly and copy to artifacts folder, then push it
 #
-- script: dotnet pack --configuration $(buildConfiguration) --no-build --include-source --include-symbols
+- script: dotnet pack SolidRpc.sln --configuration $(buildConfiguration) --no-build --include-source --include-symbols
   displayName: 'Nuget - Create packages'
   workingDirectory: $(projectFolder)
 
