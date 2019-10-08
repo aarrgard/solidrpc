@@ -19,6 +19,7 @@ variables:
   buildConfiguration: 'Release'
   projectFolder: '$(Build.SourcesDirectory)'
   solidCIPowershellFolder: $(projectFolder)
+  MSBUILDDISABLENODEREUSE: 1    
 
 steps:
 
@@ -67,8 +68,6 @@ steps:
 #
 - task: DotNetCoreCLI@2
   displayName: Test - Run test projects
-  variables:
-    MSBUILDDISABLENODEREUSE: 1    
   inputs:
     command: test
     projects: '$(projectFolder)/**/*Tests/*.csproj'
