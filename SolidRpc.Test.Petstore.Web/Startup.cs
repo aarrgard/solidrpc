@@ -24,6 +24,8 @@ namespace SolidRpc.Test.PetstoreWeb
                 o.DefaultOpenApiSpec = "SolidRpc.Security.ISolidRpcSecurity";
             });
             services.AddSolidRpcNpmGenerator();
+            services.AddSolidRpcSecurityFrontend();
+            services.AddSolidRpcSecurityBackend();
             services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>
             {
                 sp.ConfigureOptions(conf);

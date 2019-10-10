@@ -1,0 +1,40 @@
+  {
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "SecurityPermissionAttribute"
+    },
+    "host": "localhost:5001",
+    "schemes": [ "https" ],
+    "paths": {
+      "/Seuritytest": {
+        "get": {
+          "tags": [ "SecurityPermission" ],
+          "summary": "Tests the security attribute with permissions",
+          "operationId": "Securitytest",
+          "consumes": [],
+          "produces": [ "application/json" ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          },
+          "security": [
+            {
+              "permissions": []
+            }
+          ],
+          "x-permissions": {
+            "permissions": [ "permission1", "permission2" ]
+          }
+        }
+      }
+    },
+    "securityDefinitions": {
+      "permissions": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }

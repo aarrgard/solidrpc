@@ -234,6 +234,7 @@ namespace SolidRpc.OpenApi.Model
                     m.Invoke(this, new[] { propertyName, r, o, s, sp });
                 };
             }
+
             throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName}");
         }
 

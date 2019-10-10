@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Swagger\CodeGen\SecurityPermissionAttribute\Services\IArrayParam.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="NpmGenerator\TestCreateTypescript.ts" />
     <None Remove="Swagger\SpecGenReflection\TestEmptyRepo.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
@@ -72,6 +76,7 @@
 
   <ItemGroup>
     <Folder Include="Swagger\CodeGen\Local\" />
+    <Folder Include="Swagger\CodeGen\SecurityPermissionAttribute\Services\" />
   </ItemGroup>
 
   <ItemGroup>
