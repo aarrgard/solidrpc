@@ -16,11 +16,20 @@ namespace SolidRpc.Tests.Security
     /// </summary>
     public class SecurityOauth2Test : WebHostTest
     {
+        /// <summary>
+        /// Configures the client services
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureClientServices(IServiceCollection services)
         {
             services.AddHttpClient();
             base.ConfigureClientServices(services);
         }
+        /// <summary>
+        /// Configures the server services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public override IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
             services.AddSolidRpcSecurityFrontend();

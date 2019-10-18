@@ -56,7 +56,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.NpmGenerator", "So
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Security.Back", "SolidRpc.Security.Back\SolidRpc.Security.Back.csproj", "{EC4FD9AD-CE46-4D4C-9263-D6EF65D21050}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Security.Front", "SolidRpc.Security.Front\SolidRpc.Security.Front.csproj", "{0F09F090-A112-435A-B290-7EB33C34556E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Security.Front", "SolidRpc.Security.Front\SolidRpc.Security.Front.csproj", "{0F09F090-A112-435A-B290-7EB33C34556E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

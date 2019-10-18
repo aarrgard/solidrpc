@@ -55,6 +55,10 @@ namespace SolidRpc.Tests
     public class ServiceInterceptorAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
         private static Func<TMethod, Task<TAdvice>> s_TMethodToTAdviceConverter = TypeConverter.CreateConverter<TMethod, Task<TAdvice>>();
+        
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
         public ServiceInterceptorAdvice()
         {
 

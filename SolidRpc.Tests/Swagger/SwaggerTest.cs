@@ -323,7 +323,7 @@ namespace SolidRpc.Tests.Swagger
         /// 
         /// </summary>
         [Test]
-        public async Task TestSwaggerSpecReferenceToExternalFile()
+        public void TestSwaggerSpecReferenceToExternalFile()
         {
             var sc = new ServiceCollection();
             sc.AddSolidRpcServices(o => { });
