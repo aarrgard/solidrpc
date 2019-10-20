@@ -11,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
     /// <summary>
     /// Tests swagger functionality.
     /// </summary>
-    public class SpecGenTest : SwaggerTestBase
+    public class SpecGenTest : WebHostTest
     {
         /// <summary>
         /// Returns the spec folder

@@ -36,9 +36,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// Returns the namespaces.
         /// </summary>
         /// <param name="namespaces"></param>
-        public override void GetNamespaces(ICollection<string> namespaces)
+        public override void GetNamespaces(IDictionary<string, HashSet<string>> namespaces)
         {
-            namespaces.Add(new QualifiedName(Name).Namespace);
+            var qName = new QualifiedName(Name);
+            AddNamespacesFromName(namespaces, qName.Namespace, qName.Name);
             base.GetNamespaces(namespaces);
         }
 

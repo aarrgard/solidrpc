@@ -72,14 +72,14 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         public CSharpRepository()
         {
-            Namespaces = new ConcurrentDictionary<string, ICSharpMember>();
+            Namespaces = new ConcurrentDictionary<string, ICSharpNamespace>();
             ClassesAndInterfaces = new ConcurrentDictionary<string, ICSharpMember>();
         }
 
         /// <summary>
         /// All the namespaces
         /// </summary>
-        public ConcurrentDictionary<string, ICSharpMember> Namespaces { get; }
+        public ConcurrentDictionary<string, ICSharpNamespace> Namespaces { get; }
 
 
         /// <summary>
@@ -127,6 +127,19 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// Returns the interfaces
         /// </summary>
         public IEnumerable<ICSharpInterface> Interfaces => ClassesAndInterfaces.Values.OfType<ICSharpInterface>();
+
+        IEnumerable<ICSharpNamespace> ICSharpRepository.Namespaces => Namespaces.Values.OfType<ICSharpNamespace>();
+
+        /// <summary>
+        /// REturns the namespace if it exists
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <param name="ns"></param>
+        /// <returns></returns>
+        public bool TryGetNamespace(string fullName, out ICSharpNamespace ns)
+        {
+            return Namespaces.TryGetValue(fullName, out ns);
+        }
 
 
         /// <summary>
@@ -310,7 +323,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// populates supplied collection with all the namespaces.
         /// </summary>
         /// <param name="namespaces"></param>
-        public void GetNamespaces(ICollection<string> namespaces)
+        public void GetNamespaces(IDictionary<string, HashSet<string>> namespaces)
         {
             throw new NotImplementedException();
         }

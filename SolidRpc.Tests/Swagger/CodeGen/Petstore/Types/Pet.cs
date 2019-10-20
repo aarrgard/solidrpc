@@ -1,6 +1,5 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
-using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
@@ -18,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="category",EmitDefaultValue=false)]
-        public Category Category { get; set; }
+        public SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Category Category { get; set; }
     
         /// <summary>
         /// 
@@ -36,7 +35,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="tags",EmitDefaultValue=false)]
-        public IEnumerable<Tag> Tags { get; set; }
+        public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Tag> Tags { get; set; }
     
         /// <summary>
         /// pet status in the store

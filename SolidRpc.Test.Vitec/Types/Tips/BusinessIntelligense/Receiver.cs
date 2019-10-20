@@ -1,0 +1,41 @@
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+using SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models;
+namespace SolidRpc.Test.Vitec.Types.Tips.BusinessIntelligense {
+    /// <summary>
+    /// 
+    /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
+    public class Receiver {
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DataMember(Name="id",EmitDefaultValue=false)]
+        public string Id { get; set; }
+    
+        /// <summary>
+        /// Namn
+        /// </summary>
+        [DataMember(Name="name",EmitDefaultValue=false)]
+        public string Name { get; set; }
+    
+        /// <summary>
+        /// Anst�llningsnummer
+        /// </summary>
+        [DataMember(Name="employeeNumber",EmitDefaultValue=false)]
+        public string EmployeeNumber { get; set; }
+    
+        /// <summary>
+        /// Typ av anv�ndare
+        /// </summary>
+        [DataMember(Name="type",EmitDefaultValue=false)]
+        public string Type { get; set; }
+    
+        /// <summary>
+        /// F�retag
+        /// </summary>
+        [DataMember(Name="company",EmitDefaultValue=false)]
+        public Company Company { get; set; }
+    
+    }
+}

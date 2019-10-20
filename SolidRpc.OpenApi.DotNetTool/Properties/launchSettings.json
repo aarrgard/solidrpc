@@ -19,6 +19,11 @@
       "commandName": "Project",
       "commandLineArgs": "-openapi2code SolidRpc.NpmGenerator.json",
       "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.NpmGenerator"
+    },
+    "DotNetTool - Vitec": {
+      "commandName": "Project",
+      "commandLineArgs": "-openapi2code SolidRpc.Test.Vitec.json",
+      "workingDirectory": "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Vitec"
     }
   }
 }

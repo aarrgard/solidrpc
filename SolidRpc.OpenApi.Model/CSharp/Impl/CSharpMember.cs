@@ -4,12 +4,36 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-using System.Xml;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
+    /// <summary>
+    /// Base class for the members
+    /// </summary>
     public abstract class CSharpMember : ICSharpMember
     {
+
+        /// <summary>
+        /// Adds the suplied namespace and name to the namespaces
+        /// </summary>
+        /// <param name="namespaces"></param>
+        /// <param name="fullName"></param>
+        /// <param name="name"></param>
+        public static void AddNamespacesFromName(IDictionary<string, HashSet<string>> namespaces, string fullName, string name)
+        {
+            HashSet<string> namesInNamespace;
+            if (!namespaces.TryGetValue(fullName, out namesInNamespace))
+            {
+                namespaces[fullName] = namesInNamespace = new HashSet<string>();
+            }
+            namesInNamespace.Add(name);
+        }
+
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="name"></param>
         public CSharpMember(ICSharpMember parent, string name)
         {
             Parent = parent ?? throw new ArgumentNullException(nameof(parent));
@@ -221,14 +245,22 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }
         }
 
-        public virtual void GetNamespaces(ICollection<string> namespaces)
+        public virtual void GetNamespaces(IDictionary<string, HashSet<string>> namespaces)
         {
             Members.ToList().ForEach(o => o.GetNamespaces(namespaces));
         }
 
-        protected void AddNamespacesFromName(ICollection<string> namespaces, ICSharpType csType)
+        /// <summary>
+        /// Adds the namespaces of supplied type. This method also
+        /// adds the namespaces of the generic type arguments to the
+        /// supplied collection.
+        /// </summary>
+        /// <param name="namespaces"></param>
+        /// <param name="csType"></param>
+        protected void AddNamespacesFromName(IDictionary<string, HashSet<string>> namespaces, ICSharpType csType)
         {
-            namespaces.Add(csType.Namespace.FullName);
+            AddNamespacesFromName(namespaces, csType.Namespace.FullName, csType.Name);
+
             var genArgs = csType.GetGenericArguments();
             if(genArgs != null)
             {
@@ -239,8 +271,18 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }
         }
 
+        /// <summary>
+        /// Emits the code to supplied writer
+        /// </summary>
+        /// <param name="codeWriter"></param>
         public abstract void WriteCode(ICodeWriter codeWriter);
 
+        /// <summary>
+        /// Simplifies the supplied name based on the current using
+        /// directives and namespace.
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
         protected string SimplifyName(string fullName)
         {
             //
@@ -260,8 +302,13 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 work = work.Parent;
             }
 
+            // parse name
             var (typeName, genArgs, rest) = CSharpRepository.ReadType(fullName);
 
+            //
+            // find prefix in "using" declarations that the typename
+            // starts with.
+            //
             var prefix = usings.Where(o => typeName.StartsWith($"{o}."))
                 .OrderByDescending(o => o.Length)
                 .FirstOrDefault();
@@ -274,10 +321,6 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 }
                 simplifiedName = $"{simplifiedName}{rest}";
                 return simplifiedName;
-            }
-            if(fullName.StartsWith("System.Collections.Generic.IEnumerable<"))
-            {
-                throw new Exception();
             }
 
             return fullName;

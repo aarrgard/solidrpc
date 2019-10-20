@@ -15,26 +15,17 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// Constructs a new instance
         /// </summary>
         /// <param name="classDocumentation"></param>
-        /// <param name="nameAttr"></param>
-        public CodeDocMethod(CodeDocClass classDocumentation, string nameAttr)
+        /// <param name="methodName"></param>
+        public CodeDocMethod(
+            CodeDocClass classDocumentation,
+            string methodName
+            )
         {
             ClassDocumentation = classDocumentation ?? throw new ArgumentNullException(nameof(classDocumentation));
-            MethodName = GetMethodName(nameAttr) ?? throw new ArgumentNullException(nameof(nameAttr));
-            var methodNode = XmlDocument.SelectSingleNode($"/doc/members/member[@name='{nameAttr}']");
-            if(methodNode == null)
-            {
-                Summary = "";
-                ParameterDocumentation = new ICodeDocParameter[0];
-                ExceptionDocumentation = new ICodeDocException[0];
-                return;
-            }
-            Summary = SelectSingleNode(methodNode, "summary");
-            ParameterDocumentation = SelectXmlElements(methodNode, "param")
-                .Select(o => new CodeDocParameter(this, o.Attributes["name"]?.InnerText, o.InnerText))
-                .ToList();
-            ExceptionDocumentation = SelectXmlElements(methodNode, "exception")
-                .Select(o => new CodeDocException(this, o.Attributes["cref"]?.InnerText, o.InnerText))
-                .ToList();
+            MethodName = methodName ?? throw new ArgumentNullException(nameof(methodName));
+            Summary = "";
+            ParameterDocumentation = new List<ICodeDocParameter>();
+            ExceptionDocumentation = new List<ICodeDocException>();
         }
 
         private CodeDocClass ClassDocumentation { get; }
@@ -53,7 +44,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <summary>
         /// The comment
         /// </summary>
-        public string Summary { get; }
+        public string Summary { get; private set;  }
 
         /// <summary>
         /// The parameter definitions

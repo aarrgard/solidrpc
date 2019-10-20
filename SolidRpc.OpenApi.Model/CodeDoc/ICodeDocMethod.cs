@@ -5,7 +5,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
     /// <summary>
     /// Defines support for accessing documentation for a method
     /// </summary>
-    public interface ICodeDocMethod
+    public interface ICodeDocMethod : ICodeDocMemberWithSummary
     {
         /// <summary>
         /// The class documentation that this method belongs to.
@@ -16,11 +16,6 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// The method name.
         /// </summary>
         string MethodName { get; }
-
-        /// <summary>
-        /// The comment.
-        /// </summary>
-        string Summary { get; }
 
         /// <summary>
         /// The parameter documentation.

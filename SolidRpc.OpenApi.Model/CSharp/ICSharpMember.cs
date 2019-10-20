@@ -62,6 +62,6 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// Returns all the namespaces in this member.
         /// </summary>
         /// <param name="namespaces"></param>
-        void GetNamespaces(ICollection<string> namespaces);
+        void GetNamespaces(IDictionary<string, HashSet<string>> namespaces);
     }
 }

@@ -13,18 +13,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// Creates a new instance.
         /// </summary>
         /// <param name="classDocumentation"></param>
-        /// <param name="nameAttr"></param>
-        public CodeDocProperty(CodeDocClass classDocumentation, string nameAttr)
+        /// <param name="propertyName"></param>
+        public CodeDocProperty(CodeDocClass classDocumentation, string propertyName)
         {
             ClassDocumentation = classDocumentation ?? throw new ArgumentNullException(nameof(classDocumentation));
-            Name = GetPropertyName(nameAttr);
-            var methodNode = XmlDocument.SelectSingleNode($"/doc/members/member[@name='{nameAttr}']");
-            if (methodNode == null)
-            {
-                Summary = "";
-                return;
-            }
-            Summary = SelectSingleNode(methodNode, "summary");
+            Name = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            Summary = "";
         }
 
         private CodeDocClass ClassDocumentation { get; }

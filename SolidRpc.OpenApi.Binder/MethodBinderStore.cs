@@ -1,4 +1,5 @@
-﻿using SolidProxy.Core.Configuration.Runtime;
+﻿using Microsoft.Extensions.Logging;
+using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
@@ -24,8 +25,9 @@ namespace SolidRpc.OpenApi.Binder
     {
         private object _mutext = new object();
 
-        public MethodBinderStore(IServiceProvider serviceProvider, ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
+        public MethodBinderStore(ILogger<MethodBinderStore> logger, IServiceProvider serviceProvider, ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
         {
+            Logger = logger;
             Bindings = new ConcurrentDictionary<string, IMethodBinder>();
             ParsedSpecs = new ConcurrentDictionary<string, IOpenApiSpec>();
             SpecResolvers = new ConcurrentDictionary<string, IOpenApiSpecResolver>();
@@ -37,6 +39,7 @@ namespace SolidRpc.OpenApi.Binder
         private ConcurrentDictionary<string, IOpenApiSpec> ParsedSpecs { get; }
         private ConcurrentDictionary<string, IOpenApiSpecResolver> SpecResolvers { get; }
         private ISolidProxyConfigurationStore ConfigStore { get; }
+        private ILogger Logger { get; }
         private IOpenApiParser OpenApiParser { get; }
         private IServiceProvider ServiceProvider { get; }
 
@@ -51,6 +54,7 @@ namespace SolidRpc.OpenApi.Binder
                     {
                         if (_methodBinders == null)
                         {
+                            Logger.LogInformation("Creating method binders...");
                             ConfigStore.ProxyConfigurations.ToList()
                                 .SelectMany(o => o.InvocationConfigurations)
                                 .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
@@ -67,6 +71,7 @@ namespace SolidRpc.OpenApi.Binder
                                     methodBinder.CreateMethodBinding(method, uriTransformer);
                                 });
                             _methodBinders = Bindings.Values;
+                            Logger.LogInformation("...created method binders.");
                         }
                     }
                 }

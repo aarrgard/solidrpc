@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <LangVersion>7</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SolidRpc.Test.Vitec.json" />
+    <None Remove="SolidRpc.Test.Vitec.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SolidRpc.Test.Vitec.json" />
+    <EmbeddedResource Include="SolidRpc.Test.Vitec.xml" />
+  </ItemGroup>
+
+</Project>

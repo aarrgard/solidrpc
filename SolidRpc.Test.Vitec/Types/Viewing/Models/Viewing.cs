@@ -1,0 +1,78 @@
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+using System;
+using System.Collections.Generic;
+namespace SolidRpc.Test.Vitec.Types.Viewing.Models {
+    /// <summary>
+    /// 
+    /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
+    public class Viewing {
+        /// <summary>
+        /// Id p� visningen
+        /// </summary>
+        [DataMember(Name="id",EmitDefaultValue=false)]
+        public string Id { get; set; }
+    
+        /// <summary>
+        /// Starttid
+        /// </summary>
+        [DataMember(Name="startsAt",EmitDefaultValue=false)]
+        public DateTimeOffset StartsAt { get; set; }
+    
+        /// <summary>
+        /// Sluttid
+        /// </summary>
+        [DataMember(Name="endsAt",EmitDefaultValue=false)]
+        public DateTimeOffset EndsAt { get; set; }
+    
+        /// <summary>
+        /// Visas p� internet
+        /// </summary>
+        [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
+        public bool ShowOnInternet { get; set; }
+    
+        /// <summary>
+        /// Kommentar
+        /// </summary>
+        [DataMember(Name="commentary",EmitDefaultValue=false)]
+        public string Commentary { get; set; }
+    
+        /// <summary>
+        /// Max antal deltagare per visningtillf�lle
+        /// </summary>
+        [DataMember(Name="participantPerTimeSlot",EmitDefaultValue=false)]
+        public int ParticipantPerTimeSlot { get; set; }
+    
+        /// <summary>
+        /// Bokningsbar p� internet
+        /// </summary>
+        [DataMember(Name="bookableFromInternet",EmitDefaultValue=false)]
+        public bool BookableFromInternet { get; set; }
+    
+        /// <summary>
+        /// Bokningsbar p� internet fram till
+        /// </summary>
+        [DataMember(Name="noLaterThen",EmitDefaultValue=false)]
+        public DateTimeOffset NoLaterThen { get; set; }
+    
+        /// <summary>
+        /// URL till till Bookning
+        /// </summary>
+        [DataMember(Name="bookingUrl",EmitDefaultValue=false)]
+        public string BookingUrl { get; set; }
+    
+        /// <summary>
+        /// Visningstillf�llen
+        /// </summary>
+        [DataMember(Name="timeSlots",EmitDefaultValue=false)]
+        public IEnumerable<SolidRpc.Test.Vitec.Types.Viewing.Models.TimeSlot> TimeSlots { get; set; }
+    
+        /// <summary>
+        /// Id p� objektet
+        /// </summary>
+        [DataMember(Name="estateId",EmitDefaultValue=false)]
+        public string EstateId { get; set; }
+    
+    }
+}

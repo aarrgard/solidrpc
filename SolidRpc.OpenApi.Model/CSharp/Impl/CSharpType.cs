@@ -4,16 +4,35 @@ using System.Linq;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
+    /// <summary>
+    /// Implements the logic for a c# type. Interfaces and classes
+    /// </summary>
     public abstract class CSharpType : CSharpMember, ICSharpType
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="ns"></param>
+        /// <param name="name"></param>
+        /// <param name="runtimeType"></param>
         public CSharpType(ICSharpNamespace ns, string name, Type runtimeType) : base(ns, name)
         {
             RuntimeType = runtimeType;
         }
 
+        /// <summary>
+        /// The runtime type
+        /// </summary>
         public Type RuntimeType { get; }
+
+        /// <summary>
+        /// Signals if the type has been initialized
+        /// </summary>
         public bool Initialized { get; set; }
 
+        /// <summary>
+        /// Returns true if this is a file type
+        /// </summary>
         public bool IsFileType
         {
             get
@@ -23,8 +42,15 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }
         }
 
+        /// <summary>
+        /// Returns true if this is a generic type
+        /// </summary>
         public bool IsGenericType => Name.Contains('<');
 
+        /// <summary>
+        /// Adds an extends clause to this type
+        /// </summary>
+        /// <param name="extType"></param>
         public void AddExtends(ICSharpType extType)
         {
             if(Members.OfType<ICSharpTypeExtends>().Where(o => o.Name == extType.FullName).Any())
@@ -34,11 +60,19 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             ProtectedMembers.Add(new CSharpTypeExtends(this, extType));
         }
 
+        /// <summary>
+        /// Adds the supplied member
+        /// </summary>
+        /// <param name="member"></param>
         public override void AddMember(ICSharpMember member)
         {
             ProtectedMembers.Add(member);
         }
 
+        /// <summary>
+        /// Returns the generic arguments
+        /// </summary>
+        /// <returns></returns>
         public ICollection<ICSharpType> GetGenericArguments()
         {
             var (typeName, genArgs, rest) = CSharpRepository.ReadType(FullName);
@@ -46,6 +80,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             return genArgs?.Select(o => repo.GetType(o)).ToList();
         }
 
+        /// <summary>
+        /// Emits the type to supplied code writer.
+        /// </summary>
+        /// <param name="codeWriter"></param>
         public override void WriteCode(ICodeWriter codeWriter)
         {
             codeWriter.MoveToClassFile(FullName);

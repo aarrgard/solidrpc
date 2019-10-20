@@ -18,21 +18,15 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// </summary>
         /// <param name="assemblyDocumentation"></param>
         /// <param name="className"></param>
-        public CodeDocClass(CodeDocAssembly assemblyDocumentation, string className)
+        public CodeDocClass(
+            CodeDocAssembly assemblyDocumentation, 
+            string className)
         {
             AssemblyDocumentation = assemblyDocumentation;
             ClassName = className;
-            Summary = SelectSingleNode(XmlDocument, $"/doc/members/member[@name='T:{className}']/summary", false);
-            MethodDocumentation = SelectXmlElements(XmlDocument, "/doc/members/member")
-                .Where(o => GetClassName(o.Attributes["name"].InnerText) == ClassName)
-                .Where(o => GetMethodName(o.Attributes["name"].InnerText) != null)
-                .Select(o => new CodeDocMethod(this, o.Attributes["name"].InnerText))
-                .ToList();
-            PropertyDocumentation = SelectXmlElements(XmlDocument, "/doc/members/member")
-                .Where(o => GetClassName(o.Attributes["name"].InnerText) == ClassName)
-                .Where(o => GetPropertyName(o.Attributes["name"].InnerText) != null)
-                .Select(o => new CodeDocProperty(this, o.Attributes["name"].InnerText))
-                .ToList();
+            Summary = "";
+            MethodDocumentation = new Dictionary<string, ICodeDocMethod>();
+            PropertyDocumentation = new Dictionary<string, ICodeDocProperty>();
         }
 
         /// <summary>
@@ -51,17 +45,20 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <summary>
         /// The comment for this type.
         /// </summary>
-        public string Summary { get; }
+        public string Summary { get; private set; }
+
 
         /// <summary>
         /// All the method documentations.
         /// </summary>
-        public IEnumerable<ICodeDocMethod> MethodDocumentation { get; }
+        public IDictionary<string, ICodeDocMethod> MethodDocumentation { get; }
+        IEnumerable<ICodeDocMethod> ICodeDocClass.MethodDocumentation => MethodDocumentation.Values;
 
         /// <summary>
         /// All the property documentations
         /// </summary>
-        public IEnumerable<ICodeDocProperty> PropertyDocumentation { get; }
+        public IDictionary<string, ICodeDocProperty> PropertyDocumentation { get; }
+        IEnumerable<ICodeDocProperty> ICodeDocClass.PropertyDocumentation => PropertyDocumentation.Values;
 
         /// <summary>
         /// Returns the code comments.
@@ -89,28 +86,22 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <returns></returns>
         public ICodeDocMethod GetMethodDocumentation(MethodInfo methodInfo)
         {
-            var methodDoc = MethodDocumentation
-                .Where(o => o.MethodName == methodInfo.Name)
-                .FirstOrDefault();
-
-            if(methodDoc == null)
+            ICodeDocMethod doc;
+            if(!MethodDocumentation.TryGetValue(methodInfo.Name, out doc))
             {
-                methodDoc = new CodeDocMethod(this, $"M:{ClassName}.{methodInfo.Name}");
+                doc = new CodeDocMethod(this, methodInfo.Name);
             }
-            return methodDoc;
+            return doc;
         }
 
         public ICodeDocProperty GetPropertyDocumentation(PropertyInfo pi)
         {
-            var paramDoc = PropertyDocumentation
-                .Where(o => o.Name == pi.Name)
-                .FirstOrDefault();
-
-            if (paramDoc == null)
+            ICodeDocProperty doc;
+            if (!PropertyDocumentation.TryGetValue(pi.Name, out doc))
             {
-                paramDoc = new CodeDocProperty(this, $"M:{ClassName}.{pi.Name}");
+                doc = new CodeDocProperty(this, pi.Name);
             }
-            return paramDoc;
+            return doc;
         }
     }
 }

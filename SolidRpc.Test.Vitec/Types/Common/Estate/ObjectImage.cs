@@ -1,0 +1,95 @@
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+using System;
+namespace SolidRpc.Test.Vitec.Types.Common.Estate {
+    /// <summary>
+    /// 
+    /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
+    public class ObjectImage {
+        /// <summary>
+        /// Kategori
+        /// </summary>
+        [DataMember(Name="category",EmitDefaultValue=false)]
+        public string Category { get; set; }
+    
+        /// <summary>
+        /// Leverant�r
+        /// </summary>
+        [DataMember(Name="supplier",EmitDefaultValue=false)]
+        public string Supplier { get; set; }
+    
+        /// <summary>
+        /// Leverant�rsId
+        /// </summary>
+        [DataMember(Name="supplierId",EmitDefaultValue=false)]
+        public string SupplierId { get; set; }
+    
+        /// <summary>
+        /// Bildrubrik
+        /// </summary>
+        [DataMember(Name="text",EmitDefaultValue=false)]
+        public string Text { get; set; }
+    
+        /// <summary>
+        /// Filnamn
+        /// </summary>
+        [DataMember(Name="name",EmitDefaultValue=false)]
+        public string Name { get; set; }
+    
+        /// <summary>
+        /// Bildtext
+        /// </summary>
+        [DataMember(Name="textExtended",EmitDefaultValue=false)]
+        public string TextExtended { get; set; }
+    
+        /// <summary>
+        /// Sorteringsnummer
+        /// </summary>
+        [DataMember(Name="orderNumber",EmitDefaultValue=false)]
+        public int OrderNumber { get; set; }
+    
+        /// <summary>
+        /// Sorteringsnummer p� hemnet
+        /// </summary>
+        [DataMember(Name="hemnetOrderNumber",EmitDefaultValue=false)]
+        public int HemnetOrderNumber { get; set; }
+    
+        /// <summary>
+        /// Bildid
+        /// </summary>
+        [DataMember(Name="imageId",EmitDefaultValue=false)]
+        public string ImageId { get; set; }
+    
+        /// <summary>
+        /// Senast �ndrad
+        /// </summary>
+        [DataMember(Name="dateChanged",EmitDefaultValue=false)]
+        public DateTimeOffset DateChanged { get; set; }
+    
+        /// <summary>
+        /// Senast bilden �ndrades
+        /// </summary>
+        [DataMember(Name="dateChangedImageData",EmitDefaultValue=false)]
+        public DateTimeOffset DateChangedImageData { get; set; }
+    
+        /// <summary>
+        /// Bildurl
+        /// </summary>
+        [DataMember(Name="url",EmitDefaultValue=false)]
+        public string Url { get; set; }
+    
+        /// <summary>
+        /// Till�t visning p� internet
+        /// </summary>
+        [DataMember(Name="showImageOnInternet",EmitDefaultValue=false)]
+        public bool ShowImageOnInternet { get; set; }
+    
+        /// <summary>
+        /// Bildformat
+        /// </summary>
+        [DataMember(Name="extension",EmitDefaultValue=false)]
+        public string Extension { get; set; }
+    
+    }
+}

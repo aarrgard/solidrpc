@@ -6,7 +6,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
     /// <summary>
     /// Defines support for accessing class documentation
     /// </summary>
-    public interface ICodeDocClass
+    public interface ICodeDocClass : ICodeDocMemberWithSummary
     {
         /// <summary>
         /// The assembly documentation that this class belongs to.
@@ -41,11 +41,6 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         /// <param name="pi"></param>
         /// <returns></returns>
         ICodeDocProperty GetPropertyDocumentation(PropertyInfo pi);
-
-        /// <summary>
-        /// Returns the summary
-        /// </summary>
-        string Summary { get; }
 
         /// <summary>
         /// Returns the code comments. These are the comments associated with the class.

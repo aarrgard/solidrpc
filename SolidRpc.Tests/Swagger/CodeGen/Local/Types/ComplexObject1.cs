@@ -1,7 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
 namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
     /// <summary>
     /// Success
@@ -24,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
         /// The children
         /// </summary>
         [DataMember(Name="children",EmitDefaultValue=false)]
-        public IEnumerable<ComplexObject1> Children { get; set; }
+        public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Local.Types.ComplexObject1> Children { get; set; }
     
     }
 }

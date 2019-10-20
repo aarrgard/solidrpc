@@ -11,43 +11,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
     public class CodeDocMember
     {
         /// <summary>
-        /// Selects a single node.
-        /// </summary>
-        /// <param name="xmlNode"></param>
-        /// <param name="path"></param>
-        /// <param name="mustExist"></param>
-        /// <returns></returns>
-        protected string SelectSingleNode(XmlNode xmlNode, string path, bool mustExist = true)
-        {
-            if (xmlNode == null) throw new ArgumentNullException(nameof(xmlNode));
-            var nodeText = xmlNode.SelectSingleNode(path)?.InnerText?.Trim();
-            if (mustExist && nodeText == null)
-            {
-                throw new Exception($"Failed to find path {path}");
-            }
-            return nodeText;
-        }
-
-        /// <summary>
-        /// Retuirns the xml elements.
-        /// </summary>
-        /// <param name="xmlNode"></param>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        protected IEnumerable<XmlElement> SelectXmlElements(XmlNode xmlNode, string path)
-        {
-            var nodes = xmlNode.SelectNodes(path) ?? throw new Exception("Failed to find path {path}");
-            return nodes.Cast<XmlNode>().OfType<XmlElement>();
-        }
-
-        /// <summary>
         /// Returns the class name for supplied comment name.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        protected string GetClassName(string nameAttr)
+        protected string GetClassName(string name)
         {
-            var name = nameAttr ?? "";
             if (name.StartsWith("T:"))
             {
                 return name.Substring(2);

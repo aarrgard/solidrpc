@@ -29,6 +29,7 @@ namespace SolidRpc.Tests.Swagger.Binder
         public void TestBindHelloWorldWithoutComments()
         {
             var services = new ServiceCollection();
+            services.AddLogging(ConfigureLogging);
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHelloWorld));

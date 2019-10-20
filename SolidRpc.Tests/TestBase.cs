@@ -59,7 +59,13 @@ namespace SolidRpc.Tests
         protected void ConfigureLogging(ILoggingBuilder builder)
         {
             builder.SetMinimumLevel(LogLevel.Trace);
-            builder.AddConsole();
+            //builder.AddConsole();
+            builder.AddProvider(new ConsoleProvider(Log));
+        }
+
+        protected void Log(string msg)
+        {
+            Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss.ffff")}]{msg}");
         }
 
         /// <summary>

@@ -9,5 +9,9 @@ namespace SolidRpc.OpenApi.Model.CSharp
     /// </summary>
     public interface ICSharpUsing : ICSharpMember
     {
+        /// <summary>
+        /// The namespace name
+        /// </summary>
+        string NsName { get; }
     }
 }

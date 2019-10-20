@@ -14,6 +14,10 @@ namespace SolidRpc.OpenApi.Model.Generator
     /// </summary>
     public abstract class OpenApiCodeGenerator
     {
+        private static string MakeSafeName(string name)
+        {
+            return name.Replace("`", "");
+        }
         private static string CapitalizeFirstChar(string name)
         {
             if (char.IsUpper(name[0]))
@@ -36,7 +40,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                 .Where(o => !string.IsNullOrWhiteSpace(o))
                 .ToList();
             return string.Join("", words.Take(1)
-                .Select(o => capitalizeFirstChar ? CapitalizeFirstChar(o) : o)
+                .Select(o => MakeSafeName(capitalizeFirstChar ? CapitalizeFirstChar(o) : o))
                 .Union(words.Skip(1).Select(o => CapitalizeFirstChar(o))));
         }
         private static string NameEndsWith(string name, string suffix)
@@ -96,7 +100,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                 {
                     return new CSharpObject(DefinitionMapper(settings, swaggerDef.ArrayType));
                 }
-                var className = swaggerDef.Name;
+                var className = MakeSafeName(swaggerDef.Name);
                 if (!swaggerDef.IsReservedName)
                 {
                     if (swaggerDef.SwaggerOperation != null)
@@ -133,13 +137,13 @@ namespace SolidRpc.OpenApi.Model.Generator
                 csObj.AdditionalProperties = DefinitionMapper(settings, swaggerDef.AdditionalProperties);
                 return csObj;
             };
-            InterfaceNameMapper = qn => NameStartsWithLetter(CapitalizeFirstChar(qn), 'I');
-            ClassNameMapper = CapitalizeFirstChar;
-            MethodNameMapper = (s) => { return CreateCamelCase(s, true); };
-            ParameterNameMapper = (s) => { return CreateCamelCase(s, false); };
-            PropertyNameMapper = (s) => { return CreateCamelCase(s, true); };
-            ExceptionNameMapper = (s) => { return NameEndsWith(CreateCamelCase(s, true), "Exception"); };
-            SecurityDefinitionMapper = (s) => { return NameEndsWith(CreateCamelCase(s, true), "Attribute"); };
+            InterfaceNameMapper = qn => MakeSafeName(NameStartsWithLetter(CapitalizeFirstChar(qn), 'I'));
+            ClassNameMapper = (s) => { return MakeSafeName(CapitalizeFirstChar(s)); };
+            MethodNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)); };
+            ParameterNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, false)); };
+            PropertyNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)); };
+            ExceptionNameMapper = (s) => { return MakeSafeName(NameEndsWith(CreateCamelCase(s, true), "Exception")); };
+            SecurityDefinitionMapper = (s) => { return MakeSafeName(NameEndsWith(CreateCamelCase(s, true), "Attribute")); };
         }
 
         private IEnumerable<IDictionary<string, IEnumerable<string>>> MapSecurity(IEnumerable<IDictionary<string, IEnumerable<string>>> security)
@@ -244,9 +248,16 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// </summary>
         public ICSharpRepository GenerateCode()
         {
-            var codeGenerator = (ICSharpRepository)new CSharpRepository();
-            GenerateCode(codeGenerator);
-            return codeGenerator;
+            var cSharpRepository = (ICSharpRepository)new CSharpRepository();
+            GenerateCode(cSharpRepository);
+            //
+            // add usings directives
+            //
+            ((IEnumerable<ICSharpType>)cSharpRepository.Classes).Union(cSharpRepository.Interfaces).ToList().ForEach(o =>
+            {
+                AddUsings(o);
+            });
+            return cSharpRepository;
         }
 
         /// <summary>
@@ -297,7 +308,6 @@ namespace SolidRpc.OpenApi.Model.Generator
                 {
                     GetClass(csharpRepository, cSharpObject.ArrayElement);
                 }
-                AddUsings(cls);
             }
             return cls;
         }
@@ -323,22 +333,115 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// <param name="member"></param>
         protected void AddUsings(ICSharpType member)
         {
-            var namespaces = new HashSet<string>();
+            var namespaces = new Dictionary<string, HashSet<string>>();
             member.GetNamespaces(namespaces);
-            if (namespaces.Any(o => o.Contains("<")))
+            if (namespaces.Keys.Any(o => o.Contains("<")))
             {
-                throw new Exception();
+                throw new Exception("Namespaces to generic types added - why!");
             }
-            namespaces.Where(o => !string.IsNullOrEmpty(o)).ToList().ForEach(ns =>
+
+            // remove all usings added to namespaces that this type belongs to
+            member.Namespace.Namespaces.ToList().ForEach(o => namespaces.Remove(o));
+            FixReferencesToNamespaces(member, namespaces);
+            FixAmbigousReferences(namespaces);
+            namespaces.Remove("");
+
+            namespaces.ToList().ForEach(ns =>
             {
-                AddUsings(member, ns);
+                ns.Value.ToList().ForEach(name =>
+                {
+                    var qn = new QualifiedName(name);
+                    if(qn.Names.Count() > 1)
+                    {
+                        AddUsings(member, ns.Key, qn.Names.First());
+                    }
+                    else
+                    {
+                        AddUsings(member, ns.Key, null);
+                    }
+                });
             });
         }
 
-        private void AddUsings(ICSharpType member, string ns)
+        private void AddUsings(ICSharpType member, string ns, string nsName)
         {
-            var usings = member.Members.OfType<ICSharpUsing>().Select(o => o.Name);
-            if (!usings.Contains(ns)) member.AddMember(new CSharpUsing(member, ns));
+            // check if already added
+            foreach(var u in member.Members.OfType<ICSharpUsing>())
+            {
+                if(u.Name == ns && u.NsName == nsName)
+                {
+                    return;
+                }
+            }
+            member.AddMember(new CSharpUsing(member, ns, nsName));
+        }
+
+        private void FixReferencesToNamespaces(ICSharpType member, Dictionary<string, HashSet<string>> namespaces)
+        {
+            var repo = member.GetParent<ICSharpRepository>();
+            var toRemove = namespaces.Where(kvp => {
+                
+                // check name in referred type. ie. x.y.z.y => y is not ok, z.y is ok.
+                var parts = new QualifiedName(kvp.Key).Names;
+                if (kvp.Value.Any(o2 => parts.Contains(new QualifiedName(o2).Names.First())))
+                {
+                    return true;
+                }
+
+                // there can be no namespace references
+                if(member.Namespace.Namespaces.Any(o => kvp.Value.Any(o2 => repo.TryGetNamespace($"{o}.{new QualifiedName(o2).Names.First()}", out ICSharpNamespace ns))))
+                {
+                    return true;
+                }
+
+                if(kvp.Value.Any(o => o == "Lead"))
+                {
+                    return false;
+                }
+                return false;
+            }).Select(o => o.Key).ToList();
+            bool foundAmbigousRefs = toRemove.Count > 0;
+            if (foundAmbigousRefs)
+            {
+                toRemove.ForEach(ns => MoveReferencesToParentNamespace(namespaces, ns));
+                FixReferencesToNamespaces(member, namespaces);
+            }
+        }
+
+        /// <summary>
+        /// namespaces that refers to same type needs to be fixed
+        /// </summary>
+        /// <param name="namespaces"></param>
+        private void FixAmbigousReferences(Dictionary<string, HashSet<string>> namespaces)
+        {
+            bool foundAmbigousRefs = false;
+            var types = namespaces.Values
+                .SelectMany(o => o)
+                .Select(o => new QualifiedName(o).Names.First())
+                .ToList();
+            foreach(var type in types)
+            {
+                var nss = namespaces.Where(o => o.Value.Contains(type)).Select(o => o.Key).ToList();
+                if(nss.Count > 1)
+                {
+                    nss.ToList().ForEach(o => MoveReferencesToParentNamespace(namespaces,o));
+                    foundAmbigousRefs = true;
+                }
+            }
+            if(foundAmbigousRefs)
+            {
+                FixAmbigousReferences(namespaces);
+            }
+        }
+
+        private void MoveReferencesToParentNamespace(Dictionary<string, HashSet<string>> namespaces, string ns)
+        {
+            var qns = new QualifiedName(ns);
+            foreach (var name in namespaces[ns])
+            {
+                CSharpMember.AddNamespacesFromName(namespaces, qns.Namespace, $"{qns.Name}.{name}");
+            }
+            namespaces.Remove(ns);
         }
     }
 }

@@ -32,6 +32,26 @@ namespace SolidRpc.Tests
     public abstract class WebHostTest : TestBase
     {
         /// <summary>
+        /// Reads the api config
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
+        protected string ReadOpenApiConfiguration(string folderName)
+        {
+            var folder = GetSpecFolder(folderName);
+            var jsonFile = folder.GetFiles("*.json").Single();
+            using (var sr = jsonFile.OpenText())
+            {
+                return sr.ReadToEnd();
+            }
+        }
+
+        protected virtual DirectoryInfo GetSpecFolder(string folderName)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// A service interceptor
         /// </summary>
         public class ServiceInterceptor

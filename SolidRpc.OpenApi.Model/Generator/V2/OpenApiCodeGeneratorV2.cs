@@ -104,11 +104,20 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 foreach (var e in csm.Exceptions)
                 {
                     var ex = GetClass(cSharpRepository, e);
-                    ex.AddExtends(cSharpRepository.GetClass(typeof(Exception).FullName));
-                    comment += $"<exception cref=\"{ex.FullName}\">{ex.Comment?.Summary}</exception>";
-                    var ctr = new Model.CSharp.Impl.CSharpConstructor(ex, $"\"{ex.Comment?.Summary}\"",$"Data[\"HttpStatusCode\"] = {e.ExceptionCode};");
-                    ctr.ParseComment("<summary>Constructs a new instance</summary>");
-                    ex.AddMember(ctr);
+                    //
+                    // if more than one exeptions has the same description
+                    // we might have som problem to determine which one goes
+                    // with wich http code - use first. We do not want to add 
+                    // more than one constructor.
+                    //
+                    if(!ex.Members.OfType<ICSharpTypeExtends>().Any())
+                    {
+                        ex.AddExtends(cSharpRepository.GetClass(typeof(Exception).FullName));
+                        comment += $"<exception cref=\"{ex.FullName}\">{ex.Comment?.Summary}</exception>";
+                        var ctr = new Model.CSharp.Impl.CSharpConstructor(ex, $"\"{ex.Comment?.Summary}\"", $"Data[\"HttpStatusCode\"] = {e.ExceptionCode};");
+                        ctr.ParseComment("<summary>Constructs a new instance</summary>");
+                        ex.AddMember(ctr);
+                    }
                 }
 
                 var m = new Model.CSharp.Impl.CSharpMethod(i, csm.MethodName, returnType);
@@ -214,7 +223,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         {
             int dummy;
             return op.Responses
-                .Where(o => !string.Equals(o.Key, "200"))
+                .Where(o => !string.Equals(o.Key, "200")) // ok
+                //.Where(o => !string.Equals(o.Key, "204")) // ok - no content
                 .Where(o => !string.Equals(o.Key, "default", StringComparison.InvariantCultureIgnoreCase))
                 .Where(o => int.TryParse(o.Key, out dummy))
                 .Select(ro =>
@@ -359,6 +369,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeDateTimeOffset);
                         case "uuid":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeGuid);
+                        case "byte":
                         case "binary":
                             return new SwaggerDefinition(swaggerOperation, SwaggerDefinition.TypeStream);
                         case "uri":

@@ -1,3 +1,4 @@
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Security {
     /// <summary>
     /// 
@@ -6,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Security {
         /// <summary>
         /// 
         /// </summary>
-        public System.String[] Scopes { get; set; }
+        public String[] Scopes { get; set; }
     
     }
 }
