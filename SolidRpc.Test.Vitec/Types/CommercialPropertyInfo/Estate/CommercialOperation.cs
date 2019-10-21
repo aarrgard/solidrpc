@@ -7,25 +7,25 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CommercialOperation {
         /// <summary>
-        /// Uppv�rmningskostnad
+        /// Uppv&#228;rmningskostnad
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public double Heating { get; set; }
     
         /// <summary>
-        /// F�rs�kring
+        /// F&#246;rs&#228;kring
         /// </summary>
         [DataMember(Name="insurance",EmitDefaultValue=false)]
         public double Insurance { get; set; }
     
         /// <summary>
-        /// Kostnad f�r vatten och avlopp
+        /// Kostnad f&#246;r vatten och avlopp
         /// </summary>
         [DataMember(Name="waterAndDrain",EmitDefaultValue=false)]
         public double WaterAndDrain { get; set; }
     
         /// <summary>
-        /// Renh�llningsavgift
+        /// Renh&#229;llningsavgift
         /// </summary>
         [DataMember(Name="sanitation",EmitDefaultValue=false)]
         public double Sanitation { get; set; }
@@ -37,19 +37,19 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public double ChimneySweeping { get; set; }
     
         /// <summary>
-        /// V�gavg/sn�
+        /// V&#228;gavg/sn&#246;
         /// </summary>
         [DataMember(Name="roadSnowCharge",EmitDefaultValue=false)]
         public int RoadSnowCharge { get; set; }
     
         /// <summary>
-        /// F�rvaltning
+        /// F&#246;rvaltning
         /// </summary>
         [DataMember(Name="management",EmitDefaultValue=false)]
         public double Management { get; set; }
     
         /// <summary>
-        /// Fastighetssk�tsel
+        /// Fastighetssk&#246;tsel
         /// </summary>
         [DataMember(Name="caretaking",EmitDefaultValue=false)]
         public double Caretaking { get; set; }
@@ -61,25 +61,25 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public double Electricity { get; set; }
     
         /// <summary>
-        /// TV-anl�ggning
+        /// TV-anl&#228;ggning
         /// </summary>
         [DataMember(Name="tvSystem",EmitDefaultValue=false)]
         public double TvSystem { get; set; }
     
         /// <summary>
-        /// Periodiskt underh�ll
+        /// Periodiskt underh&#229;ll
         /// </summary>
         [DataMember(Name="periodicMaintenance",EmitDefaultValue=false)]
         public double PeriodicMaintenance { get; set; }
     
         /// <summary>
-        /// L�pande underh�ll
+        /// L&#246;pande underh&#229;ll
         /// </summary>
         [DataMember(Name="ongoingMaintenance",EmitDefaultValue=false)]
         public double OngoingMaintenance { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public double Other { get; set; }
@@ -109,7 +109,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public string CommentOperationalCost { get; set; }
     
         /// <summary>
-        /// Fastigheten �r helt eller delvis momsregistrerad
+        /// Fastigheten &#228;r helt eller delvis momsregistrerad
         /// </summary>
         [DataMember(Name="completeOrPartialVATRegistered",EmitDefaultValue=false)]
         public bool CompleteOrPartialVATRegistered { get; set; }

@@ -7,25 +7,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Texts {
         /// <summary>
-        /// Kort s�ljande beskrivning
+        /// Kort s&#228;ljande beskrivning
         /// </summary>
         [DataMember(Name="shortSaleDescription",EmitDefaultValue=false)]
         public string ShortSaleDescription { get; set; }
     
         /// <summary>
-        /// S�ljande beskrivning
+        /// S&#228;ljande beskrivning
         /// </summary>
         [DataMember(Name="saleDescription",EmitDefaultValue=false)]
         public string SaleDescription { get; set; }
     
         /// <summary>
-        /// S�ljfras
+        /// S&#228;ljfras
         /// </summary>
         [DataMember(Name="salePhrase",EmitDefaultValue=false)]
         public string SalePhrase { get; set; }
     
         /// <summary>
-        /// S�ljrubrik
+        /// S&#228;ljrubrik
         /// </summary>
         [DataMember(Name="saleHeading",EmitDefaultValue=false)]
         public string SaleHeading { get; set; }

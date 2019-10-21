@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Viewing {
         /// <summary>
-        /// Id p� visningen
+        /// Id p&#229; visningen
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
@@ -27,7 +27,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         public DateTimeOffset EndsAt { get; set; }
     
         /// <summary>
-        /// Visas p� internet
+        /// Visas p&#229; internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
         public bool ShowOnInternet { get; set; }
@@ -39,19 +39,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         public string Commentary { get; set; }
     
         /// <summary>
-        /// Max antal deltagare per visningtillf�lle
+        /// Max antal deltagare per visningtillf&#228;lle
         /// </summary>
         [DataMember(Name="participantPerTimeSlot",EmitDefaultValue=false)]
         public int ParticipantPerTimeSlot { get; set; }
     
         /// <summary>
-        /// Bokningsbar p� internet
+        /// Bokningsbar p&#229; internet
         /// </summary>
         [DataMember(Name="bookableFromInternet",EmitDefaultValue=false)]
         public bool BookableFromInternet { get; set; }
     
         /// <summary>
-        /// Bokningsbar p� internet fram till
+        /// Bokningsbar p&#229; internet fram till
         /// </summary>
         [DataMember(Name="noLaterThen",EmitDefaultValue=false)]
         public DateTimeOffset NoLaterThen { get; set; }
@@ -63,13 +63,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         public string BookingUrl { get; set; }
     
         /// <summary>
-        /// Visningstillf�llen
+        /// Visningstillf&#228;llen
         /// </summary>
         [DataMember(Name="timeSlots",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models.TimeSlot> TimeSlots { get; set; }
     
         /// <summary>
-        /// Id p� objektet
+        /// Id p&#229; objektet
         /// </summary>
         [DataMember(Name="estateId",EmitDefaultValue=false)]
         public string EstateId { get; set; }

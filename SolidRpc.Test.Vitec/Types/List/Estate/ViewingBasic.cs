@@ -8,13 +8,13 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ViewingBasic {
         /// <summary>
-        /// Start datumet f�r visningen
+        /// Start datumet f&#246;r visningen
         /// </summary>
         [DataMember(Name="startTime",EmitDefaultValue=false)]
         public DateTimeOffset StartTime { get; set; }
     
         /// <summary>
-        /// Slutdatum f�r visningen
+        /// Slutdatum f&#246;r visningen
         /// </summary>
         [DataMember(Name="endTime",EmitDefaultValue=false)]
         public DateTimeOffset EndTime { get; set; }

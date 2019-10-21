@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PropertyTypeAndAreas {
         /// <summary>
-        /// Objekttyp (S�kbegrepp)
+        /// Objekttyp (S&#246;kbegrepp)
         /// </summary>
         [DataMember(Name="propertyType",EmitDefaultValue=false)]
         public string PropertyType { get; set; }
@@ -26,7 +26,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public int NumberOfpartition { get; set; }
     
         /// <summary>
-        /// Areal p� antal skiften
+        /// Areal p&#229; antal skiften
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
         public double Area { get; set; }
@@ -44,7 +44,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public IEnumerable<SolidRpc.Test.Vitec.Types.FarmInfo.Estate.AreaData> AreaData { get; set; }
     
         /// <summary>
-        /// Vilken arealk�lla som skall visas p� internet.
+        /// Vilken arealk&#228;lla som skall visas p&#229; internet.
         /// </summary>
         [DataMember(Name="showAreaDataOnInternet",EmitDefaultValue=false)]
         public string ShowAreaDataOnInternet { get; set; }

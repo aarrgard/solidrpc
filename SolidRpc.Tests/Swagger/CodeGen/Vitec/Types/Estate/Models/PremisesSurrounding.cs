@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PremisesSurrounding {
         /// <summary>
-        /// Allm�nt om omr�det
+        /// Allm&#228;nt om omr&#229;det
         /// </summary>
         [DataMember(Name="generalAboutArea",EmitDefaultValue=false)]
         public string GeneralAboutArea { get; set; }
     
         /// <summary>
-        /// N�rservice
+        /// N&#228;rservice
         /// </summary>
         [DataMember(Name="nearService",EmitDefaultValue=false)]
         public string NearService { get; set; }
@@ -31,7 +31,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public string Parking { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

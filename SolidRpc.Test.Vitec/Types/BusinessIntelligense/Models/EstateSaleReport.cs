@@ -46,7 +46,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicAddress Address { get; set; }
     
         /// <summary>
-        /// M�klarna som ska ha provision
+        /// M&#228;klarna som ska ha provision
         /// </summary>
         [DataMember(Name="agents",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.SaleReportEstateAgent> Agents { get; set; }
@@ -58,7 +58,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public DateTimeOffset ContractDay { get; set; }
     
         /// <summary>
-        /// Tilltr�desdag
+        /// Tilltr&#228;desdag
         /// </summary>
         [DataMember(Name="accessDay",EmitDefaultValue=false)]
         public DateTimeOffset AccessDay { get; set; }
@@ -76,7 +76,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public double Commission { get; set; }
     
         /// <summary>
-        /// Fritext f�r fast arvode
+        /// Fritext f&#246;r fast arvode
         /// </summary>
         [DataMember(Name="commissionText",EmitDefaultValue=false)]
         public string CommissionText { get; set; }
@@ -100,19 +100,19 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public Coordinate Wgs84Coordinate { get; set; }
     
         /// <summary>
-        /// Intagsk�lla
+        /// Intagsk&#228;lla
         /// </summary>
         [DataMember(Name="intakeSource",EmitDefaultValue=false)]
         public DescriptiveId1_Int32 IntakeSource { get; set; }
     
         /// <summary>
-        /// N�r objektinformationen uppdaterades senast
+        /// N&#228;r objektinformationen uppdaterades senast
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }
     
         /// <summary>
-        /// �ndringshistorik. Detta �r en lista p� uppdateringar och vad f�lten var satta till vid dessa uppdateringar
+        /// &#196;ndringshistorik. Detta &#228;r en lista p&#229; uppdateringar och vad f&#228;lten var satta till vid dessa uppdateringar
         /// </summary>
         [DataMember(Name="changes",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry> Changes { get; set; }

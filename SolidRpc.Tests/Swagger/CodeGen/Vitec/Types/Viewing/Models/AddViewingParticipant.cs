@@ -13,25 +13,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         public bool Participated { get; set; }
     
         /// <summary>
-        /// Minuter innan visningen som p�minnelse ska skickas ut
+        /// Minuter innan visningen som p&#229;minnelse ska skickas ut
         /// </summary>
         [DataMember(Name="reminderTime",EmitDefaultValue=false)]
         public int ReminderTime { get; set; }
     
         /// <summary>
-        /// SMS p�minnelse
+        /// SMS p&#229;minnelse
         /// </summary>
         [DataMember(Name="smsReminder",EmitDefaultValue=false)]
         public bool SmsReminder { get; set; }
     
         /// <summary>
-        /// Bekr�ftelse via epost
+        /// Bekr&#228;ftelse via epost
         /// </summary>
         [DataMember(Name="mailConfirmation",EmitDefaultValue=false)]
         public bool MailConfirmation { get; set; }
     
         /// <summary>
-        /// Bekr�ftelse via SMS
+        /// Bekr&#228;ftelse via SMS
         /// </summary>
         [DataMember(Name="smsConfirmation",EmitDefaultValue=false)]
         public bool SmsConfirmation { get; set; }

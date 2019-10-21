@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public bool Bidder { get; set; }
     
         /// <summary>
-        /// Vilken niv� av intresse som spekulanten har p� bostaden
+        /// Vilken niv&#229; av intresse som spekulanten har p&#229; bostaden
         /// </summary>
         [DataMember(Name="interestLevel",EmitDefaultValue=false)]
         public string InterestLevel { get; set; }

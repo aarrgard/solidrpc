@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IAssociation {
         /// <summary>
-        /// H�mtar bostadsr�ttsf�rening.
+        /// H&#228;mtar bostadsr&#228;ttsf&#246;rening.
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="associationId"></param>

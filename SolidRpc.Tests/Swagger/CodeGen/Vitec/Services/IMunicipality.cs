@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IMunicipality {
         /// <summary>
-        /// H�mtar en lista �ver kommuner.
+        /// H&#228;mtar en lista &#246;ver kommuner.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="id">Kommunid</param>

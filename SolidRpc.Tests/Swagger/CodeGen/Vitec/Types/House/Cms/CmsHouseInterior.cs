@@ -26,7 +26,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.House.Cms {
         public int MaxNumberOfBedrooms { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning av interi�ren
+        /// Allm&#228;n beskrivning av interi&#246;ren
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public string Description { get; set; }

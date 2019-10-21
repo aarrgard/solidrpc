@@ -8,19 +8,19 @@ namespace SolidRpc.Test.Vitec.Types.Villavardet.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class SoldEstate {
         /// <summary>
-        /// K�pobjekt
+        /// K&#246;pobjekt
         /// </summary>
         [DataMember(Name="estate",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Villavardet.Models.Estate Estate { get; set; }
     
         /// <summary>
-        /// K�pare
+        /// K&#246;pare
         /// </summary>
         [DataMember(Name="buyer",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Villavardet.Models.Buyer Buyer { get; set; }
     
         /// <summary>
-        /// Tilltr�desdag
+        /// Tilltr&#228;desdag
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
         public DateTimeOffset AccessDate { get; set; }
@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Types.Villavardet.Models {
         public DateTimeOffset ContractDate { get; set; }
     
         /// <summary>
-        /// M�klare
+        /// M&#228;klare
         /// </summary>
         [DataMember(Name="agent",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Villavardet.Models.Agent Agent { get; set; }

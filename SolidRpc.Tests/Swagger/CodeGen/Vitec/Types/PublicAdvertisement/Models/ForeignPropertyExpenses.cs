@@ -8,13 +8,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ForeignPropertyExpenses {
         /// <summary>
-        /// Avgift bostadsr�ttsf�rening
+        /// Avgift bostadsr&#228;ttsf&#246;rening
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
         public MoneyValue MonthlyFee { get; set; }
     
         /// <summary>
-        /// Driftkostnad per �r
+        /// Driftkostnad per &#229;r
         /// </summary>
         [DataMember(Name="operatingCost",EmitDefaultValue=false)]
         public MoneyValue OperatingCost { get; set; }

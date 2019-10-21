@@ -19,13 +19,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool IsFarm { get; set; }
     
         /// <summary>
-        /// Bostadsr�ttsfritidshus
+        /// Bostadsr&#228;ttsfritidshus
         /// </summary>
         [DataMember(Name="isHousingCooperative",EmitDefaultValue=false)]
         public bool IsHousingCooperative { get; set; }
     
         /// <summary>
-        /// �vrig bostad
+        /// &#214;vrig bostad
         /// </summary>
         [DataMember(Name="isOtherType",EmitDefaultValue=false)]
         public bool IsOtherType { get; set; }

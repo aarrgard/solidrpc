@@ -20,13 +20,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public double Area { get; set; }
     
         /// <summary>
-        /// Summa hyra kr/�r
+        /// Summa hyra kr/&#229;r
         /// </summary>
         [DataMember(Name="rent",EmitDefaultValue=false)]
         public double Rent { get; set; }
     
         /// <summary>
-        /// Summa driftkostnad kr/�r
+        /// Summa driftkostnad kr/&#229;r
         /// </summary>
         [DataMember(Name="operatingCosts",EmitDefaultValue=false)]
         public double OperatingCosts { get; set; }

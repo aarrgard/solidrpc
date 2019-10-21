@@ -9,6 +9,13 @@ namespace SolidRpc.OpenApi.Model.Agnostic
     /// </summary>
     public class SwaggerDescription
     {
+        /// <summary>
+        /// Creates a new description
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="externalDescription"></param>
+        /// <param name="externalUri"></param>
+        /// <returns></returns>
         public static SwaggerDescription Create(string description, string externalDescription, string externalUri)
         {
             if (description == null) return null;

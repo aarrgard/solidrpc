@@ -9,7 +9,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICategory {
         /// <summary>
-        /// H�mtar kategorier. F�r att kunna h�mta kategorier s� kr�vs det en giltig API nyckel och ett kundid
+        /// H&#228;mtar kategorier. F&#246;r att kunna h&#228;mta kategorier s&#229; kr&#228;vs det en giltig API nyckel och ett kundid
         /// </summary>
         /// <param name="customerId">Kund id</param>
         /// <param name="cancellationToken"></param>

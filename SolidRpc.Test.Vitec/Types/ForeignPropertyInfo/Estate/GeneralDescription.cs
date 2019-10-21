@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class GeneralDescription {
         /// <summary>
-        /// Spr�k
+        /// Spr&#229;k
         /// </summary>
         [DataMember(Name="language",EmitDefaultValue=false)]
         public string Language { get; set; }

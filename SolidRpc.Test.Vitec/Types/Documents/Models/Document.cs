@@ -27,7 +27,7 @@ namespace SolidRpc.Test.Vitec.Types.Documents.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// Leverant�r
+        /// Leverant&#246;r
         /// </summary>
         [DataMember(Name="supplier",EmitDefaultValue=false)]
         public string Supplier { get; set; }
@@ -45,7 +45,7 @@ namespace SolidRpc.Test.Vitec.Types.Documents.Models {
         public string ExternalId { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="changeDate",EmitDefaultValue=false)]
         public DateTimeOffset ChangeDate { get; set; }

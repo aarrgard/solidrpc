@@ -8,31 +8,31 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class SaleReportEstateAgent {
         /// <summary>
-        /// M�klarens id
+        /// M&#228;klarens id
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
     
         /// <summary>
-        /// Namn p� m�klaren
+        /// Namn p&#229; m&#228;klaren
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
     
         /// <summary>
-        /// Initialer p� m�klaren
+        /// Initialer p&#229; m&#228;klaren
         /// </summary>
         [DataMember(Name="initials",EmitDefaultValue=false)]
         public string Initials { get; set; }
     
         /// <summary>
-        /// Anst�llningsnummer
+        /// Anst&#228;llningsnummer
         /// </summary>
         [DataMember(Name="employeeId",EmitDefaultValue=false)]
         public string EmployeeId { get; set; }
     
         /// <summary>
-        /// Ansvarig m�klare
+        /// Ansvarig m&#228;klare
         /// </summary>
         [DataMember(Name="responsible",EmitDefaultValue=false)]
         public bool Responsible { get; set; }
@@ -50,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentCommission Commission { get; set; }
     
         /// <summary>
-        /// �ndringshistorik.
+        /// &#196;ndringshistorik.
         /// </summary>
         [DataMember(Name="changes",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentChangeEntry> Changes { get; set; }

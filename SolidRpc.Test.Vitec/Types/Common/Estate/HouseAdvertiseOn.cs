@@ -8,13 +8,13 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class HouseAdvertiseOn {
         /// <summary>
-        /// Visa �ven som succession/begagnat p� hemnet (g�ller enbart nyproduktions villor/fritidshus)
+        /// Visa &#228;ven som succession/begagnat p&#229; hemnet (g&#228;ller enbart nyproduktions villor/fritidshus)
         /// </summary>
         [DataMember(Name="visibleDuringProduction",EmitDefaultValue=false)]
         public bool VisibleDuringProduction { get; set; }
     
         /// <summary>
-        /// Visar om objektet ska annonserars p� hemsida
+        /// Visar om objektet ska annonserars p&#229; hemsida
         /// </summary>
         [DataMember(Name="homepage",EmitDefaultValue=false)]
         public bool Homepage { get; set; }
@@ -32,13 +32,13 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public bool ShowTodaysHousing { get; set; }
     
         /// <summary>
-        /// D�lj pris
+        /// D&#246;lj pris
         /// </summary>
         [DataMember(Name="hidePrice",EmitDefaultValue=false)]
         public bool HidePrice { get; set; }
     
         /// <summary>
-        /// D�lj l�ge
+        /// D&#246;lj l&#228;ge
         /// </summary>
         [DataMember(Name="hideAddress",EmitDefaultValue=false)]
         public bool HideAddress { get; set; }
@@ -62,7 +62,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string ChangingRequirementsText { get; set; }
     
         /// <summary>
-        /// Lista av bildid&#39;n som ska visas p� egen hemsida
+        /// Lista av bildid&#39;n som ska visas p&#229; egen hemsida
         /// </summary>
         [DataMember(Name="imageIds",EmitDefaultValue=false)]
         public IEnumerable<string> ImageIds { get; set; }
@@ -74,19 +74,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Common.Estate.Document> Documents { get; set; }
     
         /// <summary>
-        /// L�nkar
+        /// L&#228;nkar
         /// </summary>
         [DataMember(Name="links",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Common.Estate.Link> Links { get; set; }
     
         /// <summary>
-        /// Marknadsplatser som objektet annonseras p�
+        /// Marknadsplatser som objektet annonseras p&#229;
         /// </summary>
         [DataMember(Name="marketplaces",EmitDefaultValue=false)]
         public IEnumerable<string> Marketplaces { get; set; }
     
         /// <summary>
-        /// Visa som f�rhandsgranskning
+        /// Visa som f&#246;rhandsgranskning
         /// </summary>
         [DataMember(Name="showAsPreview",EmitDefaultValue=false)]
         public bool ShowAsPreview { get; set; }

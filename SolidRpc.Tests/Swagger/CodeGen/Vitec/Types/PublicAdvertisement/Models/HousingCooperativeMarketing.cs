@@ -7,49 +7,49 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class HousingCooperativeMarketing {
         /// <summary>
-        /// Andel i bostadsf�rening
+        /// Andel i bostadsf&#246;rening
         /// </summary>
         [DataMember(Name="share",EmitDefaultValue=false)]
         public bool Share { get; set; }
     
         /// <summary>
-        /// Andel i bostadsf�rening
+        /// Andel i bostadsf&#246;rening
         /// </summary>
         [DataMember(Name="shareInHousingSociety",EmitDefaultValue=false)]
         public bool ShareInHousingSociety { get; set; }
     
         /// <summary>
-        /// Bostadsr�ttsvilla
+        /// Bostadsr&#228;ttsvilla
         /// </summary>
         [DataMember(Name="isHouse",EmitDefaultValue=false)]
         public bool IsHouse { get; set; }
     
         /// <summary>
-        /// Bostadsr�ttsfritidshus
+        /// Bostadsr&#228;ttsfritidshus
         /// </summary>
         [DataMember(Name="isCottage",EmitDefaultValue=false)]
         public bool IsCottage { get; set; }
     
         /// <summary>
-        /// Bostadsr�ttsparhus
+        /// Bostadsr&#228;ttsparhus
         /// </summary>
         [DataMember(Name="isDuplexHouse",EmitDefaultValue=false)]
         public bool IsDuplexHouse { get; set; }
     
         /// <summary>
-        /// Bostadsr�ttsradhus
+        /// Bostadsr&#228;ttsradhus
         /// </summary>
         [DataMember(Name="isTerraceHouse",EmitDefaultValue=false)]
         public bool IsTerraceHouse { get; set; }
     
         /// <summary>
-        /// Bostadsr�ttskedjehus
+        /// Bostadsr&#228;ttskedjehus
         /// </summary>
         [DataMember(Name="isLinkedHouse",EmitDefaultValue=false)]
         public bool IsLinkedHouse { get; set; }
     
         /// <summary>
-        /// �vrig bostad
+        /// &#214;vrig bostad
         /// </summary>
         [DataMember(Name="isOtherType",EmitDefaultValue=false)]
         public bool IsOtherType { get; set; }

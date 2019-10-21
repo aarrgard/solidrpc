@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class BalconyPatio {
         /// <summary>
-        /// Sammanst�llning balkong/uteplats
+        /// Sammanst&#228;llning balkong/uteplats
         /// </summary>
         [DataMember(Name="summaryBalconyPatio",EmitDefaultValue=false)]
         public string SummaryBalconyPatio { get; set; }

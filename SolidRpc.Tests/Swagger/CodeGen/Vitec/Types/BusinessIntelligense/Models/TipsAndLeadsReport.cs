@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.IncomingLead> IncomingLeads { get; set; }
     
         /// <summary>
-        /// Utg�ende leads
+        /// Utg&#229;ende leads
         /// </summary>
         [DataMember(Name="outgoingLeads",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.OutgoingLead> OutgoingLeads { get; set; }

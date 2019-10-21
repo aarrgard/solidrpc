@@ -50,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string City { get; set; }
     
         /// <summary>
-        /// Telefonv�xel
+        /// Telefonv&#228;xel
         /// </summary>
         [DataMember(Name="telephone",EmitDefaultValue=false)]
         public string Telephone { get; set; }
@@ -68,7 +68,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string HomepageUrl { get; set; }
     
         /// <summary>
-        /// N�r kontoret senast �ndrades
+        /// N&#228;r kontoret senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

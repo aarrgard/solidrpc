@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.Budget.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Estates {
         /// <summary>
-        /// Antal s�lda bost�der
+        /// Antal s&#229;lda bost&#228;der
         /// </summary>
         [DataMember(Name="sold",EmitDefaultValue=false)]
         public int Sold { get; set; }
     
         /// <summary>
-        /// Antal nyregistrerade bost�der
+        /// Antal nyregistrerade bost&#228;der
         /// </summary>
         [DataMember(Name="registered",EmitDefaultValue=false)]
         public int Registered { get; set; }

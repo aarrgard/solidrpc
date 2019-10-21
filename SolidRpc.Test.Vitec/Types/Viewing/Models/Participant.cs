@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.Viewing.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Participant {
         /// <summary>
-        /// Deltog p� visningen
+        /// Deltog p&#229; visningen
         /// </summary>
         [DataMember(Name="hasParticipated",EmitDefaultValue=false)]
         public bool HasParticipated { get; set; }

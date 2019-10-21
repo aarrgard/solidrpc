@@ -107,6 +107,16 @@
             <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="impl"></param>
+            <param name="openApiConfiguration"></param>
+            <param name="baseUriTransformer"></param>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Configures the suppllied method so that it is exposed through the .net core http binding.

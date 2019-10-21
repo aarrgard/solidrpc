@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool IncludeHouses { get; set; }
     
         /// <summary>
-        /// Inkludera l�genheter (bostadsr�tter)
+        /// Inkludera l&#228;genheter (bostadsr&#228;tter)
         /// </summary>
         [DataMember(Name="includeHousingCooperatives",EmitDefaultValue=false)]
         public bool IncludeHousingCooperatives { get; set; }
@@ -43,7 +43,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool IncludeCommercialProperties { get; set; }
     
         /// <summary>
-        /// Inkludera l�genheter (�gander�tter)
+        /// Inkludera l&#228;genheter (&#228;gander&#228;tter)
         /// </summary>
         [DataMember(Name="includeCondominiums",EmitDefaultValue=false)]
         public bool IncludeCondominiums { get; set; }
@@ -67,31 +67,31 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool IncludeProjects { get; set; }
     
         /// <summary>
-        /// Inkludera bost�der med status till salu
+        /// Inkludera bost&#228;der med status till salu
         /// </summary>
         [DataMember(Name="includeForSale",EmitDefaultValue=false)]
         public bool IncludeForSale { get; set; }
     
         /// <summary>
-        /// Inkludera bost�der med status kommande
+        /// Inkludera bost&#228;der med status kommande
         /// </summary>
         [DataMember(Name="includeFutureSale",EmitDefaultValue=false)]
         public bool IncludeFutureSale { get; set; }
     
         /// <summary>
-        /// Inkludera bost�der med status snart till salu
+        /// Inkludera bost&#228;der med status snart till salu
         /// </summary>
         [DataMember(Name="includeSoonForSale",EmitDefaultValue=false)]
         public bool IncludeSoonForSale { get; set; }
     
         /// <summary>
-        /// Urval p� huvudhandl�ggare
+        /// Urval p&#229; huvudhandl&#228;ggare
         /// </summary>
         [DataMember(Name="primaryAgentId",EmitDefaultValue=false)]
         public string PrimaryAgentId { get; set; }
     
         /// <summary>
-        /// Urval p� bostadsid
+        /// Urval p&#229; bostadsid
         /// </summary>
         [DataMember(Name="estateId",EmitDefaultValue=false)]
         public string EstateId { get; set; }

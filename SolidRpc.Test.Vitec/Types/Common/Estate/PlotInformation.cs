@@ -19,19 +19,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string PlotType { get; set; }
     
         /// <summary>
-        /// �vrigt tomt
+        /// &#214;vrigt tomt
         /// </summary>
         [DataMember(Name="otherPlot",EmitDefaultValue=false)]
         public string OtherPlot { get; set; }
     
         /// <summary>
-        /// Sammanst�llning uteplats
+        /// Sammanst&#228;llning uteplats
         /// </summary>
         [DataMember(Name="patio",EmitDefaultValue=false)]
         public string Patio { get; set; }
     
         /// <summary>
-        /// Byggr�tt
+        /// Byggr&#228;tt
         /// </summary>
         [DataMember(Name="buildingPermission",EmitDefaultValue=false)]
         public string BuildingPermission { get; set; }

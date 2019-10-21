@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         public string Name { get; set; }
     
         /// <summary>
-        /// F�retag
+        /// F&#246;retag
         /// </summary>
         [DataMember(Name="company",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.Company Company { get; set; }

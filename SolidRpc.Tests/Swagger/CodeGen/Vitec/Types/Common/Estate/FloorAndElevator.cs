@@ -19,19 +19,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string Elevator { get; set; }
     
         /// <summary>
-        /// Totalt antal v�ningar
+        /// Totalt antal v&#229;ningar
         /// </summary>
         [DataMember(Name="totalNumberFloors",EmitDefaultValue=false)]
         public int TotalNumberFloors { get; set; }
     
         /// <summary>
-        /// V�ning
+        /// V&#229;ning
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
         public double Floor { get; set; }
     
         /// <summary>
-        /// Kommentar V�ningsplan
+        /// Kommentar V&#229;ningsplan
         /// </summary>
         [DataMember(Name="floorCommentary",EmitDefaultValue=false)]
         public string FloorCommentary { get; set; }

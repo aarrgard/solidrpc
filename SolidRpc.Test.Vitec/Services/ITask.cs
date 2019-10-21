@@ -10,7 +10,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ITask {
         /// <summary>
-        /// H�mtar alla f�rdefinierade typade uppgifter
+        /// H&#228;mtar alla f&#246;rdefinierade typade uppgifter
         /// </summary>
         /// <param name="customerId">Kund id</param>
         /// <param name="cancellationToken"></param>

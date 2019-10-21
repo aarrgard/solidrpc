@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class AssignmentSource {
         /// <summary>
-        /// Intagsk�lla id
+        /// Intagsk&#228;lla id
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public int Id { get; set; }
     
         /// <summary>
-        /// Namn p� intagsk�llan
+        /// Namn p&#229; intagsk&#228;llan
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

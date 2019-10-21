@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         public string ImageId { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }

@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string Url { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChangedData",EmitDefaultValue=false)]
         public DateTimeOffset DateChangedData { get; set; }

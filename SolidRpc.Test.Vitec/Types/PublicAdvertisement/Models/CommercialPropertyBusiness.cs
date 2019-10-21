@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string LineOfBusiness { get; set; }
     
         /// <summary>
-        /// Oms�ttning
+        /// Oms&#228;ttning
         /// </summary>
         [DataMember(Name="revenue",EmitDefaultValue=false)]
         public MoneyValue Revenue { get; set; }
@@ -32,19 +32,19 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Activity { get; set; }
     
         /// <summary>
-        /// Antal anst�llda
+        /// Antal anst&#228;llda
         /// </summary>
         [DataMember(Name="numberOfEmployees",EmitDefaultValue=false)]
         public int NumberOfEmployees { get; set; }
     
         /// <summary>
-        /// Utrustning som medf�ljer
+        /// Utrustning som medf&#246;ljer
         /// </summary>
         [DataMember(Name="equipment",EmitDefaultValue=false)]
         public string Equipment { get; set; }
     
         /// <summary>
-        /// Start�r
+        /// Start&#229;r
         /// </summary>
         [DataMember(Name="establishedYear",EmitDefaultValue=false)]
         public int EstablishedYear { get; set; }

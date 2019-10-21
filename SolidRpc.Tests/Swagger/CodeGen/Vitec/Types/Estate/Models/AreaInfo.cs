@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public double Area { get; set; }
     
         /// <summary>
-        /// Hyra kr/�r
+        /// Hyra kr/&#229;r
         /// </summary>
         [DataMember(Name="rentalIncome",EmitDefaultValue=false)]
         public double RentalIncome { get; set; }
@@ -31,7 +31,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public string OperatingCost { get; set; }
     
         /// <summary>
-        /// Hyra kr/kvm/�r
+        /// Hyra kr/kvm/&#229;r
         /// </summary>
         [DataMember(Name="rentalIncomePerSqm",EmitDefaultValue=false)]
         public double RentalIncomePerSqm { get; set; }

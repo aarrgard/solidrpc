@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Cottage {
         /// <summary>
-        /// Marknadsf�ring
+        /// Marknadsf&#246;ring
         /// </summary>
         [DataMember(Name="advertiseOn",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.CottageAdvertiseOn AdvertiseOn { get; set; }
@@ -29,13 +29,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public SolidRpc.Test.Vitec.Types.Common.Estate.Price Price { get; set; }
     
         /// <summary>
-        /// Tilltr�desdatum
+        /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.Date Date { get; set; }
     
         /// <summary>
-        /// Interi�r
+        /// Interi&#246;r
         /// </summary>
         [DataMember(Name="houseInterior",EmitDefaultValue=false)]
         public HouseInterior HouseInterior { get; set; }
@@ -65,7 +65,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public SolidRpc.Test.Vitec.Types.Common.Estate.HousePlotInformation Plot { get; set; }
     
         /// <summary>
-        /// Tillg�ngar
+        /// Tillg&#229;ngar
         /// </summary>
         [DataMember(Name="assess",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.Assess Assess { get; set; }
@@ -95,13 +95,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public SolidRpc.Test.Vitec.Types.Common.Estate.Operation Operation { get; set; }
     
         /// <summary>
-        /// F�rs�kring
+        /// F&#246;rs&#228;kring
         /// </summary>
         [DataMember(Name="insurance",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.Insurance Insurance { get; set; }
     
         /// <summary>
-        /// Elf�rbrukning
+        /// Elf&#246;rbrukning
         /// </summary>
         [DataMember(Name="electricity",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.Electricity Electricity { get; set; }
@@ -113,7 +113,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Common.Estate.Mortage> Mortages { get; set; }
     
         /// <summary>
-        /// Lista �ver aktuella s�ljare representerade av id:n
+        /// Lista &#246;ver aktuella s&#228;ljare representerade av id:n
         /// </summary>
         [DataMember(Name="sellers",EmitDefaultValue=false)]
         public IEnumerable<string> Sellers { get; set; }
@@ -131,7 +131,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Common.Estate.Viewing> Viewings { get; set; }
     
         /// <summary>
-        /// Marknadsf�rs som
+        /// Marknadsf&#246;rs som
         /// </summary>
         [DataMember(Name="marketedAs",EmitDefaultValue=false)]
         public string MarketedAs { get; set; }
@@ -149,7 +149,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public SolidRpc.Test.Vitec.Types.Common.Estate.TVAndBroadband TvAndBroadband { get; set; }
     
         /// <summary>
-        /// N�romr�de
+        /// N&#228;romr&#229;de
         /// </summary>
         [DataMember(Name="surrounding",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.Surrounding Surrounding { get; set; }
@@ -161,7 +161,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public SolidRpc.Test.Vitec.Types.Estate.Models.HouseInspection Inspection { get; set; }
     
         /// <summary>
-        /// Tomtr�tt
+        /// Tomtr&#228;tt
         /// </summary>
         [DataMember(Name="leasehold",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.Leasehold Leasehold { get; set; }
@@ -173,13 +173,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public SolidRpc.Test.Vitec.Types.Common.Estate.Lease Lease { get; set; }
     
         /// <summary>
-        /// Lista �ver aktuella k�pare representerade av id:n
+        /// Lista &#246;ver aktuella k&#246;pare representerade av id:n
         /// </summary>
         [DataMember(Name="buyers",EmitDefaultValue=false)]
         public IEnumerable<string> Buyers { get; set; }
     
         /// <summary>
-        /// Internetinst�llningar
+        /// Internetinst&#228;llningar
         /// </summary>
         [DataMember(Name="internetSettings",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Common.Estate.InternetSettings InternetSettings { get; set; }
@@ -209,7 +209,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public string OfficeId { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
@@ -233,13 +233,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Common.Estate.ObjectImage> Images { get; set; }
     
         /// <summary>
-        /// Lista �ver aktuella intressenter representerade av id:n
+        /// Lista &#246;ver aktuella intressenter representerade av id:n
         /// </summary>
         [DataMember(Name="interests",EmitDefaultValue=false)]
         public IEnumerable<string> Interests { get; set; }
     
         /// <summary>
-        /// Egendefinierade f�lt
+        /// Egendefinierade f&#228;lt
         /// </summary>
         [DataMember(Name="customFields",EmitDefaultValue=false)]
         public IEnumerable<FieldValue> CustomFields { get; set; }

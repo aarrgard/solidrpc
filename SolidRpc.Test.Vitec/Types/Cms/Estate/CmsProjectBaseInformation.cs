@@ -9,31 +9,31 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CmsProjectBaseInformation {
         /// <summary>
-        /// Status p� projektet
+        /// Status p&#229; projektet
         /// </summary>
         [DataMember(Name="status",EmitDefaultValue=false)]
         public string Status { get; set; }
     
         /// <summary>
-        /// Namn p� projektet
+        /// Namn p&#229; projektet
         /// </summary>
         [DataMember(Name="projectName",EmitDefaultValue=false)]
         public string ProjectName { get; set; }
     
         /// <summary>
-        /// Datum f�r s�ljstart
+        /// Datum f&#246;r s&#228;ljstart
         /// </summary>
         [DataMember(Name="saleStart",EmitDefaultValue=false)]
         public DateTimeOffset SaleStart { get; set; }
     
         /// <summary>
-        /// Prelimin�r tidpunkt f�r inflytt
+        /// Prelimin&#228;r tidpunkt f&#246;r inflytt
         /// </summary>
         [DataMember(Name="preliminaryAccess",EmitDefaultValue=false)]
         public string PreliminaryAccess { get; set; }
     
         /// <summary>
-        /// Namn p� producent
+        /// Namn p&#229; producent
         /// </summary>
         [DataMember(Name="producer",EmitDefaultValue=false)]
         public string Producer { get; set; }

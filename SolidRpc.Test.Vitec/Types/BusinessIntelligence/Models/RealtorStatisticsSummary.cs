@@ -25,13 +25,13 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligence.Models {
         public double Commission { get; set; }
     
         /// <summary>
-        /// Summa f�rs�ljning
+        /// Summa f&#246;rs&#228;ljning
         /// </summary>
         [DataMember(Name="totalSales",EmitDefaultValue=false)]
         public double TotalSales { get; set; }
     
         /// <summary>
-        /// Provision i procent av f�rs�ljning
+        /// Provision i procent av f&#246;rs&#228;ljning
         /// </summary>
         [DataMember(Name="commissionPercentage",EmitDefaultValue=false)]
         public double CommissionPercentage { get; set; }
@@ -43,13 +43,13 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligence.Models {
         public double AverageCommission { get; set; }
     
         /// <summary>
-        /// Antal intagsf�rs�k
+        /// Antal intagsf&#246;rs&#246;k
         /// </summary>
         [DataMember(Name="attemptedIntakes",EmitDefaultValue=false)]
         public int AttemptedIntakes { get; set; }
     
         /// <summary>
-        /// Antal s�lda bost�der
+        /// Antal s&#229;lda bost&#228;der
         /// </summary>
         [DataMember(Name="sold",EmitDefaultValue=false)]
         public int Sold { get; set; }

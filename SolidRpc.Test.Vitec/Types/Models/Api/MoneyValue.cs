@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.Models.Api {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class MoneyValue {
         /// <summary>
-        /// V�rde
+        /// V&#228;rde
         /// </summary>
         [DataMember(Name="value",EmitDefaultValue=false)]
         public double Value { get; set; }

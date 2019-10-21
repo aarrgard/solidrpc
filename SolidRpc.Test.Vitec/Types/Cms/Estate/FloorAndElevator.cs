@@ -7,19 +7,19 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class FloorAndElevator {
         /// <summary>
-        /// V�ning
+        /// V&#229;ning
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
         public double Floor { get; set; }
     
         /// <summary>
-        /// Antal v�ningar
+        /// Antal v&#229;ningar
         /// </summary>
         [DataMember(Name="totalNumberFloors",EmitDefaultValue=false)]
         public int TotalNumberFloors { get; set; }
     
         /// <summary>
-        /// Beskrivning av v�ningsplan
+        /// Beskrivning av v&#229;ningsplan
         /// </summary>
         [DataMember(Name="floorCommentary",EmitDefaultValue=false)]
         public string FloorCommentary { get; set; }
@@ -31,7 +31,7 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         public bool Elevator { get; set; }
     
         /// <summary>
-        /// Sammanst�llning balkong/uteplats
+        /// Sammanst&#228;llning balkong/uteplats
         /// </summary>
         [DataMember(Name="descriptionOfElevator",EmitDefaultValue=false)]
         public string DescriptionOfElevator { get; set; }

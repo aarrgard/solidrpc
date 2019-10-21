@@ -8,13 +8,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estates.BusinessIntelligens
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class OfficeMonthReport {
         /// <summary>
-        /// M�nad
+        /// M&#229;nad
         /// </summary>
         [DataMember(Name="month",EmitDefaultValue=false)]
         public string Month { get; set; }
     
         /// <summary>
-        /// M�nader
+        /// M&#229;nader
         /// </summary>
         [DataMember(Name="estateSaleReports",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estates.BusinessIntelligense.EstateSaleReport> EstateSaleReports { get; set; }

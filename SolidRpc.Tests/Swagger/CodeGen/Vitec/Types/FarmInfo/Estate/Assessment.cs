@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Assessment {
         /// <summary>
-        /// Taxeringsv�rden (lista)
+        /// Taxeringsv&#228;rden (lista)
         /// </summary>
         [DataMember(Name="assessValues",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate.AssessValue> AssessValues { get; set; }
@@ -20,13 +20,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
         public string TypeCode { get; set; }
     
         /// <summary>
-        /// Prelimin�rt taxeringsv�rde
+        /// Prelimin&#228;rt taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="preliminaryValue",EmitDefaultValue=false)]
         public bool PreliminaryValue { get; set; }
     
         /// <summary>
-        /// Taxerings�r
+        /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="taxYear",EmitDefaultValue=false)]
         public int TaxYear { get; set; }

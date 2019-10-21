@@ -20,19 +20,19 @@ namespace SolidRpc.Test.Vitec.Types.Tips.BusinessIntelligense {
         public string Name { get; set; }
     
         /// <summary>
-        /// Anst�llningsnummer
+        /// Anst&#228;llningsnummer
         /// </summary>
         [DataMember(Name="employeeNumber",EmitDefaultValue=false)]
         public string EmployeeNumber { get; set; }
     
         /// <summary>
-        /// Typ av anv�ndare
+        /// Typ av anv&#228;ndare
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
-        /// F�retag
+        /// F&#246;retag
         /// </summary>
         [DataMember(Name="company",EmitDefaultValue=false)]
         public Company Company { get; set; }

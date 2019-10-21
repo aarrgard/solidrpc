@@ -8,13 +8,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Villavardet.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Criteria {
         /// <summary>
-        /// Tilltr�desdatum fr�n och med
+        /// Tilltr&#228;desdatum fr&#229;n och med
         /// </summary>
         [DataMember(Name="accessDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset AccessDateFrom { get; set; }
     
         /// <summary>
-        /// Tilltr�desdatum till och med
+        /// Tilltr&#228;desdatum till och med
         /// </summary>
         [DataMember(Name="accessDateTo",EmitDefaultValue=false)]
         public DateTimeOffset AccessDateTo { get; set; }

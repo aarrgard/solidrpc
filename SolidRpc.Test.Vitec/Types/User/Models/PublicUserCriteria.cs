@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.User.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PublicUserCriteria {
         /// <summary>
-        /// Anv�ndarid
+        /// Anv&#228;ndarid
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }
     
         /// <summary>
-        /// Text som filtrerar p� namn eller titel
+        /// Text som filtrerar p&#229; namn eller titel
         /// </summary>
         [DataMember(Name="searchText",EmitDefaultValue=false)]
         public string SearchText { get; set; }

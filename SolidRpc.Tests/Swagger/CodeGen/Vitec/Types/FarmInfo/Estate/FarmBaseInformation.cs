@@ -9,13 +9,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class FarmBaseInformation {
         /// <summary>
-        /// Uppl�telseform
+        /// Uppl&#229;telseform
         /// </summary>
         [DataMember(Name="disposalForm",EmitDefaultValue=false)]
         public string DisposalForm { get; set; }
     
         /// <summary>
-        /// Ut�kade s�kbegrepp
+        /// Ut&#246;kade s&#246;kbegrepp
         /// </summary>
         [DataMember(Name="increaseSeekConception",EmitDefaultValue=false)]
         public IEnumerable<string> IncreaseSeekConception { get; set; }
@@ -27,13 +27,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
         public ObjectAddress ObjectAddress { get; set; }
     
         /// <summary>
-        /// �vrigt under allm�nt
+        /// &#214;vrigt under allm&#228;nt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }
     
         /// <summary>
-        /// Visar om det r�r en k�nslig aff�r
+        /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
         public bool SensitiveBusiness { get; set; }

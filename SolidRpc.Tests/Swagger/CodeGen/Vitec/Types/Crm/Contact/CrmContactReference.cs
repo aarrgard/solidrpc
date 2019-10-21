@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Crm.Contact {
         public string Id { get; set; }
     
         /// <summary>
-        /// Senast �ndrad
+        /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

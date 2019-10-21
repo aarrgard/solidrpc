@@ -20,13 +20,13 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Contact.Models.Person> Persons { get; set; }
     
         /// <summary>
-        /// Lista av d�dsbon
+        /// Lista av d&#246;dsbon
         /// </summary>
         [DataMember(Name="estates",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Contact.Models.Estate> Estates { get; set; }
     
         /// <summary>
-        /// Lista av f�retagskontakter
+        /// Lista av f&#246;retagskontakter
         /// </summary>
         [DataMember(Name="companies",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Contact.Models.Company> Companies { get; set; }

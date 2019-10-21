@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.File.Models {
         public Stream Data { get; set; }
     
         /// <summary>
-        /// Namn p� filen
+        /// Namn p&#229; filen
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

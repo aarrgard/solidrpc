@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Buyer.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class BuyerEconomy {
         /// <summary>
-        /// K�parens bank
+        /// K&#246;parens bank
         /// </summary>
         [DataMember(Name="bank",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Buyer.Models.Bank Bank { get; set; }
     
         /// <summary>
-        /// K�parens f�rs�kringsbolag
+        /// K&#246;parens f&#246;rs&#228;kringsbolag
         /// </summary>
         [DataMember(Name="insuranceCompany",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Buyer.Models.InsuranceCompany InsuranceCompany { get; set; }

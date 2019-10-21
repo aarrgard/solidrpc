@@ -22,7 +22,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar lista av anteckningar f�r en kontakt
+        /// H&#228;mtar lista av anteckningar f&#246;r en kontakt
         /// </summary>
         /// <param name="contactId">kontaktId</param>
         /// <param name="customerId">Kund-id</param>

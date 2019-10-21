@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public string Id { get; set; }
     
         /// <summary>
-        /// Bost�derna som kontakten �r s�ljare p�.
+        /// Bost&#228;derna som kontakten &#228;r s&#228;ljare p&#229;.
         /// </summary>
         [DataMember(Name="sellerOn",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Crm.Contact.CrmSellerRelation> SellerOn { get; set; }

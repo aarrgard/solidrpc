@@ -11,10 +11,10 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ISearchProfile {
         /// <summary>
-        /// Radera s�kprofil
+        /// Radera s&#246;kprofil
         /// </summary>
         /// <param name="customerId">Kundid</param>
-        /// <param name="id">S�kprofilen</param>
+        /// <param name="id">Sökprofilen</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Test.Vitec.Types.Services.SearchProfile.SearchProfileDeleteSearchProfile.NoContentException">No Content</exception>
         Task SearchProfileDeleteSearchProfile(
@@ -23,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar en lista av s�kprofiler
+        /// H&#228;mtar en lista av s&#246;kprofiler
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="criteriaContactId">Kontaktid.</param>
@@ -34,7 +34,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Ska kontaktens s�kprofiler matchas
+        /// Ska kontaktens s&#246;kprofiler matchas
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="matchSearchprofile"></param>
@@ -46,10 +46,10 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta en s�kprofil
+        /// H&#228;mta en s&#246;kprofil
         /// </summary>
         /// <param name="customerId">Kundid</param>
-        /// <param name="id">S�kprofilid</param>
+        /// <param name="id">Sökprofilid</param>
         /// <param name="cancellationToken"></param>
         Task<Models.SearchProfile> SearchProfileGetSearchProfile(
             string customerId,
@@ -57,11 +57,11 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Uppdatera en s�kprofil f�r en kontakt
+        /// Uppdatera en s&#246;kprofil f&#246;r en kontakt
         /// </summary>
         /// <param name="customerId">Kundid</param>
-        /// <param name="id">S�kprofilid</param>
-        /// <param name="searchProfile">S�kprofil</param>
+        /// <param name="id">Sökprofilid</param>
+        /// <param name="searchProfile">Sökprofil</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Test.Vitec.Types.Services.SearchProfile.SearchProfileUpdateSearchProfile.NoContentException">No Content</exception>
         Task SearchProfileUpdateSearchProfile(
@@ -71,7 +71,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Raderar alla s�kprofiler p� en kontakt
+        /// Raderar alla s&#246;kprofiler p&#229; en kontakt
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="contactId">Kontaktid</param>
@@ -83,11 +83,11 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Skapa s�kprofil
+        /// Skapa s&#246;kprofil
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="contactId">Kontaktid</param>
-        /// <param name="searchProfile">S�kprofilen</param>
+        /// <param name="searchProfile">Sökprofilen</param>
         /// <param name="cancellationToken"></param>
         Task<string> SearchProfileCreateSearchProfile(
             string customerId,
@@ -96,11 +96,11 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Skapa s�kprofil utland
+        /// Skapa s&#246;kprofil utland
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="contactId">Kontaktid</param>
-        /// <param name="searchProfile">S�kprofilen</param>
+        /// <param name="searchProfile">Sökprofilen</param>
         /// <param name="cancellationToken"></param>
         Task<string> SearchProfileCreateForeignSearchProfile(
             string customerId,

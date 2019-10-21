@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CondominiumInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CondominiumInterior {
         /// <summary>
-        /// K�kstyp
+        /// K&#246;kstyp
         /// </summary>
         [DataMember(Name="kitchenType",EmitDefaultValue=false)]
         public string KitchenType { get; set; }
@@ -33,7 +33,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CondominiumInfo.Estate {
         public double NumberOfRooms { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning
+        /// Allm&#228;n beskrivning
         /// </summary>
         [DataMember(Name="generealDescription",EmitDefaultValue=false)]
         public string GenerealDescription { get; set; }

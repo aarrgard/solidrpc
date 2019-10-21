@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Surroundings {
         /// <summary>
-        /// N�rservice
+        /// N&#228;rservice
         /// </summary>
         [DataMember(Name="service",EmitDefaultValue=false)]
         public string Service { get; set; }
@@ -19,7 +19,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Communication { get; set; }
     
         /// <summary>
-        /// Allm�nt om omr�det
+        /// Allm&#228;nt om omr&#229;det
         /// </summary>
         [DataMember(Name="generalAboutArea",EmitDefaultValue=false)]
         public string GeneralAboutArea { get; set; }

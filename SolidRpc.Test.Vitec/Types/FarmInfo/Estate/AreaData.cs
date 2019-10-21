@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class AreaData {
         /// <summary>
-        /// K�lla
+        /// K&#228;lla
         /// </summary>
         [DataMember(Name="areaSource",EmitDefaultValue=false)]
         public string AreaSource { get; set; }
@@ -25,13 +25,13 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public double WasteLand { get; set; }
     
         /// <summary>
-        /// �ker
+        /// &#197;ker
         /// </summary>
         [DataMember(Name="arabel",EmitDefaultValue=false)]
         public double Arabel { get; set; }
     
         /// <summary>
-        /// In�gomark
+        /// In&#228;gomark
         /// </summary>
         [DataMember(Name="infield",EmitDefaultValue=false)]
         public double Infield { get; set; }
@@ -49,7 +49,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public double Water { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public double Other { get; set; }

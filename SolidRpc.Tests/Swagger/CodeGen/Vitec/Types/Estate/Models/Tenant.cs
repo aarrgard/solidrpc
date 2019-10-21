@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Tenant {
         /// <summary>
-        /// Id p� hyresg�sten
+        /// Id p&#229; hyresg&#228;sten
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
     
         /// <summary>
-        /// Typ av hyresg�st
+        /// Typ av hyresg&#228;st
         /// </summary>
         [DataMember(Name="contactType",EmitDefaultValue=false)]
         public string ContactType { get; set; }

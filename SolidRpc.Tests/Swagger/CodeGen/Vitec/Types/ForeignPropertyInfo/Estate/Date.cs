@@ -8,19 +8,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Date {
         /// <summary>
-        /// M�jligt tilltr�desdatum
+        /// M&#246;jligt tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="possibleAccessDate",EmitDefaultValue=false)]
         public string PossibleAccessDate { get; set; }
     
         /// <summary>
-        /// Tilltr�desdatum
+        /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
         public DateTimeOffset AccessDate { get; set; }
     
         /// <summary>
-        /// Tilltr�detid
+        /// Tilltr&#228;detid
         /// </summary>
         [DataMember(Name="accessTime",EmitDefaultValue=false)]
         public string AccessTime { get; set; }
@@ -38,7 +38,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         public DateTimeOffset AssignmentDate { get; set; }
     
         /// <summary>
-        /// S�ljstart
+        /// S&#228;ljstart
         /// </summary>
         [DataMember(Name="salesStart",EmitDefaultValue=false)]
         public DateTimeOffset SalesStart { get; set; }
@@ -50,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         public DateTimeOffset ReservationAgreement { get; set; }
     
         /// <summary>
-        /// F�rhandsavtal
+        /// F&#246;rhandsavtal
         /// </summary>
         [DataMember(Name="preliminaryAgreement",EmitDefaultValue=false)]
         public DateTimeOffset PreliminaryAgreement { get; set; }

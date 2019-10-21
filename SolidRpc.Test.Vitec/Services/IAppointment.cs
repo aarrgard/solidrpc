@@ -9,7 +9,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IAppointment {
         /// <summary>
-        /// Skapa kalenderh�ndelse
+        /// Skapa kalenderh&#228;ndelse
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="id"></param>

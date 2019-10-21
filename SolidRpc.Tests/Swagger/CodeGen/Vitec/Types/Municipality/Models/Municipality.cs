@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Municipality.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// L�n och kommun kod
+        /// L&#228;n och kommun kod
         /// </summary>
         [DataMember(Name="countyMunicipalityCode",EmitDefaultValue=false)]
         public string CountyMunicipalityCode { get; set; }

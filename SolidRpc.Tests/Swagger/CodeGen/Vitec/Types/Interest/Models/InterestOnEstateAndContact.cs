@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         public string InterestNote { get; set; }
     
         /// <summary>
-        /// Notifiera handl�ggaren p� bostaden att intresseanm�lan inkommit
+        /// Notifiera handl&#228;ggaren p&#229; bostaden att intresseanm&#228;lan inkommit
         /// </summary>
         [DataMember(Name="notifyUser",EmitDefaultValue=false)]
         public bool NotifyUser { get; set; }

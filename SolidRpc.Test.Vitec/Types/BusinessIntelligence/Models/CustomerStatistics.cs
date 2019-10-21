@@ -20,7 +20,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligence.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// Lista p� �r med kontorsstatestik
+        /// Lista p&#229; &#229;r med kontorsstatestik
         /// </summary>
         [DataMember(Name="years",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.BusinessIntelligence.Models.YearStatisticsSummary> Years { get; set; }

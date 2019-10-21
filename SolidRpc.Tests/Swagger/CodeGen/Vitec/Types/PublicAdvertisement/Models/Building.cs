@@ -19,19 +19,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string RoomDescription { get; set; }
     
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public int YearBuilt { get; set; }
     
         /// <summary>
-        /// Biarea (m�)
+        /// Biarea (m&#178;)
         /// </summary>
         [DataMember(Name="grossFloorArea",EmitDefaultValue=false)]
         public double GrossFloorArea { get; set; }
     
         /// <summary>
-        /// Boarea (m�)
+        /// Boarea (m&#178;)
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
         public double LivingSpace { get; set; }

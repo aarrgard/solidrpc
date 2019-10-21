@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PlotExpenses {
         /// <summary>
-        /// Driftkostnad per �r
+        /// Driftkostnad per &#229;r
         /// </summary>
         [DataMember(Name="operatingCost",EmitDefaultValue=false)]
         public double OperatingCost { get; set; }
     
         /// <summary>
-        /// Tomtr�ttsavg�ld
+        /// Tomtr&#228;ttsavg&#228;ld
         /// </summary>
         [DataMember(Name="plotRent",EmitDefaultValue=false)]
         public double PlotRent { get; set; }

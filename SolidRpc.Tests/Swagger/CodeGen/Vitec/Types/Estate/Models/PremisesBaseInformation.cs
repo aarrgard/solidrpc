@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public string Alignment { get; set; }
     
         /// <summary>
-        /// Uppl�telseform
+        /// Uppl&#229;telseform
         /// </summary>
         [DataMember(Name="disposalForm",EmitDefaultValue=false)]
         public string DisposalForm { get; set; }
@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public string PropertyType { get; set; }
     
         /// <summary>
-        /// Visar om det r�r en k�nslig aff�r
+        /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
         public bool SensitiveBusiness { get; set; }

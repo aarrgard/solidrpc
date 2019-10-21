@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class SalesReportOffice {
         /// <summary>
-        /// Kund-id f�r detta kontor
+        /// Kund-id f&#246;r detta kontor
         /// </summary>
         [DataMember(Name="customerId",EmitDefaultValue=false)]
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Namn p� kontoret
+        /// Namn p&#229; kontoret
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

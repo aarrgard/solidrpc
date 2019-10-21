@@ -7,19 +7,19 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CommercialFloorAndElevator {
         /// <summary>
-        /// Antal v�ningar
+        /// Antal v&#229;ningar
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
         public int NumberOfFloors { get; set; }
     
         /// <summary>
-        /// Hiss (Ja, Nej eller ok�nt)
+        /// Hiss (Ja, Nej eller ok&#228;nt)
         /// </summary>
         [DataMember(Name="elevator",EmitDefaultValue=false)]
         public string Elevator { get; set; }
     
         /// <summary>
-        /// �vriga hissuppgifter
+        /// &#214;vriga hissuppgifter
         /// </summary>
         [DataMember(Name="descriptionOfElevator",EmitDefaultValue=false)]
         public string DescriptionOfElevator { get; set; }

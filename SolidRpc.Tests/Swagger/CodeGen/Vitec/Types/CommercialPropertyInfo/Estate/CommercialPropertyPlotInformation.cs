@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public double Area { get; set; }
     
         /// <summary>
-        /// �vrigt tomt
+        /// &#214;vrigt tomt
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public string Description { get; set; }

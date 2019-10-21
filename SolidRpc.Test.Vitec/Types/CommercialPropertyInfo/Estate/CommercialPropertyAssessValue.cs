@@ -7,19 +7,19 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CommercialPropertyAssessValue {
         /// <summary>
-        /// V�rderingsenhet
+        /// V&#228;rderingsenhet
         /// </summary>
         [DataMember(Name="evaluationUnit",EmitDefaultValue=false)]
         public string EvaluationUnit { get; set; }
     
         /// <summary>
-        /// Taxeringsv�rde
+        /// Taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="value",EmitDefaultValue=false)]
         public double Value { get; set; }
     
         /// <summary>
-        /// V�rde�r
+        /// V&#228;rde&#229;r
         /// </summary>
         [DataMember(Name="valueYear",EmitDefaultValue=false)]
         public string ValueYear { get; set; }

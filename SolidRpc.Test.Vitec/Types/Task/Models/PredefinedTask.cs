@@ -13,7 +13,7 @@ namespace SolidRpc.Test.Vitec.Types.Task.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// Beskrivning p� uppgiften
+        /// Beskrivning p&#229; uppgiften
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public string Description { get; set; }

@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.Office.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PublicOfficeCritera {
         /// <summary>
-        /// Unik identifierare p� butiken
+        /// Unik identifierare p&#229; butiken
         /// </summary>
         [DataMember(Name="officeId",EmitDefaultValue=false)]
         public string OfficeId { get; set; }

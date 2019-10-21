@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
         public CmsForeignPropertyBaseInformation BaseInformation { get; set; }
     
         /// <summary>
-        /// Interi�r
+        /// Interi&#246;r
         /// </summary>
         [DataMember(Name="interior",EmitDefaultValue=false)]
         public CmsForeignPropertyInterior Interior { get; set; }
@@ -41,13 +41,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
         public CmsPlotInformation Plot { get; set; }
     
         /// <summary>
-        /// Exteri�r
+        /// Exteri&#246;r
         /// </summary>
         [DataMember(Name="exterior",EmitDefaultValue=false)]
         public Exterior Exterior { get; set; }
     
         /// <summary>
-        /// Avst�nd
+        /// Avst&#229;nd
         /// </summary>
         [DataMember(Name="distance",EmitDefaultValue=false)]
         public Distance Distance { get; set; }
@@ -65,7 +65,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
         public CmsPrice Price { get; set; }
     
         /// <summary>
-        /// Anv�ndarid
+        /// Anv&#228;ndarid
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }

@@ -13,7 +13,7 @@ namespace SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate {
         public string CarSpace { get; set; }
     
         /// <summary>
-        /// �vriga byggnader
+        /// &#214;vriga byggnader
         /// </summary>
         [DataMember(Name="otherBuildings",EmitDefaultValue=false)]
         public string OtherBuildings { get; set; }

@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CondominiumBalconyPatio {
         /// <summary>
-        /// Sammanst�llning uteplats
+        /// Sammanst&#228;llning uteplats
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public string Description { get; set; }
     
         /// <summary>
-        /// Sammanst�llning bilplats
+        /// Sammanst&#228;llning bilplats
         /// </summary>
         [DataMember(Name="parking",EmitDefaultValue=false)]
         public string Parking { get; set; }

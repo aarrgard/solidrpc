@@ -310,6 +310,29 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// Configures the supplied type so that it is exposed in the binder.
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="impl"></param>
+        /// <param name="openApiConfiguration"></param>
+        /// <param name="baseUriTransformer"></param>
+        /// <returns></returns>
+        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings<T>(this IServiceCollection sc, T impl, string openApiConfiguration = null, MethodAddressTransformer baseUriTransformer = null) where T:class
+        {
+            if(impl != null)
+            {
+                sc.AddSingleton<T>(impl);
+            }
+            else
+            {
+                sc.AddTransient<T, T>();
+            }
+            return typeof(T).GetMethods()
+                .Select(m => sc.AddSolidRpcBinding(m, openApiConfiguration, baseUriTransformer))
+                .ToList();
+        }
+
+        /// <summary>
         /// Configures the suppllied method so that it is exposed through the .net core http binding.
         /// </summary>
         /// <param name="sc"></param>

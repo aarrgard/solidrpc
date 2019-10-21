@@ -13,13 +13,13 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperativeInfo.Estate {
         public double RepairFund { get; set; }
     
         /// <summary>
-        /// Andel av �rsavgiften
+        /// Andel av &#229;rsavgiften
         /// </summary>
         [DataMember(Name="participationOffAnnualFee",EmitDefaultValue=false)]
         public double ParticipationOffAnnualFee { get; set; }
     
         /// <summary>
-        /// Andel i f�rening (%)
+        /// Andel i f&#246;rening (%)
         /// </summary>
         [DataMember(Name="participationInAssociation",EmitDefaultValue=false)]
         public double ParticipationInAssociation { get; set; }

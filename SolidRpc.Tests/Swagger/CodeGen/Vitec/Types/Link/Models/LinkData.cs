@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Link.Models {
         public string Url { get; set; }
     
         /// <summary>
-        /// Namn p� l�nken
+        /// Namn p&#229; l&#228;nken
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
@@ -25,7 +25,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Link.Models {
         public bool Advertise { get; set; }
     
         /// <summary>
-        /// L�nkkategori
+        /// L&#228;nkkategori
         /// </summary>
         [DataMember(Name="category",EmitDefaultValue=false)]
         public string Category { get; set; }

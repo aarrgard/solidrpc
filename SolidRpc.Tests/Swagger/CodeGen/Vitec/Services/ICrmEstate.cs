@@ -14,8 +14,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmEstate {
         /// <summary>
-        /// H�mtar budgivningsinst�llningar. &lt;p&gt;H�mtar budgivningsinst�llningar.&lt;/p&gt;
-        /// &lt;p&gt;F�r att kunna h�mta bidinst�llningar s� kr�vs det en giltig API nyckel och ett kundid.&lt;/p&gt;
+        /// H&#228;mtar budgivningsinst&#228;llningar. &lt;p&gt;H&#228;mtar budgivningsinst&#228;llningar.&lt;/p&gt;
+        /// &lt;p&gt;F&#246;r att kunna h&#228;mta bidinst&#228;llningar s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">bostadsid</param>
@@ -26,12 +26,12 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Uppdatera budgivningsinst�llningar. &lt;p&gt;Uppdatera budgivningsinst�llningar.&lt;/p&gt;
-        /// &lt;p&gt;F�r att kunna h�mta bidinst�llningar s� kr�vs det en giltig API nyckel och ett kundid.&lt;/p&gt;
+        /// Uppdatera budgivningsinst&#228;llningar. &lt;p&gt;Uppdatera budgivningsinst&#228;llningar.&lt;/p&gt;
+        /// &lt;p&gt;F&#246;r att kunna h&#228;mta bidinst&#228;llningar s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Bostadsid</param>
-        /// <param name="biddingSettings">Bidgivninginst�llingar</param>
+        /// <param name="biddingSettings">Bidgivninginställingar</param>
         /// <param name="cancellationToken"></param>
         Task<bool> CrmEstatePutBiddingSettings(
             string customerId,
@@ -40,7 +40,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar fakturanummer. &lt;p&gt;H�mtar fakturanummer.&lt;/p&gt;
+        /// H&#228;mtar fakturanummer. &lt;p&gt;H&#228;mtar fakturanummer.&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">bostadsid</param>
@@ -51,7 +51,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar provisionsjusteringar &lt;p&gt;H�mtar provisionsjusteringar (till�gg/avdrag)&lt;/p&gt;
+        /// H&#228;mtar provisionsjusteringar &lt;p&gt;H&#228;mtar provisionsjusteringar (till&#228;gg/avdrag)&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Bostadsid</param>
@@ -62,8 +62,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Provisionsjustering &lt;p&gt;Provisionsjustering (till�gg/avdrag)&lt;/p&gt;
-        /// &lt;p&gt;Ange ett negativt belopp f�r avdrag p� provisionen&lt;/p&gt;
+        /// Provisionsjustering &lt;p&gt;Provisionsjustering (till&#228;gg/avdrag)&lt;/p&gt;
+        /// &lt;p&gt;Ange ett negativt belopp f&#246;r avdrag p&#229; provisionen&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Bostadsid</param>
@@ -76,7 +76,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Marknadsf�r utlandsbost�der p� marknadsplatser
+        /// Marknadsf&#246;r utlandsbost&#228;der p&#229; marknadsplatser
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="estateId"></param>
@@ -90,7 +90,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar marknadsplatser f�r utlandsbost�der
+        /// H&#228;mtar marknadsplatser f&#246;r utlandsbost&#228;der
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="criteriaEstateType"></param>
@@ -101,10 +101,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar alla filer tillh�rande ett objekt eller projekt
+        /// H&#228;mtar alla filer tillh&#246;rande ett objekt eller projekt
         /// </summary>
         /// <param name="customerId">kundid</param>
-        /// <param name="estateId">id p� objekt/projekt</param>
+        /// <param name="estateId">id på objekt/projekt</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<FileInfo>> CrmEstateGetFiles(
             string customerId,
@@ -112,7 +112,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar intagsk�llor
+        /// H&#228;mtar intagsk&#228;llor
         /// </summary>
         /// <param name="customerId">kundid</param>
         /// <param name="cancellationToken"></param>

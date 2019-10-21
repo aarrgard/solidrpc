@@ -21,7 +21,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta information om ett bud
+        /// H&#228;mta information om ett bud
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="id">Budid</param>
@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta information om synliga bud kopplat till en budgivare och/eller bostad.
+        /// H&#228;mta information om synliga bud kopplat till en budgivare och/eller bostad.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="criteriaEstateId">Bostadsid</param>
@@ -45,7 +45,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta information om dolda bud kopplat till en budgivare och/eller bostad.
+        /// H&#228;mta information om dolda bud kopplat till en budgivare och/eller bostad.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="criteriaEstateId">Bostadsid</param>
@@ -58,7 +58,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Metod f�r att l�gga bud p� en bostad.
+        /// Metod f&#246;r att l&#228;gga bud p&#229; en bostad.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Bostadsid</param>

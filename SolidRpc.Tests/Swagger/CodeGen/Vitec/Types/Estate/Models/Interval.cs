@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Interval {
         /// <summary>
-        /// Minimumv�rde
+        /// Minimumv&#228;rde
         /// </summary>
         [DataMember(Name="min",EmitDefaultValue=false)]
         public double Min { get; set; }
     
         /// <summary>
-        /// Maximumv�rde
+        /// Maximumv&#228;rde
         /// </summary>
         [DataMember(Name="max",EmitDefaultValue=false)]
         public double Max { get; set; }

@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Premises {
         /// <summary>
-        /// Marknadsf�ring
+        /// Marknadsf&#246;ring
         /// </summary>
         [DataMember(Name="advertiseOn",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.AdvertiseOn AdvertiseOn { get; set; }
@@ -22,13 +22,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models.PremisesBaseInformation BaseInformation { get; set; }
     
         /// <summary>
-        /// Sammanst�llning areor
+        /// Sammanst&#228;llning areor
         /// </summary>
         [DataMember(Name="compilationAreas",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models.CompilationAreas CompilationAreas { get; set; }
     
         /// <summary>
-        /// Tilltr�desdatum
+        /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.Date Date { get; set; }
@@ -46,7 +46,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.BalconyPatio BalconyPatio { get; set; }
     
         /// <summary>
-        /// V�ning/Hiss
+        /// V&#229;ning/Hiss
         /// </summary>
         [DataMember(Name="floorAndElevator",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models.PremisesFloorAndElevator FloorAndElevator { get; set; }
@@ -70,13 +70,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.Viewing> Viewings { get; set; }
     
         /// <summary>
-        /// �gare/uthyrare
+        /// &#196;gare/uthyrare
         /// </summary>
         [DataMember(Name="owners",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models.Owner> Owners { get; set; }
     
         /// <summary>
-        /// Hyresg�ster
+        /// Hyresg&#228;ster
         /// </summary>
         [DataMember(Name="tenants",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models.Tenant> Tenants { get; set; }
@@ -112,7 +112,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public string OfficeId { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
@@ -136,13 +136,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.ObjectImage> Images { get; set; }
     
         /// <summary>
-        /// Lista �ver aktuella intressenter representerade av id:n
+        /// Lista &#246;ver aktuella intressenter representerade av id:n
         /// </summary>
         [DataMember(Name="interests",EmitDefaultValue=false)]
         public IEnumerable<string> Interests { get; set; }
     
         /// <summary>
-        /// Egendefinierade f�lt
+        /// Egendefinierade f&#228;lt
         /// </summary>
         [DataMember(Name="customFields",EmitDefaultValue=false)]
         public IEnumerable<FieldValue> CustomFields { get; set; }

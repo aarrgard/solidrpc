@@ -23,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         public Range PriceRange { get; set; }
     
         /// <summary>
-        /// Storleksintervall p� boarea
+        /// Storleksintervall p&#229; boarea
         /// </summary>
         [DataMember(Name="livingSpaceRange",EmitDefaultValue=false)]
         public Range LivingSpaceRange { get; set; }
@@ -53,19 +53,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         public Status Status { get; set; }
     
         /// <summary>
-        /// Huvudtillh�righet
+        /// Huvudtillh&#246;righet
         /// </summary>
         [DataMember(Name="customerId",EmitDefaultValue=false)]
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Omr�des namn
+        /// Omr&#229;des namn
         /// </summary>
         [DataMember(Name="areaName",EmitDefaultValue=false)]
         public string AreaName { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
@@ -95,7 +95,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate.ViewingBasic> ViewingsList { get; set; }
     
         /// <summary>
-        /// P�g�r bud Ja/Nej
+        /// P&#229;g&#229;r bud Ja/Nej
         /// </summary>
         [DataMember(Name="bidding",EmitDefaultValue=false)]
         public bool Bidding { get; set; }

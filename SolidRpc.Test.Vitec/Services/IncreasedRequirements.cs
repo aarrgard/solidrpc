@@ -10,7 +10,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IncreasedRequirements {
         /// <summary>
-        /// H�mta ut�kadekrav
+        /// H&#228;mta ut&#246;kadekrav
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="cancellationToken"></param>

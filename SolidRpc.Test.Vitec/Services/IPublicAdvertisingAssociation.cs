@@ -10,7 +10,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingAssociation {
         /// <summary>
-        /// H�mtar information om bostadsr�ttsf�reningar. F�r att kunna h�mta bostadsr�ttsf�reningar s� kr�vs det en giltig API nyckel och ett kundid.
+        /// H&#228;mtar information om bostadsr&#228;ttsf&#246;reningar. F&#246;r att kunna h&#228;mta bostadsr&#228;ttsf&#246;reningar s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="cancellationToken"></param>
@@ -19,7 +19,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar information om bostadsr�ttsf�reningen. F�r att kunna h�mta bostadsr�ttsf�reningen s� kr�vs det en giltig API nyckel och ett kundid.
+        /// H&#228;mtar information om bostadsr&#228;ttsf&#246;reningen. F&#246;r att kunna h&#228;mta bostadsr&#228;ttsf&#246;reningen s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="associationId"></param>

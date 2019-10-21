@@ -25,13 +25,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize Impediment { get; set; }
     
         /// <summary>
-        /// �ker
+        /// &#197;ker
         /// </summary>
         [DataMember(Name="field",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize Field { get; set; }
     
         /// <summary>
-        /// In�gomark
+        /// In&#228;gomark
         /// </summary>
         [DataMember(Name="infield",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize Infield { get; set; }
@@ -49,7 +49,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize Water { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize Other { get; set; }

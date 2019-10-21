@@ -13,7 +13,7 @@ namespace SolidRpc.Test.Vitec.Types.Villavardet.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// M�klarkontor
+        /// M&#228;klarkontor
         /// </summary>
         [DataMember(Name="office",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Villavardet.Models.Office Office { get; set; }

@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PartnerService.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ContactLeadSender {
         /// <summary>
-        /// Anv�ndare
+        /// Anv&#228;ndare
         /// </summary>
         [DataMember(Name="user",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PartnerService.Models.UserLeadSender User { get; set; }
     
         /// <summary>
-        /// F�retag
+        /// F&#246;retag
         /// </summary>
         [DataMember(Name="company",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PartnerService.Models.CompanyLeadSender Company { get; set; }

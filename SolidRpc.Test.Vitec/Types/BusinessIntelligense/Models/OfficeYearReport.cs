@@ -8,13 +8,13 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class OfficeYearReport {
         /// <summary>
-        /// �r
+        /// &#197;r
         /// </summary>
         [DataMember(Name="year",EmitDefaultValue=false)]
         public string Year { get; set; }
     
         /// <summary>
-        /// M�nader
+        /// M&#229;nader
         /// </summary>
         [DataMember(Name="months",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.OfficeMonthReport> Months { get; set; }

@@ -9,9 +9,9 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface Interest {
         /// <summary>
-        /// Skickar in intresseanm�lan fr�n en befintlig kontakt till en bostad.
+        /// Skickar in intresseanm&#228;lan fr&#229;n en befintlig kontakt till en bostad.
         /// </summary>
-        /// <param name="interest">Intresseanm�lan</param>
+        /// <param name="interest">Intresseanmälan</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Test.Vitec.Types.Services.Interest.InterestSendInterestOnEstate.NoContentException">No Content</exception>
         Task InterestSendInterestOnEstate(
@@ -19,8 +19,8 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Skickar in intresseanm�lan fr�n en ny kontakt till en bostad.
-        /// Innan nya personer l�ggs in i m�klarsystemet, g�rs alltid en dubblettkontroll.
+        /// Skickar in intresseanm&#228;lan fr&#229;n en ny kontakt till en bostad.
+        /// Innan nya personer l&#228;ggs in i m&#228;klarsystemet, g&#246;rs alltid en dubblettkontroll.
         /// </summary>
         /// <param name="interest">InterestAndContact</param>
         /// <param name="cancellationToken"></param>
@@ -30,7 +30,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Skickar in intresseanm�lan till m�klarsystemet f�r ett eller flera omr�den. Skickar in intresseanm�lan till m�klarsystemet f�r ett eller flera omr�den.
+        /// Skickar in intresseanm&#228;lan till m&#228;klarsystemet f&#246;r ett eller flera omr&#229;den. Skickar in intresseanm&#228;lan till m&#228;klarsystemet f&#246;r ett eller flera omr&#229;den.
         /// </summary>
         /// <param name="interest"></param>
         /// <param name="cancellationToken"></param>
@@ -40,7 +40,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Skickar in intresseanm�lan f�r ett eller flera omr�den, tillsammans med kontaktuppgifter. Innan nya personer l�ggs in i m�klarsystemet, g�rs alltid en dubblettkontroll.
+        /// Skickar in intresseanm&#228;lan f&#246;r ett eller flera omr&#229;den, tillsammans med kontaktuppgifter. Innan nya personer l&#228;ggs in i m&#228;klarsystemet, g&#246;rs alltid en dubblettkontroll.
         /// </summary>
         /// <param name="interest"></param>
         /// <param name="cancellationToken"></param>

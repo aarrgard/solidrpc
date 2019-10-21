@@ -7,19 +7,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Electricity {
         /// <summary>
-        /// F�retag
+        /// F&#246;retag
         /// </summary>
         [DataMember(Name="companie",EmitDefaultValue=false)]
         public string Companie { get; set; }
     
         /// <summary>
-        /// Ellevrant�r
+        /// Ellevrant&#246;r
         /// </summary>
         [DataMember(Name="distributor",EmitDefaultValue=false)]
         public string Distributor { get; set; }
     
         /// <summary>
-        /// Elf�rbrukning KWH /�r
+        /// Elf&#246;rbrukning KWH /&#229;r
         /// </summary>
         [DataMember(Name="powerConsumptionKWH",EmitDefaultValue=false)]
         public double PowerConsumptionKWH { get; set; }

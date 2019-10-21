@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IDocument {
         /// <summary>
-        /// Metod f�r att l�gga till eller uppdatera ett  dokument till en bostad.
+        /// Metod f&#246;r att l&#228;gga till eller uppdatera ett  dokument till en bostad.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Bostadsid</param>

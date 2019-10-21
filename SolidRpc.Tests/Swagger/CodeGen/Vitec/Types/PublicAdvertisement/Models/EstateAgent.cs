@@ -27,7 +27,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string EmailAddress { get; set; }
     
         /// <summary>
-        /// N�r m�klaren senast �ndrades
+        /// N&#228;r m&#228;klaren senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }
@@ -39,7 +39,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.TelephoneNumbers Telephone { get; set; }
     
         /// <summary>
-        /// M�klarens tillh�righeter till kontor
+        /// M&#228;klarens tillh&#246;righeter till kontor
         /// </summary>
         [DataMember(Name="officeAffiliations",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.EstateAgentOfficeAffiliation> OfficeAffiliations { get; set; }
@@ -51,7 +51,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Title { get; set; }
     
         /// <summary>
-        /// Bild p� m�klaren
+        /// Bild p&#229; m&#228;klaren
         /// </summary>
         [DataMember(Name="image",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.Image Image { get; set; }

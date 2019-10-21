@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CompanyTelephoneNumbers {
         /// <summary>
-        /// Telefon v�xel
+        /// Telefon v&#228;xel
         /// </summary>
         [DataMember(Name="switch",EmitDefaultValue=false)]
         public string Switch { get; set; }
     
         /// <summary>
-        /// �vrig telefonnummer
+        /// &#214;vrig telefonnummer
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

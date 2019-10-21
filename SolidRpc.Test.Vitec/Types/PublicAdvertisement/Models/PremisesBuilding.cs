@@ -7,19 +7,19 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PremisesBuilding {
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public int YearBuilt { get; set; }
     
         /// <summary>
-        /// V�ningsplan
+        /// V&#229;ningsplan
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
         public double Floor { get; set; }
     
         /// <summary>
-        /// Antal v�ningsplan
+        /// Antal v&#229;ningsplan
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
         public double NumberOfFloors { get; set; }
@@ -31,7 +31,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Elevator { get; set; }
     
         /// <summary>
-        /// Planl�sning
+        /// Planl&#246;sning
         /// </summary>
         [DataMember(Name="roomDescription",EmitDefaultValue=false)]
         public string RoomDescription { get; set; }

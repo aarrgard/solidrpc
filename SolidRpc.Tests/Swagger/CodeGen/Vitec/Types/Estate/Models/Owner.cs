@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Owner {
         /// <summary>
-        /// Id p� �garen/uthyraren
+        /// Id p&#229; &#228;garen/uthyraren
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }

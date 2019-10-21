@@ -25,7 +25,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public string Frame { get; set; }
     
         /// <summary>
-        /// Bj�lklag
+        /// Bj&#228;lklag
         /// </summary>
         [DataMember(Name="beam",EmitDefaultValue=false)]
         public string Beam { get; set; }
@@ -43,19 +43,19 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public string Roof { get; set; }
     
         /// <summary>
-        /// Utv pl�tarbete
+        /// Utv pl&#229;tarbete
         /// </summary>
         [DataMember(Name="externallyMetalWork",EmitDefaultValue=false)]
         public string ExternallyMetalWork { get; set; }
     
         /// <summary>
-        /// F�nster
+        /// F&#246;nster
         /// </summary>
         [DataMember(Name="windows",EmitDefaultValue=false)]
         public string Windows { get; set; }
     
         /// <summary>
-        /// Uppv�rmning
+        /// Uppv&#228;rmning
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public string Heating { get; set; }
@@ -67,7 +67,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public string WaterAndDrain { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="others",EmitDefaultValue=false)]
         public string Others { get; set; }

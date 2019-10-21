@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.Usergroup {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class UserGroup {
         /// <summary>
-        /// Anv�ndar
+        /// Anv&#228;ndar
         /// </summary>
         [DataMember(Name="userGroupId",EmitDefaultValue=false)]
         public string UserGroupId { get; set; }
@@ -26,7 +26,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.Usergroup {
         public string Name { get; set; }
     
         /// <summary>
-        /// Anv�ndare
+        /// Anv&#228;ndare
         /// </summary>
         [DataMember(Name="users",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.Usergroup.User> Users { get; set; }

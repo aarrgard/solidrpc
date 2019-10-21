@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.IncreasedRequirement.Models {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Ut�kade krav
+        /// Ut&#246;kade krav
         /// </summary>
         [DataMember(Name="increasedRequirements",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.IncreasedRequirement.Models.IncreasedRequirement> IncreasedRequirements { get; set; }

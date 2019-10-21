@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Villavardet.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Buyer {
         /// <summary>
-        /// F�rnamn
+        /// F&#246;rnamn
         /// </summary>
         [DataMember(Name="firstName",EmitDefaultValue=false)]
         public string FirstName { get; set; }

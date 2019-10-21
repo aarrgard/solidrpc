@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class EstateAgentOfficeAffiliation {
         /// <summary>
-        /// Telefon arbete f�r aktuellt kontor
+        /// Telefon arbete f&#246;r aktuellt kontor
         /// </summary>
         [DataMember(Name="workPhone",EmitDefaultValue=false)]
         public string WorkPhone { get; set; }

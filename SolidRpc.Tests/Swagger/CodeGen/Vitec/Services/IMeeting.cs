@@ -10,10 +10,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IMeeting {
         /// <summary>
-        /// H�mtar ett bokat m�te
+        /// H&#228;mtar ett bokat m&#246;te
         /// </summary>
         /// <param name="customerId">Kund-id</param>
-        /// <param name="id">M�tets id</param>
+        /// <param name="id">Mötets id</param>
         /// <param name="cancellationToken"></param>
         Task<Models.Meeting> MeetingGetSingle(
             string customerId,
@@ -21,7 +21,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar bokade intagsm�ten.
+        /// H&#228;mtar bokade intagsm&#246;ten.
         /// </summary>
         /// <param name="criteria">Urval</param>
         /// <param name="cancellationToken"></param>
@@ -30,11 +30,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Boka intagsm�te
+        /// Boka intagsm&#246;te
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Objektid</param>
-        /// <param name="assignmentMeeting">Intagsm�te</param>
+        /// <param name="assignmentMeeting">Intagsmöte</param>
         /// <param name="cancellationToken"></param>
         Task<string> MeetingPostAssignmentMeeting(
             string customerId,

@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingFarm {
         /// <summary>
-        /// H�mta g�rd
+        /// H&#228;mta g&#229;rd
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="id">Bostadens id</param>

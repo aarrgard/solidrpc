@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class HousingCooperativesBasic {
         /// <summary>
-        /// M�nandsavgift
+        /// M&#229;nandsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
         public double MonthlyFee { get; set; }
@@ -47,19 +47,19 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
         public Status Status { get; set; }
     
         /// <summary>
-        /// Huvudtillh�righet
+        /// Huvudtillh&#246;righet
         /// </summary>
         [DataMember(Name="customerId",EmitDefaultValue=false)]
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Omr�des namn
+        /// Omr&#229;des namn
         /// </summary>
         [DataMember(Name="areaName",EmitDefaultValue=false)]
         public string AreaName { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
@@ -89,7 +89,7 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
         public IEnumerable<SolidRpc.Test.Vitec.Types.List.Estate.ViewingBasic> ViewingsList { get; set; }
     
         /// <summary>
-        /// P�g�r bud Ja/Nej
+        /// P&#229;g&#229;r bud Ja/Nej
         /// </summary>
         [DataMember(Name="bidding",EmitDefaultValue=false)]
         public bool Bidding { get; set; }

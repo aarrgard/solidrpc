@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativ.Cms {
         public double NumberOfRooms { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning av interi�ren
+        /// Allm&#228;n beskrivning av interi&#246;ren
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public string Description { get; set; }
@@ -26,7 +26,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativ.Cms {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativ.Cms.Room> Rooms { get; set; }
     
         /// <summary>
-        /// K�kstyp
+        /// K&#246;kstyp
         /// </summary>
         [DataMember(Name="kitchenType",EmitDefaultValue=false)]
         public string KitchenType { get; set; }

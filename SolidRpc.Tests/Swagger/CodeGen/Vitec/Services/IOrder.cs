@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IOrder {
         /// <summary>
-        /// Uppdatera status p� en tj�nst
+        /// Uppdatera status p&#229; en tj&#228;nst
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="orderStatus"></param>
@@ -20,7 +20,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Beg�r anv�ndarinteraktion p� en tj�nst
+        /// Beg&#228;r anv&#228;ndarinteraktion p&#229; en tj&#228;nst
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="request"></param>

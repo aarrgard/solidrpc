@@ -13,7 +13,7 @@ namespace SolidRpc.Test.Vitec.Types.Order.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// Fullst�ndig url(inklusive protokoll) som skall anropas f�r interaktion
+        /// Fullst&#228;ndig url(inklusive protokoll) som skall anropas f&#246;r interaktion
         /// </summary>
         [DataMember(Name="url",EmitDefaultValue=false)]
         public string Url { get; set; }

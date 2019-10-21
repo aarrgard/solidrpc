@@ -15,7 +15,7 @@ namespace SolidRpc.Test.Vitec.Types.Interest.Models {
         public UpdatePerson UpdatePerson { get; set; }
     
         /// <summary>
-        /// S�kpreferenser
+        /// S&#246;kpreferenser
         /// </summary>
         [DataMember(Name="lookingForAccommodations",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Interest.Models.LookingForAccommodation> LookingForAccommodations { get; set; }
@@ -27,7 +27,7 @@ namespace SolidRpc.Test.Vitec.Types.Interest.Models {
         public SolidRpc.Test.Vitec.Types.Interest.Models.PresentAccommodation PresentAccommodation { get; set; }
     
         /// <summary>
-        /// Notifiera handl�ggaren p� kontakten att ett intresse f�r ett omr�de inkommit, kr�ver UserId f�r nya kontakter
+        /// Notifiera handl&#228;ggaren p&#229; kontakten att ett intresse f&#246;r ett omr&#229;de inkommit, kr&#228;ver UserId f&#246;r nya kontakter
         /// </summary>
         [DataMember(Name="notifyUser",EmitDefaultValue=false)]
         public bool NotifyUser { get; set; }

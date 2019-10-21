@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Crm.Contact {
         public string EstateType { get; set; }
     
         /// <summary>
-        /// Vilken intressegrad som kontakten har eller hade p� bostaden.
+        /// Vilken intressegrad som kontakten har eller hade p&#229; bostaden.
         /// </summary>
         [DataMember(Name="level",EmitDefaultValue=false)]
         public string Level { get; set; }

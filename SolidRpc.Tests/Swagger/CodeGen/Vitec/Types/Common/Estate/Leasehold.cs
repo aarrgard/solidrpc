@@ -8,13 +8,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Leasehold {
         /// <summary>
-        /// Tomtr�ttsavg�ld kr/�r
+        /// Tomtr&#228;ttsavg&#228;ld kr/&#229;r
         /// </summary>
         [DataMember(Name="leaseholdFee",EmitDefaultValue=false)]
         public double LeaseholdFee { get; set; }
     
         /// <summary>
-        /// L�ptid
+        /// L&#246;ptid
         /// </summary>
         [DataMember(Name="leaseholdUntil",EmitDefaultValue=false)]
         public DateTimeOffset LeaseholdUntil { get; set; }

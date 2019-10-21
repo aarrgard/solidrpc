@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string Id { get; set; }
     
         /// <summary>
-        /// Namn p� statusen
+        /// Namn p&#229; statusen
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

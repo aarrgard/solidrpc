@@ -14,13 +14,13 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Crm.Contact.CrmContactReference> Persons { get; set; }
     
         /// <summary>
-        /// F�retag som matchats
+        /// F&#246;retag som matchats
         /// </summary>
         [DataMember(Name="companies",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Crm.Contact.CrmContactReference> Companies { get; set; }
     
         /// <summary>
-        /// D�dsbon som matchats
+        /// D&#246;dsbon som matchats
         /// </summary>
         [DataMember(Name="deceasedEstates",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Crm.Contact.CrmContactReference> DeceasedEstates { get; set; }

@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CustomField.Models {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Lista av egendefinerade f�lt.
+        /// Lista av egendefinerade f&#228;lt.
         /// </summary>
         [DataMember(Name="fields",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CustomField.Models.Field> Fields { get; set; }

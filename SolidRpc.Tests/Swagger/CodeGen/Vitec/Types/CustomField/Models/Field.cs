@@ -14,19 +14,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CustomField.Models {
         public string Label { get; set; }
     
         /// <summary>
-        /// F�ltnamn
+        /// F&#228;ltnamn
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
     
         /// <summary>
-        /// F�lttyp
+        /// F&#228;lttyp
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
-        /// Giltilig f�r
+        /// Giltilig f&#246;r
         /// </summary>
         [DataMember(Name="validFor",EmitDefaultValue=false)]
         public IEnumerable<string> ValidFor { get; set; }

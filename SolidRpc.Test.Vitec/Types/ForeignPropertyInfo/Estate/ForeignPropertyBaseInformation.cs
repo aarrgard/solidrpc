@@ -26,19 +26,19 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public double BuildningArea { get; set; }
     
         /// <summary>
-        /// M�nadsavgift
+        /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
         public double MonthlyFee { get; set; }
     
         /// <summary>
-        /// Kommentar till m�nadsavgift
+        /// Kommentar till m&#229;nadsavgift
         /// </summary>
         [DataMember(Name="commentary",EmitDefaultValue=false)]
         public string Commentary { get; set; }
     
         /// <summary>
-        /// �garregister
+        /// &#196;garregister
         /// </summary>
         [DataMember(Name="ownerRegister",EmitDefaultValue=false)]
         public string OwnerRegister { get; set; }
@@ -50,19 +50,19 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public string ReferenceId { get; set; }
     
         /// <summary>
-        /// Uppl�telseform text
+        /// Uppl&#229;telseform text
         /// </summary>
         [DataMember(Name="tenure",EmitDefaultValue=false)]
         public string Tenure { get; set; }
     
         /// <summary>
-        /// Uppl�telseform
+        /// Uppl&#229;telseform
         /// </summary>
         [DataMember(Name="disposalForm",EmitDefaultValue=false)]
         public string DisposalForm { get; set; }
     
         /// <summary>
-        /// Ut�kade s�kbegrepp
+        /// Ut&#246;kade s&#246;kbegrepp
         /// </summary>
         [DataMember(Name="increaseSeekConception",EmitDefaultValue=false)]
         public IEnumerable<string> IncreaseSeekConception { get; set; }
@@ -74,25 +74,25 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate.Address Address { get; set; }
     
         /// <summary>
-        /// Areak�lla
+        /// Areak&#228;lla
         /// </summary>
         [DataMember(Name="areaSource",EmitDefaultValue=false)]
         public string AreaSource { get; set; }
     
         /// <summary>
-        /// �vrigt under allm�nt
+        /// &#214;vrigt under allm&#228;nt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }
     
         /// <summary>
-        /// Projekt id vissas h�r om objektet ing�r i ett projekt
+        /// Projekt id vissas h&#228;r om objektet ing&#229;r i ett projekt
         /// </summary>
         [DataMember(Name="projectId",EmitDefaultValue=false)]
         public string ProjectId { get; set; }
     
         /// <summary>
-        /// Visar om det r�r en k�nslig aff�r
+        /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
         public bool SensitiveBusiness { get; set; }

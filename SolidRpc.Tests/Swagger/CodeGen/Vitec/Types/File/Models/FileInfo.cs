@@ -8,25 +8,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.File.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class FileInfo {
         /// <summary>
-        /// Id p� filen
+        /// Id p&#229; filen
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
     
         /// <summary>
-        /// Namn p� filen
+        /// Namn p&#229; filen
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
     
         /// <summary>
-        /// Filtyp (fil�ndelse)
+        /// Filtyp (fil&#228;ndelse)
         /// </summary>
         [DataMember(Name="extension",EmitDefaultValue=false)]
         public string Extension { get; set; }
     
         /// <summary>
-        /// Senast �ndrad
+        /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChangedData",EmitDefaultValue=false)]
         public DateTimeOffset DateChangedData { get; set; }

@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Id { get; set; }
     
         /// <summary>
-        /// N�r bilddata f�r�ndrades senast
+        /// N&#228;r bilddata f&#246;r&#228;ndrades senast
         /// </summary>
         [DataMember(Name="dataChangedAt",EmitDefaultValue=false)]
         public DateTimeOffset DataChangedAt { get; set; }
@@ -44,7 +44,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Tags { get; set; }
     
         /// <summary>
-        /// Fil�ndelse
+        /// Fil&#228;ndelse
         /// </summary>
         [DataMember(Name="extension",EmitDefaultValue=false)]
         public string Extension { get; set; }

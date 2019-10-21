@@ -19,7 +19,7 @@ namespace SolidRpc.Test.Vitec.Types.Category.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// En readonly kategori s�tts automatiskt av systemet och ska inte tilldelas manuellt till en kontakt
+        /// En readonly kategori s&#228;tts automatiskt av systemet och ska inte tilldelas manuellt till en kontakt
         /// </summary>
         [DataMember(Name="readOnly",EmitDefaultValue=false)]
         public bool ReadOnly { get; set; }

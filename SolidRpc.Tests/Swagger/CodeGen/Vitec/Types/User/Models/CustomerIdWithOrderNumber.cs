@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         public int OrderNumber { get; set; }
     
         /// <summary>
-        /// Huvudf�retag
+        /// Huvudf&#246;retag
         /// </summary>
         [DataMember(Name="mainBusiness",EmitDefaultValue=false)]
         public bool MainBusiness { get; set; }

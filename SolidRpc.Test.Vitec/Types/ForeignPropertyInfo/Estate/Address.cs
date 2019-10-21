@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Address {
         /// <summary>
-        /// Omr�de
+        /// Omr&#229;de
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
         public string Area { get; set; }
@@ -62,7 +62,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public string City { get; set; }
     
         /// <summary>
-        /// Omr�desid
+        /// Omr&#229;desid
         /// </summary>
         [DataMember(Name="areaId",EmitDefaultValue=false)]
         public string AreaId { get; set; }

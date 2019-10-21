@@ -14,13 +14,13 @@ namespace SolidRpc.Test.Vitec.Types.Note.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// Datum f�r anteckningen
+        /// Datum f&#246;r anteckningen
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
         public DateTimeOffset Date { get; set; }
     
         /// <summary>
-        /// Anv�ndarid
+        /// Anv&#228;ndarid
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }

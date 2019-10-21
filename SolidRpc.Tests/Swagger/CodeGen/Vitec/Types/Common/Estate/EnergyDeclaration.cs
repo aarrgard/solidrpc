@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class EnergyDeclaration {
         /// <summary>
-        /// Utf�rd
+        /// Utf&#246;rd
         /// </summary>
         [DataMember(Name="completed",EmitDefaultValue=false)]
         public string Completed { get; set; }
@@ -20,7 +20,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public DateTimeOffset EnergyDeclarationDate { get; set; }
     
         /// <summary>
-        /// Energif�rbrukning
+        /// Energif&#246;rbrukning
         /// </summary>
         [DataMember(Name="energyConsumption",EmitDefaultValue=false)]
         public string EnergyConsumption { get; set; }
@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string EnergyClass { get; set; }
     
         /// <summary>
-        /// Prim�rtenergital
+        /// Prim&#228;rtenergital
         /// </summary>
         [DataMember(Name="primaryEnergyNumber",EmitDefaultValue=false)]
         public string PrimaryEnergyNumber { get; set; }

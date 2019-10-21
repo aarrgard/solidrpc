@@ -49,7 +49,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool Plot { get; set; }
     
         /// <summary>
-        /// R�relse
+        /// R&#246;relse
         /// </summary>
         [DataMember(Name="business",EmitDefaultValue=false)]
         public bool Business { get; set; }

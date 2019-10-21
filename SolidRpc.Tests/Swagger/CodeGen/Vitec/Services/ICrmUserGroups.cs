@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmUserGroups {
         /// <summary>
-        /// H�mta anv�ndargrupp
+        /// H&#228;mta anv&#228;ndargrupp
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>

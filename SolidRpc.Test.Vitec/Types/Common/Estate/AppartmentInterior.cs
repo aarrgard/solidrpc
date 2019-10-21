@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class AppartmentInterior {
         /// <summary>
-        /// Typ av k�k
+        /// Typ av k&#246;k
         /// </summary>
         [DataMember(Name="kitchenType",EmitDefaultValue=false)]
         public string KitchenType { get; set; }
@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public double NumberOfRooms { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning
+        /// Allm&#228;n beskrivning
         /// </summary>
         [DataMember(Name="generealDescription",EmitDefaultValue=false)]
         public string GenerealDescription { get; set; }

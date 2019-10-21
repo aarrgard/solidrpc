@@ -9,11 +9,11 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IHousingCooperative {
         /// <summary>
-        /// Metod f�r att uppdatera en bostadsr�tt.
+        /// Metod f&#246;r att uppdatera en bostadsr&#228;tt.
         /// </summary>
         /// <param name="customerId">Kund-id</param>
-        /// <param name="id">Id p� bostadsr�tten</param>
-        /// <param name="housingCooperative">Bostadsr�ttsinformationen som ska uppdateras</param>
+        /// <param name="id">Id på bostadsrätten</param>
+        /// <param name="housingCooperative">Bostadsrättsinformationen som ska uppdateras</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Test.Vitec.Types.Services.HousingCooperative.HousingCooperativeUpdate.NoContentException">No Content</exception>
         Task HousingCooperativeUpdate(
@@ -23,10 +23,10 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Metod f�r att skapa en bostadsr�tt.&lt;br /&gt;
+        /// Metod f&#246;r att skapa en bostadsr&#228;tt.&lt;br /&gt;
         /// </summary>
         /// <param name="customerId">Kund-id</param>
-        /// <param name="housingCooperative">Bostadsr�ttsinformationen som ska uppdateras</param>
+        /// <param name="housingCooperative">Bostadsrättsinformationen som ska uppdateras</param>
         /// <param name="cancellationToken"></param>
         Task<string> HousingCooperativeCreate(
             string customerId,

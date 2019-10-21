@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Types.Interest.Models {
         public double Price { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

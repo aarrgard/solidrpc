@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public double Price { get; set; }
     
         /// <summary>
-        /// �vrig information
+        /// &#214;vrig information
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

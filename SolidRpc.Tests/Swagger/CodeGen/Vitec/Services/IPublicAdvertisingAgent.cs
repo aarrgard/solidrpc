@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingAgent {
         /// <summary>
-        /// H�mtar m�klarelista.
+        /// H&#228;mtar m&#228;klarelista.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
@@ -19,10 +19,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar m�klare.
+        /// H&#228;mtar m&#228;klare.
         /// </summary>
         /// <param name="customerId">Kundid</param>
-        /// <param name="id">M�klarens id</param>
+        /// <param name="id">Mäklarens id</param>
         /// <param name="cancellationToken"></param>
         Task<EstateAgent> PublicAdvertisingAgentGet(
             string customerId,

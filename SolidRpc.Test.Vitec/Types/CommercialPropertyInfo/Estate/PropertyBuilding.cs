@@ -34,19 +34,19 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public string BuildingType { get; set; }
     
         /// <summary>
-        /// Bygg�rs kommentar
+        /// Bygg&#229;rs kommentar
         /// </summary>
         [DataMember(Name="buildingYearComment",EmitDefaultValue=false)]
         public string BuildingYearComment { get; set; }
     
         /// <summary>
-        /// V�ning/hiss
+        /// V&#229;ning/hiss
         /// </summary>
         [DataMember(Name="floorAndElevator",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate.CommercialFloorAndElevator FloorAndElevator { get; set; }
     
         /// <summary>
-        /// Byggnads�r
+        /// Byggnads&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public string YearBuilt { get; set; }
@@ -70,7 +70,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public EnergyDeclaration EnergyDeclaration { get; set; }
     
         /// <summary>
-        /// Byggnadss�tt
+        /// Byggnadss&#228;tt
         /// </summary>
         [DataMember(Name="building",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate.CommercialPropertyBuilding Building { get; set; }
@@ -112,7 +112,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public double BiArea { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning av interi�ren
+        /// Allm&#228;n beskrivning av interi&#246;ren
         /// </summary>
         [DataMember(Name="generalDescription",EmitDefaultValue=false)]
         public string GeneralDescription { get; set; }

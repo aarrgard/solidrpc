@@ -11,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Area {
         /// <summary>
-        /// Omr�dets id
+        /// Omr&#229;dets id
         /// </summary>
         [DataMember(Name="areaId",EmitDefaultValue=false)]
         public string AreaId { get; set; }
@@ -29,7 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         public string ExternalId { get; set; }
     
         /// <summary>
-        /// Omr�desnamn
+        /// Omr&#229;desnamn
         /// </summary>
         [DataMember(Name="areaName",EmitDefaultValue=false)]
         public string AreaName { get; set; }
@@ -41,7 +41,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         public string Description { get; set; }
     
         /// <summary>
-        /// Visa p� internet
+        /// Visa p&#229; internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
         public bool ShowOnInternet { get; set; }
@@ -59,25 +59,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         public string County { get; set; }
     
         /// <summary>
-        /// Omr�det som 2d-polygon
+        /// Omr&#229;det som 2d-polygon
         /// </summary>
         [DataMember(Name="polygon",EmitDefaultValue=false)]
         public IEnumerable<Coordinate> Polygon { get; set; }
     
         /// <summary>
-        /// Omr�det som 2d-polygon i WGS84
+        /// Omr&#229;det som 2d-polygon i WGS84
         /// </summary>
         [DataMember(Name="polygonWGS84",EmitDefaultValue=false)]
         public IEnumerable<Coordinate> PolygonWGS84 { get; set; }
     
         /// <summary>
-        /// Bilder p� omr�det
+        /// Bilder p&#229; omr&#229;det
         /// </summary>
         [DataMember(Name="images",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models.AreaImage> Images { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }

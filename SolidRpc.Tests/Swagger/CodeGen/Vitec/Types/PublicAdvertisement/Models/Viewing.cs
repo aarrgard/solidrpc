@@ -14,13 +14,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Id { get; set; }
     
         /// <summary>
-        /// N�r visningen startar
+        /// N&#228;r visningen startar
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
         public DateTimeOffset StartsAt { get; set; }
     
         /// <summary>
-        /// N�r visningen slutar
+        /// N&#228;r visningen slutar
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
         public DateTimeOffset EndsAt { get; set; }

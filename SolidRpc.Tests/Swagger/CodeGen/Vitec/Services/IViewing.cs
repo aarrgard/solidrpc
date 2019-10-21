@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IViewing {
         /// <summary>
-        /// H�mta visningar f�r en bostad.
+        /// H&#228;mta visningar f&#246;r en bostad.
         /// </summary>
         /// <param name="estateId">Bostadsid</param>
         /// <param name="customerId">Kundid</param>
@@ -21,7 +21,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta visningar f�r en bostad.
+        /// H&#228;mta visningar f&#246;r en bostad.
         /// </summary>
         /// <param name="estateId">Bostadsid</param>
         /// <param name="customerId">Kundid</param>
@@ -32,11 +32,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Tar bort en visningsdeltagare p� en visning.
+        /// Tar bort en visningsdeltagare p&#229; en visning.
         /// </summary>
         /// <param name="viewingId">Visningsid</param>
-        /// <param name="timeSlotId">Id p� visningstillf�llet</param>
-        /// <param name="contactId">Id p� kontakten.</param>
+        /// <param name="timeSlotId">Id på visningstillfället</param>
+        /// <param name="contactId">Id på kontakten.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant.NoContentException">No Content</exception>
@@ -48,11 +48,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// L�gg till befintlig visningsdeltagare p� en bostad.
+        /// L&#228;gg till befintlig visningsdeltagare p&#229; en bostad.
         /// </summary>
         /// <param name="viewingId">Visningsid</param>
-        /// <param name="timeSlotId">Id p� visningstillf�llet</param>
-        /// <param name="contactId">Id p� kontakten.</param>
+        /// <param name="timeSlotId">Id på visningstillfället</param>
+        /// <param name="contactId">Id på kontakten.</param>
         /// <param name="participant">Information om deltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
@@ -66,11 +66,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Tar bort en visningsdeltagare p� en visning.
+        /// Tar bort en visningsdeltagare p&#229; en visning.
         /// </summary>
         /// <param name="viewingId">Visningsid</param>
-        /// <param name="timeSlotId">Id p� visningstillf�llet</param>
-        /// <param name="contactId">Id p� kontakten.</param>
+        /// <param name="timeSlotId">Id på visningstillfället</param>
+        /// <param name="contactId">Id på kontakten.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant2.NoContentException">No Content</exception>
@@ -82,11 +82,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// L�gg till befintlig visningsdeltagare p� en bostad.
+        /// L&#228;gg till befintlig visningsdeltagare p&#229; en bostad.
         /// </summary>
         /// <param name="viewingId">Visningsid</param>
-        /// <param name="timeSlotId">Id p� visningstillf�llet</param>
-        /// <param name="contactId">Id p� kontakten.</param>
+        /// <param name="timeSlotId">Id på visningstillfället</param>
+        /// <param name="contactId">Id på kontakten.</param>
         /// <param name="participant">Information om deltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
@@ -100,10 +100,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// L�gg till ny visningsdeltagare p� en befintligt bostad
+        /// L&#228;gg till ny visningsdeltagare p&#229; en befintligt bostad
         /// </summary>
         /// <param name="viewingId">Visningsid</param>
-        /// <param name="timeSlotId">Id p� visningstillf�llet</param>
+        /// <param name="timeSlotId">Id på visningstillfället</param>
         /// <param name="participant">Visningsdeltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
@@ -115,10 +115,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// L�gg till ny visningsdeltagare p� en befintligt bostad
+        /// L&#228;gg till ny visningsdeltagare p&#229; en befintligt bostad
         /// </summary>
         /// <param name="viewingId">Visningsid</param>
-        /// <param name="timeSlotId">Id p� visningstillf�llet</param>
+        /// <param name="timeSlotId">Id på visningstillfället</param>
         /// <param name="participant">Visningsdeltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>

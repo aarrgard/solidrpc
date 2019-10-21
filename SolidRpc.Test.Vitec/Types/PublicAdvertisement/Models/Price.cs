@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Price {
         /// <summary>
-        /// Utg�ngspris (SEK)
+        /// Utg&#229;ngspris (SEK)
         /// </summary>
         [DataMember(Name="swedishCurrency",EmitDefaultValue=false)]
         public double SwedishCurrency { get; set; }

@@ -43,7 +43,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public bool OfficeHotel { get; set; }
     
         /// <summary>
-        /// Lager/F�rr�dslokal
+        /// Lager/F&#246;rr&#229;dslokal
         /// </summary>
         [DataMember(Name="storage",EmitDefaultValue=false)]
         public bool Storage { get; set; }

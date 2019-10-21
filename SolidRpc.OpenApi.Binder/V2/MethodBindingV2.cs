@@ -71,23 +71,56 @@ namespace SolidRpc.OpenApi.Binder.V2
             return parameter;
         }
 
-        public static bool NameMatches(string opParamName, string clrParamName)
+        public static bool NameMatches(string name1, string name2)
         {
-            var opWords = opParamName.Split(SolidRpcConstants.OpenApiWordSeparators);
-            int idx = 0;
-            foreach (var opWord in opWords)
+            int name1Idx = 0;
+            int name2Idx = 0;
+            while(true)
             {
-                while (idx < clrParamName.Length && SolidRpcConstants.OpenApiWordSeparators.Any(o => o == clrParamName[idx]))
+                while (name1Idx < name1.Length && SolidRpcConstants.OpenApiWordSeparators.Contains(name1[name1Idx])) name1Idx++;
+                while (name2Idx < name2.Length && SolidRpcConstants.OpenApiWordSeparators.Contains(name2[name2Idx])) name2Idx++;
+
+                if (name1.Length == name1Idx && name2.Length == name2Idx)
                 {
-                    idx++;
+                    return true;
                 }
-                if (!clrParamName.Substring(idx).StartsWith(opWord, StringComparison.InvariantCultureIgnoreCase))
+                if (name1.Length <= name1Idx)
                 {
                     return false;
                 }
-                idx += opWord.Length;
+                if (name2.Length <= name2Idx)
+                {
+                    return false;
+                }
+                if (char.ToLower(name1[name1Idx]) != char.ToLower(name2[name2Idx]))
+                {
+                    return false;
+                }
+                while (true)
+                {
+                    if (name1.Length == name1Idx && name2.Length == name2Idx)
+                    {
+                        return true;
+                    }
+                    if (name1.Length <= name1Idx)
+                    {
+                        return false;
+                    }
+                    if (name2.Length <= name2Idx)
+                    {
+                        return false;
+                    }
+                    if (char.ToLower(name1[name1Idx]) == char.ToLower(name2[name2Idx]))
+                    {
+                        name1Idx++;
+                        name2Idx++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
             }
-            return string.IsNullOrWhiteSpace(clrParamName.Substring(idx));
         }
 
         public MethodBindingV2(

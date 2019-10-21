@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPartnerServiceContactLead {
         /// <summary>
-        /// L�gg till ett lead f�r en person
+        /// L&#228;gg till ett lead f&#246;r en person
         /// </summary>
         /// <param name="customerId">Kund-id</param>
         /// <param name="personLead">Personlead</param>

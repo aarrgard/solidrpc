@@ -42,7 +42,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models.IntrestOnObject> InterestOnObjects { get; set; }
     
         /// <summary>
-        /// F�rnamn
+        /// F&#246;rnamn
         /// </summary>
         [DataMember(Name="firstName",EmitDefaultValue=false)]
         public string FirstName { get; set; }
@@ -90,7 +90,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         public string ObtainThrough { get; set; }
     
         /// <summary>
-        /// M�klarens id
+        /// M&#228;klarens id
         /// </summary>
         [DataMember(Name="brokerId",EmitDefaultValue=false)]
         public string BrokerId { get; set; }
@@ -108,7 +108,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Egendefinierade f�lt
+        /// Egendefinierade f&#228;lt
         /// </summary>
         [DataMember(Name="customFields",EmitDefaultValue=false)]
         public IEnumerable<FieldValue> CustomFields { get; set; }
@@ -138,7 +138,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         public string OtherPhone { get; set; }
     
         /// <summary>
-        /// �nskar reklamutskick
+        /// &#214;nskar reklamutskick
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
         public bool WishAdvertising { get; set; }
@@ -162,7 +162,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         public DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>
-        /// �ndrad
+        /// &#196;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

@@ -174,6 +174,7 @@ namespace SolidRpc.OpenApi.Model.V2
                         case null:
                         case "":
                             return typeof(string);
+                        case "byte":
                         case "binary":
                             return typeof(Stream);
                         case "date":

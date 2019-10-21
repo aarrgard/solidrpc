@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class AppartmentBuilding {
         /// <summary>
-        /// V�ningsplan
+        /// V&#229;ningsplan
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
         public double Floor { get; set; }
     
         /// <summary>
-        /// Antal v�ningsplan
+        /// Antal v&#229;ningsplan
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
         public double NumberOfFloors { get; set; }
@@ -37,19 +37,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string RoomDescription { get; set; }
     
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public int YearBuilt { get; set; }
     
         /// <summary>
-        /// Biarea (m�)
+        /// Biarea (m&#178;)
         /// </summary>
         [DataMember(Name="grossFloorArea",EmitDefaultValue=false)]
         public double GrossFloorArea { get; set; }
     
         /// <summary>
-        /// Boarea (m�)
+        /// Boarea (m&#178;)
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
         public double LivingSpace { get; set; }

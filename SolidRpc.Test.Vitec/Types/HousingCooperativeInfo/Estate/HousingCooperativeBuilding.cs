@@ -13,37 +13,37 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperativeInfo.Estate {
         public string BuildingType { get; set; }
     
         /// <summary>
-        /// Byggnations�r
+        /// Byggnations&#229;r
         /// </summary>
         [DataMember(Name="buildingYear",EmitDefaultValue=false)]
         public string BuildingYear { get; set; }
     
         /// <summary>
-        /// Kommentar till byggnads�r
+        /// Kommentar till byggnads&#229;r
         /// </summary>
         [DataMember(Name="commentaryForBuildingYear",EmitDefaultValue=false)]
         public string CommentaryForBuildingYear { get; set; }
     
         /// <summary>
-        /// Uppv�rmning
+        /// Uppv&#228;rmning
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public string Heating { get; set; }
     
         /// <summary>
-        /// F�nster
+        /// F&#246;nster
         /// </summary>
         [DataMember(Name="windows",EmitDefaultValue=false)]
         public string Windows { get; set; }
     
         /// <summary>
-        /// �vrigt om byggnaden
+        /// &#214;vrigt om byggnaden
         /// </summary>
         [DataMember(Name="otherAboutTheBuildning",EmitDefaultValue=false)]
         public string OtherAboutTheBuildning { get; set; }
     
         /// <summary>
-        /// �vrigta byggnader
+        /// &#214;vrigta byggnader
         /// </summary>
         [DataMember(Name="otherBuildings",EmitDefaultValue=false)]
         public string OtherBuildings { get; set; }

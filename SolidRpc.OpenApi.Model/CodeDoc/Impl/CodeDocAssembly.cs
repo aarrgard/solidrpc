@@ -76,6 +76,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
                     member = propertyClass.PropertyDocumentation[propertyName] = new CodeDocProperty(propertyClass, propertyName);
                     break;
                 case "E:":
+                case "F:":
                     return;
                 default:
                 throw new Exception("Cannot handle member type:" + type);
@@ -95,8 +96,11 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
                             s_SummarySetters.GetOrAdd(member.GetType(), CreateSummarySetter).Invoke(member, (childElement.InnerText ?? "").Trim());
                             break;
                         case "param":
-                            var codeDocParam = new CodeDocParameter((CodeDocMethod)member, childElement.GetAttribute("name"), childElement.InnerText);
-                            s_ParamDocSetters.GetOrAdd(member.GetType(), CreateParamDocSetter).Invoke(member, codeDocParam);
+                            if(member is CodeDocMethod method)
+                            {
+                                var codeDocParam = new CodeDocParameter(method, childElement.GetAttribute("name"), childElement.InnerText);
+                                s_ParamDocSetters.GetOrAdd(method.GetType(), CreateParamDocSetter).Invoke(member, codeDocParam);
+                            }
                             break;
                         case "exception":
                             var codeDocException = new CodeDocException((CodeDocMethod)member, childElement.GetAttribute("cref"), childElement.InnerText);

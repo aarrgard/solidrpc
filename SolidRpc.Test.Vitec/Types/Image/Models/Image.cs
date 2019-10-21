@@ -14,13 +14,13 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         public string ImageId { get; set; }
     
         /// <summary>
-        /// Senast �ndrad
+        /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
     
         /// <summary>
-        /// Senast bilden �ndrades
+        /// Senast bilden &#228;ndrades
         /// </summary>
         [DataMember(Name="dateChangedImageData",EmitDefaultValue=false)]
         public DateTimeOffset DateChangedImageData { get; set; }
@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         public string Url { get; set; }
     
         /// <summary>
-        /// Till�t visning p� internet
+        /// Till&#229;t visning p&#229; internet
         /// </summary>
         [DataMember(Name="showImageOnInternet",EmitDefaultValue=false)]
         public bool ShowImageOnInternet { get; set; }

@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PlotInfo {
         /// <summary>
-        /// Tomtarea (m�)
+        /// Tomtarea (m&#178;)
         /// </summary>
         [DataMember(Name="plotSize",EmitDefaultValue=false)]
         public double PlotSize { get; set; }

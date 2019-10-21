@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Price {
         /// <summary>
-        /// Utg�ngspris
+        /// Utg&#229;ngspris
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
         public double StartingPrice { get; set; }

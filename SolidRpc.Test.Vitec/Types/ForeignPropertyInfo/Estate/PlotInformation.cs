@@ -19,7 +19,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public string PlotType { get; set; }
     
         /// <summary>
-        /// �vrigt tomt
+        /// &#214;vrigt tomt
         /// </summary>
         [DataMember(Name="otherPlot",EmitDefaultValue=false)]
         public string OtherPlot { get; set; }

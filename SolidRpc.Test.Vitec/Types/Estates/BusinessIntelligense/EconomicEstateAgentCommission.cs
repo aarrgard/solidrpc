@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.Estates.BusinessIntelligense {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class EconomicEstateAgentCommission {
         /// <summary>
-        /// Provisionsv�rdet i kronor
+        /// Provisionsv&#228;rdet i kronor
         /// </summary>
         [DataMember(Name="value",EmitDefaultValue=false)]
         public double Value { get; set; }
     
         /// <summary>
-        /// Hur m�nga procent av totala provisionen som m�klaren f�r
+        /// Hur m&#229;nga procent av totala provisionen som m&#228;klaren f&#229;r
         /// </summary>
         [DataMember(Name="percentageOfTotal",EmitDefaultValue=false)]
         public double PercentageOfTotal { get; set; }

@@ -7,31 +7,31 @@ namespace SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CondominiumBuilding {
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="buildingYear",EmitDefaultValue=false)]
         public string BuildingYear { get; set; }
     
         /// <summary>
-        /// Bygg�r kommentar
+        /// Bygg&#229;r kommentar
         /// </summary>
         [DataMember(Name="buildingYearComment",EmitDefaultValue=false)]
         public string BuildingYearComment { get; set; }
     
         /// <summary>
-        /// F�nster
+        /// F&#246;nster
         /// </summary>
         [DataMember(Name="window",EmitDefaultValue=false)]
         public string Window { get; set; }
     
         /// <summary>
-        /// Uppv�rmning
+        /// Uppv&#228;rmning
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public string Heating { get; set; }
     
         /// <summary>
-        /// �vrigt om byggnaden
+        /// &#214;vrigt om byggnaden
         /// </summary>
         [DataMember(Name="otherAboutTheBuildning",EmitDefaultValue=false)]
         public string OtherAboutTheBuildning { get; set; }
@@ -43,7 +43,7 @@ namespace SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate {
         public string Renovations { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

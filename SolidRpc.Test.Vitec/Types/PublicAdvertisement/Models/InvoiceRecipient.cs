@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class InvoiceRecipient {
         /// <summary>
-        /// Typ av kontakt, f�retag eller person
+        /// Typ av kontakt, f&#246;retag eller person
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
-        /// Namn p� f�retag eller person som �r mottagare till faktura
+        /// Namn p&#229; f&#246;retag eller person som &#228;r mottagare till faktura
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

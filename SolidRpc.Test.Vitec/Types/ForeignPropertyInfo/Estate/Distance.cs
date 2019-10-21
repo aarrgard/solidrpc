@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Distance {
         /// <summary>
-        /// Aff�rscentrum
+        /// Aff&#228;rscentrum
         /// </summary>
         [DataMember(Name="shoppingCentre",EmitDefaultValue=false)]
         public int ShoppingCentre { get; set; }
@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public int Sea { get; set; }
     
         /// <summary>
-        /// Mataff�r
+        /// Mataff&#228;r
         /// </summary>
         [DataMember(Name="supermarket",EmitDefaultValue=false)]
         public int Supermarket { get; set; }

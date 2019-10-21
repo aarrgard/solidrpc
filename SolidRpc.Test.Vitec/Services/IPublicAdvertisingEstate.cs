@@ -10,24 +10,24 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingEstate {
         /// <summary>
-        /// H�mta en lista �ver bost�der som kunden vill ha p� marknadsplatsen. Anv�nd f�r att synka en kund.
+        /// H&#228;mta en lista &#246;ver bost&#228;der som kunden vill ha p&#229; marknadsplatsen. Anv&#228;nd f&#246;r att synka en kund.
         /// </summary>
         /// <param name="customerId">Kund-id</param>
         /// <param name="criteriaIncludeHouses">Inkludera villor</param>
-        /// <param name="criteriaIncludeHousingCooperatives">Inkludera l�genheter (bostadsr�tter)</param>
+        /// <param name="criteriaIncludeHousingCooperatives">Inkludera lägenheter (bostadsrätter)</param>
         /// <param name="criteriaIncludeCottages">Inkludera fritidshus</param>
         /// <param name="criteriaIncludePlots">Inkludera tomter</param>
         /// <param name="criteriaIncludeFarms">Inkludera lantbruk</param>
         /// <param name="criteriaIncludeCommercialProperties">Inkludera kommersiella objekt</param>
-        /// <param name="criteriaIncludeCondominiums">Inkludera l�genheter (�gander�tter)</param>
+        /// <param name="criteriaIncludeCondominiums">Inkludera lägenheter (äganderätter)</param>
         /// <param name="criteriaIncludeForeignProperties">Inkludera utlandsobjekt</param>
         /// <param name="criteriaIncludePremises">Inkludera lokaler</param>
         /// <param name="criteriaIncludeProjects">Inkludera projekt</param>
-        /// <param name="criteriaIncludeForSale">Inkludera bost�der med status till salu</param>
-        /// <param name="criteriaIncludeFutureSale">Inkludera bost�der med status kommande</param>
-        /// <param name="criteriaIncludeSoonForSale">Inkludera bost�der med status snart till salu</param>
-        /// <param name="criteriaPrimaryAgentId">Urval p� huvudhandl�ggare</param>
-        /// <param name="criteriaEstateId">Urval p� bostadsid</param>
+        /// <param name="criteriaIncludeForSale">Inkludera bostäder med status till salu</param>
+        /// <param name="criteriaIncludeFutureSale">Inkludera bostäder med status kommande</param>
+        /// <param name="criteriaIncludeSoonForSale">Inkludera bostäder med status snart till salu</param>
+        /// <param name="criteriaPrimaryAgentId">Urval på huvudhandläggare</param>
+        /// <param name="criteriaEstateId">Urval på bostadsid</param>
         /// <param name="cancellationToken"></param>
         Task<PublicAdvertisingEstateList> PublicAdvertisingEstateGetList(
             string customerId,
@@ -49,7 +49,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Uppdatera marknadsf�ringsstatus f�r bostaden p� aktuell marknadsplats.
+        /// Uppdatera marknadsf&#246;ringsstatus f&#246;r bostaden p&#229; aktuell marknadsplats.
         /// </summary>
         /// <param name="customerId">Kund-id</param>
         /// <param name="id">Bostadens id</param>
@@ -60,7 +60,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Uppdatera marknadsf�ringsstatus f�r bostaden p� aktuell marknadsplats.
+        /// Uppdatera marknadsf&#246;ringsstatus f&#246;r bostaden p&#229; aktuell marknadsplats.
         /// </summary>
         /// <param name="customerId">Kund-id</param>
         /// <param name="id">Bostadens id</param>
@@ -74,7 +74,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar information om ett otypat objekt
+        /// H&#228;mtar information om ett otypat objekt
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Lokalsid</param>

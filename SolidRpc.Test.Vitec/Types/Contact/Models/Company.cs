@@ -42,7 +42,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public IEnumerable<SolidRpc.Test.Vitec.Types.Contact.Models.IntrestOnObject> InterestOnObjects { get; set; }
     
         /// <summary>
-        /// F�retagsnamn
+        /// F&#246;retagsnamn
         /// </summary>
         [DataMember(Name="companyName",EmitDefaultValue=false)]
         public string CompanyName { get; set; }
@@ -60,13 +60,13 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public string HomePage { get; set; }
     
         /// <summary>
-        /// Telefon v�xel
+        /// Telefon v&#228;xel
         /// </summary>
         [DataMember(Name="switchPhone",EmitDefaultValue=false)]
         public string SwitchPhone { get; set; }
     
         /// <summary>
-        /// M�klarens id
+        /// M&#228;klarens id
         /// </summary>
         [DataMember(Name="brokerId",EmitDefaultValue=false)]
         public string BrokerId { get; set; }
@@ -84,7 +84,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Egendefinierade f�lt
+        /// Egendefinierade f&#228;lt
         /// </summary>
         [DataMember(Name="customFields",EmitDefaultValue=false)]
         public IEnumerable<FieldValue> CustomFields { get; set; }
@@ -114,7 +114,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public string OtherPhone { get; set; }
     
         /// <summary>
-        /// �nskar reklamutskick
+        /// &#214;nskar reklamutskick
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
         public bool WishAdvertising { get; set; }
@@ -138,7 +138,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>
-        /// �ndrad
+        /// &#196;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

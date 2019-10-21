@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CommercialPropertyAssessment {
         /// <summary>
-        /// Taxeringsv�rden (lista)
+        /// Taxeringsv&#228;rden (lista)
         /// </summary>
         [DataMember(Name="assessValues",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CommercialPropertyAssessValue> AssessValues { get; set; }
@@ -20,13 +20,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public string TypeCode { get; set; }
     
         /// <summary>
-        /// Prelimin�rt taxeringsv�rde
+        /// Prelimin&#228;rt taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="preliminaryAssessedValue",EmitDefaultValue=false)]
         public bool PreliminaryAssessedValue { get; set; }
     
         /// <summary>
-        /// Taxerings�r
+        /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="taxYear",EmitDefaultValue=false)]
         public int TaxYear { get; set; }

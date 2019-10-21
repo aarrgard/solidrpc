@@ -40,19 +40,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         public string CellPhone { get; set; }
     
         /// <summary>
-        /// M�tesdatum
+        /// M&#246;tesdatum
         /// </summary>
         [DataMember(Name="meetingDate",EmitDefaultValue=false)]
         public DateTimeOffset MeetingDate { get; set; }
     
         /// <summary>
-        /// M�klarens id
+        /// M&#228;klarens id
         /// </summary>
         [DataMember(Name="brokerId",EmitDefaultValue=false)]
         public string BrokerId { get; set; }
     
         /// <summary>
-        /// M�klarens namn
+        /// M&#228;klarens namn
         /// </summary>
         [DataMember(Name="brokerName",EmitDefaultValue=false)]
         public string BrokerName { get; set; }
@@ -76,7 +76,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         public DateTimeOffset BookedDate { get; set; }
     
         /// <summary>
-        /// P�skriftsdatum
+        /// P&#229;skriftsdatum
         /// </summary>
         [DataMember(Name="signatureDate",EmitDefaultValue=false)]
         public DateTimeOffset SignatureDate { get; set; }
@@ -94,13 +94,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         public double CommissionWithoutTaxes { get; set; }
     
         /// <summary>
-        /// Intagsk�lla (Kontakttyp)
+        /// Intagsk&#228;lla (Kontakttyp)
         /// </summary>
         [DataMember(Name="assignmentSource",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models.AssignmentSource AssignmentSource { get; set; }
     
         /// <summary>
-        /// Avbokad av (M�klare, Kund)
+        /// Avbokad av (M&#228;klare, Kund)
         /// </summary>
         [DataMember(Name="cancelledBy",EmitDefaultValue=false)]
         public string CancelledBy { get; set; }
@@ -112,7 +112,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         public DateTimeOffset AgreementDate { get; set; }
     
         /// <summary>
-        /// Tilltr�desdatum
+        /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
         public DateTimeOffset AccessDate { get; set; }

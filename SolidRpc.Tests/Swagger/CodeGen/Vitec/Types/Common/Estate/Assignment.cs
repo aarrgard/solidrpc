@@ -14,13 +14,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.Status Status { get; set; }
     
         /// <summary>
-        /// F�rs�ljningss�tt
+        /// F&#246;rs&#228;ljningss&#228;tt
         /// </summary>
         [DataMember(Name="marketingMethods",EmitDefaultValue=false)]
         public IEnumerable<string> MarketingMethods { get; set; }
     
         /// <summary>
-        /// Ansvarig m�klare (id)
+        /// Ansvarig m&#228;klare (id)
         /// </summary>
         [DataMember(Name="responsibleBroker",EmitDefaultValue=false)]
         public string ResponsibleBroker { get; set; }

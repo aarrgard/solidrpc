@@ -8,19 +8,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Date {
         /// <summary>
-        /// M�jligt tilltr�desdatum
+        /// M&#246;jligt tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="possibleAccessDate",EmitDefaultValue=false)]
         public string PossibleAccessDate { get; set; }
     
         /// <summary>
-        /// Tilltr�desdatum
+        /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
         public DateTimeOffset AccessDate { get; set; }
     
         /// <summary>
-        /// Tilltr�detid
+        /// Tilltr&#228;detid
         /// </summary>
         [DataMember(Name="accessTime",EmitDefaultValue=false)]
         public string AccessTime { get; set; }

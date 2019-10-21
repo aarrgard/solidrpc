@@ -20,19 +20,19 @@ namespace SolidRpc.Test.Vitec.Types.Bid.Models {
         public string Amount { get; set; }
     
         /// <summary>
-        /// Datum och tid f�r budet
+        /// Datum och tid f&#246;r budet
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
         public DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>
-        /// Villkor f�r budet
+        /// Villkor f&#246;r budet
         /// </summary>
         [DataMember(Name="condition",EmitDefaultValue=false)]
         public string Condition { get; set; }
     
         /// <summary>
-        /// Anger om budet �r dolt
+        /// Anger om budet &#228;r dolt
         /// </summary>
         [DataMember(Name="isHidden",EmitDefaultValue=false)]
         public bool IsHidden { get; set; }

@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class SharedSpaces {
         /// <summary>
-        /// G�rdsplan, innerg�rd
+        /// G&#229;rdsplan, innerg&#229;rd
         /// </summary>
         [DataMember(Name="courtyard",EmitDefaultValue=false)]
         public string Courtyard { get; set; }

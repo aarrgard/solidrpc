@@ -7,19 +7,19 @@ namespace SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class OtherAreas {
         /// <summary>
-        /// Sammanst�llning
+        /// Sammanst&#228;llning
         /// </summary>
         [DataMember(Name="compilation",EmitDefaultValue=false)]
         public string Compilation { get; set; }
     
         /// <summary>
-        /// G�rdsplats/inneg�rd
+        /// G&#229;rdsplats/inneg&#229;rd
         /// </summary>
         [DataMember(Name="courtyard",EmitDefaultValue=false)]
         public string Courtyard { get; set; }
     
         /// <summary>
-        /// St�dning
+        /// St&#228;dning
         /// </summary>
         [DataMember(Name="cleaning",EmitDefaultValue=false)]
         public string Cleaning { get; set; }

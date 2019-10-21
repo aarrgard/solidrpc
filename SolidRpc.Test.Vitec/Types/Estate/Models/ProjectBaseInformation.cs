@@ -8,13 +8,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ProjectBaseInformation {
         /// <summary>
-        /// Namn p� projektet
+        /// Namn p&#229; projektet
         /// </summary>
         [DataMember(Name="projectName",EmitDefaultValue=false)]
         public string ProjectName { get; set; }
     
         /// <summary>
-        /// Address f�r projektet
+        /// Address f&#246;r projektet
         /// </summary>
         [DataMember(Name="address",EmitDefaultValue=false)]
         public ObjectAddress Address { get; set; }

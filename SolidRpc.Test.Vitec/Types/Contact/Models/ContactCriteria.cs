@@ -10,7 +10,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ContactCriteria {
         /// <summary>
-        /// Om kontakt id ska tillh�ra en specifikt kontor
+        /// Om kontakt id ska tillh&#246;ra en specifikt kontor
         /// </summary>
         [DataMember(Name="customerId",EmitDefaultValue=false)]
         public string CustomerId { get; set; }
@@ -22,25 +22,25 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public IEnumerable<string> ContactId { get; set; }
     
         /// <summary>
-        /// Urval p� anv�ndarid
+        /// Urval p&#229; anv&#228;ndarid
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }
     
         /// <summary>
-        /// Urval p� kategorier
+        /// Urval p&#229; kategorier
         /// </summary>
         [DataMember(Name="categories",EmitDefaultValue=false)]
         public IEnumerable<string> Categories { get; set; }
     
         /// <summary>
-        /// Urval p� epostadress
+        /// Urval p&#229; epostadress
         /// </summary>
         [DataMember(Name="emailAddresses",EmitDefaultValue=false)]
         public IEnumerable<string> EmailAddresses { get; set; }
     
         /// <summary>
-        /// Kontraktdatum fr�n
+        /// Kontraktdatum fr&#229;n
         /// </summary>
         [DataMember(Name="contractDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset ContractDateFrom { get; set; }
@@ -52,7 +52,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public DateTimeOffset ContractDateTo { get; set; }
     
         /// <summary>
-        /// Visiningsdatum fr�n
+        /// Visiningsdatum fr&#229;n
         /// </summary>
         [DataMember(Name="viewingDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset ViewingDateFrom { get; set; }
@@ -64,7 +64,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public DateTimeOffset ViewingDateTo { get; set; }
     
         /// <summary>
-        /// Budgivningsdatum fr�n
+        /// Budgivningsdatum fr&#229;n
         /// </summary>
         [DataMember(Name="biddingDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset BiddingDateFrom { get; set; }
@@ -76,7 +76,7 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public DateTimeOffset BiddingDateTo { get; set; }
     
         /// <summary>
-        /// Skapatdatum fr�n
+        /// Skapatdatum fr&#229;n
         /// </summary>
         [DataMember(Name="createdDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset CreatedDateFrom { get; set; }
@@ -88,43 +88,43 @@ namespace SolidRpc.Test.Vitec.Types.Contact.Models {
         public DateTimeOffset CreatedDateTo { get; set; }
     
         /// <summary>
-        /// �ndringsdatum fr�n
+        /// &#196;ndringsdatum fr&#229;n
         /// </summary>
         [DataMember(Name="changedDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset ChangedDateFrom { get; set; }
     
         /// <summary>
-        /// �ndringsdatum till
+        /// &#196;ndringsdatum till
         /// </summary>
         [DataMember(Name="changedDateTo",EmitDefaultValue=false)]
         public DateTimeOffset ChangedDateTo { get; set; }
     
         /// <summary>
-        /// Fr�n datum kopplad som s�ljare p� objekt
+        /// Fr&#229;n datum kopplad som s&#228;ljare p&#229; objekt
         /// </summary>
         [DataMember(Name="sellerRelationDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset SellerRelationDateFrom { get; set; }
     
         /// <summary>
-        /// Till datum kopplad som s�ljare p� objekt
+        /// Till datum kopplad som s&#228;ljare p&#229; objekt
         /// </summary>
         [DataMember(Name="sellerRelationDateTo",EmitDefaultValue=false)]
         public DateTimeOffset SellerRelationDateTo { get; set; }
     
         /// <summary>
-        /// Fr�n datum kopplad som k�pare p� objekt
+        /// Fr&#229;n datum kopplad som k&#246;pare p&#229; objekt
         /// </summary>
         [DataMember(Name="buyerRelationDateFrom",EmitDefaultValue=false)]
         public DateTimeOffset BuyerRelationDateFrom { get; set; }
     
         /// <summary>
-        /// Till datum kopplad som k�pare p� objekt
+        /// Till datum kopplad som k&#246;pare p&#229; objekt
         /// </summary>
         [DataMember(Name="buyerRelationDateTo",EmitDefaultValue=false)]
         public DateTimeOffset BuyerRelationDateTo { get; set; }
     
         /// <summary>
-        /// Egendefinerat f�lt
+        /// Egendefinerat f&#228;lt
         /// </summary>
         [DataMember(Name="customField",EmitDefaultValue=false)]
         public FieldValueCriteria CustomField { get; set; }

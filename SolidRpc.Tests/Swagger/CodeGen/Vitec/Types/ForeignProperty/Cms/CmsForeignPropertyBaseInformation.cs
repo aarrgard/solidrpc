@@ -13,13 +13,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignProperty.Cms {
         public bool NewConstruction { get; set; }
     
         /// <summary>
-        /// Uppl�telseform
+        /// Uppl&#229;telseform
         /// </summary>
         [DataMember(Name="disposalForm",EmitDefaultValue=false)]
         public string DisposalForm { get; set; }
     
         /// <summary>
-        /// M�jligt tilltr�desdatum
+        /// M&#246;jligt tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="possibleAccessDate",EmitDefaultValue=false)]
         public string PossibleAccessDate { get; set; }

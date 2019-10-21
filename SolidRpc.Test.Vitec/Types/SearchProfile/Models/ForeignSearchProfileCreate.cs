@@ -10,13 +10,13 @@ namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ForeignSearchProfileCreate {
         /// <summary>
-        /// Lista p� omr�desid.
+        /// Lista p&#229; omr&#229;desid.
         /// </summary>
         [DataMember(Name="areaIds",EmitDefaultValue=false)]
         public IEnumerable<string> AreaIds { get; set; }
     
         /// <summary>
-        /// L�genhet
+        /// L&#228;genhet
         /// </summary>
         [DataMember(Name="apartment",EmitDefaultValue=false)]
         public bool Apartment { get; set; }
@@ -70,25 +70,25 @@ namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
         public string Currency { get; set; }
     
         /// <summary>
-        /// Special f�rfr�gan
+        /// Special f&#246;rfr&#229;gan
         /// </summary>
         [DataMember(Name="specialRequest",EmitDefaultValue=false)]
         public string SpecialRequest { get; set; }
     
         /// <summary>
-        /// Ritat omr�de
+        /// Ritat omr&#229;de
         /// </summary>
         [DataMember(Name="drawnAreas",EmitDefaultValue=false)]
         public IEnumerable<Polygon> DrawnAreas { get; set; }
     
         /// <summary>
-        /// Ut�kade krav
+        /// Ut&#246;kade krav
         /// </summary>
         [DataMember(Name="increasedRequirementIds",EmitDefaultValue=false)]
         public IEnumerable<string> IncreasedRequirementIds { get; set; }
     
         /// <summary>
-        /// Avst�nd
+        /// Avst&#229;nd
         /// </summary>
         [DataMember(Name="distance",EmitDefaultValue=false)]
         public Distance Distance { get; set; }

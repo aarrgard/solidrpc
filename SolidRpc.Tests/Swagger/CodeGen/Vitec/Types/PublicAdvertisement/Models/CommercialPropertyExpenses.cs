@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CommercialPropertyExpenses {
         /// <summary>
-        /// Driftskostnad per �r
+        /// Driftskostnad per &#229;r
         /// </summary>
         [DataMember(Name="operatingCost",EmitDefaultValue=false)]
         public double OperatingCost { get; set; }

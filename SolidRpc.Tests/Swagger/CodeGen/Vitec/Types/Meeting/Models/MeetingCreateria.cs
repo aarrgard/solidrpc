@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Datum fr�n
+        /// Datum fr&#229;n
         /// </summary>
         [DataMember(Name="dateFrom",EmitDefaultValue=false)]
         public DateTimeOffset DateFrom { get; set; }
@@ -26,8 +26,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         public DateTimeOffset DateTo { get; set; }
     
         /// <summary>
-        /// Typ av m�tesfiltrering.
-        /// True resultrerar i att filtrering blir p� bokningsdatum. False resulterar i en filtrering p� m�tesdatum.
+        /// Typ av m&#246;tesfiltrering.
+        /// True resultrerar i att filtrering blir p&#229; bokningsdatum. False resulterar i en filtrering p&#229; m&#246;tesdatum.
         /// </summary>
         [DataMember(Name="search",EmitDefaultValue=false)]
         public bool Search { get; set; }

@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class EconomicEstateChangeEntry {
         /// <summary>
-        /// Objektet �ndrades vid detta datum
+        /// Objektet &#228;ndrades vid detta datum
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

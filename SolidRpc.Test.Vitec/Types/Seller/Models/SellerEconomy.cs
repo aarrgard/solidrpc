@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.Seller.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class SellerEconomy {
         /// <summary>
-        /// S�ljarens bank
+        /// S&#228;ljarens bank
         /// </summary>
         [DataMember(Name="bank",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Seller.Models.Bank Bank { get; set; }

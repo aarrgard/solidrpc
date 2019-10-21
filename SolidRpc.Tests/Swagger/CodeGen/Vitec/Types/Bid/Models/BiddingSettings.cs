@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Bid.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class BiddingSettings {
         /// <summary>
-        /// Hur bud ska visas p� internet
+        /// Hur bud ska visas p&#229; internet
         /// </summary>
         [DataMember(Name="biddingOptions",EmitDefaultValue=false)]
         public string BiddingOptions { get; set; }

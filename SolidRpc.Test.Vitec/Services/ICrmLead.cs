@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmLead {
         /// <summary>
-        /// H�mtar en lista �ver leadsk�llor.
+        /// H&#228;mtar en lista &#246;ver leadsk&#228;llor.
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="cancellationToken"></param>

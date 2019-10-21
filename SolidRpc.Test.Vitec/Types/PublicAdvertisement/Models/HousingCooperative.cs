@@ -9,25 +9,25 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class HousingCooperative {
         /// <summary>
-        /// Folkbokf�ringsnummer
+        /// Folkbokf&#246;ringsnummer
         /// </summary>
         [DataMember(Name="appartmentNumberInRegister",EmitDefaultValue=false)]
         public string AppartmentNumberInRegister { get; set; }
     
         /// <summary>
-        /// L�genhetsnummer
+        /// L&#228;genhetsnummer
         /// </summary>
         [DataMember(Name="appartmentNumber",EmitDefaultValue=false)]
         public string AppartmentNumber { get; set; }
     
         /// <summary>
-        /// Id p� bostadsr�ttsf�reningen
+        /// Id p&#229; bostadsr&#228;ttsf&#246;reningen
         /// </summary>
         [DataMember(Name="associationId",EmitDefaultValue=false)]
         public string AssociationId { get; set; }
     
         /// <summary>
-        /// Marknadsf�ring
+        /// Marknadsf&#246;ring
         /// </summary>
         [DataMember(Name="marketing",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperativeMarketing Marketing { get; set; }
@@ -39,19 +39,19 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperativeExpenses Expenses { get; set; }
     
         /// <summary>
-        /// Typ av bostadsr�tt
+        /// Typ av bostadsr&#228;tt
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
-        /// Uppl�telseform
+        /// Uppl&#229;telseform
         /// </summary>
         [DataMember(Name="tenure",EmitDefaultValue=false)]
         public string Tenure { get; set; }
     
         /// <summary>
-        /// Projektid om l�genheten ing�r i ett projekt
+        /// Projektid om l&#228;genheten ing&#229;r i ett projekt
         /// </summary>
         [DataMember(Name="projectId",EmitDefaultValue=false)]
         public string ProjectId { get; set; }
@@ -81,7 +81,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// Kontorstillh�righet
+        /// Kontorstillh&#246;righet
         /// </summary>
         [DataMember(Name="officeAffiliation",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.OfficeAffiliation OfficeAffiliation { get; set; }
@@ -93,13 +93,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.CustomAttributes CustomAttributes { get; set; }
     
         /// <summary>
-        /// Id p� huvudhandl�ggare
+        /// Id p&#229; huvudhandl&#228;ggare
         /// </summary>
         [DataMember(Name="primaryAgentId",EmitDefaultValue=false)]
         public string PrimaryAgentId { get; set; }
     
         /// <summary>
-        /// Id p� andrahandl�ggare
+        /// Id p&#229; andrahandl&#228;ggare
         /// </summary>
         [DataMember(Name="secondaryAgentId",EmitDefaultValue=false)]
         public string SecondaryAgentId { get; set; }
@@ -117,19 +117,19 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Texts Texts { get; set; }
     
         /// <summary>
-        /// N�romr�de
+        /// N&#228;romr&#229;de
         /// </summary>
         [DataMember(Name="surroundings",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Surroundings Surroundings { get; set; }
     
         /// <summary>
-        /// Om budgivning p�g�r
+        /// Om budgivning p&#229;g&#229;r
         /// </summary>
         [DataMember(Name="acceptingBids",EmitDefaultValue=false)]
         public bool AcceptingBids { get; set; }
     
         /// <summary>
-        /// N�r bostaden senast �ndrades
+        /// N&#228;r bostaden senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

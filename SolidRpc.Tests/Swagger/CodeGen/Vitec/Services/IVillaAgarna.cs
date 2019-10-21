@@ -11,11 +11,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IVillaAgarna {
         /// <summary>
-        /// H�mtar bostadsinformation till Villa�garna
+        /// H&#228;mtar bostadsinformation till Villa&#228;garna
         /// </summary>
         /// <param name="customerId">KundId</param>
-        /// <param name="criteriaAccessDateFrom">Tilltr�desdatum fr�n och med</param>
-        /// <param name="criteriaAccessDateTo">Tilltr�desdatum till och med</param>
+        /// <param name="criteriaAccessDateFrom">Tillträdesdatum från och med</param>
+        /// <param name="criteriaAccessDateTo">Tillträdesdatum till och med</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<SoldEstate>> VillaAgarnaGetObjectsBetween(
             string customerId,

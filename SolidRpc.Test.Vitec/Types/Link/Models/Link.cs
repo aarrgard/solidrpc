@@ -13,13 +13,13 @@ namespace SolidRpc.Test.Vitec.Types.Link.Models {
         public string Url { get; set; }
     
         /// <summary>
-        /// Namn p� l�nken
+        /// Namn p&#229; l&#228;nken
         /// </summary>
         [DataMember(Name="text",EmitDefaultValue=false)]
         public string Text { get; set; }
     
         /// <summary>
-        /// L�nkkategori
+        /// L&#228;nkkategori
         /// </summary>
         [DataMember(Name="category",EmitDefaultValue=false)]
         public string Category { get; set; }

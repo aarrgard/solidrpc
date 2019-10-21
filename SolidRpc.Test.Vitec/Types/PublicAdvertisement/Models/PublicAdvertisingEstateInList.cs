@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// N�r bostaden senast f�r�ndrades.
+        /// N&#228;r bostaden senast f&#246;r&#228;ndrades.
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

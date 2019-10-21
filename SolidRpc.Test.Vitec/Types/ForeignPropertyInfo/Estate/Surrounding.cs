@@ -7,19 +7,19 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Surrounding {
         /// <summary>
-        /// Spr�kkod se:https://sv.wikipedia.org/wiki/ISO_639
+        /// Spr&#229;kkod se:https://sv.wikipedia.org/wiki/ISO_639
         /// </summary>
         [DataMember(Name="language",EmitDefaultValue=false)]
         public string Language { get; set; }
     
         /// <summary>
-        /// Allm�nt om omr�det
+        /// Allm&#228;nt om omr&#229;det
         /// </summary>
         [DataMember(Name="generalAboutArea",EmitDefaultValue=false)]
         public string GeneralAboutArea { get; set; }
     
         /// <summary>
-        /// N�rservice
+        /// N&#228;rservice
         /// </summary>
         [DataMember(Name="nearService",EmitDefaultValue=false)]
         public string NearService { get; set; }
@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public string Parking { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

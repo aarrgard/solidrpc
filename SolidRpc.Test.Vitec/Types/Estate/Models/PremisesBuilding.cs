@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PremisesBuilding {
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="constructionYear",EmitDefaultValue=false)]
         public string ConstructionYear { get; set; }
     
         /// <summary>
-        /// Renoverings�r
+        /// Renoverings&#229;r
         /// </summary>
         [DataMember(Name="renovationYear",EmitDefaultValue=false)]
         public string RenovationYear { get; set; }
@@ -25,7 +25,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public double NumberOfRooms { get; set; }
     
         /// <summary>
-        /// Uppv�rmning
+        /// Uppv&#228;rmning
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public string Heating { get; set; }
@@ -43,13 +43,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public string Renovation { get; set; }
     
         /// <summary>
-        /// Planl�sning
+        /// Planl&#246;sning
         /// </summary>
         [DataMember(Name="plan",EmitDefaultValue=false)]
         public string Plan { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

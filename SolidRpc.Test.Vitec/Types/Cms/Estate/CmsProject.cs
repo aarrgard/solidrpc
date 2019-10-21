@@ -13,13 +13,13 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         public SolidRpc.Test.Vitec.Types.Cms.Estate.CmsProjectBaseInformation BaseInformation { get; set; }
     
         /// <summary>
-        /// S�ljande rubrik p� projektet
+        /// S&#228;ljande rubrik p&#229; projektet
         /// </summary>
         [DataMember(Name="sellingHeading",EmitDefaultValue=false)]
         public string SellingHeading { get; set; }
     
         /// <summary>
-        /// L�ng beskrivning av projektet
+        /// L&#229;ng beskrivning av projektet
         /// </summary>
         [DataMember(Name="longSellingDescription",EmitDefaultValue=false)]
         public string LongSellingDescription { get; set; }

@@ -19,13 +19,13 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public string Elevator { get; set; }
     
         /// <summary>
-        /// Totalt antal v�ningar
+        /// Totalt antal v&#229;ningar
         /// </summary>
         [DataMember(Name="totalNumberFloors",EmitDefaultValue=false)]
         public int TotalNumberFloors { get; set; }
     
         /// <summary>
-        /// V�ning
+        /// V&#229;ning
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
         public double Floor { get; set; }

@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string AdvertisementId { get; set; }
     
         /// <summary>
-        /// Url till annonsen p� marknadsplatsens hemsida
+        /// Url till annonsen p&#229; marknadsplatsens hemsida
         /// </summary>
         [DataMember(Name="advertisementUrl",EmitDefaultValue=false)]
         public string AdvertisementUrl { get; set; }

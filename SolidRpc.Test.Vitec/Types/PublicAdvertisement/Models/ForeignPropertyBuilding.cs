@@ -19,25 +19,25 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string RoomDescription { get; set; }
     
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public int YearBuilt { get; set; }
     
         /// <summary>
-        /// Boarea (m�)
+        /// Boarea (m&#178;)
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
         public double LivingSpace { get; set; }
     
         /// <summary>
-        /// V�ningsplan
+        /// V&#229;ningsplan
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
         public double Floor { get; set; }
     
         /// <summary>
-        /// Antal v�ningsplan
+        /// Antal v&#229;ningsplan
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
         public double NumberOfFloors { get; set; }

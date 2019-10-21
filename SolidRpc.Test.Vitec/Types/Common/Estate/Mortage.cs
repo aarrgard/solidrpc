@@ -26,7 +26,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public double Amount { get; set; }
     
         /// <summary>
-        /// �r ett skrifrligt pantbrev
+        /// &#196;r ett skrifrligt pantbrev
         /// </summary>
         [DataMember(Name="writtenMortgages",EmitDefaultValue=false)]
         public bool WrittenMortgages { get; set; }
@@ -38,7 +38,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string Note { get; set; }
     
         /// <summary>
-        /// Inoml�ge
+        /// Inoml&#228;ge
         /// </summary>
         [DataMember(Name="within",EmitDefaultValue=false)]
         public double Within { get; set; }

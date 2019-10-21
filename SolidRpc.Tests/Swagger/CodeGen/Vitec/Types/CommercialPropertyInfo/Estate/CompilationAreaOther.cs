@@ -25,31 +25,31 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public double Area { get; set; }
     
         /// <summary>
-        /// Hyresint�kt kr/�r
+        /// Hyresint&#228;kt kr/&#229;r
         /// </summary>
         [DataMember(Name="rentalIncome",EmitDefaultValue=false)]
         public double RentalIncome { get; set; }
     
         /// <summary>
-        /// Hyresint�kt kr/kvm och �r
+        /// Hyresint&#228;kt kr/kvm och &#229;r
         /// </summary>
         [DataMember(Name="pricePerSquareMeter",EmitDefaultValue=false)]
         public double PricePerSquareMeter { get; set; }
     
         /// <summary>
-        /// �vriga int�kter kr/�r
+        /// &#214;vriga int&#228;kter kr/&#229;r
         /// </summary>
         [DataMember(Name="otherIncome",EmitDefaultValue=false)]
         public double OtherIncome { get; set; }
     
         /// <summary>
-        /// �vriga int�kter kr/kvm och �r
+        /// &#214;vriga int&#228;kter kr/kvm och &#229;r
         /// </summary>
         [DataMember(Name="otherIncomePerSquareMeter",EmitDefaultValue=false)]
         public double OtherIncomePerSquareMeter { get; set; }
     
         /// <summary>
-        /// Schablon driftkostnader (kr/�r)
+        /// Schablon driftkostnader (kr/&#229;r)
         /// </summary>
         [DataMember(Name="flatOperatingCost",EmitDefaultValue=false)]
         public double FlatOperatingCost { get; set; }

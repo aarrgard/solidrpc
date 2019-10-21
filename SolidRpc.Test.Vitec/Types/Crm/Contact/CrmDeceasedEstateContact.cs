@@ -10,7 +10,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CrmDeceasedEstateContact {
         /// <summary>
-        /// Kontakttyp (Person, f�retag eller d�dsbo)
+        /// Kontakttyp (Person, f&#246;retag eller d&#246;dsbo)
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
@@ -46,7 +46,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// M�klarens id
+        /// M&#228;klarens id
         /// </summary>
         [DataMember(Name="agentId",EmitDefaultValue=false)]
         public string AgentId { get; set; }
@@ -64,7 +64,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public Email Email { get; set; }
     
         /// <summary>
-        /// Reklamutskick till�ts
+        /// Reklamutskick till&#229;ts
         /// </summary>
         [DataMember(Name="advertisingEnabled",EmitDefaultValue=false)]
         public bool AdvertisingEnabled { get; set; }
@@ -88,7 +88,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>
-        /// �ndrad
+        /// &#196;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

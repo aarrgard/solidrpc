@@ -9,19 +9,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class LookingForAccommodation {
         /// <summary>
-        /// S�kpreferens Id
+        /// S&#246;kpreferens Id
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
     
         /// <summary>
-        /// Lista av omr�den.Endast omr�den med polygoner kan anv�ndas
+        /// Lista av omr&#229;den.Endast omr&#229;den med polygoner kan anv&#228;ndas
         /// </summary>
         [DataMember(Name="areaIds",EmitDefaultValue=false)]
         public IEnumerable<string> AreaIds { get; set; }
     
         /// <summary>
-        /// L�n, LK-Koder
+        /// L&#228;n, LK-Koder
         /// </summary>
         [DataMember(Name="countys",EmitDefaultValue=false)]
         public IEnumerable<string> Countys { get; set; }
@@ -39,7 +39,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         public IEnumerable<Coordinate> Polygon { get; set; }
     
         /// <summary>
-        /// �nskem�let g�ller utlandsbost�der
+        /// &#214;nskem&#229;let g&#228;ller utlandsbost&#228;der
         /// </summary>
         [DataMember(Name="foreignProperty",EmitDefaultValue=false)]
         public bool ForeignProperty { get; set; }
@@ -57,7 +57,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         public bool RowHouse { get; set; }
     
         /// <summary>
-        /// Bostadsr�tt
+        /// Bostadsr&#228;tt
         /// </summary>
         [DataMember(Name="housingCooperative",EmitDefaultValue=false)]
         public bool HousingCooperative { get; set; }
@@ -81,19 +81,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         public bool Plot { get; set; }
     
         /// <summary>
-        /// G�rd
+        /// G&#229;rd
         /// </summary>
         [DataMember(Name="farm",EmitDefaultValue=false)]
         public bool Farm { get; set; }
     
         /// <summary>
-        /// Hyresr�tt
+        /// Hyresr&#228;tt
         /// </summary>
         [DataMember(Name="tenancy",EmitDefaultValue=false)]
         public bool Tenancy { get; set; }
     
         /// <summary>
-        /// �vrig boform
+        /// &#214;vrig boform
         /// </summary>
         [DataMember(Name="otherHousing",EmitDefaultValue=false)]
         public bool OtherHousing { get; set; }
@@ -123,19 +123,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models.Interval PlotArea { get; set; }
     
         /// <summary>
-        /// Special f�rfr�gan
+        /// Special f&#246;rfr&#229;gan
         /// </summary>
         [DataMember(Name="specialRequset",EmitDefaultValue=false)]
         public string SpecialRequset { get; set; }
     
         /// <summary>
-        /// Ut�kade krav
+        /// Ut&#246;kade krav
         /// </summary>
         [DataMember(Name="increasedRequirementIDs",EmitDefaultValue=false)]
         public IEnumerable<string> IncreasedRequirementIDs { get; set; }
     
         /// <summary>
-        /// Aktivt �nskem�l (ska matchas)
+        /// Aktivt &#246;nskem&#229;l (ska matchas)
         /// </summary>
         [DataMember(Name="active",EmitDefaultValue=false)]
         public bool Active { get; set; }

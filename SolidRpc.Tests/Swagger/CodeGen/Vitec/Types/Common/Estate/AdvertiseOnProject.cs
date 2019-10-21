@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class AdvertiseOnProject {
         /// <summary>
-        /// Visar om objektet ska annonserars p� hemsida
+        /// Visar om objektet ska annonserars p&#229; hemsida
         /// </summary>
         [DataMember(Name="homepage",EmitDefaultValue=false)]
         public bool Homepage { get; set; }
@@ -20,7 +20,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public bool ShowAsComming { get; set; }
     
         /// <summary>
-        /// Lista av bildid&#39;n som ska visas p� egen hemsida
+        /// Lista av bildid&#39;n som ska visas p&#229; egen hemsida
         /// </summary>
         [DataMember(Name="imageIds",EmitDefaultValue=false)]
         public IEnumerable<string> ImageIds { get; set; }
@@ -32,13 +32,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.Document> Documents { get; set; }
     
         /// <summary>
-        /// L�nkar
+        /// L&#228;nkar
         /// </summary>
         [DataMember(Name="links",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate.Link> Links { get; set; }
     
         /// <summary>
-        /// Visa som f�rhandsgranskning
+        /// Visa som f&#246;rhandsgranskning
         /// </summary>
         [DataMember(Name="showAsPreview",EmitDefaultValue=false)]
         public bool ShowAsPreview { get; set; }

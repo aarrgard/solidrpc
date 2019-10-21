@@ -13,13 +13,13 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public string Business { get; set; }
     
         /// <summary>
-        /// Antal anst�llda
+        /// Antal anst&#228;llda
         /// </summary>
         [DataMember(Name="employees",EmitDefaultValue=false)]
         public int Employees { get; set; }
     
         /// <summary>
-        /// Utrustning som medf�ljer
+        /// Utrustning som medf&#246;ljer
         /// </summary>
         [DataMember(Name="equipment",EmitDefaultValue=false)]
         public string Equipment { get; set; }
@@ -43,13 +43,13 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public string Profit { get; set; }
     
         /// <summary>
-        /// Oms�ttning
+        /// Oms&#228;ttning
         /// </summary>
         [DataMember(Name="revenue",EmitDefaultValue=false)]
         public double Revenue { get; set; }
     
         /// <summary>
-        /// Start�r
+        /// Start&#229;r
         /// </summary>
         [DataMember(Name="startingYear",EmitDefaultValue=false)]
         public int StartingYear { get; set; }

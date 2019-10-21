@@ -21,7 +21,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         public bool Public { get; set; }
     
         /// <summary>
-        /// Anv�ndarid
+        /// Anv&#228;ndarid
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }
@@ -69,7 +69,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         public string ExtraTitle { get; set; }
     
         /// <summary>
-        /// Till�t inloggning
+        /// Till&#229;t inloggning
         /// </summary>
         [DataMember(Name="allowLogOn",EmitDefaultValue=false)]
         public bool AllowLogOn { get; set; }
@@ -105,7 +105,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         public string PublicPhonenumber { get; set; }
     
         /// <summary>
-        /// Talade spr�k
+        /// Talade spr&#229;k
         /// </summary>
         [DataMember(Name="spokenLanguages",EmitDefaultValue=false)]
         public IEnumerable<string> SpokenLanguages { get; set; }
@@ -153,7 +153,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Image.Models.Image Image { get; set; }
     
         /// <summary>
-        /// F�retag d�r anv�ndaren �r publik
+        /// F&#246;retag d&#228;r anv&#228;ndaren &#228;r publik
         /// </summary>
         [DataMember(Name="publishedOnOffice",EmitDefaultValue=false)]
         public IEnumerable<string> PublishedOnOffice { get; set; }
@@ -177,7 +177,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models.CustomerIdWithOrderNumber> CustomerIdsWithSortOrder { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }

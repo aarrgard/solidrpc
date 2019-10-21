@@ -13,7 +13,7 @@ namespace SolidRpc.Test.Vitec.Types.IntakeSource.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// Beskrivning p� intagsk�llan
+        /// Beskrivning p&#229; intagsk&#228;llan
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public string Description { get; set; }

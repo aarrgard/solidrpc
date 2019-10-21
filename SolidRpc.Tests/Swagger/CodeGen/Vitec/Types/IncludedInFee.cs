@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class IncludedInFee {
         /// <summary>
-        /// V�rme
+        /// V&#228;rme
         /// </summary>
         [DataMember(Name="heat",EmitDefaultValue=false)]
         public bool Heat { get; set; }

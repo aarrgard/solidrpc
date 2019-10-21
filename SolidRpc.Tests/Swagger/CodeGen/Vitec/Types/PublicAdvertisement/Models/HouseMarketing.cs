@@ -37,7 +37,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool IsFarm { get; set; }
     
         /// <summary>
-        /// �garl�genhet
+        /// &#196;garl&#228;genhet
         /// </summary>
         [DataMember(Name="isCondominium",EmitDefaultValue=false)]
         public bool IsCondominium { get; set; }
@@ -49,7 +49,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public bool IsCottage { get; set; }
     
         /// <summary>
-        /// �vrig bostad
+        /// &#214;vrig bostad
         /// </summary>
         [DataMember(Name="isOtherType",EmitDefaultValue=false)]
         public bool IsOtherType { get; set; }

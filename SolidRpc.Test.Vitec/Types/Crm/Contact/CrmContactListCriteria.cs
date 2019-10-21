@@ -8,13 +8,13 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CrmContactListCriteria {
         /// <summary>
-        /// Urval p� anv�ndareid
+        /// Urval p&#229; anv&#228;ndareid
         /// </summary>
         [DataMember(Name="agentId",EmitDefaultValue=false)]
         public string AgentId { get; set; }
     
         /// <summary>
-        /// Skapad fr�n och med
+        /// Skapad fr&#229;n och med
         /// </summary>
         [DataMember(Name="createdAtFrom",EmitDefaultValue=false)]
         public DateTimeOffset CreatedAtFrom { get; set; }
@@ -26,25 +26,25 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         public DateTimeOffset CreatedAtTo { get; set; }
     
         /// <summary>
-        /// �ndrad fr�n och med
+        /// &#196;ndrad fr&#229;n och med
         /// </summary>
         [DataMember(Name="changedAtFrom",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAtFrom { get; set; }
     
         /// <summary>
-        /// �ndrad till och med
+        /// &#196;ndrad till och med
         /// </summary>
         [DataMember(Name="changedAtTo",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAtTo { get; set; }
     
         /// <summary>
-        /// Egendefinerat f�ltnamn
+        /// Egendefinerat f&#228;ltnamn
         /// </summary>
         [DataMember(Name="customFieldName",EmitDefaultValue=false)]
         public string CustomFieldName { get; set; }
     
         /// <summary>
-        /// Egendefinerat f�ltv�rde
+        /// Egendefinerat f&#228;ltv&#228;rde
         /// </summary>
         [DataMember(Name="customFieldValue",EmitDefaultValue=false)]
         public string CustomFieldValue { get; set; }

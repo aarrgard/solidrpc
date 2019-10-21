@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PremisesExpenses {
         /// <summary>
-        /// �rshyra kr/m�
+        /// &#197;rshyra kr/m&#178;
         /// </summary>
         [DataMember(Name="yearlyFeePerSquareMeter",EmitDefaultValue=false)]
         public double YearlyFeePerSquareMeter { get; set; }

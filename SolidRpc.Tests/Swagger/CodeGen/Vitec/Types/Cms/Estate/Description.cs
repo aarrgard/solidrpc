@@ -7,31 +7,31 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Description {
         /// <summary>
-        /// S�ljfras
+        /// S&#228;ljfras
         /// </summary>
         [DataMember(Name="sellPhrase",EmitDefaultValue=false)]
         public string SellPhrase { get; set; }
     
         /// <summary>
-        /// S�ljande rubrik
+        /// S&#228;ljande rubrik
         /// </summary>
         [DataMember(Name="sellingHeading",EmitDefaultValue=false)]
         public string SellingHeading { get; set; }
     
         /// <summary>
-        /// Kort s�ljande beskrivning
+        /// Kort s&#228;ljande beskrivning
         /// </summary>
         [DataMember(Name="shortSellingDescription",EmitDefaultValue=false)]
         public string ShortSellingDescription { get; set; }
     
         /// <summary>
-        /// L�ng s�ljande beskrivning
+        /// L&#229;ng s&#228;ljande beskrivning
         /// </summary>
         [DataMember(Name="longSellingDescription",EmitDefaultValue=false)]
         public string LongSellingDescription { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

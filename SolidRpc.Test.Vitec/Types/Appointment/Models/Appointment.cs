@@ -9,7 +9,7 @@ namespace SolidRpc.Test.Vitec.Types.Appointment.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Appointment {
         /// <summary>
-        /// �mne
+        /// &#196;mne
         /// </summary>
         [DataMember(Name="subject",EmitDefaultValue=false)]
         public string Subject { get; set; }
@@ -45,19 +45,19 @@ namespace SolidRpc.Test.Vitec.Types.Appointment.Models {
         public string Note { get; set; }
     
         /// <summary>
-        /// �terkommande
+        /// &#197;terkommande
         /// </summary>
         [DataMember(Name="recurrence",EmitDefaultValue=false)]
         public bool Recurrence { get; set; }
     
         /// <summary>
-        /// �terkommande per �r/m�nad/vecka/dag
+        /// &#197;terkommande per &#229;r/m&#229;nad/vecka/dag
         /// </summary>
         [DataMember(Name="recurrencePattern",EmitDefaultValue=false)]
         public string RecurrencePattern { get; set; }
     
         /// <summary>
-        /// Dag/dagar i veckan (anv�nds f�r veckoliga m�ten)
+        /// Dag/dagar i veckan (anv&#228;nds f&#229;r veckoliga m&#246;ten)
         /// </summary>
         [DataMember(Name="recurrenceDayOfWeeks",EmitDefaultValue=false)]
         public IEnumerable<string> RecurrenceDayOfWeeks { get; set; }
@@ -69,13 +69,13 @@ namespace SolidRpc.Test.Vitec.Types.Appointment.Models {
         public int RecurrenceInterval { get; set; }
     
         /// <summary>
-        /// M�naden (anv�nds f�r m�natliga m�ten)
+        /// M&#229;naden (anv&#228;nds f&#246;r m&#229;natliga m&#246;ten)
         /// </summary>
         [DataMember(Name="recurrenceMonth",EmitDefaultValue=false)]
         public int RecurrenceMonth { get; set; }
     
         /// <summary>
-        /// Dag i m�naden (anv�ns f�r �rliga och m�natliga m�ten)
+        /// Dag i m&#229;naden (anv&#228;ns f&#246;r &#229;rliga och m&#229;natliga m&#246;ten)
         /// </summary>
         [DataMember(Name="recurrenceDay",EmitDefaultValue=false)]
         public int RecurrenceDay { get; set; }

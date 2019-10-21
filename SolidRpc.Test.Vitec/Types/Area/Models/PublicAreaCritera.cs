@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.Area.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PublicAreaCritera {
         /// <summary>
-        /// Omr�dets id
+        /// Omr&#229;dets id
         /// </summary>
         [DataMember(Name="areaId",EmitDefaultValue=false)]
         public string AreaId { get; set; }

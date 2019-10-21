@@ -9,13 +9,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ForeignProperty {
         /// <summary>
-        /// L�genhetsnummer
+        /// L&#228;genhetsnummer
         /// </summary>
         [DataMember(Name="appartmentNumber",EmitDefaultValue=false)]
         public string AppartmentNumber { get; set; }
     
         /// <summary>
-        /// Projektid om bostaden ing�r i ett projekt
+        /// Projektid om bostaden ing&#229;r i ett projekt
         /// </summary>
         [DataMember(Name="projectId",EmitDefaultValue=false)]
         public string ProjectId { get; set; }
@@ -45,7 +45,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.EnergyDeclaration EnergyDeclaration { get; set; }
     
         /// <summary>
-        /// Marknadsf�ring
+        /// Marknadsf&#246;ring
         /// </summary>
         [DataMember(Name="marketing",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyMarketing Marketing { get; set; }
@@ -75,7 +75,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Id { get; set; }
     
         /// <summary>
-        /// Kontorstillh�righet
+        /// Kontorstillh&#246;righet
         /// </summary>
         [DataMember(Name="officeAffiliation",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.OfficeAffiliation OfficeAffiliation { get; set; }
@@ -87,13 +87,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CustomAttributes CustomAttributes { get; set; }
     
         /// <summary>
-        /// Id p� huvudhandl�ggare
+        /// Id p&#229; huvudhandl&#228;ggare
         /// </summary>
         [DataMember(Name="primaryAgentId",EmitDefaultValue=false)]
         public string PrimaryAgentId { get; set; }
     
         /// <summary>
-        /// Id p� andrahandl�ggare
+        /// Id p&#229; andrahandl&#228;ggare
         /// </summary>
         [DataMember(Name="secondaryAgentId",EmitDefaultValue=false)]
         public string SecondaryAgentId { get; set; }
@@ -111,19 +111,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.Texts Texts { get; set; }
     
         /// <summary>
-        /// N�romr�de
+        /// N&#228;romr&#229;de
         /// </summary>
         [DataMember(Name="surroundings",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.Surroundings Surroundings { get; set; }
     
         /// <summary>
-        /// Om budgivning p�g�r
+        /// Om budgivning p&#229;g&#229;r
         /// </summary>
         [DataMember(Name="acceptingBids",EmitDefaultValue=false)]
         public bool AcceptingBids { get; set; }
     
         /// <summary>
-        /// N�r bostaden senast �ndrades
+        /// N&#228;r bostaden senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }

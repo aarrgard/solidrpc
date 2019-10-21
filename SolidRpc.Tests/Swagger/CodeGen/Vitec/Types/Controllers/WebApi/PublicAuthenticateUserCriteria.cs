@@ -13,13 +13,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Controllers.WebApi {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Anv�ndarnamn
+        /// Anv&#228;ndarnamn
         /// </summary>
         [DataMember(Name="userName",EmitDefaultValue=false)]
         public string UserName { get; set; }
     
         /// <summary>
-        /// L�senord
+        /// L&#246;senord
         /// </summary>
         [DataMember(Name="password",EmitDefaultValue=false)]
         public string Password { get; set; }

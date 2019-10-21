@@ -13,19 +13,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public int SquereMeterype { get; set; }
     
         /// <summary>
-        /// �vrigt tomt
+        /// &#214;vrigt tomt
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
-        /// Sammanst�llning uteplats
+        /// Sammanst&#228;llning uteplats
         /// </summary>
         [DataMember(Name="summary",EmitDefaultValue=false)]
         public string Summary { get; set; }
     
         /// <summary>
-        /// Sammanst�llning bilplats
+        /// Sammanst&#228;llning bilplats
         /// </summary>
         [DataMember(Name="parking",EmitDefaultValue=false)]
         public string Parking { get; set; }

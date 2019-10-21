@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         public double NumberOfBathrooms { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning
+        /// Allm&#228;n beskrivning
         /// </summary>
         [DataMember(Name="generealDescriptionInterior",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate.GeneralDescription> GenerealDescriptionInterior { get; set; }

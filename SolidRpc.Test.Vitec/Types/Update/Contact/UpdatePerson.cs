@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.Update.Contact {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class UpdatePerson {
         /// <summary>
-        /// F�rnamn
+        /// F&#246;rnamn
         /// </summary>
         [DataMember(Name="firstName",EmitDefaultValue=false)]
         public string FirstName { get; set; }
@@ -47,13 +47,13 @@ namespace SolidRpc.Test.Vitec.Types.Update.Contact {
         public string CellPhone { get; set; }
     
         /// <summary>
-        /// PUL-Godk�nnande
+        /// PUL-Godk&#228;nnande
         /// </summary>
         [DataMember(Name="approval",EmitDefaultValue=false)]
         public bool Approval { get; set; }
     
         /// <summary>
-        /// PUL-Godk�nnande datum
+        /// PUL-Godk&#228;nnande datum
         /// </summary>
         [DataMember(Name="approvalDate",EmitDefaultValue=false)]
         public DateTimeOffset ApprovalDate { get; set; }
@@ -101,7 +101,7 @@ namespace SolidRpc.Test.Vitec.Types.Update.Contact {
         public Email Email { get; set; }
     
         /// <summary>
-        /// Anv�ndarid som kontakten ska kopplas till
+        /// Anv&#228;ndarid som kontakten ska kopplas till
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }
@@ -113,7 +113,7 @@ namespace SolidRpc.Test.Vitec.Types.Update.Contact {
         public string OtherPhone { get; set; }
     
         /// <summary>
-        /// �nskar reklamutskick
+        /// &#214;nskar reklamutskick
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
         public bool WishAdvertising { get; set; }
@@ -137,7 +137,7 @@ namespace SolidRpc.Test.Vitec.Types.Update.Contact {
         public SolidRpc.Test.Vitec.Types.Task.Models.Task Task { get; set; }
     
         /// <summary>
-        /// Egendefinerat f�lt
+        /// Egendefinerat f&#228;lt
         /// </summary>
         [DataMember(Name="customField",EmitDefaultValue=false)]
         public FieldValueCriteria CustomField { get; set; }

@@ -10,12 +10,12 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmLink {
         /// <summary>
-        /// H�mtar l�nkar. &lt;p&gt;H�mtar l�nk.&lt;/p&gt;
-        /// &lt;p&gt;F�r att kunna h�mta en l�nk s� kr�vs det en giltig API nyckel och ett kundid.
-        /// Det kr�vs �ven ett giltig l�nkid f�r att kunna h�mta en l�nk.&lt;/p&gt;
+        /// H&#228;mtar l&#228;nkar. &lt;p&gt;H&#228;mtar l&#228;nk.&lt;/p&gt;
+        /// &lt;p&gt;F&#246;r att kunna h&#228;mta en l&#228;nk s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.
+        /// Det kr&#228;vs &#228;ven ett giltig l&#228;nkid f&#246;r att kunna h&#228;mta en l&#228;nk.&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
-        /// <param name="linkId">l�nkid</param>
+        /// <param name="linkId">länkid</param>
         /// <param name="cancellationToken"></param>
         Task<Models.Link> CrmLinkGet(
             string customerId,
@@ -23,11 +23,11 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Metod f�r att l�gga till en ny l�nk  till en bostad.
+        /// Metod f&#246;r att l&#228;gga till en ny l&#228;nk  till en bostad.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Bostadsid</param>
-        /// <param name="linkData">L�nk</param>
+        /// <param name="linkData">Länk</param>
         /// <param name="cancellationToken"></param>
         Task<string> CrmLinkCreate(
             string customerId,
@@ -36,7 +36,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Metod f�r att h�mta l�nkkategorier
+        /// Metod f&#246;r att h&#228;mta l&#228;nkkategorier
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="cancellationToken"></param>

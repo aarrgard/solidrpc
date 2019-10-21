@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class FarmInspection {
         /// <summary>
-        /// Besiktningsf�retag
+        /// Besiktningsf&#246;retag
         /// </summary>
         [DataMember(Name="company",EmitDefaultValue=false)]
         public string Company { get; set; }
     
         /// <summary>
-        /// K�pargenomg�ng genomf�rd
+        /// K&#246;pargenomg&#229;ng genomf&#246;rd
         /// </summary>
         [DataMember(Name="buyersInspection",EmitDefaultValue=false)]
         public bool BuyersInspection { get; set; }
@@ -25,13 +25,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public string PaidBy { get; set; }
     
         /// <summary>
-        /// F�rbesiktigad
+        /// F&#246;rbesiktigad
         /// </summary>
         [DataMember(Name="inspected",EmitDefaultValue=false)]
         public bool Inspected { get; set; }
     
         /// <summary>
-        /// S�ljarf�rs�kring
+        /// S&#228;ljarf&#246;rs&#228;kring
         /// </summary>
         [DataMember(Name="sellerInsurence",EmitDefaultValue=false)]
         public bool SellerInsurence { get; set; }

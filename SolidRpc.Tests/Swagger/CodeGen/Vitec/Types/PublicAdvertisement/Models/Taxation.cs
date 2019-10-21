@@ -7,7 +7,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Taxation {
         /// <summary>
-        /// Taxeringsv�rde byggnad (SEK)
+        /// Taxeringsv&#228;rde byggnad (SEK)
         /// </summary>
         [DataMember(Name="buildingValue",EmitDefaultValue=false)]
         public double BuildingValue { get; set; }
@@ -19,13 +19,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Code { get; set; }
     
         /// <summary>
-        /// Taxeringsv�rde totalt (SEK)
+        /// Taxeringsv&#228;rde totalt (SEK)
         /// </summary>
         [DataMember(Name="totalValue",EmitDefaultValue=false)]
         public double TotalValue { get; set; }
     
         /// <summary>
-        /// Taxerings�r
+        /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="year",EmitDefaultValue=false)]
         public int Year { get; set; }

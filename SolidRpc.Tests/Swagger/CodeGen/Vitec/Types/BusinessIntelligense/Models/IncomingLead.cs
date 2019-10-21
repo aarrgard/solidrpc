@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         public DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>
-        /// Avs�ndare
+        /// Avs&#228;ndare
         /// </summary>
         [DataMember(Name="sender",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.Sender Sender { get; set; }

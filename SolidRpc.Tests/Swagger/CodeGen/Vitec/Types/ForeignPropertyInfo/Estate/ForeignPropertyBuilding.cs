@@ -13,13 +13,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         public string BuildingType { get; set; }
     
         /// <summary>
-        /// Byggnations�r
+        /// Byggnations&#229;r
         /// </summary>
         [DataMember(Name="buildingYear",EmitDefaultValue=false)]
         public string BuildingYear { get; set; }
     
         /// <summary>
-        /// Kommentar till byggnads�r
+        /// Kommentar till byggnads&#229;r
         /// </summary>
         [DataMember(Name="commentaryForBuildingYear",EmitDefaultValue=false)]
         public string CommentaryForBuildingYear { get; set; }
@@ -37,19 +37,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         public string Frame { get; set; }
     
         /// <summary>
-        /// F�nster
+        /// F&#246;nster
         /// </summary>
         [DataMember(Name="windows",EmitDefaultValue=false)]
         public string Windows { get; set; }
     
         /// <summary>
-        /// Bj�lklag
+        /// Bj&#228;lklag
         /// </summary>
         [DataMember(Name="beam",EmitDefaultValue=false)]
         public string Beam { get; set; }
     
         /// <summary>
-        /// Utv�ndigt pl�tarbete
+        /// Utv&#228;ndigt pl&#229;tarbete
         /// </summary>
         [DataMember(Name="externallySheetMetalWork",EmitDefaultValue=false)]
         public string ExternallySheetMetalWork { get; set; }
@@ -67,25 +67,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         public string Roof { get; set; }
     
         /// <summary>
-        /// Grundl�ggning
+        /// Grundl&#228;ggning
         /// </summary>
         [DataMember(Name="foundation",EmitDefaultValue=false)]
         public string Foundation { get; set; }
     
         /// <summary>
-        /// Uppv�rmning
+        /// Uppv&#228;rmning
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public string Heating { get; set; }
     
         /// <summary>
-        /// �vrigt om byggnaden
+        /// &#214;vrigt om byggnaden
         /// </summary>
         [DataMember(Name="otherAboutTheBuildning",EmitDefaultValue=false)]
         public string OtherAboutTheBuildning { get; set; }
     
         /// <summary>
-        /// �vriga byggnader
+        /// &#214;vriga byggnader
         /// </summary>
         [DataMember(Name="otherBuildings",EmitDefaultValue=false)]
         public string OtherBuildings { get; set; }

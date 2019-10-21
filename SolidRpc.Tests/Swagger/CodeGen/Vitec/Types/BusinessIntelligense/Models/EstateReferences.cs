@@ -32,7 +32,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EstateReference> Houses { get; set; }
     
         /// <summary>
-        /// Bostadsr�tter
+        /// Bostadsr&#228;tter
         /// </summary>
         [DataMember(Name="housingCooperatives",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EstateReference> HousingCooperatives { get; set; }
@@ -50,13 +50,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EstateReference> Plots { get; set; }
     
         /// <summary>
-        /// G�rdar
+        /// G&#229;rdar
         /// </summary>
         [DataMember(Name="farms",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EstateReference> Farms { get; set; }
     
         /// <summary>
-        /// �garl�genheter
+        /// &#196;garl&#228;genheter
         /// </summary>
         [DataMember(Name="condominiums",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models.EstateReference> Condominiums { get; set; }

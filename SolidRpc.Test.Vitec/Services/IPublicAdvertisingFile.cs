@@ -9,9 +9,9 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingFile {
         /// <summary>
-        /// H�mtar filer. &lt;p&gt;H�mtar fil.&lt;/p&gt;
-        /// &lt;p&gt;F�r att kunna h�mta en fil s� kr�vs det en giltig API nyckel och ett kundid.
-        /// Det kr�vs �ven ett giltigt fil id f�r att kunna h�mta en fil.&lt;/p&gt;
+        /// H&#228;mtar filer. &lt;p&gt;H&#228;mtar fil.&lt;/p&gt;
+        /// &lt;p&gt;F&#246;r att kunna h&#228;mta en fil s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.
+        /// Det kr&#228;vs &#228;ven ett giltigt fil id f&#246;r att kunna h&#228;mta en fil.&lt;/p&gt;
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="fileId">Filid</param>

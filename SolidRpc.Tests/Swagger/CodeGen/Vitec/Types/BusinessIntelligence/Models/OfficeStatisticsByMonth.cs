@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligence.Models
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class OfficeStatisticsByMonth {
         /// <summary>
-        /// Lista p� statistik per kontor
+        /// Lista p&#229; statistik per kontor
         /// </summary>
         [DataMember(Name="officeStatistics",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligence.Models.CustomerStatistics> OfficeStatistics { get; set; }

@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.Link.Models {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Lista av l�nkkategorier
+        /// Lista av l&#228;nkkategorier
         /// </summary>
         [DataMember(Name="categories",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.Link.Models.Category> Categories { get; set; }

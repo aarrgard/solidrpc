@@ -15,7 +15,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public string Id { get; set; }
     
         /// <summary>
-        /// Namn p� byggnaden
+        /// Namn p&#229; byggnaden
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }
@@ -27,7 +27,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public string BuildingType { get; set; }
     
         /// <summary>
-        /// Byggnads�r
+        /// Byggnads&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public string YearBuilt { get; set; }
@@ -75,7 +75,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public Operation Operation { get; set; }
     
         /// <summary>
-        /// Elf�rbrukning
+        /// Elf&#246;rbrukning
         /// </summary>
         [DataMember(Name="electricity",EmitDefaultValue=false)]
         public Electricity Electricity { get; set; }
@@ -93,13 +93,13 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public TVAndBroadband TvAndBroadband { get; set; }
     
         /// <summary>
-        /// Byggnadss�tt
+        /// Byggnadss&#228;tt
         /// </summary>
         [DataMember(Name="building",EmitDefaultValue=false)]
         public string Building { get; set; }
     
         /// <summary>
-        /// Uppv�rmning
+        /// Uppv&#228;rmning
         /// </summary>
         [DataMember(Name="heating",EmitDefaultValue=false)]
         public string Heating { get; set; }
@@ -117,7 +117,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public Ventilation Ventilation { get; set; }
     
         /// <summary>
-        /// �vrigt
+        /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }
@@ -153,7 +153,7 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         public string SideBuildings { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning av interi�ren
+        /// Allm&#228;n beskrivning av interi&#246;ren
         /// </summary>
         [DataMember(Name="generalDescription",EmitDefaultValue=false)]
         public string GeneralDescription { get; set; }

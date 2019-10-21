@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Vitec.Types.PartnerService.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class PersonLead {
         /// <summary>
-        /// F�rnamn
+        /// F&#246;rnamn
         /// </summary>
         [DataMember(Name="firstName",EmitDefaultValue=false)]
         public string FirstName { get; set; }
@@ -44,7 +44,7 @@ namespace SolidRpc.Test.Vitec.Types.PartnerService.Models {
         public string TypeId { get; set; }
     
         /// <summary>
-        /// Intagsk�lla
+        /// Intagsk&#228;lla
         /// </summary>
         [DataMember(Name="assignmentSourceId",EmitDefaultValue=false)]
         public string AssignmentSourceId { get; set; }
@@ -68,13 +68,13 @@ namespace SolidRpc.Test.Vitec.Types.PartnerService.Models {
         public SolidRpc.Test.Vitec.Types.PartnerService.Models.ContactOffice Office { get; set; }
     
         /// <summary>
-        /// Anv�ndare, mottagare av tipset
+        /// Anv&#228;ndare, mottagare av tipset
         /// </summary>
         [DataMember(Name="agent",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PartnerService.Models.ContactAgent Agent { get; set; }
     
         /// <summary>
-        /// Avs�ndare av tipset
+        /// Avs&#228;ndare av tipset
         /// </summary>
         [DataMember(Name="sender",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PartnerService.Models.ContactLeadSender Sender { get; set; }

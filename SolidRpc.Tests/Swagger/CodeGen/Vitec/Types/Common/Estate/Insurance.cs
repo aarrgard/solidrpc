@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public double Amount { get; set; }
     
         /// <summary>
-        /// Fullv�rdesf�rs�krad
+        /// Fullv&#228;rdesf&#246;rs&#228;krad
         /// </summary>
         [DataMember(Name="fullValue",EmitDefaultValue=false)]
         public string FullValue { get; set; }

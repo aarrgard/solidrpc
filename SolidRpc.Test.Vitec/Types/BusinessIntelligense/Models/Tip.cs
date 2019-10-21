@@ -7,25 +7,25 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Tip {
         /// <summary>
-        /// Unik identifierare f�r tipset
+        /// Unik identifierare f&#246;r tipset
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
     
         /// <summary>
-        /// Rubrik p� tipset
+        /// Rubrik p&#229; tipset
         /// </summary>
         [DataMember(Name="title",EmitDefaultValue=false)]
         public string Title { get; set; }
     
         /// <summary>
-        /// Aktuell status p� tipset
+        /// Aktuell status p&#229; tipset
         /// </summary>
         [DataMember(Name="state",EmitDefaultValue=false)]
         public string State { get; set; }
     
         /// <summary>
-        /// Beskrivande text. Kan fyllas i av avs�ndare, men kan ocks� uppdateras av mottagaren.
+        /// Beskrivande text. Kan fyllas i av avs&#228;ndare, men kan ocks&#229; uppdateras av mottagaren.
         /// </summary>
         [DataMember(Name="message",EmitDefaultValue=false)]
         public string Message { get; set; }

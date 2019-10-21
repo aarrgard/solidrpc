@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Incomming.BusinessIntellige
         public string Id { get; set; }
     
         /// <summary>
-        /// Namn p� lead
+        /// Namn p&#229; lead
         /// </summary>
         [DataMember(Name="title",EmitDefaultValue=false)]
         public string Title { get; set; }

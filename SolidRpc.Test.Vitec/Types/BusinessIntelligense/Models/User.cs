@@ -19,13 +19,13 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// Typ av anv�ndare
+        /// Typ av anv&#228;ndare
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public string Type { get; set; }
     
         /// <summary>
-        /// Anst�llningsnummer
+        /// Anst&#228;llningsnummer
         /// </summary>
         [DataMember(Name="employeeNumber",EmitDefaultValue=false)]
         public string EmployeeNumber { get; set; }

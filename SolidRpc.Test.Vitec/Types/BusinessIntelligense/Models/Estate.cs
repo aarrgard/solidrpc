@@ -19,7 +19,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public string EstateStatus { get; set; }
     
         /// <summary>
-        /// Status i beslutst�dsrapporter
+        /// Status i beslutst&#246;dsrapporter
         /// </summary>
         [DataMember(Name="status",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.Status Status { get; set; }

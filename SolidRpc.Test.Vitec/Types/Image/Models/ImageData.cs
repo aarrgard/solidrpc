@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         public Stream Data { get; set; }
     
         /// <summary>
-        /// Namn p� bilden
+        /// Namn p&#229; bilden
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

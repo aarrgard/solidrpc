@@ -13,13 +13,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Budget.Models {
         public int Commission { get; set; }
     
         /// <summary>
-        /// Bost�der
+        /// Bost&#228;der
         /// </summary>
         [DataMember(Name="estates",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Budget.Models.Estates Estates { get; set; }
     
         /// <summary>
-        /// M�ten
+        /// M&#246;ten
         /// </summary>
         [DataMember(Name="saleMeetings",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Budget.Models.SaleMeetings SaleMeetings { get; set; }

@@ -9,7 +9,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmBuyer {
         /// <summary>
-        /// Bank- och f�rs�kringsppgifter
+        /// Bank- och f&#246;rs&#228;kringsppgifter
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="contactId"></param>

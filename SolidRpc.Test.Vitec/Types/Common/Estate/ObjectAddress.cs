@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string Municipality { get; set; }
     
         /// <summary>
-        /// Omr�de
+        /// Omr&#229;de
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
         public string Area { get; set; }
@@ -50,25 +50,25 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string LocalIncomeTax { get; set; }
     
         /// <summary>
-        /// F�rsamling
+        /// F&#246;rsamling
         /// </summary>
         [DataMember(Name="parish",EmitDefaultValue=false)]
         public string Parish { get; set; }
     
         /// <summary>
-        /// L�n
+        /// L&#228;n
         /// </summary>
         [DataMember(Name="county",EmitDefaultValue=false)]
         public string County { get; set; }
     
         /// <summary>
-        /// Omr�desid
+        /// Omr&#229;desid
         /// </summary>
         [DataMember(Name="areaId",EmitDefaultValue=false)]
         public string AreaId { get; set; }
     
         /// <summary>
-        /// Om omr�det �r arkiverat
+        /// Om omr&#229;det &#228;r arkiverat
         /// </summary>
         [DataMember(Name="areaArchived",EmitDefaultValue=false)]
         public bool AreaArchived { get; set; }

@@ -21,13 +21,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Office.Models {
         public string OfficeId { get; set; }
     
         /// <summary>
-        /// F�retagsnamn
+        /// F&#246;retagsnamn
         /// </summary>
         [DataMember(Name="customerName",EmitDefaultValue=false)]
         public string CustomerName { get; set; }
     
         /// <summary>
-        /// Juridiskt f�retagsnamn
+        /// Juridiskt f&#246;retagsnamn
         /// </summary>
         [DataMember(Name="legalCustomerName",EmitDefaultValue=false)]
         public string LegalCustomerName { get; set; }
@@ -63,7 +63,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Office.Models {
         public string Telephone { get; set; }
     
         /// <summary>
-        /// F�retagets s�tte
+        /// F&#246;retagets s&#228;tte
         /// </summary>
         [DataMember(Name="companyPlace",EmitDefaultValue=false)]
         public string CompanyPlace { get; set; }
@@ -141,19 +141,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Office.Models {
         public string OfficeName { get; set; }
     
         /// <summary>
-        /// Kedjetillh�righet
+        /// Kedjetillh&#246;righet
         /// </summary>
         [DataMember(Name="chain",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Office.Models.Chain Chain { get; set; }
     
         /// <summary>
-        /// �ndringsdatum
+        /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
     
         /// <summary>
-        /// Prim�r tips/lead mottagare
+        /// Prim&#228;r tips/lead mottagare
         /// </summary>
         [DataMember(Name="primaryLeadReceiverId",EmitDefaultValue=false)]
         public string PrimaryLeadReceiverId { get; set; }

@@ -8,13 +8,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativ.Cms {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CmsHousingCooperativBaseInformation {
         /// <summary>
-        /// L�genhetsnummer
+        /// L&#228;genhetsnummer
         /// </summary>
         [DataMember(Name="apartmentNumber",EmitDefaultValue=false)]
         public string ApartmentNumber { get; set; }
     
         /// <summary>
-        /// M�nadsavgift
+        /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
         public double MonthlyFee { get; set; }

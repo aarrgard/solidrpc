@@ -9,7 +9,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingPlot {
         /// <summary>
-        /// H�mta tomt
+        /// H&#228;mta tomt
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="id">Tomtens id</param>

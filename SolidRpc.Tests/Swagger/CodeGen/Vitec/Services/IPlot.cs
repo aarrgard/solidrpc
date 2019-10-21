@@ -9,10 +9,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPlot {
         /// <summary>
-        /// Metod f�r att uppdatera en tomt.
+        /// Metod f&#246;r att uppdatera en tomt.
         /// </summary>
         /// <param name="customerId">Kund-id</param>
-        /// <param name="id">Id p� tomten</param>
+        /// <param name="id">Id på tomten</param>
         /// <param name="plot">Tomtinformationen som ska uppdateras</param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Services.Plot.PlotUpdate.NoContentException">No Content</exception>
@@ -23,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Metod f�r att skapa en tomt.&lt;br /&gt;
+        /// Metod f&#246;r att skapa en tomt.&lt;br /&gt;
         /// </summary>
         /// <param name="customerId">Kund-id</param>
         /// <param name="plot">Tomtinformationen som ska uppdateras</param>

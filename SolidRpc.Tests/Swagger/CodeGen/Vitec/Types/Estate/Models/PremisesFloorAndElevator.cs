@@ -19,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         public bool Elevator { get; set; }
     
         /// <summary>
-        /// V�ningar
+        /// V&#229;ningar
         /// </summary>
         [DataMember(Name="floors",EmitDefaultValue=false)]
         public string Floors { get; set; }

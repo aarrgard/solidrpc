@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class FarmMarketing {
         /// <summary>
-        /// Avstyckad g�rd
+        /// Avstyckad g&#229;rd
         /// </summary>
         [DataMember(Name="parceledFarm",EmitDefaultValue=false)]
         public bool ParceledFarm { get; set; }
@@ -25,7 +25,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public bool IsForestFarm { get; set; }
     
         /// <summary>
-        /// H�stg�rd
+        /// H&#228;stg&#229;rd
         /// </summary>
         [DataMember(Name="isHorseFarm",EmitDefaultValue=false)]
         public bool IsHorseFarm { get; set; }

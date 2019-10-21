@@ -7,37 +7,37 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Enrollments {
         /// <summary>
-        /// R�ttigheter / Gemensamhetsanl�ggningar
+        /// R&#228;ttigheter / Gemensamhetsanl&#228;ggningar
         /// </summary>
         [DataMember(Name="preferentialAndCommunity",EmitDefaultValue=false)]
         public string PreferentialAndCommunity { get; set; }
     
         /// <summary>
-        /// Inskrivna servitut och �vriga gravationer
+        /// Inskrivna servitut och &#246;vriga gravationer
         /// </summary>
         [DataMember(Name="enrolledEasement",EmitDefaultValue=false)]
         public string EnrolledEasement { get; set; }
     
         /// <summary>
-        /// Planbest�mmelser
+        /// Planbest&#228;mmelser
         /// </summary>
         [DataMember(Name="planRegulations",EmitDefaultValue=false)]
         public string PlanRegulations { get; set; }
     
         /// <summary>
-        /// R�ttigheter f�rm�n
+        /// R&#228;ttigheter f&#246;rm&#229;n
         /// </summary>
         [DataMember(Name="easementsBenefits",EmitDefaultValue=false)]
         public string EasementsBenefits { get; set; }
     
         /// <summary>
-        /// R�ttigheter last
+        /// R&#228;ttigheter last
         /// </summary>
         [DataMember(Name="easementsLoad",EmitDefaultValue=false)]
         public string EasementsLoad { get; set; }
     
         /// <summary>
-        /// Gemensamhetsanl�ggningar
+        /// Gemensamhetsanl&#228;ggningar
         /// </summary>
         [DataMember(Name="communityFacilities",EmitDefaultValue=false)]
         public string CommunityFacilities { get; set; }

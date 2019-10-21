@@ -27,7 +27,7 @@ namespace SolidRpc.Test.Vitec.Types.HouseInfo.Estate {
         public double NumberOfRooms { get; set; }
     
         /// <summary>
-        /// Allm�n beskrivning
+        /// Allm&#228;n beskrivning
         /// </summary>
         [DataMember(Name="generealDescription",EmitDefaultValue=false)]
         public string GenerealDescription { get; set; }

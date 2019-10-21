@@ -14,25 +14,25 @@ namespace SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense {
         public string EstateId { get; set; }
     
         /// <summary>
-        /// Tidpunkt f�r bes�k
+        /// Tidpunkt f&#246;r bes&#246;k
         /// </summary>
         [DataMember(Name="occurredAt",EmitDefaultValue=false)]
         public DateTimeOffset OccurredAt { get; set; }
     
         /// <summary>
-        /// Bes�kets l�ngd
+        /// Bes&#246;kets l&#228;ngd
         /// </summary>
         [DataMember(Name="duration",EmitDefaultValue=false)]
         public int Duration { get; set; }
     
         /// <summary>
-        /// Bes�karens user agent (browser)
+        /// Bes&#246;karens user agent (browser)
         /// </summary>
         [DataMember(Name="userAgent",EmitDefaultValue=false)]
         public string UserAgent { get; set; }
     
         /// <summary>
-        /// Vart kom bes�ket ifr�n
+        /// Vart kom bes&#246;ket ifr&#229;n
         /// </summary>
         [DataMember(Name="referer",EmitDefaultValue=false)]
         public string Referer { get; set; }

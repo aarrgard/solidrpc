@@ -21,25 +21,25 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Name { get; set; }
     
         /// <summary>
-        /// Marknadsf�ring
+        /// Marknadsf&#246;ring
         /// </summary>
         [DataMember(Name="marketing",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectMarketing Marketing { get; set; }
     
         /// <summary>
-        /// Kontorstillh�righet
+        /// Kontorstillh&#246;righet
         /// </summary>
         [DataMember(Name="officeAffiliation",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.OfficeAffiliation OfficeAffiliation { get; set; }
     
         /// <summary>
-        /// Id p� huvudhandl�ggare
+        /// Id p&#229; huvudhandl&#228;ggare
         /// </summary>
         [DataMember(Name="primaryAgentId",EmitDefaultValue=false)]
         public string PrimaryAgentId { get; set; }
     
         /// <summary>
-        /// Id p� andrahandl�ggare
+        /// Id p&#229; andrahandl&#228;ggare
         /// </summary>
         [DataMember(Name="secondaryAgentId",EmitDefaultValue=false)]
         public string SecondaryAgentId { get; set; }
@@ -57,7 +57,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Texts Texts { get; set; }
     
         /// <summary>
-        /// N�r bostaden senast �ndrades
+        /// N&#228;r bostaden senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
         public DateTimeOffset ChangedAt { get; set; }
@@ -81,43 +81,43 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Image> Images { get; set; }
     
         /// <summary>
-        /// Villor som ing�r i projektet
+        /// Villor som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="houses",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> Houses { get; set; }
     
         /// <summary>
-        /// Tomter som ing�r i projektet
+        /// Tomter som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="plots",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> Plots { get; set; }
     
         /// <summary>
-        /// Bostadsr�tter som ing�r i projektet
+        /// Bostadsr&#228;tter som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="housingCooperatives",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> HousingCooperatives { get; set; }
     
         /// <summary>
-        /// �garl�genheter som ing�r i projektet
+        /// &#196;garl&#228;genheter som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="condominiums",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> Condominiums { get; set; }
     
         /// <summary>
-        /// Lokaler som ing�r i projektet
+        /// Lokaler som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="premises",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> Premises { get; set; }
     
         /// <summary>
-        /// Utl�ndska bost�der som ing�r i projektet
+        /// Utl&#228;ndska bost&#228;der som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="foreignProperties",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> ForeignProperties { get; set; }
     
         /// <summary>
-        /// Fritidshus som ing�r i projektet
+        /// Fritidshus som ing&#229;r i projektet
         /// </summary>
         [DataMember(Name="cottages",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ProjectEstateRelation> Cottages { get; set; }

@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.Buyer.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class InsuranceCompany {
         /// <summary>
-        /// F�rs�kringsbolagsnamn
+        /// F&#246;rs&#228;kringsbolagsnamn
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
         public string Name { get; set; }

@@ -9,7 +9,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IPublicAdvertisingProject {
         /// <summary>
-        /// H�mta projekt
+        /// H&#228;mta projekt
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="id">Projektets id</param>

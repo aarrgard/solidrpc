@@ -11,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IMaklarstatistik {
         /// <summary>
-        /// H�mtar bostadsinformation till m�klarstatistik
+        /// H&#228;mtar bostadsinformation till m&#228;klarstatistik
         /// </summary>
         /// <param name="customerId">KundId</param>
-        /// <param name="criteriaChangeAtFrom">�ndringsdatum fr�n och med</param>
-        /// <param name="criteriaChangeAtTo">�ndringsdatum till och med</param>
-        /// <param name="criteriaContractDateFrom">Kontraktsdatum fr�n och med, max tre m�nader tidigare �n ContractDateTo</param>
-        /// <param name="criteriaContractDateTo">Kontraktsdatum till och med, max tre m�nader senare �n ContractDateFrom</param>
+        /// <param name="criteriaChangeAtFrom">Ändringsdatum från och med</param>
+        /// <param name="criteriaChangeAtTo">Ändringsdatum till och med</param>
+        /// <param name="criteriaContractDateFrom">Kontraktsdatum från och med, max tre månader tidigare än ContractDateTo</param>
+        /// <param name="criteriaContractDateTo">Kontraktsdatum till och med, max tre månader senare än ContractDateFrom</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<PropertyStatistics>> MaklarstatistikGetObjectsBetween(
             string customerId,

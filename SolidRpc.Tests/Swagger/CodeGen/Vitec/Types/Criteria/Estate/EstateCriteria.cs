@@ -16,19 +16,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Criteria.Estate {
         public string CustomerId { get; set; }
     
         /// <summary>
-        /// Id p� handl�ggare, anv�nds f�r att s�ka p� bost�der som tillh�r en specifik handl�ggare
+        /// Id p&#229; handl&#228;ggare, anv&#228;nds f&#246;r att s&#246;ka p&#229; bost&#228;der som tillh&#246;r en specifik handl&#228;ggare
         /// </summary>
         [DataMember(Name="userId",EmitDefaultValue=false)]
         public string UserId { get; set; }
     
         /// <summary>
-        /// Typ av datum som s�kningen ska filtreras p�
+        /// Typ av datum som s&#246;kningen ska filtreras p&#229;
         /// </summary>
         [DataMember(Name="typeOfDate",EmitDefaultValue=false)]
         public string TypeOfDate { get; set; }
     
         /// <summary>
-        /// Datum fr�n
+        /// Datum fr&#229;n
         /// </summary>
         [DataMember(Name="dateFrom",EmitDefaultValue=false)]
         public DateTimeOffset DateFrom { get; set; }
@@ -40,19 +40,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Criteria.Estate {
         public DateTimeOffset DateTo { get; set; }
     
         /// <summary>
-        /// Objekttyp (villa, bostadsr�tt, osv)
+        /// Objekttyp (villa, bostadsr&#228;tt, osv)
         /// </summary>
         [DataMember(Name="type",EmitDefaultValue=false)]
         public IEnumerable<string> Type { get; set; }
     
         /// <summary>
-        /// Status id (till salu, kommande, s�ld, �)
+        /// Status id (till salu, kommande, s&#229;ld, …)
         /// </summary>
         [DataMember(Name="statuses",EmitDefaultValue=false)]
         public IEnumerable<Status> Statuses { get; set; }
     
         /// <summary>
-        /// L�n och kommun kod
+        /// L&#228;n och kommun kod
         /// </summary>
         [DataMember(Name="countyMunicipalityCode",EmitDefaultValue=false)]
         public string CountyMunicipalityCode { get; set; }

@@ -25,7 +25,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize Size { get; set; }
     
         /// <summary>
-        /// M�nadshyra
+        /// M&#229;nadshyra
         /// </summary>
         [DataMember(Name="yearlyFee",EmitDefaultValue=false)]
         public double YearlyFee { get; set; }

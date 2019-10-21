@@ -13,13 +13,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string Name { get; set; }
     
         /// <summary>
-        /// Bygg�r
+        /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
         public int YearBuilt { get; set; }
     
         /// <summary>
-        /// Antal v�ningsplan
+        /// Antal v&#229;ningsplan
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
         public double NumberOfFloors { get; set; }

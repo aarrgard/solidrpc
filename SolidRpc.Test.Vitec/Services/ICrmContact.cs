@@ -11,16 +11,16 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmContact {
         /// <summary>
-        /// H�mta lista av kontakter som matchar ett kriterie.
+        /// H&#228;mta lista av kontakter som matchar ett kriterie.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
-        /// <param name="criteriaAgentId">Urval p� anv�ndareid</param>
-        /// <param name="criteriaCreatedAtFrom">Skapad fr�n och med</param>
+        /// <param name="criteriaAgentId">Urval på användareid</param>
+        /// <param name="criteriaCreatedAtFrom">Skapad från och med</param>
         /// <param name="criteriaCreatedAtTo">Skapad till och med</param>
-        /// <param name="criteriaChangedAtFrom">�ndrad fr�n och med</param>
-        /// <param name="criteriaChangedAtTo">�ndrad till och med</param>
-        /// <param name="criteriaCustomFieldName">Egendefinerat f�ltnamn</param>
-        /// <param name="criteriaCustomFieldValue">Egendefinerat f�ltv�rde</param>
+        /// <param name="criteriaChangedAtFrom">Ändrad från och med</param>
+        /// <param name="criteriaChangedAtTo">Ändrad till och med</param>
+        /// <param name="criteriaCustomFieldName">Egendefinerat fältnamn</param>
+        /// <param name="criteriaCustomFieldValue">Egendefinerat fältvärde</param>
         /// <param name="cancellationToken"></param>
         Task<CrmContactList> CrmContactSelect(
             string customerId,
@@ -34,7 +34,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta kontakt
+        /// H&#228;mta kontakt
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -45,7 +45,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista utav kontakter, max 20 stycken �t g�ngen.
+        /// H&#228;mta lista utav kontakter, max 20 stycken &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -56,7 +56,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta f�retagskontakt
+        /// H&#228;mta f&#246;retagskontakt
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -67,7 +67,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista utav f�retagskontakter, max 20 stycken �t g�ngen.
+        /// H&#228;mta lista utav f&#246;retagskontakter, max 20 stycken &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -78,7 +78,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta personkontakt
+        /// H&#228;mta personkontakt
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -89,7 +89,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista utav personkontakter, max 20 stycken �t g�ngen.
+        /// H&#228;mta lista utav personkontakter, max 20 stycken &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -100,7 +100,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta d�dsbokontakt
+        /// H&#228;mta d&#246;dsbokontakt
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -111,7 +111,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista utav d�dsbokontakter, max 20 stycken �t g�ngen.
+        /// H&#228;mta lista utav d&#246;dsbokontakter, max 20 stycken &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -122,7 +122,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta nuvarande boende f�r en kontakt.
+        /// H&#228;mta nuvarande boende f&#246;r en kontakt.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -133,7 +133,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista av nuvarande boenden f�r kontakter, max 20 stycken kontakter �t g�ngen.
+        /// H&#228;mta lista av nuvarande boenden f&#246;r kontakter, max 20 stycken kontakter &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -144,7 +144,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta spekulantrelationerna f�r en kontakt.
+        /// H&#228;mta spekulantrelationerna f&#246;r en kontakt.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -155,7 +155,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista av spekulantrelationer f�r kontakter, max 20 stycken kontakter �t g�ngen.
+        /// H&#228;mta lista av spekulantrelationer f&#246;r kontakter, max 20 stycken kontakter &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -166,7 +166,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta k�parrelationerna f�r en kontakt.
+        /// H&#228;mta k&#246;parrelationerna f&#246;r en kontakt.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -177,7 +177,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista av k�parrelationer f�r kontakter, max 20 stycken kontakter �t g�ngen.
+        /// H&#228;mta lista av k&#246;parrelationer f&#246;r kontakter, max 20 stycken kontakter &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -188,7 +188,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta s�ljarrelationerna f�r en kontakt.
+        /// H&#228;mta s&#228;ljarrelationerna f&#246;r en kontakt.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactId">Kontaktid.</param>
@@ -199,7 +199,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mta lista av s�ljarrelationer f�r kontakter, max 20 stycken kontakter �t g�ngen.
+        /// H&#228;mta lista av s&#228;ljarrelationer f&#246;r kontakter, max 20 stycken kontakter &#229;t g&#229;ngen.
         /// </summary>
         /// <param name="customerId">Kund-id.</param>
         /// <param name="contactIds">Kontaktidn (kommaseparerade, max 20 stycken).</param>
@@ -222,7 +222,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Ta bort en kategori fr�n en kontakt.
+        /// Ta bort en kategori fr&#229;n en kontakt.
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="contactId">Kontaktid</param>

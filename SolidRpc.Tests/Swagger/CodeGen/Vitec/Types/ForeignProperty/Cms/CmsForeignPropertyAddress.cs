@@ -26,7 +26,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignProperty.Cms {
         public string Town { get; set; }
     
         /// <summary>
-        /// Omr�desid
+        /// Omr&#229;desid
         /// </summary>
         [DataMember(Name="areaId",EmitDefaultValue=false)]
         public string AreaId { get; set; }

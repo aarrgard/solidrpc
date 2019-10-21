@@ -33,7 +33,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public DateTimeOffset Date { get; set; }
     
         /// <summary>
-        /// Fr�n
+        /// Fr&#229;n
         /// </summary>
         [DataMember(Name="startTime",EmitDefaultValue=false)]
         public DateTimeOffset StartTime { get; set; }
@@ -51,7 +51,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string Commentary { get; set; }
     
         /// <summary>
-        /// Bokningsbar fr�n Internet
+        /// Bokningsbar fr&#229;n Internet
         /// </summary>
         [DataMember(Name="bookableFromInternet",EmitDefaultValue=false)]
         public bool BookableFromInternet { get; set; }
@@ -63,13 +63,13 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string BookingUrl { get; set; }
     
         /// <summary>
-        /// Visa p� Internet
+        /// Visa p&#229; Internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
         public bool ShowOnInternet { get; set; }
     
         /// <summary>
-        /// Intressenter som varit p� aktuell visning
+        /// Intressenter som varit p&#229; aktuell visning
         /// </summary>
         [DataMember(Name="participants",EmitDefaultValue=false)]
         public IEnumerable<string> Participants { get; set; }

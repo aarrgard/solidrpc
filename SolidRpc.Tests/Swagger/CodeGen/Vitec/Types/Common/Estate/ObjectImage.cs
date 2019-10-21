@@ -14,13 +14,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string Category { get; set; }
     
         /// <summary>
-        /// Leverant�r
+        /// Leverant&#246;r
         /// </summary>
         [DataMember(Name="supplier",EmitDefaultValue=false)]
         public string Supplier { get; set; }
     
         /// <summary>
-        /// Leverant�rsId
+        /// Leverant&#246;rsId
         /// </summary>
         [DataMember(Name="supplierId",EmitDefaultValue=false)]
         public string SupplierId { get; set; }
@@ -50,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public int OrderNumber { get; set; }
     
         /// <summary>
-        /// Sorteringsnummer p� hemnet
+        /// Sorteringsnummer p&#229; hemnet
         /// </summary>
         [DataMember(Name="hemnetOrderNumber",EmitDefaultValue=false)]
         public int HemnetOrderNumber { get; set; }
@@ -62,13 +62,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string ImageId { get; set; }
     
         /// <summary>
-        /// Senast �ndrad
+        /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
         public DateTimeOffset DateChanged { get; set; }
     
         /// <summary>
-        /// Senast bilden �ndrades
+        /// Senast bilden &#228;ndrades
         /// </summary>
         [DataMember(Name="dateChangedImageData",EmitDefaultValue=false)]
         public DateTimeOffset DateChangedImageData { get; set; }
@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string Url { get; set; }
     
         /// <summary>
-        /// Till�t visning p� internet
+        /// Till&#229;t visning p&#229; internet
         /// </summary>
         [DataMember(Name="showImageOnInternet",EmitDefaultValue=false)]
         public bool ShowImageOnInternet { get; set; }

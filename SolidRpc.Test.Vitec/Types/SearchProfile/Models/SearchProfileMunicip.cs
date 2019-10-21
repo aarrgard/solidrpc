@@ -7,7 +7,7 @@ namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class SearchProfileMunicip {
         /// <summary>
-        /// L�n
+        /// L&#228;n
         /// </summary>
         [DataMember(Name="county",EmitDefaultValue=false)]
         public string County { get; set; }
@@ -25,7 +25,7 @@ namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// L�n och kommunkod
+        /// L&#228;n och kommunkod
         /// </summary>
         [DataMember(Name="countyMunicipalityCode",EmitDefaultValue=false)]
         public string CountyMunicipalityCode { get; set; }

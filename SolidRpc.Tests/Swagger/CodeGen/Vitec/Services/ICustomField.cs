@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICustomField {
         /// <summary>
-        /// H�mtar egendefinerade f�lt.
+        /// H&#228;mtar egendefinerade f&#228;lt.
         /// </summary>
         /// <param name="customerId">Kund id</param>
         /// <param name="cancellationToken"></param>

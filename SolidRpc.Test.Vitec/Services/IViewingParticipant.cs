@@ -10,7 +10,7 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IViewingParticipant {
         /// <summary>
-        /// H�mta uppf�ljning om en visningsdeltagare f�r en visning
+        /// H&#228;mta uppf&#246;ljning om en visningsdeltagare f&#246;r en visning
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="contactId"></param>
@@ -23,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Uppdatera uppf�ljning om en visningsdeltagare
+        /// Uppdatera uppf&#246;ljning om en visningsdeltagare
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="participantFollowUp"></param>

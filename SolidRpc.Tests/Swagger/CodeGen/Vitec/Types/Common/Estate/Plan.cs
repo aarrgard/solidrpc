@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         public string Type { get; set; }
     
         /// <summary>
-        /// Genomf�randetid
+        /// Genomf&#246;randetid
         /// </summary>
         [DataMember(Name="implemetationPeriod",EmitDefaultValue=false)]
         public string ImplemetationPeriod { get; set; }

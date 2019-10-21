@@ -25,7 +25,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Crm.Contact {
         public string Cell { get; set; }
     
         /// <summary>
-        /// �vrig telefonnummer
+        /// &#214;vrig telefonnummer
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }

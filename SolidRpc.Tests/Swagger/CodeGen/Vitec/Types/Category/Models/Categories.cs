@@ -8,7 +8,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Category.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Categories {
         /// <summary>
-        /// F�retagskategorier
+        /// F&#246;retagskategorier
         /// </summary>
         [DataMember(Name="companyCategories",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Category.Models.Category> CompanyCategories { get; set; }

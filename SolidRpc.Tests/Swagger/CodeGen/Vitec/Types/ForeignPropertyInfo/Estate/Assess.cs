@@ -7,13 +7,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Assess {
         /// <summary>
-        /// Taxerings�r
+        /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="taxAssessmentYear",EmitDefaultValue=false)]
         public int TaxAssessmentYear { get; set; }
     
         /// <summary>
-        /// Prelimin�rt taxeringsv�rde
+        /// Prelimin&#228;rt taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="preliminaryAssessedValue",EmitDefaultValue=false)]
         public bool PreliminaryAssessedValue { get; set; }
@@ -25,19 +25,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         public string AssessmentDirectory { get; set; }
     
         /// <summary>
-        /// Byggnadsv�rde
+        /// Byggnadsv&#228;rde
         /// </summary>
         [DataMember(Name="buildingValue",EmitDefaultValue=false)]
         public double BuildingValue { get; set; }
     
         /// <summary>
-        /// Markv�rde
+        /// Markv&#228;rde
         /// </summary>
         [DataMember(Name="landValue",EmitDefaultValue=false)]
         public double LandValue { get; set; }
     
         /// <summary>
-        /// Summa taxeringsv�rde
+        /// Summa taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="totalAssessedValue",EmitDefaultValue=false)]
         public double TotalAssessedValue { get; set; }

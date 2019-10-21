@@ -7,13 +7,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CondominiumExpenses {
         /// <summary>
-        /// �rsavgift till samf�llighet
+        /// &#197;rsavgift till samf&#228;llighet
         /// </summary>
         [DataMember(Name="yearlyCommunityFee",EmitDefaultValue=false)]
         public double YearlyCommunityFee { get; set; }
     
         /// <summary>
-        /// Driftkostnad per �r
+        /// Driftkostnad per &#229;r
         /// </summary>
         [DataMember(Name="operatingCost",EmitDefaultValue=false)]
         public double OperatingCost { get; set; }

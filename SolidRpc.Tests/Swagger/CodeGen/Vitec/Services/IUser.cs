@@ -11,11 +11,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IUser {
         /// <summary>
-        /// H�mtar lista �ver publika anv�ndare. H�mta anv�ndarlista f�r publika anv�ndare.
-        /// F�r att kunna h�mta anv�ndarlista s� kr�vs det en giltig API nyckel och ett kundid.
+        /// H&#228;mtar lista &#246;ver publika anv&#228;ndare. H&#228;mta anv&#228;ndarlista f&#246;r publika anv&#228;ndare.
+        /// F&#246;r att kunna h&#228;mta anv&#228;ndarlista s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.
         /// </summary>
-        /// <param name="criteriaUserId">Anv�ndarid</param>
-        /// <param name="criteriaSearchText">Text som filtrerar p� namn eller titel</param>
+        /// <param name="criteriaUserId">Användarid</param>
+        /// <param name="criteriaSearchText">Text som filtrerar på namn eller titel</param>
         /// <param name="criteriaCustomerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.User>> UserGetUser(
@@ -25,11 +25,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H�mtar lista �ver alla anv�ndare. H�mta samtliga anv�ndare.
-        /// F�r att kunna h�mta anv�ndarlista s� kr�vs det en giltig API nyckel och ett kundid.
+        /// H&#228;mtar lista &#246;ver alla anv&#228;ndare. H&#228;mta samtliga anv&#228;ndare.
+        /// F&#246;r att kunna h&#228;mta anv&#228;ndarlista s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.
         /// </summary>
-        /// <param name="criteriaUserId">Anv�ndarid</param>
-        /// <param name="criteriaSearchText">Text som filtrerar p� namn eller titel</param>
+        /// <param name="criteriaUserId">Användarid</param>
+        /// <param name="criteriaSearchText">Text som filtrerar på namn eller titel</param>
         /// <param name="criteriaCustomerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<User.User>> UserGetAllUsers(
@@ -39,11 +39,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Autentisierar anv�ndare
+        /// Autentisierar anv&#228;ndare
         /// </summary>
         /// <param name="criteriaCustomerId">Kundid</param>
-        /// <param name="criteriaUserName">Anv�ndarnamn</param>
-        /// <param name="criteriaPassword">L�senord</param>
+        /// <param name="criteriaUserName">Användarnamn</param>
+        /// <param name="criteriaPassword">Lösenord</param>
         /// <param name="cancellationToken"></param>
         Task<bool> UserAuthenticateUser(
             string criteriaCustomerId = default(string),

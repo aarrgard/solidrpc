@@ -8,7 +8,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Link {
         /// <summary>
-        /// L�nkar
+        /// L&#228;nkar
         /// </summary>
         [DataMember(Name="links",EmitDefaultValue=false)]
         public IEnumerable<string> Links { get; set; }

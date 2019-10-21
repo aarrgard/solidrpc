@@ -25,7 +25,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public string City { get; set; }
     
         /// <summary>
-        /// Omr�desnamn
+        /// Omr&#229;desnamn
         /// </summary>
         [DataMember(Name="areaName",EmitDefaultValue=false)]
         public string AreaName { get; set; }
@@ -49,7 +49,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models.Wgs84Coordinate Wgs84Coordinate { get; set; }
     
         /// <summary>
-        /// V�gbeskrivning
+        /// V&#228;gbeskrivning
         /// </summary>
         [DataMember(Name="directions",EmitDefaultValue=false)]
         public string Directions { get; set; }

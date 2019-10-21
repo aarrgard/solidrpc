@@ -8,13 +8,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class CompilationAreas {
         /// <summary>
-        /// Areak�lla
+        /// Areak&#228;lla
         /// </summary>
         [DataMember(Name="areaSource",EmitDefaultValue=false)]
         public string AreaSource { get; set; }
     
         /// <summary>
-        /// Bost�der
+        /// Bost&#228;der
         /// </summary>
         [DataMember(Name="residential",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CompilationArea Residential { get; set; }
@@ -62,19 +62,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CompilationArea ColdStockroom { get; set; }
     
         /// <summary>
-        /// �vrigt 1
+        /// &#214;vrigt 1
         /// </summary>
         [DataMember(Name="other1",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CompilationAreaOther Other1 { get; set; }
     
         /// <summary>
-        /// �vrigt 2
+        /// &#214;vrigt 2
         /// </summary>
         [DataMember(Name="other2",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CompilationAreaOther Other2 { get; set; }
     
         /// <summary>
-        /// �vriga areor
+        /// &#214;vriga areor
         /// </summary>
         [DataMember(Name="others",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CompilationAreaOther> Others { get; set; }
@@ -86,7 +86,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.CommercialPropertyAreas Areas { get; set; }
     
         /// <summary>
-        /// Int�kter
+        /// Int&#228;kter
         /// </summary>
         [DataMember(Name="income",EmitDefaultValue=false)]
         public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate.Income Income { get; set; }
@@ -98,7 +98,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public string Vacancies { get; set; }
     
         /// <summary>
-        /// �vriga kommentarer
+        /// &#214;vriga kommentarer
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
         public string Other { get; set; }
@@ -110,13 +110,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         public double Area { get; set; }
     
         /// <summary>
-        /// Summa hyresint�kter
+        /// Summa hyresint&#228;kter
         /// </summary>
         [DataMember(Name="rentIncomes",EmitDefaultValue=false)]
         public double RentIncomes { get; set; }
     
         /// <summary>
-        /// Summa �vriga int�kter
+        /// Summa &#246;vriga int&#228;kter
         /// </summary>
         [DataMember(Name="otherIncomes",EmitDefaultValue=false)]
         public double OtherIncomes { get; set; }

@@ -10,10 +10,10 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IArea {
         /// <summary>
-        /// H�mtar en lista �ver omr�den.
+        /// H&#228;mtar en lista &#246;ver omr&#229;den.
         /// </summary>
         /// <param name="criteriaCustomerId"></param>
-        /// <param name="criteriaAreaId">Omr�dets id</param>
+        /// <param name="criteriaAreaId">Områdets id</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Area>> AreaGetAreas(
             string criteriaCustomerId,

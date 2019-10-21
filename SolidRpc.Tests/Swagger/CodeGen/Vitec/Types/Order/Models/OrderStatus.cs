@@ -13,7 +13,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Order.Models {
         public string Id { get; set; }
     
         /// <summary>
-        /// Status p� tj�nsten
+        /// Status p&#229; tj&#228;nsten
         /// </summary>
         [DataMember(Name="status",EmitDefaultValue=false)]
         public string Status { get; set; }
