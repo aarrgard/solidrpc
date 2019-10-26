@@ -7,7 +7,7 @@
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8"
   },
-  "name": "solidrpc-security-impl-providers",
+  "name": "solidrpc-security-back-providers",
   "scripts": {
     "all": "npm run webpack && npm run copy-all",
     "webpack": "webpack --mode production",

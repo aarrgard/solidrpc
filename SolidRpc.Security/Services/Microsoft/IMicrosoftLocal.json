@@ -37,13 +37,13 @@
         }
       }
     },
-    "/LoggedIn/{accessToken}": {
+    "/LoggedIn": {
       "get": {
         "description": "Callback when a user has logged in successfully.",
         "operationId": "LoggedIn",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "accessToken",
             "description": "The the access token for the logged in user",
             "required": true,

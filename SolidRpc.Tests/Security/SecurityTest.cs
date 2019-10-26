@@ -45,9 +45,9 @@ namespace SolidRpc.Tests.Security
             var redirect_uri = new Uri("https://arr1-petstore.azurewebsites.net/front/microsoft/login");
             var response_mode = "query";
             var state = "234322";
-            var url = await binder.GetUrlAsync<IMicrosoftRemote>(o => o.Authorize("common", clientId, response_type, redirect_uri, scopes, nounce, response_mode, state, null, null, null, null, CancellationToken.None));
+            var url = await binder.GetUrlAsync<IMicrosoftRemote>(o => o.Authorize("common", clientId, response_type, redirect_uri, response_mode, scopes, state, nounce, null, null, null, null, CancellationToken.None));
             //Process.Start(new ProcessStartInfo("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", url.ToString()));
-            Assert.AreEqual("https://login.microsoftonline.com/common/oauth2/authorize?client_id=615993a8-66b3-40ce-a165-96a81edd3677&response_type=code&redirect_uri=https://arr1-petstore.azurewebsites.net/front/microsoft/login&scope=openid&nounce=234324&response_mode=query&state=234322", url.ToString());
+            Assert.AreEqual("https://login.microsoftonline.com/common/oauth2/authorize?client_id=615993a8-66b3-40ce-a165-96a81edd3677&response_type=code&redirect_uri=https://arr1-petstore.azurewebsites.net/front/microsoft/login&response_mode=query&scope=openid&state=234322&nounce=234324", url.ToString());
             //await sp.GetRequiredService<IMicrosoftRemote>().Authorize("common", clientId, response_type, redirect_uri, null, nounce, response_mode, state);
         }
 

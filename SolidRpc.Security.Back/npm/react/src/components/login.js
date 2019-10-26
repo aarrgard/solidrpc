@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import LoginButton from "./components/login-button";
+import LoginButton from "./login-button";
 
 import { Security  } from "solidrpc-security";
 

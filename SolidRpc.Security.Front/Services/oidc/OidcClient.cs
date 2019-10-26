@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SolidRpc.Security.Front.Services.oidc
 {
     /// <summary>
-    /// Implements an oidc client.
+    /// Implements logic to fetch the configuration for an oidc client.
     /// </summary>
     public class OidcClient : IOidcClient
     {
@@ -24,14 +24,14 @@ namespace SolidRpc.Security.Front.Services.oidc
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Settings> Settings(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Settings> Settings(CancellationToken cancellationToken = default(CancellationToken))
         {
             var settings = new Settings();
             settings.Authority = SolidRpcSecurityOptions.Authority;
             settings.ClientId = SolidRpcSecurityOptions.ClientId;
             settings.ResponseType = "id_token";
             settings.Scope = "openid";
-            return settings;
+            return Task.FromResult(settings);
         }
     }
 }

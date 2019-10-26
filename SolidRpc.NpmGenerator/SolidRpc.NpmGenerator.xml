@@ -140,6 +140,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.CheckCachedModuleDir(System.IO.DirectoryInfo)">
+            <summary>
+            Returns true if all the files exists(temp dir might get corrupted).
+            </summary>
+            <param name="cachedModuleDir"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.CreateCodeNamespace(System.String,System.Threading.CancellationToken)">
             <summary>
             Creates a code representation for supplied assembly

@@ -6,10 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="npm\react\build\**" />
     <Compile Remove="react\build\**" />
     <Compile Remove="Services\node_modules\**" />
+    <EmbeddedResource Remove="npm\react\build\**" />
     <EmbeddedResource Remove="react\build\**" />
     <EmbeddedResource Remove="Services\node_modules\**" />
+    <None Remove="npm\react\build\**" />
     <None Remove="react\build\**" />
   </ItemGroup>
 
@@ -37,6 +40,11 @@
 
   <ItemGroup>
     <Folder Include="npm\providers\dist\" />
+    <Folder Include="Services\NewFolder\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="npm\login\src\styles.css" />
   </ItemGroup>
 
 </Project>
