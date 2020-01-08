@@ -28,6 +28,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <param name="logger"></param>
         /// <param name="configuration"></param>
         /// <param name="methodBinderStore"></param>
+        /// <param name="contentHandler"></param>
         /// <param name="functionHandler"></param>
         public SolidRpcHostAzFunctions(
             ILogger<SolidRpcHost> logger, 

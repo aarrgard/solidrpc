@@ -685,6 +685,7 @@
             <param name="logger"></param>
             <param name="configuration"></param>
             <param name="methodBinderStore"></param>
+            <param name="contentHandler"></param>
             <param name="functionHandler"></param>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.IsAlive(System.Threading.CancellationToken)">

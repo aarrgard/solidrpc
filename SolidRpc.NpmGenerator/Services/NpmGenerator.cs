@@ -54,7 +54,7 @@ namespace SolidRpc.NpmGenerator.Services
         private ICodeNamespaceGenerator CodeNamespaceGenerator { get; }
         private ITypescriptGenerator TypescriptGenerator { get; }
         private IHttpClientFactory HttpClientFactory { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         /// <summary>
         /// Creates the npm tar

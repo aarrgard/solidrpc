@@ -20,10 +20,16 @@ namespace SolidRpc.Tests.Swagger.CodeGen
     /// </summary>
     public class VitecTest : WebHostTest
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public VitecTest()
         {
             FileMock = new Mock<IFile>();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public Mock<IFile> FileMock { get; }
         private string OpenApiConfig => ReadOpenApiConfiguration(nameof(TestVitec).Substring(4));
 
@@ -39,13 +45,21 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             return new DirectoryInfo(path);
         }
 
+        /// <summary>
+        /// Configures the services
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public override IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
             services.AddSolidRpcBindings<IFile>(FileMock.Object, OpenApiConfig);
             return base.ConfigureServerServices(services);
         }
 
-
+        /// <summary>
+        /// Configures the client services
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureClientServices(IServiceCollection services)
         {
             services.AddSolidRpcBindings<IFile>(null, OpenApiConfig);
@@ -92,7 +106,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// Tests all the bindings
         /// </summary>
         [Test]
-        public async Task CheckBindings()
+        public void CheckBindings()
         {
             //
             // check bindings

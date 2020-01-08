@@ -18,6 +18,7 @@ namespace SolidRpc.NpmGenerator.InternalServices
         /// Creates an instance
         /// </summary>
         /// <param name="methodBinderStore"></param>
+        /// <param name="codeDocRepository"></param>
         public CodeNamespaceGenerator(IMethodBinderStore methodBinderStore, ICodeDocRepository codeDocRepository)
         {
             MethodBinderStore = methodBinderStore;

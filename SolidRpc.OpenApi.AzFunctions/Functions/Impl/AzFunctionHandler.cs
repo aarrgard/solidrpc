@@ -287,7 +287,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             var scheme = Environment.GetEnvironmentVariable(ConfigurationMethodAddressTransformer.ConfigScheme) ?? "http";
             // add the content fetcher 
             var staticRoute = $"{HttpRouteFrontendPrefix}/{{*path}}";
-            staticRoutes[staticRoute] = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{typeof(ISolidRpcContentHandler).FullName.Replace('.', '/')}/{nameof(ISolidRpcContentHandler.GetContent)}?path={{HttpRouteFrontendPrefix}}{{path}}";
+            staticRoutes[staticRoute] = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{typeof(ISolidRpcContentHandler).FullName.Replace('.', '/')}/{nameof(ISolidRpcContentHandler.GetContent)}?path={HttpRouteFrontendPrefix}/{{path}}";
             if (staticRoutes.ToList().Any(o => !o.Key.StartsWith("/")))
             {
                 throw new Exception("Found strange entry");

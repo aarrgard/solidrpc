@@ -57,21 +57,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 work.MethodInfo = methodInfo;
             }
 
-            public IMethodBinding GetMethodInfo(IEnumerable<string> segments)
+            public IMethodBinding GetMethodInfo(IEnumerator<string> segments)
             {
-                if (!segments.Any())
+                if (!segments.MoveNext())
                 {
                     return MethodInfo;
                 }
-                if (!SubSegments.TryGetValue(segments.First(), out PathSegment subSegment))
+                if (!SubSegments.TryGetValue(segments.Current, out PathSegment subSegment))
                 {
                     if (!SubSegments.TryGetValue("{}", out subSegment))
                     {
-                        return null;
+                        throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",",SubSegments.Keys)}");
                     }
                 }
-                var rest = segments.Skip(1);
-                return subSegment.GetMethodInfo(rest);
+                return subSegment.GetMethodInfo(segments);
             }
         }
 
@@ -130,7 +129,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var pathKey = $"{request.Method}{request.Path}";
-            var methodInfo = RootSegment.GetMethodInfo(pathKey.Split('/'));
+            var methodInfo = RootSegment.GetMethodInfo(pathKey.Split('/').AsEnumerable().GetEnumerator());
             if(methodInfo == null)
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);

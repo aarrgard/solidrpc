@@ -18,7 +18,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             base.ConfigureServices(services);
             services.AddSolidRpcSwaggerUI(o => o.DefaultOpenApiSpec = "SolidRpc.Security");
             //services.AddPetstore();
-            services.AddSolidRpcSecurityBackend();
+            //services.AddSolidRpcSecurityBackend();
         }
     }
 }

@@ -33,10 +33,10 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
-            var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcContentHandler>();
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
-            services.AddSolidRpcSecurityBackendGoogle((sp, conf) => { sp.ConfigureOptions(conf); });
+            //var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcContentHandler>();
+            //services.AddSolidRpcSecurityBackendGoogle((sp, conf) => { sp.ConfigureOptions(conf); });
         }
     }
 }

@@ -147,7 +147,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                     return path.Substring(o.PathPrefix.Length).Replace('/', '.').Equals(o.Content.PathName);
                 }).Select(o => o.Content).ToList();
 
-            if (!staticFiles.Any())
+            if (!staticFiles.Any()) 
             {
                 return (_, cancellationToken) =>
                 {

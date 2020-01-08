@@ -63,98 +63,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
     },
-    "SolidRpc/Security/Services/LoginPage": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginPage",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginPage"
-    },
-    "SolidRpc/Security/Services/LoginProviders": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginProviders",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginProviders"
-    },
-    "SolidRpc/Security/Services/LoginScript": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginScript",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScript"
-    },
-    "SolidRpc/Security/Services/LoginScripts": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginScripts",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScripts"
-    },
-    "SolidRpc/Security/Services/oauth2/authorize": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/oauth2/authorize",
-        "methods": [
-          "GET",
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/authorize"
-    },
-    "SolidRpc/Security/Services/oauth2/discovery": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/oauth2/discovery",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/discovery"
-    },
-    "SolidRpc/Security/Services/oauth2/keys": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/oauth2/keys",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/keys"
-    },
-    "SolidRpc/Security/Services/oauth2/token": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/oauth2/token",
-        "methods": [
-          "GET",
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/oauth2/token"
-    },
-    "SolidRpc/Security/Services/Profile": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Profile",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Profile"
-    },
-    ".well-known/openid-configuration": {
-      "matchCondition": {
-        "route": "/.well-known/openid-configuration",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://localhost:7071/front/SolidRpc/Security/Services/oauth2/discovery"
-    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",
@@ -162,7 +70,7 @@
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path={HttpRouteFrontendPrefix}{path}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=/front/{path}"
     }
   }
 }

@@ -26,16 +26,27 @@ namespace SolidRpc.Test.Petstore.AzFunctions
         {
             var azFuncHandler = services.GetAzFunctionHandler();
 
-            if (!services.Any(o => o.ServiceType == typeof(IConfiguration)))
+            //
+            // configure IConfiguration
+            //
+            var config = (IConfiguration)services.FirstOrDefault(o => o.ServiceType == typeof(IConfiguration)).ImplementationInstance;
+            var cb = new ConfigurationBuilder();
+            if(config == null)
             {
-                var cb = new ConfigurationBuilder();
                 cb.AddEnvironmentVariables();
-                cb.AddInMemoryCollection(new Dictionary<string, string>()
-                {
-                    { ConfigurationMethodAddressTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
-                });
-                services.AddSingleton<IConfiguration>(cb.Build());
             }
+            else
+            {
+                cb.AddConfiguration(config);
+            }
+            cb.AddInMemoryCollection(new Dictionary<string, string>() {
+                { ConfigurationMethodAddressTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
+            });
+            services.AddSingleton<IConfiguration>(cb.Build());
+
+            //
+            // configure logging
+            //
             if(!services.Any(o => o.ServiceType == typeof(ILogger)))
             {
                 services.AddLogging(o => {

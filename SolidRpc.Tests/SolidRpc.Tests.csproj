@@ -58,7 +58,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0" />
     <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build040" />
-    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build063" />
+    <PackageReference Include="SolidProxy.MicrosoftDI" Version="1.0.0-build068" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
