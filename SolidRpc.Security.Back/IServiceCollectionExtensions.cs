@@ -77,6 +77,18 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 var mc = new MicrosoftOptions();
                 configurator(sp, mc);
+                if (string.IsNullOrEmpty(mc.Tenant))
+                {
+                    throw new Exception("No tenant set for Microsoft IdP");
+                }
+                if (mc.ClientID == Guid.Empty)
+                {
+                    throw new Exception("No ClientId(ApplicationId) set for Microsoft IdP");
+                }
+                if (string.IsNullOrEmpty(mc.ClientSecret))
+                {
+                    throw new Exception("No client password set for Microsoft IdP");
+                }
                 return mc;
             });
 

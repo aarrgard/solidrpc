@@ -323,7 +323,36 @@ module.exports = {{
                 cachedModuleDir.Create();
                 await DownloadNodeModule(cachedModuleDir, moduleName, version);
             }
+            var allFilesExists = CheckCachedModuleDir(cachedModuleDir);
+            if(!allFilesExists)
+            {
+                cachedModuleDir.Delete(true);
+                await DownloadNodeModule(cachedModuleDir, moduleName, version);
+            }
             return cachedModuleDir;
+        }
+
+        /// <summary>
+        /// Returns true if all the files exists(temp dir might get corrupted).
+        /// </summary>
+        /// <param name="cachedModuleDir"></param>
+        /// <returns></returns>
+        private bool CheckCachedModuleDir(DirectoryInfo cachedModuleDir)
+        {
+            var filesFile = new FileInfo(Path.Combine(cachedModuleDir.Parent.FullName, $"{cachedModuleDir.Name}.files"));
+            if(!filesFile.Exists)
+            {
+                return false;
+            }
+            using (var fos = filesFile.OpenText())
+            {
+                var line = fos.ReadLine();
+                while(line != null)
+                {
+                    line = fos.ReadLine();
+                }
+            }
+            return true;
         }
 
         private async Task DownloadNodeModule(DirectoryInfo tmpDir, string moduleName, string version)
@@ -332,6 +361,7 @@ module.exports = {{
             var url = $"https://registry.npmjs.org/{moduleName}/-/{moduleName}-{version}.tgz";
             var httpClient = HttpClientFactory.CreateClient();
             var resp = await httpClient.GetAsync(url);
+            var extractedFiles = new List<string>();
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
                 using (var gzi = new GZipInputStream(s))
@@ -341,7 +371,7 @@ module.exports = {{
                         var nextEntry = tis.GetNextEntry();
                         while(nextEntry != null)
                         {
-                            using (var fos = CreateOutputStream(tmpDir, nextEntry))
+                            using (var fos = CreateOutputStream(tmpDir, nextEntry, extractedFiles))
                             {
                                 tis.CopyEntryContents(fos);
                             }
@@ -351,15 +381,23 @@ module.exports = {{
                     }
                 }
             }
+
+            // put a file in parent directory containing all the files
+            var filesFile = new FileInfo(Path.Combine(tmpDir.Parent.FullName, $"{tmpDir.Name}.files"));
+            using (var fos = filesFile.CreateText())
+            {
+                extractedFiles.ToList().ForEach(o => fos.WriteLine(o));
+            }
         }
 
-        private Stream CreateOutputStream(DirectoryInfo moduleDir, TarEntry nextEntry)
+        private Stream CreateOutputStream(DirectoryInfo moduleDir, TarEntry nextEntry, ICollection<string> extractedFiles)
         {
             var fileName = nextEntry.Name;
             if(fileName.StartsWith("package/"))
             {
                 fileName = fileName.Substring("package/".Length);
             }
+            extractedFiles.Add(fileName);
             fileName = fileName.Replace('/', Path.DirectorySeparatorChar);
             var fi = new FileInfo(Path.Combine(moduleDir.FullName, fileName));
             if(!fi.Directory.Exists)

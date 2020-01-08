@@ -83,7 +83,15 @@ namespace System
                 var val = config[$"{name}:{prop.Name}"];
                 if(!string.IsNullOrWhiteSpace(val))
                 {
-                    var propVal = Convert.ChangeType(val, prop.PropertyType);
+                    object propVal;
+                    if(prop.PropertyType == typeof(Guid))
+                    {
+                        propVal = Guid.Parse(val);
+                    }
+                    else
+                    {
+                        propVal = Convert.ChangeType(val, prop.PropertyType);
+                    }
                     prop.SetValue(options, propVal);
                 }
             }

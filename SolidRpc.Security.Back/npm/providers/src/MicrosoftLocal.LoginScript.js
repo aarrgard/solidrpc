@@ -1,5 +1,5 @@
 ﻿window.solidRpcDoMicrosoftLogin = function() {
-    console.log('logging in to microsoft');
+    document.location = '{authorizeEndpoint}';
 }
 
 window.solidRpcDoMicrosoftLogout = function(accessToken) {
