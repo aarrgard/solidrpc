@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
+using SolidRpc.Security.Services.Oidc;
 using SolidRpc.Test.Petstore.AzFunctions;
 using SolidRpc.Test.Petstore.AzFunctionsV1;
 using System;
 using System.Reflection;
+using System.Threading;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 
@@ -35,6 +39,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
             base.ConfigureServices(services);
             services.AddSolidRpcSwaggerUI();
             services.AddPetstore();
+            services.AddSolidRpcSecurityFrontend();
+            services.AddSolidRpcSecurityBackend((sp, c) => {
+                c.OidcClientId = Guid.NewGuid().ToString();
+                c.OidcClientSecret = Guid.NewGuid().ToString();
+            });
             //var service = services.BuildServiceProvider().GetRequiredService<ISolidRpcContentHandler>();
             //services.AddSolidRpcSecurityBackendGoogle((sp, conf) => { sp.ConfigureOptions(conf); });
         }

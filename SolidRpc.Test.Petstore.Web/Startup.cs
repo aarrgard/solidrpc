@@ -26,7 +26,6 @@ namespace SolidRpc.Test.PetstoreWeb
             services.AddSolidRpcNpmGenerator();
             services.AddSolidRpcSecurityFrontend();
             services.AddSolidRpcSecurityBackend();
-<<<<<<< Updated upstream
             services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>
             {
                 sp.ConfigureOptions(conf);
@@ -35,15 +34,6 @@ namespace SolidRpc.Test.PetstoreWeb
             {
                 sp.ConfigureOptions(conf);
             });
-=======
-            //services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>
-            //{
-            //    sp.ConfigureOptions(conf);
-            //});
-            //services.AddSolidRpcSecurityBackendGoogle((sp, conf) =>
-            //{
-            //    sp.ConfigureOptions(conf);
->>>>>>> Stashed changes
             services.AddSolidRpcSecurityBackendMicrosoft((sp, conf) =>
             {
                 sp.ConfigureOptions(conf);

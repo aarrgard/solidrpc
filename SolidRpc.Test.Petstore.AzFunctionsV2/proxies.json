@@ -63,6 +63,107 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
     },
+    "SolidRpc/Security/Services/LoginPage": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginPage",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginPage"
+    },
+    "SolidRpc/Security/Services/LoginProviders": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginProviders",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginProviders"
+    },
+    "SolidRpc/Security/Services/LoginScript": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginScript",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScript"
+    },
+    "SolidRpc/Security/Services/LoginScripts": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/LoginScripts",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScripts"
+    },
+    "SolidRpc/Security/Services/Oidc/authorize": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/authorize"
+    },
+    "SolidRpc/Security/Services/Oidc/discovery": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Oidc/discovery",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/discovery"
+    },
+    "SolidRpc/Security/Services/Oidc/keys": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Oidc/keys",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/keys"
+    },
+    "SolidRpc/Security/Services/Oidc/Settings": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Oidc/Settings",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/Settings"
+    },
+    "SolidRpc/Security/Services/Oidc/token": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Oidc/token",
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/token"
+    },
+    "SolidRpc/Security/Services/Profile": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Profile",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Profile"
+    },
+    ".well-known/openid-configuration": {
+      "matchCondition": {
+        "route": "/.well-known/openid-configuration",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://localhost:7071/front/SolidRpc/Security/Services/Oidc/discovery"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

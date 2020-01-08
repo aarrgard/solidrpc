@@ -50,6 +50,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 Host = "localhost",
                 BasePath = Settings.BasePath,
             };
+            swaggerObject.Schemes = new [] { "https" };
             swaggerObject.SetOpenApiSpecResolver(openApiSpecResolver, "");
             swaggerObject.Paths = CreatePaths(cSharpRepository, swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)

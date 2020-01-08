@@ -29,7 +29,7 @@ namespace SolidRpc.Test.Petstore.AzFunctions
             //
             // configure IConfiguration
             //
-            var config = (IConfiguration)services.FirstOrDefault(o => o.ServiceType == typeof(IConfiguration)).ImplementationInstance;
+            var config = (IConfiguration)services.FirstOrDefault(o => o.ServiceType == typeof(IConfiguration))?.ImplementationInstance;
             var cb = new ConfigurationBuilder();
             if(config == null)
             {

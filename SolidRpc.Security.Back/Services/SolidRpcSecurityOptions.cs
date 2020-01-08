@@ -12,7 +12,7 @@ namespace SolidRpc.Security.Back.Services
         /// <summary>
         /// Should the static content be added when starting up
         /// </summary>
-        public bool AddStaticContent { get; internal set; }
+        public bool AddStaticContent { get; set; }
 
         /// <summary>
         /// The oidc client id.
@@ -20,8 +20,8 @@ namespace SolidRpc.Security.Back.Services
         public string OidcClientId { get; set; }
 
         /// <summary>
-        /// The oidc client security.
+        /// The oidc client secret.
         /// </summary>
-        public string OidcClientSecurity { get; set; }
+        public string OidcClientSecret { get; set; }
     }
 }
