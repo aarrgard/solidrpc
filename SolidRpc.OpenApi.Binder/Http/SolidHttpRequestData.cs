@@ -314,7 +314,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemDateTime:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
                         case SystemDateTimeOffset:
-                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTimeOffset)val).ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTimeOffset)val).ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture));
                         case SystemUri:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Uri)val).ToString());
                         case SystemString:

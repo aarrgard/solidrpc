@@ -5,6 +5,9 @@
     "version": "1.0.0"
   },
   "host": "localhost",
+  "schemes": [
+    "https"
+  ],
   "paths": {
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStuff": {
       "get": {

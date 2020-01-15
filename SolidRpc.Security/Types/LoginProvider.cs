@@ -2,7 +2,6 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System;
-using SolidRpc.Security.Types;
 namespace SolidRpc.Security.Types {
     /// <summary>
     /// success
@@ -31,7 +30,7 @@ namespace SolidRpc.Security.Types {
         /// The script uris
         /// </summary>
         [DataMember(Name="meta",EmitDefaultValue=false)]
-        public IEnumerable<LoginProviderMeta> Meta { get; set; }
+        public IEnumerable<SolidRpc.Security.Types.LoginProviderMeta> Meta { get; set; }
     
         /// <summary>
         /// The html for the login button

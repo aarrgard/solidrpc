@@ -246,12 +246,19 @@ namespace SolidRpc.Tests.MvcProxyTest
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
-                var dateTime = new DateTimeOffset(2019, 05, 25, 17, 32, 44, DateTimeOffset.Now.Offset);
+                var timezone = TimeZoneInfo.Local;
+                var time = new DateTime(2019, 05, 25, 17, 32, 44);
+                var dateTime = new DateTimeOffset(time, timezone.GetUtcOffset(time));
                 var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeOffsetInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
+                var correctedDateTime = dateTime;
+                if (TimeZoneInfo.Local.IsDaylightSavingTime(dateTime))
+                {
+                    correctedDateTime = new DateTimeOffset(time, timezone.BaseUtcOffset);
+                }
                 Assert.AreEqual($"\"{dateTime.ToString("yyy-MM-ddTHH:mm:sszzz")}\"", await AssertOk(resp));
 
-                //var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
-                //Assert.AreEqual(dateTime, await sp.ProxyDateTimeOffsetInQuery(dateTime));
+                var sp = await CreateServiceProxy<IMvcProxyTest>(ctx);
+                Assert.AreEqual(dateTime, await sp.ProxyDateTimeOffsetInQuery(dateTime));
             }
         }
 

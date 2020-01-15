@@ -6,6 +6,9 @@
   },
   "host": "localhost",
   "basePath": "/SolidRpc/Tests/Swagger/SpecGen/FileUpload2",
+  "schemes": [
+    "https"
+  ],
   "paths": {
     "/Services/IFileUpload/UploadFile": {
       "post": {

@@ -1877,6 +1877,9 @@ export namespace Security {
                         case "revocation_endpoint":
                             if (obj.revocation_endpoint) { this.RevocationEndpoint = obj.revocation_endpoint.toString(); }
                             break;
+                        case "device_authorization_endpoint":
+                            if (obj.device_authorization_endpoint) { this.DeviceAuthorizationEndpoint = obj.device_authorization_endpoint.toString(); }
+                            break;
                         case "jwks_uri":
                             if (obj.jwks_uri) { this.JwksUri = obj.jwks_uri.toString(); }
                             break;
@@ -1948,6 +1951,7 @@ export namespace Security {
                 if(this.TokenEndpoint) { arr.push('token_endpoint: '); arr.push(JSON.stringify(this.TokenEndpoint)); arr.push(','); } 
                 if(this.UserinfoEndpoint) { arr.push('userinfo_endpoint: '); arr.push(JSON.stringify(this.UserinfoEndpoint)); arr.push(','); } 
                 if(this.RevocationEndpoint) { arr.push('revocation_endpoint: '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
+                if(this.DeviceAuthorizationEndpoint) { arr.push('device_authorization_endpoint: '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
                 if(this.JwksUri) { arr.push('jwks_uri: '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
                 if(this.ScopesSupported) { arr.push('scopes_supported: '); this.ScopesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
                 if(this.GrantTypesSupported) { arr.push('grant_types_supported: '); this.GrantTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
@@ -1991,6 +1995,10 @@ export namespace Security {
              * 
              */
             RevocationEndpoint: string;
+            /**
+             * OPTIONAL. URL of the authorization server's device authorization endpoint defined in Section 3.1.
+             */
+            DeviceAuthorizationEndpoint: string;
             /**
              * REQUIRED. URL of the OP's JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server's encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key's intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
              */

@@ -1,6 +1,5 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
-using SolidRpc.Security.Types;
 using System.Collections.Generic;
 namespace SolidRpc.Security.Types {
     /// <summary>
@@ -36,7 +35,7 @@ namespace SolidRpc.Security.Types {
         /// 
         /// </summary>
         [DataMember(Name="error",EmitDefaultValue=false)]
-        public FacebookDebugTokenDataError Error { get; set; }
+        public SolidRpc.Security.Types.FacebookDebugTokenDataError Error { get; set; }
     
         /// <summary>
         /// 

@@ -5,6 +5,9 @@
     "version": "1.0.0"
   },
   "host": "localhost",
+  "schemes": [
+    "https"
+  ],
   "paths": {},
   "tags": []
 }

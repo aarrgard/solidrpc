@@ -6,6 +6,9 @@
   },
   "host": "localhost",
   "basePath": "/SolidRpc/Tests/Swagger/SpecGen/TwoComplexArgs",
+  "schemes": [
+    "https"
+  ],
   "paths": {
     "/Services/ITwoComplexArgs/GetComplexType": {
       "post": {
