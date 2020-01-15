@@ -83,14 +83,51 @@ namespace System.IO
                 await fs.CopyToAsync(ms);
             }
             var existingFileContent = ms.ToArray();
-            for(int i = 0; i < newFileContent.Length; i++)
-            {
-                if(newFileContent[i] != existingFileContent[i])
+            int newFilePos = 0;
+            int existingFilePos = 0;
+            while(true) {
+                //
+                // skip newlines
+                //
+                while (existingFilePos < existingFileContent.Length && 
+                    (existingFileContent[existingFilePos] == '\r' 
+                    || existingFileContent[existingFilePos] == '\n'))
+                {
+                    existingFilePos++;
+                }
+                while (newFilePos < newFileContent.Length && 
+                    (newFileContent[newFilePos] == '\r' || 
+                    newFileContent[newFilePos] == '\n'))
+                {
+                    newFilePos++;
+                }
+                //
+                // if both reach EOF - return true
+                // if any file reach EOF - return false
+                //
+                if (existingFileContent.Length == existingFilePos)
+                {
+                    if (newFileContent.Length == newFilePos)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                if (newFileContent.Length == newFilePos)
                 {
                     return true;
                 }
+                //
+                // check character
+                //
+                if (newFileContent[newFilePos] == existingFileContent[existingFilePos])
+                {
+                    newFilePos++;
+                    existingFilePos++;
+                    continue;
+                }
+                return true;
             }
-            return false;
         }
 
         /// <summary>
