@@ -315,12 +315,21 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             if (prefix != null)
             {
                 var simplifiedName = typeName.Substring(prefix.Length + 1);
-                if(genArgs != null)
+
+                // make sure that we do not have another match on this name in another using directive
+                var cSharpRepo = GetParent<ICSharpRepository>();
+                var resolvedTypes = usings
+                    .Select(o => cSharpRepo.GetType($"{o}.{simplifiedName}"))
+                    .Where(o => o != null);
+                if(resolvedTypes.Count() < 2)
                 {
-                    simplifiedName = $"{simplifiedName}<{string.Join(",", genArgs.Select(o => SimplifyName(o)))}>";
+                    if (genArgs != null)
+                    {
+                        simplifiedName = $"{simplifiedName}<{string.Join(",", genArgs.Select(o => SimplifyName(o)))}>";
+                    }
+                    simplifiedName = $"{simplifiedName}{rest}";
+                    return simplifiedName;
                 }
-                simplifiedName = $"{simplifiedName}{rest}";
-                return simplifiedName;
             }
 
             return fullName;

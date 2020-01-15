@@ -74,6 +74,57 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             Namespaces = new ConcurrentDictionary<string, ICSharpNamespace>();
             ClassesAndInterfaces = new ConcurrentDictionary<string, ICSharpMember>();
+            LoadSystemTypes();
+        }
+
+        private void LoadSystemTypes()
+        {
+            GetClass(typeof(void), "void");
+            GetClass(typeof(bool), "bool");
+            GetClass(typeof(short), "short");
+            GetClass(typeof(int), "int");
+            GetClass(typeof(long), "long");
+            GetClass(typeof(float), "float");
+            GetClass(typeof(double), "double");
+            GetClass(typeof(string), "string");
+            LoadSystemTypes(typeof(int).Assembly);
+            LoadSystemTypes(typeof(Uri).Assembly);
+        }
+
+        private void LoadSystemTypes(Assembly assembly)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.IsNotPublic)
+                {
+                    continue;
+                }
+                if (type.IsNested)
+                {
+                    continue;
+                }
+                ICSharpType added;
+                if (type.IsInterface)
+                {
+                    added = GetInterface(type);
+                }
+                else if (type.IsClass)
+                {
+                    added = GetClass(type);
+                }
+                else if (type.IsValueType)
+                {
+                    added = GetClass(type);
+                }
+                else
+                {
+                    continue;
+                }
+                if (added.RuntimeType == null)
+                {
+                    throw new Exception($"Failed to fetch runtime type for system type {added.FullName}");
+                }
+            }
         }
 
         /// <summary>
@@ -173,13 +224,30 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
-                return new CSharpClass(ns, qn.Name, GetSystemType(_));
+                return new CSharpClass(ns, qn.Name, null);
             });
-            if(member is ICSharpClass clz)
+            if (member is ICSharpClass clz)
             {
                 return clz;
             }
             throw new Exception("Member is not a class:" + member.GetType().FullName);
+        }
+
+        /// <summary>
+        /// Returns the class for supplied qualified name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public ICSharpClass GetClass(Type type, string typeName = null)
+        {
+            if (typeName == null) typeName = type.FullName;
+            return (ICSharpClass)ClassesAndInterfaces.GetOrAdd(typeName, _ =>
+            {
+                var qn = new QualifiedName(_);
+                var ns = GetNamespace(qn.Namespace);
+                return new CSharpClass(ns, qn.Name, type);
+            });
         }
 
 
@@ -194,7 +262,22 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
-                return new CSharpInterface(ns, qn.Name, GetSystemType(_));
+                return new CSharpInterface(ns, qn.Name, null);
+            });
+        }
+
+        /// <summary>
+        /// Returns the interface for supplied type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public ICSharpInterface GetInterface(Type type)
+        {
+            return (ICSharpInterface)ClassesAndInterfaces.GetOrAdd(type.FullName, _ =>
+            {
+                var qn = new QualifiedName(_);
+                var ns = GetNamespace(qn.Namespace);
+                return new CSharpInterface(ns, qn.Name, type);
             });
         }
 
@@ -215,81 +298,47 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <returns></returns>
         public ICSharpType GetType(string fullName)
         {
-            if (ClassesAndInterfaces.TryGetValue(fullName, out ICSharpMember member))
+            ICSharpMember member;
+            if (ClassesAndInterfaces.TryGetValue(fullName, out member))
             {
                 return (ICSharpType)member;
             }
             var (genType, genArgs, rest) = ReadType(fullName);
             if (genArgs != null) genType = $"{genType}`{genArgs.Count}";
-            var t = GetSystemType(genType);
-            if (t == null)
+            if (ClassesAndInterfaces.TryGetValue(genType, out member))
             {
-                return null;
+                if(member is ICSharpInterface)
+                {
+                    return GetInterface(fullName);
+                }
+                else
+                {
+                    return GetClass(fullName);
+                }
             }
-            else if (t.IsClass)
-            {
-                return GetClass(fullName);
-            }
-            else if (t.IsInterface)
-            {
-                return GetInterface(fullName);
-            }
-            else if (t.IsValueType)
-            {
-                return GetClass(fullName);
-            }
-            else
-            {
-                throw new Exception();
-            }
+            return null;
+            //var t = GetSystemType(genType);
+            //if (t == null)
+            //{
+            //    return null;
+            //}
+            //else if (t.IsClass)
+            //{
+            //    return GetClass(fullName);
+            //}
+            //else if (t.IsInterface)
+            //{
+            //    return GetInterface(fullName);
+            //}
+            //else if (t.IsValueType)
+            //{
+            //    return GetClass(fullName);
+            //}
+            //else
+            //{
+            //    throw new Exception();
+            //}
 
-        }
-        private Type GetSystemType(string fullName)
-        {
-            return s_systemTypes.GetOrAdd(fullName, _ => {
-                var systemAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(o => !o.IsDynamic)
-                    .Where(o => o.IsFullyTrusted);
-                foreach (Assembly a in systemAssemblies)
-                {
-                    try
-                    {
-                        foreach (Type t in a.GetTypes())
-                        {
-                            if (!t.FullName.StartsWith("System."))
-                            {
-                                continue;
-                            }
-                            if (t.FullName == fullName)
-                            {
-                                return t;
-                            }
-                        }
-                    }
-                    catch { }
-                }
-                switch (fullName)
-                {
-                    case "void":
-                        return typeof(void);
-                    case "bool":
-                        return typeof(bool);
-                    case "short":
-                        return typeof(short);
-                    case "int":
-                        return typeof(int);
-                    case "long":
-                        return typeof(long);
-                    case "float":
-                        return typeof(float);
-                    case "double":
-                        return typeof(double);
-                    case "string":
-                        return typeof(string);
-                    default:
-                        return null;
-                }
-            });
         }
 
         /// <summary>

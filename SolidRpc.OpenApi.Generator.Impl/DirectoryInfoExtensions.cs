@@ -51,7 +51,7 @@ namespace System.IO
                     await zos.CopyToAsync(ms);
                     var newFileContent = ms.ToArray();
                     var differs = await FileDiffers(fi, newFileContent);
-                    if (differs && replaceFilesThatDiffers)
+                    if (differs)
                     {
                         modifiedFiles.Add(ze.Name);
                         if(replaceFilesThatDiffers)

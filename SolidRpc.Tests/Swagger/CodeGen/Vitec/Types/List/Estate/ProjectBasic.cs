@@ -20,19 +20,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         /// Prisintervall
         /// </summary>
         [DataMember(Name="priceRange",EmitDefaultValue=false)]
-        public Range PriceRange { get; set; }
+        public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api.Range PriceRange { get; set; }
     
         /// <summary>
         /// Storleksintervall p&#229; boarea
         /// </summary>
         [DataMember(Name="livingSpaceRange",EmitDefaultValue=false)]
-        public Range LivingSpaceRange { get; set; }
+        public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api.Range LivingSpaceRange { get; set; }
     
         /// <summary>
         /// Rumsinterval
         /// </summary>
         [DataMember(Name="numberOfRoomsRange",EmitDefaultValue=false)]
-        public Range NumberOfRoomsRange { get; set; }
+        public SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api.Range NumberOfRoomsRange { get; set; }
     
         /// <summary>
         /// Visningar
