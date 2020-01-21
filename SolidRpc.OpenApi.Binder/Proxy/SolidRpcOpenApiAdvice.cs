@@ -9,6 +9,7 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -43,13 +44,19 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// Confugures the proxy
         /// </summary>
         /// <param name="config"></param>
-        public void Configure(ISolidRpcOpenApiConfig config)
+        public bool Configure(ISolidRpcOpenApiConfig config)
         {
+            var advices = config.InvocationConfiguration.GetSolidInvocationAdvices();
+            if(advices.LastOrDefault() != this)
+            {
+                return false;
+            }
             MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
                 config.MethodAddressTransformer
             );
+            return true;
         }
 
         /// <summary>

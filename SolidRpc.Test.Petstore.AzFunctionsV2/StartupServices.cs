@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
-using SolidRpc.Test.Petstore.AzFunctions;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using System;
 

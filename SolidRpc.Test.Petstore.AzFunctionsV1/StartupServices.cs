@@ -1,16 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
-using SolidRpc.Security.Services.Oidc;
-using SolidRpc.Test.Petstore.AzFunctions;
 using SolidRpc.Test.Petstore.AzFunctionsV1;
 using System;
 using System.Reflection;
-using System.Threading;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 

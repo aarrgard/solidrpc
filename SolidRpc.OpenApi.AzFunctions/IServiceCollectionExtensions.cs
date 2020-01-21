@@ -1,7 +1,6 @@
-﻿using SolidRpc.OpenApi.AzFunctions.Functions;
+﻿using SolidRpc.OpenApi.AzFunctions;
+using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
-using SolidRpc.OpenApi.Model.V2;
-using SolidRpc.Test.Petstore.AzFunctions;
 using System;
 using System.IO;
 using System.Linq;

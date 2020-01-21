@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IServiceCollection AddVitec(this IServiceCollection services, MethodAddressTransformer baseUriTransformer = null)
+        public static IServiceCollection AddVitec(this IServiceCollection services)
         {
             services.AddSolidRpcBindings(typeof(IEstate).Assembly, typeof(EstateImpl).Assembly);
             return services;

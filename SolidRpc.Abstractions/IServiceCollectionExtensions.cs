@@ -347,7 +347,9 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             sc.AddSolidRpcSingletonServices();
 
-            // check that we have an implementation.
+            //
+            // check that we have an implementation - register it if that is the case
+            //
             var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
             if (serviceRegistration == null)
             {
@@ -370,14 +372,6 @@ namespace Microsoft.Extensions.DependencyInjection
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             openApiProxyConfig.OpenApiSpec = openApiConfiguration;
             openApiProxyConfig.MethodAddressTransformer = baseUriTransformer;
-
-            //
-            // make sure that the implementation is wrapped in a proxy by adding the invocation advice.
-            // 
-            if ((serviceRegistration?.ImplementationType?.IsClass ?? false) || serviceRegistration?.ImplementationInstance != null || serviceRegistration?.ImplementationFactory != null)
-            {
-                mc.AddAdvice(typeof(SolidProxyInvocationImplAdvice<,,>));
-            }
 
             return mc;
         }

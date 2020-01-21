@@ -155,6 +155,29 @@ namespace System
             {
                 arg = taskType ?? arg;
             }
+
+            if(typeof(Stream).IsAssignableFrom(arg))
+            {
+                return new FileTypeHelper(true,
+                   (o1, o2) => {
+                       var s = (Stream)o1;
+                       var pos = s.Position;
+                       ((Stream)o2).CopyTo(s);
+                       s.Position = pos;
+                   }, (o) => {
+                       return (Stream)o;
+                   },
+                   (o1, o2)=> { }, (o) => { return "application/octet-stream"; },
+                   (o1, o2) => { }, (o) => { return null; },
+                   (o1, o2) => { }, (o) => { return null; },
+                   (o1, o2) => { }, (o) => { return null; }
+                   );
+            }
+            else
+            {
+
+            }
+
             //
             // we need an empty constructor
             //

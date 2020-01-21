@@ -8,7 +8,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 {
     /// <summary>
     /// Message handler that can be registered in the IoC container to invoke services
-    /// in an othe IoC container.
+    /// in an other IoC container.
     /// </summary>
     public class SolidRpcHttpMessageHandler : HttpMessageHandler
     {

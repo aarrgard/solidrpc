@@ -190,10 +190,15 @@ namespace SolidRpc.Tests
                 AddBaseAddress(serverServices, BaseAddress);
                 _serverServiceProvider = ConfigureServices(serverServices);
 
-                services.AddHttpClient("Swagger Petstore").ConfigurePrimaryHttpMessageHandler(o =>
-                {
-                    return new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>());
-                });
+                _serverServiceProvider.GetRequiredService<IMethodBinderStore>()
+                    .MethodBinders.ToList().ForEach(binder =>
+                    {
+                        services.AddHttpClient(binder.OpenApiSpec.Title).ConfigurePrimaryHttpMessageHandler(ch =>
+                        {
+                            return new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>());
+                        });
+                        
+                    });
                 return base.ConfigureClientServices(services);
             }
 
@@ -222,6 +227,7 @@ namespace SolidRpc.Tests
                 ServiceInterceptors = new List<ServiceInterceptor>();
                 ClientServices = new ServiceCollection();
                 ClientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+                ClientServices.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             }
 
@@ -393,14 +399,14 @@ namespace SolidRpc.Tests
             /// <summary>
             /// Configures the services
             /// </summary>
-            /// <param name="services"></param>
+            /// <param name="clientServices"></param>
             /// <returns></returns>
-            public virtual IServiceProvider ConfigureClientServices(IServiceCollection services)
+            public virtual IServiceProvider ConfigureClientServices(IServiceCollection clientServices)
             {
-                services.AddHttpClient();
-                AddBaseAddress(services, BaseAddress);
-                WebHostTest.ConfigureClientServices(services);
-                return services.BuildServiceProvider();
+                clientServices.AddHttpClient();
+                AddBaseAddress(clientServices, BaseAddress);
+                WebHostTest.ConfigureClientServices(clientServices);
+                return clientServices.BuildServiceProvider();
             }
 
             /// <summary>
@@ -428,6 +434,7 @@ namespace SolidRpc.Tests
             {
                 var configBuilder = services.GetSolidConfigurationBuilder()
                     .SetGenerator<SolidProxyCastleGenerator>();
+                configBuilder.RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
                 services.AddSolidRpcSingletonServices();
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
@@ -477,8 +484,9 @@ namespace SolidRpc.Tests
                 conf.OpenApiSpec = openApiConfiguration;
                 conf.MethodAddressTransformer = GetBaseUrl;
 
-                ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
+                ClientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
                 ClientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
+                ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
             }
         }
 
@@ -550,12 +558,12 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Configures the services hosted on the client
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="clientServices"></param>
         /// <returns></returns>
-        public virtual void ConfigureClientServices(IServiceCollection services)
+        public virtual void ConfigureClientServices(IServiceCollection clientServices)
         {
-            services.AddLogging(ConfigureLogging);
-            services.AddSolidRpcSingletonServices();
+            clientServices.AddLogging(ConfigureLogging);
+            clientServices.AddSolidRpcSingletonServices();
         }
 
         /// <summary>

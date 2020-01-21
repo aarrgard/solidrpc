@@ -418,6 +418,7 @@ namespace SolidRpc.Tests.MvcProxyTest
             var sc = new ServiceCollection();
             sc.AddSingleton(ctx.ServerServiceProvider.GetRequiredService<IConfiguration>());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
             sc.AddLogging(ConfigureLogging);
             sc.AddHttpClient();
             sc.AddSolidRpcSingletonServices();
@@ -429,6 +430,7 @@ namespace SolidRpc.Tests.MvcProxyTest
                     conf.OpenApiSpec = openApiConfiguration;
                 });
 
+            sc.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 

@@ -47,7 +47,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return (_) =>
                 {
                     var valData = _.FirstOrDefault();
-                    var data = Activator.CreateInstance(type);
+                    object data;
+                    if(typeof(Stream).IsAssignableFrom(type))
+                    {
+                        data = new MemoryStream();
+                    }
+                    else
+                    {
+                        data = Activator.CreateInstance(type);
+                    }
                     type.SetFileTypeStreamData(data, valData.GetBinaryValue());
                     type.SetFileTypeContentType(data, valData.ContentType);
                     type.SetFileTypeFilename(data, valData.Filename);

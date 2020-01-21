@@ -695,12 +695,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Test.Petstore.AzFunctions.StartupSolidRpcServices">
+        <member name="T:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices">
             <summary>
-            Base class to configure the soldi rpc services
+            Base class to configure the solid rpc services
             </summary>
         </member>
-        <member name="M:SolidRpc.Test.Petstore.AzFunctions.StartupSolidRpcServices.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Configures the services.
             </summary>

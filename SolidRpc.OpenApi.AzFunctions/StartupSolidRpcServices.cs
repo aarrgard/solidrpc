@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Services;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using SolidRpc.OpenApi.Binder;
 
-namespace SolidRpc.Test.Petstore.AzFunctions
+namespace SolidRpc.OpenApi.AzFunctions
 {
     /// <summary>
-    /// Base class to configure the soldi rpc services
+    /// Base class to configure the solid rpc services
     /// </summary>
     public class StartupSolidRpcServices 
     {
