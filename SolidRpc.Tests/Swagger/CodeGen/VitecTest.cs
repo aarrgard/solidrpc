@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Services;
 using System;
@@ -32,7 +33,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// 
         /// </summary>
         public Mock<IFile> FileMock { get; }
-        private string OpenApiConfig => ReadOpenApiConfiguration(nameof(TestVitec).Substring(4));
+        private string OpenApiSpec => ReadOpenApiConfiguration(nameof(TestVitec).Substring(4));
 
         /// <summary>
         /// Returns the spec folder
@@ -53,7 +54,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// <returns></returns>
         public override IServiceProvider ConfigureServerServices(IServiceCollection serverServices)
         {
-            serverServices.AddSolidRpcBindings(FileMock.Object, OpenApiConfig);
+            serverServices.AddSolidRpcBindings(
+                FileMock.Object, 
+                (c) => c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = OpenApiSpec);
+
             return base.ConfigureServerServices(serverServices);
         }
 
@@ -63,8 +67,9 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// <param name="clientServices"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices)
         {
-            clientServices.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
-            clientServices.AddSolidRpcBindings<IFile>(null, OpenApiConfig);
+            clientServices.AddSolidRpcBindings<IFile>(
+                null, 
+                (c) => c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = OpenApiSpec);
             base.ConfigureClientServices(clientServices);
         }
 
@@ -122,7 +127,6 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             sc.AddLogging(ConfigureLogging);
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
             sc.AddSolidRpcServices(o => { o.AddRpcHostServices = true; });
             var sp = sc.BuildServiceProvider();
             var mbs = sp.GetRequiredService<IMethodBinderStore>();

@@ -138,7 +138,11 @@ namespace SolidRpc.Tests
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
             services.AddSolidRpcSingletonServices();
-            services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), null, GetBaseUrl);
+            services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), (c) =>
+            {
+                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                conf.MethodAddressTransformer = GetBaseUrl;
+            });
 
             return services.BuildServiceProvider();
         }

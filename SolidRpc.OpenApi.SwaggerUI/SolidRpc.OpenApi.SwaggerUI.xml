@@ -9,13 +9,13 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidRpc.OpenApi.SwaggerUI.SwaggerOptions},SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidRpc.OpenApi.SwaggerUI.SwaggerOptions},System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Adds the swagger UI to the service collection.
             </summary>
             <param name="services"></param>
-            <param name="configurator"></param>
-            <param name="baseUriTransformer"></param>
+            <param name="optionsConfigurator"></param>
+            <param name="apiConfigurator"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI">

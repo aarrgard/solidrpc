@@ -678,13 +678,14 @@
             The setup class
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
             <summary>
             Constructs a new instance
             </summary>
             <param name="logger"></param>
             <param name="configuration"></param>
             <param name="methodBinderStore"></param>
+            <param name="configurationStore"></param>
             <param name="contentHandler"></param>
             <param name="functionHandler"></param>
         </member>
@@ -705,6 +706,12 @@
             Configures the services.
             </summary>
             <param name="services"></param>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureAzureFunction(SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="c"></param>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>

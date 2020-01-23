@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 {
@@ -18,6 +19,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
+        private static Task s_restartJob = Task.CompletedTask;
         private static readonly string s_defaultHttpRoutePrefix = "/api";
         private string _routePrefix = null;
 
@@ -262,13 +264,29 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public void TriggerRestart()
         {
             var hostJson = new FileInfo(Path.Combine(BaseDir.FullName, "host.json"));
-            if(hostJson.Exists)
+            if (!hostJson.Exists)
             {
+                return;
+            }
+            if (s_restartJob.Status == TaskStatus.RanToCompletion)
+            {
+                // start it again
+            }
+            else if (s_restartJob.Status == TaskStatus.Faulted)
+            {
+                // start it again
+            }
+            else
+            {
+                return;
+            }
+            s_restartJob = Task.Run(async () => {
+                await Task.Delay(2000);
                 using (var sw = hostJson.AppendText())
                 {
                     sw.WriteLine($"//{DateTime.Now.ToString("yyyyMMddHHmmssfffff")}");
                 }
-            }
+            });
         }
 
         /// <summary>

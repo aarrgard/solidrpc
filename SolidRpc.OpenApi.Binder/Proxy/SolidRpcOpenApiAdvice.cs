@@ -10,6 +10,7 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -34,10 +35,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
-        private HttpMessageHandler HttpMessageHandler { get; }
         private ILogger Logger { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         public IHttpClientFactory HttpClientFactory { get; }
+        public IDictionary<string, string> AdditionalHeaders { get; set; }
         private IMethodBinding MethodBinding { get; set; }
 
         /// <summary>
@@ -51,6 +52,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 return false;
             }
+            AdditionalHeaders = config.HttpHeaders ?? new Dictionary<string, string>(0);
             MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
@@ -76,16 +78,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var httpReq = new SolidHttpRequest();
             await MethodBinding.BindArgumentsAsync(httpReq, invocation.Arguments);
 
-            if (HttpMessageHandler == null)
+            if (Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
             }
-            else
-            {
-                Logger.LogTrace($"Sending data to local handler. Emulating host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
-            }
 
             var httpClientReq = new HttpRequestMessage();
+            foreach(var additionalHeader in AdditionalHeaders)
+            {
+                httpClientReq.Headers.Add(additionalHeader.Key, additionalHeader.Value);
+            }
             httpReq.CopyTo(httpClientReq);
 
             var httpClientResponse = await httpClient.SendAsync(httpClientReq);

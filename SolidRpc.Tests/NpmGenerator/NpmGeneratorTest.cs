@@ -96,7 +96,6 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
             sc.AddSolidRpcNpmGenerator();
 
             var sp = sc.BuildServiceProvider();
@@ -126,7 +125,6 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
             sc.AddSolidRpcNpmGenerator();
             sc.AddSolidRpcSecurityFrontend();
             sc.AddSolidRpcSecurityBackend();

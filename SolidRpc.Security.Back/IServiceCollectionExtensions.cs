@@ -1,4 +1,6 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidProxy.Core.Configuration.Builder;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Security.Back.Services;
 using SolidRpc.Security.Back.Services.Facebook;
 using SolidRpc.Security.Back.Services.Google;
@@ -29,7 +31,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configurator"></param>
         /// <param name="addStaticContent"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurityBackend(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
+        public static IServiceCollection AddSolidRpcSecurityBackend(
+            this IServiceCollection services, 
+            Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null,
+            Action<ISolidMethodConfigurationBuilder> mbConfigurator = null)
         {
             if(!services.Any(o => o.ServiceType == typeof(IOidcClient)))
             {
@@ -46,8 +51,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             }
 
-            services.AddSolidRpcBindings(typeof(IOidcServer), typeof(OidcServer));
-            services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity));
+            services.AddSolidRpcBindings(typeof(IOidcServer), typeof(OidcServer), mbConfigurator);
+            services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity), mbConfigurator);
             services.GetSolidRpcContentStore().AddMapping(
                 "/.well-known/openid-configuration", 
                 (sp) => sp.GetRequiredService<IMethodBinderStore>().GetUrlAsync<IOidcServer>(o => o.OAuth2Discovery(CancellationToken.None)));
@@ -92,7 +97,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return mc;
             });
 
-            services.AddSolidRpcBindings(typeof(IMicrosoftRemote), null, null, (sp, uri, mi) => Task.FromResult(uri));
+            services.AddSolidRpcBindings(typeof(IMicrosoftRemote), (Type)null);
             services.AddSolidRpcBindings(typeof(IMicrosoftLocal), typeof(MicrosoftLocal));
             services.AddTransient<ILoginProvider>(sp => sp.GetRequiredService<MicrosoftLocal>());
 
@@ -119,7 +124,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 return fbc;
             });
 
-            services.AddSolidRpcBindings(typeof(IFacebookRemote), null, null, (sp, uri, mi) => Task.FromResult(uri));
+            services.AddSolidRpcBindings(typeof(IFacebookRemote), (Type)null);
+
             services.AddSolidRpcBindings(typeof(IFacebookLocal), typeof(FacebookLocal));
             services.AddTransient<ILoginProvider>(sp => sp.GetRequiredService<FacebookLocal>());
 
@@ -147,7 +153,11 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.AddSolidRpcBindings(typeof(IGoogleLocal), typeof(GoogleLocal));
-            services.AddSolidRpcBindings(typeof(IGoogleRemote), null, null, GoogleBaseApiResolver);
+            services.AddSolidRpcBindings(typeof(IGoogleRemote), null, (c) =>
+            {
+                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                conf.MethodAddressTransformer = GoogleBaseApiResolver;
+            });
             services.AddTransient<ILoginProvider>(sp => sp.GetRequiredService<GoogleLocal>());
             return services;
         }

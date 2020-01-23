@@ -1,8 +1,11 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidProxy.Core.Configuration.Builder;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.NpmGenerator.InternalServices;
 using SolidRpc.NpmGenerator.Services;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
+using System;
 using System.Linq;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -16,9 +19,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the npm generator.
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="baseUriTransformer"></param>
+        /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcNpmGenerator(this IServiceCollection services, MethodAddressTransformer baseUriTransformer = null)
+        public static IServiceCollection AddSolidRpcNpmGenerator(this IServiceCollection services, Action<ISolidMethodConfigurationBuilder> configurator = null)
         {
             services.AddTransient<ICodeNamespaceGenerator, CodeNamespaceGenerator>();
             services.AddTransient<ITypescriptGenerator, TypeScriptGenerator>();
@@ -31,7 +34,14 @@ namespace Microsoft.Extensions.DependencyInjection
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();
 
-            services.AddSolidRpcBindings(typeof(INpmGenerator), typeof(NpmGenerator), strOpenApiSpec, baseUriTransformer);
+            services.AddSolidRpcBindings(
+                typeof(INpmGenerator), 
+                typeof(NpmGenerator), 
+                (c) =>
+                {
+                    c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = strOpenApiSpec;
+                    configurator?.Invoke(c);
+                });
             return services;
         }
     }

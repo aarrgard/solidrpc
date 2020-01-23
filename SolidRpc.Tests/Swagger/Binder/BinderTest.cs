@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +34,13 @@ namespace SolidRpc.Tests.Swagger.Binder
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHelloWorld));
-            services.AddSolidRpcBindings(typeof(IHelloWorld), typeof(IHelloWorld), spec.WriteAsJsonString());
+            services.AddSolidRpcBindings(
+                typeof(IHelloWorld), 
+                typeof(IHelloWorld),
+                (c) =>
+                {
+                    c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = spec.WriteAsJsonString();
+                });
 
             var sp = services.BuildServiceProvider();
             var store = sp.GetRequiredService<IMethodBinderStore>();

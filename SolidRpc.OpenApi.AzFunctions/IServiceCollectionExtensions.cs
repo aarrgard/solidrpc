@@ -1,4 +1,5 @@
-﻿using SolidRpc.OpenApi.AzFunctions;
+﻿using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
 using System;
@@ -120,7 +121,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var mi = GetMethodInfo(invocation);
             var openApiParser = services.GetSolidRpcOpenApiParser();
             var openApiSpec = openApiParser.CreateSpecification(mi);
-            services.AddSolidRpcBinding(mi, openApiSpec.WriteAsJsonString());
+            services.AddSolidRpcBinding(mi, (c) =>
+            {
+                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                conf.OpenApiSpec = openApiSpec.WriteAsJsonString();
+            });
 
             var funcHandler = services.GetAzFunctionHandler();
 

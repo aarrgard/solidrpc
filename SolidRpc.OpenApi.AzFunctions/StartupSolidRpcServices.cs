@@ -7,6 +7,8 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using SolidRpc.OpenApi.Binder;
+using SolidProxy.Core.Configuration.Builder;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 
 namespace SolidRpc.OpenApi.AzFunctions
 {
@@ -60,7 +62,16 @@ namespace SolidRpc.OpenApi.AzFunctions
             {
                 o.AddRpcHostServices = true;
                 o.AddStaticContentServices = true;
-            });
+            }, ConfigureAzureFunction);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        protected virtual void ConfigureAzureFunction(ISolidMethodConfigurationBuilder c)
+        {
+            c.ConfigureAdvice<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
         }
     }
 }

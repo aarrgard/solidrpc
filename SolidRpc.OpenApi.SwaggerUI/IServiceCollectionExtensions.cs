@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidProxy.Core.Configuration.Builder;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.SwaggerUI;
 using SolidRpc.OpenApi.SwaggerUI.Services;
@@ -15,20 +16,28 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the swagger UI to the service collection.
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configurator"></param>
-        /// <param name="baseUriTransformer"></param>
+        /// <param name="optionsConfigurator"></param>
+        /// <param name="apiConfigurator"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSwaggerUI(this IServiceCollection services, Action<SwaggerOptions> configurator = null, MethodAddressTransformer baseUriTransformer = null)
+        public static IServiceCollection AddSolidRpcSwaggerUI(
+            this IServiceCollection services, 
+            Action<SwaggerOptions> optionsConfigurator = null, 
+            Action<ISolidMethodConfigurationBuilder> apiConfigurator = null)
         {
             services.AddSingleton(sp => {
                 var options = new SwaggerOptions();
-                configurator?.Invoke(options);
+                optionsConfigurator?.Invoke(options);
                 return options;
             });
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ISwaggerUI));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();
 
-            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), strOpenApiSpec, baseUriTransformer);
+            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), (c) =>
+            {
+                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                conf.OpenApiSpec = strOpenApiSpec;
+                apiConfigurator?.Invoke(c);
+            }); 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", typeof(ISwaggerUI).Assembly);
             return services;
         }

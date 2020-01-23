@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidProxy.Core.Configuration.Builder;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Security.Front;
 using SolidRpc.Security.Front.InternalServices;
@@ -21,7 +22,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configurator"></param>
         /// <param name="addStaticContent"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcSecurityFrontend(this IServiceCollection services, Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null)
+        public static IServiceCollection AddSolidRpcSecurityFrontend(
+            this IServiceCollection services, 
+            Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null,
+            Action<ISolidMethodConfigurationBuilder> mbConfigurator = null)
         {
             services.AddSingletonIfMissing<IOpenIDKeyStore, OpenIDKeyStore>();
             services.AddSingletonIfMissing<IAccessTokenFactory, AccessTokenFactory>();
@@ -57,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return opts;
             });
  
-            services.AddSolidRpcBindings(typeof(IOidcClient), typeof(OidcClient));
+            services.AddSolidRpcBindings(typeof(IOidcClient), typeof(OidcClient), mbConfigurator);
 
             return services;
         }

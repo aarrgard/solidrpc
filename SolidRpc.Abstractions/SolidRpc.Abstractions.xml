@@ -42,12 +42,13 @@
             Should the rpc host services be added on startup.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration},System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Adds the rpc services
             </summary>
             <param name="services"></param>
             <param name="configurator"></param>
+            <param name="mbConfigurator"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -87,44 +88,41 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Configures all the interfaces in supplied assembly
             </summary>
             <param name="sc"></param>
             <param name="interfaceAssembly"></param>
             <param name="implementationAssembly"></param>
-            <param name="baseUriTransformer"></param>
+            <param name="configurator"></param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
             <param name="sc"></param>
             <param name="interfaze"></param>
             <param name="impl"></param>
-            <param name="openApiConfiguration"></param>
-            <param name="baseUriTransformer"></param>
+            <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
             <param name="sc"></param>
             <param name="impl"></param>
-            <param name="openApiConfiguration"></param>
-            <param name="baseUriTransformer"></param>
+            <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.String,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Configures the suppllied method so that it is exposed through the .net core http binding.
             </summary>
             <param name="sc"></param>
             <param name="mi"></param>
-            <param name="openApiConfiguration">The open api configuration to use - may be null to use the embedded api config.</param>
-            <param name="baseUriTransformer"></param>
+            <param name="configurator"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
@@ -628,9 +626,48 @@
             <param name="basePath"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig">
+            <summary>
+            Interface used to determine how the azure function
+            settings should be.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.AuthLevel">
+            <summary>
+            The authorization level.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3">
+            <summary>
+            
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <typeparam name="TMethod"></typeparam>
+            <typeparam name="TAdvice"></typeparam>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3.Configure(SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig)">
+            <summary>
+            
+            </summary>
+            <param name="config"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3.Handle(System.Func{System.Threading.Tasks.Task{`2}},SolidProxy.Core.Proxy.ISolidProxyInvocation{`0,`1,`2})">
+            <summary>
+            
+            </summary>
+            <param name="next"></param>
+            <param name="invocation"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig">
             <summary>
             Configures the bindings for the rpc proxy.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.HttpHeaders">
+            <summary>
+            The http headers to add to the invocations
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.OpenApiSpec">

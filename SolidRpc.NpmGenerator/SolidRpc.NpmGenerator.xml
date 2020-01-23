@@ -379,12 +379,12 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcNpmGenerator(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcNpmGenerator(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
             <summary>
             Adds the npm generator.
             </summary>
             <param name="services"></param>
-            <param name="baseUriTransformer"></param>
+            <param name="configurator"></param>
             <returns></returns>
         </member>
     </members>

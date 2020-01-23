@@ -227,7 +227,6 @@ namespace SolidRpc.Tests
                 ServiceInterceptors = new List<ServiceInterceptor>();
                 ClientServices = new ServiceCollection();
                 ClientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-                ClientServices.GetSolidConfigurationBuilder().RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             }
 
@@ -434,7 +433,6 @@ namespace SolidRpc.Tests
             {
                 var configBuilder = services.GetSolidConfigurationBuilder()
                     .SetGenerator<SolidProxyCastleGenerator>();
-                configBuilder.RegisterConfigurationAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
                 services.AddSolidRpcSingletonServices();
                 ServiceInterceptors.ToList().ForEach(m =>
                 {
@@ -442,7 +440,9 @@ namespace SolidRpc.Tests
                     {
                         services.AddTransient(m.MethodInfo.DeclaringType);
                     }
-                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, m.OpenApiConfiguration);
+                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, c => {
+                        c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = m.OpenApiConfiguration;
+                        });
                     
                     var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
                     var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
