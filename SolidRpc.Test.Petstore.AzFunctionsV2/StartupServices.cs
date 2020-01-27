@@ -26,5 +26,17 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddPetstore();
             //services.AddSolidRpcSecurityBackend();
         }
+
+        protected override void ConfigureAzureFunction(ISolidMethodConfigurationBuilder c)
+        {
+            if(c.MethodInfo.DeclaringType.Assembly == typeof(SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI).Assembly)
+            {
+                c.ConfigureAdvice<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+            }
+            else
+            {
+                base.ConfigureAzureFunction(c);
+            }
+        }
     }
 }
