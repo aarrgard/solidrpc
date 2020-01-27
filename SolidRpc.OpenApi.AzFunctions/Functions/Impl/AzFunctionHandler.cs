@@ -254,6 +254,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <returns></returns>
         public IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string functionName)
         {
+            if (baseDir == null) throw new ArgumentNullException(nameof(baseDir));
+            if (string.IsNullOrEmpty(functionName)) throw new ArgumentNullException(nameof(functionName));
             var httpFunction = new AzHttpFunction(this, new DirectoryInfo(Path.Combine(baseDir.FullName, functionName)));
             return httpFunction;
         }

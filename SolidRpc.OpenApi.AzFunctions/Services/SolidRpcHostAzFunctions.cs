@@ -77,7 +77,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 }).ToList();
 
             var startTime = DateTime.Now;
-            WriteHttpFunctions(FunctionHandler.DevDir, functionDefs);
+            if(FunctionHandler.DevDir != null)
+            {
+                WriteHttpFunctions(FunctionHandler.DevDir, functionDefs);
+            }
             var modified = WriteHttpFunctions(FunctionHandler.BaseDir, functionDefs);
 
             var staticRoutes = await ContentHandler.GetPathMappingsAsync(cancellationToken); 
@@ -135,6 +138,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private bool WriteHttpFunctions(DirectoryInfo baseDir, IEnumerable<FunctionDef> functionDefs)
         {
+            if (baseDir == null) throw new ArgumentNullException(nameof(baseDir));
             var paths = functionDefs.Select(o => o.Path).Distinct().ToList();
             var functionNames = paths.Select(o => CreateFunctionName(o)).ToList();
             var functions = FunctionHandler.GetFunctions(baseDir).ToList();
