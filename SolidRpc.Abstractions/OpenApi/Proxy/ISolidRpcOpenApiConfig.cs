@@ -11,11 +11,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
     public interface ISolidRpcOpenApiConfig : ISolidProxyInvocationAdviceConfig
     {
         /// <summary>
-        /// The http headers to add to the invocations
-        /// </summary>
-        IDictionary<string, string> HttpHeaders { get; set; }
-
-        /// <summary>
         /// Sets the open api specification to use. If not set the specification matching
         /// the method name or assembly name where the method is defined will be used.
         /// </summary>
@@ -27,5 +22,10 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// the openapi config.
         /// </summary>
         MethodAddressTransformer MethodAddressTransformer { get; set; }
+
+        /// <summary>
+        /// The http headers to add to the invocations
+        /// </summary>
+        MethodHeadersTransformer MethodHeadersTransformer { get; set; }
     }
 }

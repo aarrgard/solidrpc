@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private ILogger Logger { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         public IHttpClientFactory HttpClientFactory { get; }
-        public IDictionary<string, string> AdditionalHeaders { get; set; }
+        public MethodHeadersTransformer MethodHeadersTransformer { get; set; }
         private IMethodBinding MethodBinding { get; set; }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 return false;
             }
-            AdditionalHeaders = config.HttpHeaders ?? new Dictionary<string, string>(0);
+            MethodHeadersTransformer = config.MethodHeadersTransformer ?? ((o1, o2, o3) => Task.CompletedTask);
             MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
@@ -78,13 +78,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var httpReq = new SolidHttpRequest();
             await MethodBinding.BindArgumentsAsync(httpReq, invocation.Arguments);
 
+ 
             if (Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
             }
 
             var httpClientReq = new HttpRequestMessage();
-            foreach(var additionalHeader in AdditionalHeaders)
+            var headers = new Dictionary<string, IEnumerable<string>>();
+            await MethodHeadersTransformer(invocation.ServiceProvider, headers, invocation.SolidProxyInvocationConfiguration.MethodInfo);
+            foreach (var additionalHeader in headers)
             {
                 httpClientReq.Headers.Add(additionalHeader.Key, additionalHeader.Value);
             }

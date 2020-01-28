@@ -352,6 +352,15 @@
             <param name="methodInfo">The method to resolve the uri for(may be null)</param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.MethodHeadersTransformer">
+            <summary>
+            The method used to transform headers
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="headers"></param>
+            <param name="methodInfo">The method to transform the headers for</param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
             <summary>
             Interface that we use to access the data in the Http request
@@ -665,11 +674,6 @@
             Configures the bindings for the rpc proxy.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.HttpHeaders">
-            <summary>
-            The http headers to add to the invocations
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.OpenApiSpec">
             <summary>
             Sets the open api specification to use. If not set the specification matching
@@ -681,6 +685,11 @@
             The method to transform the Uri. This delegate is invoked to determine
             the base Uri for the service. Supplied uri is the one obtained from
             the openapi config.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.MethodHeadersTransformer">
+            <summary>
+            The http headers to add to the invocations
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">
