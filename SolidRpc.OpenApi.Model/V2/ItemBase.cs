@@ -10,7 +10,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// Describes a single response from an API Operation.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#itemsObject"/>
+    /// <a href="https://swagger.io/specification/v2/#itemsObject"/>
     public class ItemBase : ModelBase
     {
         public ItemBase(ModelBase parent) : base(parent) { }
@@ -223,11 +223,6 @@ namespace SolidRpc.OpenApi.Model.V2
             {
                 throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
             }
-        }
-
-        internal IEnumerable<object> ExpandItemBase(ItemBase o)
-        {
-            throw new NotImplementedException();
         }
     }
 }

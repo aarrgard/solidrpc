@@ -114,14 +114,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
 
         private Action<JsonReader, object, JsonSerializer> CreateReadPropertyHandler(string propertyName)
         {
-            var prop = typeof(T)
+            var props = typeof(T)
                 .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
                 .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
                 .Where(o => string.Equals(o.GetCustomAttribute<DataMemberAttribute>().Name, propertyName))
-                .SingleOrDefault();
+                .ToList();
 
-            if(prop != null)
+            if(props.Count == 1)
             {
+                var prop = props.First();
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(Deserialize))
                     .MakeGenericMethod(prop.PropertyType);
@@ -131,7 +132,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
                     prop.SetValue(o, val);
                 };
             }
-            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName}");
+            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
         }
 
         /// <summary>

@@ -219,6 +219,12 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
         private string GetFullName(SyntaxNode member, string typeName)
         {
+            // handle nullable types
+            if (typeName.EndsWith("?"))
+            {
+                typeName = $"System.Nullable<{typeName.Substring(0, typeName.Length-1)}>";
+            }
+
             // handle generic types
             var (genType, genArgs, rest) = Model.CSharp.Impl.CSharpRepository.ReadType(typeName);
             if (genArgs != null)

@@ -1,0 +1,102 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "NullableTypes",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/NullableTypes",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/INullableTypes/GetComplexType": {
+      "post": {
+        "tags": [
+          "INullableTypes"
+        ],
+        "description": "Consumes one complex type an a simple string...",
+        "operationId": "GetComplexType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ct",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ComplexType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/ComplexType"
+            }
+          }
+        }
+      }
+    },
+    "/Services/INullableTypes/GetNullableType": {
+      "get": {
+        "tags": [
+          "INullableTypes"
+        ],
+        "description": "Consumes one nullable int and returns it.",
+        "operationId": "GetNullableType",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "nullableInt",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType": {
+      "properties": {
+        "NullableInt": {
+          "type": "integer",
+          "format": "int32",
+          "description": "nullable int"
+        },
+        "NullableLong": {
+          "type": "integer",
+          "format": "int64",
+          "description": "nullable int"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType1"
+    }
+  },
+  "tags": [
+    {
+      "name": "INullableTypes",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}

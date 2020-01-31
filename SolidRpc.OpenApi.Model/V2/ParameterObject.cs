@@ -8,7 +8,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// Describes a single API operation on a path.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#parameterObject"/>
+    /// <a ref="https://swagger.io/specification/v2/#parameterObject"/>
     public class ParameterObject : ItemBase
     {
         public static IEnumerable<ParameterObject> EmptyList = new ParameterObject[0];

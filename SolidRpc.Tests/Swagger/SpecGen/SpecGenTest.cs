@@ -170,5 +170,41 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var res = proxy.GetComplexType(new OneComplexArg.Types.ComplexType1());
             }
         }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestNullableTypes()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestNullableTypes).Substring(4));
+                ctx.CreateServerInterceptor<NullableTypes.Services.INullableTypes>(
+                    o => o.GetComplexType(null),
+                    config,
+                    args =>
+                    {
+                        Assert.AreEqual(1, args.Length);
+                        Assert.IsNotNull((NullableTypes.Types.ComplexType)args[0]);
+                        return (NullableTypes.Types.ComplexType)args[0];
+                    });
+                ctx.AddOpenApiProxy<NullableTypes.Services.INullableTypes>(config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<NullableTypes.Services.INullableTypes>();
+                
+                var res = proxy.GetComplexType(new NullableTypes.Types.ComplexType());
+                Assert.IsNull(res.NullableInt);
+                Assert.IsNull(res.NullableLong);
+
+                res = proxy.GetComplexType(new NullableTypes.Types.ComplexType()
+                {
+                    NullableInt = 1,
+                    NullableLong = 1
+                });
+                Assert.IsNotNull(res.NullableInt);
+                Assert.IsNotNull(res.NullableLong);
+            }
+        }
     }
 }

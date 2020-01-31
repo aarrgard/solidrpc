@@ -63,6 +63,10 @@ namespace SolidRpc.Tests
             builder.AddProvider(new ConsoleProvider(Log));
         }
 
+        /// <summary>
+        /// Logs a message.
+        /// </summary>
+        /// <param name="msg"></param>
         protected void Log(string msg)
         {
             Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss.ffff")}]{msg}");

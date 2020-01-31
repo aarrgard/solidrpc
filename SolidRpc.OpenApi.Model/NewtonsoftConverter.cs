@@ -204,15 +204,15 @@ namespace SolidRpc.OpenApi.Model
 
         private Action<JsonReader, object, JsonSerializer> CreateReadPropertyHandler(string propertyName)
         {
-            var prop = GetProperties()
+            var props = GetProperties()
                 .Where(o => {
                     var propName = o.GetCustomAttribute<DataMemberAttribute>()?.Name ?? o.Name;
                     return string.Equals(propName, propertyName, StringComparison.InvariantCultureIgnoreCase);
-                })
-                .SingleOrDefault();
+                }).ToList();
 
-            if(prop != null)
+            if(props.Count == 1)
             {
+                var prop = props.First();
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(Deserialize))
                     .MakeGenericMethod(prop.PropertyType);
@@ -223,6 +223,7 @@ namespace SolidRpc.OpenApi.Model
                     prop.SetValue(o, val);
                 };
             }
+
             if(DynamicType != null)
             {
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -235,7 +236,7 @@ namespace SolidRpc.OpenApi.Model
                 };
             }
 
-            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName}");
+            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
         }
 
         private void ReadDictionaryData<Tp>(string propertyName, JsonReader r, object o, JsonSerializer s, Action<object, object> setParent) 

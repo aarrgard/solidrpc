@@ -11,7 +11,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// Further information about the properties can be found in JSON Schema Core and JSON Schema Validation.Unless stated otherwise, the property definitions follow the JSON Schema specification as referenced here.
     /// The following properties are taken directly from the JSON Schema definition and follow the same specifications:
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#schemaObject"/>
+    /// <a href="https://swagger.io/specification/v2/#schemaObject"/>
     public class SchemaObject : ItemsObject
     {
         public static SchemaObject CreateSchemaObject(ModelBase parent, Type type)
