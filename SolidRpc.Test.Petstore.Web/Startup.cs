@@ -26,20 +26,20 @@ namespace SolidRpc.Test.PetstoreWeb
             services.AddSolidRpcNpmGenerator();
             services.AddSolidRpcSecurityFrontend();
             services.AddSolidRpcSecurityBackend();
-            services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>
-            {
-                sp.ConfigureOptions(conf);
-            });
-            services.AddSolidRpcSecurityBackendGoogle((sp, conf) =>
-            {
-                sp.ConfigureOptions(conf);
-            });
+            //services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>
+            //{
+            //    sp.ConfigureOptions(conf);
+            //});
+            //services.AddSolidRpcSecurityBackendGoogle((sp, conf) =>
+            //{
+            //    sp.ConfigureOptions(conf);
+            //});
             services.AddSolidRpcSecurityBackendMicrosoft((sp, conf) =>
             {
                 sp.ConfigureOptions(conf);
             });
             //services.AddPetstore();
-            services.AddVitec();
+            //services.AddVitec();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

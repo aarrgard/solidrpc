@@ -42,7 +42,7 @@
             Should the rpc host services be added on startup.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration},System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration},System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
             <summary>
             Adds the rpc services
             </summary>
@@ -88,7 +88,7 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
             <summary>
             Configures all the interfaces in supplied assembly
             </summary>
@@ -97,7 +97,7 @@
             <param name="implementationAssembly"></param>
             <param name="configurator"></param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
@@ -107,7 +107,7 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
@@ -116,7 +116,7 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Action{SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
             <summary>
             Configures the suppllied method so that it is exposed through the .net core http binding.
             </summary>
@@ -232,12 +232,13 @@
             Returns all the method binders.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Boolean,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
             <param name="openApiSpec">The openapi spec to use. If null we search the assembly.</param>
-            <param name="methodInfo"></param>
+            <param name="localApi">Does the method have a local implementation</param>
+            <param name="methodInfo">The method to creata a binding for</param>
             <param name="baseUriTransformer"></param>
             <returns></returns>
         </member>

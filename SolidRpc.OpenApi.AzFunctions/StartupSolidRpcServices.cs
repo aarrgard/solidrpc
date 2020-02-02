@@ -69,9 +69,9 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// 
         /// </summary>
         /// <param name="c"></param>
-        protected virtual void ConfigureAzureFunction(ISolidMethodConfigurationBuilder c)
+        protected virtual void ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
-            c.ConfigureAdvice<ISolidAzureFunctionConfig>().AuthLevel = "function";
+            c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "function";
         }
     }
 }

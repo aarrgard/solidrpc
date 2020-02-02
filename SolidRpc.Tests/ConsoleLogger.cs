@@ -23,7 +23,14 @@ namespace SolidRpc.Tests
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Logger(formatter(state, exception));
+            if(exception != null)
+            {
+                Logger(formatter(state, exception) + ":" + exception.ToString());
+            }
+            else
+            {
+                Logger(formatter(state, exception));
+            }
         }
     }
 }

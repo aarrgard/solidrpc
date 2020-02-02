@@ -6,6 +6,7 @@ using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using System;
+using System.Linq;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 
@@ -27,11 +28,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddSolidRpcSecurityBackend();
         }
 
-        protected override void ConfigureAzureFunction(ISolidMethodConfigurationBuilder c)
+        protected override void ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
-            if(c.MethodInfo.DeclaringType.Assembly == typeof(SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI).Assembly)
+            if(c.Methods.First().DeclaringType.Assembly == typeof(SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI).Assembly)
             {
-                c.ConfigureAdvice<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
             }
             else
             {

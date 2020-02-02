@@ -47,14 +47,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="config"></param>
         public bool Configure(ISolidRpcOpenApiConfig config)
         {
-            var advices = config.InvocationConfiguration.GetSolidInvocationAdvices();
-            if(advices.LastOrDefault() != this)
+            if(config.InvocationConfiguration.HasImplementation)
             {
                 return false;
             }
             MethodHeadersTransformer = config.MethodHeadersTransformer ?? ((o1, o2, o3) => Task.CompletedTask);
             MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.OpenApiSpec,
+                config.InvocationConfiguration.HasImplementation,
                 config.InvocationConfiguration.MethodInfo,
                 config.MethodAddressTransformer
             );

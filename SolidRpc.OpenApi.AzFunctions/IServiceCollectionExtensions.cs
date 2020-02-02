@@ -123,8 +123,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var openApiSpec = openApiParser.CreateSpecification(mi);
             services.AddSolidRpcBinding(mi, (c) =>
             {
-                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                conf.OpenApiSpec = openApiSpec.WriteAsJsonString();
+                c.OpenApiSpec = openApiSpec.WriteAsJsonString();
             });
 
             var funcHandler = services.GetAzFunctionHandler();

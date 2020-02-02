@@ -8,9 +8,11 @@
   <ItemGroup>
     <Compile Remove="npm\react\build\**" />
     <Compile Remove="react\build\**" />
+    <Compile Remove="Services\NewFolder\**" />
     <Compile Remove="Services\node_modules\**" />
     <EmbeddedResource Remove="npm\react\build\**" />
     <EmbeddedResource Remove="react\build\**" />
+    <EmbeddedResource Remove="Services\NewFolder\**" />
     <EmbeddedResource Remove="Services\node_modules\**" />
     <None Remove="npm\react\build\**" />
     <None Remove="react\build\**" />
@@ -20,6 +22,7 @@
     <Compile Remove="**\node_modules\**" />
     <EmbeddedResource Remove="**\node_modules\**" />
     <None Remove="**\node_modules\**" />
+    <None Remove="Services\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,7 +43,6 @@
 
   <ItemGroup>
     <Folder Include="npm\providers\dist\" />
-    <Folder Include="Services\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>

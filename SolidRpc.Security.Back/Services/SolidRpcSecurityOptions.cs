@@ -10,6 +10,13 @@ namespace SolidRpc.Security.Back.Services
     public class SolidRpcSecurityOptions
     {
         /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        public SolidRpcSecurityOptions()
+        {
+            AddStaticContent = true;
+        }
+        /// <summary>
         /// Should the static content be added when starting up
         /// </summary>
         public bool AddStaticContent { get; set; }

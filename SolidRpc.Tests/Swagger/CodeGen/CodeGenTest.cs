@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -98,23 +100,18 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             {
                 var config = ReadOpenApiConfiguration(nameof(TestUrlParam).Substring(4));
 
-                // await proxy.DeletePet(api_key, pet.Id);
-                ctx.CreateServerInterceptor<UrlParam.Services.IUrlParam>(
-                    o => o.ProxyIntegerInPath(1, CancellationToken.None),
-                    config,
-                    args =>
-                    {
-                        CompareStructs(3, args[0]);
-                        CompareStructs(CancellationToken.None, args[1]);
-                        return Task.FromResult((int)args[0]);
-                    });
 
+                var moq = new Moq.Mock<UrlParam.Services.IUrlParam>();
+                moq.Setup(o => o.ProxyIntegerInPath(It.Is<int>(val => val == 3), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult(3));
 
-                ctx.AddOpenApiProxy<UrlParam.Services.IUrlParam>(config);
+                ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlParam.Services.IUrlParam>();
 
-                await proxy.ProxyIntegerInPath(3);
+                var res = await proxy.ProxyIntegerInPath(3);
+                Assert.AreEqual(3, res);
+                Assert.AreEqual(1, moq.Invocations.Count);
             }
         }
 
@@ -128,23 +125,18 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             {
                 var config = ReadOpenApiConfiguration(nameof(TestArrayParam).Substring(4));
 
-                // await proxy.DeletePet(api_key, pet.Id);
-                ctx.CreateServerInterceptor<ArrayParam.Services.IArrayParam>(
-                    o => o.ProxyArrayInQuery(null, CancellationToken.None),
-                    config,
-                    args =>
-                    {
-                        CompareStructs(new int[] { 5, 9 }, args[0]);
-                        CompareStructs(CancellationToken.None, args[1]);
-                        return Task.FromResult<IEnumerable<int>>((int[])args[0]);
-                    });
+                var moq = new Moq.Mock<ArrayParam.Services.IArrayParam>();
+                moq.Setup(o => o.ProxyArrayInQuery(It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult<IEnumerable<int>>(new[] { 5, 9}));
 
-
-                ctx.AddOpenApiProxy<ArrayParam.Services.IArrayParam>(config);
+                ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<ArrayParam.Services.IArrayParam>();
 
-                await proxy.ProxyArrayInQuery(new int[] { 5, 9});
+                var res = await proxy.ProxyArrayInQuery(new int[] { 5, 9});
+                Assert.AreEqual(5, res.Skip(0).First());
+                Assert.AreEqual(9, res.Skip(1).First());
+                Assert.AreEqual(1, moq.Invocations.Count);
             }
         }
     }

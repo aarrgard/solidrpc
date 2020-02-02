@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
@@ -89,22 +90,26 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload1).Substring(4));
-                ctx.CreateServerInterceptor<FileUpload1.Services.IFileUpload>(
-                    o => o.UploadFile(null, null, null, CancellationToken.None),
-                    config,
-                    args =>
-                    {
-                        Assert.AreEqual(4, args.Length);
-                        Assert.AreEqual(new byte[] { 0, 1, 2, 3 }, ((MemoryStream)args[0]).ToArray());
-                        Assert.AreEqual("filename.txt", args[1]);
-                        Assert.AreEqual("application/pdf", args[2]);
-                        Assert.IsNotNull((CancellationToken)args[3]);
-                        return Task.CompletedTask;
-                    });
-                ctx.AddOpenApiProxy<FileUpload1.Services.IFileUpload>(config);
+
+                var moq = new Mock<FileUpload1.Services.IFileUpload>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload1.Services.IFileUpload>();
-                await proxy.UploadFile(new MemoryStream(new byte[] { 0, 1, 2, 3 }), "filename.txt", "application/pdf");
+
+                moq.Setup(o => o.UploadFile(
+                    It.Is<Stream>(a => CompareStructs(a, new MemoryStream(new byte[] { 0, 1, 2, 3 }))),
+                    It.Is<string>(a => a == "filename.txt"),
+                    It.Is<string>(a => a == "application/pdf"),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.CompletedTask);
+
+                await proxy.UploadFile(
+                    new MemoryStream(new byte[] { 0, 1, 2, 3 }), 
+                    "filename.txt", 
+                    "application/pdf");
+
+                Assert.AreEqual(1, moq.Invocations.Count);
             }
         }
 
@@ -117,18 +122,18 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload2).Substring(4));
-                ctx.CreateServerInterceptor<FileUpload2.Services.IFileUpload>(
-                    o => o.UploadFile(null, CancellationToken.None),
-                    config,
-                    args =>
-                    {
-                        Assert.AreEqual(2, args.Length);
-                        CompareStructs(CreateUpload2Struct(), args[0]);
-                        Assert.IsNotNull((CancellationToken)args[1]);
-                        return Task.FromResult(CreateUpload2Struct());
-                    });
-                ctx.AddOpenApiProxy<FileUpload2.Services.IFileUpload>(config);
+
+                var moq = new Mock<FileUpload2.Services.IFileUpload>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
                 await ctx.StartAsync();
+
+                moq.Setup(o => o.UploadFile(
+                    It.Is<FileUpload2.Types.FileData>(a => CompareStructs(a, CreateUpload2Struct())),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult(CreateUpload2Struct()));
+
+
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload2.Services.IFileUpload>();
                 var res = await proxy.UploadFile(CreateUpload2Struct());
 
@@ -155,19 +160,18 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestOneComplexArg).Substring(4));
-                ctx.CreateServerInterceptor<OneComplexArg.Services.IOneComplexArg>(
-                    o => o.GetComplexType(null),
-                    config,
-                    args =>
-                    {
-                        Assert.AreEqual(1, args.Length);
-                        Assert.IsNotNull((OneComplexArg.Types.ComplexType1)args[0]);
-                        return (OneComplexArg.Types.ComplexType1)args[0];
-                    });
-                ctx.AddOpenApiProxy<OneComplexArg.Services.IOneComplexArg>(config);
+
+                var moq = new Mock<OneComplexArg.Services.IOneComplexArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                moq.Setup(o => o.GetComplexType(
+                    It.Is<OneComplexArg.Types.ComplexType1>(a => CompareStructs(a, new OneComplexArg.Types.ComplexType1()))
+                    )).Returns(new OneComplexArg.Types.ComplexType1());
+
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
                 var res = proxy.GetComplexType(new OneComplexArg.Types.ComplexType1());
+                CompareStructs(new OneComplexArg.Types.ComplexType1(), res);
             }
         }
 
@@ -180,23 +184,39 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             using (var ctx = CreateKestrelHostContext())
             {
                 var config = ReadOpenApiConfiguration(nameof(TestNullableTypes).Substring(4));
-                ctx.CreateServerInterceptor<NullableTypes.Services.INullableTypes>(
-                    o => o.GetComplexType(null),
-                    config,
-                    args =>
-                    {
-                        Assert.AreEqual(1, args.Length);
-                        Assert.IsNotNull((NullableTypes.Types.ComplexType)args[0]);
-                        return (NullableTypes.Types.ComplexType)args[0];
-                    });
-                ctx.AddOpenApiProxy<NullableTypes.Services.INullableTypes>(config);
+
+                var moq = new Mock<NullableTypes.Services.INullableTypes>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                //ctx.CreateServerInterceptor<NullableTypes.Services.INullableTypes>(
+                //    o => o.GetComplexType(null),
+                //    config,
+                //    args =>
+                //    {
+                //        Assert.AreEqual(1, args.Length);
+                //        Assert.IsNotNull((NullableTypes.Types.ComplexType)args[0]);
+                //        return (NullableTypes.Types.ComplexType)args[0];
+                //    });
+                //ctx.AddOpenApiProxy<NullableTypes.Services.INullableTypes>(config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<NullableTypes.Services.INullableTypes>();
-                
+
+                moq.Setup(o => o.GetComplexType(It.Is<NullableTypes.Types.ComplexType>(a => a.NullableInt == null))).Returns(() =>
+                {
+                    return new NullableTypes.Types.ComplexType();
+                });
                 var res = proxy.GetComplexType(new NullableTypes.Types.ComplexType());
                 Assert.IsNull(res.NullableInt);
                 Assert.IsNull(res.NullableLong);
 
+                moq.Setup(o => o.GetComplexType(It.Is<NullableTypes.Types.ComplexType>(a => a.NullableInt.HasValue))).Returns(() =>
+                {
+                    return new NullableTypes.Types.ComplexType()
+                    {
+                        NullableInt = 1,
+                        NullableLong = 1
+                    };
+                });
                 res = proxy.GetComplexType(new NullableTypes.Types.ComplexType()
                 {
                     NullableInt = 1,

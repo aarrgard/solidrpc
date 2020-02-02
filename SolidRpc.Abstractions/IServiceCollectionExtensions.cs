@@ -85,7 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcServices(
             this IServiceCollection services, 
             Action<RpcServiceConfiguration> configurator,
-            Action<ISolidMethodConfigurationBuilder> mbConfigurator = null)
+            Action<ISolidRpcOpenApiConfig> mbConfigurator = null)
         {
             var config = new RpcServiceConfiguration();
             configurator(config);
@@ -105,7 +105,7 @@ namespace Microsoft.Extensions.DependencyInjection
             methods.ToList().ForEach(m =>
             {
                 services.AddSolidRpcBinding(m, (c) => {
-                    c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = solidRpcHostSpec;
+                    c.OpenApiSpec = solidRpcHostSpec;
                     mbConfigurator?.Invoke(c);
                 });
             });
@@ -256,7 +256,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="interfaceAssembly"></param>
         /// <param name="implementationAssembly"></param>
         /// <param name="configurator"></param>
-        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly interfaceAssembly, Assembly implementationAssembly = null, Action<ISolidMethodConfigurationBuilder> configurator = null)
+        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly interfaceAssembly, Assembly implementationAssembly = null, Action<ISolidRpcOpenApiConfig> configurator = null)
         {
             // use the interface as implementation
             if (implementationAssembly == null)
@@ -295,11 +295,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="impl"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings(
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcBindings(
             this IServiceCollection sc, 
             Type interfaze, 
             Type impl = null, 
-            Action<ISolidMethodConfigurationBuilder> configurator = null)
+            Action<ISolidRpcOpenApiConfig> configurator = null)
         {
             //
             // make sure that the type is registered
@@ -311,7 +311,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (!sc.Any(o => o.ServiceType == interfaze))
             {
-                return new ISolidMethodConfigurationBuilder[0];
+                return new ISolidRpcOpenApiConfig[0];
             }
 
             return interfaze.GetMethods()
@@ -326,7 +326,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="impl"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IEnumerable<ISolidMethodConfigurationBuilder> AddSolidRpcBindings<T>(this IServiceCollection sc, T impl, Action<ISolidMethodConfigurationBuilder> configurator = null) where T:class
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcBindings<T>(this IServiceCollection sc, T impl, Action<ISolidRpcOpenApiConfig> configurator = null) where T:class
         {
             if(impl != null)
             {
@@ -348,7 +348,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="mi"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static ISolidMethodConfigurationBuilder AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, Action<ISolidMethodConfigurationBuilder> configurator)
+        public static ISolidRpcOpenApiConfig AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, Action<ISolidRpcOpenApiConfig> configurator)
         {
             //
             // make sure that the singleton services are registered
@@ -378,9 +378,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureMethod(mi);
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-            configurator?.Invoke(mc);
+            configurator?.Invoke(openApiProxyConfig);
 
-            return mc;
+            return openApiProxyConfig;
         }
     }
 }

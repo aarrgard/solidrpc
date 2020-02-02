@@ -140,8 +140,7 @@ namespace SolidRpc.Tests
             services.AddSolidRpcSingletonServices();
             services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), (c) =>
             {
-                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                conf.MethodAddressTransformer = GetBaseUrl;
+                c.MethodAddressTransformer = GetBaseUrl;
             });
 
             return services.BuildServiceProvider();

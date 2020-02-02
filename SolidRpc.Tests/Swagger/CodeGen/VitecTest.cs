@@ -27,12 +27,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// </summary>
         public VitecTest()
         {
-            FileMock = new Mock<IFile>();
         }
         /// <summary>
         /// 
         /// </summary>
-        public Mock<IFile> FileMock { get; }
         private string OpenApiSpec => ReadOpenApiConfiguration(nameof(TestVitec).Substring(4));
 
         /// <summary>
@@ -45,32 +43,6 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
             path = Path.Combine(path, "Swagger", "CodeGen", folderName);
             return new DirectoryInfo(path);
-        }
-
-        /// <summary>
-        /// Configures the services
-        /// </summary>
-        /// <param name="serverServices"></param>
-        /// <returns></returns>
-        public override IServiceProvider ConfigureServerServices(IServiceCollection serverServices)
-        {
-            serverServices.AddSolidRpcBindings(
-                FileMock.Object, 
-                (c) => c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = OpenApiSpec);
-
-            return base.ConfigureServerServices(serverServices);
-        }
-
-        /// <summary>
-        /// Configures the client services
-        /// </summary>
-        /// <param name="clientServices"></param>
-        public override void ConfigureClientServices(IServiceCollection clientServices)
-        {
-            clientServices.AddSolidRpcBindings<IFile>(
-                null, 
-                (c) => c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = OpenApiSpec);
-            base.ConfigureClientServices(clientServices);
         }
 
         /// <summary>
@@ -102,11 +74,14 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// </summary>
         public async Task TestVitec(TestHostContext ctx)
         {
+            var fileMock = new Mock<IFile>();
+            ctx.AddServerAndClientService(fileMock.Object, OpenApiSpec);
+
             await ctx.StartAsync();
 
             var ms = (Stream)new MemoryStream(new byte[50]);
             var file = ctx.ClientServiceProvider.GetRequiredService<IFile>();
-            FileMock.Setup(o => o.FileGetFile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            fileMock.Setup(o => o.FileGetFile(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(ms));
             
             var res = await file.FileGetFile("customerId", "fileId", CancellationToken.None);
@@ -135,7 +110,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 .SelectMany(o => o.GetMethods())
                 .ToList().ForEach(m =>
                 {
-                    var binding = mbs.CreateMethodBinding(openApiSpec, m);
+                    var binding = mbs.CreateMethodBinding(openApiSpec, false, m);
                     Log($"Checking: {m.Name}->{binding.Method} {binding.Path}");
                 });
         }

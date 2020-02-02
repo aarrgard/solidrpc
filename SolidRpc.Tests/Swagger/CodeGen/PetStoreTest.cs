@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.User.UpdateUser;
@@ -124,270 +125,14 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 }
             };
 
-            // await proxy.AddPet(pet);
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.AddPet(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(pet, args[0]);
-                    Assert.AreEqual(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-            // await proxy.DeletePet(api_key, pet.Id);
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.DeletePet(0, null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(3, args.Length);
-                    CompareStructs(pet.Id, args[0]);
-                    CompareStructs(api_key, args[1]);
-                    CompareStructs(CancellationToken.None, args[2]);
-                    return Task.CompletedTask;
-                });
-
-            //  await proxy.FindPetsByStatus(statuses);
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.FindPetsByStatus(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(statuses, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult<IEnumerable<Petstore.Types.Pet>>(new Petstore.Types.Pet[] { pet });
-                });
-
-            //  await proxy.FindPetsByTags(statuses);
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.FindPetsByTags(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(typeof(IEnumerable<string>), tags.Select(o => o.Name), args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult<IEnumerable<Petstore.Types.Pet>>(new Petstore.Types.Pet[] { pet });
-                });
-
-            //  await proxy.GetPetById(pet.Id)
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.GetPetById(0, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(pet.Id, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult(pet);
-                });
-
-            //  await proxy.UpdatePet(pet)
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.UpdatePet(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(pet, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult(pet);
-                });
-
-            //  await proxy.UpdatePet(pet)
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.UpdatePetWithForm(0, null, null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(4, args.Length);
-                    CompareStructs(pet.Id, args[0]);
-                    CompareStructs(pet.Name, args[1]);
-                    CompareStructs(pet.Status, args[2]);
-                    CompareStructs(CancellationToken.None, args[3]);
-                    return Task.FromResult(pet);
-                });
+            var petMoq = new Mock<Petstore.Services.IPet>(MockBehavior.Strict);
+            var storeMoq = new Mock<Petstore.Services.IStore>(MockBehavior.Strict);
+            var userMoq = new Mock<Petstore.Services.IUser>(MockBehavior.Strict);
 
 
-            //  await proxy.UpdatePet(pet)
-            ctx.CreateServerInterceptor<Petstore.Services.IPet>(
-                o => o.UploadFile(0, null, null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(4, args.Length);
-                    CompareStructs(pet.Id, args[0]);
-                    CompareStructs("Additional data", args[1]);
-                    CompareStructs(new MemoryStream(new byte[] { 1, 2, 3 }), args[2]);
-                    CompareStructs(CancellationToken.None, args[3]);
-                    return Task.FromResult(apiResponse);
-                });
-
-
-            //  await proxy.PlaceOrder(pet)
-            ctx.CreateServerInterceptor<Petstore.Services.IStore>(
-                o => o.PlaceOrder(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(order, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult((Petstore.Types.Order)args[0]);
-                });
-
-            //  await proxy.DeleteOrder(124)
-            ctx.CreateServerInterceptor<Petstore.Services.IStore>(
-                o => o.DeleteOrder(0, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(order.Id, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-            //  await proxy.DeleteOrder(124)
-            ctx.CreateServerInterceptor<Petstore.Services.IStore>(
-                o => o.GetOrderById(0, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(order.Id, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult(order);
-                });
-
-            //  await proxy.DeleteOrder(124)
-            ctx.CreateServerInterceptor<Petstore.Services.IStore>(
-                o => o.GetInventory(CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(1, args.Length);
-                    CompareStructs(CancellationToken.None, args[0]);
-                    return Task.FromResult(inventory);
-                });
-
-            //  await proxy.CreateUser(null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.CreateUser(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(users[0], args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-            //  await proxy.CreateUser(null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.CreateUsersWithArrayInput(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(typeof(IEnumerable<Petstore.Types.User>), users, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-            //  await proxy.CreateUser(null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.CreateUsersWithListInput(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(typeof(IEnumerable<Petstore.Types.User>), users, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-
-            //  await proxy.DeleteUser(null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.DeleteUser(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(users[0].Username, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-            //  await proxy.DeleteUser(null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.DeleteUser(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(users[0].Username, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.CompletedTask;
-                });
-
-            //  await proxy.GetUserByName(null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.GetUserByName(null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(2, args.Length);
-                    CompareStructs(users[0].Username, args[0]);
-                    CompareStructs(CancellationToken.None, args[1]);
-                    return Task.FromResult(users[0]);
-                });
-
-
-            //  await proxy.LoginUser(null,null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.LoginUser(null, null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(3, args.Length);
-                    CompareStructs(users[0].Username, args[0]);
-                    CompareStructs(users[0].Password, args[1]);
-                    CompareStructs(CancellationToken.None, args[2]);
-                    return Task.FromResult(api_key);
-                });
-
-            //  await proxy.LoginUser(null,null)
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.LogoutUser(CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(1, args.Length);
-                    CompareStructs(CancellationToken.None, args[0]);
-                    return Task.CompletedTask;
-                });
-
-            //  Exception - await UpdateUser
-            ctx.CreateServerInterceptor<Petstore.Services.IUser>(
-                o => o.UpdateUser(null, null, CancellationToken.None),
-                config,
-                args =>
-                {
-                    Assert.AreEqual(3, args.Length);
-                    CompareStructs("kalle", args[0]);
-                    CompareStructs(users[0], args[1]);
-                    CompareStructs(CancellationToken.None, args[2]);
-                    throw new UserNotFoundException();
-                });
-
-            ctx.AddOpenApiProxy<Petstore.Services.IPet>(config);
-            ctx.AddOpenApiProxy<Petstore.Services.IStore>(config);
-            ctx.AddOpenApiProxy<Petstore.Services.IUser>(config);
+            ctx.AddServerAndClientService(petMoq.Object, config);
+            ctx.AddServerAndClientService(storeMoq.Object, config);
+            ctx.AddServerAndClientService(userMoq.Object, config);
 
             await ctx.StartAsync();
 
@@ -397,42 +142,98 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             //
             // Pet
             //
+            petMoq.Setup(o => o.AddPet(It.Is<Petstore.Types.Pet>(a => CompareStructs(pet, a)), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await petProxy.AddPet(pet);
+            Assert.AreEqual(1, petMoq.Invocations.Count);
+
+            petMoq.Setup(o => o.DeletePet(It.Is<long>(a => a == pet.Id), It.Is<string>(a => a == api_key), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await petProxy.DeletePet(pet.Id, api_key);
+            Assert.AreEqual(2, petMoq.Invocations.Count);
+
+            petMoq.Setup(o => o.FindPetsByStatus(It.Is<IEnumerable<string>>(a => CompareStructs(a, statuses)), It.IsAny<CancellationToken>())).Returns(Task.FromResult(new[] { pet }.AsEnumerable()));
             CompareStructs(typeof(IEnumerable<Petstore.Services.IPet>), new[] { pet }, await petProxy.FindPetsByStatus(statuses));
-            CompareStructs(typeof(IEnumerable<Petstore.Services.IPet>), new[] { pet }, await petProxy.FindPetsByTags(tags.Select(o => o.Name)));
+            Assert.AreEqual(3, petMoq.Invocations.Count);
+
+            petMoq.Setup(o => o.FindPetsByTags(It.Is<IEnumerable<string>>(a => CompareStructs(a, tags.Select(t => t.Name))), It.IsAny<CancellationToken>())).Returns(Task.FromResult(new[] { pet }.AsEnumerable()));
+            CompareStructs(typeof(IEnumerable<Petstore.Services.IPet>), new[] { pet }, await petProxy.FindPetsByTags(tags.Select(t => t.Name)));
+            Assert.AreEqual(4, petMoq.Invocations.Count);
+
+            petMoq.Setup(o => o.GetPetById(It.Is<long>(a => a == pet.Id), It.IsAny<CancellationToken>())).Returns(Task.FromResult(pet));
             CompareStructs(pet, await petProxy.GetPetById(pet.Id));
+            Assert.AreEqual(5, petMoq.Invocations.Count);
+
+            petMoq.Setup(o => o.UpdatePet(It.Is<Petstore.Types.Pet>(a => CompareStructs(a,pet)), It.IsAny<CancellationToken>())).Returns(Task.FromResult(pet));
             await petProxy.UpdatePet(pet);
+            Assert.AreEqual(6, petMoq.Invocations.Count);
+
+            petMoq.Setup(o => o.UpdatePetWithForm(It.Is<long>(a => a == pet.Id), It.Is<string>(a => a == pet.Name), It.Is<string>(a => a == pet.Status), It.IsAny<CancellationToken>())).Returns(Task.FromResult(pet));
             await petProxy.UpdatePetWithForm(pet.Id, pet.Name, pet.Status);
-            CompareStructs(apiResponse, await petProxy.UploadFile(pet.Id, "Additional data", new MemoryStream(new byte[] { 1, 2, 3 })));
+            Assert.AreEqual(7, petMoq.Invocations.Count);
+
+            var streamContent = new byte[] { 1, 2, 3 };
+            petMoq.Setup(o => o.UploadFile(It.Is<long>(a => a == pet.Id), It.Is<string>(a => a == "Additional data"), It.Is<Stream>(a => CompareStructs(a, new MemoryStream(streamContent))), It.IsAny<CancellationToken>())).Returns(Task.FromResult(apiResponse));
+            CompareStructs(apiResponse, await petProxy.UploadFile(pet.Id, "Additional data", new MemoryStream(streamContent)));
+            Assert.AreEqual(8, petMoq.Invocations.Count);
 
 
             //
             // Store
             //
+            storeMoq.Setup(o => o.PlaceOrder(It.Is<Petstore.Types.Order>(a => CompareStructs(a, order)), It.IsAny<CancellationToken>())).Returns(Task.FromResult(order));
             CompareStructs(order, await storeProxy.PlaceOrder(order));
+            Assert.AreEqual(1, storeMoq.Invocations.Count);
+
+            storeMoq.Setup(o => o.DeleteOrder(It.Is<long>(a => a == order.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await storeProxy.DeleteOrder(order.Id);
+            Assert.AreEqual(2, storeMoq.Invocations.Count);
+
+            storeMoq.Setup(o => o.GetOrderById(It.Is<long>(a => a == order.Id), It.IsAny<CancellationToken>())).Returns(Task.FromResult(order));
             CompareStructs(order, await storeProxy.GetOrderById(order.Id));
+            Assert.AreEqual(3, storeMoq.Invocations.Count);
+
+            storeMoq.Setup(o => o.GetInventory(It.IsAny<CancellationToken>())).Returns(Task.FromResult(inventory));
             var inventory2 = await storeProxy.GetInventory();
-            Assert.AreNotSame(inventory, inventory2);
+            //Assert.AreNotSame(inventory, inventory2);
             CompareStructs(inventory, inventory2);
+            Assert.AreEqual(4, storeMoq.Invocations.Count);
 
             //
             // User
             //
+            userMoq.Setup(o => o.CreateUser(It.Is<Petstore.Types.User>(a => CompareStructs(a,users[0])), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await userProxy.CreateUser(users[0]);
+            Assert.AreEqual(1, userMoq.Invocations.Count);
+
+            userMoq.Setup(o => o.CreateUsersWithArrayInput(It.Is<IEnumerable<Petstore.Types.User>>(a => CompareStructs(a.ToArray(), users)), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await userProxy.CreateUsersWithArrayInput(users);
+            Assert.AreEqual(2, userMoq.Invocations.Count);
+
+            userMoq.Setup(o => o.CreateUsersWithListInput(It.Is<IEnumerable<Petstore.Types.User>>(a => CompareStructs(a.ToArray(), users)), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await userProxy.CreateUsersWithListInput(users);
+            Assert.AreEqual(3, userMoq.Invocations.Count);
+
+            userMoq.Setup(o => o.DeleteUser(It.Is<string>(a => a == users[0].Username), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             await userProxy.DeleteUser(users[0].Username);
+            Assert.AreEqual(4, userMoq.Invocations.Count);
+
+            userMoq.Setup(o => o.GetUserByName(It.Is<string>(a => a == users[0].Username), It.IsAny<CancellationToken>())).Returns(Task.FromResult(users[0]));
             CompareStructs(users[0], await userProxy.GetUserByName(users[0].Username));
+            Assert.AreEqual(5, userMoq.Invocations.Count);
+
+            userMoq.Setup(o => o.LoginUser(It.Is<string>(a => a == users[0].Username), It.Is<string>(a => a == users[0].Password), It.IsAny<CancellationToken>())).Returns(Task.FromResult(api_key));
             CompareStructs(api_key, await userProxy.LoginUser(users[0].Username, users[0].Password));
+            Assert.AreEqual(6, userMoq.Invocations.Count);
+
+            userMoq.Setup(o => o.LogoutUser(It.IsAny<CancellationToken>())).Returns(Task.FromResult(api_key));
             await userProxy.LogoutUser();
+            Assert.AreEqual(7, userMoq.Invocations.Count);
 
 
             // Exception
             //
             try
             {
+                userMoq.Setup(o => o.UpdateUser(It.Is<string>(a => a == "kalle"), It.Is<Petstore.Types.User>(a => CompareStructs(a, users[0])), It.IsAny<CancellationToken>())).Throws(new UserNotFoundException());
                 await userProxy.UpdateUser("kalle", users[0]);
                 Assert.Fail();
             }
@@ -440,6 +241,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             {
                 // ok
             }
+            Assert.AreEqual(8, userMoq.Invocations.Count);
         }
     }
 }

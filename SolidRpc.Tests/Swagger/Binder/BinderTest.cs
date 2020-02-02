@@ -31,6 +31,7 @@ namespace SolidRpc.Tests.Swagger.Binder
         {
             var services = new ServiceCollection();
             services.AddLogging(ConfigureLogging);
+            services.AddHttpClient();
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHelloWorld));
@@ -39,7 +40,7 @@ namespace SolidRpc.Tests.Swagger.Binder
                 typeof(IHelloWorld),
                 (c) =>
                 {
-                    c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = spec.WriteAsJsonString();
+                    c.OpenApiSpec = spec.WriteAsJsonString();
                 });
 
             var sp = services.BuildServiceProvider();

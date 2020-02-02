@@ -707,7 +707,7 @@
             </summary>
             <param name="services"></param>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureAzureFunction(SolidProxy.Core.Configuration.Builder.ISolidMethodConfigurationBuilder)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureAzureFunction(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>
             
             </summary>

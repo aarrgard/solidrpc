@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcSecurityBackend(
             this IServiceCollection services, 
             Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null,
-            Action<ISolidMethodConfigurationBuilder> mbConfigurator = null)
+            Action<ISolidRpcOpenApiConfig> mbConfigurator = null)
         {
             if(!services.Any(o => o.ServiceType == typeof(IOidcClient)))
             {
@@ -155,8 +155,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(IGoogleLocal), typeof(GoogleLocal));
             services.AddSolidRpcBindings(typeof(IGoogleRemote), null, (c) =>
             {
-                var conf = c.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                conf.MethodAddressTransformer = GoogleBaseApiResolver;
+                c.MethodAddressTransformer = GoogleBaseApiResolver;
             });
             services.AddTransient<ILoginProvider>(sp => sp.GetRequiredService<GoogleLocal>());
             return services;

@@ -77,14 +77,14 @@ namespace SolidRpc.Tests
         /// </summary>
         /// <param name="o1"></param>
         /// <param name="o2"></param>
-        public static void CompareStructs(object o1, object o2)
+        public static bool CompareStructs(object o1, object o2)
         {
             Assert.AreEqual(o1?.GetType(), o2?.GetType());
             if(ReferenceEquals(o1, o2))
             {
-                return;
+                return true;
             }
-            CompareStructs(o1.GetType(), o1, o2);
+            return CompareStructs(o1.GetType(), o1, o2);
         }
 
         /// <summary>
@@ -93,16 +93,16 @@ namespace SolidRpc.Tests
         /// <param name="t"></param>
         /// <param name="o1"></param>
         /// <param name="o2"></param>
-        public static void CompareStructs(Type t, object o1, object o2)
+        public static bool CompareStructs(Type t, object o1, object o2)
         {
             var path = new Stack<string>();
-            CompareStructs(path, t, o1, o2);
+            return CompareStructs(path, t, o1, o2);
         }
-        private static void CompareStructs(Stack<string> path, Type t, object o1, object o2)
+        private static bool CompareStructs(Stack<string> path, Type t, object o1, object o2)
         {
             if (ReferenceEquals(o1, o2))
             {
-                return;
+                return true;
             }
             if (o1 == null || o2 == null)
             {
@@ -111,31 +111,31 @@ namespace SolidRpc.Tests
             if (typeof(DateTime).IsAssignableFrom(t))
             {
                 Assert.AreEqual(o1, o2);
-                return;
+                return true;
             }
             if (typeof(DateTimeOffset).IsAssignableFrom(t))
             {
                 Assert.AreEqual(o1, o2);
-                return;
+                return true;
             }
             if (typeof(string).IsAssignableFrom(t))
             {
                 Assert.AreEqual(o1, o2);
-                return;
+                return true;
             }
             if (typeof(CancellationToken).IsAssignableFrom(t))
             {
-                return;
+                return true;
             }
             if (typeof(Stream).IsAssignableFrom(t))
             {
                 CompareStreams(path, o1, o2);
-                return;
+                return true;
             }
             if (t.IsArray)
             {
                 CompareArrays(path, o1, o2);
-                return;
+                return true;
             }
             if (typeof(IEnumerable).IsAssignableFrom(t))
             {
@@ -164,7 +164,7 @@ namespace SolidRpc.Tests
                         path.Pop();
                     }
                 }
-                return;
+                return true;
             }
             if (t.GetProperties().Length == 0)
             {
@@ -196,6 +196,7 @@ namespace SolidRpc.Tests
                     path.Pop();
                 }
             }
+            return true;
         }
 
         private static void CompareArrays(Stack<string> path, object input, object result)

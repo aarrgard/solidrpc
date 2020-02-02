@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 using SolidProxy.Core.IoC;
 using SolidProxy.GeneratorCastle;
@@ -11,6 +12,7 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Proxy;
+using SolidRpc.Tests.Swagger.CodeGen.ArrayParam.Services;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -49,40 +51,6 @@ namespace SolidRpc.Tests
         protected virtual DirectoryInfo GetSpecFolder(string folderName)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// A service interceptor
-        /// </summary>
-        public class ServiceInterceptor
-        {
-            /// <summary>
-            /// Constructs a new instance
-            /// </summary>
-            /// <param name="methodInfo"></param>
-            /// <param name="openApiConfiguration"></param>
-            /// <param name="callback"></param>
-            public ServiceInterceptor(MethodInfo methodInfo, string openApiConfiguration, Func<object[], object> callback)
-            {
-                MethodInfo = methodInfo;
-                Callback = callback;
-                OpenApiConfiguration = openApiConfiguration;
-            }
-
-            /// <summary>
-            /// The method we are intercepting
-            /// </summary>
-            public MethodInfo MethodInfo { get; }
-
-            /// <summary>
-            /// The callback
-            /// </summary>
-            public Func<object[], object> Callback { get; }
-
-            /// <summary>
-            /// The open api configuration to use when binding the method.
-            /// </summary>
-            public string OpenApiConfiguration { get;  }
         }
 
         /// <summary>
@@ -224,21 +192,12 @@ namespace SolidRpc.Tests
             {
                 WebHostTest = webHostTest;
                 HttpClient = httpClient;
-                ServiceInterceptors = new List<ServiceInterceptor>();
-                ClientServices = new ServiceCollection();
-                ClientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-
+                ServerServicesCallback = (_) => { };
+                ClientServicesCallback = (_) => { };
             }
 
-            /// <summary>
-            /// The service interceptors in this test.
-            /// </summary>
-            public IList<ServiceInterceptor> ServiceInterceptors { get; }
-
-            /// <summary>
-            /// The client services
-            /// </summary>
-            public ServiceCollection ClientServices { get; }
+            private Action<IServiceCollection> ServerServicesCallback { get; set; }
+            private Action<IServiceCollection> ClientServicesCallback { get; set; }
 
             /// <summary>
             /// The web host test
@@ -281,7 +240,9 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual Task StartAsync()
             {
-                _clientServiceProvider = ConfigureClientServices(ClientServices);
+                var clientServices = new ServiceCollection();
+                clientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+                _clientServiceProvider = ConfigureClientServices(clientServices);
                 return Task.CompletedTask;
             }
 
@@ -310,19 +271,6 @@ namespace SolidRpc.Tests
             public Task<HttpResponseMessage> GetResponse(string requestUri)
             {
                 return GetResponse<object>(requestUri);
-            }
-
-            /// <summary>
-            /// Adds an interceptor
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="expression"></param>
-            /// <param name="openApiConfiguration"></param>
-            /// <param name="callback"></param>
-            public void CreateServerInterceptor<T>(Expression<Action<T>> expression, string openApiConfiguration, Func<object[], object> callback)
-            {
-                var methodInfo = ((MethodCallExpression)((LambdaExpression)expression).Body).Method;
-                ServiceInterceptors.Add(new ServiceInterceptor(methodInfo, openApiConfiguration, callback) { });
             }
 
             /// <summary>
@@ -404,6 +352,7 @@ namespace SolidRpc.Tests
             {
                 clientServices.AddHttpClient();
                 AddBaseAddress(clientServices, BaseAddress);
+                ClientServicesCallback(clientServices);
                 WebHostTest.ConfigureClientServices(clientServices);
                 return clientServices.BuildServiceProvider();
             }
@@ -427,31 +376,13 @@ namespace SolidRpc.Tests
             /// <summary>
             /// Configures the services
             /// </summary>
-            /// <param name="services"></param>
+            /// <param name="serverServices"></param>
             /// <returns></returns>
-            public IServiceProvider ConfigureServices(IServiceCollection services)
+            public IServiceProvider ConfigureServices(IServiceCollection serverServices)
             {
-                var configBuilder = services.GetSolidConfigurationBuilder()
-                    .SetGenerator<SolidProxyCastleGenerator>();
-                services.AddSolidRpcSingletonServices();
-                ServiceInterceptors.ToList().ForEach(m =>
-                {
-                    if(!services.Any(o => o.ServiceType == m.MethodInfo.DeclaringType))
-                    {
-                        services.AddTransient(m.MethodInfo.DeclaringType);
-                    }
-                    var methodConf = services.AddSolidRpcBinding(m.MethodInfo, c => {
-                        c.ConfigureAdvice<ISolidRpcOpenApiConfig>().OpenApiSpec = m.OpenApiConfiguration;
-                        });
-                    
-                    var interceptorConf = methodConf.ConfigureAdvice<IServiceInterceptorAdviceConfig>();
-                    var serviceCalls = interceptorConf.ServiceCalls ?? new List<ServiceCall>();
-                    serviceCalls.Add(new ServiceCall(m.MethodInfo, m.Callback));
-                    interceptorConf.ServiceCalls = serviceCalls;
-
-                });
-                configBuilder.AddAdvice(typeof(ServiceInterceptorAdvice<,,>));
-                return WebHostTest.ConfigureServerServices(services);
+                serverServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+                ServerServicesCallback(serverServices);
+                return WebHostTest.ConfigureServerServices(serverServices);
             }
 
             private Task<Uri> GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
@@ -477,16 +408,75 @@ namespace SolidRpc.Tests
             /// <param name="openApiConfiguration"></param>
             public void AddOpenApiProxy<T>(string openApiConfiguration) where T : class
             {
-                ClientServices.AddTransient<T, T>();
-                var conf = ClientServices.GetSolidConfigurationBuilder()
-                    .ConfigureInterface<T>()
-                    .ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                conf.OpenApiSpec = openApiConfiguration;
-                conf.MethodAddressTransformer = GetBaseUrl;
+                AddClientService(clientServices =>
+                {
+                    clientServices.AddTransient<T, T>();
+                    var conf = clientServices.GetSolidConfigurationBuilder()
+                        .ConfigureInterface<T>()
+                        .ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                    conf.OpenApiSpec = openApiConfiguration;
+                    conf.MethodAddressTransformer = GetBaseUrl;
 
-                ClientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
-                ClientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
-                ClientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
+                    clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
+                    clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
+                    clientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
+                });
+            }
+
+            /// <summary>
+            /// Adds a callback to add the server services
+            /// </summary>
+            /// <param name="sc"></param>
+            public void AddServerService(Action<IServiceCollection> sc)
+            {
+                var oldCallback = ServerServicesCallback;
+                ServerServicesCallback = (_) =>
+                {
+                    oldCallback(_);
+                    sc(_);
+                };
+            }
+
+            /// <summary>
+            /// Adds a callback to add the server services
+            /// </summary>
+            /// <param name="sc"></param>
+            public void AddClientService(Action<IServiceCollection> sc)
+            {
+                var oldCallback = ServerServicesCallback;
+                ClientServicesCallback = (_) =>
+                {
+                    oldCallback(_);
+                    sc(_);
+                };
+            }
+
+            /// <summary>
+            /// Adds the serer and client service
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="impl"></param>
+            /// <param name="config"></param>
+            public void AddServerAndClientService<T>(T impl, string config) where T : class
+            {
+                AddServerService(sc => sc.AddSolidRpcBindings(impl, c =>
+                {
+                    c.OpenApiSpec = config;
+                }));
+
+                AddClientService(clientServices =>
+                {
+                    clientServices.AddTransient<T, T>();
+                    var conf = clientServices.GetSolidConfigurationBuilder()
+                        .ConfigureInterface<T>()
+                        .ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                    conf.OpenApiSpec = config;
+                    conf.MethodAddressTransformer = GetBaseUrl;
+
+                    clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
+                    clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
+                    clientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
+                });
             }
         }
 
