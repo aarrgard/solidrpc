@@ -17,5 +17,12 @@ namespace SolidRpc.Security.Services.Oidc {
         Task<Settings> Settings(
             CancellationToken cancellationToken = default(CancellationToken));
     
+        /// <summary>
+        /// The path that we use as a redirect when the user is authenticated.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        Task LoggedIn(
+            CancellationToken cancellationToken = default(CancellationToken));
+    
     }
 }

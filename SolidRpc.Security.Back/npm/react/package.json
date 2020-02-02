@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "homepage": ".",
   "dependencies": {
-    "oidc-client": "^1.9.1",
+    "oidc-client": "^1.10.1",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-scripts": "2.1.8",
@@ -18,7 +18,7 @@
     "typescript": "3.3.3"
   },
   "scripts": {
-    "start": "set HTTPS=true&&react-scripts start DESKTOP-7O2KCUK",
+    "start": "set HTTPS=true&&react-scripts start DESKTOP-IFUK6JH",
     "build": "react-scripts build && cp -R ./build ../www",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

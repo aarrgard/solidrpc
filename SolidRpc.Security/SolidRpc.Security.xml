@@ -279,6 +279,12 @@
             </summary>
             <param name="cancellationToken"></param>
         </member>
+        <member name="M:SolidRpc.Security.Services.Oidc.IOidcClient.LoggedIn(System.Threading.CancellationToken)">
+            <summary>
+            The path that we use as a redirect when the user is authenticated.
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
         <member name="T:SolidRpc.Security.Services.Oidc.IOidcServer">
             <summary>
             Defines logic for the oidc server

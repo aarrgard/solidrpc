@@ -24,6 +24,17 @@
           }
         }
       }
+    },
+    "/LoggedIn": {
+      "get": {
+        "description": "The path that we use as a redirect when the user is authenticated.",
+        "operationId": "LoggedIn",
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
     }
   },
   "definitions": {

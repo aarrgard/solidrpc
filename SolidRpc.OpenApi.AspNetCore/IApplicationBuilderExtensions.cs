@@ -219,6 +219,7 @@ namespace Microsoft.AspNetCore.Builder
                 ctx.Response.StatusCode = 200;
                 var charset = string.IsNullOrEmpty(content.CharSet) ? "" : $"; charset=\"{content.CharSet}\"";
                 ctx.Response.ContentType = $"{content.ContentType}{charset}";
+                AddAllowedCorsHeaders(ctx);
                 await content.Content.CopyToAsync(ctx.Response.Body);
             } 
             catch(FileContentNotFoundException)

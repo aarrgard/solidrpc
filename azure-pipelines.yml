@@ -2,7 +2,7 @@
 ## Build pipeline
 #
 
-name: 'SolidProxy$(Date:yyyyMMdd)$(Rev:.r)'
+name: 'SolidRpc$(Date:yyyyMMdd)$(Rev:.r)'
 
 trigger:
   branches:

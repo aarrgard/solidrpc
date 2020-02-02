@@ -356,13 +356,14 @@ namespace SolidRpc.NpmGenerator.InternalServices
                     code.Append(asIndentation).AppendLine($"let returnString = false");
                     code.Append(asIndentation).AppendLine($"if(arr == null) {{");
                     code.Append(CreateIndentation(asIndentation)).AppendLine($"arr = [];");
-                    code.Append(CreateIndentation(asIndentation)).AppendLine($"returnString = false;");
+                    code.Append(CreateIndentation(asIndentation)).AppendLine($"returnString = true;");
                     code.Append(asIndentation).AppendLine($"}}");
+                    code.Append(asIndentation).AppendLine($"arr.push('{{');");
                     (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
                         var jsonify = CreateJs2JsonConverter(rootNamespace, o.PropertyType, $"this.{o.Name}");
-                        code.Append(asIndentation).AppendLine($"if(this.{o.Name}) {{ arr.push('{o.HttpName}: '); {jsonify}; arr.push(','); }} ");
+                        code.Append(asIndentation).AppendLine($"if(this.{o.Name}) {{ arr.push('\"{o.HttpName}\": '); {jsonify}; arr.push(','); }} ");
                     });
-                    code.Append(asIndentation).AppendLine($"arr.push('}}');");
+                    code.Append(asIndentation).AppendLine($"if(arr[arr.length-1] == ',') arr[arr.length-1] = '}}'; else arr.push('}}');");
                     code.Append(asIndentation).AppendLine($"if(returnString) return arr.join(\"\");");
                     code.Append(asIndentation).AppendLine($"return null;");
                 }
