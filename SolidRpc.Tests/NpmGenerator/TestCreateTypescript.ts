@@ -1003,6 +1003,17 @@ export namespace Security {
                  * This observable is hot and monitors all the responses from the Settings invocations.
                  */
                 SettingsObservable : Observable<Security.Types.Settings>;
+                /**
+                 * The path that we use as a redirect when the user is authenticated.
+                 * @param cancellationToken 
+                 */
+                LoggedIn(
+                    cancellationToken? : CancellationToken
+                ): Observable<void>;
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<void>;
             }
             /**
              * Defines logic for the oidc client.
@@ -1012,6 +1023,8 @@ export namespace Security {
                     super();
                     this.SettingsSubject = new Subject<Security.Types.Settings>();
                     this.SettingsObservable = this.SettingsSubject.asObservable().pipe(share());
+                    this.LoggedInSubject = new Subject<void>();
+                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
                 }
                 /**
                  * Returns the settings for the client. Usually invoked from a javascript web app.                 *             These settings does not contain the secret which the client should keep for itself.                 *             It does however contain a "redirect_uri" that is valid for this client.
@@ -1034,6 +1047,27 @@ export namespace Security {
                  */
                 SettingsObservable : Observable<Security.Types.Settings>;
                 private SettingsSubject : Subject<Security.Types.Settings>;
+                /**
+                 * The path that we use as a redirect when the user is authenticated.
+                 * @param cancellationToken 
+                 */
+                LoggedIn(
+                    cancellationToken? : CancellationToken
+                ): Observable<void> {
+                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/LoggedIn';
+                    return this.request<void>('get', uri, null, null, null, cancellationToken, function(code, data) {
+                        if(code == 200) {
+                            return null;
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.LoggedInSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 */
+                LoggedInObservable : Observable<void>;
+                private LoggedInSubject : Subject<void>;
             }
             /**
              * Instance for the IOidcClient type. Implemented by the OidcClientImpl
@@ -1536,11 +1570,12 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Name) { arr.push('name: '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                if(this.Value) { arr.push('value: '); arr.push(JSON.stringify(this.Value)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                if(this.Value) { arr.push('"value": '); arr.push(JSON.stringify(this.Value)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1573,11 +1608,12 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.AccessToken) { arr.push('access_token: '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
-                if(this.TokenType) { arr.push('token_type: '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.AccessToken) { arr.push('"access_token": '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
+                if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1607,10 +1643,11 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Data) { arr.push('data: '); this.Data.toJson(arr); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Data) { arr.push('"data": '); this.Data.toJson(arr); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1660,18 +1697,19 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.AppId) { arr.push('app_id: '); arr.push(JSON.stringify(this.AppId)); arr.push(','); } 
-                if(this.Type) { arr.push('type: '); arr.push(JSON.stringify(this.Type)); arr.push(','); } 
-                if(this.Application) { arr.push('application: '); arr.push(JSON.stringify(this.Application)); arr.push(','); } 
-                if(this.DataAccessExpiresAt) { arr.push('data_access_expires_at: '); arr.push(JSON.stringify(this.DataAccessExpiresAt)); arr.push(','); } 
-                if(this.Error) { arr.push('error: '); this.Error.toJson(arr); arr.push(','); } 
-                if(this.ExpiresAt) { arr.push('expires_at: '); arr.push(JSON.stringify(this.ExpiresAt)); arr.push(','); } 
-                if(this.IsValid) { arr.push('is_valid: '); arr.push(JSON.stringify(this.IsValid)); arr.push(','); } 
-                if(this.Scopes) { arr.push('scopes: '); this.Scopes.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.UserId) { arr.push('user_id: '); arr.push(JSON.stringify(this.UserId)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.AppId) { arr.push('"app_id": '); arr.push(JSON.stringify(this.AppId)); arr.push(','); } 
+                if(this.Type) { arr.push('"type": '); arr.push(JSON.stringify(this.Type)); arr.push(','); } 
+                if(this.Application) { arr.push('"application": '); arr.push(JSON.stringify(this.Application)); arr.push(','); } 
+                if(this.DataAccessExpiresAt) { arr.push('"data_access_expires_at": '); arr.push(JSON.stringify(this.DataAccessExpiresAt)); arr.push(','); } 
+                if(this.Error) { arr.push('"error": '); this.Error.toJson(arr); arr.push(','); } 
+                if(this.ExpiresAt) { arr.push('"expires_at": '); arr.push(JSON.stringify(this.ExpiresAt)); arr.push(','); } 
+                if(this.IsValid) { arr.push('"is_valid": '); arr.push(JSON.stringify(this.IsValid)); arr.push(','); } 
+                if(this.Scopes) { arr.push('"scopes": '); this.Scopes.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.UserId) { arr.push('"user_id": '); arr.push(JSON.stringify(this.UserId)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1735,12 +1773,13 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Code) { arr.push('code: '); arr.push(JSON.stringify(this.Code)); arr.push(','); } 
-                if(this.Message) { arr.push('message: '); arr.push(JSON.stringify(this.Message)); arr.push(','); } 
-                if(this.Subcode) { arr.push('subcode: '); arr.push(JSON.stringify(this.Subcode)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Code) { arr.push('"code": '); arr.push(JSON.stringify(this.Code)); arr.push(','); } 
+                if(this.Message) { arr.push('"message": '); arr.push(JSON.stringify(this.Message)); arr.push(','); } 
+                if(this.Subcode) { arr.push('"subcode": '); arr.push(JSON.stringify(this.Subcode)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1786,14 +1825,15 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Name) { arr.push('name: '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                if(this.Status) { arr.push('status: '); arr.push(JSON.stringify(this.Status)); arr.push(','); } 
-                if(this.Script) { arr.push('script: '); this.Script.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.Meta) { arr.push('meta: '); this.Meta.forEach(o => o.toJson(arr)); arr.push(','); } 
-                if(this.ButtonHtml) { arr.push('buttonHtml: '); arr.push(JSON.stringify(this.ButtonHtml)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                if(this.Status) { arr.push('"status": '); arr.push(JSON.stringify(this.Status)); arr.push(','); } 
+                if(this.Script) { arr.push('"script": '); this.Script.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.Meta) { arr.push('"meta": '); this.Meta.forEach(o => o.toJson(arr)); arr.push(','); } 
+                if(this.ButtonHtml) { arr.push('"buttonHtml": '); arr.push(JSON.stringify(this.ButtonHtml)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1838,11 +1878,12 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Name) { arr.push('name: '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                if(this.Content) { arr.push('content: '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -1944,34 +1985,35 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Issuer) { arr.push('issuer: '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
-                if(this.AuthorizationEndpoint) { arr.push('authorization_endpoint: '); arr.push(JSON.stringify(this.AuthorizationEndpoint)); arr.push(','); } 
-                if(this.TokenEndpoint) { arr.push('token_endpoint: '); arr.push(JSON.stringify(this.TokenEndpoint)); arr.push(','); } 
-                if(this.UserinfoEndpoint) { arr.push('userinfo_endpoint: '); arr.push(JSON.stringify(this.UserinfoEndpoint)); arr.push(','); } 
-                if(this.RevocationEndpoint) { arr.push('revocation_endpoint: '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
-                if(this.DeviceAuthorizationEndpoint) { arr.push('device_authorization_endpoint: '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
-                if(this.JwksUri) { arr.push('jwks_uri: '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
-                if(this.ScopesSupported) { arr.push('scopes_supported: '); this.ScopesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.GrantTypesSupported) { arr.push('grant_types_supported: '); this.GrantTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.ResponseModesSupported) { arr.push('response_modes_supported: '); this.ResponseModesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.SubjectTypesSupported) { arr.push('subject_types_supported: '); this.SubjectTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.IdTokenSigningAlgValuesSupported) { arr.push('id_token_signing_alg_values_supported: '); this.IdTokenSigningAlgValuesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.EndSessionEndpoint) { arr.push('end_session_endpoint: '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
-                if(this.ResponseTypesSupported) { arr.push('response_types_supported: '); this.ResponseTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.ClaimsSupported) { arr.push('claims_supported: '); this.ClaimsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.TokenEndpointAuthMethodsSupported) { arr.push('token_endpoint_auth_methods_supported: '); this.TokenEndpointAuthMethodsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.CodeChallengeMethodsSupported) { arr.push('code_challenge_methods_supported: '); this.CodeChallengeMethodsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.RequestUriParameterSupported) { arr.push('request_uri_parameter_supported: '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
-                if(this.HttpLogoutSupported) { arr.push('http_logout_supported: '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
-                if(this.FrontchannelLogoutSupported) { arr.push('frontchannel_logout_supported: '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
-                if(this.RbacUrl) { arr.push('rbac_url: '); arr.push(JSON.stringify(this.RbacUrl)); arr.push(','); } 
-                if(this.MsgraphHost) { arr.push('msgraph_host: '); arr.push(JSON.stringify(this.MsgraphHost)); arr.push(','); } 
-                if(this.CloudGraphHostName) { arr.push('cloud_graph_host_name: '); arr.push(JSON.stringify(this.CloudGraphHostName)); arr.push(','); } 
-                if(this.CloudInstanceName) { arr.push('cloud_instance_name: '); arr.push(JSON.stringify(this.CloudInstanceName)); arr.push(','); } 
-                if(this.TenantRegionScope) { arr.push('tenant_region_scope: '); arr.push(JSON.stringify(this.TenantRegionScope)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
+                if(this.AuthorizationEndpoint) { arr.push('"authorization_endpoint": '); arr.push(JSON.stringify(this.AuthorizationEndpoint)); arr.push(','); } 
+                if(this.TokenEndpoint) { arr.push('"token_endpoint": '); arr.push(JSON.stringify(this.TokenEndpoint)); arr.push(','); } 
+                if(this.UserinfoEndpoint) { arr.push('"userinfo_endpoint": '); arr.push(JSON.stringify(this.UserinfoEndpoint)); arr.push(','); } 
+                if(this.RevocationEndpoint) { arr.push('"revocation_endpoint": '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
+                if(this.DeviceAuthorizationEndpoint) { arr.push('"device_authorization_endpoint": '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
+                if(this.JwksUri) { arr.push('"jwks_uri": '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
+                if(this.ScopesSupported) { arr.push('"scopes_supported": '); this.ScopesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); this.GrantTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); this.ResponseModesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); this.SubjectTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); this.IdTokenSigningAlgValuesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.EndSessionEndpoint) { arr.push('"end_session_endpoint": '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
+                if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); this.ResponseTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.ClaimsSupported) { arr.push('"claims_supported": '); this.ClaimsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); this.TokenEndpointAuthMethodsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); this.CodeChallengeMethodsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.RequestUriParameterSupported) { arr.push('"request_uri_parameter_supported": '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
+                if(this.HttpLogoutSupported) { arr.push('"http_logout_supported": '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
+                if(this.FrontchannelLogoutSupported) { arr.push('"frontchannel_logout_supported": '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
+                if(this.RbacUrl) { arr.push('"rbac_url": '); arr.push(JSON.stringify(this.RbacUrl)); arr.push(','); } 
+                if(this.MsgraphHost) { arr.push('"msgraph_host": '); arr.push(JSON.stringify(this.MsgraphHost)); arr.push(','); } 
+                if(this.CloudGraphHostName) { arr.push('"cloud_graph_host_name": '); arr.push(JSON.stringify(this.CloudGraphHostName)); arr.push(','); } 
+                if(this.CloudInstanceName) { arr.push('"cloud_instance_name": '); arr.push(JSON.stringify(this.CloudInstanceName)); arr.push(','); } 
+                if(this.TenantRegionScope) { arr.push('"tenant_region_scope": '); arr.push(JSON.stringify(this.TenantRegionScope)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -2120,19 +2162,20 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Alg) { arr.push('alg: '); arr.push(JSON.stringify(this.Alg)); arr.push(','); } 
-                if(this.Kty) { arr.push('kty: '); arr.push(JSON.stringify(this.Kty)); arr.push(','); } 
-                if(this.Use) { arr.push('use: '); arr.push(JSON.stringify(this.Use)); arr.push(','); } 
-                if(this.Kid) { arr.push('kid: '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
-                if(this.X5u) { arr.push('x5u: '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
-                if(this.X5t) { arr.push('x5t: '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
-                if(this.X5c) { arr.push('x5c: '); this.X5c.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.N) { arr.push('n: '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
-                if(this.E) { arr.push('e: '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
-                if(this.Issuer) { arr.push('issuer: '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Alg) { arr.push('"alg": '); arr.push(JSON.stringify(this.Alg)); arr.push(','); } 
+                if(this.Kty) { arr.push('"kty": '); arr.push(JSON.stringify(this.Kty)); arr.push(','); } 
+                if(this.Use) { arr.push('"use": '); arr.push(JSON.stringify(this.Use)); arr.push(','); } 
+                if(this.Kid) { arr.push('"kid": '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
+                if(this.X5u) { arr.push('"x5u": '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
+                if(this.X5t) { arr.push('"x5t": '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
+                if(this.X5c) { arr.push('"x5c": '); this.X5c.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
+                if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
+                if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -2194,10 +2237,11 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Keys) { arr.push('Keys: '); this.Keys.forEach(o => o.toJson(arr)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Keys) { arr.push('"Keys": '); this.Keys.forEach(o => o.toJson(arr)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -2238,15 +2282,16 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Authority) { arr.push('authority: '); arr.push(JSON.stringify(this.Authority)); arr.push(','); } 
-                if(this.ClientId) { arr.push('client_id: '); arr.push(JSON.stringify(this.ClientId)); arr.push(','); } 
-                if(this.ResponseType) { arr.push('response_type: '); arr.push(JSON.stringify(this.ResponseType)); arr.push(','); } 
-                if(this.Scope) { arr.push('scope: '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
-                if(this.RedirectUri) { arr.push('redirect_uri: '); arr.push(JSON.stringify(this.RedirectUri)); arr.push(','); } 
-                if(this.PostLogoutRedirectUri) { arr.push('post_logout_redirect_uri: '); arr.push(JSON.stringify(this.PostLogoutRedirectUri)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Authority) { arr.push('"authority": '); arr.push(JSON.stringify(this.Authority)); arr.push(','); } 
+                if(this.ClientId) { arr.push('"client_id": '); arr.push(JSON.stringify(this.ClientId)); arr.push(','); } 
+                if(this.ResponseType) { arr.push('"response_type": '); arr.push(JSON.stringify(this.ResponseType)); arr.push(','); } 
+                if(this.Scope) { arr.push('"scope": '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
+                if(this.RedirectUri) { arr.push('"redirect_uri": '); arr.push(JSON.stringify(this.RedirectUri)); arr.push(','); } 
+                if(this.PostLogoutRedirectUri) { arr.push('"post_logout_redirect_uri": '); arr.push(JSON.stringify(this.PostLogoutRedirectUri)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -2304,14 +2349,15 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.AccessToken) { arr.push('access_token: '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
-                if(this.TokenType) { arr.push('token_type: '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
-                if(this.ExpiresIn) { arr.push('expires_in: '); arr.push(JSON.stringify(this.ExpiresIn)); arr.push(','); } 
-                if(this.RefreshToken) { arr.push('refresh_token: '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
-                if(this.Scope) { arr.push('scope: '); this.Scope.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.AccessToken) { arr.push('"access_token": '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
+                if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
+                if(this.ExpiresIn) { arr.push('"expires_in": '); arr.push(JSON.stringify(this.ExpiresIn)); arr.push(','); } 
+                if(this.RefreshToken) { arr.push('"refresh_token": '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
+                if(this.Scope) { arr.push('"scope": '); this.Scope.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
@@ -2359,12 +2405,13 @@ export namespace Security {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
-                    returnString = false;
+                    returnString = true;
                 }
-                if(this.Content) { arr.push('content: '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
-                if(this.ContentType) { arr.push('contentType: '); arr.push(JSON.stringify(this.ContentType)); arr.push(','); } 
-                if(this.CharSet) { arr.push('charSet: '); arr.push(JSON.stringify(this.CharSet)); arr.push(','); } 
-                arr.push('}');
+                arr.push('{');
+                if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
+                if(this.ContentType) { arr.push('"contentType": '); arr.push(JSON.stringify(this.ContentType)); arr.push(','); } 
+                if(this.CharSet) { arr.push('"charSet": '); arr.push(JSON.stringify(this.CharSet)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
