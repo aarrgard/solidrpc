@@ -37,7 +37,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
 
             //log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
 
-            /// return the response.
+            // return the response.
             var httpResponse = new HttpResponseMessage();
             await res.CopyToAsync(httpResponse, req);
             return httpResponse;

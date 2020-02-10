@@ -7,7 +7,7 @@ namespace SolidRpc.OpenApi.Model.V3
     /// <summary>
     /// This is the root document object of the OpenAPI document.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/#oasObject"/>
+    /// <a href="https://swagger.io/specification/#oasObject"/>
     public class OpenAPIObject : ModelBase, IOpenApiSpec
     {
         public OpenAPIObject(IOpenApiSpecResolver openApiSpecResolver) : base(null)

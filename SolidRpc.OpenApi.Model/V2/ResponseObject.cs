@@ -7,7 +7,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// Describes a single response from an API Operation.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#responseObject"/>
+    /// <a href="https://swagger.io/specification/v2/#responseObject"/>
     public class ResponseObject : ModelBase
     {
         /// <summary>

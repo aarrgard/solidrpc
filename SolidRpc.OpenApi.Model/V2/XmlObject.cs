@@ -6,7 +6,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// A metadata object that allows for more fine-tuned XML model definitions.
     /// When using arrays, XML element names are not inferred(for singular/plural forms) and the name property should be used to add that information.See examples for expected behavior.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#xmlObject"/>
+    /// <a href="https://swagger.io/specification/v2/#xmlObject"/>
     public class XmlObject : ModelBase
     {
         public XmlObject(ModelBase parent) : base(parent)

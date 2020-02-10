@@ -5,7 +5,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// Allows the definition of a security scheme that can be used by the operations. Supported schemes are basic authentication, an API key (either as a header or as a query parameter) and OAuth2's common flows (implicit, password, application and access code).
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#securitySchemeObject"/>
+    /// <a href="https://swagger.io/specification/v2/#securitySchemeObject"/>
     public class SecuritySchemeObject : ModelBase
     {
         public SecuritySchemeObject(ModelBase parent) : base(parent)

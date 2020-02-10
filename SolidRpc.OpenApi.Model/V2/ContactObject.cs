@@ -5,7 +5,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// Contact information for the exposed API.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#contactObject"/>
+    /// <a href="https://swagger.io/specification/v2/#contactObject"/>
     public class ContactObject : ModelBase
     {
         public ContactObject(ModelBase parent) : base(parent) { }

@@ -9,7 +9,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#swaggerObject"/>
+    /// <a href="https://swagger.io/specification/v2/#swaggerObject"/>
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
         private IOpenApiSpecResolver _openApiSpecResolver = new OpenApiSpecResolverDummy();

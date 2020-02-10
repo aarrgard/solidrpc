@@ -5,7 +5,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <summary>
     /// License information for the exposed API.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#licenseObject"/>
+    /// <a href="https://swagger.io/specification/v2/#licenseObject"/>
     public class LicenseObject : ModelBase
     {
         public LicenseObject(ModelBase parent) : base(parent) { }

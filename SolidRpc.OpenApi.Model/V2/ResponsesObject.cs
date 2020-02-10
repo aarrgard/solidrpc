@@ -5,7 +5,7 @@
     /// The default can be used as the default response object for all HTTP codes that are not covered individually by the specification.
     /// The Responses Object MUST contain at least one response code, and it SHOULD be the response for a successful operation call.
     /// </summary>
-    /// <see cref="https://swagger.io/specification/v2/#responsesObject"/>
+    /// <a href="https://swagger.io/specification/v2/#responsesObject"/>
     public class ResponsesObject : ModelBaseDynamic<ResponseObject>
     {
         public ResponsesObject(ModelBase parent) : base(parent)
