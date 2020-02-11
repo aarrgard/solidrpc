@@ -1,5 +1,5 @@
 using System.CodeDom.Compiler;
-namespace SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceDailyHits {
+namespace SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateInterestApplication {
     /// <summary>
     /// No Content
     /// </summary>

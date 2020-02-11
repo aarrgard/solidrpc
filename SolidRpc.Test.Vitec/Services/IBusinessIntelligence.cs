@@ -8,7 +8,6 @@ using SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models;
 using Models = SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models;
 using BusinessIntelligense = SolidRpc.Test.Vitec.Types.Estates.BusinessIntelligense;
 using SolidRpc.Test.Vitec.Types.Budget.Models;
-using SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense;
 namespace SolidRpc.Test.Vitec.Services {
     /// <summary>
     /// 
@@ -168,30 +167,6 @@ namespace SolidRpc.Test.Vitec.Services {
             string customerId,
             DateTimeOffset dateFrom,
             DateTimeOffset dateTo,
-            CancellationToken cancellationToken = default(CancellationToken));
-    
-        /// <summary>
-        /// Metod f&#246;r att rapportera bes&#246;ksstatistik f&#246;r marknadsplatser
-        /// </summary>
-        /// <param name="customerId">Kund-id</param>
-        /// <param name="estateHit">Besök</param>
-        /// <param name="cancellationToken"></param>
-        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceHits.NoContentException">No Content</exception>
-        Task BusinessIntelligenceHits(
-            string customerId,
-            IEnumerable<EstateHit> estateHit,
-            CancellationToken cancellationToken = default(CancellationToken));
-    
-        /// <summary>
-        /// Metod f&#246;r att rapportera daglig bes&#246;ksstatistik f&#246;r marknadsplatser
-        /// </summary>
-        /// <param name="customerId">Kund-id</param>
-        /// <param name="dailyestateHits"></param>
-        /// <param name="cancellationToken"></param>
-        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceDailyHits.NoContentException">No Content</exception>
-        Task BusinessIntelligenceDailyHits(
-            string customerId,
-            IEnumerable<DailyEstateHit> dailyestateHits,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

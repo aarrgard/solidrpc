@@ -36,40 +36,47 @@ Security.Services.Oidc.OidcClientInstance.Settings().subscribe(settings => {
     console.log('Got settings from oidc client service:');
     console.log(settings);
 
-    settings.ResponseType = "id_token token";
-
-    var userManager = new UserManager(JSON.parse(settings.toJson()));
+    let json = JSON.parse(settings.toJson());
+    console.log(json)
+    var userManager = new UserManager(json);
     var url;
     var keepOpen = false;
     userManager.signoutPopupCallback(url, keepOpen).then(_ => {
         console.log('signoutPopupCallback:' + url);
-    }, error => {
-       console.error(error);
+    }).catch(error => {
+        console.error(error);
     });
     userManager.signinPopupCallback(url).then(result => {
         console.log('signinPopupCallback:' + url);
         console.log('signinPopupCallback:' + window.location.href);
         console.log(result);
+    }).catch(error => {
+        console.error(error);
     });
     userManager.signinSilentCallback().then(() => {
         console.log('signinSilentCallback');
-    }, error => {
+    }).catch(error => {
         console.error(error);
-    });
+    });;
 
     userManager.events.addUserLoaded(o => {
         console.log('UserLoaded!');
         console.log(o);
     });
     Log.logger = console;
+    Log.level = Log.DEBUG;
     userManager.signinPopup().then(o => {
         console.log('logged in?:');
         console.log(o);
+    }).catch(error => {
+        console.error(error);
     });
-    //userManager.querySessionStatus().then(o => {
-    //    console.log('Session status:');
-    //    console.log(o);
-    //});
+    userManager.querySessionStatus().then(o => {
+        console.log('Session status:');
+        console.log(o);
+    }).catch(error => {
+        console.error(error);
+    });
 
 })
 

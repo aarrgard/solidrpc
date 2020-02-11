@@ -26,10 +26,14 @@ namespace SolidRpc.OpenApi.Binder.Http
                 await source.Body.CopyToAsync(ms);
                 target.ResponseStream = new MemoryStream(ms.ToArray());
             }
-            if(source.Headers.TryGetValue("Content-Disposition", out StringValues cds))
+            if (source.Headers.TryGetValue("Content-Disposition", out StringValues cds))
             {
                 var cd = ContentDispositionHeaderValue.Parse(cds);
                 target.Filename = cd.FileName;
+            }
+            if (source.Headers.TryGetValue("Location", out StringValues loc))
+            {
+                target.Location = loc;
             }
         }
         /// <summary>
@@ -50,6 +54,11 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 target.ContentType = source.ContentType;
                 await source.ResponseStream.CopyToAsync(target.Body);
+            }
+            if(!string.IsNullOrEmpty(source.Location))
+            {
+                target.StatusCode = 302;
+                target.Headers.Add("Location", source.Location);
             }
         }
     }

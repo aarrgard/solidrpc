@@ -14,6 +14,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         string ContentType { get; }
 
         /// <summary>
+        /// The encoding - stored in the Content-Type header
+        /// </summary>
+        Encoding Encoding { get; }
+
+        /// <summary>
         /// File filename - usually stored in the Content-Disposition header.
         /// </summary>
         string Filename { get; }

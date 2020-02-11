@@ -19,5 +19,11 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         [DataMember(Name="leaseholdUntil",EmitDefaultValue=false)]
         public DateTimeOffset LeaseholdUntil { get; set; }
     
+        /// <summary>
+        /// Avg&#228;ldsperiod i &#229;r
+        /// </summary>
+        [DataMember(Name="leaseholdPeriod",EmitDefaultValue=false)]
+        public int LeaseholdPeriod { get; set; }
+    
     }
 }

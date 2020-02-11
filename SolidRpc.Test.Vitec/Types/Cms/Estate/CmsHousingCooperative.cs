@@ -1,8 +1,8 @@
 using System.CodeDom.Compiler;
-using SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms;
+using SolidRpc.Test.Vitec.Types.HousingCooperative.Cms;
 using System.Runtime.Serialization;
-using System.Collections.Generic;
 using SolidRpc.Test.Vitec.Types.Common.Cms;
+using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
     /// <summary>
     /// 
@@ -22,16 +22,22 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         public CmsHousingCooperativInterior Interior { get; set; }
     
         /// <summary>
+        /// Balkong/uteplats
+        /// </summary>
+        [DataMember(Name="balconyPatio",EmitDefaultValue=false)]
+        public SolidRpc.Test.Vitec.Types.Cms.Estate.BalconyPatio BalconyPatio { get; set; }
+    
+        /// <summary>
         /// V&#229;ning/hiss
         /// </summary>
         [DataMember(Name="floorAndElevator",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Cms.Estate.FloorAndElevator FloorAndElevator { get; set; }
     
         /// <summary>
-        /// Balkong/uteplats
+        /// Pris information
         /// </summary>
-        [DataMember(Name="balconyPatio",EmitDefaultValue=false)]
-        public SolidRpc.Test.Vitec.Types.Cms.Estate.BalconyPatio BalconyPatio { get; set; }
+        [DataMember(Name="price",EmitDefaultValue=false)]
+        public CmsPrice Price { get; set; }
     
         /// <summary>
         /// Lista &#246;ver s&#228;ljarid&#39;n
@@ -50,12 +56,6 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Cms.Estate.Description Description { get; set; }
-    
-        /// <summary>
-        /// Pris information
-        /// </summary>
-        [DataMember(Name="price",EmitDefaultValue=false)]
-        public CmsPrice Price { get; set; }
     
         /// <summary>
         /// Anv&#228;ndarid

@@ -247,5 +247,11 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         [DataMember(Name="energiKlass",EmitDefaultValue=false)]
         public string EnergiKlass { get; set; }
     
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember(Name="balkong",EmitDefaultValue=false)]
+        public bool Balkong { get; set; }
+    
     }
 }

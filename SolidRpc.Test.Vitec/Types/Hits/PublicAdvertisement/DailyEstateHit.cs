@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System;
-namespace SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense {
+namespace SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement {
     /// <summary>
     /// 
     /// </summary>
@@ -18,12 +18,6 @@ namespace SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense {
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
         public DateTimeOffset Date { get; set; }
-    
-        /// <summary>
-        /// Anges om man vill rapportera f&#246;r enskild timme mellan 0-23.
-        /// </summary>
-        [DataMember(Name="hour",EmitDefaultValue=false)]
-        public int Hour { get; set; }
     
         /// <summary>
         /// Antal bes&#246;k.

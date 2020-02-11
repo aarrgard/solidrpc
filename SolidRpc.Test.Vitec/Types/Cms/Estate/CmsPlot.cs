@@ -22,6 +22,12 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         public CmsPlotInformation Plot { get; set; }
     
         /// <summary>
+        /// Pris information
+        /// </summary>
+        [DataMember(Name="price",EmitDefaultValue=false)]
+        public CmsPrice Price { get; set; }
+    
+        /// <summary>
         /// Lista &#246;ver s&#228;ljar id&#39;n
         /// </summary>
         [DataMember(Name="sellers",EmitDefaultValue=false)]
@@ -38,12 +44,6 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         /// </summary>
         [DataMember(Name="description",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Cms.Estate.Description Description { get; set; }
-    
-        /// <summary>
-        /// Pris information
-        /// </summary>
-        [DataMember(Name="price",EmitDefaultValue=false)]
-        public CmsPrice Price { get; set; }
     
         /// <summary>
         /// Anv&#228;ndarid

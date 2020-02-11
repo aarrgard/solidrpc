@@ -15,7 +15,20 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="estateId">Bostadsid</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<Models.Viewing>> ViewingGet(
+        Task<IEnumerable<Models.Viewing>> ViewingGet2(
+            string estateId,
+            string customerId,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Skapa en visning p&#229; en bostad
+        /// </summary>
+        /// <param name="viewing">Information om visningen</param>
+        /// <param name="estateId">Id på objektet</param>
+        /// <param name="customerId">Kundid</param>
+        /// <param name="cancellationToken"></param>
+        Task<string> ViewingCreateViewing(
+            Models.AddViewing viewing,
             string estateId,
             string customerId,
             CancellationToken cancellationToken = default(CancellationToken));
@@ -26,7 +39,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="estateId">Bostadsid</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<Models.Viewing>> ViewingGet2(
+        Task<IEnumerable<Models.Viewing>> ViewingGet(
             string estateId,
             string customerId = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
@@ -39,8 +52,8 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="contactId">Id på kontakten.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant.NoContentException">No Content</exception>
-        Task ViewingRemoveViewingParticipant(
+        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant2.NoContentException">No Content</exception>
+        Task ViewingRemoveViewingParticipant2(
             string viewingId,
             string timeSlotId,
             string contactId,
@@ -73,8 +86,8 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="contactId">Id på kontakten.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant2.NoContentException">No Content</exception>
-        Task ViewingRemoveViewingParticipant2(
+        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant.NoContentException">No Content</exception>
+        Task ViewingRemoveViewingParticipant(
             string viewingId,
             string timeSlotId,
             string contactId,
@@ -107,7 +120,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="participant">Visningsdeltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        Task<string> ViewingAddNewViewingParticipant2(
+        Task<string> ViewingAddNewViewingParticipant(
             string viewingId,
             string timeSlotId,
             Models.AddNewViewingParticipant participant,
@@ -122,7 +135,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="participant">Visningsdeltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        Task<string> ViewingAddNewViewingParticipant(
+        Task<string> ViewingAddNewViewingParticipant2(
             string viewingId,
             string timeSlotId,
             Models.AddNewViewingParticipant participant,

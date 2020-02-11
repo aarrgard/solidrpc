@@ -5,18 +5,18 @@ namespace SolidRpc.Test.Vitec.Types.House.Cms {
     /// 
     /// </summary>
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
-    public class Room {
+    public class CmsInsurance {
         /// <summary>
-        /// Rubrik
+        /// Bolag
         /// </summary>
-        [DataMember(Name="heading",EmitDefaultValue=false)]
-        public string Heading { get; set; }
+        [DataMember(Name="company",EmitDefaultValue=false)]
+        public string Company { get; set; }
     
         /// <summary>
-        /// Text
+        /// Belopp
         /// </summary>
-        [DataMember(Name="text",EmitDefaultValue=false)]
-        public string Text { get; set; }
+        [DataMember(Name="amount",EmitDefaultValue=false)]
+        public double Amount { get; set; }
     
     }
 }

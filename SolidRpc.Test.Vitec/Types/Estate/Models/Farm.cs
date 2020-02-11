@@ -53,6 +53,12 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         public FarmOperation Operation { get; set; }
     
         /// <summary>
+        /// Arrende
+        /// </summary>
+        [DataMember(Name="lease",EmitDefaultValue=false)]
+        public SolidRpc.Test.Vitec.Types.Common.Estate.Lease Lease { get; set; }
+    
+        /// <summary>
         /// F&#246;rs&#228;kring
         /// </summary>
         [DataMember(Name="insurance",EmitDefaultValue=false)]

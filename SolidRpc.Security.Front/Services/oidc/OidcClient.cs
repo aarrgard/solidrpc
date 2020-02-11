@@ -38,9 +38,9 @@ namespace SolidRpc.Security.Front.Services.oidc
             var settings = new Settings();
             settings.Authority = SolidRpcSecurityOptions.Authority;
             settings.ClientId = SolidRpcSecurityOptions.ClientId;
-            settings.ResponseType = "id_token";
+            settings.ResponseType = "token";
             settings.Scope = "openid";
-            settings.RedirectUri = redirectUri.ToString();
+            settings.PopupRedirectUri = redirectUri.ToString();
             return settings;
         }
     }

@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -172,6 +173,45 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
                 var res = proxy.GetComplexType(new OneComplexArg.Types.ComplexType1());
                 CompareStructs(new OneComplexArg.Types.ComplexType1(), res);
+            }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test, Ignore("Finish up!")]
+        public async Task TestMoreComplexArgs()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestMoreComplexArgs).Substring(4));
+
+                var moq = new Mock<MoreComplexArgs.Services.IMoreComplexArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                var ct1Arr = (IEnumerable<MoreComplexArgs.Types.ComplexType1>)new[] { new MoreComplexArgs.Types.ComplexType1() {
+                    CT2 = new MoreComplexArgs.Types.ComplexType2()
+                } };
+                var ct2Arr = (IEnumerable<MoreComplexArgs.Types.ComplexType2>)new[] { new MoreComplexArgs.Types.ComplexType2() {
+                    CT1 = new MoreComplexArgs.Types.ComplexType1()
+                } };
+
+                moq.Setup(o => o.GetComplexType(
+                    It.IsAny<string>(),
+                    It.IsAny<DateTime?>(),
+                    It.Is<IEnumerable<MoreComplexArgs.Types.ComplexType1>>(a => CompareTypedStructs(ct1Arr, a)),
+                    It.Is<IEnumerable<MoreComplexArgs.Types.ComplexType2>>(a => CompareTypedStructs(ct2Arr, a))
+                    )).Returns("test");
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<MoreComplexArgs.Services.IMoreComplexArgs>();
+                var res = proxy.GetComplexType(
+                    "test",
+                    DateTime.Now,
+                    ct1Arr,
+                    ct2Arr
+                    );
+                Assert.AreEqual("test", res);
             }
         }
 

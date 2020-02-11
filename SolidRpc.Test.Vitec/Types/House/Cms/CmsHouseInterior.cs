@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using SolidRpc.Test.Vitec.Types.Common.Cms;
 namespace SolidRpc.Test.Vitec.Types.House.Cms {
     /// <summary>
     /// 
@@ -35,7 +36,7 @@ namespace SolidRpc.Test.Vitec.Types.House.Cms {
         /// Rum
         /// </summary>
         [DataMember(Name="rooms",EmitDefaultValue=false)]
-        public IEnumerable<SolidRpc.Test.Vitec.Types.House.Cms.Room> Rooms { get; set; }
+        public IEnumerable<CmsRoom> Rooms { get; set; }
     
     }
 }

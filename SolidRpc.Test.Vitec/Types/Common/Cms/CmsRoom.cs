@@ -1,11 +1,11 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
-namespace SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms {
+namespace SolidRpc.Test.Vitec.Types.Common.Cms {
     /// <summary>
     /// 
     /// </summary>
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
-    public class Room {
+    public class CmsRoom {
         /// <summary>
         /// Rubrik
         /// </summary>

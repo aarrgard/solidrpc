@@ -33,5 +33,10 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The last modified time
         /// </summary>
         public DateTimeOffset? LastModified { get; set; }
+
+        /// <summary>
+        /// The location of the resource
+        /// </summary>
+        public string Location { get; set; }
     }
 }

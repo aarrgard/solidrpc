@@ -2272,6 +2272,9 @@ export namespace Security {
                         case "redirect_uri":
                             if (obj.redirect_uri) { this.RedirectUri = obj.redirect_uri.toString(); }
                             break;
+                        case "popup_redirect_uri":
+                            if (obj.popup_redirect_uri) { this.PopupRedirectUri = obj.popup_redirect_uri.toString(); }
+                            break;
                         case "post_logout_redirect_uri":
                             if (obj.post_logout_redirect_uri) { this.PostLogoutRedirectUri = obj.post_logout_redirect_uri.toString(); }
                             break;
@@ -2290,6 +2293,7 @@ export namespace Security {
                 if(this.ResponseType) { arr.push('"response_type": '); arr.push(JSON.stringify(this.ResponseType)); arr.push(','); } 
                 if(this.Scope) { arr.push('"scope": '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
                 if(this.RedirectUri) { arr.push('"redirect_uri": '); arr.push(JSON.stringify(this.RedirectUri)); arr.push(','); } 
+                if(this.PopupRedirectUri) { arr.push('"popup_redirect_uri": '); arr.push(JSON.stringify(this.PopupRedirectUri)); arr.push(','); } 
                 if(this.PostLogoutRedirectUri) { arr.push('"post_logout_redirect_uri": '); arr.push(JSON.stringify(this.PostLogoutRedirectUri)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
@@ -2315,6 +2319,10 @@ export namespace Security {
              * The the address to redirect to
              */
             RedirectUri: string;
+            /**
+             * The the address to redirect to
+             */
+            PopupRedirectUri: string;
             /**
              * The address to call when logging out.
              */
@@ -2398,6 +2406,9 @@ export namespace Security {
                         case "charSet":
                             if (obj.charSet) { this.CharSet = obj.charSet.toString(); }
                             break;
+                        case "location":
+                            if (obj.location) { this.Location = obj.location.toString(); }
+                            break;
                     }
                 }
             }
@@ -2411,22 +2422,27 @@ export namespace Security {
                 if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
                 if(this.ContentType) { arr.push('"contentType": '); arr.push(JSON.stringify(this.ContentType)); arr.push(','); } 
                 if(this.CharSet) { arr.push('"charSet": '); arr.push(JSON.stringify(this.CharSet)); arr.push(','); } 
+                if(this.Location) { arr.push('"location": '); arr.push(JSON.stringify(this.Location)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
             /**
-             * 
+             * The content
              */
             Content: Uint8Array;
             /**
-             * 
+             * The content type
              */
             ContentType: string;
             /**
-             * 
+             * The charset - set if content is text
              */
             CharSet: string;
+            /**
+             * The location of the data.
+             */
+            Location: string;
         }
     }
 }

@@ -12,23 +12,27 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// Constructs a new structure representing binary data.
         /// </summary>
         /// <param name="contentType"></param>
+        /// <param name="charset"></param>
         /// <param name="name"></param>
         /// <param name="binaryData"></param>
-        public SolidHttpRequestDataBinary(string contentType, string name, byte[] binaryData) : base(contentType, name)
+        public SolidHttpRequestDataBinary(string contentType, string charset, string name, byte[] binaryData) : base(contentType, name)
         {
             BinaryData = binaryData;
+            Encoding = (charset == null) ? null : Encoding.GetEncoding(charset);
         }
         /// <summary>
         /// Constructs a new structure representing binary data.
         /// </summary>
         /// <param name="contentType"></param>
+        /// <param name="charset"></param>
         /// <param name="name"></param>
         /// <param name="binaryData"></param>
-        public SolidHttpRequestDataBinary(string contentType, string name, Stream stream) : base(contentType, name)
+        public SolidHttpRequestDataBinary(string contentType, string charset, string name, Stream stream) : base(contentType, name)
         {
             var ms = new MemoryStream();
             stream.CopyTo(ms);
             BinaryData = ms.ToArray();
+            Encoding = (charset == null) ? null : Encoding.GetEncoding(charset);
         }
 
         /// <summary>

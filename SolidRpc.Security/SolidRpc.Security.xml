@@ -741,6 +741,11 @@
             The the address to redirect to
             </summary>
         </member>
+        <member name="P:SolidRpc.Security.Types.Settings.PopupRedirectUri">
+            <summary>
+            The the address to redirect to
+            </summary>
+        </member>
         <member name="P:SolidRpc.Security.Types.Settings.PostLogoutRedirectUri">
             <summary>
             The address to call when logging out.
@@ -783,17 +788,22 @@
         </member>
         <member name="P:SolidRpc.Security.Types.WebContent.Content">
             <summary>
-            
+            The content
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.WebContent.ContentType">
             <summary>
-            
+            The content type
             </summary>
         </member>
         <member name="P:SolidRpc.Security.Types.WebContent.CharSet">
             <summary>
-            
+            The charset - set if content is text
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.Types.WebContent.Location">
+            <summary>
+            The location of the data.
             </summary>
         </member>
     </members>

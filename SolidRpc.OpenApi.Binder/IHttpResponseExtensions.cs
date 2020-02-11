@@ -24,9 +24,13 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 target.ContentType = source.Content.Headers?.ContentType?.MediaType;
                 target.Filename = source.Content.Headers?.ContentDisposition?.FileName;
-                if(source.Headers.Date.HasValue)
+                if (source.Headers.Date.HasValue)
                 {
                     target.LastModified = source.Headers.Date.Value.DateTime;
+                }
+                if (source.Headers.Location != null)
+                {
+                    target.Location = source.Headers.Location.ToString();
                 }
                 var ms = new MemoryStream();
                 await source.Content.CopyToAsync(ms);
@@ -87,6 +91,13 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.Headers.CacheControl.Private = true;
                 target.Headers.CacheControl.MaxAge = new TimeSpan(24, 0, 0);
             }
+
+            if(source.Location != null)
+            {
+                target.StatusCode = HttpStatusCode.Redirect;
+                target.Headers.Location = new Uri(source.Location);
+            }
+
             return Task.CompletedTask;
         }
 

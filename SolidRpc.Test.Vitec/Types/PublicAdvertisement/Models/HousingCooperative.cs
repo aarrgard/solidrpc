@@ -9,12 +9,6 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class HousingCooperative {
         /// <summary>
-        /// Folkbokf&#246;ringsnummer
-        /// </summary>
-        [DataMember(Name="appartmentNumberInRegister",EmitDefaultValue=false)]
-        public string AppartmentNumberInRegister { get; set; }
-    
-        /// <summary>
         /// L&#228;genhetsnummer
         /// </summary>
         [DataMember(Name="appartmentNumber",EmitDefaultValue=false)]
@@ -75,10 +69,28 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.EnergyDeclaration EnergyDeclaration { get; set; }
     
         /// <summary>
+        /// Exteri&#246;r
+        /// </summary>
+        [DataMember(Name="exterior",EmitDefaultValue=false)]
+        public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.AppartmentExterior Exterior { get; set; }
+    
+        /// <summary>
+        /// Folkbokf&#246;ringsnummer
+        /// </summary>
+        [DataMember(Name="appartmentNumberInRegister",EmitDefaultValue=false)]
+        public string AppartmentNumberInRegister { get; set; }
+    
+        /// <summary>
         /// Bostadens id
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
+    
+        /// <summary>
+        /// Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+        /// </summary>
+        [DataMember(Name="status",EmitDefaultValue=false)]
+        public string Status { get; set; }
     
         /// <summary>
         /// Kontorstillh&#246;righet
@@ -135,10 +147,22 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public DateTimeOffset ChangedAt { get; set; }
     
         /// <summary>
+        /// Tilltr&#228;de vid
+        /// </summary>
+        [DataMember(Name="admissionAt",EmitDefaultValue=false)]
+        public DateTimeOffset AdmissionAt { get; set; }
+    
+        /// <summary>
         /// Url:er
         /// </summary>
         [DataMember(Name="urls",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Urls Urls { get; set; }
+    
+        /// <summary>
+        /// Filer
+        /// </summary>
+        [DataMember(Name="files",EmitDefaultValue=false)]
+        public IEnumerable<SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File> Files { get; set; }
     
         /// <summary>
         /// Visningar

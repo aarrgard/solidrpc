@@ -10,6 +10,12 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class Meeting {
         /// <summary>
+        /// M&#246;tesid
+        /// </summary>
+        [DataMember(Name="id",EmitDefaultValue=false)]
+        public string Id { get; set; }
+    
+        /// <summary>
         /// Kontakt id
         /// </summary>
         [DataMember(Name="contactId",EmitDefaultValue=false)]
@@ -76,7 +82,7 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         public DateTimeOffset BookedDate { get; set; }
     
         /// <summary>
-        /// P&#229;skriftsdatum
+        /// Uppdragsdatum
         /// </summary>
         [DataMember(Name="signatureDate",EmitDefaultValue=false)]
         public DateTimeOffset SignatureDate { get; set; }
@@ -106,10 +112,16 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         public string CancelledBy { get; set; }
     
         /// <summary>
-        /// Kontraktsdatum
+        /// F&#246;rs&#228;ljning = Kontraktsdatum, V&#228;rdering = V&#228;rderingsdag, Skrivning = Datum f&#246;r skrivuppdrag
         /// </summary>
         [DataMember(Name="agreementDate",EmitDefaultValue=false)]
         public DateTimeOffset AgreementDate { get; set; }
+    
+        /// <summary>
+        /// Uppdragstyp
+        /// </summary>
+        [DataMember(Name="commissionType",EmitDefaultValue=false)]
+        public string CommissionType { get; set; }
     
         /// <summary>
         /// Tilltr&#228;desdatum

@@ -42,5 +42,24 @@ namespace SolidRpc.Test.Vitec.Types.Viewing.Models {
         [DataMember(Name="smsConfirmation",EmitDefaultValue=false)]
         public bool SmsConfirmation { get; set; }
     
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember(Name="returnBookingId",EmitDefaultValue=false)]
+        public bool ReturnBookingId { get; set; }
+    
+        /// <summary>
+        /// Meddelande fr&#229;n kontaktpersonen. Meddelandet kommer att sparas p&#229; det lead som skapas i samband med att visningsdeltagaren l&#228;ggs till.
+        /// </summary>
+        [DataMember(Name="contactMessage",EmitDefaultValue=false)]
+        public string ContactMessage { get; set; }
+    
+        /// <summary>
+        /// Leadsk&#228;lla - Det lead som skapas i samband med anm&#228;lan till visning kommer att kopplas till aktuell leadsk&#228;lla.
+        /// Om f&#228;ltet inte anges, kommer leadet att kopplas till en f&#246;rvald leadsk&#228;lla.
+        /// </summary>
+        [DataMember(Name="leadSourceId",EmitDefaultValue=false)]
+        public string LeadSourceId { get; set; }
+    
     }
 }

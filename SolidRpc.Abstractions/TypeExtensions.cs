@@ -16,6 +16,7 @@ namespace System
             null, null,
             null, null,
             null, null,
+            null, null,
             null, null
         );
 
@@ -27,6 +28,7 @@ namespace System
             { "filename", typeof(string) },
             { "lastmodified", typeof(DateTimeOffset?) },
             { "charset", typeof(string) },
+            { "location", typeof(string) },
         };
 
         /// <summary>
@@ -45,7 +47,9 @@ namespace System
                 Action<object, string> setCharSet,
                 Func<object, string> getCharSet,
                 Action<object, DateTimeOffset?> setLastModified,
-                Func<object, DateTimeOffset?> getLastModified
+                Func<object, DateTimeOffset?> getLastModified,
+                Action<object, string> setLocation,
+                Func<object, string> getLocation
                 )
             {
                 IsFileType = isFileType;
@@ -59,6 +63,8 @@ namespace System
                 GetCharSet = getCharSet;
                 SetLastModified = setLastModified;
                 GetLastModified = getLastModified;
+                SetLocation = setLocation;
+                GetLocation = getLocation;
             }
             /// <summary>
             /// Returns true if this type is a file type.
@@ -114,6 +120,16 @@ namespace System
             /// The method we use to set the stream data.
             /// </summary>
             public Func<object, DateTimeOffset?> GetLastModified { get; }
+
+            /// <summary>
+            /// The location of the file
+            /// </summary>
+            public Action<object, string> SetLocation { get; }
+
+            /// <summary>
+            /// The location of the file
+            /// </summary>
+            public Func<object, string> GetLocation { get; }
         }
         private static ConcurrentDictionary<Type, FileTypeHelper> s_FileTypes = new ConcurrentDictionary<Type, FileTypeHelper>();
 
@@ -168,6 +184,7 @@ namespace System
                        return (Stream)o;
                    },
                    (o1, o2)=> { }, (o) => { return "application/octet-stream"; },
+                   (o1, o2) => { }, (o) => { return null; },
                    (o1, o2) => { }, (o) => { return null; },
                    (o1, o2) => { }, (o) => { return null; },
                    (o1, o2) => { }, (o) => { return null; }
@@ -299,12 +316,28 @@ namespace System
                 getLastModified = (impl) => (DateTimeOffset?)lastModifiedProp.GetValue(impl);
             }
 
+            //
+            // handle location
+            //
+            var locationProp = arg.GetProperties()
+                .Where(o => string.Equals(o.Name, "location", StringComparison.InvariantCultureIgnoreCase))
+                .Where(o => o.PropertyType == typeof(string))
+                .FirstOrDefault();
+            Action<object, string> setLocation = (impl, dt) => { };
+            Func<object, string> getLocation= (impl) => { return null; };
+            if (locationProp != null)
+            {
+                setLocation = (impl, dt) => locationProp.SetValue(impl, dt);
+                getLocation = (impl) => (string)locationProp.GetValue(impl);
+            }
+
             var remainingProps = arg.GetProperties()
                 .Where(o => o != dataProp)
                 .Where(o => o != contentTypeProp)
                 .Where(o => o != filenameProp)
                 .Where(o => o != charsetProp)
                 .Where(o => o != lastModifiedProp)
+                .Where(o => o != locationProp)
                 .ToList();
 
             if(remainingProps.Count != 0)
@@ -317,7 +350,8 @@ namespace System
                 setContentType, getContentType,
                 setFilename, getFilename,
                 setCharset, getCharset,
-                setLastModified, getLastModified
+                setLastModified, getLastModified,
+                setLocation, getLocation
                 );
         }
 
@@ -397,6 +431,19 @@ namespace System
         }
 
         /// <summary>
+        /// Set the location data on supplied structure.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <param name="location"></param>
+        public static void SetFileTypeLocation(this Type type, object impl, string location)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            h.SetLocation(impl, location);
+        }
+
+        /// <summary>
         /// Returns the stream data.
         /// </summary>
         /// <param name="type"></param>
@@ -459,6 +506,19 @@ namespace System
             var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
             if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
             return h.GetLastModified(impl);
+        }
+
+        /// <summary>
+        /// Returns the location
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="impl"></param>
+        /// <returns></returns>
+        public static string GetFileTypeLocation(this Type type, object impl)
+        {
+            var h = s_FileTypes.GetOrAdd(type, CreateFileTypeHelper);
+            if (!h.IsFileType) throw new Exception("Type is not a file type:" + type.FullName);
+            return h.GetLocation(impl);
         }
 
         /// <summary>

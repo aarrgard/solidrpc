@@ -29,7 +29,7 @@ namespace SolidRpc.Test.Vitec.Types.PartnerService.Models {
         /// Telefonnummer
         /// </summary>
         [DataMember(Name="telephone",EmitDefaultValue=false)]
-        public SolidRpc.Test.Vitec.Types.PartnerService.Models.PersonTelephoneNumbers Telephone { get; set; }
+        public PersonTelephoneNumbers Telephone { get; set; }
     
         /// <summary>
         /// Meddelande

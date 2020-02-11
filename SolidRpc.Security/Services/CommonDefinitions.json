@@ -5,13 +5,23 @@
       "properties": {
         "content": {
           "type": "string",
-          "format": "binary"
+          "format": "binary",
+          "description": "The content"
         },
         "contentType": {
-          "type": "string"
+          "type": "string",
+          "description": "The content type"
+
         },
         "charSet": {
-          "type": "string"
+          "type": "string",
+          "description": "The charset - set if content is text"
+
+        },
+        "location": {
+          "type": "string",
+          "description": "The location of the data."
+
         }
       }
     },

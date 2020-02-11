@@ -14,7 +14,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// </summary>
         /// <param name="customerId">Kund id</param>
         /// <param name="cancellationToken"></param>
-        Task<IEnumerable<PredefinedTask>> TaskGetTasks(
+        System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Test.Vitec.Types.Task.Models.PredefinedTask>> TaskGetTasks(
             string customerId,
             CancellationToken cancellationToken = default(CancellationToken));
     

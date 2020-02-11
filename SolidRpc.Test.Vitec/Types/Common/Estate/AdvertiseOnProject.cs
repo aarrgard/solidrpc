@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     /// <summary>
@@ -12,6 +13,12 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// </summary>
         [DataMember(Name="homepage",EmitDefaultValue=false)]
         public bool Homepage { get; set; }
+    
+        /// <summary>
+        /// F&#246;rsta annonseringsdatum p&#229; hemsidan
+        /// </summary>
+        [DataMember(Name="firstPublishingDateOnHomepage",EmitDefaultValue=false)]
+        public DateTimeOffset FirstPublishingDateOnHomepage { get; set; }
     
         /// <summary>
         /// Visa som kommande

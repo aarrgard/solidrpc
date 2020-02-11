@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using SolidRpc.Test.Vitec.Types.Models.Api;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
     /// 
@@ -31,6 +32,12 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public double LivingSpace { get; set; }
     
         /// <summary>
+        /// Byggnadsyta (m&#178;)
+        /// </summary>
+        [DataMember(Name="constructedArea",EmitDefaultValue=false)]
+        public double ConstructedArea { get; set; }
+    
+        /// <summary>
         /// V&#229;ningsplan
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
@@ -47,6 +54,18 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// </summary>
         [DataMember(Name="elevator",EmitDefaultValue=false)]
         public string Elevator { get; set; }
+    
+        /// <summary>
+        /// Antal sovrum (min och max)
+        /// </summary>
+        [DataMember(Name="numberOfBedRooms",EmitDefaultValue=false)]
+        public Range1_Double NumberOfBedRooms { get; set; }
+    
+        /// <summary>
+        /// Antal badrum
+        /// </summary>
+        [DataMember(Name="numberOfBathRooms",EmitDefaultValue=false)]
+        public int NumberOfBathRooms { get; set; }
     
     }
 }

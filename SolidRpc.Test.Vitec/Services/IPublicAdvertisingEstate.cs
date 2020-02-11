@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models;
 using System.Threading;
 using SolidRpc.Test.Vitec.Types.Estate.Models;
+using System.Collections.Generic;
+using SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement;
 namespace SolidRpc.Test.Vitec.Services {
     /// <summary>
     /// 
@@ -49,7 +51,7 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Uppdatera marknadsf&#246;ringsstatus f&#246;r bostaden p&#229; aktuell marknadsplats.
+        /// H&#228;mta marknadsf&#246;ringsstatus f&#246;r bostaden p&#229; aktuell marknadsplats.
         /// </summary>
         /// <param name="customerId">Kund-id</param>
         /// <param name="id">Bostadens id</param>
@@ -74,7 +76,18 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// H&#228;mtar information om ett otypat objekt
+        /// H&#228;mta s&#229;ld referensbostad
+        /// </summary>
+        /// <param name="customerId">Kund-id</param>
+        /// <param name="id">Bostadens id</param>
+        /// <param name="cancellationToken"></param>
+        Task<EstateSoldReference> PublicAdvertisingEstateGetSoldReference(
+            string customerId,
+            string id,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// H&#228;mtar information om en otypad bostad
         /// </summary>
         /// <param name="customerId">Kundid</param>
         /// <param name="estateId">Lokalsid</param>
@@ -82,6 +95,44 @@ namespace SolidRpc.Test.Vitec.Services {
         Task<EstateInformation> PublicAdvertisingEstateGetEstateLookup(
             string customerId,
             string estateId,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Rapportera bes&#246;ksstatistik per dag f&#246;r marknadsplatser. Rapportering &#228;r kumulativ.
+        /// </summary>
+        /// <param name="customerId">Kund-id</param>
+        /// <param name="dailyEstateHits">Besök</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateDailyHits.NoContentException">No Content</exception>
+        Task PublicAdvertisingEstateDailyHits(
+            string customerId,
+            IEnumerable<DailyEstateHit> dailyEstateHits,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Rapportera bes&#246;ksstatistik per timme f&#246;r marknadsplatser. Rapportering &#228;r kumulativ.
+        /// </summary>
+        /// <param name="customerId">Kund-id</param>
+        /// <param name="hourlyEstateHits">Besök</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateHourlyHits.NoContentException">No Content</exception>
+        Task PublicAdvertisingEstateHourlyHits(
+            string customerId,
+            IEnumerable<HourlyEstateHit> hourlyEstateHits,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Skickar in en ny intresseanm&#228;lan f&#246;r en kontakt till en bostad p&#229; en marknadsplats. Innan nya personer l&#228;ggs in i m&#228;klarsystemet, g&#246;rs alltid en dubblettkontroll.
+        /// </summary>
+        /// <param name="customerId">Kund-id</param>
+        /// <param name="estateId">Id för aktuell bostad</param>
+        /// <param name="application">Uppgifter för intresseanmälan</param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateInterestApplication.NoContentException">No Content</exception>
+        Task PublicAdvertisingEstateInterestApplication(
+            string customerId,
+            string estateId,
+            PublicAdvertisingInterestApplication application,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

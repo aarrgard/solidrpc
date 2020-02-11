@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Test.Vitec.Types.Cms.Estate;
 using System.Threading;
+using SolidRpc.Test.Vitec.Types.HousingCooperative.Cms;
 namespace SolidRpc.Test.Vitec.Services {
     /// <summary>
     /// 
@@ -31,6 +32,17 @@ namespace SolidRpc.Test.Vitec.Services {
         Task<string> HousingCooperativeCreate(
             string customerId,
             CmsHousingCooperative housingCooperative,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// Metod f&#246;r att skapa en bostadsr&#228;tt&lt;br /&gt;
+        /// </summary>
+        /// <param name="customerId">Kund-id</param>
+        /// <param name="housingCooperative">Information om bostadsrätten som ska uppdateras</param>
+        /// <param name="cancellationToken"></param>
+        Task<string> HousingCooperativeCreateHousingCooperativeFromSellerInput(
+            string customerId,
+            HousingCooperativeSellerInput housingCooperative,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

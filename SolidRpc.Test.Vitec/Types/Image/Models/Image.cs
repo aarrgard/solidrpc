@@ -1,6 +1,8 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System;
+using System.Collections.Generic;
+using SolidRpc.Test.Vitec.Types.Api.Connect;
 namespace SolidRpc.Test.Vitec.Types.Image.Models {
     /// <summary>
     /// 
@@ -42,6 +44,12 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         /// </summary>
         [DataMember(Name="extension",EmitDefaultValue=false)]
         public string Extension { get; set; }
+    
+        /// <summary>
+        /// CDN referenser
+        /// </summary>
+        [DataMember(Name="cdnReferences",EmitDefaultValue=false)]
+        public IEnumerable<CdnImageReference> CdnReferences { get; set; }
     
     }
 }

@@ -14,6 +14,21 @@
             
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Services.IAdvertisingEstate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IAdvertisingEstate.AdvertisingEstateInterestApplication(System.String,System.String,SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication,System.Threading.CancellationToken)">
+            <summary>
+            Skickar in en ny intresseanm&#228;lan f&#246;r en kontakt till en bostad. Innan nya personer l&#228;ggs in i m&#228;klarsystemet, g&#246;rs alltid en dubblettkontroll.
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="estateId">Id för aktuell bostad</param>
+            <param name="application">Uppgifter för intresseanmälan</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.AdvertisingEstate.AdvertisingEstateInterestApplication.NoContentException">No Content</exception>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Services.IAppointment">
             <summary>
             
@@ -164,24 +179,6 @@
             <param name="dateFrom">Från</param>
             <param name="dateTo">Till</param>
             <param name="cancellationToken"></param>
-        </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IBusinessIntelligence.BusinessIntelligenceHits(System.String,System.Collections.Generic.IEnumerable{SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit},System.Threading.CancellationToken)">
-            <summary>
-            Metod f&#246;r att rapportera bes&#246;ksstatistik f&#246;r marknadsplatser
-            </summary>
-            <param name="customerId">Kund-id</param>
-            <param name="estateHit">Besök</param>
-            <param name="cancellationToken"></param>
-            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceHits.NoContentException">No Content</exception>
-        </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IBusinessIntelligence.BusinessIntelligenceDailyHits(System.String,System.Collections.Generic.IEnumerable{SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.DailyEstateHit},System.Threading.CancellationToken)">
-            <summary>
-            Metod f&#246;r att rapportera daglig bes&#246;ksstatistik f&#246;r marknadsplatser
-            </summary>
-            <param name="customerId">Kund-id</param>
-            <param name="dailyestateHits"></param>
-            <param name="cancellationToken"></param>
-            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceDailyHits.NoContentException">No Content</exception>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.ICategory">
             <summary>
@@ -499,6 +496,48 @@
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Vitec.Types.Services.CrmContact.CrmContactDeleteCategory.NoContentException">No Content</exception>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Services.ICrmEconomy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.ICrmEconomy.CrmEconomyGetDeposit(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            H&#228;mtar handpenningsuppgifter. &lt;p&gt;H&#228;mtar uppgifter om handpenning avseende en bostad.&lt;/p&gt;
+            &lt;p&gt;F&#246;r att kunna h&#228;mta uppgifter s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.&lt;/p&gt;
+            </summary>
+            <param name="customerId">Kundid</param>
+            <param name="estateId">bostadsid</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.ICrmEconomy.CrmEconomyPutDeposit(System.String,System.String,SolidRpc.Test.Vitec.Types.Economy.Models.DepositData,System.Threading.CancellationToken)">
+            <summary>
+            Uppdaterar handpenningsupppgifter. &lt;p&gt;Uppdaterar handpenningsupppgifter.&lt;/p&gt;
+            &lt;p&gt;F&#246;r att kunna h&#228;mta uppgifter s&#229; kr&#228;vs det en giltig API nyckel och ett kundid.&lt;/p&gt;
+            </summary>
+            <param name="customerId">Kundid</param>
+            <param name="estateId">bostadsid</param>
+            <param name="data"></param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.ICrmEconomy.CrmEconomyUpdateOperatingCosts(System.String,System.String,SolidRpc.Test.Vitec.Types.Economy.Models.Operation,System.Threading.CancellationToken)">
+            <summary>
+            Uppdatera driftkostnader p&#229; ett objekt
+            </summary>
+            <param name="customerId">Kundid</param>
+            <param name="estateId">bostadsid</param>
+            <param name="operation">driftskostnader</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.ICrmEconomy.CrmEconomyCreateLoan(System.String,System.String,SolidRpc.Test.Vitec.Types.Common.Cms.Loan,System.Threading.CancellationToken)">
+            <summary>
+            Metod f&#246;r att skapa ett befintligt l&#229;n
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="estateId">bostadsid</param>
+            <param name="loan">Information om det befintliga lånet</param>
+            <param name="cancellationToken"></param>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Services.ICrmEstate">
             <summary>
             
@@ -679,17 +718,17 @@
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.ICrmLead.CrmLeadGetLeadSources(System.String,System.Threading.CancellationToken)">
             <summary>
-            H&#228;mtar en lista &#246;ver leadsk&#228;llor.
+            H&#228;mtar en lista med aktiva leadsk&#228;llor.
             </summary>
-            <param name="customerId"></param>
+            <param name="customerId">Kundid</param>
             <param name="cancellationToken"></param>
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.ICrmLead.CrmLeadCreate(System.String,SolidRpc.Test.Vitec.Types.Lead.Models.Lead,System.Threading.CancellationToken)">
             <summary>
             Skapar ett lead
             </summary>
-            <param name="customerId"></param>
-            <param name="lead"></param>
+            <param name="customerId">Kundid</param>
+            <param name="lead">Lead</param>
             <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.ICrmLink">
@@ -989,7 +1028,7 @@
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IHouse.HouseUpdate(System.String,System.String,SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse,System.Threading.CancellationToken)">
             <summary>
-            Metod f&#246;r att uppdatera en villa.
+            Metod f&#246;r att uppdatera en villa
             </summary>
             <param name="customerId">Kund-id</param>
             <param name="id">Id på villan</param>
@@ -999,10 +1038,18 @@
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IHouse.HouseCreate(System.String,SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse,System.Threading.CancellationToken)">
             <summary>
-            Metod f&#246;r att skapa en villa.&lt;br /&gt;
+            Metod f&#246;r att skapa en villa&lt;br /&gt;
             </summary>
             <param name="customerId">Kund-id</param>
             <param name="house">Villainformationen som ska uppdateras</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IHouse.HouseCreateHouseFromSellerInput(System.String,SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput,System.Threading.CancellationToken)">
+            <summary>
+            Metod f&#246;r att skapa en villa&lt;br /&gt;
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="house">Information om villan som ska uppdateras</param>
             <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.IHousingCooperative">
@@ -1026,6 +1073,14 @@
             </summary>
             <param name="customerId">Kund-id</param>
             <param name="housingCooperative">Bostadsrättsinformationen som ska uppdateras</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IHousingCooperative.HousingCooperativeCreateHousingCooperativeFromSellerInput(System.String,SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput,System.Threading.CancellationToken)">
+            <summary>
+            Metod f&#246;r att skapa en bostadsr&#228;tt&lt;br /&gt;
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="housingCooperative">Information om bostadsrätten som ska uppdateras</param>
             <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.ILead">
@@ -1400,7 +1455,7 @@
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IPublicAdvertisingEstate.PublicAdvertisingEstateGetAdvertisementStatus(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
-            Uppdatera marknadsf&#246;ringsstatus f&#246;r bostaden p&#229; aktuell marknadsplats.
+            H&#228;mta marknadsf&#246;ringsstatus f&#246;r bostaden p&#229; aktuell marknadsplats.
             </summary>
             <param name="customerId">Kund-id</param>
             <param name="id">Bostadens id</param>
@@ -1416,13 +1471,49 @@
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateUpdateAdvertisementStatus.NoContentException">No Content</exception>
         </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IPublicAdvertisingEstate.PublicAdvertisingEstateGetSoldReference(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            H&#228;mta s&#229;ld referensbostad
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="id">Bostadens id</param>
+            <param name="cancellationToken"></param>
+        </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IPublicAdvertisingEstate.PublicAdvertisingEstateGetEstateLookup(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
-            H&#228;mtar information om ett otypat objekt
+            H&#228;mtar information om en otypad bostad
             </summary>
             <param name="customerId">Kundid</param>
             <param name="estateId">Lokalsid</param>
             <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IPublicAdvertisingEstate.PublicAdvertisingEstateDailyHits(System.String,System.Collections.Generic.IEnumerable{SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.DailyEstateHit},System.Threading.CancellationToken)">
+            <summary>
+            Rapportera bes&#246;ksstatistik per dag f&#246;r marknadsplatser. Rapportering &#228;r kumulativ.
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="dailyEstateHits">Besök</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateDailyHits.NoContentException">No Content</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IPublicAdvertisingEstate.PublicAdvertisingEstateHourlyHits(System.String,System.Collections.Generic.IEnumerable{SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.HourlyEstateHit},System.Threading.CancellationToken)">
+            <summary>
+            Rapportera bes&#246;ksstatistik per timme f&#246;r marknadsplatser. Rapportering &#228;r kumulativ.
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="hourlyEstateHits">Besök</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateHourlyHits.NoContentException">No Content</exception>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IPublicAdvertisingEstate.PublicAdvertisingEstateInterestApplication(System.String,System.String,SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication,System.Threading.CancellationToken)">
+            <summary>
+            Skickar in en ny intresseanm&#228;lan f&#246;r en kontakt till en bostad p&#229; en marknadsplats. Innan nya personer l&#228;ggs in i m&#228;klarsystemet, g&#246;rs alltid en dubblettkontroll.
+            </summary>
+            <param name="customerId">Kund-id</param>
+            <param name="estateId">Id för aktuell bostad</param>
+            <param name="application">Uppgifter för intresseanmälan</param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateInterestApplication.NoContentException">No Content</exception>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.IPublicAdvertisingFarm">
             <summary>
@@ -1714,14 +1805,6 @@
             
             </summary>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingGet(System.String,System.String,System.Threading.CancellationToken)">
-            <summary>
-            H&#228;mta visningar f&#246;r en bostad.
-            </summary>
-            <param name="estateId">Bostadsid</param>
-            <param name="customerId">Kundid</param>
-            <param name="cancellationToken"></param>
-        </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingGet2(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             H&#228;mta visningar f&#246;r en bostad.
@@ -1730,7 +1813,24 @@
             <param name="customerId">Kundid</param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingRemoveViewingParticipant(System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingCreateViewing(SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Skapa en visning p&#229; en bostad
+            </summary>
+            <param name="viewing">Information om visningen</param>
+            <param name="estateId">Id på objektet</param>
+            <param name="customerId">Kundid</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingGet(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            H&#228;mta visningar f&#246;r en bostad.
+            </summary>
+            <param name="estateId">Bostadsid</param>
+            <param name="customerId">Kundid</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingRemoveViewingParticipant2(System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Tar bort en visningsdeltagare p&#229; en visning.
             </summary>
@@ -1739,7 +1839,7 @@
             <param name="contactId">Id på kontakten.</param>
             <param name="customerId">Kundid</param>
             <param name="cancellationToken"></param>
-            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant.NoContentException">No Content</exception>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant2.NoContentException">No Content</exception>
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddViewingParticipant2(System.String,System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewingParticipant,System.String,System.Threading.CancellationToken)">
             <summary>
@@ -1753,7 +1853,7 @@
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingAddViewingParticipant2.NoContentException">No Content</exception>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingRemoveViewingParticipant2(System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingRemoveViewingParticipant(System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Tar bort en visningsdeltagare p&#229; en visning.
             </summary>
@@ -1762,7 +1862,7 @@
             <param name="contactId">Id på kontakten.</param>
             <param name="customerId">Kundid</param>
             <param name="cancellationToken"></param>
-            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant2.NoContentException">No Content</exception>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingRemoveViewingParticipant.NoContentException">No Content</exception>
         </member>
         <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddViewingParticipant(System.String,System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewingParticipant,System.String,System.Threading.CancellationToken)">
             <summary>
@@ -1776,7 +1876,7 @@
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingAddViewingParticipant.NoContentException">No Content</exception>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant2(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
             <summary>
             L&#228;gg till ny visningsdeltagare p&#229; en befintligt bostad
             </summary>
@@ -1786,7 +1886,7 @@
             <param name="customerId">Kundid</param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant2(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
             <summary>
             L&#228;gg till ny visningsdeltagare p&#229; en befintligt bostad
             </summary>
@@ -1831,6 +1931,81 @@
             <param name="criteriaAccessDateFrom">Tillträdesdatum från och med</param>
             <param name="criteriaAccessDateTo">Tillträdesdatum till och med</param>
             <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.LeadSourceId">
+            <summary>
+            Leadsk&#228;lla - Det lead som skapas i samband med intresseanm&#228;lan kommer att kopplas till aktuell leadsk&#228;lla. Om f&#228;ltet inte anges, kommer leadet att kopplas till en f&#246;rvald leadsk&#228;lla.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.AssignmentSourceId">
+            <summary>
+            Intagsk&#228;lla f&#246;r den bostad som personen eventuellt l&#228;mnar. Skall bara anges om angiven leadsk&#228;lla anv&#228;nds f&#246;r att koppla leadet till en bostad som kontaktpersonen eventuellt skall s&#228;lja.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.FirstName">
+            <summary>
+            F&#246;rnamn
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.LastName">
+            <summary>
+            Efternamn
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.SocialSecurityNumber">
+            <summary>
+            Personnummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.Address">
+            <summary>
+            Adress
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.Telephone">
+            <summary>
+            Telefonnummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.Email">
+            <summary>
+            Email
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.GdprApprovalDate">
+            <summary>
+            GDPR informerad den
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.PresentAccommodation">
+            <summary>
+            Uppgifter om nuvarande boende
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Advertising.Models.AdvertisingInterestApplication.ContactMessage">
+            <summary>
+            Meddelande fr&#229;n kontaktpersonen
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Api.Connect.CdnImageReference">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Api.Connect.CdnImageReference.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Api.Connect.CdnImageReference.Url">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Appointment.Models.Appointment">
             <summary>
@@ -2582,6 +2757,11 @@
             Postnummer
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicAddress.CountryCode">
+            <summary>
+            Landskod
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentChangeEntry">
             <summary>
             
@@ -2597,6 +2777,11 @@
             Provisionsv&#228;rdet i kronor
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentChangeEntry.CommissionForeign">
+            <summary>
+            Provisionsv&#228;rdet i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentChangeEntry.PercentageOfTotal">
             <summary>
             Hur m&#229;nga procent av totala provisionen som m&#228;klaren f&#229;r
@@ -2610,6 +2795,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentCommission.Value">
             <summary>
             Provisionsv&#228;rdet i kronor
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentCommission.ValueForeign">
+            <summary>
+            Provisionsv&#228;rdet i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateAgentCommission.PercentageOfTotal">
@@ -2637,6 +2827,11 @@
             Provision
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.CommissionForeign">
+            <summary>
+            Provision i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.StartingPrice">
             <summary>
             Startpris
@@ -2645,6 +2840,26 @@
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.FinalPrice">
             <summary>
             Slutpris
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.StartingPriceForeign">
+            <summary>
+            Startpris i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.FinalPriceForeign">
+            <summary>
+            Slutpris i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.CurrencyCode">
+            <summary>
+            Valutakod (SEK, EUR, USD etc), g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EconomicEstateChangeEntry.CurrencyExchangeRate">
+            <summary>
+            V&#228;xlingskurs, g&#228;ller endast utlandsbost&#228;der.
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.Estate">
@@ -2827,6 +3042,11 @@
             Totala provision
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.CommissionForeign">
+            <summary>
+            Totala provision i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.CommissionText">
             <summary>
             Fritext f&#246;r fast arvode
@@ -2870,6 +3090,26 @@
         <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.FinalPrice">
             <summary>
             Slutpris
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.StartingPriceForeign">
+            <summary>
+            Startpris i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.FinalPriceForeign">
+            <summary>
+            Slutpris i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.CurrencyCode">
+            <summary>
+            Valutakod (SEK, EUR, USD etc), g&#228;ller endast utlandsbost&#228;der.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.EstateSaleReport.CurrencyExchangeRate">
+            <summary>
+            V&#228;xlingskurs, g&#228;ller endast utlandsbost&#228;der.
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models.IncomingLead">
@@ -3352,6 +3592,11 @@
             Husets tomt
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsCottage.Price">
+            <summary>
+            Pris information
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsCottage.Sellers">
             <summary>
             Lista &#246;ver s&#228;ljar id&#39;n
@@ -3365,11 +3610,6 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsCottage.Description">
             <summary>
             Beskrivning
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsCottage.Price">
-            <summary>
-            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsCottage.UserId">
@@ -3390,6 +3630,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignProperty.Interior">
             <summary>
             Interi&#246;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignProperty.Price">
+            <summary>
+            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignProperty.Descriptions">
@@ -3422,19 +3667,34 @@
             Valuta
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignProperty.Price">
-            <summary>
-            Pris information
-            </summary>
-        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignProperty.UserId">
             <summary>
             Anv&#228;ndarid
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignPropertyPrice">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignPropertyPrice.SwedishStartingPrice">
+            <summary>
+            Utg&#229;ngspris i SEK
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignPropertyPrice.StartingPrice">
+            <summary>
+            Utg&#229;ngspris
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse">
             <summary>
             
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.Plot">
+            <summary>
+            Husets tomt
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.BaseInformation">
@@ -3447,9 +3707,9 @@
             Interi&#246;r
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.Plot">
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.Price">
             <summary>
-            Husets tomt
+            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.Sellers">
@@ -3465,11 +3725,6 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.Description">
             <summary>
             Beskrivning
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.Price">
-            <summary>
-            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHouse.UserId">
@@ -3492,14 +3747,19 @@
             Interi&#246;r
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.BalconyPatio">
+            <summary>
+            Balkong/uteplats
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.FloorAndElevator">
             <summary>
             V&#229;ning/hiss
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.BalconyPatio">
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.Price">
             <summary>
-            Balkong/uteplats
+            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.Sellers">
@@ -3515,11 +3775,6 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.Description">
             <summary>
             Beskrivning
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.Price">
-            <summary>
-            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsHousingCooperative.UserId">
@@ -3542,6 +3797,11 @@
             Tomt
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsPlot.Price">
+            <summary>
+            Pris information
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsPlot.Sellers">
             <summary>
             Lista &#246;ver s&#228;ljar id&#39;n
@@ -3555,11 +3815,6 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsPlot.Description">
             <summary>
             Beskrivning
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsPlot.Price">
-            <summary>
-            Pris information
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Cms.Estate.CmsPlot.UserId">
@@ -3705,6 +3960,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate.CommercialBaseInformation.AreaSource">
             <summary>
             Areak&#228;lla
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate.CommercialBaseInformation.AreaSourceComment">
+            <summary>
+            Kommentar f&#246;r areak&#228;lla
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate.CommercialBaseInformation.DisposalForm">
@@ -4467,6 +4727,36 @@
             Beskrivning
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.CmsElectricity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsElectricity.Company">
+            <summary>
+            N&#228;tbolag
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsElectricity.Distributor">
+            <summary>
+            Ellevrant&#246;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsElectricity.PowerConsumptionKWH">
+            <summary>
+            Elf&#246;rbrukning KWH /&#229;r
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.CmsEnergyDeclaration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsEnergyDeclaration.Status">
+            <summary>
+            Utf&#246;rd
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.CmsEstateAddress">
             <summary>
             
@@ -4522,6 +4812,61 @@
             Utg&#229;ngspris
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.CmsRoom">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsRoom.Heading">
+            <summary>
+            Rubrik
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsRoom.Text">
+            <summary>
+            Text
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.CmsSurrounding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsSurrounding.GeneralAboutArea">
+            <summary>
+            Allm&#228;nt om omr&#229;det
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.CmsVentilation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.CmsVentilation.Type">
+            <summary>
+            Typ av ventilation
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Common.Cms.Loan">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.Loan.Lender">
+            <summary>
+            L&#229;ngivare
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.Loan.LoanNumber">
+            <summary>
+            L&#229;nenummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Cms.Loan.Amount">
+            <summary>
+            Belopp
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOn">
             <summary>
             
@@ -4529,12 +4874,22 @@
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOn.Homepage">
             <summary>
-            Visar om objektet ska annonserars p&#229; hemsida
+            Visar om objektet ska annonseras p&#229; hemsida
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOn.FirstPublishingDateOnHomepage">
+            <summary>
+            F&#246;rsta annonseringsdatum p&#229; hemsidan
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOn.ShowAsComming">
             <summary>
             Visa som kommande
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOn.ShowAsSoonForSale">
+            <summary>
+            Visa som Snart till salu
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOn.ShowTodaysHousing">
@@ -4600,6 +4955,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOnProject.Homepage">
             <summary>
             Visar om objektet ska annonserars p&#229; hemsida
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOnProject.FirstPublishingDateOnHomepage">
+            <summary>
+            F&#246;rsta annonseringsdatum p&#229; hemsidan
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AdvertiseOnProject.ShowAsComming">
@@ -4802,6 +5162,11 @@
             Bildformat
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.AssociationImage.CdnReferences">
+            <summary>
+            CDN referenser
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Common.Estate.BalconyPatio">
             <summary>
             
@@ -4894,12 +5259,22 @@
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.CottageAdvertiseOn.Homepage">
             <summary>
-            Visar om objektet ska annonserars p&#229; hemsida
+            Visar om objektet ska annonseras p&#229; hemsida
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.CottageAdvertiseOn.FirstPublishingDateOnHomepage">
+            <summary>
+            F&#246;rsta annonseringsdatum p&#229; hemsidan
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.CottageAdvertiseOn.ShowAsComming">
             <summary>
             Visa som kommande
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.CottageAdvertiseOn.ShowAsSoonForSale">
+            <summary>
+            Visa som Snart till salu
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.CottageAdvertiseOn.ShowTodaysHousing">
@@ -5199,12 +5574,22 @@
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.HouseAdvertiseOn.Homepage">
             <summary>
-            Visar om objektet ska annonserars p&#229; hemsida
+            Visar om objektet ska annonseras p&#229; hemsida
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.HouseAdvertiseOn.FirstPublishingDateOnHomepage">
+            <summary>
+            F&#246;rsta annonseringsdatum p&#229; hemsidan
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.HouseAdvertiseOn.ShowAsComming">
             <summary>
             Visa som kommande
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.HouseAdvertiseOn.ShowAsSoonForSale">
+            <summary>
+            Visa som Snart till salu
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.HouseAdvertiseOn.ShowTodaysHousing">
@@ -5392,6 +5777,11 @@
             L&#246;ptid
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.Leasehold.LeaseholdPeriod">
+            <summary>
+            Avg&#228;ldsperiod i &#229;r
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Common.Estate.Link">
             <summary>
             
@@ -5489,7 +5879,7 @@
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.ObjectAddress.Parish">
             <summary>
-            F&#246;rsamling
+            F&#246;rsamling (alltid null)
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.ObjectAddress.County">
@@ -5600,6 +5990,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.ObjectImage.Extension">
             <summary>
             Bildformat
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Common.Estate.ObjectImage.CdnReferences">
+            <summary>
+            CDN referenser
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Common.Estate.Operation">
@@ -6110,6 +6505,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate.CondominiumBaseInformation.AreaSource">
             <summary>
             Areak&#228;lla
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate.CondominiumBaseInformation.AreaSourceComment">
+            <summary>
+            Kommentar f&#246;r areak&#228;lla
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.CondominiumInfo.Estate.CondominiumBaseInformation.Other">
@@ -7617,6 +8017,11 @@
             Bostadstyp
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Crm.Contact.CrmSellerRelation.ShareHolding">
+            <summary>
+            &#196;garandel
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Crm.Contact.CrmSpeculatorContact">
             <summary>
             OK
@@ -7990,6 +8395,121 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Documents.Models.Document.Extension">
             <summary>
             Filtyp
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit">
+            <summary>
+            OK
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.Amount">
+            <summary>
+            Belopp
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.PayDay">
+            <summary>
+            Dag f&#246;r erl&#228;ggning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.PaidAt">
+            <summary>
+            Erlagd
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.ReportedAt">
+            <summary>
+            Redovisad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.CommissionReceivedAt">
+            <summary>
+            Provision erh&#229;llen
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.ContractDay">
+            <summary>
+            Kontraktsdag
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Deposit.AdmissionDay">
+            <summary>
+            Tilltr&#228;de
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Economy.Models.DepositData">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.DepositData.PaidAt">
+            <summary>
+            Erlagd
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.DepositData.ReportedAt">
+            <summary>
+            Redovisad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.DepositData.CommissionReceivedAt">
+            <summary>
+            Provision erh&#229;llen
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Economy.Models.Operation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.Heating">
+            <summary>
+            Uppv&#228;rmningskostnad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.Electricity">
+            <summary>
+            Elkostnad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.WaterAndDrain">
+            <summary>
+            Kostnad f&#246;r vatten och avlopp
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.ChimneySweeping">
+            <summary>
+            Sotningsavgift
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.RoadCommunity">
+            <summary>
+            Kostnad f&#246;r v&#228;gsamf&#228;llighet
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.Sanitation">
+            <summary>
+            Renh&#229;llningsavgift
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.Insurance">
+            <summary>
+            F&#246;rs&#228;kring
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.Other">
+            <summary>
+            &#214;vrigt
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.PersonsInHousehold">
+            <summary>
+            Antal perssoner i hush&#229;llet
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Economy.Models.Operation.Comment">
+            <summary>
+            Kommentar
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Estates.BusinessIntelligense.DescriptiveId">
@@ -8940,6 +9460,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Estate.Models.Farm.Operation">
             <summary>
             Drift
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Estate.Models.Farm.Lease">
+            <summary>
+            Arrende
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Estate.Models.Farm.Insurance">
@@ -11322,6 +11847,11 @@
             Areak&#228;lla
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate.ForeignPropertyBaseInformation.AreaSourceComment">
+            <summary>
+            Kommentar f&#246;r areak&#228;lla
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate.ForeignPropertyBaseInformation.Other">
             <summary>
             &#214;vrigt under allm&#228;nt
@@ -11797,59 +12327,49 @@
             Spr&#229;k Koder fr&#229;n ISO 639-1
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.DailyEstateHit">
+        <member name="T:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.DailyEstateHit">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.DailyEstateHit.EstateId">
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.DailyEstateHit.EstateId">
             <summary>
             ObjektId
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.DailyEstateHit.Date">
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.DailyEstateHit.Date">
             <summary>
             Dag f&#246;r bes&#246;ket. (ev. tidangivelse ignoreras)
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.DailyEstateHit.Hour">
-            <summary>
-            Anges om man vill rapportera f&#246;r enskild timme mellan 0-23.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.DailyEstateHit.Count">
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.DailyEstateHit.Count">
             <summary>
             Antal bes&#246;k.
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit">
+        <member name="T:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.HourlyEstateHit">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit.EstateId">
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.HourlyEstateHit.Hour">
+            <summary>
+            Timme mellan 0-23. Ex. 8 anger intervallet 8.00-9.00
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.HourlyEstateHit.EstateId">
             <summary>
             ObjektId
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit.OccurredAt">
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.HourlyEstateHit.Date">
             <summary>
-            Tidpunkt f&#246;r bes&#246;k
+            Dag f&#246;r bes&#246;ket. (ev. tidangivelse ignoreras)
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit.Duration">
+        <member name="P:SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement.HourlyEstateHit.Count">
             <summary>
-            Bes&#246;kets l&#228;ngd
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit.UserAgent">
-            <summary>
-            Bes&#246;karens user agent (browser)
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.Hits.BusinessIntelligense.EstateHit.Referer">
-            <summary>
-            Vart kom bes&#246;ket ifr&#229;n
+            Antal bes&#246;k.
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.HouseInfo.Estate.HouseBaseInformation">
@@ -11910,6 +12430,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.HouseInfo.Estate.HouseBaseInformation.AreaSource">
             <summary>
             Areak&#228;lla
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HouseInfo.Estate.HouseBaseInformation.AreaSourceComment">
+            <summary>
+            Kommentar f&#246;r areak&#228;lla
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.HouseInfo.Estate.HouseBaseInformation.Other">
@@ -12077,6 +12602,56 @@
             Objektets adress
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Facade">
+            <summary>
+            Fasad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Frame">
+            <summary>
+            Stomme
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Beam">
+            <summary>
+            Bj&#228;lklag
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Roof">
+            <summary>
+            Tak
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Foundation">
+            <summary>
+            Grundl&#228;ggning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Windows">
+            <summary>
+            F&#246;nster
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Heating">
+            <summary>
+            Uppv&#228;rmning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.OtherAboutTheBuildning">
+            <summary>
+            &#214;vrigt om byggnaden
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.OtherBuildings">
+            <summary>
+            &#214;vriga byggnader
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseInterior">
             <summary>
             
@@ -12107,19 +12682,154 @@
             Rum
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.Room">
+        <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.CmsHousePlotInformation">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.Room.Heading">
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHousePlotInformation.PlotType">
             <summary>
-            Rubrik
+            Tomttyp
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.Room.Text">
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHousePlotInformation.OtherInfoAboutPlot">
             <summary>
-            Text
+            &#214;vrigt tomt
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHousePlotInformation.PatioDescription">
+            <summary>
+            Beskrivning uteplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHousePlotInformation.ParkingDescription">
+            <summary>
+            Beskrivning bilplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHousePlotInformation.Area">
+            <summary>
+            Tomtarea
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.CmsInsurance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsInsurance.Company">
+            <summary>
+            Bolag
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsInsurance.Amount">
+            <summary>
+            Belopp
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.CmsWaterAndDrain">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsWaterAndDrain.Description">
+            <summary>
+            Vatten och avlopp
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Building">
+            <summary>
+            Byggnad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Ventilation">
+            <summary>
+            Ventilation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.EnergyDeclaration">
+            <summary>
+            Energideklaration
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Plot">
+            <summary>
+            Tomt, uteplats och bilplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.WaterAndDrain">
+            <summary>
+            Vatten och avlopp
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Surrounding">
+            <summary>
+            N&#228;romr&#229;de
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Insurance">
+            <summary>
+            F&#246;rs&#228;kring
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Electricity">
+            <summary>
+            El
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.AreaSource">
+            <summary>
+            Areak&#228;lla
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.AreaId">
+            <summary>
+            Omr&#229;desid
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.PossibleAccessDate">
+            <summary>
+            M&#246;jligt tilltr&#228;desdatum
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.BaseInformation">
+            <summary>
+            Basinformation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Interior">
+            <summary>
+            Interi&#246;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Price">
+            <summary>
+            Pris information
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Sellers">
+            <summary>
+            Lista &#246;ver s&#228;ljar id&#39;n
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Interests">
+            <summary>
+            Lista &#246;ver intressenters id&#39;n
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.Description">
+            <summary>
+            Beskrivning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput.UserId">
+            <summary>
+            Anv&#228;ndarid
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperativeInfo.Estate.Association">
@@ -12407,6 +13117,11 @@
             Areak&#228;lla
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativeInfo.Estate.HousingCooperativeBaseInformation.AreaSourceComment">
+            <summary>
+            Kommentar f&#246;r areak&#228;lla
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativeInfo.Estate.HousingCooperativeBaseInformation.Other">
             <summary>
             &#214;vrigt under allm&#228;nt
@@ -12502,84 +13217,314 @@
             Kommentar till andelstal
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation">
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.ApartmentNumber">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio.GroundIncluded">
+            <summary>
+            Mark som ing&#229;r i uppl&#229;telsen
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio.Balcony">
+            <summary>
+            Balkong
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio.Patio">
+            <summary>
+            Uteplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio.Parking">
+            <summary>
+            Bilplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio.PatioDescription">
+            <summary>
+            Beskrivning uteplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsBalconyPatio.ParkingDescription">
+            <summary>
+            Beskrivning bilplats
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.ApartmentNumber">
             <summary>
             L&#228;genhetsnummer
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.MonthlyFee">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.MonthlyFee">
             <summary>
             M&#229;nadsavgift
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.LivingSpace">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.MonthlyFeeDescription">
+            <summary>
+            Kommentar till m&#229;nadsavgift
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.LivingSpace">
             <summary>
             Boarea
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.OtherSpace">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.OtherSpace">
             <summary>
             Biarea
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.PortCode">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.PortCode">
             <summary>
             Portkod
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.Status">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.Status">
             <summary>
             Status
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativBaseInformation.Address">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativBaseInformation.Address">
             <summary>
             Objektets adress
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativInterior">
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativInterior.NumberOfRooms">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.ApartmentNumber">
+            <summary>
+            L&#228;genhetsnummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.MonthlyFee">
+            <summary>
+            M&#229;nadsavgift
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.MonthlyFeeDescription">
+            <summary>
+            Kommentar till m&#229;nadsavgift
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.LivingSpace">
+            <summary>
+            Boarea
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.OtherSpace">
+            <summary>
+            Biarea
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.PortCode">
+            <summary>
+            Portkod
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.Status">
+            <summary>
+            Status
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBaseInformation.Address">
+            <summary>
+            Objektets adress
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.BuildingType">
+            <summary>
+            Byggnadstyp
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.BuildingYear">
+            <summary>
+            Byggnations&#229;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.Windows">
+            <summary>
+            F&#246;nster
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.Heating">
+            <summary>
+            Uppv&#228;rmning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.OtherAboutTheBuildning">
+            <summary>
+            &#214;vrigt om byggnaden
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.OtherBuildings">
+            <summary>
+            &#214;vriga byggnader
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeInterior">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeInterior.NumberOfRooms">
             <summary>
             Antal rum
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativInterior.Description">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeInterior.Description">
             <summary>
             Allm&#228;n beskrivning av interi&#246;ren
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativInterior.Rooms">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeInterior.Rooms">
             <summary>
             Rum
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.CmsHousingCooperativInterior.KitchenType">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeInterior.KitchenType">
             <summary>
             K&#246;kstyp
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.Room">
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativInterior">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.Room.Heading">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativInterior.NumberOfRooms">
             <summary>
-            Rubrik
+            Antal rum
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.Room.Text">
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativInterior.Description">
             <summary>
-            Text
+            Allm&#228;n beskrivning av interi&#246;ren
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativInterior.Rooms">
+            <summary>
+            Rum
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativInterior.KitchenType">
+            <summary>
+            K&#246;kstyp
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.BaseInformation">
+            <summary>
+            Basinformation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Interior">
+            <summary>
+            Interi&#246;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Building">
+            <summary>
+            Byggnad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Ventilation">
+            <summary>
+            Ventilation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.EnergyDeclaration">
+            <summary>
+            Energideklaration
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.BalconyPatio">
+            <summary>
+            Balkong, uteplats pch bilplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Surrounding">
+            <summary>
+            N&#228;romr&#229;de
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Electricity">
+            <summary>
+            El
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.AreaSource">
+            <summary>
+            Areak&#228;lla
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.AreaId">
+            <summary>
+            Omr&#229;desid
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.PossibleAccessDate">
+            <summary>
+            M&#246;jligt tilltr&#228;desdatum
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.ShareInAssociation">
+            <summary>
+            Andel i f&#246;rening (%)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.ShareOfAnnualFee">
+            <summary>
+            Andel av &#229;rsavgiften (%)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.FloorAndElevator">
+            <summary>
+            V&#229;ning/hiss
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Price">
+            <summary>
+            Pris information
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Sellers">
+            <summary>
+            Lista &#246;ver s&#228;ljarid&#39;n
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Interests">
+            <summary>
+            Lista &#246;ver intressenters id&#39;n
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.Description">
+            <summary>
+            Beskrivning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput.UserId">
+            <summary>
+            Anv&#228;ndarid
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Image.Models.Image">
@@ -12615,6 +13560,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Image.Models.Image.Extension">
             <summary>
             Bildformat
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Image.Models.Image.CdnReferences">
+            <summary>
+            CDN referenser
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Image.Models.ImageCategories">
@@ -12755,6 +13705,61 @@
         <member name="P:SolidRpc.Test.Vitec.Types.IntakeSource.Models.AssignmentSource.Description">
             <summary>
             Beskrivning p&#229; intagsk&#228;llan
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactAddress">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactAddress.StreetAddress">
+            <summary>
+            Gatuadress
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactAddress.ZipCode">
+            <summary>
+            Postnummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactAddress.City">
+            <summary>
+            Postort
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation.EstateType">
+            <summary>
+            Bostadstyp
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation.LivingSpace">
+            <summary>
+            Boarea
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation.NumberOfRooms">
+            <summary>
+            Antal rum
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation.Price">
+            <summary>
+            Pris
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation.Other">
+            <summary>
+            &#214;vrigt
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.InterestApplication.Models.ContactPresentAccommodation.Coordinate">
+            <summary>
+            Koordinater
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Interest.Models.InterestAndContactOnArea">
@@ -14227,6 +15232,11 @@
             
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Maklarstatistik.Models.PropertyStatistics.Balkong">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Marketplace.Models.CrmEstateAdvertising">
             <summary>
             
@@ -14260,6 +15270,31 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Marketplace.Models.CrmMarketplaceCriteria.EstateType">
             <summary>
             
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File.Id">
+            <summary>
+            Filid
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File.Extension">
+            <summary>
+            Fil&#228;ndelse
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File.Description">
+            <summary>
+            Beskrivning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File.DataChangedAt">
+            <summary>
+            &#196;ndringsdatum
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Meeting.Models.AssignmentMeeting">
@@ -14310,6 +15345,11 @@
         <member name="T:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting">
             <summary>
             OK
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.Id">
+            <summary>
+            M&#246;tesid
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.ContactId">
@@ -14369,7 +15409,7 @@
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.SignatureDate">
             <summary>
-            P&#229;skriftsdatum
+            Uppdragsdatum
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.EstateStatus">
@@ -14394,7 +15434,12 @@
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.AgreementDate">
             <summary>
-            Kontraktsdatum
+            F&#246;rs&#228;ljning = Kontraktsdatum, V&#228;rdering = V&#228;rderingsdag, Skrivning = Datum f&#246;r skrivuppdrag
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.CommissionType">
+            <summary>
+            Uppdragstyp
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.Meeting.Models.Meeting.AccessDate">
@@ -14531,6 +15576,31 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Models.Api.MoneyValue.Currency">
             <summary>
             Valuta (SEK, EURO, USD, osv)
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Models.Api.PersonTelephoneNumbers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Models.Api.PersonTelephoneNumbers.Home">
+            <summary>
+            Telefon bostad
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Models.Api.PersonTelephoneNumbers.Work">
+            <summary>
+            Telefon arbete
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Models.Api.PersonTelephoneNumbers.Cell">
+            <summary>
+            Mobiltelefon
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Models.Api.PersonTelephoneNumbers.Other">
+            <summary>
+            &#214;vrig telefonnummer
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Models.Api.Polygon">
@@ -15098,31 +16168,6 @@
             Avs&#228;ndare av tipset
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.PartnerService.Models.PersonTelephoneNumbers">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.PartnerService.Models.PersonTelephoneNumbers.Home">
-            <summary>
-            Telefon bostad
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.PartnerService.Models.PersonTelephoneNumbers.Work">
-            <summary>
-            Telefon arbete
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.PartnerService.Models.PersonTelephoneNumbers.Cell">
-            <summary>
-            Mobiltelefon
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.PartnerService.Models.PersonTelephoneNumbers.Other">
-            <summary>
-            &#214;vrig telefonnummer
-            </summary>
-        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PartnerService.Models.UserLeadSender">
             <summary>
             
@@ -15176,6 +16221,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.PlotInfo.Estate.PlotBaseInformation.AreaSource">
             <summary>
             Areak&#228;lla
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PlotInfo.Estate.PlotBaseInformation.AreaSourceComment">
+            <summary>
+            Kommentar f&#246;r areak&#228;lla
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PlotInfo.Estate.PlotBaseInformation.Other">
@@ -15308,6 +16358,26 @@
             Boarea (m&#178;)
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.AppartmentExterior">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.AppartmentExterior.Balcony">
+            <summary>
+            Balkong
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.AppartmentExterior.Patio">
+            <summary>
+            Uteplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.AppartmentExterior.Pool">
+            <summary>
+            Pool
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Association">
             <summary>
             
@@ -15413,6 +16483,11 @@
             Bostadens id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.CommercialProperty.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.CommercialProperty.OfficeAffiliation">
             <summary>
             Kontorstillh&#246;righet
@@ -15458,9 +16533,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.CommercialProperty.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.CommercialProperty.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.CommercialProperty.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.CommercialProperty.Viewings">
@@ -15693,9 +16778,24 @@
             Energideklaration
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.Exterior">
+            <summary>
+            Exteri&#246;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.AppartmentNumberInRegister">
+            <summary>
+            Folkbokf&#246;ringsnummer
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.Id">
             <summary>
             Bostadens id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.OfficeAffiliation">
@@ -15743,9 +16843,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Condominium.Viewings">
@@ -15863,6 +16973,11 @@
             Bostadens id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Cottage.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Cottage.OfficeAffiliation">
             <summary>
             Kontorstillh&#246;righet
@@ -15908,9 +17023,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Cottage.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Cottage.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Cottage.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Cottage.Viewings">
@@ -16048,6 +17173,26 @@
             Kundid
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.EstateSoldReference">
+            <summary>
+            OK
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.EstateSoldReference.PartsApproveFinalPriceVisible">
+            <summary>
+            Om parter har godk&#228;nt att slutpris f&#229;r visas.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.EstateSoldReference.ContractDate">
+            <summary>
+            Kontraktsdag
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.EstateSoldReference.FinalPrice">
+            <summary>
+            Slutpris
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm">
             <summary>
             OK
@@ -16108,6 +17253,11 @@
             Bostadens id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm.OfficeAffiliation">
             <summary>
             Kontorstillh&#246;righet
@@ -16153,9 +17303,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Farm.Viewings">
@@ -16213,6 +17373,11 @@
             H&#228;stg&#229;rd
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.FarmMarketing.IsHouseFarm">
+            <summary>
+            Inget bruk
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.FarmMarketing.IsFutureSale">
             <summary>
             Kommande
@@ -16268,6 +17433,57 @@
             &#214;vrigt
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignExterior">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignExterior.Balcony">
+            <summary>
+            Balkong
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignExterior.Patio">
+            <summary>
+            Uteplats
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignExterior.Pool">
+            <summary>
+            Pool
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage.LanguageCode">
+            <summary>
+            Spr&#229;kkod enligt ISO-639-1.
+            https://sv.wikipedia.org/wiki/ISO_639
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage.ShortSaleDescription">
+            <summary>
+            Kort s&#228;ljande beskrivning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage.SaleDescription">
+            <summary>
+            S&#228;ljande beskrivning
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage.SalePhrase">
+            <summary>
+            S&#228;ljfras
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage.SaleHeading">
+            <summary>
+            S&#228;ljrubrik
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty">
             <summary>
             OK
@@ -16281,6 +17497,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.ProjectId">
             <summary>
             Projektid om bostaden ing&#229;r i ett projekt
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.ReferenceCode">
+            <summary>
+            Referensnummer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Building">
@@ -16323,9 +17544,24 @@
             Typ av utlandsobjekt
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.ForeignLanguages">
+            <summary>
+            Texter p&#229; utl&#228;ndska spr&#229;k
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Exterior">
+            <summary>
+            Exteri&#246;r
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Id">
             <summary>
             Bostadens id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.OfficeAffiliation">
@@ -16373,9 +17609,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignProperty.Viewings">
@@ -16413,6 +17659,11 @@
             Boarea (m&#178;)
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyBuilding.ConstructedArea">
+            <summary>
+            Byggnadsyta (m&#178;)
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyBuilding.Floor">
             <summary>
             V&#229;ningsplan
@@ -16426,6 +17677,16 @@
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyBuilding.Elevator">
             <summary>
             Information om hiss
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyBuilding.NumberOfBedRooms">
+            <summary>
+            Antal sovrum (min och max)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyBuilding.NumberOfBathRooms">
+            <summary>
+            Antal badrum
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignPropertyExpenses">
@@ -16553,6 +17814,11 @@
             Bostadens id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.House.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.House.OfficeAffiliation">
             <summary>
             Kontorstillh&#246;righet
@@ -16598,9 +17864,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.House.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.House.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.House.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.House.Viewings">
@@ -16683,11 +17959,6 @@
             OK
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.AppartmentNumberInRegister">
-            <summary>
-            Folkbokf&#246;ringsnummer
-            </summary>
-        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.AppartmentNumber">
             <summary>
             L&#228;genhetsnummer
@@ -16738,9 +18009,24 @@
             Energideklaration
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.Exterior">
+            <summary>
+            Exteri&#246;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.AppartmentNumberInRegister">
+            <summary>
+            Folkbokf&#246;ringsnummer
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.Id">
             <summary>
             Bostadens id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.OfficeAffiliation">
@@ -16788,9 +18074,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.HousingCooperative.Viewings">
@@ -16941,6 +18237,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Image.Extension">
             <summary>
             Fil&#228;ndelse
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Image.CdnReferences">
+            <summary>
+            CDN referenser
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.InvoiceRecipient">
@@ -17158,6 +18459,11 @@
             Bostadens id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Plot.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Plot.OfficeAffiliation">
             <summary>
             Kontorstillh&#246;righet
@@ -17203,9 +18509,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Plot.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Plot.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Plot.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Plot.Viewings">
@@ -17313,6 +18629,11 @@
             Bostadens id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Premises.Status">
+            <summary>
+            Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Premises.OfficeAffiliation">
             <summary>
             Kontorstillh&#246;righet
@@ -17358,9 +18679,19 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Premises.AdmissionAt">
+            <summary>
+            Tilltr&#228;de vid
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Premises.Urls">
             <summary>
             Url:er
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Premises.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Premises.Viewings">
@@ -17553,6 +18884,11 @@
             Projektets id
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.Status">
+            <summary>
+            Status p&#229; projektet.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.Name">
             <summary>
             Projektets namn
@@ -17593,6 +18929,16 @@
             N&#228;r bostaden senast &#228;ndrades
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.SellstartDate">
+            <summary>
+            Dag f&#246;r s&#228;ljstart
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.PossibleAdmissionDate">
+            <summary>
+            Prelimin&#228;r dag f&#246;r inflyttning
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.Urls">
             <summary>
             Url:er
@@ -17606,6 +18952,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.Images">
             <summary>
             Bilder
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.Files">
+            <summary>
+            Filer
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Project.Houses">
@@ -17838,6 +19189,78 @@
             Url till annonsen p&#229; marknadsplatsens hemsida
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingEstateStatus.StatusInformation">
+            <summary>
+            En lista av statusinformation som presenteras f&#246;r anv&#228;ndarna.
+            Anv&#228;nd f&#246;r att ange t ex valideringsfel, varningar eller annan information till anv&#228;ndaren.
+            L&#229;t det vara null eller skicka inte med om ni inte har n&#229;got s&#228;rskilt att meddela anv&#228;ndaren.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingEstateStatusInfo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingEstateStatusInfo.Message">
+            <summary>
+            Meddelande till anv&#228;ndaren
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingEstateStatusInfo.Type">
+            <summary>
+            Typ, anger hur meddelandet presenteras, se v&#228;rden f&#246;r vad det inneb&#228;r.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.FirstName">
+            <summary>
+            F&#246;rnamn
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.LastName">
+            <summary>
+            Efternamn
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.SocialSecurityNumber">
+            <summary>
+            Personnummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.Address">
+            <summary>
+            Adress
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.Telephone">
+            <summary>
+            Telefonnummer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.Email">
+            <summary>
+            Email
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.GdprApprovalDate">
+            <summary>
+            GDPR informerad den
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.PresentAccommodation">
+            <summary>
+            Uppgifter om nuvarande boende
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.PublicAdvertisingInterestApplication.ContactMessage">
+            <summary>
+            Meddelande fr&#229;n kontaktpersonen
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.SurfaceSize">
             <summary>
             
@@ -17878,6 +19301,11 @@
             Parkering
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Surroundings.Other">
+            <summary>
+            &#214;vrigt
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Taxation">
             <summary>
             
@@ -17916,6 +19344,11 @@
         <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.TelephoneNumbers.Cell">
             <summary>
             Telefon mobil
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.TelephoneNumbers.Public">
+            <summary>
+            Publikt telefonnummer
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Texts">
@@ -18433,32 +19866,22 @@
             S&#228;ljarens bank
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Services.AdvertisingEstate.AdvertisingEstateInterestApplication.NoContentException">
+            <summary>
+            No Content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Types.Services.AdvertisingEstate.AdvertisingEstateInterestApplication.NoContentException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceBudget.NoContentException">
             <summary>
             No Content
             </summary>
         </member>
         <member name="M:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceBudget.NoContentException.#ctor">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceDailyHits.NoContentException">
-            <summary>
-            No Content
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceDailyHits.NoContentException.#ctor">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceHits.NoContentException">
-            <summary>
-            No Content
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Test.Vitec.Types.Services.BusinessIntelligence.BusinessIntelligenceHits.NoContentException.#ctor">
             <summary>
             Constructs a new instance
             </summary>
@@ -18689,6 +20112,36 @@
             </summary>
         </member>
         <member name="M:SolidRpc.Test.Vitec.Types.Services.Plot.PlotUpdate.NoContentException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateDailyHits.NoContentException">
+            <summary>
+            No Content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateDailyHits.NoContentException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateHourlyHits.NoContentException">
+            <summary>
+            No Content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateHourlyHits.NoContentException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateInterestApplication.NoContentException">
+            <summary>
+            No Content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Types.Services.PublicAdvertisingEstate.PublicAdvertisingEstateInterestApplication.NoContentException.#ctor">
             <summary>
             Constructs a new instance
             </summary>
@@ -19308,6 +20761,52 @@
             Bekr&#228;ftelse via SMS
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant.ReturnBookingId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant.ContactMessage">
+            <summary>
+            Meddelande fr&#229;n kontaktpersonen. Meddelandet kommer att sparas p&#229; det lead som skapas i samband med att visningsdeltagaren l&#228;ggs till.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant.LeadSourceId">
+            <summary>
+            Leadsk&#228;lla - Det lead som skapas i samband med anm&#228;lan till visning kommer att kopplas till aktuell leadsk&#228;lla.
+            Om f&#228;ltet inte anges, kommer leadet att kopplas till en f&#246;rvald leadsk&#228;lla.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing.StartAt">
+            <summary>
+            Starttid
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing.EndsAt">
+            <summary>
+            Sluttid
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing.ShowOnInternet">
+            <summary>
+            Visas p&#229; internet
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing.BookableOnInternet">
+            <summary>
+            Bokningsbar p&#229; internet
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewing.Comment">
+            <summary>
+            Kommentar
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewingParticipant">
             <summary>
             
@@ -19336,6 +20835,18 @@
         <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewingParticipant.SmsConfirmation">
             <summary>
             Bekr&#228;ftelse via SMS
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewingParticipant.ContactMessage">
+            <summary>
+            Meddelande fr&#229;n kontaktpersonen. Meddelandet kommer att sparas p&#229; det lead som skapas i samband med att visningsdeltagaren l&#228;ggs till.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.Viewing.Models.AddViewingParticipant.LeadSourceId">
+            <summary>
+            Leadsk&#228;lla - Det lead som skapas i samband med anm&#228;lan till visning kommer att kopplas till aktuell leadsk&#228;lla.
+            Leadsk&#228;llan f&#229;r inte ha n&#229;got definierat arbetsfl&#246;de, dvs det skall bara inneh&#229;lla information.
+            Om f&#228;ltet inte anges, kommer leadet att kopplas till en f&#246;rvald leadsk&#228;lla.
             </summary>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Viewing.Models.Participant">

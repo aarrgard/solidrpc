@@ -18,5 +18,11 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         [DataMember(Name="zipCode",EmitDefaultValue=false)]
         public string ZipCode { get; set; }
     
+        /// <summary>
+        /// Landskod
+        /// </summary>
+        [DataMember(Name="countryCode",EmitDefaultValue=false)]
+        public string CountryCode { get; set; }
+    
     }
 }

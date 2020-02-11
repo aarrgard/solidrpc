@@ -15,6 +15,12 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Id { get; set; }
     
         /// <summary>
+        /// Status p&#229; projektet.
+        /// </summary>
+        [DataMember(Name="status",EmitDefaultValue=false)]
+        public string Status { get; set; }
+    
+        /// <summary>
         /// Projektets namn
         /// </summary>
         [DataMember(Name="name",EmitDefaultValue=false)]
@@ -63,6 +69,18 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public DateTimeOffset ChangedAt { get; set; }
     
         /// <summary>
+        /// Dag f&#246;r s&#228;ljstart
+        /// </summary>
+        [DataMember(Name="sellstartDate",EmitDefaultValue=false)]
+        public DateTimeOffset SellstartDate { get; set; }
+    
+        /// <summary>
+        /// Prelimin&#228;r dag f&#246;r inflyttning
+        /// </summary>
+        [DataMember(Name="possibleAdmissionDate",EmitDefaultValue=false)]
+        public string PossibleAdmissionDate { get; set; }
+    
+        /// <summary>
         /// Url:er
         /// </summary>
         [DataMember(Name="urls",EmitDefaultValue=false)]
@@ -79,6 +97,12 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// </summary>
         [DataMember(Name="images",EmitDefaultValue=false)]
         public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Image> Images { get; set; }
+    
+        /// <summary>
+        /// Filer
+        /// </summary>
+        [DataMember(Name="files",EmitDefaultValue=false)]
+        public IEnumerable<SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File> Files { get; set; }
     
         /// <summary>
         /// Villor som ing&#229;r i projektet

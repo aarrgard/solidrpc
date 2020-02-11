@@ -51,6 +51,12 @@ namespace SolidRpc.Test.Vitec.Types.PlotInfo.Estate {
         public string AreaSource { get; set; }
     
         /// <summary>
+        /// Kommentar f&#246;r areak&#228;lla
+        /// </summary>
+        [DataMember(Name="areaSourceComment",EmitDefaultValue=false)]
+        public string AreaSourceComment { get; set; }
+    
+        /// <summary>
         /// &#214;vrigt under allm&#228;nt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]

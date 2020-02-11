@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Common.Cms;
-namespace SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms {
+namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
     /// <summary>
     /// 
     /// </summary>
@@ -18,6 +18,12 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms {
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
         public double MonthlyFee { get; set; }
+    
+        /// <summary>
+        /// Kommentar till m&#229;nadsavgift
+        /// </summary>
+        [DataMember(Name="monthlyFeeDescription",EmitDefaultValue=false)]
+        public string MonthlyFeeDescription { get; set; }
     
         /// <summary>
         /// Boarea

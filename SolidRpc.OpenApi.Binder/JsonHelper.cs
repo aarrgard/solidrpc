@@ -16,6 +16,7 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public class JsonHelper
     {
+        public static readonly Encoding DefaultEncoding = Encoding.UTF8;
         private static ConcurrentDictionary<Type, Func<object, object>> s_makeArray = new ConcurrentDictionary<Type, Func<object, object>>();
         private static readonly JsonSerializer s_serializer = new JsonSerializer()
         {
@@ -85,7 +86,7 @@ namespace SolidRpc.OpenApi.Binder
             // this is to create concrete object if a linq enum is supplied.
             using (var ms = new MemoryStream())
             {
-                var enc = Encoding.UTF8;
+                //using (StreamWriter sw = new StreamWriter(ms, DefaultEncoding))
                 using (StreamWriter sw = new StreamWriter(ms))
                 {
                     using (JsonWriter jsonWriter = new JsonTextWriter(sw))
@@ -100,6 +101,11 @@ namespace SolidRpc.OpenApi.Binder
         private static object MakeArray<T>(object e)
         {
             return ((IEnumerable<T>)e).ToArray();
-        } 
+        }
+
+        internal static void Deserialize(Stream stream, Type parameterType, object encoding)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

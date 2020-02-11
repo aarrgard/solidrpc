@@ -88,7 +88,15 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             if (ParameterObject.IsBodyType())
             {
-                return new[] { MapScope(ParameterObject.In), "body" };
+                var args = ((MethodInfo)ParameterInfo.Member).GetParameters().Select(o => o.Name);
+                if (ParameterObject.IsBodyTypeArgument(args))
+                {
+                    return new[] { MapScope(ParameterObject.In), "body", ParameterInfo.Name };
+                }
+                else
+                {
+                    return new[] { MapScope(ParameterObject.In), "body" };
+                }
             }
             if (ParameterInfo.ParameterType == typeof(CancellationToken))
             {
@@ -132,7 +140,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             var latest = formData.OfType<SolidHttpRequestDataBinary>().LastOrDefault();
             if(latest == null)
             {
-                latest = new SolidHttpRequestDataBinary("application/octet-stream", "temp", (byte[])null);
+                latest = new SolidHttpRequestDataBinary("application/octet-stream", null, "temp", (byte[])null);
                 latest.SetFilename("upload.tmp");
             }
             return latest;
@@ -274,7 +282,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
                 val = rdEnum.FirstOrDefault();
             }
-            if(val is string)
+            if (val is string)
             {
                 throw new Exception("Cannot extract args from path!");
             }
@@ -283,13 +291,22 @@ namespace SolidRpc.OpenApi.Binder.V2
             //
             var props = val.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public);
             var prop = props.FirstOrDefault(o => o.Name == pathElement);
-            if (prop == null)
+            if (prop != null)
             {
-                throw new Exception($"Cannot find path {pathElement} in {val.GetType().FullName}");
+                var propValue = prop.GetValue(val);
+                var newValue = ExtractPath(request, pathEnumerator, filteredList, propValue);
+                return newValue;
             }
-            var propValue = prop.GetValue(val);
-            var newValue = ExtractPath(request, pathEnumerator, filteredList, propValue);
-            return newValue;
+            if (val is IHttpRequestData rd)
+            {
+                if(rd.ContentType == "application/json")
+                {
+                    var newValue = JsonHelper.Deserialize(rd.GetBinaryValue(), ParameterInfo.ParameterType, rd.Encoding);
+                    return newValue;
+                }
+                throw new Exception("Cannot extract args from request data!");
+            }
+            throw new Exception($"Cannot find path {pathElement} in {val.GetType().FullName}");
         }
     }
 }

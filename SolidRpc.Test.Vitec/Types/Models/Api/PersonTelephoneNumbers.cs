@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
-namespace SolidRpc.Test.Vitec.Types.PartnerService.Models {
+namespace SolidRpc.Test.Vitec.Types.Models.Api {
     /// <summary>
     /// 
     /// </summary>

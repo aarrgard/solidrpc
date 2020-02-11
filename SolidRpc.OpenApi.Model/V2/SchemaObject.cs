@@ -14,6 +14,12 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <a href="https://swagger.io/specification/v2/#schemaObject"/>
     public class SchemaObject : ItemsObject
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static SchemaObject CreateSchemaObject(ModelBase parent, Type type)
         {
             if (type == typeof(void) || type == typeof(Task))
@@ -141,6 +147,19 @@ namespace SolidRpc.OpenApi.Model.V2
         /// </summary>
         [DataMember(Name = "required", EmitDefaultValue = false)]
         public IEnumerable<string> Required { get; set; }
+
+        /// <summary>
+        /// Returns the definitions object - creating it if it is missing
+        /// </summary>
+        /// <returns></returns>
+        public DefinitionsObject GetProperties()
+        {
+            if(Properties == null)
+            {
+                Properties = new DefinitionsObject(this);
+            }
+            return Properties;
+        }
 
         /// <summary>
         /// Returns true if this type is a file type

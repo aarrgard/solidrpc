@@ -21,9 +21,8 @@ namespace SolidRpc.OpenApi.Binder.V2
     {
         public static ParameterObject GetParameterObject(OperationObject operationObject, ParameterInfo parameterInfo)
         {
-            var parameters = operationObject.GetParameters()
-                .Where(o => NameMatches(o.Name,parameterInfo.Name));
-            var parameter = parameters.FirstOrDefault();
+            var parameters = operationObject.GetParameters();
+            var parameter = parameters.FirstOrDefault(o => NameMatches(o.Name, parameterInfo.Name));
             if(parameter == null)
             {
                 if(parameterInfo.ParameterType == typeof(CancellationToken))
@@ -60,7 +59,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     var schema = bodyParam.Schema.GetRefSchema() ?? bodyParam.Schema;
                     if (schema != null)
                     {
-                        if(schema.Properties.ContainsKey(parameter.Name))
+                        if (schema.GetProperties().ContainsKey(parameterInfo.Name))
                         {
                             return bodyParam;
                         }
@@ -393,6 +392,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 typeof(T).SetFileTypeContentType(res, response.ContentType);
                 typeof(T).SetFileTypeFilename(res, response.Filename);
                 typeof(T).SetFileTypeLastModified(res, response.LastModified);
+                typeof(T).SetFileTypeLocation(res, response.Location);
                 return res;
             }
             throw new Exception("Cannot handle content type:" + response.ContentType);
@@ -453,7 +453,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return args;
         }
 
-        public async Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
+        public Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
         {
             response.StatusCode = 200;
 
@@ -468,7 +468,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     response.StatusCode = respCode.Value;
                 }
-                return;
+                return Task.CompletedTask;
             }
 
             //
@@ -486,7 +486,8 @@ namespace SolidRpc.OpenApi.Binder.V2
                 response.ResponseStream = objType.GetFileTypeStreamData(obj);
                 response.Filename = objType.GetFileTypeFilename(obj);
                 response.LastModified = objType.GetFileTypeLastModified(obj);
-                return;
+                response.Location = objType.GetFileTypeLocation(obj);
+                return Task.CompletedTask;
             }
 
             string contentType = null;
@@ -505,7 +506,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     throw new Exception("Cannot handle content type:" + contentType);
             }
 
-            return;
+            return Task.CompletedTask;
         }
 
         private Func<object, Task<object>> CreateExtractor<T>()

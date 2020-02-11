@@ -51,6 +51,30 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Returns true if this is a body type and all the members of the schema
+        /// is part of supplied set of argument names
+        /// </summary>
+        /// <param name="argNames"></param>
+        /// <returns></returns>
+        public bool IsBodyTypeArgument(IEnumerable<string> argNames)
+        {
+            var schema = Schema.GetRefSchema() ?? Schema;
+            var propertyNames = schema.GetProperties().Keys;
+            if(propertyNames.Count < 2)
+            {
+                return false;
+            }
+            if(propertyNames.All(o => argNames.Contains(o)))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns true if this parameter is a file type
         /// </summary>
         /// <returns></returns>

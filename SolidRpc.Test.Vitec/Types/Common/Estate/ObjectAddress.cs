@@ -50,7 +50,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         public string LocalIncomeTax { get; set; }
     
         /// <summary>
-        /// F&#246;rsamling
+        /// F&#246;rsamling (alltid null)
         /// </summary>
         [DataMember(Name="parish",EmitDefaultValue=false)]
         public string Parish { get; set; }

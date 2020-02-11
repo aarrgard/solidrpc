@@ -117,6 +117,14 @@ namespace SolidRpc.OpenApi.Binder.Http
 
         private static Func<IHttpRequestData, object> CreateExtractor(string contentType, string name, Type type)
         {
+            if (type.IsNullableType(out Type nullableType))
+            {
+                var subExtractor = CreateExtractor(contentType, name, nullableType);
+                return (_) =>
+                {
+                     return subExtractor(_);
+                };
+            }
             contentType = contentType ?? "application/json";
             switch (contentType)
             {
@@ -184,7 +192,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                 while (section != null)
                 {
                     var sectionMediaType = section.Headers.ContentType;
-                    var data = new SolidHttpRequestDataBinary(sectionMediaType.MediaType, "body", (byte[])null);
+                    var data = new SolidHttpRequestDataBinary(sectionMediaType.MediaType, sectionMediaType.CharSet, "body", (byte[])null);
 
                     var stream = await section.ReadAsStreamAsync();
                     data.SetBinaryData(section.Headers.ContentDisposition?.Name, stream);
@@ -239,7 +247,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 var ms = new MemoryStream();
                 await body.CopyToAsync(ms);
-                bodyData.Add(new SolidHttpRequestDataBinary(mediaType.MediaType, "body", ms.ToArray()));
+                bodyData.Add(new SolidHttpRequestDataBinary(mediaType.MediaType, mediaType.CharSet, "body", ms.ToArray()));
             }
             return bodyData;
         }
@@ -278,12 +286,25 @@ namespace SolidRpc.OpenApi.Binder.Http
 
         private static Func<IEnumerable<IHttpRequestData>, object, IHttpRequestData> CreateBinder(string contentType, string name, Type type)
         {
-            if(type?.FullName == SystemIOStream)
+            if(type.IsNullableType(out Type nullableType))
+            {
+                var subBinder = CreateBinder(contentType, name, nullableType);
+                return (_, val) =>
+                {
+                    if(val == null)
+                    {
+                        return null;
+
+                    }
+                    return subBinder(_, val);
+                };
+            }
+            if (type?.FullName == SystemIOStream)
             {
                 contentType = contentType ?? "application/octet-stream";
                 return (_, val) =>
                 {
-                    var retVal = new SolidHttpRequestDataBinary(contentType, name, (Stream)val);
+                    var retVal = new SolidHttpRequestDataBinary(contentType, null, name, (Stream)val);
                     retVal.SetFilename("upload.tmp");
                     return retVal; ;
                 };
@@ -323,7 +344,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    return (_, val) => new SolidHttpRequestDataBinary(contentType, name, JsonHelper.Serialize(val, type));
+                    return (_, val) => new SolidHttpRequestDataBinary(contentType, JsonHelper.DefaultEncoding.HeaderName, name, JsonHelper.Serialize(val, type));
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }
@@ -343,6 +364,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The content type
         /// </summary>
         public string ContentType { get; protected set; }
+
+        /// <summary>
+        /// The content type
+        /// </summary>
+        public Encoding Encoding { get; protected set; }
 
         /// <summary>
         /// The name

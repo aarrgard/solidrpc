@@ -37,6 +37,12 @@ namespace SolidRpc.Security.Types {
         public string RedirectUri { get; set; }
     
         /// <summary>
+        /// The the address to redirect to
+        /// </summary>
+        [DataMember(Name="popup_redirect_uri",EmitDefaultValue=false)]
+        public string PopupRedirectUri { get; set; }
+    
+        /// <summary>
         /// The address to call when logging out.
         /// </summary>
         [DataMember(Name="post_logout_redirect_uri",EmitDefaultValue=false)]

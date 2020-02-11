@@ -1,0 +1,108 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "MoreComplexArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/MoreComplexArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IMoreComplexArgs/GetComplexType": {
+      "post": {
+        "tags": [
+          "IMoreComplexArgs"
+        ],
+        "description": "Consumes two complex types an a simple string...",
+        "operationId": "GetComplexType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "simpleType",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "description": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "ct1Enum": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComplexType1"
+                  }
+                },
+                "ct2Enum": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ComplexType2"
+                  }
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType1": {
+      "properties": {
+        "CT1": {
+          "$ref": "#/definitions/ComplexType1"
+        },
+        "CT2": {
+          "$ref": "#/definitions/ComplexType2"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType1"
+    },
+    "ComplexType2": {
+      "properties": {
+        "CT1": {
+          "$ref": "#/definitions/ComplexType1"
+        },
+        "CT2": {
+          "$ref": "#/definitions/ComplexType2"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType2"
+    }
+  },
+  "tags": [
+    {
+      "name": "IMoreComplexArgs",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}

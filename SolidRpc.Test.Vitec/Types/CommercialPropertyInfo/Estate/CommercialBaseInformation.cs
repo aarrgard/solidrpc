@@ -14,6 +14,12 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         public string AreaSource { get; set; }
     
         /// <summary>
+        /// Kommentar f&#246;r areak&#228;lla
+        /// </summary>
+        [DataMember(Name="areaSourceComment",EmitDefaultValue=false)]
+        public string AreaSourceComment { get; set; }
+    
+        /// <summary>
         /// Uppl&#229;telseform
         /// </summary>
         [DataMember(Name="disposalForm",EmitDefaultValue=false)]

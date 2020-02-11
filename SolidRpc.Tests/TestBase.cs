@@ -73,6 +73,17 @@ namespace SolidRpc.Tests
         }
 
         /// <summary>
+        /// Compares the two structures
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="o1"></param>
+        /// <param name="o2"></param>
+        /// <returns></returns>
+        public static bool CompareTypedStructs<T>(T o1, T o2)
+        {
+            return CompareStructs(typeof(T), o1, o2);
+        }
+        /// <summary>
         /// Compares the structs
         /// </summary>
         /// <param name="o1"></param>

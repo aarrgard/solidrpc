@@ -13,6 +13,12 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         public double Value { get; set; }
     
         /// <summary>
+        /// Provisionsv&#228;rdet i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
+        /// </summary>
+        [DataMember(Name="valueForeign",EmitDefaultValue=false)]
+        public double ValueForeign { get; set; }
+    
+        /// <summary>
         /// Hur m&#229;nga procent av totala provisionen som m&#228;klaren f&#229;r
         /// </summary>
         [DataMember(Name="percentageOfTotal",EmitDefaultValue=false)]

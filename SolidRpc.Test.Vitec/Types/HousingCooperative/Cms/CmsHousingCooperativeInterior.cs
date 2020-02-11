@@ -1,12 +1,13 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-namespace SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms {
+using SolidRpc.Test.Vitec.Types.Common.Cms;
+namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
     /// <summary>
     /// 
     /// </summary>
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
-    public class CmsHousingCooperativInterior {
+    public class CmsHousingCooperativeInterior {
         /// <summary>
         /// Antal rum
         /// </summary>
@@ -23,7 +24,7 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms {
         /// Rum
         /// </summary>
         [DataMember(Name="rooms",EmitDefaultValue=false)]
-        public IEnumerable<SolidRpc.Test.Vitec.Types.HousingCooperativ.Cms.Room> Rooms { get; set; }
+        public IEnumerable<CmsRoom> Rooms { get; set; }
     
         /// <summary>
         /// K&#246;kstyp

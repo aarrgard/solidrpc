@@ -135,11 +135,16 @@ namespace SolidRpc.Security.Back.Services
 
         public Task<WebContent> OAuth2AuthorizeGet(IEnumerable<string> scope, string responseType, string clientId, string redirectUri = null, string state = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            //return Task.FromResult(new WebContent()
+            //{
+            //    Content = new MemoryStream(Encoding.UTF8.GetBytes("Please authenticate!")),
+            //    ContentType = "text/plain",
+            //    CharSet = Encoding.UTF8.EncodingName
+            //});
+            var session_state = "asdfsadf";
             return Task.FromResult(new WebContent()
             {
-                Content = new MemoryStream(Encoding.UTF8.GetBytes("Please authenticate!")),
-                ContentType = "text/plain",
-                CharSet = Encoding.UTF8.EncodingName
+                Location = $"{redirectUri}#id_token=sdfsdf&state={state}&session_state={session_state}"
             });
         }
 

@@ -18,5 +18,11 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         [DataMember(Name="cell",EmitDefaultValue=false)]
         public string Cell { get; set; }
     
+        /// <summary>
+        /// Publikt telefonnummer
+        /// </summary>
+        [DataMember(Name="public",EmitDefaultValue=false)]
+        public string Public { get; set; }
+    
     }
 }

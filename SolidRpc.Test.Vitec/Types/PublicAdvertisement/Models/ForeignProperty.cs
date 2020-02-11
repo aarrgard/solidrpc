@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
-using System;
 using System.Collections.Generic;
+using System;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
     /// OK
@@ -19,6 +19,12 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// </summary>
         [DataMember(Name="projectId",EmitDefaultValue=false)]
         public string ProjectId { get; set; }
+    
+        /// <summary>
+        /// Referensnummer
+        /// </summary>
+        [DataMember(Name="referenceCode",EmitDefaultValue=false)]
+        public string ReferenceCode { get; set; }
     
         /// <summary>
         /// Byggnad
@@ -69,10 +75,28 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public string Type { get; set; }
     
         /// <summary>
+        /// Texter p&#229; utl&#228;ndska spr&#229;k
+        /// </summary>
+        [DataMember(Name="foreignLanguages",EmitDefaultValue=false)]
+        public IEnumerable<SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignLanguage> ForeignLanguages { get; set; }
+    
+        /// <summary>
+        /// Exteri&#246;r
+        /// </summary>
+        [DataMember(Name="exterior",EmitDefaultValue=false)]
+        public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.ForeignExterior Exterior { get; set; }
+    
+        /// <summary>
         /// Bostadens id
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
         public string Id { get; set; }
+    
+        /// <summary>
+        /// Status p&#229; f&#246;rs&#228;ljningen/uthyrningen.
+        /// </summary>
+        [DataMember(Name="status",EmitDefaultValue=false)]
+        public string Status { get; set; }
     
         /// <summary>
         /// Kontorstillh&#246;righet
@@ -129,10 +153,22 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public DateTimeOffset ChangedAt { get; set; }
     
         /// <summary>
+        /// Tilltr&#228;de vid
+        /// </summary>
+        [DataMember(Name="admissionAt",EmitDefaultValue=false)]
+        public DateTimeOffset AdmissionAt { get; set; }
+    
+        /// <summary>
         /// Url:er
         /// </summary>
         [DataMember(Name="urls",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models.Urls Urls { get; set; }
+    
+        /// <summary>
+        /// Filer
+        /// </summary>
+        [DataMember(Name="files",EmitDefaultValue=false)]
+        public IEnumerable<SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement.File> Files { get; set; }
     
         /// <summary>
         /// Visningar

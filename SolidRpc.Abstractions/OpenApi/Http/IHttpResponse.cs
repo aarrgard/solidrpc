@@ -24,6 +24,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         string Filename { get; set; }
 
         /// <summary>
+        /// The location - stored in Location header
+        /// </summary>
+        string Location { get; set; }
+
+        /// <summary>
         /// Accessor for the "Last-Modified" header.
         /// </summary>
         DateTimeOffset? LastModified { get; set; }

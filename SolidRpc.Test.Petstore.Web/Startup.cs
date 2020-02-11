@@ -26,8 +26,8 @@ namespace SolidRpc.Test.PetstoreWeb
             services.AddSolidRpcNpmGenerator();
             services.AddSolidRpcSecurityFrontend((sp, conf) =>
             {
-                conf.Authority = "https://login.microsoftonline.com/common/v2.0";
-                conf.ClientId = "615993a8-66b3-40ce-a165-96a81edd3677";
+                //conf.Authority = "https://login.microsoftonline.com/common/v2.0";
+                //conf.ClientId = "615993a8-66b3-40ce-a165-96a81edd3677";
             });
             services.AddSolidRpcSecurityBackend();
             //services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>

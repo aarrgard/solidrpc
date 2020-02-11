@@ -30,5 +30,11 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         [DataMember(Name="parking",EmitDefaultValue=false)]
         public string Parking { get; set; }
     
+        /// <summary>
+        /// &#214;vrigt
+        /// </summary>
+        [DataMember(Name="other",EmitDefaultValue=false)]
+        public string Other { get; set; }
+    
     }
 }

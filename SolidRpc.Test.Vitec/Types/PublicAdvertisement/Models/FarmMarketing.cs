@@ -31,6 +31,12 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         public bool IsHorseFarm { get; set; }
     
         /// <summary>
+        /// Inget bruk
+        /// </summary>
+        [DataMember(Name="isHouseFarm",EmitDefaultValue=false)]
+        public bool IsHouseFarm { get; set; }
+    
+        /// <summary>
         /// Kommande
         /// </summary>
         [DataMember(Name="isFutureSale",EmitDefaultValue=false)]

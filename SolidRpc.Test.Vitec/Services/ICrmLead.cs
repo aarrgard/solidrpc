@@ -11,9 +11,9 @@ namespace SolidRpc.Test.Vitec.Services {
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface ICrmLead {
         /// <summary>
-        /// H&#228;mtar en lista &#246;ver leadsk&#228;llor.
+        /// H&#228;mtar en lista med aktiva leadsk&#228;llor.
         /// </summary>
-        /// <param name="customerId"></param>
+        /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<LeadSource>> CrmLeadGetLeadSources(
             string customerId,
@@ -22,8 +22,8 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <summary>
         /// Skapar ett lead
         /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="lead"></param>
+        /// <param name="customerId">Kundid</param>
+        /// <param name="lead">Lead</param>
         /// <param name="cancellationToken"></param>
         Task<string> CrmLeadCreate(
             string customerId,

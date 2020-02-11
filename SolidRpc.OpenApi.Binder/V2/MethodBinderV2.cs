@@ -125,7 +125,11 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             item = item.GetRefSchema() ?? item;
             var clrType = item.GetClrType();
-            if(type.IsTaskType(out Type taskType))
+            if (type.IsNullableType(out Type nullableType))
+            {
+                type = nullableType;
+            }
+            if (type.IsTaskType(out Type taskType))
             {
                 type = taskType;
             }
@@ -134,6 +138,11 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return true;
             }
             if(clrType == typeof(object))
+            {
+                return true;
+            }
+            // this test can be removed when we register converters in the IoC container.
+            if (type == typeof(DateTime) && clrType == typeof(DateTimeOffset))
             {
                 return true;
             }

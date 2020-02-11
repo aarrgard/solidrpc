@@ -18,5 +18,11 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         [DataMember(Name="estateType",EmitDefaultValue=false)]
         public string EstateType { get; set; }
     
+        /// <summary>
+        /// &#196;garandel
+        /// </summary>
+        [DataMember(Name="shareHolding",EmitDefaultValue=false)]
+        public string ShareHolding { get; set; }
+    
     }
 }

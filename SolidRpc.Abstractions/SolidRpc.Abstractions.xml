@@ -434,6 +434,11 @@
             The content type - stored in the Content-Type header.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Encoding">
+            <summary>
+            The encoding - stored in the Content-Type header
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Filename">
             <summary>
             File filename - usually stored in the Content-Disposition header.
@@ -481,6 +486,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Filename">
             <summary>
             The filename - stored in Content-Disposition header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Location">
+            <summary>
+            The location - stored in Location header
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.LastModified">
@@ -992,6 +1002,16 @@
             The method we use to set the stream data.
             </summary>
         </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.SetLocation">
+            <summary>
+            The location of the file
+            </summary>
+        </member>
+        <member name="P:System.TypeExtensions.FileTypeHelper.GetLocation">
+            <summary>
+            The location of the file
+            </summary>
+        </member>
         <member name="M:System.TypeExtensions.IsFileType(System.String,System.Collections.Generic.Dictionary{System.String,System.Type})">
             <summary>
             Returns true if the type is a file type.
@@ -1047,6 +1067,14 @@
             <param name="impl"></param>
             <param name="lastModified"></param>
         </member>
+        <member name="M:System.TypeExtensions.SetFileTypeLocation(System.Type,System.Object,System.String)">
+            <summary>
+            Set the location data on supplied structure.
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <param name="location"></param>
+        </member>
         <member name="M:System.TypeExtensions.GetFileTypeStreamData(System.Type,System.Object)">
             <summary>
             Returns the stream data.
@@ -1082,6 +1110,14 @@
         <member name="M:System.TypeExtensions.GetFileTypeLastModified(System.Type,System.Object)">
             <summary>
             Returns the last modified
+            </summary>
+            <param name="type"></param>
+            <param name="impl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.GetFileTypeLocation(System.Type,System.Object)">
+            <summary>
+            Returns the location
             </summary>
             <param name="type"></param>
             <param name="impl"></param>

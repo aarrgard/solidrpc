@@ -23,6 +23,12 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         public CmsForeignPropertyInterior Interior { get; set; }
     
         /// <summary>
+        /// Pris information
+        /// </summary>
+        [DataMember(Name="price",EmitDefaultValue=false)]
+        public SolidRpc.Test.Vitec.Types.Cms.Estate.CmsForeignPropertyPrice Price { get; set; }
+    
+        /// <summary>
         /// Beskrivningar
         /// </summary>
         [DataMember(Name="descriptions",EmitDefaultValue=false)]
@@ -57,12 +63,6 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         /// </summary>
         [DataMember(Name="currency",EmitDefaultValue=false)]
         public SolidRpc.Test.Vitec.Types.Cms.Estate.Currency Currency { get; set; }
-    
-        /// <summary>
-        /// Pris information
-        /// </summary>
-        [DataMember(Name="price",EmitDefaultValue=false)]
-        public CmsPrice Price { get; set; }
     
         /// <summary>
         /// Anv&#228;ndarid
