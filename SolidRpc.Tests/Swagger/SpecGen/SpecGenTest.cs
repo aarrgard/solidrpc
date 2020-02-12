@@ -179,7 +179,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
-        [Test, Ignore("Finish up!")]
+        [Test]
         public async Task TestMoreComplexArgs()
         {
             using (var ctx = CreateKestrelHostContext())

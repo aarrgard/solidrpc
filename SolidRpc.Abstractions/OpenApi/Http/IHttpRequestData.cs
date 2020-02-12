@@ -32,13 +32,13 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// The string representation
         /// </summary>
         /// <returns></returns>
-        string GetStringValue(Encoding encoding = null);
+        string GetStringValue();
 
         /// <summary>
         /// Returns the binary value.
         /// </summary>
         /// <returns></returns>
-        Stream GetBinaryValue(Encoding encoding = null);
+        Stream GetBinaryValue();
 
         /// <summary>
         /// Returns the data as supplied type.

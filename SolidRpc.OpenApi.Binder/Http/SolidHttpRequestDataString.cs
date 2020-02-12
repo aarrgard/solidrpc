@@ -24,12 +24,12 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         public string StringData { get; }
 
-        public override Stream GetBinaryValue(Encoding encoding = null)
+        public override Stream GetBinaryValue()
         {
-            return new MemoryStream(GetEncoding(encoding).GetBytes(StringData));
+            return new MemoryStream(GetEncoding().GetBytes(StringData));
         }
 
-        public override string GetStringValue(Encoding encoding = null)
+        public override string GetStringValue()
         {
             return StringData;
         }

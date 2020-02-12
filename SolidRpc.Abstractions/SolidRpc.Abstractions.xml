@@ -449,13 +449,13 @@
             The name of the data
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetStringValue(System.Text.Encoding)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetStringValue">
             <summary>
             The string representation
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetBinaryValue(System.Text.Encoding)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetBinaryValue">
             <summary>
             Returns the binary value.
             </summary>

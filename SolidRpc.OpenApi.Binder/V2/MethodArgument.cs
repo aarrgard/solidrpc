@@ -35,8 +35,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             else
             {
-                HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
-                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterObject.Name, ParameterInfo.ParameterType, collectionFormat);
+                var parameterName = parameterObject.Name;
+                if(ParameterObject.IsBodyType())
+                {
+                    parameterName = ParameterInfo.Name;
+                }
+                HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
+                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
             }
         }
 
@@ -91,7 +96,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 var args = ((MethodInfo)ParameterInfo.Member).GetParameters().Select(o => o.Name);
                 if (ParameterObject.IsBodyTypeArgument(args))
                 {
-                    return new[] { MapScope(ParameterObject.In), "body", ParameterInfo.Name };
+                    return new[] { MapScope(ParameterObject.In), ParameterInfo.Name };
                 }
                 else
                 {

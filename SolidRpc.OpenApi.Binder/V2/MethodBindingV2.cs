@@ -1,4 +1,5 @@
-﻿using SolidProxy.Core.Proxy;
+﻿using Newtonsoft.Json;
+using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -300,9 +302,21 @@ namespace SolidRpc.OpenApi.Binder.V2
                 throw new ArgumentException($"Number of supplied arguments({args.Length}) does not match number of arguments in method({Arguments.Length}).");
             }
 
+
+            //
+            // bind arguments
+            //
+            for (int i = 0; i < Arguments.Length; i++)
+            {
+                await Arguments[i].BindArgumentAsync(request, args[i]);
+            }
+
+            //
+            // set path
+            // 
             request.Method = Method;
             request.Scheme = Address.Scheme;
-            if(Address.IsDefaultPort)
+            if (Address.IsDefaultPort)
             {
                 request.HostAndPort = Address.Host;
             }
@@ -312,17 +326,16 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             request.Path = Address.LocalPath;
 
-            for (int i = 0; i < Arguments.Length; i++)
-            {
-                await Arguments[i].BindArgumentAsync(request, args[i]);
-            }
-
-            foreach(var pathData in request.PathData)
+            foreach (var pathData in request.PathData)
             {
                 request.Path = request.Path.Replace($"{{{pathData.Name}}}", HttpUtility.UrlEncode(pathData.GetStringValue()));
             }
 
+            //
+            // set content type
+            //
             request.ContentType = GetContentTypeBasedOnConsumesAndData(request);
+
         }
 
         private string GetContentTypeBasedOnConsumesAndData(IHttpRequest request)
@@ -347,11 +360,12 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return "multipart/form-data";
             }
-            if (request.BodyData.Count() == 1)
+            var contentTypes = request.BodyData.Select(o => o.ContentType).Distinct();
+            if (contentTypes.Count() > 1)
             {
-                return request.BodyData.First().ContentType;
+                throw new Exception("Cannot determine content type");
             }
-            return "multipart/form-data";
+            return contentTypes.First();
         }
 
         public T ExtractResponse<T>(IHttpResponse response)
@@ -421,28 +435,43 @@ namespace SolidRpc.OpenApi.Binder.V2
             return true;
         }
 
+        private IList<string> _patterns;
+        public IList<string> Patterns
+        {
+            get
+            {
+                if(_patterns == null)
+                {
+
+                    var path = OperationObject.GetAddress().LocalPath;
+                    var patterns = path.Split('/');
+                    for(int i = 0; i < patterns.Length; i++)
+                    {
+                        if (!patterns[i].StartsWith("{"))
+                        {
+                            patterns[i] = null;
+                            continue;
+                        }
+                        if (!patterns[i].EndsWith("}"))
+                        {
+                            patterns[i] = null;
+                            continue;
+                        }
+                        patterns[i] = patterns[i].Substring(1, patterns[i].Length - 2);
+                    }
+                    _patterns = patterns;
+                }
+                return _patterns;
+            }
+        }
+
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {
-            // create path data
-            var path = OperationObject.GetAddress().LocalPath;
-            var patterns = path.Split('/');
-            var pathElements = request.Path.Split('/');
-            if(patterns.Length != pathElements.Length)
-            {
-                throw new Exception($"Supplied request path({request.Path}) does not match operation path({path})");
-            }
-            var pathData = new List<SolidHttpRequestData>();
-            for(int i = 0; i < patterns.Length; i++)
-            {
-                var pattern = patterns[i];
-                if(pattern.StartsWith("{") && pattern.EndsWith("}"))
-                {
-                    var name = pattern.Substring(1, pattern.Length - 2);
-                    var data = HttpUtility.UrlDecode(pathElements[i]);
-                    pathData.Add(new SolidHttpRequestDataString("text/plain", name, data));
-                }
-            }
-            request.PathData = pathData;
+            // extract path data
+            ExtractPathData(request);
+
+            // extract body parameters
+            ExtractBodyJsonParameters(request);
 
             // then bind the arguments
             var args = new object[Arguments.Length];
@@ -451,6 +480,67 @@ namespace SolidRpc.OpenApi.Binder.V2
                 args[i] = await Arguments[i].ExtractArgumentAsync(request);
             }
             return args;
+        }
+
+        private void ExtractPathData(IHttpRequest request)
+        {
+            // create path data
+            var patterns = Patterns;
+            var pathElements = request.Path.Split('/');
+            if (patterns.Count != pathElements.Length)
+            {
+                throw new Exception($"Supplied request path({request.Path}) does not match operation path({OperationObject.GetPath()})");
+            }
+            var pathData = new List<SolidHttpRequestData>();
+            for (int i = 0; i < patterns.Count; i++)
+            {
+                if (patterns[i] == null) continue;
+                var data = HttpUtility.UrlDecode(pathElements[i]);
+                pathData.Add(new SolidHttpRequestDataString("text/plain", patterns[i], data));
+            }
+
+            request.PathData = pathData;
+        }
+
+        private void ExtractBodyJsonParameters(IHttpRequest request)
+        {
+            if(request.BodyData.Count() != 1)
+            {
+                return;
+            }
+            var bodyArguments = Arguments.Where(o => o.Location == "body");
+            if (bodyArguments.Count() < 2)
+            {
+                return;
+            }
+            var bodyData = request.BodyData.First();
+            var contents = ExtractJsonContents(bodyData);
+            request.BodyData = contents.Select(o => new SolidHttpRequestDataString(bodyData.ContentType, o.Key, o.Value)).ToArray();
+        }
+
+        private IDictionary<string, string> ExtractJsonContents(IHttpRequestData bodyData)
+        {
+            var res = new Dictionary<string, string>();
+            using (var s = bodyData.GetBinaryValue())
+            using (var tr = new StreamReader(s, bodyData.Encoding ?? Encoding.UTF8))
+            using (var jr = new JsonTextReader(tr))
+            {
+                while(jr.Read())
+                {
+                    if(jr.TokenType == JsonToken.PropertyName)
+                    {
+                        var propertyName = (string)jr.Value;
+                        jr.Read();
+                        var sw = new StringWriter();
+                        var jw = new JsonTextWriter(sw);
+                        jw.WriteToken(jr);
+                        jw.Close();
+                        sw.Close();
+                        res[propertyName] = sw.ToString();
+                    }
+                }
+            }
+            return res;
         }
 
         public Task BindResponseAsync(IHttpResponse response, object obj, Type objType)

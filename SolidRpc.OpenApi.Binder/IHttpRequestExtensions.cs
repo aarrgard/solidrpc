@@ -191,9 +191,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
 
         private static HttpContent CreateBody(IEnumerable<IHttpRequestData> bodyData)
         {
-            if(bodyData.Count() != 1)
+            var contentTypes = bodyData.Select(o => o.ContentType).Distinct();
+            if(contentTypes.Count() != 1)
             {
-                throw new Exception("Cannot create body from more than one data.");
+                throw new Exception($"Cannot create body from more than one content-types({string.Join(",", contentTypes)})");
             }
             var body = bodyData.First();
             HttpContent content;
@@ -201,13 +202,12 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 case "application/octet-stream":
                     content = new StreamContent(body.GetBinaryValue());
-                    content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType);
+                    content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
                     content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = body.Name, FileName = "test.xml" };
                     break;
                 case "application/json":
-                    var enc = Encoding.UTF8;
-                    content = new StringContent(body.GetStringValue(enc));
-                    content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = enc.HeaderName };
+                    content = new StringContent(CreateJsonData(bodyData.ToList()));
+                    content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
                     break;
                 default:
                     throw new Exception("Cannot handle content type:" + body.ContentType);
@@ -215,6 +215,23 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             return content;
         }
 
-
+        private static string CreateJsonData(IList<IHttpRequestData> bodyData)
+        {
+            if(bodyData.Count == 1)
+            {
+                return bodyData.First().GetStringValue();
+            }
+            var sb = new StringBuilder("{");
+            for(int i = 0; i < bodyData.Count; i++)
+            {
+                if(i != 0)
+                {
+                    sb.Append(",");
+                }
+                sb.Append("\"").Append(bodyData[i].Name).Append("\":").Append(bodyData[i].GetStringValue());
+            }
+            sb.Append("}");
+            return sb.ToString();
+        }
     }
 }

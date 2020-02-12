@@ -380,9 +380,9 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         public string Filename { get; protected set; }
 
-        protected Encoding GetEncoding(Encoding encoding)
+        protected Encoding GetEncoding()
         {
-            return encoding ?? Encoding.UTF8;
+            return Encoding ?? Encoding.UTF8;
         }
 
         /// <summary>
@@ -390,14 +390,14 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public abstract string GetStringValue(Encoding encoding = null);
+        public abstract string GetStringValue();
 
         /// <summary>
         /// Returns the binary value using supplied encoding.
         /// </summary>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public abstract Stream GetBinaryValue(Encoding encoding = null);
+        public abstract Stream GetBinaryValue();
 
         /// <summary>
         /// Convertes the value to specified type.
