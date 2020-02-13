@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="SolidRpc.OpenApi.Generator" Version="1.0.0-rc005" />
+    <PackageReference Include="SolidRpc.OpenApi.Generator" Version="1.0.0-rc006" />
   </ItemGroup>
 
   <ItemGroup>
