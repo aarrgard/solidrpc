@@ -102,7 +102,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             sc.AddLogging(ConfigureLogging);
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcServices(o => { o.AddRpcHostServices = true; });
+            sc.AddSolidRpcServices(o => true);
             var sp = sc.BuildServiceProvider();
             var mbs = sp.GetRequiredService<IMethodBinderStore>();
             GetType().Assembly.GetTypes()

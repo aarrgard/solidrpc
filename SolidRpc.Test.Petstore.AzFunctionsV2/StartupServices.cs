@@ -2,8 +2,10 @@
 using SolidProxy.Core.Configuration.Builder;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
+using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using System;
 using System.Linq;
@@ -28,16 +30,30 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddSolidRpcSecurityBackend();
         }
 
-        protected override void ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
+        protected override bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
-            if(c.Methods.First().DeclaringType.Assembly == typeof(SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI).Assembly)
+            //
+            // enable anonyous access to the swagger methods and static content.
+            //
+            if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
                 c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                return true;
             }
-            else
+            if (c.Methods.First().DeclaringType == typeof(ISolidRpcContentHandler))
             {
-                base.ConfigureAzureFunction(c);
+                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                return true;
             }
+
+            //
+            // disable all the methods in the ISolidRpcHost interface
+            //
+            if (c.Methods.First().DeclaringType == typeof(ISolidRpcHost))
+            {
+                return false;
+            }
+            return base.ConfigureAzureFunction(c);
         }
     }
 }

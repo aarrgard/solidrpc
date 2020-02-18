@@ -142,16 +142,17 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             //
             // search for the spec using existing bindings.
             //
-            var openApiSpec = MethodBinderStore.MethodBinders
+            var binder = MethodBinderStore.MethodBinders
                 .Where(o => o.Assembly.GetName().Name == assemblyName)
-                .Select(o => o.OpenApiSpec)
-                .Where(o => o.OpenApiSpecResolverAddress == openApiSpecResolverAddress)
+                .Where(o => o.OpenApiSpec.OpenApiSpecResolverAddress == openApiSpecResolverAddress)
                 .FirstOrDefault();
+
+            var openApiSpec = binder?.OpenApiSpec;
 
             //
             // Spec may be imported from other bindings.
             //
-            if(openApiSpec == null)
+            if (openApiSpec == null)
             {
                 //
                 // find the assembly - must be part of the bindings!
@@ -174,7 +175,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             //
             // check if there is any content associated
             //
-            if(ContentHandler.PathPrefixes.Any(o => o == openApiSpec.BaseAddress.AbsolutePath))
+            if (ContentHandler.PathPrefixes.Any(o => o == openApiSpec.BaseAddress.AbsolutePath))
             {
                 try
                 {
@@ -186,6 +187,24 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 catch(FileContentNotFoundException)
                 {
                     
+                }
+            }
+
+            //
+            // remove operations not in the binder
+            //
+            if(binder != null)
+            {
+                var localOperations = new HashSet<string>(binder.MethodBindings
+                    .Where(o => o.IsEnabled)
+                    .Where(o => o.IsLocal)
+                    .Select(o => o.OperationId));
+                foreach(var op in openApiSpec.Operations)
+                {
+                    if(!localOperations.Contains(op.OperationId))
+                    {
+                        openApiSpec.RemoveOperation(op);
+                    }
                 }
             }
 

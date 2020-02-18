@@ -92,6 +92,7 @@ namespace Microsoft.AspNetCore.Builder
             bindingStore.MethodBinders
                 .SelectMany(o => o.MethodBindings)
                 .Where(o => o.IsLocal)
+                .Where(o => o.IsEnabled)
                 .ToList()
                 .ForEach(o =>
                 {

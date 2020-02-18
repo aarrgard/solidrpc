@@ -70,6 +70,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var functionDefs = MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodBindings)
                 .Where(o => o.IsLocal)
+                .Where(o => o.IsEnabled)
                 .Select(o => new FunctionDef() {
                     Path = FixupPath(o.Address.LocalPath),
                     Method = o.Method.ToLower(),
@@ -97,6 +98,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var config = ConfigurationStore.ProxyConfigurations
                 .SelectMany(o => o.InvocationConfigurations)
                 .Where(o => o.MethodInfo == mb.MethodInfo)
+                .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+                .Where(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>().Enabled)
                 .Single();
             if(!config.IsAdviceConfigured<ISolidAzureFunctionConfig>())
             {

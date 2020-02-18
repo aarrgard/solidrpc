@@ -9,7 +9,7 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidRpc.OpenApi.SwaggerUI.SwaggerOptions},System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSwaggerUI(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidRpc.OpenApi.SwaggerUI.SwaggerOptions},System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Adds the swagger UI to the service collection.
             </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -9,7 +10,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// Describes a single API operation on a path.
     /// <a href="https://swagger.io/specification/v2/#operationObject">see</a>
     /// </summary>
-    public class OperationObject : ModelBase
+    public class OperationObject : ModelBase, IOpenApiOperation
     {
         /// <summary>
         /// The empty list of parameters

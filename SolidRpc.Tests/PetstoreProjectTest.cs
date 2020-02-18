@@ -141,6 +141,7 @@ namespace SolidRpc.Tests
             services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), (c) =>
             {
                 c.MethodAddressTransformer = GetBaseUrl;
+                return true;
             });
 
             return services.BuildServiceProvider();

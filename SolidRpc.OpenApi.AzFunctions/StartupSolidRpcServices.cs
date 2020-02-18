@@ -58,20 +58,17 @@ namespace SolidRpc.OpenApi.AzFunctions
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
             services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
-            services.AddSolidRpcServices(o =>
-            {
-                o.AddRpcHostServices = true;
-                o.AddStaticContentServices = true;
-            }, ConfigureAzureFunction);
+            services.AddSolidRpcServices(ConfigureAzureFunction);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="c"></param>
-        protected virtual void ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
+        protected virtual bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
             c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "function";
+            return true;
         }
     }
 }

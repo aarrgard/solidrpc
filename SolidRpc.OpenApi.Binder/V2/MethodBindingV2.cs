@@ -3,6 +3,7 @@ using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
@@ -283,13 +284,35 @@ namespace SolidRpc.OpenApi.Binder.V2
         {
             get
             {
-                if(!_isLocal.HasValue)
+                if (!_isLocal.HasValue)
                 {
                     var proxy = (ISolidProxy)MethodBinder.ServiceProvider.GetService(MethodInfo.DeclaringType);
                     var advicePipeline = proxy.GetInvocationAdvices(MethodInfo);
                     _isLocal = advicePipeline.OfType<ISolidProxyInvocationAdvice>().Any();
                 }
                 return _isLocal.Value;
+            }
+        }
+
+        private bool? _isEnabled;
+        public bool IsEnabled
+        {
+            get
+            {
+                if (!_isEnabled.HasValue)
+                {
+                    var proxy = (ISolidProxy)MethodBinder.ServiceProvider.GetService(MethodInfo.DeclaringType);
+                    var invocationConfig = proxy.GetInvocations().Where(o => o.SolidProxyInvocationConfiguration.MethodInfo == MethodInfo).Single().SolidProxyInvocationConfiguration;
+                    if (!invocationConfig.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+                    {
+                        _isEnabled = false;
+                    }
+                    else
+                    {
+                        _isEnabled = invocationConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>().Enabled;
+                    }
+                }
+                return _isEnabled.Value;
             }
         }
 

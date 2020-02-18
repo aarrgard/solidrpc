@@ -41,6 +41,7 @@ namespace SolidRpc.Tests.Swagger.Binder
                 (c) =>
                 {
                     c.OpenApiSpec = spec.WriteAsJsonString();
+                    return true;
                 });
 
             var sp = services.BuildServiceProvider();

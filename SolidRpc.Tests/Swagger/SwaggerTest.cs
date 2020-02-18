@@ -30,7 +30,8 @@ namespace SolidRpc.Tests.Swagger
         public void TestPetStore()
         {
             var sc = new ServiceCollection();
-            sc.AddSolidRpcServices(o => { });
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcServices(o => true);
             var sp = sc.BuildServiceProvider();
             var res = sp.GetRequiredService<OpenApiSpecResolverAssembly>();
             res.AddAssemblyResources(GetType().Assembly);
@@ -326,7 +327,8 @@ namespace SolidRpc.Tests.Swagger
         public void TestSwaggerSpecReferenceToExternalFile()
         {
             var sc = new ServiceCollection();
-            sc.AddSolidRpcServices(o => { });
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcServices(o => true);
             var sp = sc.BuildServiceProvider();
             var res = sp.GetRequiredService<OpenApiSpecResolverAssembly>();
             res.AddAssemblyResources(GetType().Assembly);

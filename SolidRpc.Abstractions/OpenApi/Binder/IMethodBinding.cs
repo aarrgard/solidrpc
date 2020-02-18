@@ -20,12 +20,17 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// The method info structure this binding represents.
         /// </summary>
         MethodInfo MethodInfo { get; }
-        
+
         /// <summary>
         /// Returns true if the underlying method ends in an 
         /// InvocationAdvice. False otherwise.
         /// </summary>
         bool IsLocal { get; }
+
+        /// <summary>
+        /// Returns true if this method is enabled
+        /// </summary>
+        bool IsEnabled { get; }
 
         /// <summary>
         /// Returns the operation id for this method.

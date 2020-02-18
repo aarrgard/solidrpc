@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.Model.V3
@@ -30,7 +31,14 @@ namespace SolidRpc.OpenApi.Model.V3
 
         public string OpenApiSpecResolverAddress => throw new NotImplementedException();
 
+        public IEnumerable<IOpenApiOperation> Operations => throw new NotImplementedException();
+
         public IOpenApiSpec Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveOperation(IOpenApiOperation op)
         {
             throw new NotImplementedException();
         }

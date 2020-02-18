@@ -5,11 +5,11 @@
       "name": "req",
       "direction": "in",
       "type": "httpTrigger",
-      "authLevel": "anonymous",
+      "authLevel": "function",
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId"
+      "route": "SolidRpc/Security/Services/Oidc/LoggedIn"
     },
     {
       "name": "serviceProvider",

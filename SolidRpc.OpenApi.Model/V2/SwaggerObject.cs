@@ -13,7 +13,6 @@ namespace SolidRpc.OpenApi.Model.V2
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
         private IOpenApiSpecResolver _openApiSpecResolver = new OpenApiSpecResolverDummy();
-        private string _openApiSpecResolverAddress = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Constructs a new instance.
@@ -31,7 +30,7 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <summary>
         /// Returns the address for this spec.
         /// </summary>
-        public string OpenApiSpecResolverAddress => _openApiSpecResolverAddress;
+        public string OpenApiSpecResolverAddress { get; private set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Sets the open api spec resolver
@@ -40,7 +39,7 @@ namespace SolidRpc.OpenApi.Model.V2
         public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver, string address)
         {
             _openApiSpecResolver = openApiSpecResolver;
-            _openApiSpecResolverAddress = address;
+            OpenApiSpecResolverAddress = address;
         }
 
         /// <summary>
@@ -293,7 +292,7 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             var clone = (new OpenApiParserV2()).ParseSwaggerDoc(WriteAsJsonString());
             clone._openApiSpecResolver = _openApiSpecResolver;
-            clone._openApiSpecResolverAddress = _openApiSpecResolverAddress;
+            clone.OpenApiSpecResolverAddress = OpenApiSpecResolverAddress;
             return clone;
         }
 
@@ -389,6 +388,11 @@ namespace SolidRpc.OpenApi.Model.V2
         public string Title => Info?.Title ?? "Unknown";
 
         /// <summary>
+        /// REturns all the operations
+        /// </summary>
+        public IEnumerable<IOpenApiOperation> Operations => GetOperations();
+
+        /// <summary>
         /// Returns the security definitions object. Creates one if null.
         /// </summary>
         /// <returns></returns>
@@ -399,6 +403,37 @@ namespace SolidRpc.OpenApi.Model.V2
                 SecurityDefinitions = new SecurityDefinitionsObject(this);
             }
             return SecurityDefinitions;
+        }
+
+        /// <summary>
+        /// Removes the supplied operation
+        /// </summary>
+        /// <param name="operation"></param>
+        public void RemoveOperation(IOpenApiOperation operation)
+        {
+            foreach(var path in GetPaths().Select(o => o.Value))
+            {
+                if (path.Head?.OperationId == operation.OperationId)
+                {
+                    path.Head = null;
+                }
+                if (path.Options?.OperationId == operation.OperationId)
+                {
+                    path.Options = null;
+                }
+                if (path.Get?.OperationId == operation.OperationId)
+                {
+                    path.Get = null;
+                }
+                if (path.Put?.OperationId == operation.OperationId)
+                {
+                    path.Put = null;
+                }
+                if (path.Delete?.OperationId == operation.OperationId)
+                {
+                    path.Delete = null;
+                }
+            }
         }
     }
 }

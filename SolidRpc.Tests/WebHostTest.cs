@@ -462,6 +462,7 @@ namespace SolidRpc.Tests
                 AddServerService(sc => sc.AddSolidRpcBindings(impl, c =>
                 {
                     c.OpenApiSpec = config;
+                    return true;
                 }));
 
                 AddClientService(clientServices =>

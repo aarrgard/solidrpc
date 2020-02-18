@@ -9,33 +9,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent"
     },
-    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration"
-    },
-    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId"
-    },
-    "SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive"
-    },
     "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml": {
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml",
@@ -163,6 +136,15 @@
         ]
       },
       "backendUri": "http://localhost:7071/front/SolidRpc/Security/Services/Oidc/discovery"
+    },
+    "SolidRpc/Security/Services/Oidc/LoggedIn": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Security/Services/Oidc/LoggedIn",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/LoggedIn"
     },
     "front/{path}": {
       "matchCondition": {

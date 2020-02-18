@@ -50,22 +50,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-
-        /// <summary>
-        /// Structure to specify which services that should be added on startup.
-        /// </summary>
-        public class RpcServiceConfiguration
-        {
-            /// <summary>
-            /// Should the rpc host services be added on startup.
-            /// </summary>
-            public bool AddRpcHostServices { get; set; }
-            /// <summary>
-            /// Should the rpc host services be added on startup.
-            /// </summary>
-            public bool AddStaticContentServices { get; set; }
-        }
-
         private class DummyServiceProvider : IServiceProvider
         {
             public object GetService(Type serviceType)
@@ -80,25 +64,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configurator"></param>
-        /// <param name="mbConfigurator"></param>
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcServices(
             this IServiceCollection services, 
-            Action<RpcServiceConfiguration> configurator,
-            Action<ISolidRpcOpenApiConfig> mbConfigurator = null)
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
-            var config = new RpcServiceConfiguration();
-            configurator(config);
-
-            var methods = (IEnumerable<MethodInfo>)new MethodInfo[0];
-            if (config.AddRpcHostServices)
-            {
-                methods = methods.Union(typeof(ISolidRpcHost).GetMethods());
-            }
-            if (config.AddStaticContentServices)
-            {
-                methods = methods.Union(typeof(ISolidRpcContentHandler).GetMethods().Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent)));
-            }
+            var methods = typeof(ISolidRpcHost).GetMethods()
+                .Union(typeof(ISolidRpcContentHandler).GetMethods().Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent)));
 
             var openApiParser = services.GetSolidRpcOpenApiParser();
             var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
@@ -106,7 +78,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 services.AddSolidRpcBinding(m, (c) => {
                     c.OpenApiSpec = solidRpcHostSpec;
-                    mbConfigurator?.Invoke(c);
+                    return configurator?.Invoke(c) ?? false;
                 });
             });
 
@@ -256,7 +228,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="interfaceAssembly"></param>
         /// <param name="implementationAssembly"></param>
         /// <param name="configurator"></param>
-        public static IServiceCollection AddSolidRpcBindings(this IServiceCollection sc, Assembly interfaceAssembly, Assembly implementationAssembly = null, Action<ISolidRpcOpenApiConfig> configurator = null)
+        public static IServiceCollection AddSolidRpcBindings(
+            this IServiceCollection sc, Assembly interfaceAssembly, 
+            Assembly implementationAssembly = null, 
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             // use the interface as implementation
             if (implementationAssembly == null)
@@ -299,7 +274,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection sc, 
             Type interfaze, 
             Type impl = null, 
-            Action<ISolidRpcOpenApiConfig> configurator = null)
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             //
             // make sure that the type is registered
@@ -326,7 +301,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="impl"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcBindings<T>(this IServiceCollection sc, T impl, Action<ISolidRpcOpenApiConfig> configurator = null) where T:class
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcBindings<T>(
+            this IServiceCollection sc, T impl, 
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null) where T:class 
         {
             if(impl != null)
             {
@@ -348,7 +325,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="mi"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static ISolidRpcOpenApiConfig AddSolidRpcBinding(this IServiceCollection sc, MethodInfo mi, Action<ISolidRpcOpenApiConfig> configurator)
+        public static ISolidRpcOpenApiConfig AddSolidRpcBinding(
+            this IServiceCollection sc, 
+            MethodInfo mi, 
+            Func<ISolidRpcOpenApiConfig, bool> configurator)
         {
             //
             // make sure that the singleton services are registered
@@ -378,7 +358,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureMethod(mi);
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-            configurator?.Invoke(openApiProxyConfig);
+            var enabled = configurator?.Invoke(openApiProxyConfig) ?? true;
+            if(openApiProxyConfig.Enabled != mc.Enabled)
+            {
+                openApiProxyConfig.Enabled = enabled;
+            }
 
             return openApiProxyConfig;
         }

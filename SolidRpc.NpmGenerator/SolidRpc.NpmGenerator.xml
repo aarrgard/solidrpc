@@ -379,7 +379,7 @@
             Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcNpmGenerator(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcNpmGenerator(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Adds the npm generator.
             </summary>

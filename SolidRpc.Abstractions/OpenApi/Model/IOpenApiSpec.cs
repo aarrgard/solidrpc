@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SolidRpc.Abstractions.OpenApi.Model
 {
@@ -47,6 +48,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         Uri BaseAddress { get; }
 
         /// <summary>
+        /// REturns all the operations in this specificaiton
+        /// </summary>
+        IEnumerable<IOpenApiOperation> Operations { get; }
+
+        /// <summary>
         /// Updates the spec so that the host and port are from the supplied address.
         /// If the root address matches this spec then this spec is returned. Otherwise
         /// this spec is clone:ed and updated.
@@ -73,5 +79,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// to ../../test.json#/definitions/x will become test.json#/definitions/x
         /// </summary>
         void RemoveRelativeRefPaths();
+
+        /// <summary>
+        /// Removes the supplied operation from this specification.
+        /// </summary>
+        /// <param name="op"></param>
+        void RemoveOperation(IOpenApiOperation op);
     }
 }

@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcSwaggerUI(
             this IServiceCollection services, 
             Action<SwaggerOptions> optionsConfigurator = null, 
-            Action<ISolidRpcOpenApiConfig> apiConfigurator = null)
+            Func<ISolidRpcOpenApiConfig, bool> apiConfigurator = null)
         {
             services.AddSingleton(sp => {
                 var options = new SwaggerOptions();
@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), (c) =>
             {
                 c.OpenApiSpec = strOpenApiSpec;
-                apiConfigurator?.Invoke(c);
+                return apiConfigurator?.Invoke(c) ?? false;
             }); 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", typeof(ISwaggerUI).Assembly);
             return services;

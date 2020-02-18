@@ -27,28 +27,12 @@
             <param name="factory"></param>
             <returns></returns>
         </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration">
-            <summary>
-            Structure to specify which services that should be added on startup.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration.AddRpcHostServices">
-            <summary>
-            Should the rpc host services be added on startup.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration.AddStaticContentServices">
-            <summary>
-            Should the rpc host services be added on startup.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RpcServiceConfiguration},System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Adds the rpc services
             </summary>
             <param name="services"></param>
             <param name="configurator"></param>
-            <param name="mbConfigurator"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -88,7 +72,7 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures all the interfaces in supplied assembly
             </summary>
@@ -97,7 +81,7 @@
             <param name="implementationAssembly"></param>
             <param name="configurator"></param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
@@ -107,7 +91,7 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
@@ -116,7 +100,7 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Action{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the suppllied method so that it is exposed through the .net core http binding.
             </summary>
@@ -285,6 +269,11 @@
             <summary>
             Returns true if the underlying method ends in an 
             InvocationAdvice. False otherwise.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.IsEnabled">
+            <summary>
+            Returns true if this method is enabled
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.OperationId">
@@ -531,6 +520,16 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation">
+            <summary>
+            Represents an operation.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.OperationId">
+            <summary>
+            Returns the operation id.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser">
             <summary>
             Interface used to handle open api specs
@@ -603,6 +602,11 @@
             Scheme, Host, Port and BasePath.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.Operations">
+            <summary>
+            REturns all the operations in this specificaiton
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.SetBaseAddress(System.Uri)">
             <summary>
             Updates the spec so that the host and port are from the supplied address.
@@ -630,6 +634,12 @@
             Removes all the relative paths in the refs. ie. a reference
             to ../../test.json#/definitions/x will become test.json#/definitions/x
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec.RemoveOperation(SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation)">
+            <summary>
+            Removes the supplied operation from this specification.
+            </summary>
+            <param name="op"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver">
             <summary>

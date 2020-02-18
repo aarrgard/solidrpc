@@ -21,7 +21,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcNpmGenerator(this IServiceCollection services, Action<ISolidRpcOpenApiConfig> configurator = null)
+        public static IServiceCollection AddSolidRpcNpmGenerator(
+            this IServiceCollection services, 
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             services.AddTransient<ICodeNamespaceGenerator, CodeNamespaceGenerator>();
             services.AddTransient<ITypescriptGenerator, TypeScriptGenerator>();
@@ -40,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 (c) =>
                 {
                     c.OpenApiSpec = strOpenApiSpec;
-                    configurator?.Invoke(c);
+                    return configurator?.Invoke(c) ?? false;
                 });
             return services;
         }

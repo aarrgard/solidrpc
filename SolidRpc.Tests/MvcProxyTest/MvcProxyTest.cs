@@ -425,6 +425,7 @@ namespace SolidRpc.Tests.MvcProxyTest
             sc.AddSolidRpcBindings(typeof(T), typeof(T), (c) =>
             {
                 c.OpenApiSpec = openApiConfiguration;
+                return true;
             });
 
             sc.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));

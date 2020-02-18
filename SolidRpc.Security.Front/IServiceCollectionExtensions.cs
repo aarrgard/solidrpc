@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcSecurityFrontend(
             this IServiceCollection services, 
             Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null,
-            Action<ISolidRpcOpenApiConfig> mbConfigurator = null)
+            Func<ISolidRpcOpenApiConfig, bool> mbConfigurator = null)
         {
             services.AddSingletonIfMissing<IOpenIDKeyStore, OpenIDKeyStore>();
             services.AddSingletonIfMissing<IAccessTokenFactory, AccessTokenFactory>();
