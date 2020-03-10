@@ -10,13 +10,106 @@
     "https"
   ],
   "paths": {
-    "/Services/IComplexAndSimpleArgs/GetComplexType": {
+    "/Services/IComplexAndSimpleArgs/GetDecimal/{d}": {
+      "get": {
+        "tags": [
+          "IComplexAndSimpleArgs"
+        ],
+        "description": "Proxies a decimal",
+        "operationId": "GetDecimal",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "d",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "decimal",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IComplexAndSimpleArgs/GetGuid/{g}": {
+      "get": {
+        "tags": [
+          "IComplexAndSimpleArgs"
+        ],
+        "description": "Proxies a guid",
+        "operationId": "GetGuid",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "g",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IComplexAndSimpleArgs/GetInteger/{i}": {
+      "get": {
+        "tags": [
+          "IComplexAndSimpleArgs"
+        ],
+        "description": "Proxies an integer",
+        "operationId": "GetInteger",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "i",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IComplexAndSimpleArgs/GetSimpleAndComplexType/{simpleType}": {
       "post": {
         "tags": [
           "IComplexAndSimpleArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "GetComplexType",
+        "operationId": "GetSimpleAndComplexType",
         "consumes": [
           "application/json"
         ],
@@ -26,15 +119,15 @@
         "parameters": [
           {
             "name": "simpleType",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string",
             "description": ""
           },
           {
             "name": "ct1",
             "in": "body",
-            "required": false,
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
             }
@@ -45,6 +138,37 @@
             "description": "ComplexType1",
             "schema": {
               "$ref": "#/definitions/ComplexType1"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IComplexAndSimpleArgs/GetUri/{u}": {
+      "get": {
+        "tags": [
+          "IComplexAndSimpleArgs"
+        ],
+        "description": "Proxies a uri",
+        "operationId": "GetUri",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "u",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uri",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "uri"
             }
           }
         }

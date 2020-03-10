@@ -10,7 +10,7 @@
     "https"
   ],
   "paths": {
-    "/Services/IMoreComplexArgs/GetComplexType": {
+    "/Services/IMoreComplexArgs/GetComplexType/{simpleType}/{date}": {
       "post": {
         "tags": [
           "IMoreComplexArgs"
@@ -26,15 +26,15 @@
         "parameters": [
           {
             "name": "simpleType",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string",
             "description": ""
           },
           {
             "name": "date",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string",
             "format": "date-time",
             "description": ""
@@ -42,7 +42,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": false,
+            "required": true,
             "schema": {
               "properties": {
                 "ct1Enum": {

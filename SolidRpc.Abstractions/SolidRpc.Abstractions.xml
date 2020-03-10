@@ -701,6 +701,14 @@
             the method name or assembly name where the method is defined will be used.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.SecurityKey">
+            <summary>
+            If this key is set it needs to be specified in the invocation
+            properties in order for the invocation to be authorized on the server side.
+            If the key is present on the client side it is added to call so that
+            the invocation is authorized.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.MethodAddressTransformer">
             <summary>
             The method to transform the Uri. This delegate is invoked to determine
@@ -917,14 +925,19 @@
             Raised when the file content is not found
             </summary>
         </member>
+        <member name="F:SolidRpc.Abstractions.Types.FileContentNotFoundException.HttpStatusCode">
+            <summary>
+            The http status code
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.Types.FileContentNotFoundException.#ctor">
             <summary>
-            The file content
+            Constructs a new exception
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.Types.FileContentNotFoundException.#ctor(System.String)">
             <summary>
-            The file content
+            Constructs a new exception
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.NameValuePair">
@@ -940,6 +953,26 @@
         <member name="P:SolidRpc.Abstractions.Types.NameValuePair.Value">
             <summary>
             The value
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.UnauthorizedException">
+            <summary>
+            Raised when the the method invocation is not allowed
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Types.UnauthorizedException.HttpStatusCode">
+            <summary>
+            The http status code
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor">
+            <summary>
+            Constructs a new exception
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor(System.String)">
+            <summary>
+            Constructs a new exception
             </summary>
         </member>
         <member name="T:System.TypeExtensions">

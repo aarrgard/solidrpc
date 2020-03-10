@@ -1,5 +1,6 @@
 ﻿using SolidProxy.Core.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using System;
 using System.Collections.Generic;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
@@ -15,6 +16,14 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// the method name or assembly name where the method is defined will be used.
         /// </summary>
         string OpenApiSpec { get; set; }
+
+        /// <summary>
+        /// If this key is set it needs to be specified in the invocation
+        /// properties in order for the invocation to be authorized on the server side.
+        /// If the key is present on the client side it is added to call so that
+        /// the invocation is authorized.
+        /// </summary>
+        Guid? SecurityKey { get; set; }
 
         /// <summary>
         /// The method to transform the Uri. This delegate is invoked to determine

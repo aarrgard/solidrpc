@@ -222,10 +222,14 @@ namespace Microsoft.AspNetCore.Builder
                 ctx.Response.ContentType = $"{content.ContentType}{charset}";
                 AddAllowedCorsHeaders(ctx);
                 await content.Content.CopyToAsync(ctx.Response.Body);
-            } 
-            catch(FileContentNotFoundException)
+            }
+            catch (FileContentNotFoundException)
             {
-                ctx.Response.StatusCode = 404;
+                ctx.Response.StatusCode = FileContentNotFoundException.HttpStatusCode;
+            }
+            catch (UnauthorizedException)
+            {
+                ctx.Response.StatusCode = UnauthorizedException.HttpStatusCode;
             }
         }
 

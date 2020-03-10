@@ -42,7 +42,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                CreateSpec(subDir.Name, false);
+                //if (subDir.Name != "RequiredOptionalArg") continue;
+                CreateSpec(subDir.Name, true);
             }
         }
 

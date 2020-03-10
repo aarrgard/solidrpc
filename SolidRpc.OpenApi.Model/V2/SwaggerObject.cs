@@ -13,6 +13,7 @@ namespace SolidRpc.OpenApi.Model.V2
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
         private IOpenApiSpecResolver _openApiSpecResolver = new OpenApiSpecResolverDummy();
+        private string _openApiSpecResolverAddress = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Constructs a new instance.
@@ -30,16 +31,17 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <summary>
         /// Returns the address for this spec.
         /// </summary>
-        public string OpenApiSpecResolverAddress { get; private set; } = Guid.NewGuid().ToString();
+        public string OpenApiSpecResolverAddress => _openApiSpecResolverAddress;
 
         /// <summary>
         /// Sets the open api spec resolver
         /// </summary>
         /// <param name="openApiSpecResolver"></param>
+        /// <param name="address"></param>
         public void SetOpenApiSpecResolver(IOpenApiSpecResolver openApiSpecResolver, string address)
         {
             _openApiSpecResolver = openApiSpecResolver;
-            OpenApiSpecResolverAddress = address;
+            _openApiSpecResolverAddress = address;
         }
 
         /// <summary>
@@ -292,7 +294,7 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             var clone = (new OpenApiParserV2()).ParseSwaggerDoc(WriteAsJsonString());
             clone._openApiSpecResolver = _openApiSpecResolver;
-            clone.OpenApiSpecResolverAddress = OpenApiSpecResolverAddress;
+            clone._openApiSpecResolverAddress = OpenApiSpecResolverAddress;
             return clone;
         }
 

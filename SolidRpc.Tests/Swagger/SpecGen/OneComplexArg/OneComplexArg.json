@@ -27,7 +27,7 @@
           {
             "name": "ct1",
             "in": "body",
-            "required": false,
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
             }

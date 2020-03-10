@@ -6,10 +6,12 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -69,8 +71,9 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services, 
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
-            var methods = typeof(ISolidRpcHost).GetMethods()
-                .Union(typeof(ISolidRpcContentHandler).GetMethods().Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent)));
+            var methods = typeof(ISolidRpcContentHandler).GetMethods()
+                .Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent))
+                .Union(typeof(ISolidRpcHost).GetMethods());
 
             var openApiParser = services.GetSolidRpcOpenApiParser();
             var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
@@ -362,6 +365,23 @@ namespace Microsoft.Extensions.DependencyInjection
             if(openApiProxyConfig.Enabled != mc.Enabled)
             {
                 openApiProxyConfig.Enabled = enabled;
+            }
+
+            //
+            // make sure that we apply security.
+            //
+            var secKey = openApiProxyConfig.SecurityKey?.ToString();
+            if (secKey != null)
+            {
+                mc.AddPreInvocationCallback(i =>
+                {
+                    var callKey = i.GetValue<string>("HTTP_SolidRpcSecurityKey");
+                    if(!secKey.Equals(callKey, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        throw new UnauthorizedException();
+                    }
+                    return Task.CompletedTask;
+                });
             }
 
             return openApiProxyConfig;

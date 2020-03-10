@@ -4,6 +4,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
@@ -186,10 +187,12 @@ namespace SolidRpc.OpenApi.Binder.V2
         {
             get
             {
-                if(_exceptionMappings == null)
+                if (_exceptionMappings == null)
                 {
                     // extract exception types
                     _exceptionMappings = new Dictionary<int, Action>();
+                    _exceptionMappings[UnauthorizedException.HttpStatusCode] = CreateExceptionThrower(typeof(UnauthorizedException));
+                    _exceptionMappings[FileContentNotFoundException.HttpStatusCode] = CreateExceptionThrower(typeof(FileContentNotFoundException));
                     CodeDocMethod.ExceptionDocumentation.ToList().ForEach(o =>
                     {
                         var exceptionType = MethodInfo.DeclaringType.Assembly.GetType(o.ExceptionType);

@@ -20,10 +20,11 @@ namespace SolidRpc.Tests.Security
         /// Configures the client services
         /// </summary>
         /// <param name="clientServices"></param>
-        public override void ConfigureClientServices(IServiceCollection clientServices)
+        /// <param name="baseAddress"></param>
+        public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             clientServices.AddHttpClient();
-            base.ConfigureClientServices(clientServices);
+            base.ConfigureClientServices(clientServices, baseAddress);
         }
         /// <summary>
         /// Configures the server services

@@ -85,6 +85,12 @@ namespace SolidRpc.OpenApi.Model.V2
                 itemBase.Format = "double";
                 return;
             }
+            else if (type == typeof(decimal))
+            {
+                itemBase.Type = "number";
+                itemBase.Format = "decimal";
+                return;
+            }
             else if (type == typeof(System.IO.Stream))
             {
                 itemBase.Type = "string";

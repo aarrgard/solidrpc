@@ -1,0 +1,155 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "RequiredOptionalArg",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/RequiredOptionalArg",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IRequiredOptionalArg/GetOptionalComplexType": {
+      "post": {
+        "tags": [
+          "IRequiredOptionalArg"
+        ],
+        "description": "This argument should be optional",
+        "operationId": "GetOptionalComplexType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ct1",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ComplexType1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/ComplexType1"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IRequiredOptionalArg/GetOptionalString": {
+      "get": {
+        "tags": [
+          "IRequiredOptionalArg"
+        ],
+        "description": "This argument should be optional",
+        "operationId": "GetOptionalString",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IRequiredOptionalArg/GetRequiredComplexType": {
+      "post": {
+        "tags": [
+          "IRequiredOptionalArg"
+        ],
+        "description": "This argument should be required",
+        "operationId": "GetRequiredComplexType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ct1",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ComplexType1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/ComplexType1"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IRequiredOptionalArg/GetRequiredString/{s}": {
+      "get": {
+        "tags": [
+          "IRequiredOptionalArg"
+        ],
+        "description": "This argument should be required",
+        "operationId": "GetRequiredString",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType1": {
+      "properties": {
+        "CT1": {
+          "$ref": "#/definitions/ComplexType1"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType1"
+    }
+  },
+  "tags": [
+    {
+      "name": "IRequiredOptionalArg",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}

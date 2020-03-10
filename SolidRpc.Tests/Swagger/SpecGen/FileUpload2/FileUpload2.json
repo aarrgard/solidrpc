@@ -27,7 +27,7 @@
           {
             "name": "fileData",
             "in": "formData",
-            "required": false,
+            "required": true,
             "type": "file",
             "description": "The file data"
           }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using SolidRpc.Abstractions.Services;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -15,17 +17,25 @@ namespace SolidRpc.Test.PetstoreWeb
         {
             services.AddLogging(o => o.SetMinimumLevel(LogLevel.Trace));
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            services.AddSolidRpcServices(o => true);
+            services.AddHttpClient();
+            services.AddSolidRpcServices(o =>
+            {
+                if (o.Methods.First().DeclaringType != typeof(ISolidRpcContentHandler))
+                {
+                    o.SecurityKey = Guid.NewGuid();
+                }
+                return true;
+            });
             services.AddSolidRpcSwaggerUI(o => {
                 o.DefaultOpenApiSpec = "SolidRpc.Security.ISolidRpcSecurity";
             });
-            services.AddSolidRpcNpmGenerator();
-            services.AddSolidRpcSecurityFrontend((sp, conf) =>
-            {
-                //conf.Authority = "https://login.microsoftonline.com/common/v2.0";
-                //conf.ClientId = "615993a8-66b3-40ce-a165-96a81edd3677";
-            });
-            services.AddSolidRpcSecurityBackend();
+            //services.AddSolidRpcNpmGenerator();
+            //services.AddSolidRpcSecurityFrontend((sp, conf) =>
+            //{
+            //    //conf.Authority = "https://login.microsoftonline.com/common/v2.0";
+            //    //conf.ClientId = "615993a8-66b3-40ce-a165-96a81edd3677";
+            //});
+            //services.AddSolidRpcSecurityBackend();
             //services.AddSolidRpcSecurityBackendFacebook((sp, conf) =>
             //{
             //    sp.ConfigureOptions(conf);
@@ -34,10 +44,10 @@ namespace SolidRpc.Test.PetstoreWeb
             //{
             //    sp.ConfigureOptions(conf);
             //});
-            services.AddSolidRpcSecurityBackendMicrosoft((sp, conf) =>
-            {
-                sp.ConfigureOptions(conf);
-            });
+            //services.AddSolidRpcSecurityBackendMicrosoft((sp, conf) =>
+            //{
+            //    sp.ConfigureOptions(conf);
+            //});
             //services.AddPetstore();
             //services.AddVitec();
         }

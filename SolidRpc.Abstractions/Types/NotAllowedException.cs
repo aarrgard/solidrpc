@@ -3,23 +3,24 @@
 namespace SolidRpc.Abstractions.Types
 {
     /// <summary>
-    /// Raised when the file content is not found
+    /// Raised when the the method invocation is not allowed
     /// </summary>
-    public class FileContentNotFoundException : Exception
+    public class UnauthorizedException : Exception
     {
         /// <summary>
         /// The http status code
         /// </summary>
-        public static readonly int HttpStatusCode = 404;
+        public static readonly int HttpStatusCode = 401;
+
         private void Init()
         {
-            Data["HttpStatusCode"] = HttpStatusCode;
+            Data["HttpStatusCode"] = 401;
         }
 
         /// <summary>
         /// Constructs a new exception
         /// </summary>
-        public FileContentNotFoundException()
+        public UnauthorizedException()
         {
             Init();
         }
@@ -27,7 +28,7 @@ namespace SolidRpc.Abstractions.Types
         /// <summary>
         /// Constructs a new exception
         /// </summary>
-        public FileContentNotFoundException(string message) : base(message)
+        public UnauthorizedException(string message) : base(message)
         {
             Init();
         }

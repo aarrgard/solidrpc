@@ -110,9 +110,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                                 .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                                 .ToList().ForEach(invocConfig =>
                                 {
-                                    var o = invocConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                                    var mi = o.InvocationConfiguration.MethodInfo;
-                                    var methodInfo = MethodBinderStore.CreateMethodBinding(o.OpenApiSpec, invocConfig.HasImplementation, mi, o.MethodAddressTransformer);
+                                    var openApiConfig = invocConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+                                    var mi = openApiConfig.InvocationConfiguration.MethodInfo;
+                                    var methodInfo = MethodBinderStore.CreateMethodBinding(openApiConfig.OpenApiSpec, invocConfig.HasImplementation, mi, openApiConfig.MethodAddressTransformer);
                                     _rootSegment.AddPath(methodInfo);
                                     Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodInfo.Address.LocalPath}.");
                                 });
@@ -161,12 +161,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"Service for {methodInfo.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
-            // return response
+            var invocationValues = new Dictionary<string, object>();
+            foreach(var qv in request.Headers)
+            {
+                invocationValues.Add($"HTTP_{qv.Name}", qv.GetStringValue());
+            }
+
             var resp = new SolidHttpResponse();
             try
             {
-                var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args);
+                var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args, invocationValues);
 
+                // return response
                 //
                 // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
                 //

@@ -161,6 +161,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     {
                         po = operationObject.GetParameter("body");
                         po.In = "body";
+                        po.Required = !o.Optional;
                         po.Schema = po.Schema ?? new SchemaObject(po);
                         po.Schema.Type = "object";
                         po.Schema.Properties = po.Schema.Properties ?? new DefinitionsObject(po);

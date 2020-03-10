@@ -193,7 +193,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 }
 
                 var parameterName = o.Identifier.ToString();
-                var optional = o.Default == null;
+                var optional = o.Default != null;
                 method.AddMember(new CSharpMethodParameter(method, parameterName, parameterType, optional));
             });
 

@@ -27,7 +27,7 @@
           {
             "name": "ct",
             "in": "body",
-            "required": false,
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ComplexType"
             }
@@ -43,7 +43,7 @@
         }
       }
     },
-    "/Services/INullableTypes/GetNullableType": {
+    "/Services/INullableTypes/GetNullableType/{nullableInt}": {
       "get": {
         "tags": [
           "INullableTypes"
@@ -56,8 +56,8 @@
         "parameters": [
           {
             "name": "nullableInt",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "integer",
             "format": "int32",
             "description": ""

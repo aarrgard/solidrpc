@@ -86,9 +86,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             GetClass(typeof(long), "long");
             GetClass(typeof(float), "float");
             GetClass(typeof(double), "double");
+            GetClass(typeof(decimal), "decimal");
             GetClass(typeof(string), "string");
             LoadSystemTypes(typeof(int).Assembly);
             LoadSystemTypes(typeof(Uri).Assembly);
+            LoadSystemTypes(typeof(Guid).Assembly);
         }
 
         private void LoadSystemTypes(Assembly assembly)

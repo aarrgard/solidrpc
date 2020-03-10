@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), (c) =>
             {
                 c.OpenApiSpec = strOpenApiSpec;
-                return apiConfigurator?.Invoke(c) ?? false;
+                return apiConfigurator?.Invoke(c) ?? true;
             }); 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", typeof(ISwaggerUI).Assembly);
             return services;

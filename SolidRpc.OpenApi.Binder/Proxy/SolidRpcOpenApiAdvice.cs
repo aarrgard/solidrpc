@@ -40,6 +40,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public IHttpClientFactory HttpClientFactory { get; }
         public MethodHeadersTransformer MethodHeadersTransformer { get; set; }
         private IMethodBinding MethodBinding { get; set; }
+        private string SecurityKey { get; set; }
 
         /// <summary>
         /// Confugures the proxy
@@ -51,6 +52,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 return false;
             }
+            SecurityKey = config.SecurityKey?.ToString();
             MethodHeadersTransformer = config.MethodHeadersTransformer ?? ((o1, o2, o3) => Task.CompletedTask);
             MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.OpenApiSpec,
@@ -90,6 +92,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             foreach (var additionalHeader in headers)
             {
                 httpClientReq.Headers.Add(additionalHeader.Key, additionalHeader.Value);
+            }
+            if(SecurityKey != null)
+            {
+                httpClientReq.Headers.Add("SolidRpcSecurityKey", SecurityKey);
             }
             httpReq.CopyTo(httpClientReq);
 

@@ -10,7 +10,7 @@
     "https"
   ],
   "paths": {
-    "/Services/ITwoComplexArgs/GetComplexType": {
+    "/Services/ITwoComplexArgs/GetComplexType/{simpleType}": {
       "post": {
         "tags": [
           "ITwoComplexArgs"
@@ -26,15 +26,15 @@
         "parameters": [
           {
             "name": "simpleType",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string",
             "description": ""
           },
           {
             "name": "body",
             "in": "body",
-            "required": false,
+            "required": true,
             "schema": {
               "properties": {
                 "ct1": {

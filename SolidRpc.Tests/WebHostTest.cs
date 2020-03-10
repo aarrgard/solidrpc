@@ -353,7 +353,7 @@ namespace SolidRpc.Tests
                 clientServices.AddHttpClient();
                 AddBaseAddress(clientServices, BaseAddress);
                 ClientServicesCallback(clientServices);
-                WebHostTest.ConfigureClientServices(clientServices);
+                WebHostTest.ConfigureClientServices(clientServices, BaseAddress);
                 return clientServices.BuildServiceProvider();
             }
 
@@ -365,7 +365,7 @@ namespace SolidRpc.Tests
             protected void AddBaseAddress(IServiceCollection services, Uri baseAddress)
             {
                 if (BaseAddress == null) throw new Exception("No base address set");
-                var strBaseAddress = BaseAddress.ToString();
+                var strBaseAddress = baseAddress.ToString();
                 strBaseAddress = strBaseAddress.Substring(0, strBaseAddress.Length - 1);
 
                 var config = new ConfigurationBuilder();
@@ -550,8 +550,9 @@ namespace SolidRpc.Tests
         /// Configures the services hosted on the client
         /// </summary>
         /// <param name="clientServices"></param>
+        /// <param name="baseAddress"></param>
         /// <returns></returns>
-        public virtual void ConfigureClientServices(IServiceCollection clientServices)
+        public virtual void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             clientServices.AddLogging(ConfigureLogging);
             clientServices.AddSolidRpcSingletonServices();
