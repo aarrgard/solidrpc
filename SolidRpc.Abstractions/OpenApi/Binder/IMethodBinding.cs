@@ -31,6 +31,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// Returns true if this method is enabled
         /// </summary>
         bool IsEnabled { get; }
+        
+        /// <summary>
+        /// Returns the security key needed for this invocation.
+        /// </summary>
+        KeyValuePair<string, string>? SecurityKey { get; }
 
         /// <summary>
         /// Returns the operation id for this method.

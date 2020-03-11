@@ -20,6 +20,7 @@
   <ItemGroup>
     <None Remove="NpmGenerator\TestCreateTypescript.ts" />
     <None Remove="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
+    <None Remove="Swagger\Security\SecurityTest.TestAddSecurityKey.json" />
     <None Remove="Swagger\SpecGenReflection\TestEmptyRepo.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1NullableParameter.json" />
@@ -32,6 +33,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
+    <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityKey.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
     <EmbeddedResource Include="Swagger\petstore.json" />

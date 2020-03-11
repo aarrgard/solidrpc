@@ -251,5 +251,35 @@ namespace SolidRpc.OpenApi.Model.V2
             }
             return parameter;
         }
+
+        public void AddSolidRpcSecurityKey(string keyName)
+        {
+            var securityDefinitionName = $"SolidRpcSecurity.{keyName}";
+            if(Security == null)
+            {
+                Security = new SecurityRequirementObject[0];
+            }
+            if(Security.SelectMany(o => o.Keys).Contains(securityDefinitionName))
+            {
+                return;
+            }
+            var sro = new SecurityRequirementObject(this);
+            sro[securityDefinitionName] = new string[0];
+            Security = Security.Union(new[] {
+                sro
+            }).ToList();
+
+            //
+            // make sure that the security definition exists
+            //
+            var securityDefinitions = GetParent<SwaggerObject>().GetSecurityDefinitions();
+            if(!securityDefinitions.TryGetValue(securityDefinitionName, out SecuritySchemeObject sso))
+            {
+                securityDefinitions[securityDefinitionName] = sso = new SecuritySchemeObject(securityDefinitions);
+                sso.Type = "apiKey";
+                sso.In = "header";
+                sso.Name = keyName;
+            }
+        }
     }
 }

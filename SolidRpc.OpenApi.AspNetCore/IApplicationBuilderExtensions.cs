@@ -28,20 +28,20 @@ namespace Microsoft.AspNetCore.Builder
             /// <summary>
             /// The method mapped to the path
             /// </summary>
-            public IMethodBinding MethodInfo { get; set; }
+            public IMethodBinding MethodBinding { get; set; }
 
             public ISolidRpcContentHandler ContentHandler { get; set; }
             public IEnumerable<string> AllowedCorsOrigins { get; }
 
             public override string ToString()
             {
-                if(MethodInfo != null)
+                if(MethodBinding != null)
                 {
-                    return $"Operation:{MethodInfo.OperationId}:{MethodInfo.MethodInfo.DeclaringType.FullName}:{MethodInfo.MethodInfo}";
+                    return $"Operation:{MethodBinding.OperationId}:{MethodBinding.MethodInfo.DeclaringType.FullName}:{MethodBinding.MethodInfo}";
                 }
                 else
                 {
-                    return "Static";
+                    return "Static content";
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace Microsoft.AspNetCore.Builder
                     {
                         dict[path] = binding = new PathHandler(allowedCorsOrigins);
                     }
-                    binding.MethodInfo = o;
+                    binding.MethodBinding = o;
 
                     //register an "options" handler
                     path = $"OPTIONS{o.Address.LocalPath}";
@@ -109,7 +109,7 @@ namespace Microsoft.AspNetCore.Builder
                     {
                         dict[path] = binding = new PathHandler(allowedCorsOrigins);
                     }
-                    binding.MethodInfo = o;
+                    binding.MethodBinding = o;
                 });
 
             //
@@ -152,10 +152,19 @@ namespace Microsoft.AspNetCore.Builder
             // add handler for this path
             if (paths.TryGetValue(pathPrefix, out PathHandler pathHandler))
             {
-                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}");
-                if(pathHandler.MethodInfo != null)
+                // emit to log
+                var secKeyOutput = "";
+                var secKey = pathHandler.MethodBinding?.SecurityKey;
+                if (secKey != null)
                 {
-                    ab.Run((ctx) => HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.MethodInfo, ctx));
+                    secKeyOutput = $", use {secKey.Value.Key}:{secKey.Value.Value} to access resources";
+                }
+                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}{secKeyOutput}");
+                
+                // bind path
+                if(pathHandler.MethodBinding != null)
+                {
+                    ab.Run((ctx) => HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.MethodBinding, ctx));
                 }
                 else if (pathHandler.ContentHandler != null)
                 {

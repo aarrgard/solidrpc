@@ -28,19 +28,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="serviceProvider"></param>
         public SolidRpcOpenApiAdvice(
             ILogger<SolidRpcOpenApiAdvice<TObject, TMethod, TAdvice>> logger,
-            IMethodBinderStore methodBinderStore,
-            IHttpClientFactory httpClientFactory)
+            IServiceProvider serviceProvider)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
-            HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
         private ILogger Logger { get; }
-        private IMethodBinderStore MethodBinderStore { get; }
-        public IHttpClientFactory HttpClientFactory { get; }
-        public MethodHeadersTransformer MethodHeadersTransformer { get; set; }
+        private IServiceProvider ServiceProvider { get; }
+        private IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
+        private IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
+        private MethodHeadersTransformer MethodHeadersTransformer { get; set; }
         private IMethodBinding MethodBinding { get; set; }
-        private string SecurityKey { get; set; }
+        private KeyValuePair<string, string>? SecurityKey { get; set; }
 
         /// <summary>
         /// Confugures the proxy
@@ -52,7 +51,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 return false;
             }
-            SecurityKey = config.SecurityKey?.ToString();
+            SecurityKey = config.SecurityKey;
             MethodHeadersTransformer = config.MethodHeadersTransformer ?? ((o1, o2, o3) => Task.CompletedTask);
             MethodBinding = MethodBinderStore.CreateMethodBinding(
                 config.OpenApiSpec,
@@ -95,7 +94,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             if(SecurityKey != null)
             {
-                httpClientReq.Headers.Add("SolidRpcSecurityKey", SecurityKey);
+                httpClientReq.Headers.Add(SecurityKey.Value.Key, SecurityKey.Value.Value);
             }
             httpReq.CopyTo(httpClientReq);
 

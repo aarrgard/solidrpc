@@ -36,7 +36,11 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IList<OperationObject> Operations { get; }
 
-        protected override IMethodBinding CreateBinding(MethodInfo mi, MethodAddressTransformer methodAddressTransformer, bool mustExist)
+        protected override IMethodBinding CreateBinding(
+            MethodInfo mi, 
+            MethodAddressTransformer methodAddressTransformer, 
+            bool mustExist,
+            KeyValuePair<string, string>? securityKey)
         {
             if (mi == null) throw new ArgumentNullException(nameof(mi));
             if (mi.DeclaringType.Assembly != Assembly)
@@ -83,7 +87,13 @@ namespace SolidRpc.OpenApi.Binder.V2
                     return null;
                 }
             }
-            return new MethodBindingV2(this, prospects.Single(), mi, CodeDocRepo.GetMethodDoc(mi), methodAddressTransformer);
+            return new MethodBindingV2(
+                this, 
+                prospects.Single(),
+                mi, 
+                CodeDocRepo.GetMethodDoc(mi), 
+                methodAddressTransformer,
+                securityKey);
 
         }
 

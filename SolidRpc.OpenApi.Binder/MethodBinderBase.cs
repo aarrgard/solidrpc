@@ -34,12 +34,19 @@ namespace SolidRpc.OpenApi.Binder
 
         private ConcurrentDictionary<MethodInfo, IMethodBinding> CachedBindings { get; }
 
-        public IMethodBinding CreateMethodBinding(MethodInfo methodInfo, MethodAddressTransformer methodAddressTransformer)
+        public IMethodBinding CreateMethodBinding(
+            MethodInfo methodInfo,
+            MethodAddressTransformer methodAddressTransformer,
+            KeyValuePair<string, string>? securityKey)
         {
-            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, methodAddressTransformer, true));
+            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, methodAddressTransformer, true, securityKey));
         }
 
-        protected abstract IMethodBinding CreateBinding(MethodInfo mi, MethodAddressTransformer methodAddressTransformer, bool mustExist);
+        protected abstract IMethodBinding CreateBinding(
+            MethodInfo mi,
+            MethodAddressTransformer methodAddressTransformer, 
+            bool mustExist,
+            KeyValuePair<string, string>? securityKey);
     }
 }
 

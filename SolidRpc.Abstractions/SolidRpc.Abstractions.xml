@@ -35,12 +35,13 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean)">
             <summary>
             Returns the service provider for specified service.
             </summary>
             <typeparam name="TService"></typeparam>
             <param name="services"></param>
+            <param name="mustExist"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -191,12 +192,13 @@
             Returns all the mapped methods
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBinding(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBinding(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer,System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Returns the method info from supplied specification.
             </summary>
             <param name="methodInfo"></param>
             <param name="baseUriTransformer"></param>
+            <param name="securityKey"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore">
@@ -274,6 +276,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.IsEnabled">
             <summary>
             Returns true if this method is enabled
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.SecurityKey">
+            <summary>
+            Returns the security key needed for this invocation.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.OperationId">
@@ -529,6 +536,12 @@
             <summary>
             Returns the operation id.
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.AddSolidRpcSecurityKey(System.String)">
+            <summary>
+            Sets 
+            </summary>
+            <param name="keyName"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser">
             <summary>

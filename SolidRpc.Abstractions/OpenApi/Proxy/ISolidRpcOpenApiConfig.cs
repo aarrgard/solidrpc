@@ -23,7 +23,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// If the key is present on the client side it is added to call so that
         /// the invocation is authorized.
         /// </summary>
-        Guid? SecurityKey { get; set; }
+        KeyValuePair<string, string>? SecurityKey { get; set; }
 
         /// <summary>
         /// The method to transform the Uri. This delegate is invoked to determine

@@ -435,6 +435,10 @@ namespace SolidRpc.OpenApi.Model.V2
                 {
                     path.Delete = null;
                 }
+                if (path.Post?.OperationId == operation.OperationId)
+                {
+                    path.Post = null;
+                }
             }
         }
     }

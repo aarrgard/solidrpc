@@ -1,4 +1,5 @@
-﻿using SolidProxy.Core.Configuration.Builder;
+﻿using Microsoft.Extensions.Configuration;
+using SolidProxy.Core.Configuration.Builder;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -80,7 +81,17 @@ namespace Microsoft.Extensions.DependencyInjection
             methods.ToList().ForEach(m =>
             {
                 services.AddSolidRpcBinding(m, (c) => {
+                    
                     c.OpenApiSpec = solidRpcHostSpec;
+
+                    //
+                    // remove securitykey for the content handler
+                    //
+                    var method = c.Methods.Single();
+                    if(method.DeclaringType == typeof(ISolidRpcContentHandler))
+                    {
+                        c.SecurityKey = null;
+                    }
                     return configurator?.Invoke(c) ?? false;
                 });
             });
@@ -93,8 +104,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TService"></typeparam>
         /// <param name="services"></param>
+        /// <param name="mustExist"></param>
         /// <returns></returns>
-        public static TService GetSolidRpcServiceProvider<TService>(this IServiceCollection services) where TService:class
+        public static TService GetSolidRpcServiceProvider<TService>(this IServiceCollection services, bool mustExist = true) where TService:class
         {
             var service = services.SingleOrDefault(o => o.ServiceType == typeof(TService));
             if (service == null)
@@ -130,7 +142,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     throw new Exception("!!!");
                 }
             }
-            throw new Exception($"Cannot find singleton service for {typeof(TService)}.");
+            if(mustExist)
+            {
+                throw new Exception($"Cannot find singleton service for {typeof(TService)}.");
+            }
+            return null;
         }
 
         /// <summary>
@@ -361,6 +377,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureMethod(mi);
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+            SetSecurityKey(openApiProxyConfig, sc.GetSolidRpcServiceProvider<IConfiguration>(false));
             var enabled = configurator?.Invoke(openApiProxyConfig) ?? true;
             if(openApiProxyConfig.Enabled != mc.Enabled)
             {
@@ -369,14 +386,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
             //
             // make sure that we apply security.
+            // we cannot do this in the "SetSecurityKey" section since the
+            // custom configurator may change/remove the key.(ISolidRpcContentHandler)
             //
-            var secKey = openApiProxyConfig.SecurityKey?.ToString();
+            var secKey = openApiProxyConfig.SecurityKey;
             if (secKey != null)
             {
+                var key = secKey.Value.Key;
+                var value = secKey.Value.Value;
                 mc.AddPreInvocationCallback(i =>
                 {
-                    var callKey = i.GetValue<string>("HTTP_SolidRpcSecurityKey");
-                    if(!secKey.Equals(callKey, StringComparison.InvariantCultureIgnoreCase))
+                    var callKey = i.GetValue<string>($"HTTP_{key}");
+                    if(!value.Equals(callKey, StringComparison.InvariantCultureIgnoreCase))
                     {
                         throw new UnauthorizedException();
                     }
@@ -385,6 +406,39 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             return openApiProxyConfig;
+        }
+
+        private static void SetSecurityKey(ISolidRpcOpenApiConfig openApiProxyConfig, IConfiguration configuration)
+        {
+            if (configuration == null) return;
+            var method = openApiProxyConfig.Methods.Single();
+            var assemblyName = method.DeclaringType.Assembly.GetName().Name;
+            var methodName = $"{method.DeclaringType.FullName}.{method.Name}";
+            if(methodName.StartsWith($"{assemblyName}."))
+            {
+                methodName = methodName.Substring(assemblyName.Length+1);
+            }
+            var key1 = "SolidRpcSecurityKey";
+            var key2 = $"{key1}.{assemblyName}";
+            var key3 = $"{key2}.{methodName}";
+            var val = configuration[key3];
+            if (val != null)
+            {
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key3, val);
+                return;
+            }
+            val = configuration[key2];
+            if (val != null)
+            {
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key2, val);
+                return;
+            }
+            val = configuration[key1];
+            if (val != null)
+            {
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
+                return;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using SolidProxy.GeneratorCastle;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using SolidRpc.Abstractions.Services;
+using System.Collections.Generic;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -18,14 +19,7 @@ namespace SolidRpc.Test.PetstoreWeb
             services.AddLogging(o => o.SetMinimumLevel(LogLevel.Trace));
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             services.AddHttpClient();
-            services.AddSolidRpcServices(o =>
-            {
-                if (o.Methods.First().DeclaringType != typeof(ISolidRpcContentHandler))
-                {
-                    o.SecurityKey = Guid.NewGuid();
-                }
-                return true;
-            });
+            services.AddSolidRpcServices(o => true);
             services.AddSolidRpcSwaggerUI(o => {
                 o.DefaultOpenApiSpec = "SolidRpc.Security.ISolidRpcSecurity";
             });
@@ -49,7 +43,7 @@ namespace SolidRpc.Test.PetstoreWeb
             //    sp.ConfigureOptions(conf);
             //});
             //services.AddPetstore();
-            //services.AddVitec();
+            services.AddVitec();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

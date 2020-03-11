@@ -66,9 +66,10 @@ namespace SolidRpc.OpenApi.Binder
                                     var method = apiConfig.InvocationConfiguration.MethodInfo;
                                     var assembly = method.DeclaringType.Assembly;
                                     var uriTransformer = apiConfig.MethodAddressTransformer;
+                                    var securityKey = apiConfig.SecurityKey;
                                     var openApiSpec = GetOpenApiSpec(config, invocConfig.HasImplementation, method, uriTransformer);
                                     var methodBinder = GetMethodBinder(openApiSpec, assembly);
-                                    var methodBinding = methodBinder.CreateMethodBinding(method, uriTransformer);
+                                    var methodBinding = methodBinder.CreateMethodBinding(method, uriTransformer, securityKey);
                                 });
                             _methodBinders = Bindings.Values;
                             Logger.LogInformation("...created method binders.");
@@ -190,7 +191,7 @@ namespace SolidRpc.OpenApi.Binder
         {
             var parsedSpec = GetOpenApiSpec(openApiSpec, localApi, methodInfo, baseUriTransformer);
             var methodBinder = GetMethodBinder(parsedSpec, methodInfo.DeclaringType.Assembly);
-            return methodBinder.CreateMethodBinding(methodInfo, baseUriTransformer);
+            return methodBinder.CreateMethodBinding(methodInfo, baseUriTransformer, null);
         }
 
         public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true)

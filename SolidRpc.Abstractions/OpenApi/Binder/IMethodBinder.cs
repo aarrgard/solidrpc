@@ -30,7 +30,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// </summary>
         /// <param name="methodInfo"></param>
         /// <param name="baseUriTransformer"></param>
+        /// <param name="securityKey"></param>
         /// <returns></returns>
-        IMethodBinding CreateMethodBinding(MethodInfo methodInfo, MethodAddressTransformer baseUriTransformer);
+        IMethodBinding CreateMethodBinding(
+            MethodInfo methodInfo, 
+            MethodAddressTransformer baseUriTransformer,
+            KeyValuePair<string, string>? securityKey);
     }
 }

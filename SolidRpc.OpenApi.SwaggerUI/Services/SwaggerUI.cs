@@ -195,13 +195,20 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             //
             if(binder != null)
             {
-                var localOperations = new HashSet<string>(binder.MethodBindings
+                var localOperations = binder.MethodBindings
                     .Where(o => o.IsEnabled)
                     .Where(o => o.IsLocal)
-                    .Select(o => o.OperationId));
+                    .ToDictionary(o => o.OperationId, o => o);
                 foreach(var op in openApiSpec.Operations)
                 {
-                    if(!localOperations.Contains(op.OperationId))
+                    if(localOperations.TryGetValue(op.OperationId, out IMethodBinding binding))
+                    {
+                        if(binding.SecurityKey != null)
+                        {
+                            op.AddSolidRpcSecurityKey(binding.SecurityKey.Value.Key);
+                        }
+                    }
+                    else
                     {
                         openApiSpec.RemoveOperation(op);
                     }

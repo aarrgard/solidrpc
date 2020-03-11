@@ -131,14 +131,18 @@ namespace SolidRpc.OpenApi.Binder.V2
             OperationObject operationObject, 
             MethodInfo methodInfo, 
             ICodeDocMethod codeDocMethod,
-            MethodAddressTransformer methodAddressTransformer)
+            MethodAddressTransformer methodAddressTransformer,
+            KeyValuePair<string, string>? securityKey)
         {
             MethodBinder = methodBinder ?? throw new ArgumentNullException(nameof(methodBinder));
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodInfo));
+            SecurityKey = securityKey;
         }
+
+        public KeyValuePair<string, string>? SecurityKey { get; }
 
         private Action CreateExceptionThrower(Type exceptionType)
         {

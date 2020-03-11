@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidRpc.Abstractions.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,12 +19,12 @@ namespace SolidRpc.Tests.Security
         /// </summary>
         public SecurityKeyTest()
         {
-            SecurityKey = Guid.NewGuid();
+            SecurityKey = new KeyValuePair<string, string>(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
         }
         /// <summary>
         /// 
         /// </summary>
-        public Guid SecurityKey { get; }
+        public KeyValuePair<string, string> SecurityKey { get; }
 
         /// <summary>
         /// 
