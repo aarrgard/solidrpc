@@ -34,8 +34,13 @@ namespace SolidRpc.Tests.Swagger.Binder
             spec.Operations.ToList().ForEach(o => o.AddSolidRpcSecurityKey("test"));
             var template = GetManifestResourceAsString(nameof(TestAddSecurityKey) + ".json");
             var strSpec = spec.WriteAsJsonString(true);
+            
             var re = new Regex(@"This OpenApi specification was generated from compiled code on (.*) \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d");
             strSpec = re.Replace(strSpec, "");
+            
+            re = new Regex(@"""version"": ""(\d+).(\d+).(\d+).(\d+)""");
+            strSpec = re.Replace(strSpec, "");
+            
             Assert.AreEqual(template, strSpec);
         }
     }
