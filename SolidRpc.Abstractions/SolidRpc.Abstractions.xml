@@ -52,6 +52,14 @@
             <param name="services"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type)">
+            <summary>
+            Registers a singleton service provider.
+            </summary>
+            <param name="services"></param>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Adds the singleton services
@@ -524,6 +532,40 @@
             </summary>
             <param name="request"></param>
             <param name="methodInfo"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeInternalAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object},System.Threading.CancellationToken)">
+            <summary>
+            Invokes the specified method with supplied arguments. If there is a SecurityKey specified for the method 
+            it is passed along as an invocation parameter.
+            </summary>
+            <param name="methodInfo"></param>
+            <param name="args"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker`1">
+            <summary>
+            Invokes a method on an object in the service provider.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker`1.InvokeInternalAsync``1(System.Linq.Expressions.Expression{System.Action{`0}},System.Threading.CancellationToken)">
+            <summary>
+            Invokes the specified method with supplied arguments. If there is a SecurityKey specified for the method 
+            it is passed along as an invocation parameter.
+            </summary>
+            <param name="action"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker`1.InvokeInternalAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Threading.CancellationToken)">
+            <summary>
+            Invokes the specified method with supplied arguments. If there is a SecurityKey specified for the method 
+            it is passed along as an invocation parameter.
+            </summary>
+            <param name="func"></param>
             <param name="cancellation"></param>
             <returns></returns>
         </member>

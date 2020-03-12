@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/Security/Services/Oidc/Settings"
+      "route": "Estate/GetHousingCooperative"
     },
     {
       "name": "serviceProvider",

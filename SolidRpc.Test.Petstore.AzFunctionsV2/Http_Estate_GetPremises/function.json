@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/Security/Services/LoginScript"
+      "route": "Estate/GetPremises"
     },
     {
       "name": "serviceProvider",

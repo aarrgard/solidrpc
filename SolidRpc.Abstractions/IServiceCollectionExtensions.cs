@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Configuration.Builder;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
@@ -108,7 +109,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static TService GetSolidRpcServiceProvider<TService>(this IServiceCollection services, bool mustExist = true) where TService:class
         {
-            var service = services.SingleOrDefault(o => o.ServiceType == typeof(TService));
+            var serviceProspects = services.Where(o => o.ServiceType == typeof(TService));
+            //if(serviceProspects.Count() > 1)
+            //{
+            //    throw new Exception($"Found more than one service of type {typeof(TService)}");
+            //}
+            var service = serviceProspects.FirstOrDefault();
             if (service == null)
             {
                 if(!mustExist)
@@ -161,19 +167,30 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection RegisterSingletonService<TService>(this IServiceCollection services) where TService : class
         {
-            if (!services.Any(o => typeof(TService) == o.ServiceType))
+            return services.RegisterSingletonService(typeof(TService));
+        }
+
+        /// <summary>
+        /// Registers a singleton service provider.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="serviceType"></param>
+        /// <returns></returns>
+        private static IServiceCollection RegisterSingletonService(this IServiceCollection services, Type serviceType)
+        {
+            if (!services.Any(o => serviceType == o.ServiceType))
             {
-                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType<TService>();
+                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType(serviceType);
                 if(implType.GetConstructor(Type.EmptyTypes) == null)
                 {
                     services.AddSingleton(implType, implType);
-                    services.AddSingleton(typeof(TService), _ => _.GetService(implType));
+                    services.AddSingleton(serviceType, implType);
                 }
                 else
                 {
                     var impl = Activator.CreateInstance(implType);
                     services.AddSingleton(implType, impl);
-                    services.AddSingleton(typeof(TService), impl);
+                    services.AddSingleton(serviceType, impl);
                 }
             }
             return services;
@@ -190,6 +207,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.RegisterSingletonService<IOpenApiParser>();
             services.RegisterSingletonService<IOpenApiSpecResolver>();
             services.RegisterSingletonService<IMethodInvoker>();
+            services.RegisterSingletonService(typeof(IMethodInvoker<>));
             services.RegisterSingletonService<IMethodBinderStore>();
             services.RegisterSingletonService<IMethodAddressTransformer>();
             services.RegisterSingletonService<ISolidRpcContentStore>();
@@ -400,8 +418,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 var value = secKey.Value.Value;
                 mc.AddPreInvocationCallback(i =>
                 {
-                    var callKey = i.GetValue<string>(key);
-                    if(!value.Equals(callKey, StringComparison.InvariantCultureIgnoreCase))
+                    var callKey = i.GetValue<StringValues>(key);
+                    if(!value.Equals(callKey.ToString(), StringComparison.InvariantCultureIgnoreCase))
                     {
                         throw new UnauthorizedException();
                     }

@@ -7,10 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "function",
       "methods": [
-        "get",
-        "post"
+        "get"
       ],
-      "route": "SolidRpc/Security/Services/Oidc/authorize"
+      "route": "Estate/GetCottage"
     },
     {
       "name": "serviceProvider",

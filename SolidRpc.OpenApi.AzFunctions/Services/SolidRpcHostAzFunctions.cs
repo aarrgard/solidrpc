@@ -78,11 +78,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 }).ToList();
 
             var startTime = DateTime.Now;
-            if(FunctionHandler.DevDir != null)
-            {
-                WriteHttpFunctions(FunctionHandler.DevDir, functionDefs);
-            }
-            var modified = WriteHttpFunctions(FunctionHandler.BaseDir, functionDefs);
+            var modified = WriteHttpFunctions(functionDefs);
 
             var staticRoutes = await ContentHandler.GetPathMappingsAsync(cancellationToken); 
             FunctionHandler.SyncProxiesFile(staticRoutes.ToDictionary(o => o.Name, o => o.Value));
@@ -139,12 +135,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             return path;
         }
 
-        private bool WriteHttpFunctions(DirectoryInfo baseDir, IEnumerable<FunctionDef> functionDefs)
+        private bool WriteHttpFunctions(IEnumerable<FunctionDef> functionDefs)
         {
-            if (baseDir == null) throw new ArgumentNullException(nameof(baseDir));
+            var functions = FunctionHandler.GetFunctions().OfType<IAzHttpFunction>().ToList();
             var paths = functionDefs.Select(o => o.Path).Distinct().ToList();
             var functionNames = paths.Select(o => CreateFunctionName(o)).ToList();
-            var functions = FunctionHandler.GetFunctions(baseDir).ToList();
             var modified = false;
 
             //
@@ -175,7 +170,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 }
                 if (httpFunction == null)
                 {
-                    httpFunction = FunctionHandler.CreateHttpFunction(baseDir, functionName);
+                    httpFunction = FunctionHandler.CreateHttpFunction(functionName);
                 }
                 httpFunction.AuthLevel = authLevel;
                 httpFunction.Route = FunctionHandler.CreateRoute(path);

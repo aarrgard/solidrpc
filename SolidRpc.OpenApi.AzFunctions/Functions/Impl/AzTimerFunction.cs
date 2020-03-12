@@ -52,8 +52,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Constructs a new timer function.
         /// </summary>
         /// <param name="functionHandler"></param>
-        /// <param name="functionDir"></param>
-        public AzTimerFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir) : base(functionHandler, functionDir, DefaultFunction(functionHandler))
+        /// <param name="subDir"></param>
+        public AzTimerFunction(IAzFunctionHandler functionHandler, string subDir) : base(functionHandler, subDir, DefaultFunction(functionHandler))
         {
         }
 
@@ -61,9 +61,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Constructs a new timer function
         /// </summary>
         /// <param name="functionHandler"></param>
-        /// <param name="functionDir"></param>
+        /// <param name="subDir"></param>
         /// <param name="functionJson"></param>
-        public AzTimerFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir, Function functionJson) : base(functionHandler, functionDir, functionJson)
+        public AzTimerFunction(IAzFunctionHandler functionHandler, string subDir, Function functionJson) : base(functionHandler, subDir, functionJson)
         {
         }
 

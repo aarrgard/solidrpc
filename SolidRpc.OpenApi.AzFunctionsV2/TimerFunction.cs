@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,20 +33,17 @@ namespace SolidRpc.OpenApi.AzFunctions
             {
                 throw new ArgumentException($"Service({serviceType.FullName}) does not define the method {methodName}");
             }
-            var serviceimpl = serviceProvider.GetService(serviceType);
-            if (serviceimpl == null)
-            {
-                throw new ArgumentException("Service not registered in service provider:" + serviceType.FullName);
-            }
-
+ 
             var parameters = methodInfo.GetParameters();
             var args = new object[parameters.Length];
             for(int i = 0; i < args.Length; i++)
             {
                 args[i] = ResolveArgument(serviceProvider, parameters[i].ParameterType, cancellationToken);
             }
-            var resTask = methodInfo.Invoke(serviceimpl, args) as Task;
-            
+
+            var methodInvoker = (IMethodInvoker)serviceProvider.GetService(typeof(IMethodInvoker));
+            var res = await methodInvoker.InvokeInternalAsync(methodInfo, args, cancellationToken);
+            var resTask = res as Task;
             if (resTask != null)
             {
                 await resTask;

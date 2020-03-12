@@ -7,9 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "function",
       "methods": [
-        "get"
+        "post"
       ],
-      "route": "SolidRpc/Security/Services/LoginPage"
+      "route": "Estate/GetEstateList"
     },
     {
       "name": "serviceProvider",

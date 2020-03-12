@@ -12,9 +12,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// Returns the functions
         /// </summary>
-        /// <param name="baseDir"></param>
         /// <returns></returns>
-        IEnumerable<IAzFunction> GetFunctions(DirectoryInfo baseDir = null);
+        IEnumerable<IAzFunction> GetFunctions();
 
         /// <summary>
         /// Returns the http scheme.
@@ -41,15 +40,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Creates a new timer function
         /// </summary>
         /// <returns></returns>
-        IAzTimerFunction CreateTimerFunction(DirectoryInfo baseDir, string name);
+        IAzTimerFunction CreateTimerFunction(string name);
 
         /// <summary>
         /// Creates a http function
         /// </summary>
-        /// <param name="baseDir"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string name);
+        IAzHttpFunction CreateHttpFunction(string name);
 
         /// <summary>
         /// Triggers a restart by writing some additional data to 
@@ -75,12 +73,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// The location of the functions app
         /// </summary>
-        DirectoryInfo BaseDir { get; }
-
-        /// <summary>
-        /// The development directory.
-        /// </summary>
-        DirectoryInfo DevDir { get; }
+        IEnumerable<DirectoryInfo> BaseDirs { get; }
 
         /// <summary>
         /// Creates a vaid route from supplied route. V1 &amp; V2 handles initial

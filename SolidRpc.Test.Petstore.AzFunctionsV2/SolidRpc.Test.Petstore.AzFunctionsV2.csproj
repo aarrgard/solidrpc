@@ -17,6 +17,7 @@
     <ProjectReference Include="..\SolidRpc.Security.Back\SolidRpc.Security.Back.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore.Impl\SolidRpc.Test.Petstore.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
+    <ProjectReference Include="..\SolidRpc.Test.Vitec.Impl\SolidRpc.Test.Vitec.Impl.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

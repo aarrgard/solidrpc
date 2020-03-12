@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -15,13 +16,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Constructs a new instance
         /// </summary>
         /// <param name="functionHandler"></param>
-        /// <param name="functionDir"></param>
+        /// <param name="subDir"></param>
         /// <param name="function"></param>
-        public AzFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir, Function function)
+        public AzFunction(IAzFunctionHandler functionHandler, string subDir, Function function)
         {
             FunctionHandler = functionHandler ?? throw new ArgumentNullException(nameof(functionHandler));
-            FunctionDir = functionDir ?? throw new ArgumentNullException(nameof(functionDir));
+            SubDir = subDir ?? throw new ArgumentNullException(nameof(subDir));
             Function = function ?? throw new ArgumentNullException(nameof(function));
+            Name = SubDir.Split('/').SelectMany(o => o.Split('\\')).Last();
         }
 
         /// <summary>
@@ -35,14 +37,20 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public IAzFunctionHandler FunctionHandler { get; }
 
         /// <summary>
+        /// Returns all the function dirs
+        /// </summary>
+        public IEnumerable<DirectoryInfo> FunctionDirs => FunctionHandler
+            .BaseDirs.Select(o => new DirectoryInfo(Path.Combine(o.FullName, SubDir)));
+
+        /// <summary>
         /// The function dir
         /// </summary>
-        public DirectoryInfo FunctionDir { get; }
+        public string SubDir { get; }
 
         /// <summary>
         /// The name of the function
         /// </summary>
-        public string Name => FunctionDir.Name;
+        public string Name { get; }
 
         /// <summary>
         /// The function
@@ -106,7 +114,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
         private string ReadFunctionJson()
         {
-            return ReadFunctionJson(new FileInfo(Path.Combine(FunctionHandler.BaseDir.FullName, Name, "function.json")));
+            return ReadFunctionJson(new FileInfo(Path.Combine(FunctionHandler.BaseDirs.First().FullName, Name, "function.json")));
         }
 
         private string ReadFunctionJson(FileInfo fi)
@@ -134,10 +142,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public void Delete()
         {
-            if (FunctionDir.Exists)
+            FunctionDirs.ToList().ForEach(o =>
             {
-                FunctionDir.Delete(true);
-            }
+                if (o.Exists)
+                {
+                    o.Delete(true);
+                }
+            });
         }
 
         /// <summary>
@@ -145,7 +156,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         public bool Save()
         {
-            return Save(new FileInfo(Path.Combine(FunctionDir.FullName, "function.json")));
+            return FunctionDirs.Select(o =>
+            {
+                return Save(new FileInfo(Path.Combine(o.FullName, "function.json")));
+            }).ToList().First(); // Do not remove "ToList()"!
         }
         /// <summary>
         /// Saves the run.csx and function.json files

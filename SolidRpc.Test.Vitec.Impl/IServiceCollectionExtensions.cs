@@ -1,5 +1,6 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Test.Vitec.Services;
+using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,9 +15,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="baseUriTransformer"></param>
         /// <returns></returns>
-        public static IServiceCollection AddVitec(this IServiceCollection services)
+        public static IServiceCollection AddVitec(this IServiceCollection services, Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
-            services.AddSolidRpcBindings(typeof(IEstate).Assembly, typeof(EstateImpl).Assembly);
+            services.AddSolidRpcBindings(typeof(IEstate).Assembly, typeof(EstateImpl).Assembly, configurator);
             return services;
         }
     }

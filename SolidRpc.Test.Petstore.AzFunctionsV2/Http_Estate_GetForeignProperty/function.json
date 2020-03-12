@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/Security/Services/Profile"
+      "route": "Estate/GetForeignProperty"
     },
     {
       "name": "serviceProvider",

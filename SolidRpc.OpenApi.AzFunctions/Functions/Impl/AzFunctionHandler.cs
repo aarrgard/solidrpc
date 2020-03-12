@@ -17,6 +17,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// <summary>
     /// The function handler
     /// </summary>
+    /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
         private static Task s_restartJob = Task.CompletedTask;
@@ -64,6 +65,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 return devDir;
             }
         }
+        public IEnumerable<DirectoryInfo> BaseDirs => (new [] { BaseDir, DevDir }).Where(o => o != null);
 
         /// <summary>
         /// The function assembly
@@ -78,21 +80,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Create a new instance
         /// </summary>
-        public IEnumerable<IAzFunction> GetFunctions(DirectoryInfo baseDir = null)
+        public IEnumerable<IAzFunction> GetFunctions()
         {
-            if(baseDir == null)
-            {
-                baseDir = BaseDir;
-            }
-            var functions = new List<IAzFunction>();
-            foreach(var d in baseDir.GetDirectories())
+            var functions = new Dictionary<string, IAzFunction>();
+            foreach(var d in BaseDirs.SelectMany(o => o.GetDirectories()))
             {
                 if(GetFunction(d, out IAzFunction func))
                 {
-                    functions.Add(func);
+                    functions[func.Name] = func;
                 }
             }
-            return functions;
+            return functions.Values;
         }
 
         /// <summary>
@@ -210,11 +208,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 var function = JsonConvert.DeserializeObject<Function>(strFunctionJson);
                 if (function.Bindings.Any(o => o.Type == "httpTrigger"))
                 {
-                    func = new AzHttpFunction(this, d, function);
+                    func = new AzHttpFunction(this, d.Name, function);
                 }
                 else if (function.Bindings.Any(o => o.Type == "timerTrigger"))
                 {
-                    func = new AzTimerFunction(this, d, function);
+                    func = new AzTimerFunction(this, d.Name, function);
                 }
                 else
                 {
@@ -232,9 +230,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Creates a timer function
         /// </summary>
         /// <returns></returns>
-        public IAzTimerFunction CreateTimerFunction(DirectoryInfo baseDir, string functionName)
+        public IAzTimerFunction CreateTimerFunction(string functionName)
         {
-            var timerFunction = new AzTimerFunction(this, new DirectoryInfo(Path.Combine(baseDir.FullName, functionName)));
+            var timerFunction = new AzTimerFunction(this, functionName);
             return timerFunction;
         }
 
@@ -249,14 +247,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Creates a http function
         /// </summary>
-        /// <param name="baseDir"></param>
         /// <param name="functionName"></param>
         /// <returns></returns>
-        public IAzHttpFunction CreateHttpFunction(DirectoryInfo baseDir, string functionName)
+        public IAzHttpFunction CreateHttpFunction(string functionName)
         {
-            if (baseDir == null) throw new ArgumentNullException(nameof(baseDir));
             if (string.IsNullOrEmpty(functionName)) throw new ArgumentNullException(nameof(functionName));
-            var httpFunction = new AzHttpFunction(this, new DirectoryInfo(Path.Combine(baseDir.FullName, functionName)));
+            var httpFunction = new AzHttpFunction(this, functionName);
             return httpFunction;
         }
 
@@ -336,7 +332,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies = new AzProxies();
             }
 
-            var routes = GetFunctions(baseDir).OfType<IAzHttpFunction>()
+            var routes = GetFunctions().OfType<IAzHttpFunction>()
                 .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
                 .Distinct()
                 .GroupBy(o => o.Route)

@@ -36,115 +36,113 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
     },
-    "SolidRpc/Security/Services/LoginPage": {
+    "Estate/GetCommercialProperty": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginPage",
+        "route": "/front/Estate/GetCommercialProperty",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginPage"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetCommercialProperty"
     },
-    "SolidRpc/Security/Services/LoginProviders": {
+    "Estate/GetCondominium": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginProviders",
+        "route": "/front/Estate/GetCondominium",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginProviders"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetCondominium"
     },
-    "SolidRpc/Security/Services/LoginScript": {
+    "Estate/GetCottage": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginScript",
+        "route": "/front/Estate/GetCottage",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScript"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetCottage"
     },
-    "SolidRpc/Security/Services/LoginScripts": {
+    "Estate/GetEstateList": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/LoginScripts",
+        "route": "/front/Estate/GetEstateList",
         "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/LoginScripts"
-    },
-    "SolidRpc/Security/Services/Oidc/authorize": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
-        "methods": [
-          "GET",
           "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/authorize"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetEstateList"
     },
-    "SolidRpc/Security/Services/Oidc/discovery": {
+    "Estate/GetFarm": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Oidc/discovery",
+        "route": "/front/Estate/GetFarm",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/discovery"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetFarm"
     },
-    "SolidRpc/Security/Services/Oidc/keys": {
+    "Estate/GetForeignProperty": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Oidc/keys",
+        "route": "/front/Estate/GetForeignProperty",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/keys"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetForeignProperty"
     },
-    "SolidRpc/Security/Services/Oidc/Settings": {
+    "Estate/GetHouse": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Oidc/Settings",
+        "route": "/front/Estate/GetHouse",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/Settings"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetHouse"
     },
-    "SolidRpc/Security/Services/Oidc/token": {
+    "Estate/GetHousingCooperative": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Oidc/token",
+        "route": "/front/Estate/GetHousingCooperative",
         "methods": [
-          "GET",
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetHousingCooperative"
+    },
+    "Estate/GetPlot": {
+      "matchCondition": {
+        "route": "/front/Estate/GetPlot",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetPlot"
+    },
+    "Estate/GetPremises": {
+      "matchCondition": {
+        "route": "/front/Estate/GetPremises",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetPremises"
+    },
+    "Estate/GetProject": {
+      "matchCondition": {
+        "route": "/front/Estate/GetProject",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetProject"
+    },
+    "Estate/GetStatuses": {
+      "matchCondition": {
+        "route": "/front/Estate/GetStatuses",
+        "methods": [
           "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/token"
-    },
-    "SolidRpc/Security/Services/Profile": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Profile",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Profile"
-    },
-    ".well-known/openid-configuration": {
-      "matchCondition": {
-        "route": "/.well-known/openid-configuration",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://localhost:7071/front/SolidRpc/Security/Services/Oidc/discovery"
-    },
-    "SolidRpc/Security/Services/Oidc/LoggedIn": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Security/Services/Oidc/LoggedIn",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Security/Services/Oidc/LoggedIn"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetStatuses"
     },
     "front/{path}": {
       "matchCondition": {

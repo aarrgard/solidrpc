@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/Security/Services/Oidc/discovery"
+      "route": "Estate/GetCommercialProperty"
     },
     {
       "name": "serviceProvider",

@@ -58,6 +58,10 @@ namespace SolidRpc.Abstractions
         {
             ServiceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
             ImplementationType = implementationType ?? throw new ArgumentNullException(nameof(implementationType));
+            if(serviceType.IsGenericType)
+            {
+                return;
+            }
             if(!ServiceType.IsAssignableFrom(ImplementationType))
             {
                 throw new Exception("ServiceType not assignable from implementation");

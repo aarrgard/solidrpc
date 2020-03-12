@@ -49,8 +49,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Constructs a new instance
         /// </summary>
         /// <param name="functionHandler"></param>
-        /// <param name="functionDir"></param>
-        public AzHttpFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir) : base(functionHandler, functionDir, DefaultFunction(functionHandler))
+        /// <param name="subDir"></param>
+        public AzHttpFunction(IAzFunctionHandler functionHandler, string subDir) : base(functionHandler, subDir, DefaultFunction(functionHandler))
         {
         }
 
@@ -58,9 +58,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Constructs a new instance
         /// </summary>
         /// <param name="functionHandler"></param>
-        /// <param name="functionDir"></param>
+        /// <param name="subDir"></param>
         /// <param name="functionJson"></param>
-        public AzHttpFunction(IAzFunctionHandler functionHandler, DirectoryInfo functionDir, Function functionJson) : base(functionHandler, functionDir, functionJson)
+        public AzHttpFunction(IAzFunctionHandler functionHandler, string subDir, Function functionJson) : base(functionHandler, subDir, functionJson)
         {
         }
 

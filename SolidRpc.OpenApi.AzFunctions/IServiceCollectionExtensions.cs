@@ -65,22 +65,37 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddAzFunctionStartup<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TService : class where TImpl : class,TService
         {
             services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
+            services.AddAzFunctionTimer<TService>(invocation, "0 0 0 1 1 0", true);
+            return services;
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="invocation"></param>
+        /// <param name="schedule"></param>
+        /// <param name="runOnStartup"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddAzFunctionTimer<TService>(this IServiceCollection services, Expression<Action<TService>> invocation, string schedule, bool runOnStartup = false) where TService : class
+        {
             var mi = GetMethodInfo(invocation);
             var functionName = $"Timer_{typeof(TService).FullName}.{mi.Name}".Replace(".", "_");
             var funcHandler = services.GetAzFunctionHandler();
-            var initFunc = funcHandler.GetFunctions().SingleOrDefault(o => o.Name == functionName);
-            if (initFunc != null && false == initFunc is IAzTimerFunction)
+            var azFunc = funcHandler.GetFunctions().SingleOrDefault(o => o.Name == functionName);
+            if (azFunc != null && false == azFunc is IAzTimerFunction)
             {
-                initFunc.Delete();
-                initFunc = null;
+                azFunc.Delete();
+                azFunc = null;
             }
-            var timerFunc = (IAzTimerFunction)initFunc;
+            var timerFunc = (IAzTimerFunction)azFunc;
             if (timerFunc == null)
             {
-                timerFunc = funcHandler.CreateTimerFunction(funcHandler.BaseDir, functionName);
+                timerFunc = funcHandler.CreateTimerFunction(functionName);
             }
-            timerFunc.RunOnStartup = true;
+            timerFunc.RunOnStartup = runOnStartup;
+            timerFunc.Schedule = schedule;
             timerFunc.ServiceType = typeof(TService).FullName;
             timerFunc.MethodName = mi.Name;
             timerFunc.Save();
