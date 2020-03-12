@@ -164,7 +164,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var invocationValues = new Dictionary<string, object>();
             foreach(var qv in request.Headers)
             {
-                invocationValues.Add($"HTTP_{qv.Name}", qv.GetStringValue());
+                invocationValues.Add(qv.Name, qv.GetStringValue());
             }
 
             var resp = new SolidHttpResponse();

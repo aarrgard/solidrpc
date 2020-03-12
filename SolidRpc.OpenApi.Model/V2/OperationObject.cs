@@ -252,6 +252,10 @@ namespace SolidRpc.OpenApi.Model.V2
             return parameter;
         }
 
+        /// <summary>
+        /// Adds the security key
+        /// </summary>
+        /// <param name="keyName"></param>
         public void AddSolidRpcSecurityKey(string keyName)
         {
             var securityDefinitionName = $"SolidRpcSecurity.{keyName}";

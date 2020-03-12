@@ -31,14 +31,14 @@
         },
         "security": [
           {
-            "SolidRpcSecurity": []
+            "SolidRpcSecurity.test": []
           }
         ]
       }
     }
   },
   "securityDefinitions": {
-    "SolidRpcSecurity": {
+    "SolidRpcSecurity.test": {
       "type": "apiKey",
       "name": "test",
       "in": "header"

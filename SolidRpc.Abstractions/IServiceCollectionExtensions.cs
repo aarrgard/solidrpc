@@ -111,6 +111,10 @@ namespace Microsoft.Extensions.DependencyInjection
             var service = services.SingleOrDefault(o => o.ServiceType == typeof(TService));
             if (service == null)
             {
+                if(!mustExist)
+                {
+                    return default(TService);
+                }
                 service = new ServiceDescriptor(typeof(TService), SolidRpcAbstractionProviderAttribute.CreateInstance<TService>());
                 services.Add(service);
             }
@@ -146,7 +150,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 throw new Exception($"Cannot find singleton service for {typeof(TService)}.");
             }
-            return null;
+            return default(TService);
         }
 
         /// <summary>
@@ -396,7 +400,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var value = secKey.Value.Value;
                 mc.AddPreInvocationCallback(i =>
                 {
-                    var callKey = i.GetValue<string>($"HTTP_{key}");
+                    var callKey = i.GetValue<string>(key);
                     if(!value.Equals(callKey, StringComparison.InvariantCultureIgnoreCase))
                     {
                         throw new UnauthorizedException();

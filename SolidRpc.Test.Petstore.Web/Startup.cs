@@ -1,12 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using SolidRpc.Abstractions.Services;
-using System.Collections.Generic;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
