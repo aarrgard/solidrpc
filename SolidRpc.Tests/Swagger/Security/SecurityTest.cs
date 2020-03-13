@@ -39,7 +39,7 @@ namespace SolidRpc.Tests.Swagger.Binder
             strSpec = re.Replace(strSpec, "");
             
             re = new Regex(@"""version"": ""(\d+).(\d+).(\d+).(\d+)""");
-            strSpec = re.Replace(strSpec, "");
+            strSpec = re.Replace(strSpec, @"""version"": """"");
             
             Assert.AreEqual(template, strSpec);
         }
