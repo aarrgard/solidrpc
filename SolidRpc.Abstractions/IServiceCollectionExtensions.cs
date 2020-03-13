@@ -136,6 +136,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.Add(service);
                 return (TService)service.ImplementationInstance;
             }
+            if (service.ImplementationFactory != null)
+            {
+                return (TService)service.ImplementationFactory(null);
+            }
             var proxied = services.SingleOrDefault(o => o.ServiceType == typeof(ISolidProxied<TService>));
             if(proxied != null)
             {
