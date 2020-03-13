@@ -35,7 +35,6 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         private SwaggerOptions SwaggerOptions { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
-        private IConfiguration Configuration { get; }
 
         /// <summary>
         /// Returns the index.hmtl file.
