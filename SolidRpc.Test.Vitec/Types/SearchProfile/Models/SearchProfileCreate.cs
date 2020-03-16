@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Test.Vitec.Types.Models.Api;
+using System;
 namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
     /// <summary>
     /// 
@@ -66,7 +67,7 @@ namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
         /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
     
         /// <summary>
         /// Tomtarea anges i ha f&#246;r g&#229;rd och i kvm f&#246;r &#246;vriga
@@ -78,7 +79,7 @@ namespace SolidRpc.Test.Vitec.Types.SearchProfile.Models {
         /// Varav sovrum
         /// </summary>
         [DataMember(Name="bedrooms",EmitDefaultValue=false)]
-        public double Bedrooms { get; set; }
+        public double? Bedrooms { get; set; }
     
     }
 }

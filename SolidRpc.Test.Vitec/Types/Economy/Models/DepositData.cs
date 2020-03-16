@@ -11,19 +11,19 @@ namespace SolidRpc.Test.Vitec.Types.Economy.Models {
         /// Erlagd
         /// </summary>
         [DataMember(Name="paidAt",EmitDefaultValue=false)]
-        public DateTimeOffset PaidAt { get; set; }
+        public DateTimeOffset? PaidAt { get; set; }
     
         /// <summary>
         /// Redovisad
         /// </summary>
         [DataMember(Name="reportedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ReportedAt { get; set; }
+        public DateTimeOffset? ReportedAt { get; set; }
     
         /// <summary>
         /// Provision erh&#229;llen
         /// </summary>
         [DataMember(Name="commissionReceivedAt",EmitDefaultValue=false)]
-        public DateTimeOffset CommissionReceivedAt { get; set; }
+        public DateTimeOffset? CommissionReceivedAt { get; set; }
     
     }
 }

@@ -12,7 +12,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Objektet &#228;ndrades vid detta datum
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public System.DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Status
@@ -24,19 +24,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Provision
         /// </summary>
         [DataMember(Name="commission",EmitDefaultValue=false)]
-        public double Commission { get; set; }
+        public double? Commission { get; set; }
     
         /// <summary>
         /// Startpris
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
-        public long StartingPrice { get; set; }
+        public long? StartingPrice { get; set; }
     
         /// <summary>
         /// Slutpris
         /// </summary>
         [DataMember(Name="finalPrice",EmitDefaultValue=false)]
-        public long FinalPrice { get; set; }
+        public long? FinalPrice { get; set; }
     
     }
 }

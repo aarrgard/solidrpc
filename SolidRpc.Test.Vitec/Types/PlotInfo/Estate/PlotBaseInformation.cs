@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Test.Vitec.Types.Common.Estate;
+using System;
 namespace SolidRpc.Test.Vitec.Types.PlotInfo.Estate {
     /// <summary>
     /// 
@@ -72,7 +73,7 @@ namespace SolidRpc.Test.Vitec.Types.PlotInfo.Estate {
         /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
-        public bool SensitiveBusiness { get; set; }
+        public bool? SensitiveBusiness { get; set; }
     
         /// <summary>
         /// Bostadstyp

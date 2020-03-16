@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Elf&#246;rbrukning KWH /&#229;r
         /// </summary>
         [DataMember(Name="powerConsumptionKWH",EmitDefaultValue=false)]
-        public double PowerConsumptionKWH { get; set; }
+        public double? PowerConsumptionKWH { get; set; }
     
     }
 }

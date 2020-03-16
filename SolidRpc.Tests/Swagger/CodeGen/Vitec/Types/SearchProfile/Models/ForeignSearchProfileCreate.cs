@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
@@ -19,25 +20,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
         /// L&#228;genhet
         /// </summary>
         [DataMember(Name="apartment",EmitDefaultValue=false)]
-        public bool Apartment { get; set; }
+        public bool? Apartment { get; set; }
     
         /// <summary>
         /// Villa
         /// </summary>
         [DataMember(Name="house",EmitDefaultValue=false)]
-        public bool House { get; set; }
+        public bool? House { get; set; }
     
         /// <summary>
         /// Radhus
         /// </summary>
         [DataMember(Name="terraceHouse",EmitDefaultValue=false)]
-        public bool TerraceHouse { get; set; }
+        public bool? TerraceHouse { get; set; }
     
         /// <summary>
         /// Tomt
         /// </summary>
         [DataMember(Name="plot",EmitDefaultValue=false)]
-        public bool Plot { get; set; }
+        public bool? Plot { get; set; }
     
         /// <summary>
         /// Boarea
@@ -61,7 +62,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
         /// Valuta
         /// </summary>
         [DataMember(Name="exchangeRate",EmitDefaultValue=false)]
-        public double ExchangeRate { get; set; }
+        public double? ExchangeRate { get; set; }
     
         /// <summary>
         /// Valuta
@@ -97,19 +98,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
         /// Pool
         /// </summary>
         [DataMember(Name="swimmingPool",EmitDefaultValue=false)]
-        public bool SwimmingPool { get; set; }
+        public bool? SwimmingPool { get; set; }
     
         /// <summary>
         /// Balkong
         /// </summary>
         [DataMember(Name="balcony",EmitDefaultValue=false)]
-        public bool Balcony { get; set; }
+        public bool? Balcony { get; set; }
     
         /// <summary>
         /// Terrass
         /// </summary>
         [DataMember(Name="terrace",EmitDefaultValue=false)]
-        public bool Terrace { get; set; }
+        public bool? Terrace { get; set; }
     
     }
 }

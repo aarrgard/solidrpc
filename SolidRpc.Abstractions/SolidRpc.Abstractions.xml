@@ -100,7 +100,7 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>

@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Marketplace.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Marketplace.Models {
         /// 
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
-        public int Id { get; set; }
+        public int? Id { get; set; }
     
         /// <summary>
         /// 

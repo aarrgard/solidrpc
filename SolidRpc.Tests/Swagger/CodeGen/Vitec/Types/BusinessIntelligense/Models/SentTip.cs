@@ -12,7 +12,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Skapat
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
-        public DateTimeOffset CreatedAt { get; set; }
+        public System.DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// Avs&#228;ndare

@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDate { get; set; }
+        public DateTimeOffset? AccessDate { get; set; }
     
         /// <summary>
         /// Tilltr&#228;detid
@@ -29,37 +29,37 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="agreementDate",EmitDefaultValue=false)]
-        public DateTimeOffset AgreementDate { get; set; }
+        public DateTimeOffset? AgreementDate { get; set; }
     
         /// <summary>
         /// Uppdragsdatum
         /// </summary>
         [DataMember(Name="assignmentDate",EmitDefaultValue=false)]
-        public DateTimeOffset AssignmentDate { get; set; }
+        public DateTimeOffset? AssignmentDate { get; set; }
     
         /// <summary>
         /// S&#228;ljstart
         /// </summary>
         [DataMember(Name="salesStart",EmitDefaultValue=false)]
-        public DateTimeOffset SalesStart { get; set; }
+        public DateTimeOffset? SalesStart { get; set; }
     
         /// <summary>
         /// Bokningsavtal
         /// </summary>
         [DataMember(Name="reservationAgreement",EmitDefaultValue=false)]
-        public DateTimeOffset ReservationAgreement { get; set; }
+        public DateTimeOffset? ReservationAgreement { get; set; }
     
         /// <summary>
         /// F&#246;rhandsavtal
         /// </summary>
         [DataMember(Name="preliminaryAgreement",EmitDefaultValue=false)]
-        public DateTimeOffset PreliminaryAgreement { get; set; }
+        public DateTimeOffset? PreliminaryAgreement { get; set; }
     
         /// <summary>
         /// Alla avtalsvillkor uppfyllda
         /// </summary>
         [DataMember(Name="allTermsMettDate",EmitDefaultValue=false)]
-        public DateTimeOffset AllTermsMettDate { get; set; }
+        public DateTimeOffset? AllTermsMettDate { get; set; }
     
     }
 }

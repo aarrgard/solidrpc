@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
@@ -42,25 +43,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
         /// Antal rum
         /// </summary>
         [DataMember(Name="numberOfRooms",EmitDefaultValue=false)]
-        public double NumberOfRooms { get; set; }
+        public double? NumberOfRooms { get; set; }
     
         /// <summary>
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Biarea
         /// </summary>
         [DataMember(Name="otherSpace",EmitDefaultValue=false)]
-        public double OtherSpace { get; set; }
+        public double? OtherSpace { get; set; }
     
         /// <summary>
         /// Byggnadsyta
         /// </summary>
         [DataMember(Name="buildingSpace",EmitDefaultValue=false)]
-        public double BuildingSpace { get; set; }
+        public double? BuildingSpace { get; set; }
     
         /// <summary>
         /// Kommentar till Areauppgifter

@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,43 +11,43 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Avstyckad g&#229;rd
         /// </summary>
         [DataMember(Name="parceledFarm",EmitDefaultValue=false)]
-        public bool ParceledFarm { get; set; }
+        public bool? ParceledFarm { get; set; }
     
         /// <summary>
         /// Jordbruk
         /// </summary>
         [DataMember(Name="isAgriculture",EmitDefaultValue=false)]
-        public bool IsAgriculture { get; set; }
+        public bool? IsAgriculture { get; set; }
     
         /// <summary>
         /// Skogsbruk
         /// </summary>
         [DataMember(Name="isForestFarm",EmitDefaultValue=false)]
-        public bool IsForestFarm { get; set; }
+        public bool? IsForestFarm { get; set; }
     
         /// <summary>
         /// H&#228;stg&#229;rd
         /// </summary>
         [DataMember(Name="isHorseFarm",EmitDefaultValue=false)]
-        public bool IsHorseFarm { get; set; }
+        public bool? IsHorseFarm { get; set; }
     
         /// <summary>
         /// Inget bruk
         /// </summary>
         [DataMember(Name="isHouseFarm",EmitDefaultValue=false)]
-        public bool IsHouseFarm { get; set; }
+        public bool? IsHouseFarm { get; set; }
     
         /// <summary>
         /// Kommande
         /// </summary>
         [DataMember(Name="isFutureSale",EmitDefaultValue=false)]
-        public bool IsFutureSale { get; set; }
+        public bool? IsFutureSale { get; set; }
     
         /// <summary>
         /// Snart till salu
         /// </summary>
         [DataMember(Name="isSoonForSale",EmitDefaultValue=false)]
-        public bool IsSoonForSale { get; set; }
+        public bool? IsSoonForSale { get; set; }
     
     }
 }

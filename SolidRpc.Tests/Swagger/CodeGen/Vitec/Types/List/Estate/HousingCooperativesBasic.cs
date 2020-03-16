@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate;
-using System;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
@@ -14,25 +14,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         /// M&#229;nandsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
     
         /// <summary>
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Antal rum
         /// </summary>
         [DataMember(Name="rooms",EmitDefaultValue=false)]
-        public double Rooms { get; set; }
+        public double? Rooms { get; set; }
     
         /// <summary>
         /// Pris
         /// </summary>
         [DataMember(Name="price",EmitDefaultValue=false)]
-        public double Price { get; set; }
+        public double? Price { get; set; }
     
         /// <summary>
         /// Bostadsid
@@ -62,7 +62,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public System.DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Gatuadress
@@ -92,7 +92,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         /// P&#229;g&#229;r bud Ja/Nej
         /// </summary>
         [DataMember(Name="bidding",EmitDefaultValue=false)]
-        public bool Bidding { get; set; }
+        public bool? Bidding { get; set; }
     
         /// <summary>
         /// Objektnummer

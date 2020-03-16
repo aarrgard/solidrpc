@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
     /// <summary>
     /// 
@@ -52,7 +53,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         /// Notifiera handl&#228;ggaren p&#229; bostaden att intresseanm&#228;lan inkommit
         /// </summary>
         [DataMember(Name="notifyUser",EmitDefaultValue=false)]
-        public bool NotifyUser { get; set; }
+        public bool? NotifyUser { get; set; }
     
     }
 }

@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
     /// 
@@ -28,7 +29,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// M&#229;nadshyra
         /// </summary>
         [DataMember(Name="yearlyFee",EmitDefaultValue=false)]
-        public double YearlyFee { get; set; }
+        public double? YearlyFee { get; set; }
     
     }
 }

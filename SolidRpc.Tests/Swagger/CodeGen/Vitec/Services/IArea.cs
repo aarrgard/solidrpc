@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Area>> AreaGetAreas(
             string criteriaCustomerId,
-            string criteriaAreaId = default(string),
+            string criteriaAreaId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

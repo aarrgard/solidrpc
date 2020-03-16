@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// The value of the size
         /// </summary>
         [DataMember(Name="value",EmitDefaultValue=false)]
-        public double Value { get; set; }
+        public double? Value { get; set; }
     
         /// <summary>
         /// The unit of the size

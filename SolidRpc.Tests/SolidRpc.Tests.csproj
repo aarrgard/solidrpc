@@ -78,6 +78,7 @@
     <ProjectReference Include="..\SolidRpc.Security.Back\SolidRpc.Security.Back.csproj" />
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
+    <ProjectReference Include="..\SolidRpc.Test.Vitec.Impl\SolidRpc.Test.Vitec.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Wire\SolidRpc.Wire.csproj" />
   </ItemGroup>
 
@@ -91,6 +92,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="appsettings_local.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

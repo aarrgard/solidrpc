@@ -120,13 +120,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// Om budgivning p&#229;g&#229;r
         /// </summary>
         [DataMember(Name="acceptingBids",EmitDefaultValue=false)]
-        public bool AcceptingBids { get; set; }
+        public bool? AcceptingBids { get; set; }
     
         /// <summary>
         /// N&#228;r bostaden senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public System.DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Url:er

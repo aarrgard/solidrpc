@@ -183,8 +183,6 @@ namespace SolidRpc.Tests
                 .ConfigureAdvice<ISolidRpcOpenApiConfig>()
                 .MethodAddressTransformer = GetBaseUrl;
 
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
-
             var petService = sc.BuildServiceProvider().GetRequiredService<IPet>();
             Assert.AreEqual(4711, (await petService.GetPetById(4711)).Id);
 

@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.BusinessIntelligence.Models {
     /// <summary>
     /// 
@@ -22,37 +23,37 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligence.Models {
         /// Provision
         /// </summary>
         [DataMember(Name="commission",EmitDefaultValue=false)]
-        public double Commission { get; set; }
+        public double? Commission { get; set; }
     
         /// <summary>
         /// Summa f&#246;rs&#228;ljning
         /// </summary>
         [DataMember(Name="totalSales",EmitDefaultValue=false)]
-        public double TotalSales { get; set; }
+        public double? TotalSales { get; set; }
     
         /// <summary>
         /// Provision i procent av f&#246;rs&#228;ljning
         /// </summary>
         [DataMember(Name="commissionPercentage",EmitDefaultValue=false)]
-        public double CommissionPercentage { get; set; }
+        public double? CommissionPercentage { get; set; }
     
         /// <summary>
         /// Medelprovision
         /// </summary>
         [DataMember(Name="averageCommission",EmitDefaultValue=false)]
-        public double AverageCommission { get; set; }
+        public double? AverageCommission { get; set; }
     
         /// <summary>
         /// Antal intagsf&#246;rs&#246;k
         /// </summary>
         [DataMember(Name="attemptedIntakes",EmitDefaultValue=false)]
-        public int AttemptedIntakes { get; set; }
+        public int? AttemptedIntakes { get; set; }
     
         /// <summary>
         /// Antal s&#229;lda bost&#228;der
         /// </summary>
         [DataMember(Name="sold",EmitDefaultValue=false)]
-        public int Sold { get; set; }
+        public int? Sold { get; set; }
     
     }
 }

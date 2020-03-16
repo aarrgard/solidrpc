@@ -139,11 +139,15 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
 
                 foreach (var p in csm.Parameters.OrderBy(o => o.Optional ? 1 : 0))
                 {
-                    var parameterType = GetClass(cSharpRepository, p.ParameterType);
+                    var parameterType = (ICSharpType)GetClass(cSharpRepository, p.ParameterType);
                     string defaultValue = null;
                     if (p.Optional)
                     {
-                        defaultValue = $"default({parameterType.FullName})";
+                        if (parameterType.RuntimeType?.IsValueType ?? false)
+                        {
+                            parameterType = cSharpRepository.GetType($"System.Nullable<{parameterType.FullName}>");
+                        }
+                        defaultValue = $"null";
                     }
 
                     var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, p.Optional, defaultValue);
@@ -345,7 +349,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                             {
                                 Name = o.Key,
                                 Type = GetSwaggerDefinition(swaggerOperation, o.Value, refs),
-                                Description = o.Value.Description
+                                Description = o.Value.Description,
+                                Required = o.Value.Required?.Contains(o.Key) ?? false
                             }).ToList();
                         }
 

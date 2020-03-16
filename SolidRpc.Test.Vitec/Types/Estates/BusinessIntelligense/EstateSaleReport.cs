@@ -55,25 +55,25 @@ namespace SolidRpc.Test.Vitec.Types.Estates.BusinessIntelligense {
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="contractDay",EmitDefaultValue=false)]
-        public DateTimeOffset ContractDay { get; set; }
+        public DateTimeOffset? ContractDay { get; set; }
     
         /// <summary>
         /// Tilltr&#228;desdag
         /// </summary>
         [DataMember(Name="accessDay",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDay { get; set; }
+        public DateTimeOffset? AccessDay { get; set; }
     
         /// <summary>
         /// Handpenning redovisningsdatum
         /// </summary>
         [DataMember(Name="depositReportedAt",EmitDefaultValue=false)]
-        public DateTimeOffset DepositReportedAt { get; set; }
+        public DateTimeOffset? DepositReportedAt { get; set; }
     
         /// <summary>
         /// Totala provision
         /// </summary>
         [DataMember(Name="commission",EmitDefaultValue=false)]
-        public double Commission { get; set; }
+        public double? Commission { get; set; }
     
         /// <summary>
         /// Fritext f&#246;r fast arvode
@@ -85,13 +85,13 @@ namespace SolidRpc.Test.Vitec.Types.Estates.BusinessIntelligense {
         /// Provisionsdatum
         /// </summary>
         [DataMember(Name="commissionReceivedAt",EmitDefaultValue=false)]
-        public DateTimeOffset CommissionReceivedAt { get; set; }
+        public DateTimeOffset? CommissionReceivedAt { get; set; }
     
         /// <summary>
         /// Nyproduktion (ja/nej)
         /// </summary>
         [DataMember(Name="isNewHome",EmitDefaultValue=false)]
-        public bool IsNewHome { get; set; }
+        public bool? IsNewHome { get; set; }
     
         /// <summary>
         /// Koordinat WGS84.
@@ -103,19 +103,19 @@ namespace SolidRpc.Test.Vitec.Types.Estates.BusinessIntelligense {
         /// N&#228;r objektinformationen uppdaterades senast
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Startpris
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
-        public long StartingPrice { get; set; }
+        public long? StartingPrice { get; set; }
     
         /// <summary>
         /// Slutpris
         /// </summary>
         [DataMember(Name="finalPrice",EmitDefaultValue=false)]
-        public long FinalPrice { get; set; }
+        public long? FinalPrice { get; set; }
     
     }
 }

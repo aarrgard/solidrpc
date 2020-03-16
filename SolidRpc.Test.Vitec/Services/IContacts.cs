@@ -38,7 +38,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<CustomerContactIds>> ContactsGetContactsWithPhonenumber(
             string phoneNumber,
-            string customerId = default(string),
+            string customerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

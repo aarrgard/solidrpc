@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
     /// <summary>
     /// 
@@ -42,61 +43,61 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         /// &#214;nskem&#229;let g&#228;ller utlandsbost&#228;der
         /// </summary>
         [DataMember(Name="foreignProperty",EmitDefaultValue=false)]
-        public bool ForeignProperty { get; set; }
+        public bool? ForeignProperty { get; set; }
     
         /// <summary>
         /// Hus
         /// </summary>
         [DataMember(Name="house",EmitDefaultValue=false)]
-        public bool House { get; set; }
+        public bool? House { get; set; }
     
         /// <summary>
         /// Radhus
         /// </summary>
         [DataMember(Name="rowHouse",EmitDefaultValue=false)]
-        public bool RowHouse { get; set; }
+        public bool? RowHouse { get; set; }
     
         /// <summary>
         /// Bostadsr&#228;tt
         /// </summary>
         [DataMember(Name="housingCooperative",EmitDefaultValue=false)]
-        public bool HousingCooperative { get; set; }
+        public bool? HousingCooperative { get; set; }
     
         /// <summary>
         /// Fritidshus
         /// </summary>
         [DataMember(Name="cottage",EmitDefaultValue=false)]
-        public bool Cottage { get; set; }
+        public bool? Cottage { get; set; }
     
         /// <summary>
         /// Lokal
         /// </summary>
         [DataMember(Name="premises",EmitDefaultValue=false)]
-        public bool Premises { get; set; }
+        public bool? Premises { get; set; }
     
         /// <summary>
         /// Tomt
         /// </summary>
         [DataMember(Name="plot",EmitDefaultValue=false)]
-        public bool Plot { get; set; }
+        public bool? Plot { get; set; }
     
         /// <summary>
         /// G&#229;rd
         /// </summary>
         [DataMember(Name="farm",EmitDefaultValue=false)]
-        public bool Farm { get; set; }
+        public bool? Farm { get; set; }
     
         /// <summary>
         /// Hyresr&#228;tt
         /// </summary>
         [DataMember(Name="tenancy",EmitDefaultValue=false)]
-        public bool Tenancy { get; set; }
+        public bool? Tenancy { get; set; }
     
         /// <summary>
         /// &#214;vrig boform
         /// </summary>
         [DataMember(Name="otherHousing",EmitDefaultValue=false)]
-        public bool OtherHousing { get; set; }
+        public bool? OtherHousing { get; set; }
     
         /// <summary>
         /// Boarea
@@ -138,7 +139,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         /// Aktivt &#246;nskem&#229;l (ska matchas)
         /// </summary>
         [DataMember(Name="active",EmitDefaultValue=false)]
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
     
     }
 }

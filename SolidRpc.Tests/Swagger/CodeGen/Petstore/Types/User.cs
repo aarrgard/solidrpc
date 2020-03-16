@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
-        public long Id { get; set; }
+        public long? Id { get; set; }
     
         /// <summary>
         /// 
@@ -52,7 +53,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// User Status
         /// </summary>
         [DataMember(Name="userStatus",EmitDefaultValue=false)]
-        public int UserStatus { get; set; }
+        public int? UserStatus { get; set; }
     
     }
 }

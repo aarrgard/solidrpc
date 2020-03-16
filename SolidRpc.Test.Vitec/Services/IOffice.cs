@@ -18,7 +18,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Office>> OfficeGetOffice(
             string criteriaCustomerId,
-            string criteriaOfficeId = default(string),
+            string criteriaOfficeId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

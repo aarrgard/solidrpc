@@ -24,7 +24,7 @@ namespace SolidRpc.Test.Vitec.Types.Cms.Estate {
         /// Datum f&#246;r s&#228;ljstart
         /// </summary>
         [DataMember(Name="saleStart",EmitDefaultValue=false)]
-        public DateTimeOffset SaleStart { get; set; }
+        public DateTimeOffset? SaleStart { get; set; }
     
         /// <summary>
         /// Prelimin&#228;r tidpunkt f&#246;r inflytt

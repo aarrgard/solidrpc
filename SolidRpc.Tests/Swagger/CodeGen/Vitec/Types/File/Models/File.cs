@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.File.Models {
     /// <summary>
     /// 
@@ -23,7 +24,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.File.Models {
         /// Annonseras
         /// </summary>
         [DataMember(Name="advertise",EmitDefaultValue=false)]
-        public bool Advertise { get; set; }
+        public bool? Advertise { get; set; }
     
     }
 }

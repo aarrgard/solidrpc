@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="aktTid",EmitDefaultValue=false)]
-        public DateTimeOffset AktTid { get; set; }
+        public DateTimeOffset? AktTid { get; set; }
     
         /// <summary>
         /// 
@@ -41,13 +41,13 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="x",EmitDefaultValue=false)]
-        public int X { get; set; }
+        public int? X { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="y",EmitDefaultValue=false)]
-        public int Y { get; set; }
+        public int? Y { get; set; }
     
         /// <summary>
         /// 
@@ -77,43 +77,43 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="avtalsdag",EmitDefaultValue=false)]
-        public DateTimeOffset Avtalsdag { get; set; }
+        public DateTimeOffset? Avtalsdag { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="tilltrdag",EmitDefaultValue=false)]
-        public DateTimeOffset Tilltrdag { get; set; }
+        public DateTimeOffset? Tilltrdag { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="pris",EmitDefaultValue=false)]
-        public int Pris { get; set; }
+        public int? Pris { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="boarea",EmitDefaultValue=false)]
-        public int Boarea { get; set; }
+        public int? Boarea { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="biarea",EmitDefaultValue=false)]
-        public int Biarea { get; set; }
+        public int? Biarea { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="avgift",EmitDefaultValue=false)]
-        public int Avgift { get; set; }
+        public int? Avgift { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="rum",EmitDefaultValue=false)]
-        public int Rum { get; set; }
+        public int? Rum { get; set; }
     
         /// <summary>
         /// 
@@ -125,7 +125,7 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="varme",EmitDefaultValue=false)]
-        public bool Varme { get; set; }
+        public bool? Varme { get; set; }
     
         /// <summary>
         /// 
@@ -149,43 +149,43 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="andelstal",EmitDefaultValue=false)]
-        public double Andelstal { get; set; }
+        public double? Andelstal { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="vaning",EmitDefaultValue=false)]
-        public double Vaning { get; set; }
+        public double? Vaning { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="vaningAv",EmitDefaultValue=false)]
-        public double VaningAv { get; set; }
+        public double? VaningAv { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="hissFinns",EmitDefaultValue=false)]
-        public bool HissFinns { get; set; }
+        public bool? HissFinns { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="taxvarde",EmitDefaultValue=false)]
-        public double Taxvarde { get; set; }
+        public double? Taxvarde { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="taxAr",EmitDefaultValue=false)]
-        public int TaxAr { get; set; }
+        public int? TaxAr { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="firmaNr",EmitDefaultValue=false)]
-        public int FirmaNr { get; set; }
+        public int? FirmaNr { get; set; }
     
         /// <summary>
         /// 
@@ -203,43 +203,43 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="tomtareal",EmitDefaultValue=false)]
-        public int Tomtareal { get; set; }
+        public int? Tomtareal { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="startPris",EmitDefaultValue=false)]
-        public int StartPris { get; set; }
+        public int? StartPris { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="slutPris",EmitDefaultValue=false)]
-        public int SlutPris { get; set; }
+        public int? SlutPris { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="annonsTid",EmitDefaultValue=false)]
-        public DateTimeOffset AnnonsTid { get; set; }
+        public DateTimeOffset? AnnonsTid { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="nyprod",EmitDefaultValue=false)]
-        public bool Nyprod { get; set; }
+        public bool? Nyprod { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="kansligAffar",EmitDefaultValue=false)]
-        public bool KansligAffar { get; set; }
+        public bool? KansligAffar { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="energiPrestanda",EmitDefaultValue=false)]
-        public double EnergiPrestanda { get; set; }
+        public double? EnergiPrestanda { get; set; }
     
         /// <summary>
         /// 
@@ -251,7 +251,7 @@ namespace SolidRpc.Test.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="balkong",EmitDefaultValue=false)]
-        public bool Balkong { get; set; }
+        public bool? Balkong { get; set; }
     
     }
 }

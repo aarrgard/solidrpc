@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
     /// successful operation
@@ -11,25 +11,25 @@ namespace SolidRpc.Test.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
-        public long Id { get; set; }
+        public long? Id { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="petId",EmitDefaultValue=false)]
-        public long PetId { get; set; }
+        public long? PetId { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="quantity",EmitDefaultValue=false)]
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="shipDate",EmitDefaultValue=false)]
-        public DateTimeOffset ShipDate { get; set; }
+        public System.DateTimeOffset? ShipDate { get; set; }
     
         /// <summary>
         /// Order Status
@@ -41,7 +41,7 @@ namespace SolidRpc.Test.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="complete",EmitDefaultValue=false)]
-        public bool Complete { get; set; }
+        public bool? Complete { get; set; }
     
     }
 }

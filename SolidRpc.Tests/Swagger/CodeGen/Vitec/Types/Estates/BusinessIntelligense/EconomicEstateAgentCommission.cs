@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estates.BusinessIntelligense {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estates.BusinessIntelligens
         /// Provisionsv&#228;rdet i kronor
         /// </summary>
         [DataMember(Name="value",EmitDefaultValue=false)]
-        public double Value { get; set; }
+        public double? Value { get; set; }
     
         /// <summary>
         /// Hur m&#229;nga procent av totala provisionen som m&#228;klaren f&#229;r
         /// </summary>
         [DataMember(Name="percentageOfTotal",EmitDefaultValue=false)]
-        public double PercentageOfTotal { get; set; }
+        public double? PercentageOfTotal { get; set; }
     
     }
 }

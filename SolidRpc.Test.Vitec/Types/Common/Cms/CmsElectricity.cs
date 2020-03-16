@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.Common.Cms {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Cms {
         /// Elf&#246;rbrukning KWH /&#229;r
         /// </summary>
         [DataMember(Name="powerConsumptionKWH",EmitDefaultValue=false)]
-        public int PowerConsumptionKWH { get; set; }
+        public int? PowerConsumptionKWH { get; set; }
     
     }
 }

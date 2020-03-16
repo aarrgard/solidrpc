@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Tomtarea i kvm
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
-        public double Area { get; set; }
+        public double? Area { get; set; }
     
         /// <summary>
         /// &#214;vrigt tomt

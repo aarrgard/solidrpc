@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
@@ -24,43 +25,43 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
         /// Villa
         /// </summary>
         [DataMember(Name="house",EmitDefaultValue=false)]
-        public bool House { get; set; }
+        public bool? House { get; set; }
     
         /// <summary>
         /// Radhus
         /// </summary>
         [DataMember(Name="housingCooperative",EmitDefaultValue=false)]
-        public bool HousingCooperative { get; set; }
+        public bool? HousingCooperative { get; set; }
     
         /// <summary>
         /// Fritidshus
         /// </summary>
         [DataMember(Name="cottage",EmitDefaultValue=false)]
-        public bool Cottage { get; set; }
+        public bool? Cottage { get; set; }
     
         /// <summary>
         /// Tomt
         /// </summary>
         [DataMember(Name="plot",EmitDefaultValue=false)]
-        public bool Plot { get; set; }
+        public bool? Plot { get; set; }
     
         /// <summary>
         /// Radhus
         /// </summary>
         [DataMember(Name="rowhouse",EmitDefaultValue=false)]
-        public bool Rowhouse { get; set; }
+        public bool? Rowhouse { get; set; }
     
         /// <summary>
         /// G&#229;rd
         /// </summary>
         [DataMember(Name="farm",EmitDefaultValue=false)]
-        public bool Farm { get; set; }
+        public bool? Farm { get; set; }
     
         /// <summary>
         /// Utland
         /// </summary>
         [DataMember(Name="foreign",EmitDefaultValue=false)]
-        public bool Foreign { get; set; }
+        public bool? Foreign { get; set; }
     
         /// <summary>
         /// Lista p&#229; omr&#229;den
@@ -114,7 +115,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
         /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
     
         /// <summary>
         /// Tomtarea anges i ha f&#246;r g&#229;rd och i kvm f&#246;r &#246;vriga
@@ -126,7 +127,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.SearchProfile.Models {
         /// Varav sovrum
         /// </summary>
         [DataMember(Name="bedrooms",EmitDefaultValue=false)]
-        public double Bedrooms { get; set; }
+        public double? Bedrooms { get; set; }
     
     }
 }

@@ -19,7 +19,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// N&#228;r bilddata f&#246;r&#228;ndrades senast
         /// </summary>
         [DataMember(Name="dataChangedAt",EmitDefaultValue=false)]
-        public DateTimeOffset DataChangedAt { get; set; }
+        public DateTimeOffset? DataChangedAt { get; set; }
     
         /// <summary>
         /// Beskrivande text

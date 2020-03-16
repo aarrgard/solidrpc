@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Kund-id

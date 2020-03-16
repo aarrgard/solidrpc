@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         /// Renoveringsbehov
         /// </summary>
         [DataMember(Name="renovation",EmitDefaultValue=false)]
-        public int Renovation { get; set; }
+        public int? Renovation { get; set; }
     
         /// <summary>
         /// Kommentar till renoveringsbehov

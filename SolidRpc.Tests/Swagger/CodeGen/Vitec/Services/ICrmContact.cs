@@ -24,13 +24,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<CrmContactList> CrmContactSelect(
             string customerId,
-            string criteriaAgentId = default(string),
-            DateTimeOffset criteriaCreatedAtFrom = default(DateTimeOffset),
-            DateTimeOffset criteriaCreatedAtTo = default(DateTimeOffset),
-            DateTimeOffset criteriaChangedAtFrom = default(DateTimeOffset),
-            DateTimeOffset criteriaChangedAtTo = default(DateTimeOffset),
-            string criteriaCustomFieldName = default(string),
-            string criteriaCustomFieldValue = default(string),
+            string criteriaAgentId = null,
+            System.DateTimeOffset? criteriaCreatedAtFrom = null,
+            System.DateTimeOffset? criteriaCreatedAtTo = null,
+            System.DateTimeOffset? criteriaChangedAtFrom = null,
+            System.DateTimeOffset? criteriaChangedAtTo = null,
+            string criteriaCustomFieldName = null,
+            string criteriaCustomFieldValue = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

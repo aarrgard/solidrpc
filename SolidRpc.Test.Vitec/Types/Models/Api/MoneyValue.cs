@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Models.Api {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.Models.Api {
         /// V&#228;rde
         /// </summary>
         [DataMember(Name="value",EmitDefaultValue=false)]
-        public double Value { get; set; }
+        public double? Value { get; set; }
     
         /// <summary>
         /// Valuta (SEK, EURO, USD, osv)

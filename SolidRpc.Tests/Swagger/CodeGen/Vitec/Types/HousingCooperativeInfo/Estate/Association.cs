@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
+using System;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativeInfo.Estate {
@@ -67,7 +68,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativeInfo.Esta
         /// &#196;kta/o&#228;kta f&#246;rening
         /// </summary>
         [DataMember(Name="genuineAssociation",EmitDefaultValue=false)]
-        public bool GenuineAssociation { get; set; }
+        public bool? GenuineAssociation { get; set; }
     
         /// <summary>
         /// Kontaktperson (offentlig)
@@ -127,19 +128,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativeInfo.Esta
         /// Antal l&#228;genheter
         /// </summary>
         [DataMember(Name="numberOfApartments",EmitDefaultValue=false)]
-        public int NumberOfApartments { get; set; }
+        public int? NumberOfApartments { get; set; }
     
         /// <summary>
         /// Antal hyresr&#228;tter
         /// </summary>
         [DataMember(Name="numberOfRentalUnits",EmitDefaultValue=false)]
-        public int NumberOfRentalUnits { get; set; }
+        public int? NumberOfRentalUnits { get; set; }
     
         /// <summary>
         /// Antal lokaler
         /// </summary>
         [DataMember(Name="numberOfLocals",EmitDefaultValue=false)]
-        public int NumberOfLocals { get; set; }
+        public int? NumberOfLocals { get; set; }
     
         /// <summary>
         /// Renoveringar, utf&#246;rda och planerade
@@ -163,13 +164,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativeInfo.Esta
         /// &#214;verl&#229;telseavgift
         /// </summary>
         [DataMember(Name="transferFee",EmitDefaultValue=false)]
-        public double TransferFee { get; set; }
+        public double? TransferFee { get; set; }
     
         /// <summary>
         /// Pants&#228;ttningsavgift
         /// </summary>
         [DataMember(Name="pledgeFee",EmitDefaultValue=false)]
-        public double PledgeFee { get; set; }
+        public double? PledgeFee { get; set; }
     
         /// <summary>
         /// F&#246;reningen till&#229;ter juridisk person som k&#246;pare

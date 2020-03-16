@@ -18,13 +18,13 @@ namespace SolidRpc.Test.Vitec.Types.Viewing.Models {
         /// Vilken tid b&#246;rjar visningstillf&#228;llet
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public DateTimeOffset StartsAt { get; set; }
+        public DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// Vilken tid slutar visningstillf&#228;llet
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public DateTimeOffset EndsAt { get; set; }
+        public DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Deltagare p&#229; visningen

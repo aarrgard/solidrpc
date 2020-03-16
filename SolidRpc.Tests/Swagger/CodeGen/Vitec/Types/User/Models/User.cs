@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
     /// <summary>
     /// 
@@ -12,13 +12,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         /// Arkiverad
         /// </summary>
         [DataMember(Name="archived",EmitDefaultValue=false)]
-        public bool Archived { get; set; }
+        public bool? Archived { get; set; }
     
         /// <summary>
         /// Publik
         /// </summary>
         [DataMember(Name="public",EmitDefaultValue=false)]
-        public bool Public { get; set; }
+        public bool? Public { get; set; }
     
         /// <summary>
         /// Anv&#228;ndarid
@@ -36,7 +36,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         /// Sorteringsnummer
         /// </summary>
         [DataMember(Name="orderNumber",EmitDefaultValue=false)]
-        public int OrderNumber { get; set; }
+        public int? OrderNumber { get; set; }
     
         /// <summary>
         /// Namn
@@ -72,7 +72,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         /// Till&#229;t inloggning
         /// </summary>
         [DataMember(Name="allowLogOn",EmitDefaultValue=false)]
-        public bool AllowLogOn { get; set; }
+        public bool? AllowLogOn { get; set; }
     
         /// <summary>
         /// Epostadress
@@ -162,7 +162,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         /// 
         /// </summary>
         [DataMember(Name="internalEmployeeNumber",EmitDefaultValue=false)]
-        public int InternalEmployeeNumber { get; set; }
+        public int? InternalEmployeeNumber { get; set; }
     
         /// <summary>
         /// 
@@ -180,7 +180,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public System.DateTimeOffset? DateChanged { get; set; }
     
     }
 }

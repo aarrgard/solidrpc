@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.ParticipantFollowUp.Models {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Types.ParticipantFollowUp.Models {
         /// 
         /// </summary>
         [DataMember(Name="participated",EmitDefaultValue=false)]
-        public bool Participated { get; set; }
+        public bool? Participated { get; set; }
     
         /// <summary>
         /// 

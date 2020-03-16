@@ -19,13 +19,13 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Senast bilden &#228;ndrades
         /// </summary>
         [DataMember(Name="dateChangedImageData",EmitDefaultValue=false)]
-        public DateTimeOffset DateChangedImageData { get; set; }
+        public DateTimeOffset? DateChangedImageData { get; set; }
     
         /// <summary>
         /// Bildurl
@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         /// Till&#229;t visning p&#229; internet
         /// </summary>
         [DataMember(Name="showImageOnInternet",EmitDefaultValue=false)]
-        public bool ShowImageOnInternet { get; set; }
+        public bool? ShowImageOnInternet { get; set; }
     
         /// <summary>
         /// Bildformat

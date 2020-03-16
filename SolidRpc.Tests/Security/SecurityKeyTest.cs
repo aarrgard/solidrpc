@@ -78,7 +78,7 @@ namespace SolidRpc.Tests.Security
                 .CreateSpecification(typeof(ITestInterface))
                 .SetBaseAddress(new Uri(baseAddress, typeof(ITestInterface).Assembly.GetName().Name.Replace('.','/')))
                 .WriteAsJsonString();
-            clientServices.AddSolidRpcBindings<ITestInterface>(null, conf =>
+            clientServices.AddSolidRpcSingletonBindings<ITestInterface>(null, conf =>
             {
                 conf.OpenApiSpec = apiSpec;
                 if(conf.Methods.First().Name == nameof(ITestInterface.MethodWithClientKeySpecified))
@@ -97,7 +97,7 @@ namespace SolidRpc.Tests.Security
         public override IServiceProvider ConfigureServerServices(IServiceCollection services)
         {
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
-            services.AddSolidRpcBindings<ITestInterface>(new TestImplementation(), conf =>
+            services.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>
             {
                 conf.OpenApiSpec = apiSpec;
                 conf.SecurityKey = SecurityKey;

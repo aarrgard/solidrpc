@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estates.BusinessIntelligense {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estates.BusinessIntelligens
         /// Id
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
-        public int Id { get; set; }
+        public int? Id { get; set; }
     
         /// <summary>
         /// Beskrivning av id

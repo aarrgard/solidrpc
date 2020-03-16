@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         /// Antal v&#229;ningar
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
-        public int NumberOfFloors { get; set; }
+        public int? NumberOfFloors { get; set; }
     
         /// <summary>
         /// Hiss (Ja, Nej eller ok&#228;nt)

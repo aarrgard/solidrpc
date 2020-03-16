@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
     /// <summary>
     /// 
@@ -16,49 +17,49 @@ namespace SolidRpc.Test.Vitec.Types.FarmInfo.Estate {
         /// Skog
         /// </summary>
         [DataMember(Name="forest",EmitDefaultValue=false)]
-        public double Forest { get; set; }
+        public double? Forest { get; set; }
     
         /// <summary>
         /// Impediment
         /// </summary>
         [DataMember(Name="wasteLand",EmitDefaultValue=false)]
-        public double WasteLand { get; set; }
+        public double? WasteLand { get; set; }
     
         /// <summary>
         /// &#197;ker
         /// </summary>
         [DataMember(Name="arabel",EmitDefaultValue=false)]
-        public double Arabel { get; set; }
+        public double? Arabel { get; set; }
     
         /// <summary>
         /// In&#228;gomark
         /// </summary>
         [DataMember(Name="infield",EmitDefaultValue=false)]
-        public double Infield { get; set; }
+        public double? Infield { get; set; }
     
         /// <summary>
         /// Bete
         /// </summary>
         [DataMember(Name="pasture",EmitDefaultValue=false)]
-        public double Pasture { get; set; }
+        public double? Pasture { get; set; }
     
         /// <summary>
         /// Vatten
         /// </summary>
         [DataMember(Name="water",EmitDefaultValue=false)]
-        public double Water { get; set; }
+        public double? Water { get; set; }
     
         /// <summary>
         /// &#214;vrigt
         /// </summary>
         [DataMember(Name="other",EmitDefaultValue=false)]
-        public double Other { get; set; }
+        public double? Other { get; set; }
     
         /// <summary>
         /// Totalareal
         /// </summary>
         [DataMember(Name="totalArea",EmitDefaultValue=false)]
-        public double TotalArea { get; set; }
+        public double? TotalArea { get; set; }
     
     }
 }

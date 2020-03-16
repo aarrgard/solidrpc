@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     /// <summary>
@@ -12,19 +12,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Visar om objektet ska annonserars p&#229; hemsida
         /// </summary>
         [DataMember(Name="homepage",EmitDefaultValue=false)]
-        public bool Homepage { get; set; }
+        public bool? Homepage { get; set; }
     
         /// <summary>
         /// F&#246;rsta annonseringsdatum p&#229; hemsidan
         /// </summary>
         [DataMember(Name="firstPublishingDateOnHomepage",EmitDefaultValue=false)]
-        public DateTimeOffset FirstPublishingDateOnHomepage { get; set; }
+        public DateTimeOffset? FirstPublishingDateOnHomepage { get; set; }
     
         /// <summary>
         /// Visa som kommande
         /// </summary>
         [DataMember(Name="showAsComming",EmitDefaultValue=false)]
-        public bool ShowAsComming { get; set; }
+        public bool? ShowAsComming { get; set; }
     
         /// <summary>
         /// Lista av bildid&#39;n som ska visas p&#229; egen hemsida
@@ -48,7 +48,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Visa som f&#246;rhandsgranskning
         /// </summary>
         [DataMember(Name="showAsPreview",EmitDefaultValue=false)]
-        public bool ShowAsPreview { get; set; }
+        public bool? ShowAsPreview { get; set; }
     
     }
 }

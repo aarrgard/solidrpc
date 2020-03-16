@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     /// <summary>
     /// 
@@ -16,13 +17,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         /// Yta
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
-        public double Area { get; set; }
+        public double? Area { get; set; }
     
         /// <summary>
         /// Hyra kr/&#229;r
         /// </summary>
         [DataMember(Name="rentalIncome",EmitDefaultValue=false)]
-        public double RentalIncome { get; set; }
+        public double? RentalIncome { get; set; }
     
         /// <summary>
         /// Driftkostnad
@@ -34,7 +35,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         /// Hyra kr/kvm/&#229;r
         /// </summary>
         [DataMember(Name="rentalIncomePerSqm",EmitDefaultValue=false)]
-        public double RentalIncomePerSqm { get; set; }
+        public double? RentalIncomePerSqm { get; set; }
     
     }
 }

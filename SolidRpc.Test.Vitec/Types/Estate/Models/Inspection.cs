@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         /// F&#246;rbesiktigad
         /// </summary>
         [DataMember(Name="inspected",EmitDefaultValue=false)]
-        public bool Inspected { get; set; }
+        public bool? Inspected { get; set; }
     
         /// <summary>
         /// S&#228;ljarf&#246;rs&#228;kring
         /// </summary>
         [DataMember(Name="sellerInsurence",EmitDefaultValue=false)]
-        public bool SellerInsurence { get; set; }
+        public bool? SellerInsurence { get; set; }
     
     }
 }

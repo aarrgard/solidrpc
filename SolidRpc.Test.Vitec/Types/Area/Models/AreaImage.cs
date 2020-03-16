@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.Area.Models {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Bildurl

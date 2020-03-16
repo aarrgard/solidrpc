@@ -1,0 +1,67 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "RequiredOptionalParam"
+  },
+  "host": "localhost:5001",
+  "schemes": [ "https" ],
+  "paths": {
+    "/RequiredInt": {
+      "get": {
+        "tags": [ "RequiredOptionalParam" ],
+        "summary": "Sends an integer back and forth between client and server",
+        "operationId": "RequiredInt",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "description": "The number to proxy",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    },
+    "/OptionalInt": {
+      "get": {
+        "tags": [ "RequiredOptionalParam" ],
+        "summary": "Sends an integer back and forth between client and server",
+        "operationId": "OptionalInt",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "description": "The number to proxy",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.User.Models;
-using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
     /// <summary>
     /// 
@@ -13,19 +13,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
         /// Raderad
         /// </summary>
         [DataMember(Name="deleted",EmitDefaultValue=false)]
-        public bool Deleted { get; set; }
+        public bool? Deleted { get; set; }
     
         /// <summary>
         /// Arkiverad
         /// </summary>
         [DataMember(Name="archived",EmitDefaultValue=false)]
-        public bool Archived { get; set; }
+        public bool? Archived { get; set; }
     
         /// <summary>
         /// Publik
         /// </summary>
         [DataMember(Name="public",EmitDefaultValue=false)]
-        public bool Public { get; set; }
+        public bool? Public { get; set; }
     
         /// <summary>
         /// Anv&#228;ndarid
@@ -43,7 +43,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
         /// Sorteringsnummer
         /// </summary>
         [DataMember(Name="orderNumber",EmitDefaultValue=false)]
-        public int OrderNumber { get; set; }
+        public int? OrderNumber { get; set; }
     
         /// <summary>
         /// Namn
@@ -79,7 +79,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
         /// Till&#229;t inloggning
         /// </summary>
         [DataMember(Name="allowLogOn",EmitDefaultValue=false)]
-        public bool AllowLogOn { get; set; }
+        public bool? AllowLogOn { get; set; }
     
         /// <summary>
         /// Epostadress
@@ -169,7 +169,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
         /// 
         /// </summary>
         [DataMember(Name="internalEmployeeNumber",EmitDefaultValue=false)]
-        public int InternalEmployeeNumber { get; set; }
+        public int? InternalEmployeeNumber { get; set; }
     
         /// <summary>
         /// 
@@ -187,7 +187,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public System.DateTimeOffset? DateChanged { get; set; }
     
     }
 }

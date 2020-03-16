@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// Energiprestanda
         /// </summary>
         [DataMember(Name="energyPerformance",EmitDefaultValue=false)]
-        public double EnergyPerformance { get; set; }
+        public double? EnergyPerformance { get; set; }
     
         /// <summary>
         /// Energiklass

@@ -61,7 +61,7 @@ namespace SolidRpc.Test.Vitec.Types.Advertising.Models {
         /// GDPR informerad den
         /// </summary>
         [DataMember(Name="gdprApprovalDate",EmitDefaultValue=false)]
-        public DateTimeOffset GdprApprovalDate { get; set; }
+        public DateTimeOffset? GdprApprovalDate { get; set; }
     
         /// <summary>
         /// Uppgifter om nuvarande boende

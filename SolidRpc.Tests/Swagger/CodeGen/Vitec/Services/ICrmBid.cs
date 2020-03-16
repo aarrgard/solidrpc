@@ -40,8 +40,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Bid>> CrmBidGetList(
             string customerId,
-            string criteriaEstateId = default(string),
-            string criteriaContactId = default(string),
+            string criteriaEstateId = null,
+            string criteriaContactId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -53,8 +53,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Bid>> CrmBidGetHiddenBids(
             string customerId,
-            string criteriaEstateId = default(string),
-            string criteriaContactId = default(string),
+            string criteriaEstateId = null,
+            string criteriaContactId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

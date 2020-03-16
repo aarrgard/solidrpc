@@ -18,19 +18,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Datum
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public DateTimeOffset Date { get; set; }
+        public System.DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Fr&#229;n
         /// </summary>
         [DataMember(Name="startTime",EmitDefaultValue=false)]
-        public DateTimeOffset StartTime { get; set; }
+        public System.DateTimeOffset? StartTime { get; set; }
     
         /// <summary>
         /// Till
         /// </summary>
         [DataMember(Name="endTime",EmitDefaultValue=false)]
-        public DateTimeOffset EndTime { get; set; }
+        public System.DateTimeOffset? EndTime { get; set; }
     
         /// <summary>
         /// Kommentar
@@ -42,7 +42,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Bokningsbar fr&#229;n Internet
         /// </summary>
         [DataMember(Name="bookableFromInternet",EmitDefaultValue=false)]
-        public bool BookableFromInternet { get; set; }
+        public bool? BookableFromInternet { get; set; }
     
         /// <summary>
         /// Bokningsurl
@@ -54,7 +54,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Visa p&#229; Internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
-        public bool ShowOnInternet { get; set; }
+        public bool? ShowOnInternet { get; set; }
     
         /// <summary>
         /// Intressenter som varit p&#229; aktuell visning

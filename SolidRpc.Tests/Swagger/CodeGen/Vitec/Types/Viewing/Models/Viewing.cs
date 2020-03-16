@@ -18,19 +18,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// Starttid
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public DateTimeOffset StartsAt { get; set; }
+        public System.DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// Sluttid
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public DateTimeOffset EndsAt { get; set; }
+        public System.DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Visas p&#229; internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
-        public bool ShowOnInternet { get; set; }
+        public bool? ShowOnInternet { get; set; }
     
         /// <summary>
         /// Kommentar
@@ -42,19 +42,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// Max antal deltagare per visningtillf&#228;lle
         /// </summary>
         [DataMember(Name="participantPerTimeSlot",EmitDefaultValue=false)]
-        public int ParticipantPerTimeSlot { get; set; }
+        public int? ParticipantPerTimeSlot { get; set; }
     
         /// <summary>
         /// Bokningsbar p&#229; internet
         /// </summary>
         [DataMember(Name="bookableFromInternet",EmitDefaultValue=false)]
-        public bool BookableFromInternet { get; set; }
+        public bool? BookableFromInternet { get; set; }
     
         /// <summary>
         /// Bokningsbar p&#229; internet fram till
         /// </summary>
         [DataMember(Name="noLaterThen",EmitDefaultValue=false)]
-        public DateTimeOffset NoLaterThen { get; set; }
+        public System.DateTimeOffset? NoLaterThen { get; set; }
     
         /// <summary>
         /// URL till till Bookning

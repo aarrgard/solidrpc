@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,43 +11,43 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// Byteskrav
         /// </summary>
         [DataMember(Name="swapDemanded",EmitDefaultValue=false)]
-        public bool SwapDemanded { get; set; }
+        public bool? SwapDemanded { get; set; }
     
         /// <summary>
         /// Butik
         /// </summary>
         [DataMember(Name="retail",EmitDefaultValue=false)]
-        public bool Retail { get; set; }
+        public bool? Retail { get; set; }
     
         /// <summary>
         /// Kontorslokal
         /// </summary>
         [DataMember(Name="office",EmitDefaultValue=false)]
-        public bool Office { get; set; }
+        public bool? Office { get; set; }
     
         /// <summary>
         /// Industrilokal
         /// </summary>
         [DataMember(Name="industrial",EmitDefaultValue=false)]
-        public bool Industrial { get; set; }
+        public bool? Industrial { get; set; }
     
         /// <summary>
         /// Verkstadslokal
         /// </summary>
         [DataMember(Name="workshop",EmitDefaultValue=false)]
-        public bool Workshop { get; set; }
+        public bool? Workshop { get; set; }
     
         /// <summary>
         /// Kontorshotell
         /// </summary>
         [DataMember(Name="officeHotel",EmitDefaultValue=false)]
-        public bool OfficeHotel { get; set; }
+        public bool? OfficeHotel { get; set; }
     
         /// <summary>
         /// Lager/F&#246;rr&#229;dslokal
         /// </summary>
         [DataMember(Name="storage",EmitDefaultValue=false)]
-        public bool Storage { get; set; }
+        public bool? Storage { get; set; }
     
     }
 }

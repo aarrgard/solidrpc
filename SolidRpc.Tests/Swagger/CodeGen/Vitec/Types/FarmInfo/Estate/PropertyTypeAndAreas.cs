@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
     /// <summary>
@@ -23,13 +24,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
         /// Antal skiften
         /// </summary>
         [DataMember(Name="numberOfpartition",EmitDefaultValue=false)]
-        public int NumberOfpartition { get; set; }
+        public int? NumberOfpartition { get; set; }
     
         /// <summary>
         /// Areal p&#229; antal skiften
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
-        public double Area { get; set; }
+        public double? Area { get; set; }
     
         /// <summary>
         /// Samtaxerade fastigheter

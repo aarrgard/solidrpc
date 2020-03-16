@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Threading.Tasks;
 using SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models;
+using System;
 using System.Threading;
 using SolidRpc.Test.Vitec.Types.Estate.Models;
 using System.Collections.Generic;
@@ -33,21 +34,21 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<PublicAdvertisingEstateList> PublicAdvertisingEstateGetList(
             string customerId,
-            bool criteriaIncludeHouses = default(bool),
-            bool criteriaIncludeHousingCooperatives = default(bool),
-            bool criteriaIncludeCottages = default(bool),
-            bool criteriaIncludePlots = default(bool),
-            bool criteriaIncludeFarms = default(bool),
-            bool criteriaIncludeCommercialProperties = default(bool),
-            bool criteriaIncludeCondominiums = default(bool),
-            bool criteriaIncludeForeignProperties = default(bool),
-            bool criteriaIncludePremises = default(bool),
-            bool criteriaIncludeProjects = default(bool),
-            bool criteriaIncludeForSale = default(bool),
-            bool criteriaIncludeFutureSale = default(bool),
-            bool criteriaIncludeSoonForSale = default(bool),
-            string criteriaPrimaryAgentId = default(string),
-            string criteriaEstateId = default(string),
+            bool? criteriaIncludeHouses = null,
+            bool? criteriaIncludeHousingCooperatives = null,
+            bool? criteriaIncludeCottages = null,
+            bool? criteriaIncludePlots = null,
+            bool? criteriaIncludeFarms = null,
+            bool? criteriaIncludeCommercialProperties = null,
+            bool? criteriaIncludeCondominiums = null,
+            bool? criteriaIncludeForeignProperties = null,
+            bool? criteriaIncludePremises = null,
+            bool? criteriaIncludeProjects = null,
+            bool? criteriaIncludeForSale = null,
+            bool? criteriaIncludeFutureSale = null,
+            bool? criteriaIncludeSoonForSale = null,
+            string criteriaPrimaryAgentId = null,
+            string criteriaEstateId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

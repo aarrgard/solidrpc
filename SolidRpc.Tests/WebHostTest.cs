@@ -459,7 +459,7 @@ namespace SolidRpc.Tests
             /// <param name="config"></param>
             public void AddServerAndClientService<T>(T impl, string config) where T : class
             {
-                AddServerService(sc => sc.AddSolidRpcBindings(impl, c =>
+                AddServerService(sc => sc.AddSolidRpcSingletonBindings(impl, c =>
                 {
                     c.OpenApiSpec = config;
                     return true;

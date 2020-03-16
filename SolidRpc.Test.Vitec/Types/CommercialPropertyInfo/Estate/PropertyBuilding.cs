@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Test.Vitec.Types.Common.Estate;
 using SolidRpc.Test.Vitec.Types.Models.Api;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Huvudbyggnad
         /// </summary>
         [DataMember(Name="mainBuilding",EmitDefaultValue=false)]
-        public bool MainBuilding { get; set; }
+        public bool? MainBuilding { get; set; }
     
         /// <summary>
         /// Byggnadstyp
@@ -85,7 +86,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Antal rum
         /// </summary>
         [DataMember(Name="numberOfRooms",EmitDefaultValue=false)]
-        public double NumberOfRooms { get; set; }
+        public double? NumberOfRooms { get; set; }
     
         /// <summary>
         /// Varav sovrum
@@ -97,19 +98,19 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Byggnadsyta
         /// </summary>
         [DataMember(Name="buildingSpace",EmitDefaultValue=false)]
-        public double BuildingSpace { get; set; }
+        public double? BuildingSpace { get; set; }
     
         /// <summary>
         /// Biarea
         /// </summary>
         [DataMember(Name="biArea",EmitDefaultValue=false)]
-        public double BiArea { get; set; }
+        public double? BiArea { get; set; }
     
         /// <summary>
         /// Allm&#228;n beskrivning av interi&#246;ren

@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Budget.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.Budget.Models {
         /// Provision (exkl.moms) max 10 000 000kr
         /// </summary>
         [DataMember(Name="commission",EmitDefaultValue=false)]
-        public int Commission { get; set; }
+        public int? Commission { get; set; }
     
         /// <summary>
         /// Bost&#228;der

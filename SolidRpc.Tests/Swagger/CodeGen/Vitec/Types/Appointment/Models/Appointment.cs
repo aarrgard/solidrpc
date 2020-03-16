@@ -24,19 +24,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Appointment.Models {
         /// Startdatum och tid
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public DateTimeOffset StartsAt { get; set; }
+        public System.DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// Slutdatum och tid
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public DateTimeOffset EndsAt { get; set; }
+        public System.DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Hela dagen
         /// </summary>
         [DataMember(Name="allDayEvent",EmitDefaultValue=false)]
-        public bool AllDayEvent { get; set; }
+        public bool? AllDayEvent { get; set; }
     
         /// <summary>
         /// Anteckning
@@ -48,7 +48,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Appointment.Models {
         /// &#197;terkommande
         /// </summary>
         [DataMember(Name="recurrence",EmitDefaultValue=false)]
-        public bool Recurrence { get; set; }
+        public bool? Recurrence { get; set; }
     
         /// <summary>
         /// &#197;terkommande per &#229;r/m&#229;nad/vecka/dag
@@ -66,19 +66,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Appointment.Models {
         /// Interval
         /// </summary>
         [DataMember(Name="recurrenceInterval",EmitDefaultValue=false)]
-        public int RecurrenceInterval { get; set; }
+        public int? RecurrenceInterval { get; set; }
     
         /// <summary>
         /// M&#229;naden (anv&#228;nds f&#246;r m&#229;natliga m&#246;ten)
         /// </summary>
         [DataMember(Name="recurrenceMonth",EmitDefaultValue=false)]
-        public int RecurrenceMonth { get; set; }
+        public int? RecurrenceMonth { get; set; }
     
         /// <summary>
         /// Dag i m&#229;naden (anv&#228;ns f&#246;r &#229;rliga och m&#229;natliga m&#246;ten)
         /// </summary>
         [DataMember(Name="recurrenceDay",EmitDefaultValue=false)]
-        public int RecurrenceDay { get; set; }
+        public int? RecurrenceDay { get; set; }
     
     }
 }

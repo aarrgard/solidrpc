@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     /// <summary>
     /// 
@@ -71,7 +72,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Om omr&#229;det &#228;r arkiverat
         /// </summary>
         [DataMember(Name="areaArchived",EmitDefaultValue=false)]
-        public bool AreaArchived { get; set; }
+        public bool? AreaArchived { get; set; }
     
         /// <summary>
         /// Gatuadress

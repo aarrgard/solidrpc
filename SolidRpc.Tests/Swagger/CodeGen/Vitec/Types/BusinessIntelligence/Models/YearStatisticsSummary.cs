@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligence.Models {
@@ -11,7 +12,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligence.Models
         /// Aktuellt &#229;r
         /// </summary>
         [DataMember(Name="year",EmitDefaultValue=false)]
-        public int Year { get; set; }
+        public int? Year { get; set; }
     
         /// <summary>
         /// Lista p&#229; statestik per m&#229;nad

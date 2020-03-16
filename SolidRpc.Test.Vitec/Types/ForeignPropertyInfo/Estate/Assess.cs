@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="taxAssessmentYear",EmitDefaultValue=false)]
-        public int TaxAssessmentYear { get; set; }
+        public int? TaxAssessmentYear { get; set; }
     
         /// <summary>
         /// Prelimin&#228;rt taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="preliminaryAssessedValue",EmitDefaultValue=false)]
-        public bool PreliminaryAssessedValue { get; set; }
+        public bool? PreliminaryAssessedValue { get; set; }
     
         /// <summary>
         /// 
@@ -28,25 +29,25 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Byggnadsv&#228;rde
         /// </summary>
         [DataMember(Name="buildingValue",EmitDefaultValue=false)]
-        public double BuildingValue { get; set; }
+        public double? BuildingValue { get; set; }
     
         /// <summary>
         /// Markv&#228;rde
         /// </summary>
         [DataMember(Name="landValue",EmitDefaultValue=false)]
-        public double LandValue { get; set; }
+        public double? LandValue { get; set; }
     
         /// <summary>
         /// Summa taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="totalAssessedValue",EmitDefaultValue=false)]
-        public double TotalAssessedValue { get; set; }
+        public double? TotalAssessedValue { get; set; }
     
         /// <summary>
         /// Skatt/avgift
         /// </summary>
         [DataMember(Name="taxFee",EmitDefaultValue=false)]
-        public double TaxFee { get; set; }
+        public double? TaxFee { get; set; }
     
     }
 }

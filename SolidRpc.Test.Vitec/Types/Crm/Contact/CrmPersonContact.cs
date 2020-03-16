@@ -1,8 +1,8 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Models.Api;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
     /// <summary>
     /// OK
@@ -73,7 +73,7 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         /// Reklamutskick till&#229;ts
         /// </summary>
         [DataMember(Name="advertisingEnabled",EmitDefaultValue=false)]
-        public bool AdvertisingEnabled { get; set; }
+        public bool? AdvertisingEnabled { get; set; }
     
         /// <summary>
         /// Anteckning
@@ -91,13 +91,13 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         /// Skapad
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// &#196;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
     }
 }

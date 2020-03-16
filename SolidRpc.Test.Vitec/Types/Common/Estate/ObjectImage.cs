@@ -49,13 +49,13 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Sorteringsnummer
         /// </summary>
         [DataMember(Name="orderNumber",EmitDefaultValue=false)]
-        public int OrderNumber { get; set; }
+        public int? OrderNumber { get; set; }
     
         /// <summary>
         /// Sorteringsnummer p&#229; hemnet
         /// </summary>
         [DataMember(Name="hemnetOrderNumber",EmitDefaultValue=false)]
-        public int HemnetOrderNumber { get; set; }
+        public int? HemnetOrderNumber { get; set; }
     
         /// <summary>
         /// Bildid
@@ -67,13 +67,13 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Senast bilden &#228;ndrades
         /// </summary>
         [DataMember(Name="dateChangedImageData",EmitDefaultValue=false)]
-        public DateTimeOffset DateChangedImageData { get; set; }
+        public DateTimeOffset? DateChangedImageData { get; set; }
     
         /// <summary>
         /// Bildurl
@@ -85,7 +85,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Till&#229;t visning p&#229; internet
         /// </summary>
         [DataMember(Name="showImageOnInternet",EmitDefaultValue=false)]
-        public bool ShowImageOnInternet { get; set; }
+        public bool? ShowImageOnInternet { get; set; }
     
         /// <summary>
         /// Bildformat

@@ -273,7 +273,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="implementationAssembly"></param>
         /// <param name="configurator"></param>
         public static IServiceCollection AddSolidRpcBindings(
-            this IServiceCollection sc, Assembly interfaceAssembly, 
+            this IServiceCollection sc, 
+            Assembly interfaceAssembly, 
             Assembly implementationAssembly = null, 
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
@@ -289,14 +290,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     continue;
                 }
-                Type impl = null;
-                if (implementationAssembly != null)
-                {
-                    impl = implementationAssembly.GetTypes()
+                Type impl = implementationAssembly.GetTypes()
                         .Where(o => t.IsAssignableFrom(o))
-                        .Where(o => o != t)
+                        .OrderBy(o => o == t ? 1 : 0)
                         .SingleOrDefault();
-                }
                 if(impl == null)
                 {
                     continue;
@@ -345,8 +342,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="impl"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
-        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcBindings<T>(
-            this IServiceCollection sc, T impl, 
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcSingletonBindings<T>(
+            this IServiceCollection sc, 
+            T impl, 
             Func<ISolidRpcOpenApiConfig, bool> configurator = null) where T:class 
         {
             if(impl != null)

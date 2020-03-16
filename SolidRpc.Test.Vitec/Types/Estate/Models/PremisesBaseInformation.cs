@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Common.Estate;
+using System;
 namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     /// <summary>
     /// 
@@ -35,7 +36,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
-        public bool SensitiveBusiness { get; set; }
+        public bool? SensitiveBusiness { get; set; }
     
         /// <summary>
         /// Fastighetsbeteckning

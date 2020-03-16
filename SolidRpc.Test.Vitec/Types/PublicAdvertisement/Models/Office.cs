@@ -71,7 +71,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// N&#228;r kontoret senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Juridiskt namn

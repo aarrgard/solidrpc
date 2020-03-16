@@ -17,19 +17,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Datum
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public DateTimeOffset Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Belopp
         /// </summary>
         [DataMember(Name="amount",EmitDefaultValue=false)]
-        public double Amount { get; set; }
+        public double? Amount { get; set; }
     
         /// <summary>
         /// &#196;r ett skrifrligt pantbrev
         /// </summary>
         [DataMember(Name="writtenMortgages",EmitDefaultValue=false)]
-        public bool WrittenMortgages { get; set; }
+        public bool? WrittenMortgages { get; set; }
     
         /// <summary>
         /// Anteckning
@@ -41,7 +41,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Inoml&#228;ge
         /// </summary>
         [DataMember(Name="within",EmitDefaultValue=false)]
-        public double Within { get; set; }
+        public double? Within { get; set; }
     
     }
 }

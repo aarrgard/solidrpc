@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Models.Api;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -12,13 +12,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Om parter har godk&#228;nt att slutpris f&#229;r visas.
         /// </summary>
         [DataMember(Name="partsApproveFinalPriceVisible",EmitDefaultValue=false)]
-        public bool PartsApproveFinalPriceVisible { get; set; }
+        public bool? PartsApproveFinalPriceVisible { get; set; }
     
         /// <summary>
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="contractDate",EmitDefaultValue=false)]
-        public DateTimeOffset ContractDate { get; set; }
+        public DateTimeOffset? ContractDate { get; set; }
     
         /// <summary>
         /// Slutpris

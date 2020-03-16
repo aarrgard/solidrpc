@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,49 +11,49 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// Nyproduktion
         /// </summary>
         [DataMember(Name="isNewHome",EmitDefaultValue=false)]
-        public bool IsNewHome { get; set; }
+        public bool? IsNewHome { get; set; }
     
         /// <summary>
         /// L&#228;genhet
         /// </summary>
         [DataMember(Name="isAppartment",EmitDefaultValue=false)]
-        public bool IsAppartment { get; set; }
+        public bool? IsAppartment { get; set; }
     
         /// <summary>
         /// Radhus
         /// </summary>
         [DataMember(Name="isTerraceHouse",EmitDefaultValue=false)]
-        public bool IsTerraceHouse { get; set; }
+        public bool? IsTerraceHouse { get; set; }
     
         /// <summary>
         /// Tomt
         /// </summary>
         [DataMember(Name="isPlot",EmitDefaultValue=false)]
-        public bool IsPlot { get; set; }
+        public bool? IsPlot { get; set; }
     
         /// <summary>
         /// Villa
         /// </summary>
         [DataMember(Name="isHouse",EmitDefaultValue=false)]
-        public bool IsHouse { get; set; }
+        public bool? IsHouse { get; set; }
     
         /// <summary>
         /// &#214;vrig bostad
         /// </summary>
         [DataMember(Name="isOtherType",EmitDefaultValue=false)]
-        public bool IsOtherType { get; set; }
+        public bool? IsOtherType { get; set; }
     
         /// <summary>
         /// Kommande
         /// </summary>
         [DataMember(Name="isFutureSale",EmitDefaultValue=false)]
-        public bool IsFutureSale { get; set; }
+        public bool? IsFutureSale { get; set; }
     
         /// <summary>
         /// Snart till salu
         /// </summary>
         [DataMember(Name="isSoonForSale",EmitDefaultValue=false)]
-        public bool IsSoonForSale { get; set; }
+        public bool? IsSoonForSale { get; set; }
     
     }
 }

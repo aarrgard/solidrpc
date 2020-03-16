@@ -17,13 +17,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// N&#228;r visningen startar
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public DateTimeOffset StartsAt { get; set; }
+        public DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// N&#228;r visningen slutar
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public DateTimeOffset EndsAt { get; set; }
+        public DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Kommentar

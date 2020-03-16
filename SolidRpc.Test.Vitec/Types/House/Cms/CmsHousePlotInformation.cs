@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.House.Cms {
     /// <summary>
     /// 
@@ -34,7 +35,7 @@ namespace SolidRpc.Test.Vitec.Types.House.Cms {
         /// Tomtarea
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
-        public double Area { get; set; }
+        public double? Area { get; set; }
     
     }
 }

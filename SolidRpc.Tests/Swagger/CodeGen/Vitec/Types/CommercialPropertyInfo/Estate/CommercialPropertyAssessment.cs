@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
     /// 
@@ -23,19 +24,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         /// Prelimin&#228;rt taxeringsv&#228;rde
         /// </summary>
         [DataMember(Name="preliminaryAssessedValue",EmitDefaultValue=false)]
-        public bool PreliminaryAssessedValue { get; set; }
+        public bool? PreliminaryAssessedValue { get; set; }
     
         /// <summary>
         /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="taxYear",EmitDefaultValue=false)]
-        public int TaxYear { get; set; }
+        public int? TaxYear { get; set; }
     
         /// <summary>
         /// Skatt/avgift
         /// </summary>
         [DataMember(Name="taxFee",EmitDefaultValue=false)]
-        public double TaxFee { get; set; }
+        public double? TaxFee { get; set; }
     
     }
 }

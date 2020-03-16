@@ -28,5 +28,10 @@ namespace SolidRpc.OpenApi.Model.Agnostic
         /// The description of the property.
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Is this property required
+        /// </summary>
+        public bool Required { get; set; }
     }
 }

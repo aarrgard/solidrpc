@@ -17,13 +17,13 @@ namespace SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement {
         /// Dag f&#246;r bes&#246;ket. (ev. tidangivelse ignoreras)
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public DateTimeOffset Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Antal bes&#246;k.
         /// </summary>
         [DataMember(Name="count",EmitDefaultValue=false)]
-        public int Count { get; set; }
+        public int? Count { get; set; }
     
     }
 }

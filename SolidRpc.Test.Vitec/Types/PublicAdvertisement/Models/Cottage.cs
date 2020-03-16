@@ -132,19 +132,19 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Om budgivning p&#229;g&#229;r
         /// </summary>
         [DataMember(Name="acceptingBids",EmitDefaultValue=false)]
-        public bool AcceptingBids { get; set; }
+        public bool? AcceptingBids { get; set; }
     
         /// <summary>
         /// N&#228;r bostaden senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Tilltr&#228;de vid
         /// </summary>
         [DataMember(Name="admissionAt",EmitDefaultValue=false)]
-        public DateTimeOffset AdmissionAt { get; set; }
+        public DateTimeOffset? AdmissionAt { get; set; }
     
         /// <summary>
         /// Url:er

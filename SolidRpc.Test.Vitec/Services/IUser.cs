@@ -19,9 +19,9 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="criteriaCustomerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.User>> UserGetUser(
-            string criteriaUserId = default(string),
-            string criteriaSearchText = default(string),
-            string criteriaCustomerId = default(string),
+            string criteriaUserId = null,
+            string criteriaSearchText = null,
+            string criteriaCustomerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -33,9 +33,9 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="criteriaCustomerId">Kundid</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<User.User>> UserGetAllUsers(
-            string criteriaUserId = default(string),
-            string criteriaSearchText = default(string),
-            string criteriaCustomerId = default(string),
+            string criteriaUserId = null,
+            string criteriaSearchText = null,
+            string criteriaCustomerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -46,9 +46,9 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="criteriaPassword">Lösenord</param>
         /// <param name="cancellationToken"></param>
         Task<bool> UserAuthenticateUser(
-            string criteriaCustomerId = default(string),
-            string criteriaUserName = default(string),
-            string criteriaPassword = default(string),
+            string criteriaCustomerId = null,
+            string criteriaUserName = null,
+            string criteriaPassword = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

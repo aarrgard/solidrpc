@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
     /// <summary>
     /// 
@@ -28,13 +29,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         /// Visningsintressent
         /// </summary>
         [DataMember(Name="viewing",EmitDefaultValue=false)]
-        public bool Viewing { get; set; }
+        public bool? Viewing { get; set; }
     
         /// <summary>
         /// Budgivare
         /// </summary>
         [DataMember(Name="bidder",EmitDefaultValue=false)]
-        public bool Bidder { get; set; }
+        public bool? Bidder { get; set; }
     
         /// <summary>
         /// Vilken niv&#229; av intresse som spekulanten har p&#229; bostaden

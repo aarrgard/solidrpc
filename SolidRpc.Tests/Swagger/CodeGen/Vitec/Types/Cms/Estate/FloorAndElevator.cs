@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
         /// V&#229;ning
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
-        public double Floor { get; set; }
+        public double? Floor { get; set; }
     
         /// <summary>
         /// Antal v&#229;ningar
         /// </summary>
         [DataMember(Name="totalNumberFloors",EmitDefaultValue=false)]
-        public int TotalNumberFloors { get; set; }
+        public int? TotalNumberFloors { get; set; }
     
         /// <summary>
         /// Beskrivning av v&#229;ningsplan
@@ -28,7 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cms.Estate {
         /// Hiss
         /// </summary>
         [DataMember(Name="elevator",EmitDefaultValue=false)]
-        public bool Elevator { get; set; }
+        public bool? Elevator { get; set; }
     
         /// <summary>
         /// Sammanst&#228;llning balkong/uteplats

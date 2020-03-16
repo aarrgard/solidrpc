@@ -1,9 +1,9 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
-using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
     /// <summary>
     /// 
@@ -20,7 +20,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         /// Arkiverad
         /// </summary>
         [DataMember(Name="archived",EmitDefaultValue=false)]
-        public bool Archived { get; set; }
+        public bool? Archived { get; set; }
     
         /// <summary>
         /// Externt id
@@ -44,7 +44,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         /// Visa p&#229; internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
-        public bool ShowOnInternet { get; set; }
+        public bool? ShowOnInternet { get; set; }
     
         /// <summary>
         /// Omgivning
@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Area.Models {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public System.DateTimeOffset? DateChanged { get; set; }
     
     }
 }

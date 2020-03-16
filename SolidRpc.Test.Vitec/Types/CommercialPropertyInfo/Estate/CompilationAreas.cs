@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using System;
 namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
     /// 
@@ -107,25 +108,25 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Summa yta
         /// </summary>
         [DataMember(Name="area",EmitDefaultValue=false)]
-        public double Area { get; set; }
+        public double? Area { get; set; }
     
         /// <summary>
         /// Summa hyresint&#228;kter
         /// </summary>
         [DataMember(Name="rentIncomes",EmitDefaultValue=false)]
-        public double RentIncomes { get; set; }
+        public double? RentIncomes { get; set; }
     
         /// <summary>
         /// Summa &#246;vriga int&#228;kter
         /// </summary>
         [DataMember(Name="otherIncomes",EmitDefaultValue=false)]
-        public double OtherIncomes { get; set; }
+        public double? OtherIncomes { get; set; }
     
         /// <summary>
         /// Summa schabloniserad driftkostnad
         /// </summary>
         [DataMember(Name="operatingCosts",EmitDefaultValue=false)]
-        public double OperatingCosts { get; set; }
+        public double? OperatingCosts { get; set; }
     
     }
 }

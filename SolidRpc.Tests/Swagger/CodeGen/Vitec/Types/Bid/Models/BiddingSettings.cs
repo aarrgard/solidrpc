@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Bid.Models {
     /// <summary>
     /// OK
@@ -16,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Bid.Models {
         /// Sms budgivning
         /// </summary>
         [DataMember(Name="smsBidding",EmitDefaultValue=false)]
-        public bool SmsBidding { get; set; }
+        public bool? SmsBidding { get; set; }
     
     }
 }

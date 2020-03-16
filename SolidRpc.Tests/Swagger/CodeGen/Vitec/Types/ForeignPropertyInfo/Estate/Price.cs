@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate {
     /// <summary>
@@ -10,19 +11,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignPropertyInfo.Estate 
         /// Utg&#229;ngspris
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
-        public double StartingPrice { get; set; }
+        public double? StartingPrice { get; set; }
     
         /// <summary>
         /// Slutpris
         /// </summary>
         [DataMember(Name="finalPrice",EmitDefaultValue=false)]
-        public double FinalPrice { get; set; }
+        public double? FinalPrice { get; set; }
     
         /// <summary>
         /// Valuta
         /// </summary>
         [DataMember(Name="exchangeRate",EmitDefaultValue=false)]
-        public double ExchangeRate { get; set; }
+        public double? ExchangeRate { get; set; }
     
         /// <summary>
         /// Valuta

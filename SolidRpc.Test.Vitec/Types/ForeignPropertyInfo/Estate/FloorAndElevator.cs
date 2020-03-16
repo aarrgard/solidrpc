@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
     /// <summary>
     /// 
@@ -22,13 +23,13 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Totalt antal v&#229;ningar
         /// </summary>
         [DataMember(Name="totalNumberFloors",EmitDefaultValue=false)]
-        public int TotalNumberFloors { get; set; }
+        public int? TotalNumberFloors { get; set; }
     
         /// <summary>
         /// V&#229;ning
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
-        public double Floor { get; set; }
+        public double? Floor { get; set; }
     
     }
 }

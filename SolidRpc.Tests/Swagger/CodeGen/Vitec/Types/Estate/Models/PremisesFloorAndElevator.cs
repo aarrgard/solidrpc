@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     /// <summary>
     /// 
@@ -16,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         /// Hiss
         /// </summary>
         [DataMember(Name="elevator",EmitDefaultValue=false)]
-        public bool Elevator { get; set; }
+        public bool? Elevator { get; set; }
     
         /// <summary>
         /// V&#229;ningar

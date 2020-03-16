@@ -1,8 +1,8 @@
 using System.CodeDom.Compiler;
 using System.Threading.Tasks;
+using System;
 using System.Threading;
 using System.Collections.Generic;
-using System;
 using System.IO;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
 namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="b">The boolean to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<bool> ProxyBooleanInQuery(
-            bool b = default(bool),
+            bool? b = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -26,7 +26,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="s">The short to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<int> ProxyShortInQuery(
-            int s = default(int),
+            int? s = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -35,7 +35,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="b">The byte to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<int> ProxyByteInQuery(
-            int b = default(int),
+            int? b = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -44,7 +44,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="i">The interger to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<int> ProxyIntInQuery(
-            int i = default(int),
+            int? i = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -53,7 +53,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="i">The interger to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<int> ProxyIntInForm(
-            int i = default(int),
+            int? i = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -62,7 +62,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="i">The interger to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<int> ProxyIntInHeader(
-            int i = default(int),
+            int? i = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="iarr">The interger to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<IEnumerable<int>>> ProxyIntArrArrInQuery(
-            IEnumerable<IEnumerable<int>> iarr = default(IEnumerable<IEnumerable<int>>),
+            IEnumerable<IEnumerable<int>> iarr = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -89,7 +89,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="l">The long to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<long> ProxyLongInQuery(
-            long l = default(long),
+            long? l = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -98,7 +98,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="f">The float to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<float> ProxyFloatInQuery(
-            float f = default(float),
+            float? f = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -107,7 +107,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="d">The double to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<double> ProxyDoubleInQuery(
-            double d = default(double),
+            double? d = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -116,7 +116,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="s">The string to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<string> ProxyStringInQuery(
-            string s = default(string),
+            string s = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -125,7 +125,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="g">The guid to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<Guid> ProxyGuidInQuery(
-            Guid g = default(Guid),
+            System.Guid? g = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -134,7 +134,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="d">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<DateTimeOffset> ProxyDateTimeOffsetInQuery(
-            DateTimeOffset d = default(DateTimeOffset),
+            System.DateTimeOffset? d = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -143,7 +143,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="d">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<DateTimeOffset> ProxyDateTimeInQuery(
-            DateTimeOffset d = default(DateTimeOffset),
+            System.DateTimeOffset? d = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -152,7 +152,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="dArr">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<DateTimeOffset>> ProxyDateTimeArrayInQuery(
-            IEnumerable<DateTimeOffset> dArr = default(IEnumerable<DateTimeOffset>),
+            IEnumerable<DateTimeOffset> dArr = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -161,7 +161,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="dArr">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<DateTimeOffset>> ProxyDateTimeArrayInForm(
-            IEnumerable<DateTimeOffset> dArr = default(IEnumerable<DateTimeOffset>),
+            IEnumerable<DateTimeOffset> dArr = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -170,7 +170,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="ff">The stream to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<Stream> ProxyStream(
-            Stream ff = default(Stream),
+            Stream ff = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -179,7 +179,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="co1">The complex object to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<ComplexObject1> ProxyComplexObject1InBody(
-            ComplexObject1 co1 = default(ComplexObject1),
+            ComplexObject1 co1 = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

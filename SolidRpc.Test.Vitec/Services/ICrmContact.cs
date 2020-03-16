@@ -24,13 +24,13 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<CrmContactList> CrmContactSelect(
             string customerId,
-            string criteriaAgentId = default(string),
-            DateTimeOffset criteriaCreatedAtFrom = default(DateTimeOffset),
-            DateTimeOffset criteriaCreatedAtTo = default(DateTimeOffset),
-            DateTimeOffset criteriaChangedAtFrom = default(DateTimeOffset),
-            DateTimeOffset criteriaChangedAtTo = default(DateTimeOffset),
-            string criteriaCustomFieldName = default(string),
-            string criteriaCustomFieldValue = default(string),
+            string criteriaAgentId = null,
+            DateTimeOffset? criteriaCreatedAtFrom = null,
+            DateTimeOffset? criteriaCreatedAtTo = null,
+            DateTimeOffset? criteriaChangedAtFrom = null,
+            DateTimeOffset? criteriaChangedAtTo = null,
+            string criteriaCustomFieldName = null,
+            string criteriaCustomFieldValue = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

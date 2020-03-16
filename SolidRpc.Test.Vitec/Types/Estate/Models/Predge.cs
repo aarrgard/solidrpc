@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     /// <summary>
     /// 
@@ -11,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         /// Pantsatt
         /// </summary>
         [DataMember(Name="pawned",EmitDefaultValue=false)]
-        public bool Pawned { get; set; }
+        public bool? Pawned { get; set; }
     
         /// <summary>
         /// Uppgiften kontrollerad
         /// </summary>
         [DataMember(Name="taskControlled",EmitDefaultValue=false)]
-        public DateTimeOffset TaskControlled { get; set; }
+        public DateTimeOffset? TaskControlled { get; set; }
     
         /// <summary>
         /// Anteckningar

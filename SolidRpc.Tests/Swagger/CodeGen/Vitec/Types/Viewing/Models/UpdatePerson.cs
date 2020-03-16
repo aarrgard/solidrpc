@@ -2,8 +2,8 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
-using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CustomField.Models;
 using System;
+using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CustomField.Models;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
     /// <summary>
     /// 
@@ -56,7 +56,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// 
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
-        public bool WishAdvertising { get; set; }
+        public bool? WishAdvertising { get; set; }
     
         /// <summary>
         /// 
@@ -122,19 +122,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// 
         /// </summary>
         [DataMember(Name="approval",EmitDefaultValue=false)]
-        public bool Approval { get; set; }
+        public bool? Approval { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="approvalDate",EmitDefaultValue=false)]
-        public DateTimeOffset ApprovalDate { get; set; }
+        public System.DateTimeOffset? ApprovalDate { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="gdprApprovalDate",EmitDefaultValue=false)]
-        public DateTimeOffset GdprApprovalDate { get; set; }
+        public System.DateTimeOffset? GdprApprovalDate { get; set; }
     
         /// <summary>
         /// 

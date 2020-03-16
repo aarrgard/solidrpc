@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Longitud
         /// </summary>
         [DataMember(Name="longitude",EmitDefaultValue=false)]
-        public double Longitude { get; set; }
+        public double? Longitude { get; set; }
     
         /// <summary>
         /// Latitud
         /// </summary>
         [DataMember(Name="latitude",EmitDefaultValue=false)]
-        public double Latitude { get; set; }
+        public double? Latitude { get; set; }
     
     }
 }

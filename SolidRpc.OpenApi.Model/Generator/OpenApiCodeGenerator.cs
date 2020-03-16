@@ -123,7 +123,8 @@ namespace SolidRpc.OpenApi.Model.Generator
                     {
                         PropertyName = PropertyNameMapper(o.Name),
                         PropertyType = DefinitionMapper(settings, o.Type),
-                        Description = o.Description
+                        Description = o.Description,
+                        Required = o.Required
                     };
                     if(o.Name != ap.PropertyName)
                     {
@@ -291,6 +292,10 @@ namespace SolidRpc.OpenApi.Model.Generator
                 foreach (var prop in cSharpObject.Properties)
                 {
                     var propType = GetClass(csharpRepository, prop.PropertyType);
+                    if(!prop.Required && (propType.RuntimeType?.IsValueType ?? false)) 
+                    {
+                        propType = csharpRepository.GetClass($"System.Nullable<{propType.FullName}>");
+                    }
                     var csProp = new Model.CSharp.Impl.CSharpProperty(cls, prop.PropertyName, propType);
                     csProp.ParseComment($"<summary>{prop.Description}</summary>");
                     if(prop.DataMember != null)

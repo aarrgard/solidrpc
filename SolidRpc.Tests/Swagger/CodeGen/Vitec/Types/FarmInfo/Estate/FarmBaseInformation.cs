@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
     /// <summary>
     /// 
@@ -36,7 +37,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
         /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
-        public bool SensitiveBusiness { get; set; }
+        public bool? SensitiveBusiness { get; set; }
     
         /// <summary>
         /// Fastighetsbeteckning

@@ -38,7 +38,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public System.DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Gatuadress
@@ -68,7 +68,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate {
         /// P&#229;g&#229;r bud Ja/Nej
         /// </summary>
         [DataMember(Name="bidding",EmitDefaultValue=false)]
-        public bool Bidding { get; set; }
+        public bool? Bidding { get; set; }
     
         /// <summary>
         /// Objektnummer

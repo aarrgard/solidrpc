@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Energideklarationsdatum
         /// </summary>
         [DataMember(Name="energyDeclarationDate",EmitDefaultValue=false)]
-        public DateTimeOffset EnergyDeclarationDate { get; set; }
+        public DateTimeOffset? EnergyDeclarationDate { get; set; }
     
         /// <summary>
         /// Energif&#246;rbrukning

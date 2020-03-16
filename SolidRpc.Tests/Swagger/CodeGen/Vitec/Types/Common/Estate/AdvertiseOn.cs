@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
@@ -11,43 +12,43 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Visar om objektet ska annonserars p&#229; hemsida
         /// </summary>
         [DataMember(Name="homepage",EmitDefaultValue=false)]
-        public bool Homepage { get; set; }
+        public bool? Homepage { get; set; }
     
         /// <summary>
         /// Visa som kommande
         /// </summary>
         [DataMember(Name="showAsComming",EmitDefaultValue=false)]
-        public bool ShowAsComming { get; set; }
+        public bool? ShowAsComming { get; set; }
     
         /// <summary>
         /// Visa som dagens objekt
         /// </summary>
         [DataMember(Name="showTodaysHousing",EmitDefaultValue=false)]
-        public bool ShowTodaysHousing { get; set; }
+        public bool? ShowTodaysHousing { get; set; }
     
         /// <summary>
         /// D&#246;lj pris
         /// </summary>
         [DataMember(Name="hidePrice",EmitDefaultValue=false)]
-        public bool HidePrice { get; set; }
+        public bool? HidePrice { get; set; }
     
         /// <summary>
         /// D&#246;lj l&#228;ge
         /// </summary>
         [DataMember(Name="hideAddress",EmitDefaultValue=false)]
-        public bool HideAddress { get; set; }
+        public bool? HideAddress { get; set; }
     
         /// <summary>
         /// Visa in bildslinga
         /// </summary>
         [DataMember(Name="showInImageLoop",EmitDefaultValue=false)]
-        public bool ShowInImageLoop { get; set; }
+        public bool? ShowInImageLoop { get; set; }
     
         /// <summary>
         /// Visa som referensobjekt
         /// </summary>
         [DataMember(Name="showAsReferenceHousing",EmitDefaultValue=false)]
-        public bool ShowAsReferenceHousing { get; set; }
+        public bool? ShowAsReferenceHousing { get; set; }
     
         /// <summary>
         /// Byteskravtext
@@ -83,7 +84,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Visa som f&#246;rhandsgranskning
         /// </summary>
         [DataMember(Name="showAsPreview",EmitDefaultValue=false)]
-        public bool ShowAsPreview { get; set; }
+        public bool? ShowAsPreview { get; set; }
     
     }
 }

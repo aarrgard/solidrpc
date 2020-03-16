@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     /// <summary>
     /// 
@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Arrende kr/&#229;r
         /// </summary>
         [DataMember(Name="leaseFee",EmitDefaultValue=false)]
-        public double LeaseFee { get; set; }
+        public double? LeaseFee { get; set; }
     
         /// <summary>
         /// Kommentar
@@ -23,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// L&#246;ptid
         /// </summary>
         [DataMember(Name="leaseUntil",EmitDefaultValue=false)]
-        public DateTimeOffset LeaseUntil { get; set; }
+        public DateTimeOffset? LeaseUntil { get; set; }
     
         /// <summary>
         /// Uppl&#229;tare

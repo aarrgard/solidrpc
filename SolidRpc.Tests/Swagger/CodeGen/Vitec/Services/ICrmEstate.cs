@@ -97,7 +97,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<CrmEstateMarketplace>> CrmEstateGetMarketplaces(
             string customerId,
-            string criteriaEstateType = default(string),
+            string criteriaEstateType = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

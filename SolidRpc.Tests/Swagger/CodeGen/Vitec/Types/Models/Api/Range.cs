@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api {
         /// H&#246;gsta v&#228;rdet i intervallet
         /// </summary>
         [DataMember(Name="maxValue",EmitDefaultValue=false)]
-        public double MaxValue { get; set; }
+        public double? MaxValue { get; set; }
     
         /// <summary>
         /// Minsta v&#228;rdet i intervallet
         /// </summary>
         [DataMember(Name="minValue",EmitDefaultValue=false)]
-        public double MinValue { get; set; }
+        public double? MinValue { get; set; }
     
     }
 }

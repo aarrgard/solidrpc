@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate;
@@ -12,19 +13,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CondominiumInfo.Estate {
         /// Nyproduktion
         /// </summary>
         [DataMember(Name="newConstruction",EmitDefaultValue=false)]
-        public bool NewConstruction { get; set; }
+        public bool? NewConstruction { get; set; }
     
         /// <summary>
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Biarea
         /// </summary>
         [DataMember(Name="otherSpace",EmitDefaultValue=false)]
-        public double OtherSpace { get; set; }
+        public double? OtherSpace { get; set; }
     
         /// <summary>
         /// Fastighetsbeteckning
@@ -84,7 +85,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CondominiumInfo.Estate {
         /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
-        public bool SensitiveBusiness { get; set; }
+        public bool? SensitiveBusiness { get; set; }
     
         /// <summary>
         /// Bostadstyp

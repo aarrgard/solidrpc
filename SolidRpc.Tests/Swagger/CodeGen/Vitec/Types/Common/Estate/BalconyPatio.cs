@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Tomtarea
         /// </summary>
         [DataMember(Name="squereMeterype",EmitDefaultValue=false)]
-        public int SquereMeterype { get; set; }
+        public int? SquereMeterype { get; set; }
     
         /// <summary>
         /// &#214;vrigt tomt
@@ -34,19 +35,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Balkong
         /// </summary>
         [DataMember(Name="balcony",EmitDefaultValue=false)]
-        public bool Balcony { get; set; }
+        public bool? Balcony { get; set; }
     
         /// <summary>
         /// Uteplats
         /// </summary>
         [DataMember(Name="patio",EmitDefaultValue=false)]
-        public bool Patio { get; set; }
+        public bool? Patio { get; set; }
     
         /// <summary>
         /// Bilplats
         /// </summary>
         [DataMember(Name="parkingLot",EmitDefaultValue=false)]
-        public bool ParkingLot { get; set; }
+        public bool? ParkingLot { get; set; }
     
     }
 }

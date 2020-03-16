@@ -30,7 +30,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// N&#228;r m&#228;klaren senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Telefonnummer

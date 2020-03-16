@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     /// <summary>
@@ -10,19 +11,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Utg&#229;ngspris (SEK)
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
-        public double StartingPrice { get; set; }
+        public double? StartingPrice { get; set; }
     
         /// <summary>
         /// Slutpris (SEK)
         /// </summary>
         [DataMember(Name="finalPrice",EmitDefaultValue=false)]
-        public double FinalPrice { get; set; }
+        public double? FinalPrice { get; set; }
     
         /// <summary>
         /// Pris i en annan valuta
         /// </summary>
         [DataMember(Name="priceInOtherCurrencie",EmitDefaultValue=false)]
-        public double PriceInOtherCurrencie { get; set; }
+        public double? PriceInOtherCurrencie { get; set; }
     
         /// <summary>
         /// Annan valuta

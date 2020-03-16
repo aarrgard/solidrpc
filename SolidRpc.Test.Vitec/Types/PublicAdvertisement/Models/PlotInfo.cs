@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Tomtarea (m&#178;)
         /// </summary>
         [DataMember(Name="plotSize",EmitDefaultValue=false)]
-        public double PlotSize { get; set; }
+        public double? PlotSize { get; set; }
     
     }
 }

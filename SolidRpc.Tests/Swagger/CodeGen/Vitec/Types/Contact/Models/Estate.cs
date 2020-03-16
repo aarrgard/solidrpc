@@ -123,7 +123,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         /// &#214;nskar reklamutskick
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
-        public bool WishAdvertising { get; set; }
+        public bool? WishAdvertising { get; set; }
     
         /// <summary>
         /// Anteckning
@@ -141,13 +141,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Contact.Models {
         /// Skapad
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
-        public DateTimeOffset CreatedAt { get; set; }
+        public System.DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// &#196;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public System.DateTimeOffset? ChangedAt { get; set; }
     
     }
 }

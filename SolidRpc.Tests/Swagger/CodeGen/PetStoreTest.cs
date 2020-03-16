@@ -147,7 +147,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             Assert.AreEqual(1, petMoq.Invocations.Count);
 
             petMoq.Setup(o => o.DeletePet(It.Is<long>(a => a == pet.Id), It.Is<string>(a => a == api_key), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            await petProxy.DeletePet(pet.Id, api_key);
+            await petProxy.DeletePet(pet.Id.Value, api_key);
             Assert.AreEqual(2, petMoq.Invocations.Count);
 
             petMoq.Setup(o => o.FindPetsByStatus(It.Is<IEnumerable<string>>(a => CompareStructs(a, statuses)), It.IsAny<CancellationToken>())).Returns(Task.FromResult(new[] { pet }.AsEnumerable()));
@@ -159,7 +159,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             Assert.AreEqual(4, petMoq.Invocations.Count);
 
             petMoq.Setup(o => o.GetPetById(It.Is<long>(a => a == pet.Id), It.IsAny<CancellationToken>())).Returns(Task.FromResult(pet));
-            CompareStructs(pet, await petProxy.GetPetById(pet.Id));
+            CompareStructs(pet, await petProxy.GetPetById(pet.Id.Value));
             Assert.AreEqual(5, petMoq.Invocations.Count);
 
             petMoq.Setup(o => o.UpdatePet(It.Is<Petstore.Types.Pet>(a => CompareStructs(a,pet)), It.IsAny<CancellationToken>())).Returns(Task.FromResult(pet));
@@ -167,12 +167,12 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             Assert.AreEqual(6, petMoq.Invocations.Count);
 
             petMoq.Setup(o => o.UpdatePetWithForm(It.Is<long>(a => a == pet.Id), It.Is<string>(a => a == pet.Name), It.Is<string>(a => a == pet.Status), It.IsAny<CancellationToken>())).Returns(Task.FromResult(pet));
-            await petProxy.UpdatePetWithForm(pet.Id, pet.Name, pet.Status);
+            await petProxy.UpdatePetWithForm(pet.Id.Value, pet.Name, pet.Status);
             Assert.AreEqual(7, petMoq.Invocations.Count);
 
             var streamContent = new byte[] { 1, 2, 3 };
             petMoq.Setup(o => o.UploadFile(It.Is<long>(a => a == pet.Id), It.Is<string>(a => a == "Additional data"), It.Is<Stream>(a => CompareStructs(a, new MemoryStream(streamContent))), It.IsAny<CancellationToken>())).Returns(Task.FromResult(apiResponse));
-            CompareStructs(apiResponse, await petProxy.UploadFile(pet.Id, "Additional data", new MemoryStream(streamContent)));
+            CompareStructs(apiResponse, await petProxy.UploadFile(pet.Id.Value, "Additional data", new MemoryStream(streamContent)));
             Assert.AreEqual(8, petMoq.Invocations.Count);
 
 
@@ -184,11 +184,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             Assert.AreEqual(1, storeMoq.Invocations.Count);
 
             storeMoq.Setup(o => o.DeleteOrder(It.Is<long>(a => a == order.Id), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            await storeProxy.DeleteOrder(order.Id);
+            await storeProxy.DeleteOrder(order.Id.Value);
             Assert.AreEqual(2, storeMoq.Invocations.Count);
 
             storeMoq.Setup(o => o.GetOrderById(It.Is<long>(a => a == order.Id), It.IsAny<CancellationToken>())).Returns(Task.FromResult(order));
-            CompareStructs(order, await storeProxy.GetOrderById(order.Id));
+            CompareStructs(order, await storeProxy.GetOrderById(order.Id.Value));
             Assert.AreEqual(3, storeMoq.Invocations.Count);
 
             storeMoq.Setup(o => o.GetInventory(It.IsAny<CancellationToken>())).Returns(Task.FromResult(inventory));

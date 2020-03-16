@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Models.Api;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
@@ -11,7 +12,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Antal rum
         /// </summary>
         [DataMember(Name="numberOfRooms",EmitDefaultValue=false)]
-        public double NumberOfRooms { get; set; }
+        public double? NumberOfRooms { get; set; }
     
         /// <summary>
         /// Rumsbeskrivning
@@ -23,31 +24,31 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Bygg&#229;r
         /// </summary>
         [DataMember(Name="yearBuilt",EmitDefaultValue=false)]
-        public int YearBuilt { get; set; }
+        public int? YearBuilt { get; set; }
     
         /// <summary>
         /// Boarea (m&#178;)
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Byggnadsyta (m&#178;)
         /// </summary>
         [DataMember(Name="constructedArea",EmitDefaultValue=false)]
-        public double ConstructedArea { get; set; }
+        public double? ConstructedArea { get; set; }
     
         /// <summary>
         /// V&#229;ningsplan
         /// </summary>
         [DataMember(Name="floor",EmitDefaultValue=false)]
-        public double Floor { get; set; }
+        public double? Floor { get; set; }
     
         /// <summary>
         /// Antal v&#229;ningsplan
         /// </summary>
         [DataMember(Name="numberOfFloors",EmitDefaultValue=false)]
-        public double NumberOfFloors { get; set; }
+        public double? NumberOfFloors { get; set; }
     
         /// <summary>
         /// Information om hiss
@@ -65,7 +66,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Antal badrum
         /// </summary>
         [DataMember(Name="numberOfBathRooms",EmitDefaultValue=false)]
-        public int NumberOfBathRooms { get; set; }
+        public int? NumberOfBathRooms { get; set; }
     
     }
 }

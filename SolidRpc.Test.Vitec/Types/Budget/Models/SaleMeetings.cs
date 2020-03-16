@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Budget.Models {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Types.Budget.Models {
         /// Totalt antal kundm&#246;ten
         /// </summary>
         [DataMember(Name="total",EmitDefaultValue=false)]
-        public int Total { get; set; }
+        public int? Total { get; set; }
     
         /// <summary>
         /// Egenbokade kundm&#246;ten
         /// </summary>
         [DataMember(Name="ownBooked",EmitDefaultValue=false)]
-        public int OwnBooked { get; set; }
+        public int? OwnBooked { get; set; }
     
     }
 }

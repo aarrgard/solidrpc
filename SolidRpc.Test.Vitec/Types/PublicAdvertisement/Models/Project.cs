@@ -66,13 +66,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// N&#228;r bostaden senast &#228;ndrades
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Dag f&#246;r s&#228;ljstart
         /// </summary>
         [DataMember(Name="sellstartDate",EmitDefaultValue=false)]
-        public DateTimeOffset SellstartDate { get; set; }
+        public DateTimeOffset? SellstartDate { get; set; }
     
         /// <summary>
         /// Prelimin&#228;r dag f&#246;r inflyttning

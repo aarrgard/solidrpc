@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
     /// <summary>
@@ -17,19 +18,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Interest.Models {
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Antal rum
         /// </summary>
         [DataMember(Name="numberOfRooms",EmitDefaultValue=false)]
-        public double NumberOfRooms { get; set; }
+        public double? NumberOfRooms { get; set; }
     
         /// <summary>
         /// Pris
         /// </summary>
         [DataMember(Name="price",EmitDefaultValue=false)]
-        public double Price { get; set; }
+        public double? Price { get; set; }
     
         /// <summary>
         /// &#214;vrigt

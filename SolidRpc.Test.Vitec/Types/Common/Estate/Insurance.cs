@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.Common.Estate {
     /// <summary>
     /// 
@@ -16,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Belopp
         /// </summary>
         [DataMember(Name="amount",EmitDefaultValue=false)]
-        public double Amount { get; set; }
+        public double? Amount { get; set; }
     
         /// <summary>
         /// Fullv&#228;rdesf&#246;rs&#228;krad

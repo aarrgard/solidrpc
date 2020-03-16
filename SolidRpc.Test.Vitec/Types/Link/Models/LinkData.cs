@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.Link.Models {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Types.Link.Models {
         /// Annonseras
         /// </summary>
         [DataMember(Name="advertise",EmitDefaultValue=false)]
-        public bool Advertise { get; set; }
+        public bool? Advertise { get; set; }
     
         /// <summary>
         /// L&#228;nkkategori

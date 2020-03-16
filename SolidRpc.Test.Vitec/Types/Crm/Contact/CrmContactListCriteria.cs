@@ -17,25 +17,25 @@ namespace SolidRpc.Test.Vitec.Types.Crm.Contact {
         /// Skapad fr&#229;n och med
         /// </summary>
         [DataMember(Name="createdAtFrom",EmitDefaultValue=false)]
-        public DateTimeOffset CreatedAtFrom { get; set; }
+        public DateTimeOffset? CreatedAtFrom { get; set; }
     
         /// <summary>
         /// Skapad till och med
         /// </summary>
         [DataMember(Name="createdAtTo",EmitDefaultValue=false)]
-        public DateTimeOffset CreatedAtTo { get; set; }
+        public DateTimeOffset? CreatedAtTo { get; set; }
     
         /// <summary>
         /// &#196;ndrad fr&#229;n och med
         /// </summary>
         [DataMember(Name="changedAtFrom",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAtFrom { get; set; }
+        public DateTimeOffset? ChangedAtFrom { get; set; }
     
         /// <summary>
         /// &#196;ndrad till och med
         /// </summary>
         [DataMember(Name="changedAtTo",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAtTo { get; set; }
+        public DateTimeOffset? ChangedAtTo { get; set; }
     
         /// <summary>
         /// Egendefinerat f&#228;ltnamn

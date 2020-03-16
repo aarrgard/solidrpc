@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.Estate.Models {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         /// Antal rum
         /// </summary>
         [DataMember(Name="numberOfRooms",EmitDefaultValue=false)]
-        public double NumberOfRooms { get; set; }
+        public double? NumberOfRooms { get; set; }
     
         /// <summary>
         /// Uppv&#228;rmning

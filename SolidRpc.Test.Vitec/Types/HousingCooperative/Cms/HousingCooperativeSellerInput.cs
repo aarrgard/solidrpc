@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Common.Cms;
+using System;
 using SolidRpc.Test.Vitec.Types.Cms.Estate;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
@@ -79,13 +80,13 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
         /// Andel i f&#246;rening (%)
         /// </summary>
         [DataMember(Name="shareInAssociation",EmitDefaultValue=false)]
-        public double ShareInAssociation { get; set; }
+        public double? ShareInAssociation { get; set; }
     
         /// <summary>
         /// Andel av &#229;rsavgiften (%)
         /// </summary>
         [DataMember(Name="shareOfAnnualFee",EmitDefaultValue=false)]
-        public double ShareOfAnnualFee { get; set; }
+        public double? ShareOfAnnualFee { get; set; }
     
         /// <summary>
         /// V&#229;ning/hiss

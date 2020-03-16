@@ -314,6 +314,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             // parse name
             var (typeName, genArgs, rest) = CSharpRepository.ReadType(fullName);
 
+            if(typeName == "System.Nullable" && genArgs.Count() == 1)
+            {
+                return $"{SimplifyName(genArgs.First())}?";
+            }
+
             //
             // find prefix in "using" declarations that the typename
             // starts with.

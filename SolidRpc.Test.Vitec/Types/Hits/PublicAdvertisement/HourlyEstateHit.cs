@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement {
     /// <summary>
     /// 
@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement {
         /// Timme mellan 0-23. Ex. 8 anger intervallet 8.00-9.00
         /// </summary>
         [DataMember(Name="hour",EmitDefaultValue=false)]
-        public int Hour { get; set; }
+        public int? Hour { get; set; }
     
         /// <summary>
         /// ObjektId
@@ -23,13 +23,13 @@ namespace SolidRpc.Test.Vitec.Types.Hits.PublicAdvertisement {
         /// Dag f&#246;r bes&#246;ket. (ev. tidangivelse ignoreras)
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public DateTimeOffset Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Antal bes&#246;k.
         /// </summary>
         [DataMember(Name="count",EmitDefaultValue=false)]
-        public int Count { get; set; }
+        public int? Count { get; set; }
     
     }
 }

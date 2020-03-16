@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
     /// <summary>
     /// 
@@ -11,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Tomtr&#228;ttsavg&#228;ld kr/&#229;r
         /// </summary>
         [DataMember(Name="leaseholdFee",EmitDefaultValue=false)]
-        public double LeaseholdFee { get; set; }
+        public double? LeaseholdFee { get; set; }
     
         /// <summary>
         /// L&#246;ptid
         /// </summary>
         [DataMember(Name="leaseholdUntil",EmitDefaultValue=false)]
-        public DateTimeOffset LeaseholdUntil { get; set; }
+        public System.DateTimeOffset? LeaseholdUntil { get; set; }
     
     }
 }

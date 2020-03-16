@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.Image.Models {
     /// <summary>
     /// 
@@ -29,7 +30,7 @@ namespace SolidRpc.Test.Vitec.Types.Image.Models {
         /// Annoneras
         /// </summary>
         [DataMember(Name="advertise",EmitDefaultValue=false)]
-        public bool Advertise { get; set; }
+        public bool? Advertise { get; set; }
     
         /// <summary>
         /// Bildkategori

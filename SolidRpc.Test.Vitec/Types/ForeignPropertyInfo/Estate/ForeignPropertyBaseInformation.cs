@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
@@ -11,25 +12,25 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Nyproduktion
         /// </summary>
         [DataMember(Name="newConstruction",EmitDefaultValue=false)]
-        public bool NewConstruction { get; set; }
+        public bool? NewConstruction { get; set; }
     
         /// <summary>
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Byggnadsyta
         /// </summary>
         [DataMember(Name="buildningArea",EmitDefaultValue=false)]
-        public double BuildningArea { get; set; }
+        public double? BuildningArea { get; set; }
     
         /// <summary>
         /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
     
         /// <summary>
         /// Kommentar till m&#229;nadsavgift
@@ -101,7 +102,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignPropertyInfo.Estate {
         /// Visar om det r&#246;r en k&#228;nslig aff&#228;r
         /// </summary>
         [DataMember(Name="sensitiveBusiness",EmitDefaultValue=false)]
-        public bool SensitiveBusiness { get; set; }
+        public bool? SensitiveBusiness { get; set; }
     
         /// <summary>
         /// Objekttyp

@@ -12,7 +12,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         /// Skapat
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// Avs&#228;ndare

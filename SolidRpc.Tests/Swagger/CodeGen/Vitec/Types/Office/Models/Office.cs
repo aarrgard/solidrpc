@@ -126,13 +126,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Office.Models {
         /// Region
         /// </summary>
         [DataMember(Name="region",EmitDefaultValue=false)]
-        public int Region { get; set; }
+        public int? Region { get; set; }
     
         /// <summary>
         /// Internt kontorsnummer
         /// </summary>
         [DataMember(Name="officeNumber",EmitDefaultValue=false)]
-        public int OfficeNumber { get; set; }
+        public int? OfficeNumber { get; set; }
     
         /// <summary>
         /// Internt kontorsnamn
@@ -150,7 +150,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Office.Models {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public System.DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Prim&#228;r tips/lead mottagare

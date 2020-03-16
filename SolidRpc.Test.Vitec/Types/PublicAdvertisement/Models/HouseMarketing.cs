@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,73 +11,73 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Parhus
         /// </summary>
         [DataMember(Name="isDuplexHouse",EmitDefaultValue=false)]
-        public bool IsDuplexHouse { get; set; }
+        public bool? IsDuplexHouse { get; set; }
     
         /// <summary>
         /// Radhus
         /// </summary>
         [DataMember(Name="isTerraceHouse",EmitDefaultValue=false)]
-        public bool IsTerraceHouse { get; set; }
+        public bool? IsTerraceHouse { get; set; }
     
         /// <summary>
         /// Kedjehus
         /// </summary>
         [DataMember(Name="isLinkedHouse",EmitDefaultValue=false)]
-        public bool IsLinkedHouse { get; set; }
+        public bool? IsLinkedHouse { get; set; }
     
         /// <summary>
         /// Friliggande
         /// </summary>
         [DataMember(Name="isDetachedHouse",EmitDefaultValue=false)]
-        public bool IsDetachedHouse { get; set; }
+        public bool? IsDetachedHouse { get; set; }
     
         /// <summary>
         /// Lantbruk
         /// </summary>
         [DataMember(Name="isFarm",EmitDefaultValue=false)]
-        public bool IsFarm { get; set; }
+        public bool? IsFarm { get; set; }
     
         /// <summary>
         /// &#196;garl&#228;genhet
         /// </summary>
         [DataMember(Name="isCondominium",EmitDefaultValue=false)]
-        public bool IsCondominium { get; set; }
+        public bool? IsCondominium { get; set; }
     
         /// <summary>
         /// Fritidshus
         /// </summary>
         [DataMember(Name="isCottage",EmitDefaultValue=false)]
-        public bool IsCottage { get; set; }
+        public bool? IsCottage { get; set; }
     
         /// <summary>
         /// &#214;vrig bostad
         /// </summary>
         [DataMember(Name="isOtherType",EmitDefaultValue=false)]
-        public bool IsOtherType { get; set; }
+        public bool? IsOtherType { get; set; }
     
         /// <summary>
         /// Nyproduktion
         /// </summary>
         [DataMember(Name="isNewHome",EmitDefaultValue=false)]
-        public bool IsNewHome { get; set; }
+        public bool? IsNewHome { get; set; }
     
         /// <summary>
         /// Byteskrav
         /// </summary>
         [DataMember(Name="swapDemanded",EmitDefaultValue=false)]
-        public bool SwapDemanded { get; set; }
+        public bool? SwapDemanded { get; set; }
     
         /// <summary>
         /// Kommande
         /// </summary>
         [DataMember(Name="isFutureSale",EmitDefaultValue=false)]
-        public bool IsFutureSale { get; set; }
+        public bool? IsFutureSale { get; set; }
     
         /// <summary>
         /// Snart till salu
         /// </summary>
         [DataMember(Name="isSoonForSale",EmitDefaultValue=false)]
-        public bool IsSoonForSale { get; set; }
+        public bool? IsSoonForSale { get; set; }
     
     }
 }

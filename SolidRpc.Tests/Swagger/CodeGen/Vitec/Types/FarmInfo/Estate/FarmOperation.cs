@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
     /// <summary>
     /// 
@@ -16,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.FarmInfo.Estate {
         /// Summa
         /// </summary>
         [DataMember(Name="sum",EmitDefaultValue=false)]
-        public double Sum { get; set; }
+        public double? Sum { get; set; }
     
     }
 }

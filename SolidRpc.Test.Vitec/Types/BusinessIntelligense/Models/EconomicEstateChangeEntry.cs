@@ -12,7 +12,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         /// Objektet &#228;ndrades vid detta datum
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Status
@@ -24,37 +24,37 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         /// Provision
         /// </summary>
         [DataMember(Name="commission",EmitDefaultValue=false)]
-        public double Commission { get; set; }
+        public double? Commission { get; set; }
     
         /// <summary>
         /// Provision i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
         /// </summary>
         [DataMember(Name="commissionForeign",EmitDefaultValue=false)]
-        public double CommissionForeign { get; set; }
+        public double? CommissionForeign { get; set; }
     
         /// <summary>
         /// Startpris
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
-        public long StartingPrice { get; set; }
+        public long? StartingPrice { get; set; }
     
         /// <summary>
         /// Slutpris
         /// </summary>
         [DataMember(Name="finalPrice",EmitDefaultValue=false)]
-        public long FinalPrice { get; set; }
+        public long? FinalPrice { get; set; }
     
         /// <summary>
         /// Startpris i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
         /// </summary>
         [DataMember(Name="startingPriceForeign",EmitDefaultValue=false)]
-        public long StartingPriceForeign { get; set; }
+        public long? StartingPriceForeign { get; set; }
     
         /// <summary>
         /// Slutpris i utl&#228;ndsk valuta, g&#228;ller endast utlandsbost&#228;der.
         /// </summary>
         [DataMember(Name="finalPriceForeign",EmitDefaultValue=false)]
-        public long FinalPriceForeign { get; set; }
+        public long? FinalPriceForeign { get; set; }
     
         /// <summary>
         /// Valutakod (SEK, EUR, USD etc), g&#228;ller endast utlandsbost&#228;der.
@@ -66,7 +66,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         /// V&#228;xlingskurs, g&#228;ller endast utlandsbost&#228;der.
         /// </summary>
         [DataMember(Name="currencyExchangeRate",EmitDefaultValue=false)]
-        public double CurrencyExchangeRate { get; set; }
+        public double? CurrencyExchangeRate { get; set; }
     
     }
 }

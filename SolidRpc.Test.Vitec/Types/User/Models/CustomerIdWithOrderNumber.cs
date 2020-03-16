@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.User.Models {
     /// <summary>
     /// 
@@ -16,13 +17,13 @@ namespace SolidRpc.Test.Vitec.Types.User.Models {
         /// Sorteringsnummer
         /// </summary>
         [DataMember(Name="orderNumber",EmitDefaultValue=false)]
-        public int OrderNumber { get; set; }
+        public int? OrderNumber { get; set; }
     
         /// <summary>
         /// Huvudf&#246;retag
         /// </summary>
         [DataMember(Name="mainBusiness",EmitDefaultValue=false)]
-        public bool MainBusiness { get; set; }
+        public bool? MainBusiness { get; set; }
     
     }
 }

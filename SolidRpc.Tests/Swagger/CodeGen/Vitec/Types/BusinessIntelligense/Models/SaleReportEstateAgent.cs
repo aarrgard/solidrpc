@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models {
     /// <summary>
@@ -35,7 +36,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Ansvarig m&#228;klare
         /// </summary>
         [DataMember(Name="responsible",EmitDefaultValue=false)]
-        public bool Responsible { get; set; }
+        public bool? Responsible { get; set; }
     
         /// <summary>
         /// Kontor

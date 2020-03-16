@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Models.Api;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
     /// 
@@ -35,7 +36,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// Antal anst&#228;llda
         /// </summary>
         [DataMember(Name="numberOfEmployees",EmitDefaultValue=false)]
-        public int NumberOfEmployees { get; set; }
+        public int? NumberOfEmployees { get; set; }
     
         /// <summary>
         /// Utrustning som medf&#246;ljer
@@ -47,7 +48,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.PublicAdvertisement.Models 
         /// Start&#229;r
         /// </summary>
         [DataMember(Name="establishedYear",EmitDefaultValue=false)]
-        public int EstablishedYear { get; set; }
+        public int? EstablishedYear { get; set; }
     
     }
 }

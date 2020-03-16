@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Test.Vitec.Types.Common.Cms;
 namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
     /// <summary>
@@ -17,7 +18,7 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
         /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
     
         /// <summary>
         /// Kommentar till m&#229;nadsavgift
@@ -29,13 +30,13 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Biarea
         /// </summary>
         [DataMember(Name="otherSpace",EmitDefaultValue=false)]
-        public double OtherSpace { get; set; }
+        public double? OtherSpace { get; set; }
     
         /// <summary>
         /// Portkod

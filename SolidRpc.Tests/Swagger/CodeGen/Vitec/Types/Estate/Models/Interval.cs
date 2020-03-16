@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
     /// <summary>
@@ -10,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         /// Minimumv&#228;rde
         /// </summary>
         [DataMember(Name="min",EmitDefaultValue=false)]
-        public double Min { get; set; }
+        public double? Min { get; set; }
     
         /// <summary>
         /// Maximumv&#228;rde
         /// </summary>
         [DataMember(Name="max",EmitDefaultValue=false)]
-        public double Max { get; set; }
+        public double? Max { get; set; }
     
     }
 }

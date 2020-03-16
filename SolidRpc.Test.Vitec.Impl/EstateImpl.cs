@@ -11,17 +11,17 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public class EstateImpl : IEstate
     {
-        public Task<CommercialProperty> EstateGetCommercialProperty(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<CommercialProperty> EstateGetCommercialProperty(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Condominium> EstateGetCondominium(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<Condominium> EstateGetCondominium(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Cottage> EstateGetCottage(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<Cottage> EstateGetCottage(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
@@ -31,37 +31,37 @@ namespace Microsoft.Extensions.DependencyInjection
             throw new System.NotImplementedException();
         }
 
-        public Task<Farm> EstateGetFarm(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<Farm> EstateGetFarm(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<ForeignProperty> EstateGetForeignProperty(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<ForeignProperty> EstateGetForeignProperty(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<House> EstateGetHouse(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<House> EstateGetHouse(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<HousingCooperative> EstateGetHousingCooperative(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<HousingCooperative> EstateGetHousingCooperative(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Plot> EstateGetPlot(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<Plot> EstateGetPlot(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Premises> EstateGetPremises(string estateId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<Premises> EstateGetPremises(string estateId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Project> EstateGetProject(string projectId, string customerId = null, bool onlyFutureViewings = false, CancellationToken cancellationToken = default)
+        public Task<Project> EstateGetProject(string projectId, string customerId = null, bool? onlyFutureViewings = false, CancellationToken cancellationToken = default)
         {
             throw new System.NotImplementedException();
         }

@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativeInfo.Estate {
     /// <summary>
@@ -10,19 +11,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativeInfo.Esta
         /// Reparationsfond
         /// </summary>
         [DataMember(Name="repairFund",EmitDefaultValue=false)]
-        public double RepairFund { get; set; }
+        public double? RepairFund { get; set; }
     
         /// <summary>
         /// Andel av &#229;rsavgiften
         /// </summary>
         [DataMember(Name="participationOffAnnualFee",EmitDefaultValue=false)]
-        public double ParticipationOffAnnualFee { get; set; }
+        public double? ParticipationOffAnnualFee { get; set; }
     
         /// <summary>
         /// Andel i f&#246;rening (%)
         /// </summary>
         [DataMember(Name="participationInAssociation",EmitDefaultValue=false)]
-        public double ParticipationInAssociation { get; set; }
+        public double? ParticipationInAssociation { get; set; }
     
         /// <summary>
         /// Kommentar till andelstal

@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Petstore.Types {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="id",EmitDefaultValue=false)]
-        public long Id { get; set; }
+        public long? Id { get; set; }
     
         /// <summary>
         /// 

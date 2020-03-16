@@ -30,7 +30,7 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         /// 
         /// </summary>
         [DataMember(Name="isNewHome",EmitDefaultValue=false)]
-        public bool IsNewHome { get; set; }
+        public bool? IsNewHome { get; set; }
     
         /// <summary>
         /// 
@@ -42,13 +42,13 @@ namespace SolidRpc.Test.Vitec.Types.BusinessIntelligense.Models {
         /// 
         /// </summary>
         [DataMember(Name="contractDay",EmitDefaultValue=false)]
-        public DateTimeOffset ContractDay { get; set; }
+        public DateTimeOffset? ContractDay { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="advertisedAt",EmitDefaultValue=false)]
-        public DateTimeOffset AdvertisedAt { get; set; }
+        public DateTimeOffset? AdvertisedAt { get; set; }
     
     }
 }

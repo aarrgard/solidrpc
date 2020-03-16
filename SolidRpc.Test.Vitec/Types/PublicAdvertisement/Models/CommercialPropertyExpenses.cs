@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Driftskostnad per &#229;r
         /// </summary>
         [DataMember(Name="operatingCost",EmitDefaultValue=false)]
-        public double OperatingCost { get; set; }
+        public double? OperatingCost { get; set; }
     
     }
 }

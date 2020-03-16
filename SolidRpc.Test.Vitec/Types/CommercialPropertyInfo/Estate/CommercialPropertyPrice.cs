@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System;
+using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
     /// 
@@ -11,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Pris
         /// </summary>
         [DataMember(Name="price",EmitDefaultValue=false)]
-        public double Price { get; set; }
+        public double? Price { get; set; }
     
         /// <summary>
         /// Pristext
@@ -23,13 +23,13 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Anbud
         /// </summary>
         [DataMember(Name="offer",EmitDefaultValue=false)]
-        public bool Offer { get; set; }
+        public bool? Offer { get; set; }
     
         /// <summary>
         /// Anbud senast
         /// </summary>
         [DataMember(Name="offerNoLaterThen",EmitDefaultValue=false)]
-        public DateTimeOffset OfferNoLaterThen { get; set; }
+        public DateTimeOffset? OfferNoLaterThen { get; set; }
     
     }
 }

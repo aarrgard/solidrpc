@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Taxeringsv&#228;rde byggnad (SEK)
         /// </summary>
         [DataMember(Name="buildingValue",EmitDefaultValue=false)]
-        public double BuildingValue { get; set; }
+        public double? BuildingValue { get; set; }
     
         /// <summary>
         /// Typkod
@@ -22,13 +23,13 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Taxeringsv&#228;rde totalt (SEK)
         /// </summary>
         [DataMember(Name="totalValue",EmitDefaultValue=false)]
-        public double TotalValue { get; set; }
+        public double? TotalValue { get; set; }
     
         /// <summary>
         /// Taxerings&#229;r
         /// </summary>
         [DataMember(Name="year",EmitDefaultValue=false)]
-        public int Year { get; set; }
+        public int? Year { get; set; }
     
     }
 }

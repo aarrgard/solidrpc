@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Category.Models {
     /// <summary>
     /// 
@@ -22,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Category.Models {
         /// En readonly kategori s&#228;tts automatiskt av systemet och ska inte tilldelas manuellt till en kontakt
         /// </summary>
         [DataMember(Name="readOnly",EmitDefaultValue=false)]
-        public bool ReadOnly { get; set; }
+        public bool? ReadOnly { get; set; }
     
     }
 }

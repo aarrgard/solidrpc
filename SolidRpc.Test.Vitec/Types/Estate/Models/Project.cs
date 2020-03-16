@@ -21,13 +21,13 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         /// Antal objekt associerade till projektet
         /// </summary>
         [DataMember(Name="numberOfObjects",EmitDefaultValue=false)]
-        public int NumberOfObjects { get; set; }
+        public int? NumberOfObjects { get; set; }
     
         /// <summary>
         /// S&#228;ljstartsdag
         /// </summary>
         [DataMember(Name="salesStartDate",EmitDefaultValue=false)]
-        public DateTimeOffset SalesStartDate { get; set; }
+        public DateTimeOffset? SalesStartDate { get; set; }
     
         /// <summary>
         /// Inflyttningsdatum
@@ -141,7 +141,7 @@ namespace SolidRpc.Test.Vitec.Types.Estate.Models {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Uppdraget

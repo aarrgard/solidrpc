@@ -26,9 +26,9 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<OfficeStatisticsSummary>> BusinessIntelligenceOfficeStatistics(
             string licenseId,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
-            string assignment = default(string),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
+            string assignment = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -43,9 +43,9 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<RealtorStatisticsSummary>> BusinessIntelligenceRealtorStatistics(
             string licenseId,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
-            string assignment = default(string),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
+            string assignment = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -60,9 +60,9 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<OfficeStatisticsByMonth> BusinessIntelligenceOfficeStatisticsByMonth(
             string licenseId,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
-            string assignment = default(string),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
+            string assignment = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -74,8 +74,8 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<SalesReportForEstateResponse> BusinessIntelligenceGetSalesReportForEstate(
             string customerId,
-            string estateId = default(string),
-            string estateNumber = default(string),
+            string estateId = null,
+            string estateNumber = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -89,8 +89,8 @@ namespace SolidRpc.Test.Vitec.Services {
         Task<SalesReportResponse> BusinessIntelligenceGetSalesReport(
             string customerId,
             string selectionType,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -104,8 +104,8 @@ namespace SolidRpc.Test.Vitec.Services {
         Task<BusinessIntelligense.SalesReportResponse> BusinessIntelligenceGetEstateReportProdDb(
             string customerId,
             string selectionType,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -119,8 +119,8 @@ namespace SolidRpc.Test.Vitec.Services {
         Task<SalesReportResponse> BusinessIntelligenceGetEstatesReport(
             string customerId,
             string selectionType,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -132,8 +132,8 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<EstateReferences>> BusinessIntelligenceEstates(
             string customerId,
-            DateTimeOffset dateFrom = default(DateTimeOffset),
-            DateTimeOffset dateTo = default(DateTimeOffset),
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Municipality>> MunicipalityGetMunicipalities(
             string customerId,
-            string id = default(string),
+            string id = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

@@ -17,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDate { get; set; }
+        public DateTimeOffset? AccessDate { get; set; }
     
         /// <summary>
         /// Tilltr&#228;detid
@@ -29,19 +29,19 @@ namespace SolidRpc.Test.Vitec.Types.Common.Estate {
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="agreementDate",EmitDefaultValue=false)]
-        public DateTimeOffset AgreementDate { get; set; }
+        public DateTimeOffset? AgreementDate { get; set; }
     
         /// <summary>
         /// Uppdragsdatum
         /// </summary>
         [DataMember(Name="assignmentDate",EmitDefaultValue=false)]
-        public DateTimeOffset AssignmentDate { get; set; }
+        public DateTimeOffset? AssignmentDate { get; set; }
     
         /// <summary>
         /// Alla avtalsvillkor uppfyllda
         /// </summary>
         [DataMember(Name="allTermsMettDate",EmitDefaultValue=false)]
-        public DateTimeOffset AllTermsMettDate { get; set; }
+        public DateTimeOffset? AllTermsMettDate { get; set; }
     
     }
 }

@@ -55,25 +55,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="contractDay",EmitDefaultValue=false)]
-        public DateTimeOffset ContractDay { get; set; }
+        public System.DateTimeOffset? ContractDay { get; set; }
     
         /// <summary>
         /// Tilltr&#228;desdag
         /// </summary>
         [DataMember(Name="accessDay",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDay { get; set; }
+        public System.DateTimeOffset? AccessDay { get; set; }
     
         /// <summary>
         /// Handpenning redovisningsdatum
         /// </summary>
         [DataMember(Name="depositReportedAt",EmitDefaultValue=false)]
-        public DateTimeOffset DepositReportedAt { get; set; }
+        public System.DateTimeOffset? DepositReportedAt { get; set; }
     
         /// <summary>
         /// Totala provision
         /// </summary>
         [DataMember(Name="commission",EmitDefaultValue=false)]
-        public double Commission { get; set; }
+        public double? Commission { get; set; }
     
         /// <summary>
         /// Fritext f&#246;r fast arvode
@@ -85,13 +85,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Provisionsdatum
         /// </summary>
         [DataMember(Name="commissionReceivedAt",EmitDefaultValue=false)]
-        public DateTimeOffset CommissionReceivedAt { get; set; }
+        public System.DateTimeOffset? CommissionReceivedAt { get; set; }
     
         /// <summary>
         /// Nyproduktion (ja/nej)
         /// </summary>
         [DataMember(Name="isNewHome",EmitDefaultValue=false)]
-        public bool IsNewHome { get; set; }
+        public bool? IsNewHome { get; set; }
     
         /// <summary>
         /// Koordinat WGS84.
@@ -109,7 +109,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// N&#228;r objektinformationen uppdaterades senast
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public DateTimeOffset ChangedAt { get; set; }
+        public System.DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// &#196;ndringshistorik. Detta &#228;r en lista p&#229; uppdateringar och vad f&#228;lten var satta till vid dessa uppdateringar
@@ -121,13 +121,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Startpris
         /// </summary>
         [DataMember(Name="startingPrice",EmitDefaultValue=false)]
-        public long StartingPrice { get; set; }
+        public long? StartingPrice { get; set; }
     
         /// <summary>
         /// Slutpris
         /// </summary>
         [DataMember(Name="finalPrice",EmitDefaultValue=false)]
-        public long FinalPrice { get; set; }
+        public long? FinalPrice { get; set; }
     
     }
 }

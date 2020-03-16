@@ -7,3 +7,4 @@ node_modules
 
 /SolidRpc.Tests/appsettings_local.json
 /SolidRpc.Security.Impl/react/build
+appsettings.local.json

@@ -2,6 +2,7 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using SolidRpc.Test.Vitec.Types.Models.Api;
+using System;
 using SolidRpc.Test.Vitec.Types.CustomField.Models;
 namespace SolidRpc.Test.Vitec.Types.Update.Contact {
     /// <summary>
@@ -79,7 +80,7 @@ namespace SolidRpc.Test.Vitec.Types.Update.Contact {
         /// &#214;nskar reklamutskick
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
-        public bool WishAdvertising { get; set; }
+        public bool? WishAdvertising { get; set; }
     
         /// <summary>
         /// Anteckning

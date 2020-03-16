@@ -17,13 +17,13 @@ namespace SolidRpc.Test.Vitec.Types.ForeignProperty.Cms {
         /// Energideklarationsdatum
         /// </summary>
         [DataMember(Name="energyDeclarationDate",EmitDefaultValue=false)]
-        public DateTimeOffset EnergyDeclarationDate { get; set; }
+        public DateTimeOffset? EnergyDeclarationDate { get; set; }
     
         /// <summary>
         /// Energif&#246;rbrukning kr/kvm/&#229;r
         /// </summary>
         [DataMember(Name="energyConsumption",EmitDefaultValue=false)]
-        public double EnergyConsumption { get; set; }
+        public double? EnergyConsumption { get; set; }
     
         /// <summary>
         /// Energiklass

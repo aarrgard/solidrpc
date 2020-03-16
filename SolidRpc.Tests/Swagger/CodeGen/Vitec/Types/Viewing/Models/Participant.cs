@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// Deltog p&#229; visningen
         /// </summary>
         [DataMember(Name="hasParticipated",EmitDefaultValue=false)]
-        public bool HasParticipated { get; set; }
+        public bool? HasParticipated { get; set; }
     
         /// <summary>
         /// Kontaktid

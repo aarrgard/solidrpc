@@ -1,4 +1,6 @@
-﻿namespace SolidRpc.OpenApi.Model.Agnostic
+﻿using System;
+
+namespace SolidRpc.OpenApi.Model.Agnostic
 {
     /// <summary>
     /// Represents a property in an object definied in swagger
@@ -19,5 +21,10 @@
         /// The description of this property - null if not description available
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Is this property required
+        /// </summary>
+        public bool Required { get; set; }
     }
 }

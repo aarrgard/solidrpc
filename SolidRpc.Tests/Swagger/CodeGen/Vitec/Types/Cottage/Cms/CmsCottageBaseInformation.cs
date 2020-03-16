@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Cms;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cottage.Cms {
@@ -11,13 +12,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Cottage.Cms {
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Biarea
         /// </summary>
         [DataMember(Name="otherSpace",EmitDefaultValue=false)]
-        public double OtherSpace { get; set; }
+        public double? OtherSpace { get; set; }
     
         /// <summary>
         /// Fastighetsbeteckning

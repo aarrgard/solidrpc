@@ -41,7 +41,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Models.Viewing>> ViewingGet(
             string estateId,
-            string customerId = default(string),
+            string customerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -91,7 +91,7 @@ namespace SolidRpc.Test.Vitec.Services {
             string viewingId,
             string timeSlotId,
             string contactId,
-            string customerId = default(string),
+            string customerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -109,7 +109,7 @@ namespace SolidRpc.Test.Vitec.Services {
             string timeSlotId,
             string contactId,
             Models.AddViewingParticipant participant,
-            string customerId = default(string),
+            string customerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -139,7 +139,7 @@ namespace SolidRpc.Test.Vitec.Services {
             string viewingId,
             string timeSlotId,
             Models.AddNewViewingParticipant participant,
-            string customerId = default(string),
+            string customerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

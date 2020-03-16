@@ -11,13 +11,13 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
         /// Start datumet f&#246;r visningen
         /// </summary>
         [DataMember(Name="startTime",EmitDefaultValue=false)]
-        public DateTimeOffset StartTime { get; set; }
+        public DateTimeOffset? StartTime { get; set; }
     
         /// <summary>
         /// Slutdatum f&#246;r visningen
         /// </summary>
         [DataMember(Name="endTime",EmitDefaultValue=false)]
-        public DateTimeOffset EndTime { get; set; }
+        public DateTimeOffset? EndTime { get; set; }
     
     }
 }

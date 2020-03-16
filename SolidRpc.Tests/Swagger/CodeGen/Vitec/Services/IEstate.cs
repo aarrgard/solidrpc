@@ -6,6 +6,7 @@ using System.Threading;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.List.Estate;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Criteria.Estate;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
     /// <summary>
     /// 
@@ -18,7 +19,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="customerId"></param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<Status>> EstateGetStatuses(
-            string customerId = default(string),
+            string customerId = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -39,8 +40,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<House> EstateGetHouse(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -52,8 +53,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<ForeignProperty> EstateGetForeignProperty(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -65,8 +66,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<HousingCooperative> EstateGetHousingCooperative(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -78,8 +79,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<Cottage> EstateGetCottage(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -91,8 +92,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<Plot> EstateGetPlot(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -104,8 +105,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<Project> EstateGetProject(
             string projectId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -117,8 +118,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<Farm> EstateGetFarm(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -130,8 +131,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<CommercialProperty> EstateGetCommercialProperty(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -143,8 +144,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<Condominium> EstateGetCondominium(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -156,8 +157,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<Premises> EstateGetPremises(
             string estateId,
-            string customerId = default(string),
-            bool onlyFutureViewings = default(bool),
+            string customerId = null,
+            bool? onlyFutureViewings = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

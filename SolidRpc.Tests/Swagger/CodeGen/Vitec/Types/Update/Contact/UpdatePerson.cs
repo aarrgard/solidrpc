@@ -50,19 +50,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Update.Contact {
         /// PUL-Godk&#228;nnande
         /// </summary>
         [DataMember(Name="approval",EmitDefaultValue=false)]
-        public bool Approval { get; set; }
+        public bool? Approval { get; set; }
     
         /// <summary>
         /// PUL-Godk&#228;nnande datum
         /// </summary>
         [DataMember(Name="approvalDate",EmitDefaultValue=false)]
-        public DateTimeOffset ApprovalDate { get; set; }
+        public System.DateTimeOffset? ApprovalDate { get; set; }
     
         /// <summary>
         /// GDPR informerad den
         /// </summary>
         [DataMember(Name="gdprApprovalDate",EmitDefaultValue=false)]
-        public DateTimeOffset GdprApprovalDate { get; set; }
+        public System.DateTimeOffset? GdprApprovalDate { get; set; }
     
         /// <summary>
         /// Informerad via
@@ -116,7 +116,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Update.Contact {
         /// &#214;nskar reklamutskick
         /// </summary>
         [DataMember(Name="wishAdvertising",EmitDefaultValue=false)]
-        public bool WishAdvertising { get; set; }
+        public bool? WishAdvertising { get; set; }
     
         /// <summary>
         /// Anteckning

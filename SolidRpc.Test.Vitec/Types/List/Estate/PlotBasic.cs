@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using SolidRpc.Test.Vitec.Types.Common.Estate;
-using System;
 using SolidRpc.Test.Vitec.Types.Models.Api;
 using System.Collections.Generic;
 namespace SolidRpc.Test.Vitec.Types.List.Estate {
@@ -14,13 +14,13 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
         /// Tomtarea
         /// </summary>
         [DataMember(Name="plotSize",EmitDefaultValue=false)]
-        public double PlotSize { get; set; }
+        public double? PlotSize { get; set; }
     
         /// <summary>
         /// Pris
         /// </summary>
         [DataMember(Name="price",EmitDefaultValue=false)]
-        public double Price { get; set; }
+        public double? Price { get; set; }
     
         /// <summary>
         /// Bostadsid
@@ -50,7 +50,7 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public DateTimeOffset DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Gatuadress
@@ -80,7 +80,7 @@ namespace SolidRpc.Test.Vitec.Types.List.Estate {
         /// P&#229;g&#229;r bud Ja/Nej
         /// </summary>
         [DataMember(Name="bidding",EmitDefaultValue=false)]
-        public bool Bidding { get; set; }
+        public bool? Bidding { get; set; }
     
         /// <summary>
         /// Objektnummer

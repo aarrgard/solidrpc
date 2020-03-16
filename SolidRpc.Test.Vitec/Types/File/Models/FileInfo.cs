@@ -29,13 +29,13 @@ namespace SolidRpc.Test.Vitec.Types.File.Models {
         /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChangedData",EmitDefaultValue=false)]
-        public DateTimeOffset DateChangedData { get; set; }
+        public DateTimeOffset? DateChangedData { get; set; }
     
         /// <summary>
         /// Om filen annonseras eller inte
         /// </summary>
         [DataMember(Name="public",EmitDefaultValue=false)]
-        public bool Public { get; set; }
+        public bool? Public { get; set; }
     
     }
 }

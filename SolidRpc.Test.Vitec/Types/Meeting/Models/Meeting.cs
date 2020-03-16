@@ -49,7 +49,7 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         /// M&#246;tesdatum
         /// </summary>
         [DataMember(Name="meetingDate",EmitDefaultValue=false)]
-        public DateTimeOffset MeetingDate { get; set; }
+        public DateTimeOffset? MeetingDate { get; set; }
     
         /// <summary>
         /// M&#228;klarens id
@@ -79,13 +79,13 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         /// Bokningsdatum
         /// </summary>
         [DataMember(Name="bookedDate",EmitDefaultValue=false)]
-        public DateTimeOffset BookedDate { get; set; }
+        public DateTimeOffset? BookedDate { get; set; }
     
         /// <summary>
         /// Uppdragsdatum
         /// </summary>
         [DataMember(Name="signatureDate",EmitDefaultValue=false)]
-        public DateTimeOffset SignatureDate { get; set; }
+        public DateTimeOffset? SignatureDate { get; set; }
     
         /// <summary>
         /// Objektets status
@@ -97,7 +97,7 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         /// Provision ex.moms
         /// </summary>
         [DataMember(Name="commissionWithoutTaxes",EmitDefaultValue=false)]
-        public double CommissionWithoutTaxes { get; set; }
+        public double? CommissionWithoutTaxes { get; set; }
     
         /// <summary>
         /// Intagsk&#228;lla (Kontakttyp)
@@ -115,7 +115,7 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         /// F&#246;rs&#228;ljning = Kontraktsdatum, V&#228;rdering = V&#228;rderingsdag, Skrivning = Datum f&#246;r skrivuppdrag
         /// </summary>
         [DataMember(Name="agreementDate",EmitDefaultValue=false)]
-        public DateTimeOffset AgreementDate { get; set; }
+        public DateTimeOffset? AgreementDate { get; set; }
     
         /// <summary>
         /// Uppdragstyp
@@ -127,7 +127,7 @@ namespace SolidRpc.Test.Vitec.Types.Meeting.Models {
         /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDate { get; set; }
+        public DateTimeOffset? AccessDate { get; set; }
     
         /// <summary>
         /// Objektets id

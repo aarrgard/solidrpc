@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="code",EmitDefaultValue=false)]
-        public int Code { get; set; }
+        public int? Code { get; set; }
     
         /// <summary>
         /// 

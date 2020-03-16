@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Invoice.Models {
     /// <summary>
     /// 
@@ -16,13 +17,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Invoice.Models {
         /// Belopp
         /// </summary>
         [DataMember(Name="amount",EmitDefaultValue=false)]
-        public int Amount { get; set; }
+        public int? Amount { get; set; }
     
         /// <summary>
         /// Momspliktig
         /// </summary>
         [DataMember(Name="vatIncluded",EmitDefaultValue=false)]
-        public bool VatIncluded { get; set; }
+        public bool? VatIncluded { get; set; }
     
     }
 }

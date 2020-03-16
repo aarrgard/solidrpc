@@ -11,25 +11,25 @@ namespace SolidRpc.Test.Vitec.Types.Viewing.Models {
         /// Starttid
         /// </summary>
         [DataMember(Name="startAt",EmitDefaultValue=false)]
-        public DateTimeOffset StartAt { get; set; }
+        public DateTimeOffset? StartAt { get; set; }
     
         /// <summary>
         /// Sluttid
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public DateTimeOffset EndsAt { get; set; }
+        public DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Visas p&#229; internet
         /// </summary>
         [DataMember(Name="showOnInternet",EmitDefaultValue=false)]
-        public bool ShowOnInternet { get; set; }
+        public bool? ShowOnInternet { get; set; }
     
         /// <summary>
         /// Bokningsbar p&#229; internet
         /// </summary>
         [DataMember(Name="bookableOnInternet",EmitDefaultValue=false)]
-        public bool BookableOnInternet { get; set; }
+        public bool? BookableOnInternet { get; set; }
     
         /// <summary>
         /// Kommentar

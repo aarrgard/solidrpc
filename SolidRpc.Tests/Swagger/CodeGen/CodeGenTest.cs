@@ -53,7 +53,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// <summary>
         /// Tests generating code from a swagger file
         /// </summary>
-        [Test,Ignore("Works on Windows")]
+        [Test,Ignore("Works on windows")]
         public void TestCodeGen()
         {
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;

@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.ForeignProperty.Cms {
     /// <summary>
@@ -10,7 +11,7 @@ namespace SolidRpc.Test.Vitec.Types.ForeignProperty.Cms {
         /// Nyproduktion
         /// </summary>
         [DataMember(Name="newConstruction",EmitDefaultValue=false)]
-        public bool NewConstruction { get; set; }
+        public bool? NewConstruction { get; set; }
     
         /// <summary>
         /// Uppl&#229;telseform

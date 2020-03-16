@@ -23,19 +23,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Bud
         /// </summary>
         [DataMember(Name="amount",EmitDefaultValue=false)]
-        public double Amount { get; set; }
+        public double? Amount { get; set; }
     
         /// <summary>
         /// Datum och tid
         /// </summary>
         [DataMember(Name="dateAndTime",EmitDefaultValue=false)]
-        public DateTimeOffset DateAndTime { get; set; }
+        public System.DateTimeOffset? DateAndTime { get; set; }
     
         /// <summary>
         /// Annulerat (Ja eller nej)
         /// </summary>
         [DataMember(Name="cancelled",EmitDefaultValue=false)]
-        public bool Cancelled { get; set; }
+        public bool? Cancelled { get; set; }
     
         /// <summary>
         /// Status

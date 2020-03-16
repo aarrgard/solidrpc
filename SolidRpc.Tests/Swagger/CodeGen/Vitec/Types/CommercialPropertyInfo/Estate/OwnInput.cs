@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
     /// 
@@ -16,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         /// Belopp
         /// </summary>
         [DataMember(Name="amount",EmitDefaultValue=false)]
-        public double Amount { get; set; }
+        public double? Amount { get; set; }
     
     }
 }

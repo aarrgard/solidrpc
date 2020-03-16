@@ -11,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Villavardet.Models {
         /// Tilltr&#228;desdatum fr&#229;n och med
         /// </summary>
         [DataMember(Name="accessDateFrom",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDateFrom { get; set; }
+        public System.DateTimeOffset? AccessDateFrom { get; set; }
     
         /// <summary>
         /// Tilltr&#228;desdatum till och med
         /// </summary>
         [DataMember(Name="accessDateTo",EmitDefaultValue=false)]
-        public DateTimeOffset AccessDateTo { get; set; }
+        public System.DateTimeOffset? AccessDateTo { get; set; }
     
     }
 }

@@ -14,7 +14,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.FileUpload1.Services {
         /// <param name="fileStream"></param>
         /// <param name="cancellationToken"></param>
         Task UploadFile(
-            Stream fileStream = default(Stream),
+            Stream fileStream = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

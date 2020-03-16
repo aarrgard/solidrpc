@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
     /// <summary>
@@ -10,19 +11,19 @@ namespace SolidRpc.Test.Vitec.Types.PublicAdvertisement.Models {
         /// Balkong
         /// </summary>
         [DataMember(Name="balcony",EmitDefaultValue=false)]
-        public bool Balcony { get; set; }
+        public bool? Balcony { get; set; }
     
         /// <summary>
         /// Uteplats
         /// </summary>
         [DataMember(Name="patio",EmitDefaultValue=false)]
-        public bool Patio { get; set; }
+        public bool? Patio { get; set; }
     
         /// <summary>
         /// Pool
         /// </summary>
         [DataMember(Name="pool",EmitDefaultValue=false)]
-        public bool Pool { get; set; }
+        public bool? Pool { get; set; }
     
     }
 }

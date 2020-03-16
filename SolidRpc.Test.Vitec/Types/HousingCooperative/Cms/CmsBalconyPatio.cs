@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
     /// <summary>
@@ -10,25 +11,25 @@ namespace SolidRpc.Test.Vitec.Types.HousingCooperative.Cms {
         /// Mark som ing&#229;r i uppl&#229;telsen
         /// </summary>
         [DataMember(Name="groundIncluded",EmitDefaultValue=false)]
-        public double GroundIncluded { get; set; }
+        public double? GroundIncluded { get; set; }
     
         /// <summary>
         /// Balkong
         /// </summary>
         [DataMember(Name="balcony",EmitDefaultValue=false)]
-        public bool Balcony { get; set; }
+        public bool? Balcony { get; set; }
     
         /// <summary>
         /// Uteplats
         /// </summary>
         [DataMember(Name="patio",EmitDefaultValue=false)]
-        public bool Patio { get; set; }
+        public bool? Patio { get; set; }
     
         /// <summary>
         /// Bilplats
         /// </summary>
         [DataMember(Name="parking",EmitDefaultValue=false)]
-        public bool Parking { get; set; }
+        public bool? Parking { get; set; }
     
         /// <summary>
         /// Beskrivning uteplats

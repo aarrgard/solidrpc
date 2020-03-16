@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Cms;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativ.Cms {
     /// <summary>
@@ -17,19 +18,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.HousingCooperativ.Cms {
         /// M&#229;nadsavgift
         /// </summary>
         [DataMember(Name="monthlyFee",EmitDefaultValue=false)]
-        public double MonthlyFee { get; set; }
+        public double? MonthlyFee { get; set; }
     
         /// <summary>
         /// Boarea
         /// </summary>
         [DataMember(Name="livingSpace",EmitDefaultValue=false)]
-        public double LivingSpace { get; set; }
+        public double? LivingSpace { get; set; }
     
         /// <summary>
         /// Biarea
         /// </summary>
         [DataMember(Name="otherSpace",EmitDefaultValue=false)]
-        public double OtherSpace { get; set; }
+        public double? OtherSpace { get; set; }
     
         /// <summary>
         /// Portkod

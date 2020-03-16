@@ -29,7 +29,7 @@ namespace SolidRpc.Test.Vitec.Types.Media.PublicAdvertisement {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dataChangedAt",EmitDefaultValue=false)]
-        public DateTimeOffset DataChangedAt { get; set; }
+        public DateTimeOffset? DataChangedAt { get; set; }
     
     }
 }

@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using System;
 namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
     /// <summary>
     /// 
@@ -16,7 +17,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Antal anst&#228;llda
         /// </summary>
         [DataMember(Name="employees",EmitDefaultValue=false)]
-        public int Employees { get; set; }
+        public int? Employees { get; set; }
     
         /// <summary>
         /// Utrustning som medf&#246;ljer
@@ -28,7 +29,7 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Ospecificerad ort
         /// </summary>
         [DataMember(Name="hiddenLocation",EmitDefaultValue=false)]
-        public bool HiddenLocation { get; set; }
+        public bool? HiddenLocation { get; set; }
     
         /// <summary>
         /// Bransch
@@ -46,13 +47,13 @@ namespace SolidRpc.Test.Vitec.Types.CommercialPropertyInfo.Estate {
         /// Oms&#228;ttning
         /// </summary>
         [DataMember(Name="revenue",EmitDefaultValue=false)]
-        public double Revenue { get; set; }
+        public double? Revenue { get; set; }
     
         /// <summary>
         /// Start&#229;r
         /// </summary>
         [DataMember(Name="startingYear",EmitDefaultValue=false)]
-        public int StartingYear { get; set; }
+        public int? StartingYear { get; set; }
     
     }
 }

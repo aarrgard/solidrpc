@@ -69,7 +69,7 @@ namespace SolidRpc.Test.Petstore.Services {
         [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task DeletePet(
             long petId,
-            string apiKey = default(string),
+            string apiKey = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -95,8 +95,8 @@ namespace SolidRpc.Test.Petstore.Services {
         [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task UpdatePetWithForm(
             long petId,
-            string name = default(string),
-            string status = default(string),
+            string name = null,
+            string status = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -109,8 +109,8 @@ namespace SolidRpc.Test.Petstore.Services {
         [PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
         Task<ApiResponse> UploadFile(
             long petId,
-            string additionalMetadata = default(string),
-            Stream file = default(Stream),
+            string additionalMetadata = null,
+            Stream file = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

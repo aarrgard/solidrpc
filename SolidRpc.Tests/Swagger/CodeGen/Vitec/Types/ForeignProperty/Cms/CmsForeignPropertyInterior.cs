@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System;
 using System.Runtime.Serialization;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models;
 namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignProperty.Cms {
@@ -11,19 +12,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignProperty.Cms {
         /// Boarea
         /// </summary>
         [DataMember(Name="livingarea",EmitDefaultValue=false)]
-        public double Livingarea { get; set; }
+        public double? Livingarea { get; set; }
     
         /// <summary>
         /// Byggnadsarea
         /// </summary>
         [DataMember(Name="buildingArea",EmitDefaultValue=false)]
-        public double BuildingArea { get; set; }
+        public double? BuildingArea { get; set; }
     
         /// <summary>
         /// Antal rum
         /// </summary>
         [DataMember(Name="numberOfRooms",EmitDefaultValue=false)]
-        public double NumberOfRooms { get; set; }
+        public double? NumberOfRooms { get; set; }
     
         /// <summary>
         /// Antal sovrum
@@ -35,7 +36,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignProperty.Cms {
         /// Antal badrum
         /// </summary>
         [DataMember(Name="numberOfBathrooms",EmitDefaultValue=false)]
-        public int NumberOfBathrooms { get; set; }
+        public int? NumberOfBathrooms { get; set; }
     
     }
 }
