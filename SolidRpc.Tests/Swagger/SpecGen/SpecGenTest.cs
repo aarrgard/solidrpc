@@ -42,7 +42,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "RequiredOptionalArg") continue;
+                //if (subDir.Name != "EnumArgs") continue;
                 CreateSpec(subDir.Name, true);
             }
         }
@@ -81,6 +81,32 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 throw new ArgumentException("Cannot find path:" + folderName);
             }
             return dir;
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestEnumArgs()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestEnumArgs).Substring(4));
+
+                var moq = new Mock<EnumArgs.Services.IEnumArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<EnumArgs.Services.IEnumArgs>();
+
+                moq.Setup(o => o.GetEnumTypeAsync(
+                    It.IsAny<EnumArgs.Types.TestEnum>(),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult(EnumArgs.Types.TestEnum.Two));
+
+                var res = await proxy.GetEnumTypeAsync(EnumArgs.Types.TestEnum.Two);
+                Assert.AreEqual(EnumArgs.Types.TestEnum.Two, res);
+            }
         }
 
         /// <summary>
@@ -228,17 +254,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var moq = new Mock<NullableTypes.Services.INullableTypes>(MockBehavior.Strict);
                 ctx.AddServerAndClientService(moq.Object, config);
-
-                //ctx.CreateServerInterceptor<NullableTypes.Services.INullableTypes>(
-                //    o => o.GetComplexType(null),
-                //    config,
-                //    args =>
-                //    {
-                //        Assert.AreEqual(1, args.Length);
-                //        Assert.IsNotNull((NullableTypes.Types.ComplexType)args[0]);
-                //        return (NullableTypes.Types.ComplexType)args[0];
-                //    });
-                //ctx.AddOpenApiProxy<NullableTypes.Services.INullableTypes>(config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<NullableTypes.Services.INullableTypes>();
 

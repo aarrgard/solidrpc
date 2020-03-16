@@ -17,7 +17,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
     /// </summary>
     public class CSharpParser
     {
-        private enum NameScope { Namespace, Class, Interface };
+        private enum NameScope { Namespace, Class, Interface, Enum };
 
         public static ICSharpRepository ParseProject(Project project)
         {
@@ -107,6 +107,15 @@ namespace SolidRpc.OpenApi.Generator.Impl
             {
                 return;
             }
+            if (member is EnumDeclarationSyntax eds)
+            {
+                WalkMembers(eds.Members, action);
+                return;
+            }
+            if (member is EnumMemberDeclarationSyntax emds)
+            {
+                return;
+            }
 
             throw new Exception("Cannot handle member:" + member.GetType().FullName);
         }
@@ -122,6 +131,12 @@ namespace SolidRpc.OpenApi.Generator.Impl
             if (member is ClassDeclarationSyntax cds)
             {
                 var (className, nameScope) = GetClassOrInterfaceName(cds);
+                var m = GetMember(className, nameScope);
+                SetComment(member, m);
+            }
+            if (member is EnumDeclarationSyntax eds)
+            {
+                var (className, nameScope) = GetClassOrInterfaceName(eds);
                 var m = GetMember(className, nameScope);
                 SetComment(member, m);
             }
@@ -147,6 +162,24 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 CreateCSharpProperty(pds);
                 return;
             }
+            if (member is EnumMemberDeclarationSyntax emds)
+            {
+                CreateCSharpEnumValue(emds);
+                return;
+            }
+        }
+
+        private void CreateCSharpEnumValue(EnumMemberDeclarationSyntax emds)
+        {
+            var (className, nameScope) = GetClassOrInterfaceName(emds);
+            var m = GetMember(className, nameScope);
+            int? value = null;
+            var strValue = emds.EqualsValue?.Value?.ToString();
+            if(!string.IsNullOrEmpty(strValue))
+            {
+                value = int.Parse(strValue);
+            }
+            m.AddMember(new CSharpEnumValue((ICSharpEnum)m, emds.Identifier.ToString(), value));
         }
 
         private void CreateCSharpProperty(PropertyDeclarationSyntax pds)
@@ -210,6 +243,10 @@ namespace SolidRpc.OpenApi.Generator.Impl
             else if (nameScope == NameScope.Interface)
             {
                 return CSharpRepository.GetInterface(className);
+            }
+            else if (nameScope == NameScope.Enum)
+            {
+                return CSharpRepository.GetEnum(className);
             }
             else
             {
@@ -314,6 +351,11 @@ namespace SolidRpc.OpenApi.Generator.Impl
             {
                 localName = nds.Name.ToString();
                 nameScope = NameScope.Namespace;
+            }
+            else if (member is EnumDeclarationSyntax eds)
+            {
+                localName = eds.Identifier.ToString();
+                nameScope = NameScope.Enum;
             }
 
             return (MergeNames(parentName, nameSeparator, localName), nameScope);

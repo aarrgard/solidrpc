@@ -297,30 +297,39 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             else if (type.RuntimeType != null)
             {
                 SchemaObject.SetTypeInfo(itemBase, type.RuntimeType);
+                return;
+            }
+            else if (type.IsEnumType)
+            {
+                CreateEnum(itemBase, (ICSharpEnum)type);
+                return;
             }
             else
             {
                 var refName = CreateRefObject(itemBase, (ICSharpClass)type);
                 itemBase.Ref = refName;
+                return;
             }
         }
+        private void CreateEnum(ItemBase node, ICSharpEnum e)
+        {
+            node.Type = "string";
+            node.Description = e.Comment?.Summary;
+            node.Enum = e.EnumValues.Select(o => o.Name).ToList();
+        }
+
         private string CreateRefObject(ModelBase node, ICSharpClass clazz)
         {
             var defName = TypeDefinitionNameMapper(clazz);
-            var swaggerObject = node.GetParent<SwaggerObject>();
-            if(swaggerObject.Definitions == null)
+            var definitions = node.GetParent<SwaggerObject>().GetDefinitions();
+            if(!definitions.ContainsKey(defName))
             {
-                swaggerObject.Definitions = new DefinitionsObject(swaggerObject);
-            }
-            if(!swaggerObject.Definitions.ContainsKey(defName))
-            {
-                var so = new SchemaObject(swaggerObject.Definitions)
+                var so = new SchemaObject(definitions)
                 {
                     Type = "object",
                     Description = clazz.Comment?.Summary
                 };
-                swaggerObject.Definitions[defName] = so;
-                so.Properties = CreateDefinitionsObject(so, clazz);
+                definitions[defName] = so;
                 so.Properties = CreateDefinitionsObject(so, clazz);
             }
 

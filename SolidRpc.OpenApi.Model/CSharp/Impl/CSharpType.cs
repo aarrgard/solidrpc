@@ -48,6 +48,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public bool IsGenericType => Name.Contains('<');
 
         /// <summary>
+        /// Returns true if this type is an enum type.
+        /// </summary>
+        public bool IsEnumType => this is ICSharpEnum;
+
+        /// <summary>
         /// Adds an extends clause to this type
         /// </summary>
         /// <param name="extType"></param>
@@ -97,7 +102,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 codeWriter.Emit($"namespace {Namespace.FullName} {{{codeWriter.NewLine}");
                 codeWriter.Indent();
             }
-            var structType = (this is CSharpInterface) ? "interface" : "class";
+            var structType = (this is CSharpEnum) ? "enum" : (this is CSharpInterface) ? "interface" : "class";
 
             WriteSummary(codeWriter);
             WriteAttributes(codeWriter);

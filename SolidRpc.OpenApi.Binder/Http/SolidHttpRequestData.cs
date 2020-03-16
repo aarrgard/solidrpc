@@ -161,6 +161,10 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemString:
                             return (_) => _?.GetStringValue();
                         default:
+                            if (type?.IsEnum ?? false)
+                            {
+                                return (_) => Enum.Parse(type, _.GetStringValue());
+                            }
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
@@ -341,6 +345,10 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemString:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, (string)val);
                         default:
+                            if(type?.IsEnum ?? false)
+                            {
+                                return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Enum)val).ToString());
+                            }
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":

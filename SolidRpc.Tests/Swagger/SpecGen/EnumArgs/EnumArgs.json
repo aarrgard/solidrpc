@@ -1,0 +1,58 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "EnumArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/EnumArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IEnumArgs/GetEnumTypeAsync/{testEnum}": {
+      "get": {
+        "tags": [
+          "IEnumArgs"
+        ],
+        "description": "Consumes an enum.",
+        "operationId": "GetEnumTypeAsync",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "testEnum",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "A test enum",
+            "enum": [
+              "One",
+              "Two"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A test enum",
+            "schema": {
+              "type": "string",
+              "description": "A test enum",
+              "enum": [
+                "One",
+                "Two"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IEnumArgs",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}

@@ -52,5 +52,12 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// <param name="fullName">The name of the class</param>
         /// <returns></returns>
         ICSharpClass GetClass(string fullName);
+
+        /// <summary>
+        /// Returns the enum for supplied name
+        /// </summary>
+        /// <param name="fullName">The name of the enum</param>
+        /// <returns></returns>
+        ICSharpEnum GetEnum(string fullName);
     }
 }

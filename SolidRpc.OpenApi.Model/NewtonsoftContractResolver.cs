@@ -50,7 +50,11 @@ namespace SolidRpc.OpenApi.Model
             {
                 return base.CreateContract(type);
             }
-            if(type.IsArray)
+            if (type.IsArray)
+            {
+                return base.CreateContract(type);
+            }
+            if (type.IsEnum)
             {
                 return base.CreateContract(type);
             }

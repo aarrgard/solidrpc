@@ -70,6 +70,8 @@ namespace SolidRpc.OpenApi.Binder
         /// <returns></returns>
         public static Stream Serialize(object obj, Type objectType)
         {
+            // convert enumerable types into arrays.
+            // this is to create concrete object if a linq enum is supplied.
             obj = s_makeArray.GetOrAdd(objectType, _ =>
             {
                 if (_.IsGenericType && _.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -82,11 +84,8 @@ namespace SolidRpc.OpenApi.Binder
                 return o => o;
             })(obj);
 
-            // convert enumerable types into arrays.
-            // this is to create concrete object if a linq enum is supplied.
             using (var ms = new MemoryStream())
             {
-                //using (StreamWriter sw = new StreamWriter(ms, DefaultEncoding))
                 using (StreamWriter sw = new StreamWriter(ms))
                 {
                     using (JsonWriter jsonWriter = new JsonTextWriter(sw))

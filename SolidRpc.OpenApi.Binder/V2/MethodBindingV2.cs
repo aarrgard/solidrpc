@@ -426,7 +426,8 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case "application/json":
                     using (var s = response.ResponseStream)
                     {
-                        return JsonHelper.Deserialize<T>(s);
+                        var respContent = JsonHelper.Deserialize<T>(s);
+                        return respContent;
                     }
             }
             if(typeof(T).IsFileType())
@@ -627,11 +628,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
 
             return Task.CompletedTask;
-        }
-
-        private Func<object, Task<object>> CreateExtractor<T>()
-        {
-            return async (o) => await (Task<T>)o;
         }
     }
 }

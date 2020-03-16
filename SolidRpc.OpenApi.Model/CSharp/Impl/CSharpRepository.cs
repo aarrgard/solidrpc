@@ -73,7 +73,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public CSharpRepository()
         {
             Namespaces = new ConcurrentDictionary<string, ICSharpNamespace>();
-            ClassesAndInterfaces = new ConcurrentDictionary<string, ICSharpMember>();
+            Types = new ConcurrentDictionary<string, ICSharpMember>();
             LoadSystemTypes();
         }
 
@@ -138,7 +138,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <summary>
         /// All the classes and interfaces 
         /// </summary>
-        public ConcurrentDictionary<string, ICSharpMember> ClassesAndInterfaces { get; }
+        public ConcurrentDictionary<string, ICSharpMember> Types { get; }
 
         /// <summary>
         /// The parent
@@ -148,7 +148,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <summary>
         /// All the members(classes, interfaces and namespaces)
         /// </summary>
-        public IEnumerable<ICSharpMember> Members => Namespaces.Values.Union(ClassesAndInterfaces.Values);
+        public IEnumerable<ICSharpMember> Members => Namespaces.Values.Union(Types.Values);
 
         /// <summary>
         /// The name(empty)
@@ -174,12 +174,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <summary>
         /// Returns the classes
         /// </summary>
-        public IEnumerable<ICSharpClass> Classes => ClassesAndInterfaces.Values.OfType<ICSharpClass>();
+        public IEnumerable<ICSharpClass> Classes => Types.Values.OfType<ICSharpClass>();
 
         /// <summary>
         /// Returns the interfaces
         /// </summary>
-        public IEnumerable<ICSharpInterface> Interfaces => ClassesAndInterfaces.Values.OfType<ICSharpInterface>();
+        public IEnumerable<ICSharpInterface> Interfaces => Types.Values.OfType<ICSharpInterface>();
 
         IEnumerable<ICSharpNamespace> ICSharpRepository.Namespaces => Namespaces.Values.OfType<ICSharpNamespace>();
 
@@ -222,7 +222,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <returns></returns>
         public ICSharpClass GetClass(string fullName)
         {
-            var member = ClassesAndInterfaces.GetOrAdd(fullName, _ =>
+            var member = Types.GetOrAdd(fullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
@@ -244,7 +244,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public ICSharpClass GetClass(Type type, string typeName = null)
         {
             if (typeName == null) typeName = type.FullName;
-            return (ICSharpClass)ClassesAndInterfaces.GetOrAdd(typeName, _ =>
+            return (ICSharpClass)Types.GetOrAdd(typeName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
@@ -260,7 +260,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <returns></returns>
         public ICSharpInterface GetInterface(string fullName)
         {
-            return (ICSharpInterface)ClassesAndInterfaces.GetOrAdd(fullName, _ =>
+            return (ICSharpInterface)Types.GetOrAdd(fullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
@@ -275,11 +275,26 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <returns></returns>
         public ICSharpInterface GetInterface(Type type)
         {
-            return (ICSharpInterface)ClassesAndInterfaces.GetOrAdd(type.FullName, _ =>
+            return (ICSharpInterface)Types.GetOrAdd(type.FullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
                 return new CSharpInterface(ns, qn.Name, type);
+            });
+        }
+
+        /// <summary>
+        /// Returns the enum type
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
+        public ICSharpEnum GetEnum(string fullName)
+        {
+            return (ICSharpEnum)Types.GetOrAdd(fullName, _ =>
+            {
+                var qn = new QualifiedName(_);
+                var ns = GetNamespace(qn.Namespace);
+                return new CSharpEnum(ns, qn.Name, null);
             });
         }
 
@@ -301,13 +316,13 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public ICSharpType GetType(string fullName)
         {
             ICSharpMember member;
-            if (ClassesAndInterfaces.TryGetValue(fullName, out member))
+            if (Types.TryGetValue(fullName, out member))
             {
                 return (ICSharpType)member;
             }
             var (genType, genArgs, rest) = ReadType(fullName);
             if (genArgs != null) genType = $"{genType}`{genArgs.Count}";
-            if (ClassesAndInterfaces.TryGetValue(genType, out member))
+            if (Types.TryGetValue(genType, out member))
             {
                 if(member is ICSharpInterface)
                 {
@@ -319,28 +334,6 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 }
             }
             return null;
-            //var t = GetSystemType(genType);
-            //if (t == null)
-            //{
-            //    return null;
-            //}
-            //else if (t.IsClass)
-            //{
-            //    return GetClass(fullName);
-            //}
-            //else if (t.IsInterface)
-            //{
-            //    return GetInterface(fullName);
-            //}
-            //else if (t.IsValueType)
-            //{
-            //    return GetClass(fullName);
-            //}
-            //else
-            //{
-            //    throw new Exception();
-            //}
-
         }
 
         /// <summary>

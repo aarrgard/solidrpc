@@ -147,7 +147,11 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return true;
             }
-            if(clrType == typeof(object))
+            if (type.IsEnum && item.GetClrType() == typeof(string))
+            {
+                return true;
+            }
+            if (clrType == typeof(object))
             {
                 return true;
             }
