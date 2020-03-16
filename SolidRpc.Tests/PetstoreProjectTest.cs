@@ -44,7 +44,7 @@ namespace SolidRpc.Tests
             /// <param name="petId"></param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public Task DeletePet(string api_key, long petId, CancellationToken cancellationToken = default(CancellationToken))
+            public Task DeletePet(long petId, string api_key, CancellationToken cancellationToken = default(CancellationToken))
             {
                 throw new NotImplementedException();
             }

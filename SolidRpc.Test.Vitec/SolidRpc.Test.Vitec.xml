@@ -1044,13 +1044,15 @@
             <param name="house">Villainformationen som ska uppdateras</param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IHouse.HouseCreateHouseFromSellerInput(System.String,SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IHouse.HouseUpdateHouseFromSellerInput(System.String,System.String,SolidRpc.Test.Vitec.Types.House.Cms.HouseSellerInput,System.Threading.CancellationToken)">
             <summary>
-            Metod f&#246;r att skapa en villa&lt;br /&gt;
+            Metod f&#246;r att uppdatera en villa&lt;br /&gt;
             </summary>
             <param name="customerId">Kund-id</param>
+            <param name="id">Id på villan</param>
             <param name="house">Information om villan som ska uppdateras</param>
             <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.House.HouseUpdateHouseFromSellerInput.NoContentException">No Content</exception>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.IHousingCooperative">
             <summary>
@@ -1075,13 +1077,15 @@
             <param name="housingCooperative">Bostadsrättsinformationen som ska uppdateras</param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IHousingCooperative.HousingCooperativeCreateHousingCooperativeFromSellerInput(System.String,SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IHousingCooperative.HousingCooperativeUpdateHousingCooperativeFromSellerInput(System.String,System.String,SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.HousingCooperativeSellerInput,System.Threading.CancellationToken)">
             <summary>
-            Metod f&#246;r att skapa en bostadsr&#228;tt&lt;br /&gt;
+            Metod f&#246;r att uppdatera en bostadsr&#228;tt&lt;br /&gt;
             </summary>
             <param name="customerId">Kund-id</param>
+            <param name="id">Id på villan</param>
             <param name="housingCooperative">Information om bostadsrätten som ska uppdateras</param>
             <param name="cancellationToken"></param>
+            <exception cref="T:SolidRpc.Test.Vitec.Types.Services.HousingCooperative.HousingCooperativeUpdateHousingCooperativeFromSellerInput.NoContentException">No Content</exception>
         </member>
         <member name="T:SolidRpc.Test.Vitec.Services.ILead">
             <summary>
@@ -1876,7 +1880,7 @@
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Vitec.Types.Services.Viewing.ViewingAddViewingParticipant.NoContentException">No Content</exception>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant2(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
             <summary>
             L&#228;gg till ny visningsdeltagare p&#229; en befintligt bostad
             </summary>
@@ -1886,7 +1890,7 @@
             <param name="customerId">Kundid</param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant2(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Vitec.Services.IViewing.ViewingAddNewViewingParticipant(System.String,System.String,SolidRpc.Test.Vitec.Types.Viewing.Models.AddNewViewingParticipant,System.String,System.Threading.CancellationToken)">
             <summary>
             L&#228;gg till ny visningsdeltagare p&#229; en befintligt bostad
             </summary>
@@ -12632,6 +12636,11 @@
             Grundl&#228;ggning
             </summary>
         </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.BuildingType">
+            <summary>
+            Byggnadstyp
+            </summary>
+        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.House.Cms.CmsHouseBuilding.Windows">
             <summary>
             F&#246;nster
@@ -13347,14 +13356,14 @@
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.BuildingType">
-            <summary>
-            Byggnadstyp
-            </summary>
-        </member>
         <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.BuildingYear">
             <summary>
             Byggnations&#229;r
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.BuildingType">
+            <summary>
+            Byggnadstyp
             </summary>
         </member>
         <member name="P:SolidRpc.Test.Vitec.Types.HousingCooperative.Cms.CmsHousingCooperativeBuilding.Windows">
@@ -20006,12 +20015,32 @@
             Constructs a new instance
             </summary>
         </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Services.House.HouseUpdateHouseFromSellerInput.NoContentException">
+            <summary>
+            No Content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Types.Services.House.HouseUpdateHouseFromSellerInput.NoContentException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Vitec.Types.Services.House.HouseUpdate.NoContentException">
             <summary>
             No Content
             </summary>
         </member>
         <member name="M:SolidRpc.Test.Vitec.Types.Services.House.HouseUpdate.NoContentException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Vitec.Types.Services.HousingCooperative.HousingCooperativeUpdateHousingCooperativeFromSellerInput.NoContentException">
+            <summary>
+            No Content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Vitec.Types.Services.HousingCooperative.HousingCooperativeUpdateHousingCooperativeFromSellerInput.NoContentException.#ctor">
             <summary>
             Constructs a new instance
             </summary>

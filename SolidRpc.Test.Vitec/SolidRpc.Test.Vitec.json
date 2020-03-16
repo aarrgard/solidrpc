@@ -4625,12 +4625,12 @@
       }
     },
     "/House/{customerId}/SellerInput": {
-      "post": {
+      "put": {
         "tags": [
           "House"
         ],
-        "summary": "Metod för att skapa en villa<br />",
-        "operationId": "House_CreateHouseFromSellerInput",
+        "summary": "Metod för att uppdatera en villa<br />",
+        "operationId": "House_UpdateHouseFromSellerInput",
         "consumes": [
           "application/json",
           "text/json",
@@ -4638,17 +4638,19 @@
           "text/xml",
           "application/x-www-form-urlencoded"
         ],
-        "produces": [
-          "application/json",
-          "text/json",
-          "application/xml",
-          "text/xml"
-        ],
+        "produces": [],
         "parameters": [
           {
             "name": "customerId",
             "in": "path",
             "description": "Kund-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id på villan",
             "required": true,
             "type": "string"
           },
@@ -4663,11 +4665,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "string"
-            }
+          "204": {
+            "description": "No Content"
           }
         }
       }
@@ -4768,12 +4767,12 @@
       }
     },
     "/HousingCooperative/{customerId}/SellerInput": {
-      "post": {
+      "put": {
         "tags": [
           "HousingCooperative"
         ],
-        "summary": "Metod för att skapa en bostadsrätt<br />",
-        "operationId": "HousingCooperative_CreateHousingCooperativeFromSellerInput",
+        "summary": "Metod för att uppdatera en bostadsrätt<br />",
+        "operationId": "HousingCooperative_UpdateHousingCooperativeFromSellerInput",
         "consumes": [
           "application/json",
           "text/json",
@@ -4781,17 +4780,19 @@
           "text/xml",
           "application/x-www-form-urlencoded"
         ],
-        "produces": [
-          "application/json",
-          "text/json",
-          "application/xml",
-          "text/xml"
-        ],
+        "produces": [],
         "parameters": [
           {
             "name": "customerId",
             "in": "path",
             "description": "Kund-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id på villan",
             "required": true,
             "type": "string"
           },
@@ -4806,11 +4807,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "string"
-            }
+          "204": {
+            "description": "No Content"
           }
         }
       }
@@ -7874,7 +7872,7 @@
           "Viewing"
         ],
         "summary": "Lägg till ny visningsdeltagare på en befintligt bostad",
-        "operationId": "Viewing_AddNewViewingParticipant",
+        "operationId": "Viewing_AddNewViewingParticipant2",
         "consumes": [
           "application/json",
           "text/json",
@@ -7936,7 +7934,7 @@
           "Viewing"
         ],
         "summary": "Lägg till ny visningsdeltagare på en befintligt bostad",
-        "operationId": "Viewing_AddNewViewingParticipant2",
+        "operationId": "Viewing_AddNewViewingParticipant",
         "consumes": [
           "application/json",
           "text/json",
@@ -20969,6 +20967,10 @@
           "description": "Grundläggning",
           "type": "string"
         },
+        "buildingType": {
+          "description": "Byggnadstyp",
+          "type": "string"
+        },
         "windows": {
           "description": "Fönster",
           "type": "string"
@@ -21409,12 +21411,12 @@
     "HousingCooperative.Cms.CmsHousingCooperativeBuilding": {
       "type": "object",
       "properties": {
-        "buildingType": {
-          "description": "Byggnadstyp",
-          "type": "string"
-        },
         "buildingYear": {
           "description": "Byggnationsår",
+          "type": "string"
+        },
+        "buildingType": {
+          "description": "Byggnadstyp",
           "type": "string"
         },
         "windows": {

@@ -49,8 +49,17 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 FullName = Name;
             }
         }
+
+        /// <summary>
+        /// The parent
+        /// </summary>
         public ICSharpMember Parent { get; }
 
+        /// <summary>
+        /// Returns the first parent of specified type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T GetParent<T>() where T : ICSharpMember
         {
             if(Parent is T t)

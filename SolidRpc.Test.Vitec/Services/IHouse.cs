@@ -35,13 +35,16 @@ namespace SolidRpc.Test.Vitec.Services {
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
-        /// Metod f&#246;r att skapa en villa&lt;br /&gt;
+        /// Metod f&#246;r att uppdatera en villa&lt;br /&gt;
         /// </summary>
         /// <param name="customerId">Kund-id</param>
+        /// <param name="id">Id på villan</param>
         /// <param name="house">Information om villan som ska uppdateras</param>
         /// <param name="cancellationToken"></param>
-        Task<string> HouseCreateHouseFromSellerInput(
+        /// <exception cref="SolidRpc.Test.Vitec.Types.Services.House.HouseUpdateHouseFromSellerInput.NoContentException">No Content</exception>
+        Task HouseUpdateHouseFromSellerInput(
             string customerId,
+            string id,
             HouseSellerInput house,
             CancellationToken cancellationToken = default(CancellationToken));
     

@@ -2,6 +2,9 @@
 
 namespace SolidRpc.OpenApi.Model.Agnostic
 {
+    /// <summary>
+    /// Represents a swagger operation
+    /// </summary>
     public class SwaggerOperation
     {
         /// <summary>

@@ -37,6 +37,12 @@ namespace SolidRpc.Test.Vitec.Types.House.Cms {
         public string Foundation { get; set; }
     
         /// <summary>
+        /// Byggnadstyp
+        /// </summary>
+        [DataMember(Name="buildingType",EmitDefaultValue=false)]
+        public string BuildingType { get; set; }
+    
+        /// <summary>
         /// F&#246;nster
         /// </summary>
         [DataMember(Name="windows",EmitDefaultValue=false)]

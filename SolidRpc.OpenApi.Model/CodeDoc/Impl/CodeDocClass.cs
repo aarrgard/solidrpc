@@ -94,6 +94,11 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             return doc;
         }
 
+        /// <summary>
+        /// Returns the documentation for supplied property.
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
         public ICodeDocProperty GetPropertyDocumentation(PropertyInfo pi)
         {
             ICodeDocProperty doc;

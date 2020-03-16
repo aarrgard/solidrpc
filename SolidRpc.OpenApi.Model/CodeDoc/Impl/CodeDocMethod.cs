@@ -73,6 +73,11 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             }
         }
 
+        /// <summary>
+        /// Returns the parameter documentation
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ICodeDocParameter GetParameterDocumentation(string name)
         {
             return ParameterDocumentation.FirstOrDefault(o => o.Name == name);

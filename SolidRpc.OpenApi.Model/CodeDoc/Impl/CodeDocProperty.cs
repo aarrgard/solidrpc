@@ -49,6 +49,9 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             }
         }
 
+        /// <summary>
+        /// The summary
+        /// </summary>
         public string Summary { get; private set; }
     }
 }

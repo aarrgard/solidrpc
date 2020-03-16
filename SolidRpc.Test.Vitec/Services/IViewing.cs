@@ -120,7 +120,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="participant">Visningsdeltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        Task<string> ViewingAddNewViewingParticipant(
+        Task<string> ViewingAddNewViewingParticipant2(
             string viewingId,
             string timeSlotId,
             Models.AddNewViewingParticipant participant,
@@ -135,7 +135,7 @@ namespace SolidRpc.Test.Vitec.Services {
         /// <param name="participant">Visningsdeltagaren.</param>
         /// <param name="customerId">Kundid</param>
         /// <param name="cancellationToken"></param>
-        Task<string> ViewingAddNewViewingParticipant2(
+        Task<string> ViewingAddNewViewingParticipant(
             string viewingId,
             string timeSlotId,
             Models.AddNewViewingParticipant participant,

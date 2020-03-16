@@ -1,16 +1,21 @@
+using System.CodeDom.Compiler;
 using System.Threading.Tasks;
+using SolidRpc.Test.Petstore.Types.Services.Store.GetInventory;
+using SolidRpc.Test.Petstore.Security;
 using System.Threading;
 using SolidRpc.Test.Petstore.Types;
 namespace SolidRpc.Test.Petstore.Services {
     /// <summary>
     /// Access to Petstore orders
     /// </summary>
+    [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public interface IStore {
         /// <summary>
         /// Returns pet inventories by status Returns a map of status codes to quantities
         /// </summary>
         /// <param name="cancellationToken"></param>
-        Task<SolidRpc.Test.Petstore.Types.Services.Store.GetInventory.Response200> GetInventory(
+        [ApiKey]
+        Task<Response200> GetInventory(
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

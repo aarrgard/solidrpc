@@ -244,19 +244,45 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             return res;
         }
     }
+
+    /// <summary>
+    /// Implements the method invoker
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MethodInvoker<T> : MethodInvoker, IMethodInvoker<T>
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="serviceProvider"></param>
+        /// <param name="methodBinderStore"></param>
+        /// <param name="proxyConfigurationStore"></param>
         public MethodInvoker(ILogger<MethodInvoker<T>> logger, IServiceProvider serviceProvider, IMethodBinderStore methodBinderStore, ISolidProxyConfigurationStore proxyConfigurationStore) : base(logger, serviceProvider, methodBinderStore, proxyConfigurationStore)
         {
         }
 
-        public new Task InvokeInternalAsync<TResult>(Expression<Action<T>> action, CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        /// Invokes the action
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task InvokeInternalAsync<TResult>(Expression<Action<T>> action, CancellationToken cancellationToken = default(CancellationToken))
         {
             var (mi, args) = GetMethodInfo(action);
             return InvokeInternalAsync(mi, args, cancellationToken);
         }
 
-        public new TResult InvokeInternalAsync<TResult>(Expression<Func<T, TResult>> func, CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        /// Invokes the function
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="func"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public TResult InvokeInternalAsync<TResult>(Expression<Func<T, TResult>> func, CancellationToken cancellationToken = default(CancellationToken))
         {
             var (mi, args) = GetMethodInfo(func);
             return (TResult)(object)InvokeInternalAsync(mi, args, cancellationToken);

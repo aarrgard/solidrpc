@@ -4,6 +4,26 @@
         <name>SolidRpc.Test.Petstore</name>
     </assembly>
     <members>
+        <member name="T:SolidRpc.Test.Petstore.Security.ApiKeyAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Security.ApiKeyAttribute.Scopes">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Security.PetstoreAuthAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Test.Petstore.Security.PetstoreAuthAttribute.Scopes">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:SolidRpc.Test.Petstore.Services.IPet">
             <summary>
             Everything about your Pets
@@ -44,12 +64,12 @@
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.FindPetsByTags.InvalidTagValueException">Invalid tag value</exception>
         </member>
-        <member name="M:SolidRpc.Test.Petstore.Services.IPet.DeletePet(System.String,System.Int64,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Test.Petstore.Services.IPet.DeletePet(System.Int64,System.String,System.Threading.CancellationToken)">
             <summary>
             Deletes a pet
             </summary>
-            <param name="api_key"></param>
             <param name="petId">Pet id to delete</param>
+            <param name="apiKey"></param>
             <param name="cancellationToken"></param>
             <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.InvalidIDSuppliedException">Invalid ID supplied</exception>
             <exception cref="T:SolidRpc.Test.Petstore.Types.Services.Pet.DeletePet.PetNotFoundException">Pet not found</exception>
