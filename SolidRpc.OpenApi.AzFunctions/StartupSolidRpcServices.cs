@@ -67,7 +67,20 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="c"></param>
         protected virtual bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
-            c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "function";
+            if(c.SecurityKey == null)
+            {
+                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "function";
+            }
+            else
+            {
+                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+            }
+
+            var method = c.Methods.First();
+            if (method.DeclaringType == typeof(ISolidRpcHost))
+            {
+                return method.Name == nameof(ISolidRpcHost.IsAlive);
+            }
             return true;
         }
     }

@@ -127,16 +127,44 @@ namespace SolidRpc.Tests.Swagger.CodeGen
 
                 var moq = new Moq.Mock<ArrayParam.Services.IArrayParam>();
                 moq.Setup(o => o.ProxyArrayInQuery(It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>()))
-                    .Returns(Task.FromResult<IEnumerable<int>>(new[] { 5, 9}));
+                    .Returns(Task.FromResult<IEnumerable<int>>(new[] { 5, 9 }));
 
                 ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<ArrayParam.Services.IArrayParam>();
 
-                var res = await proxy.ProxyArrayInQuery(new int[] { 5, 9});
+                var res = await proxy.ProxyArrayInQuery(new int[] { 5, 9 });
                 Assert.AreEqual(5, res.Skip(0).First());
                 Assert.AreEqual(9, res.Skip(1).First());
                 Assert.AreEqual(1, moq.Invocations.Count);
+            }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestRequiredOptionalParam()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestRequiredOptionalParam).Substring(4));
+
+                var moq = new Moq.Mock<RequiredOptionalParam.Services.IRequiredOptionalParam>();
+
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<RequiredOptionalParam.Services.IRequiredOptionalParam>();
+
+                moq.Setup(o => o.OptionalInt(It.Is<int?>(i => i == 1), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult<int>(1));
+                var res = await proxy.OptionalInt(1);
+                Assert.AreEqual(1, res);
+
+                moq.Setup(o => o.OptionalInt(It.Is<int?>(i => i == null), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult<int>(0));
+                res = await proxy.OptionalInt(null);
+                Assert.AreEqual(0, res);
             }
         }
     }

@@ -72,7 +72,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             switch (collectionFormat)
             {
                 case null:
-                    subExtractor = CreateExtractor(contentType, name, parameterType);
+                    subExtractor = CreateExtractor(contentType, name, parameterType, !parameterType.IsValueType);
                     return (_) => subExtractor(_.FirstOrDefault());
                 case "multi":
                     var enumExtractor = CreateEnumExtractor(contentType, name, parameterType);
@@ -107,7 +107,7 @@ namespace SolidRpc.OpenApi.Binder.Http
 
         private static Func<IEnumerable<IHttpRequestData>, IEnumerable<T>> CreateEnumExtractor<T>(string contentType, string name)
         {
-            var subExtractor = CreateExtractor(contentType, name, typeof(T));
+            var subExtractor = CreateExtractor(contentType, name, typeof(T), !typeof(T).IsValueType);
             return (_) => {
                 var arr = _.Select(o => (T)subExtractor(o)).ToArray();
                 return arr;
@@ -115,11 +115,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         }
 
 
-        private static Func<IHttpRequestData, object> CreateExtractor(string contentType, string name, Type type)
+        private static Func<IHttpRequestData, object> CreateExtractor(string contentType, string name, Type type, bool nullable)
         {
             if (type.IsNullableType(out Type nullableType))
             {
-                var subExtractor = CreateExtractor(contentType, name, nullableType);
+                var subExtractor = CreateExtractor(contentType, name, nullableType, true);
                 return (_) =>
                 {
                      return subExtractor(_);
@@ -133,28 +133,105 @@ namespace SolidRpc.OpenApi.Binder.Http
                     {
                         case null:
                         case SystemThreadingCancellationToken:
-                            return (_) => CancellationToken.None;
+                            return (_) => nullable ? (CancellationToken?)null : CancellationToken.None;
                         case SystemBoolean:
-                            return (_) => bool.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (bool.TryParse(_?.GetStringValue(), out bool parsed)) 
+                                {
+                                    return parsed;
+                                } 
+                                else 
+                                {
+                                    return nullable ? (bool?)null : false;
+                                };
+                            };
                         case SystemDouble:
-                            return (_) => double.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (double.TryParse(_?.GetStringValue(), out double parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (double?)null : 0;
+                                };
+                            };
                         case SystemSingle:
-                            return (_) => float.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (float.TryParse(_?.GetStringValue(), out float parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (float?)null : 0;
+                                };
+                            };
                         case SystemInt16:
-                            return (_) => short.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (short.TryParse(_?.GetStringValue(), out short parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (short?)null : 0;
+                                };
+                            };
                         case SystemInt32:
-                            return (_) => int.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (int.TryParse(_?.GetStringValue(), out int parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (int?)null : 0;
+                                };
+                            };
                         case SystemInt64:
-                            return (_) => long.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (long.TryParse(_?.GetStringValue(), out long parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (long?)null : 0;
+                                };
+                            };
                         case SystemGuid:
-                            return (_) => Guid.Parse(_?.GetStringValue() ?? "0");
+                            return (_) => {
+                                if (Guid.TryParse(_?.GetStringValue(), out Guid parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (Guid?)null : Guid.Empty;
+                                };
+                            };
                         case SystemDateTime:
-                            return (_) => _ == null ? DateTime.MinValue : DateTime.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                            return (_) => {
+                                if (DateTime.TryParse(_?.GetStringValue(), out DateTime parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (DateTime?)null : DateTime.MinValue;
+                                };
+                            };
                         case SystemDateTimeOffset:
-                            return (_) =>
-                            {
-                                if (_ == null) return DateTimeOffset.MinValue;
-                                return DateTimeOffset.ParseExact(_.GetStringValue(), "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+                            return (_) => {
+                                if (DateTimeOffset.TryParseExact(_?.GetStringValue(), "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (DateTimeOffset?)null : DateTimeOffset.MinValue;
+                                };
                             };
                         case SystemUri:
                             return (_) => _ == null ? null : new Uri(_.GetStringValue());

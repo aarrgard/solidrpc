@@ -2,9 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Test.Vitec.Impl;
 using SolidRpc.Test.Vitec.Services;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Tests
@@ -18,7 +17,7 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Needs settings")]
+        [Test, Ignore("Requires passwords")]
         public async Task TestStartProject()
         {
             var cb = new ConfigurationBuilder();
@@ -33,18 +32,24 @@ namespace SolidRpc.Tests
             // copy the "urls" setting
             sc.AddSingleton<IConfiguration>(cb.Build());
 
+
             sc.AddHttpClient();
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcBindings(typeof(IEstate).Assembly);
-            sc.GetSolidConfigurationBuilder()
-                .ConfigureInterfaceAssembly(typeof(IEstate).Assembly)
-                .ConfigureAdvice<ISolidRpcOpenApiConfig>()
-                .SecurityKey = new KeyValuePair<string, string>("Authorization", conf["VitecConnectAuthorization"]);
+
+            sc.AddVitecBackendServiceProvider();
 
             var sp = sc.BuildServiceProvider();
-            var estateService = sp.GetRequiredService<IEstate>();
-            var house = await estateService.EstateGetHousingCooperative("OBJ20965_1767989848");
+            var estateService = sp
+                .GetRequiredService<IVitecBackendServiceProvider>()
+                .GetRequiredService<IEstate>();
+            //var house = await estateService.EstateGetHousingCooperative("OBJ20965_1767989848");
+
+            var statuses = await estateService.EstateGetStatuses();
+            //var lst = await estateService.EstateGetEstateList(new Test.Vitec.Types.Criteria.Estate.EstateCriteria()
+            //{
+            //    Statuses = statuses.Where(o => o.Id == "3").ToList()
+            //});
         }
 
     }
