@@ -5,4 +5,8 @@
     <LangVersion>7</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
+  </ItemGroup>
+
 </Project>

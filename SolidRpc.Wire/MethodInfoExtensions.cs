@@ -1,4 +1,5 @@
-﻿using SolidRpc.Wire;
+﻿using SolidRpc.OpenApi.Model.Serialization;
+using SolidRpc.Wire;
 using System;
 using System.Linq;
 using System.Reflection;
