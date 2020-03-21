@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Linq;
+using SolidRpc.OpenApi.Model.Serialization;
 
 namespace SolidRpc.Tests.Wire
 {
