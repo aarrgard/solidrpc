@@ -27,7 +27,10 @@ namespace SolidRpc.OpenApi.Binder.V2
             } 
             else if(ParameterObject.In == "formData")
             {
-                contentType = "application/json";
+                if(!SolidHttpRequestData.IsSimpleType(parameterInfo.ParameterType))
+                {
+                    contentType = "application/json";
+                }
             }
 
             var collectionFormat = ParameterObject.Type == "array" ? ParameterObject.CollectionFormat ?? "csv" : null;

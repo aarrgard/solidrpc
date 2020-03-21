@@ -35,8 +35,27 @@ namespace SolidRpc.OpenApi.Binder.Http
         private const string SystemString = "System.String";
         private const string SystemIOStream = "System.IO.Stream";
         private const string SystemThreadingCancellationToken = "System.Threading.CancellationToken";
-        
+        private static readonly ICollection<string> SystemTypes = new HashSet<string>()
+        {
+            SystemBoolean, SystemDouble, SystemByte, SystemSingle,
+            SystemInt16, SystemInt32, SystemInt64, SystemGuid,
+            SystemDateTime, SystemDateTimeOffset, SystemUri, SystemString,
+            SystemIOStream, SystemThreadingCancellationToken
+        };
         public static readonly IEnumerable<SolidHttpRequestData> EmptyArray = new SolidHttpRequestData[0];
+
+        public static bool IsSimpleType(Type type)
+        {
+            if (type.IsEnumType(out Type enumType))
+            {
+                return IsSimpleType(enumType);
+            }
+            if (type.IsTaskType(out Type taskType))
+            {
+                return IsSimpleType(taskType);
+            }
+            return SystemTypes.Contains(type.FullName);
+        }
 
         public static Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
         {
