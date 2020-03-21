@@ -44,7 +44,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
 
         public override IOpenApiSpec CreateSwaggerSpec(IOpenApiSpecResolver openApiSpecResolver, ICSharpRepository cSharpRepository)
         {
-            var swaggerObject = new SwaggerObject(null)
+            var swaggerObject = new SwaggerObject((ModelBase)openApiSpecResolver)
             {
                 Swagger = "2.0",
                 Host = "localhost",

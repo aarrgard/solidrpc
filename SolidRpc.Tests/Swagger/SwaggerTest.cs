@@ -33,10 +33,10 @@ namespace SolidRpc.Tests.Swagger
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcServices(o => true);
             var sp = sc.BuildServiceProvider();
-            var res = sp.GetRequiredService<OpenApiSpecResolverAssembly>();
-            res.AddAssemblyResources(GetType().Assembly);
+            var openApiResolver = sp.GetRequiredService<OpenApiSpecResolverAssembly>();
+            openApiResolver.AddAssemblyResources(GetType().Assembly);
             SwaggerObject swaggerSpec;
-            if(res.TryResolveApiSpec("petstore.json", out IOpenApiSpec resolvedSpec))
+            if(openApiResolver.TryResolveApiSpec("petstore.json", out IOpenApiSpec resolvedSpec))
             {
                 swaggerSpec = (SwaggerObject)resolvedSpec;
             }
@@ -47,8 +47,8 @@ namespace SolidRpc.Tests.Swagger
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
 
-            var str = OpenApiParserV2.WriteSwaggerDoc(swaggerSpec);
-            swaggerSpec = new OpenApiParserV2().ParseSwaggerDoc(str);
+            var swaggerSpec2 = (SwaggerObject)swaggerSpec.Clone();
+            Assert.AreNotSame(swaggerSpec, swaggerSpec2);
 
             CheckPetStoreSwaggerSpec(swaggerSpec);
         }

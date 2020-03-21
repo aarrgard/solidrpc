@@ -36,12 +36,13 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T GetParent<T>() where T:ModelBase
+        public T GetParent<T>() where T:class
         {
             var work = Parent;
             while(work != null)
             {
-                if (work is T t)
+                var t = work as T;
+                if (t != null)
                 {
                     return t;
                 }

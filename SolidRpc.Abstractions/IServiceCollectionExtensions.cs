@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
@@ -21,6 +19,22 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        private interface IServicesAdded { }
+        private class ServicesAddedImplementation : IServicesAdded { }
+        private class ServiceProviderForServiceCollection : IServiceProvider
+        {
+            public ServiceProviderForServiceCollection(IServiceCollection serviceCollection)
+            {
+                ServiceCollection = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
+            }
+
+            public IServiceCollection ServiceCollection { get; }
+
+            public object GetService(Type serviceType)
+            {
+                return ServiceCollection.GetSolidRpcServiceProvider(serviceType, false);
+            }
+        }
         /// <summary>
         /// Adds the service if type is missing in the collection.
         /// </summary>
@@ -60,7 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new NotImplementedException();
             }
         }
-        private static bool s_assembliesLoaded = false;
+        private static ICollection<Assembly> s_LoadedAssemblies;
 
         /// <summary>
         /// Adds the rpc services
@@ -106,49 +120,63 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="mustExist"></param>
         /// <returns></returns>
-        public static TService GetSolidRpcServiceProvider<TService>(this IServiceCollection services, bool mustExist = true) where TService:class
+        public static TService GetSolidRpcServiceProvider<TService>(this IServiceCollection services, bool mustExist = true) where TService : class
         {
-            var serviceProspects = services.Where(o => o.ServiceType == typeof(TService));
-            //if(serviceProspects.Count() > 1)
-            //{
-            //    throw new Exception($"Found more than one service of type {typeof(TService)}");
-            //}
+            return (TService) services.GetSolidRpcServiceProvider(typeof(TService), mustExist);
+        }
+
+        /// <summary>
+        /// Returns the service provider for specified service.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="mustExist"></param>
+        /// <returns></returns>
+        public static object GetSolidRpcServiceProvider(this IServiceCollection services, Type serviceType, bool mustExist = true)
+        {
+            var serviceProspects = services.Where(o => o.ServiceType == serviceType);
             var service = serviceProspects.FirstOrDefault();
             if (service == null)
             {
-                if(!mustExist)
+                if(mustExist)
                 {
-                    return default(TService);
+                    throw new Exception($"Cannot find singleton service for {serviceType}.");
                 }
-                service = new ServiceDescriptor(typeof(TService), SolidRpcAbstractionProviderAttribute.CreateInstance<TService>());
-                services.Add(service);
+                return DefaultValue(serviceType);
             }
             if (service.ImplementationInstance != null)
             {
-                return (TService)service.ImplementationInstance;
+                return service.ImplementationInstance;
             }
             if (service.ImplementationType != null)
             {
-                var impl = Activator.CreateInstance(service.ImplementationType); // create before remove...
+                var args = service.ImplementationType.GetConstructors().First()
+                    .GetParameters().Select(o => o.ParameterType)
+                    .Select(o => services.GetSolidRpcServiceProvider(o, true))
+                    .ToArray();
+                var impl = Activator.CreateInstance(service.ImplementationType, args); // create before remove...
                 services.Remove(service);
-                service = new ServiceDescriptor(typeof(TService), impl);
+                service = new ServiceDescriptor(serviceType, impl);
                 services.Add(service);
-                return (TService)service.ImplementationInstance;
+                return service.ImplementationInstance;
             }
             if (service.ImplementationFactory != null)
             {
-                return (TService)service.ImplementationFactory(null);
+                return service.ImplementationFactory(null);
             }
-            var proxied = services.SingleOrDefault(o => o.ServiceType == typeof(ISolidProxied<TService>));
+            var proxiedType = typeof(ISolidProxied<>).MakeGenericType(serviceType);
+            var proxied = services.SingleOrDefault(o => o.ServiceType == proxiedType);
             if(proxied != null)
             {
                 if (proxied.ImplementationInstance != null)
                 {
-                    return ((ISolidProxied<TService>)proxied.ImplementationInstance).Service;
+                    throw new Exception();
+                    //return ((ISolidProxied)proxied.ImplementationInstance).Service;
                 }
                 else if (proxied.ImplementationFactory != null)
                 {
-                    return ((ISolidProxied<TService>)proxied.ImplementationFactory(new DummyServiceProvider())).Service;
+                    throw new Exception();
+                    //return ((ISolidProxied)proxied.ImplementationFactory(new DummyServiceProvider())).Service;
                 }
                 else
                 {
@@ -157,20 +185,15 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             if(mustExist)
             {
-                throw new Exception($"Cannot find singleton service for {typeof(TService)}.");
+                throw new Exception($"Cannot find singleton service for {serviceType}.");
             }
-            return default(TService);
+            return DefaultValue(serviceType);
         }
 
-        /// <summary>
-        /// Registers a singleton service provider.
-        /// </summary>
-        /// <typeparam name="TService"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection RegisterSingletonService<TService>(this IServiceCollection services) where TService : class
+        private static object DefaultValue(Type serviceType)
         {
-            return services.RegisterSingletonService(typeof(TService));
+            if (serviceType.IsValueType) return Activator.CreateInstance(serviceType);
+            return null;
         }
 
         /// <summary>
@@ -179,11 +202,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="serviceType"></param>
         /// <returns></returns>
-        private static IServiceCollection RegisterSingletonService(this IServiceCollection services, Type serviceType)
+        private static IServiceCollection RegisterSingletonService(this IServiceCollection services, Type serviceType, Type implType)
         {
             if (!services.Any(o => serviceType == o.ServiceType))
             {
-                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType(serviceType);
                 if(implType.GetConstructor(Type.EmptyTypes) == null)
                 {
                     services.AddSingleton(implType, implType);
@@ -206,35 +228,48 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSingletonServices(this IServiceCollection services)
         {
-            InitAssemblies();
-            services.RegisterSingletonService<IOpenApiParser>();
-            services.RegisterSingletonService<IOpenApiSpecResolver>();
-            services.RegisterSingletonService<IMethodInvoker>();
-            services.RegisterSingletonService(typeof(IMethodInvoker<>));
-            services.RegisterSingletonService<IMethodBinderStore>();
-            services.RegisterSingletonService<IMethodAddressTransformer>();
-            services.RegisterSingletonService<ISolidRpcContentStore>();
-            services.RegisterSingletonService<ISolidRpcContentHandler>();
+            //
+            // check if already initialized
+            //
+            if(services.Any(o => o.ServiceType == typeof(IServicesAdded)))
+            {
+                return services;
+            }
+            services.AddSingleton<IServicesAdded, ServicesAddedImplementation>();
+
+            //
+            // initialize services
+            //
+            var assemblies = InitAssemblies();
+            var singletons = assemblies.SelectMany(o => SolidRpcAbstractionProviderAttribute.GetSingletonServices(o)).ToList();
+            foreach(var singleton in singletons)
+            {
+                services.RegisterSingletonService(singleton.Key, singleton.Value);
+            }
             return services;
         }
 
-        private static void InitAssemblies()
+        private static ICollection<Assembly> InitAssemblies()
         {
-            if (s_assembliesLoaded) return;
-            LoadAssembly("SolidRpc.OpenApi.Model");
-            LoadAssembly("SolidRpc.OpenApi.Binder");
-            LoadAssembly("SolidRpc.OpenApi.AspNetCore", false);
-            LoadAssembly("SolidRpc.OpenApi.AzFunctions", false);
-            LoadAssembly("SolidRpc.OpenApi.AzFunctionsV1Extension", false);
-            LoadAssembly("SolidRpc.OpenApi.AzFunctionsV2Extension", false);
-            s_assembliesLoaded = true;
+            if (s_LoadedAssemblies == null)
+            {
+                var assemblies = new List<Assembly>();
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.Model");
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.Binder");
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.AspNetCore", false);
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctions", false);
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctionsV1Extension", false);
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctionsV2Extension", false);
+                s_LoadedAssemblies = assemblies;
+            }
+            return s_LoadedAssemblies;
         }
 
-        private static void LoadAssembly(string assemblyName, bool required = true)
+        private static void LoadAssembly(ICollection<Assembly> assemblies, string assemblyName, bool required = true)
         {
             try
             {
-                Assembly.Load(assemblyName);
+                assemblies.Add(Assembly.Load(assemblyName));
             }
             catch(Exception)
             {
@@ -349,7 +384,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if(impl != null)
             {
-                sc.AddSingleton<T>(impl);
+                sc.AddSingleton(impl);
             }
             else
             {

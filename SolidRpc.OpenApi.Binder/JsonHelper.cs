@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SolidRpc.OpenApi.Model;
+using SolidRpc.OpenApi.Model.Serialization.Newtonsoft;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -100,11 +99,6 @@ namespace SolidRpc.OpenApi.Binder
         private static object MakeArray<T>(object e)
         {
             return ((IEnumerable<T>)e).ToArray();
-        }
-
-        internal static void Deserialize(Stream stream, Type parameterType, object encoding)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -172,7 +172,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             if(s_serviceProvider == null)
             {
                 var sc = new ServiceCollection();
-                sc.AddSingleton<IOpenApiParser, OpenApiParser>();
+                sc.AddSolidRpcSingletonServices();
                 sc.AddSingleton<IOpenApiSpecResolver, OpenApiSpecResolverFile>();
                 sc.AddTransient<IOpenApiGenerator, OpenApiGenerator>();
                 s_serviceProvider = sc.BuildServiceProvider();

@@ -9,12 +9,17 @@ namespace SolidRpc.OpenApi.Model
     /// <summary>
     /// Resolves specifications that are embedded in an assembly.
     /// </summary>
-    public class OpenApiSpecResolverDummy : IOpenApiSpecResolver
+    public class OpenApiSpecResolverDummy : ModelBase, IOpenApiSpecResolver
     {
         /// <summary>
-        /// The instance
+        /// Constructs a new instance
         /// </summary>
-        public static readonly IOpenApiSpecResolver Instance = new OpenApiSpecResolverDummy();
+        public OpenApiSpecResolverDummy(IOpenApiParser openApiParser) : base(null)
+        {
+            OpenApiParser = openApiParser;
+        }
+
+        public IOpenApiParser OpenApiParser { get; }
 
         /// <summary>
         /// Resolves the api spec with supplied name

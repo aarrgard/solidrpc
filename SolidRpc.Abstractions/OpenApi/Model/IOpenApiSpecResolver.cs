@@ -11,6 +11,11 @@ namespace SolidRpc.Abstractions.OpenApi.Model
     public interface IOpenApiSpecResolver
     {
         /// <summary>
+        /// Returns the parser that parses the resolved specifications.
+        /// </summary>
+        IOpenApiParser OpenApiParser { get; }
+
+        /// <summary>
         /// Resolves the specification at supplied address.
         /// </summary>
         /// <param name="address"></param>

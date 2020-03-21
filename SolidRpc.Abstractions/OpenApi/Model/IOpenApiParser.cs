@@ -18,6 +18,14 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         IOpenApiSpec ParseSpec(IOpenApiSpecResolver specResolver, string address, string json);
 
         /// <summary>
+        /// Writes the supplied openapi specification as a string
+        /// </summary>
+        /// <param name="openApiSpec"></param>
+        /// <param name="formatted"></param>
+        /// <returns></returns>
+        string WriteSwaggerSpec(IOpenApiSpec openApiSpec, bool formatted = true);
+
+        /// <summary>
         /// Creates a specification that contains the methods in supplied types.
         /// </summary>
         /// <param name="types"></param>

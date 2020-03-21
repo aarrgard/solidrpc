@@ -1,8 +1,12 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Model.Generator;
 using SolidRpc.OpenApi.Model.Generator.V2;
+using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -70,6 +74,17 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             public IEnumerable<TestStruct> Recurse { get; set; }
         }
 
+        private IServiceProvider ServiceProvider { 
+            get
+            {
+                var sc = new ServiceCollection();
+                sc.AddSingleton<IOpenApiSpecResolver, OpenApiSpecResolverDummy>();
+                sc.AddSingleton<IOpenApiParser, OpenApiParser>();
+                sc.AddSingleton<ISerializerFactory, SolidRpc.OpenApi.Model.Serialization.SerializerFactory>();
+                return sc.BuildServiceProvider();
+            } 
+        }
+
         /// <summary>
         /// Tests generating the swagger spec from compiled code
         /// </summary>
@@ -77,7 +92,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         public void TestEmptyRepo()
         {
             var cSharpRepository = new CSharpRepository();
-            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestEmptyRepo)}.json"), spec);
         }
@@ -90,7 +106,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         {
             var cSharpRepository = new CSharpRepository();
             CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestStuff)));
-            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestStuff)}.json"), spec);
         }
@@ -103,7 +120,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         {
             var cSharpRepository = new CSharpRepository();
             CSharpReflectionParser.AddType(cSharpRepository, typeof(Interface1));
-            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1AllMethods)}.json"), spec);
         }
@@ -116,7 +134,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         {
             var cSharpRepository = new CSharpRepository();
             CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestArray)));
-            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
         }
@@ -129,7 +148,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         {
             var cSharpRepository = new CSharpRepository();
             CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestOptionalParameter)));
-            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1OptionalParameter)}.json"), spec);
         }
@@ -142,7 +162,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         {
             var cSharpRepository = new CSharpRepository();
             CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestNullableParameter)));
-            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1NullableParameter)}.json"), spec);
         }

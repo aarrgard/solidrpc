@@ -12,7 +12,7 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <a href="https://swagger.io/specification/v2/#swaggerObject"/>
     public class SwaggerObject : ModelBase, IOpenApiSpec
     {
-        private IOpenApiSpecResolver _openApiSpecResolver = new OpenApiSpecResolverDummy();
+        private IOpenApiSpecResolver _openApiSpecResolver;
         private string _openApiSpecResolverAddress = Guid.NewGuid().ToString();
 
         /// <summary>
@@ -26,7 +26,12 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <summary>
         /// Returns the specification resolver.
         /// </summary>
-        public IOpenApiSpecResolver OpenApiSpecResolver => _openApiSpecResolver;
+        public IOpenApiSpecResolver OpenApiSpecResolver => _openApiSpecResolver ?? throw new Exception("No open api spec resolver assigned.");
+
+        /// <summary>
+        /// Returns the specification resolver.
+        /// </summary>
+        public IOpenApiParser OpenApiParser => OpenApiSpecResolver.OpenApiParser;
 
         /// <summary>
         /// Returns the address for this spec.
@@ -242,7 +247,7 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <returns></returns>
         public string WriteAsJsonString(bool formatted = false)
         {
-            return OpenApiParserV2.WriteSwaggerDoc(this, formatted);
+            return OpenApiParser.WriteSwaggerSpec(this, formatted);
         }
 
         /// <summary>
@@ -292,10 +297,7 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <returns></returns>
         public IOpenApiSpec Clone()
         {
-            var clone = (new OpenApiParserV2()).ParseSwaggerDoc(WriteAsJsonString());
-            clone._openApiSpecResolver = _openApiSpecResolver;
-            clone._openApiSpecResolverAddress = OpenApiSpecResolverAddress;
-            return clone;
+            return OpenApiParser.ParseSpec(OpenApiSpecResolver, OpenApiSpecResolverAddress, WriteAsJsonString());
         }
 
         /// <summary>

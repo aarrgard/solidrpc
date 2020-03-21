@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace SolidRpc.OpenApi.Model
+namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
     /// <summary>
     /// A converter for converting json into structured elements

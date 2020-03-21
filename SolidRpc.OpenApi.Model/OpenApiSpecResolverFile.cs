@@ -8,19 +8,19 @@ namespace SolidRpc.OpenApi.Model
     /// <summary>
     /// Resolves specifications that are embedded in an assembly.
     /// </summary>
-    public class OpenApiSpecResolverFile : IOpenApiSpecResolver
+    public class OpenApiSpecResolverFile : ModelBase, IOpenApiSpecResolver
     {
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public OpenApiSpecResolverFile(IOpenApiParser openApiParser)
+        public OpenApiSpecResolverFile(IOpenApiParser openApiParser) : base(null)
         {
             OpenApiParser = openApiParser ?? throw new System.ArgumentNullException(nameof(openApiParser));
             OpenApiSpecs = new ConcurrentDictionary<string, IOpenApiSpec>();
         }
 
         private ConcurrentDictionary<string, IOpenApiSpec> OpenApiSpecs { get; }
-        private IOpenApiParser OpenApiParser { get; }
+        public IOpenApiParser OpenApiParser { get; }
 
         /// <summary>
         /// Resolves the api spec with supplied name

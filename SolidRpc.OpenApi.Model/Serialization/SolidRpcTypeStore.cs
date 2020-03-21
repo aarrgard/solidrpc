@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SolidRpc.Wire
+namespace SolidRpc.OpenApi.Model.Serialization
 {
     /// <summary>
     /// The type store is responsible for mapping clr types on to type names and vice versa.

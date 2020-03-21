@@ -14,21 +14,21 @@ namespace SolidRpc.OpenApi.Model
     /// <summary>
     /// Resolves specifications that are embedded in an assembly.
     /// </summary>
-    public class OpenApiSpecResolverAssembly : IOpenApiSpecResolver
+    public class OpenApiSpecResolverAssembly : ModelBase, IOpenApiSpecResolver
     {
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public OpenApiSpecResolverAssembly(IOpenApiParser openApiParser)
+        public OpenApiSpecResolverAssembly(IOpenApiParser openApiParser) : base(null)
         {
             OpenApiParser = openApiParser ?? throw new System.ArgumentNullException(nameof(openApiParser));
             OpenApiSpecs = new ConcurrentDictionary<string, IOpenApiSpec>();
             Assemblies = new HashSet<Assembly>();
         }
 
+        public IOpenApiParser OpenApiParser { get; }
         private ConcurrentDictionary<string, IOpenApiSpec> OpenApiSpecs { get; }
         private ICollection<Assembly> Assemblies { get; }
-        private IOpenApiParser OpenApiParser { get; }
 
         private (Assembly, string) GetManifestResource(string address)
         {

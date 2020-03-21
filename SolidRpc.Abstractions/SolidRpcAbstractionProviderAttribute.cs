@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace SolidRpc.Abstractions
 {
@@ -9,6 +11,25 @@ namespace SolidRpc.Abstractions
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class SolidRpcAbstractionProviderAttribute : Attribute
     {
+        /// <summary>
+        /// Returns all the services registered in specififed assembly
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static IDictionary<Type, Type> GetSingletonServices(Assembly assembly)
+        {
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            var attrs = AppDomain.CurrentDomain.GetAssemblies()
+                 .SelectMany(o => o.GetCustomAttributes(true))
+                 .OfType<SolidRpcAbstractionProviderAttribute>();
+            var services = new Dictionary<Type, Type>();
+            foreach(var attr in attrs)
+            {
+                services[attr.ServiceType] = attr.ImplementationType;
+            }
+            return services;
+        }
+
         /// <summary>
         /// Returns the implementation type for suplied generic type.
         /// </summary>

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace SolidRpc.OpenApi.Model
+namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
     /// <summary>
     /// Implements logic to handle the serialization/deseralization using newtonsoft.

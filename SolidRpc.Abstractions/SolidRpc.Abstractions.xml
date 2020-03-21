@@ -44,15 +44,16 @@
             <param name="mustExist"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Boolean)">
             <summary>
-            Registers a singleton service provider.
+            Returns the service provider for specified service.
             </summary>
-            <typeparam name="TService"></typeparam>
             <param name="services"></param>
+            <param name="serviceType"></param>
+            <param name="mustExist"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type)">
             <summary>
             Registers a singleton service provider.
             </summary>
@@ -599,6 +600,14 @@
             <param name="json">The json to parse</param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.WriteSwaggerSpec(SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec,System.Boolean)">
+            <summary>
+            Writes the supplied openapi specification as a string
+            </summary>
+            <param name="openApiSpec"></param>
+            <param name="formatted"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.CreateSpecification(System.Type[])">
             <summary>
             Creates a specification that contains the methods in supplied types.
@@ -702,6 +711,11 @@
             with resolving referenced specifications.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver.OpenApiParser">
+            <summary>
+            Returns the parser that parses the resolved specifications.
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpecResolver.TryResolveApiSpec(System.String,SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec@,System.String)">
             <summary>
             Resolves the specification at supplied address.
@@ -803,6 +817,150 @@
             This permission grants access to some of the solid rpc host functionality.
             </summary>
         </member>
+        <member name="T:SolidRpc.Abstractions.Serialization.ISerializer">
+            <summary>
+            Defines the logic to serialize object into a wire format 
+            such as xml or json.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.ISerializer.ContentType">
+            <summary>
+            Returns the content type for this serializer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.ISerializer.CharSet">
+            <summary>
+            The charset for this serializer
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializer.Serialize(System.IO.Stream,System.Type,System.Object,System.Boolean)">
+            <summary>
+            Serializes an object of specified type.
+            </summary>
+            <param name="stream"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="prettyFormat"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializer.Deserialize(System.IO.Stream,System.Type,System.Object@)">
+            <summary>
+            Deserializes an object.
+            </summary>
+            <param name="stream"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="prettyFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Serialization.ISerializerFactory">
+            <summary>
+            Implements logic to create seralizers.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.GetSerializer(System.String,System.Text.Encoding)">
+            <summary>
+            Gets the serializer for suplied media type.
+            </summary>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToString``1(System.String@,``0,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Serializes supplied object to a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <param name="prettyFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.DeserializeFromString``1(System.String,``0@,System.String,System.Text.Encoding)">
+            <summary>
+            Serializes supplied object to a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToString(System.String@,System.Type,System.Object,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Serializes supplied object to a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <param name="prettyFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.DeserializeFromString(System.String,System.Type,System.Object@,System.String,System.Text.Encoding)">
+            <summary>
+            Deserializes an object from a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToStream(System.IO.Stream,System.Type,System.Object,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Serializes supplied object to a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <param name="prettyFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.DeserializeFromStream(System.IO.Stream,System.Type,System.Object@,System.String,System.Text.Encoding)">
+            <summary>
+            Deserializes an object from a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToFileType(System.Object,System.Type,System.Object,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Writes an object to a file instance type.
+            </summary>
+            <param name="fileTypeInstance"></param>
+            <param name="type"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <param name="prettyFormat"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToFileType``1(System.Object,``0,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="fileTypeInstance"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <param name="prettyFormat"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.DeserializeFromFileType``1(System.Object,``0@)">
+            <summary>
+            Writes an object to a file instance type.
+            </summary>
+            <param name="fileTypeInstance"></param>
+            <param name="o"></param>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -896,6 +1054,13 @@
             <summary>
             Attribute that can be set on the SolidRpc hosting assemblies to define the 
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetSingletonServices(System.Reflection.Assembly)">
+            <summary>
+            Returns all the services registered in specififed assembly
+            </summary>
+            <param name="assembly"></param>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetImplemenationType(System.Type)">
             <summary>

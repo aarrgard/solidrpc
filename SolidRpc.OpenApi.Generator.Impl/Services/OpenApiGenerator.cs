@@ -84,7 +84,8 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             switch (settings.OpenApiVersion)
             {
                 case "2.0":
-                    openApiSpec = new OpenApiSpecGeneratorV2(CopySettings<Model.Generator.SettingsSpecGen>(settings)).CreateSwaggerSpec(OpenApiSpecResolverDummy.Instance, cSharpRepository);
+                    var openApiSpecResolver = new OpenApiSpecResolverProject(OpenApiParser, project);
+                    openApiSpec = new OpenApiSpecGeneratorV2(CopySettings<Model.Generator.SettingsSpecGen>(settings)).CreateSwaggerSpec(openApiSpecResolver, cSharpRepository);
                     break;
                 default:
                     throw new Exception("Cannot handle swagger version:" + settings.OpenApiVersion);

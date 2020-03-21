@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,12 +12,12 @@ namespace SolidRpc.OpenApi.Generator.Impl
     /// <summary>
     /// Resolves specifications that are embedded in an assembly.
     /// </summary>
-    public class OpenApiSpecResolverProject : IOpenApiSpecResolver
+    public class OpenApiSpecResolverProject : ModelBase, IOpenApiSpecResolver
     {
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public OpenApiSpecResolverProject(IOpenApiParser openApiParser, Project project)
+        public OpenApiSpecResolverProject(IOpenApiParser openApiParser, Project project) : base(null)
         {
             OpenApiParser = openApiParser ?? throw new System.ArgumentNullException(nameof(openApiParser));
             OpenApiSpecs = new ConcurrentDictionary<string, IOpenApiSpec>();
@@ -25,7 +26,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
         private ConcurrentDictionary<string, IOpenApiSpec> OpenApiSpecs { get; }
         private Project Project { get; }
-        private IOpenApiParser OpenApiParser { get; }
+        public IOpenApiParser OpenApiParser { get; }
 
         /// <summary>
         /// Resolves the api spec with supplied name
