@@ -18,7 +18,7 @@
         "description": "Consumes two complex types an a simple string...",
         "operationId": "GetComplexType",
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "produces": [
           "application/json"
@@ -32,20 +32,18 @@
             "description": ""
           },
           {
-            "name": "body",
-            "in": "body",
+            "name": "ct1",
+            "in": "formData",
             "required": true,
-            "schema": {
-              "properties": {
-                "ct1": {
-                  "$ref": "#/definitions/ComplexType1"
-                },
-                "ct2": {
-                  "$ref": "#/definitions/ComplexType2"
-                }
-              },
-              "type": "object"
-            }
+            "type": "string",
+            "description": "Serialized ComplexType1:"
+          },
+          {
+            "name": "ct2",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Serialized ComplexType2:"
           }
         ],
         "responses": {

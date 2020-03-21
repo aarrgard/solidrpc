@@ -21,7 +21,11 @@ namespace SolidRpc.Tests
         /// </summary>
         protected Stream GetManifestResource(string resourceName)
         {
-            var resName = GetType().Assembly.GetManifestResourceNames().Single(o => o.EndsWith(resourceName));
+            var resName = GetType().Assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith(resourceName));
+            if(resName == null)
+            {
+                throw new Exception("Cannot find resource with ending:" + resourceName);
+            }
             return GetType().Assembly.GetManifestResourceStream(resName);
         }
         /// <summary>

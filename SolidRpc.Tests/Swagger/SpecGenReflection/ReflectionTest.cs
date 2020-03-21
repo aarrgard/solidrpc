@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.Serialization;
+using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Model.Generator;
@@ -9,6 +12,7 @@ using SolidRpc.OpenApi.Model.Generator.V2;
 using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,6 +60,14 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// <param name="d"></param>
             /// <returns></returns>
             Task TestNullableParameter(DateTime? d);
+
+            /// <summary>
+            /// Nullable parameters should be optional
+            /// </summary>
+            /// <param name="additionalData"></param>
+            /// <param name="fileContent"></param>
+            /// <returns></returns>
+            Task TestFileTypeWithAdditionalData(string additionalData, FileContent fileContent);
         }
 
         /// <summary>
@@ -78,9 +90,9 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             get
             {
                 var sc = new ServiceCollection();
-                sc.AddSingleton<IOpenApiSpecResolver, OpenApiSpecResolverDummy>();
-                sc.AddSingleton<IOpenApiParser, OpenApiParser>();
-                sc.AddSingleton<ISerializerFactory, SolidRpc.OpenApi.Model.Serialization.SerializerFactory>();
+                sc.AddLogging(ConfigureLogging);
+                sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
+                sc.AddSolidRpcServices();
                 return sc.BuildServiceProvider();
             } 
         }
@@ -105,7 +117,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         public void TestInterface1TestStuff()
         {
             var cSharpRepository = new CSharpRepository();
-            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestStuff)));
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestStuff));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
@@ -133,11 +146,15 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         public void TestInterface1TestArray()
         {
             var cSharpRepository = new CSharpRepository();
-            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestArray)));
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestArray));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            Assert.AreEqual(2, binding.Arguments.Count());
         }
 
         /// <summary>
@@ -147,11 +164,15 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         public void TestInterface1OptionalParameter()
         {
             var cSharpRepository = new CSharpRepository();
-            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestOptionalParameter)));
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestOptionalParameter));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1OptionalParameter)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            Assert.AreEqual(1, binding.Arguments.Count());
         }
 
         /// <summary>
@@ -161,11 +182,33 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         public void TestInterface1NullableParameter()
         {
             var cSharpRepository = new CSharpRepository();
-            CSharpReflectionParser.AddMethod(cSharpRepository, typeof(Interface1).GetMethod(nameof(Interface1.TestNullableParameter)));
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestNullableParameter));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1NullableParameter)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            Assert.AreEqual(1, binding.Arguments.Count());
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1FileTypeWithAdditionalData()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestFileTypeWithAdditionalData));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1FileTypeWithAdditionalData)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            Assert.AreEqual(2, binding.Arguments.Count());
         }
     }
 }

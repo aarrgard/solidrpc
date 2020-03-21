@@ -156,44 +156,25 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     // get the schema for the property
                     //
                     var schema = GetSchema(operationObject, true, o.ParameterType);
-                    ParameterObject po;
-                    if (schema.GetBaseType() == "object")
+                    ParameterObject po = operationObject.GetParameter(o.Name);
+                    po.Description = o.Comment?.Summary;
+                    po.Required = !o.Optional;
+                    if(schema.GetBaseType() == "object")
                     {
-                        po = operationObject.GetParameter("body");
-                        po.In = "body";
-                        po.Required = !o.Optional;
-                        po.Schema = po.Schema ?? new SchemaObject(po);
-                        po.Schema.Type = "object";
-                        po.Schema.Properties = po.Schema.Properties ?? new DefinitionsObject(po);
-                        po.Schema.Properties[o.Name] = GetSchema(po.Schema, false, o.ParameterType);
+                        po.In = "formData";
+                        po.Schema = schema;
+                    }
+                    else if(po.Required)
+                    {
+                        po.In = "path";
+                        SetItemProps(po, true, o.ParameterType);
                     }
                     else
                     {
-                        po = operationObject.GetParameter(o.Name);
-                        po.Description = o.Comment?.Summary;
-                        po.Required = !o.Optional;
-                        if(po.Required)
-                        {
-                            po.In = "path";
-                        }
-                        else
-                        {
-                            po.In = "query";
-                        }
-
+                        po.In = "query";
                         SetItemProps(po, true, o.ParameterType);
                     }
                 });
-
-            //
-            // if body only contains one parameter - move it to the root level.
-            //
-            var bodyParameter = operationObject.GetParameters().FirstOrDefault(o => o.Name == "body");
-            if (bodyParameter != null && bodyParameter.Schema.Properties.Count == 1)
-            {
-                bodyParameter.Name = bodyParameter.Schema.Properties.First().Key;
-                bodyParameter.Schema = bodyParameter.Schema.Properties.First().Value;
-            }
 
             //
             // Handle file parameters
@@ -213,6 +194,26 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 fileType.In = "formData";
                 fileType.Type = "file";
                 fileType.Schema = null;
+            }
+
+            //
+            // if we have more than one "formData" parameters - convert all the refs to strings
+            //
+            var formDataParameters = operationObject.GetParameters()
+                .Where(o => o.In == "formData").ToList();
+            if (formDataParameters.Count > 1)
+            {
+                formDataParameters.Where(o => o.Schema?.GetRefSchema() != null).ToList().ForEach(o =>
+                {
+                    var refSchema = o.Schema.GetRefSchema();
+                    o.Schema = null;
+                    o.Type = "string";
+                    o.Description = $"Serialized {refSchema.GetOperationName()}:{o.Description}";
+                });
+            }
+            else
+            {
+                formDataParameters.Where(o => o.Type != "file").ToList().ForEach(o => o.In = "body");
             }
 
             operationObject.Responses = CreateResponses(operationObject, method);

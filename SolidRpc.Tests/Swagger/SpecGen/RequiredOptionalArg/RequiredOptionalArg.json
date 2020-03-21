@@ -30,7 +30,8 @@
             "required": false,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
-            }
+            },
+            "description": ""
           }
         ],
         "responses": {
@@ -92,7 +93,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
-            }
+            },
+            "description": ""
           }
         ],
         "responses": {

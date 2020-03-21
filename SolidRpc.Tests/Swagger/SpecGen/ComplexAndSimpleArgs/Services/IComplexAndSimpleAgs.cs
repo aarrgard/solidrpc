@@ -12,8 +12,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen.ComplexAndSimpleArgs.Services
         /// <summary>
         /// Consumes one complex type an a simple string...
         /// </summary>
-        /// <param name="simpleType"></param>
-        /// <param name="ct1"></param>
+        /// <param name="simpleType">The simple type</param>
+        /// <param name="ct1">The complex type</param>
         /// <returns></returns>
         ComplexType1 GetSimpleAndComplexType(string simpleType, ComplexType1 ct1);
 

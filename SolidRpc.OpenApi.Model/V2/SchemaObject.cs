@@ -185,5 +185,14 @@ namespace SolidRpc.OpenApi.Model.V2
             var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
             return TypeExtensions.IsFileType(GetClrType().FullName, props);
         }
+
+        /// <summary>
+        /// Returns the required property. If that property is not set(null) an empty list is returned.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetRequired()
+        {
+            return Required ?? new string[0];
+        }
     }
 }

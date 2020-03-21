@@ -1,0 +1,78 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "FileUpload5",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/FileUpload5",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IFileUpload/UploadFile": {
+      "post": {
+        "tags": [
+          "IFileUpload"
+        ],
+        "description": "Uploads a file. This method will get a \"file\" parameter.",
+        "operationId": "UploadFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "additionalData1",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Serialized ComplexType:"
+          },
+          {
+            "name": "additionalData2",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Serialized ComplexType:"
+          },
+          {
+            "name": "fileData",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "The file data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType": {
+      "properties": {
+        "StringData": {
+          "type": "string",
+          "description": "Some string data"
+        }
+      },
+      "type": "object",
+      "description": "The complex type"
+    }
+  },
+  "tags": [
+    {
+      "name": "IFileUpload",
+      "description": "Test interface to upload a file"
+    }
+  ]
+}

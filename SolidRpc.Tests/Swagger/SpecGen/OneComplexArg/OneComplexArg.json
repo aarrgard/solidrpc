@@ -30,7 +30,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
-            }
+            },
+            "description": ""
           }
         ],
         "responses": {

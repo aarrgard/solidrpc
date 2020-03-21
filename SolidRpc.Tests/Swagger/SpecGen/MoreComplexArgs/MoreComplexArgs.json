@@ -18,7 +18,7 @@
         "description": "Consumes two complex types an a simple string...",
         "operationId": "GetComplexType",
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "produces": [
           "application/json"
@@ -40,26 +40,28 @@
             "description": ""
           },
           {
-            "name": "body",
-            "in": "body",
+            "name": "ct1Enum",
+            "in": "formData",
             "required": true,
             "schema": {
-              "properties": {
-                "ct1Enum": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ComplexType1"
-                  }
-                },
-                "ct2Enum": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ComplexType2"
-                  }
-                }
-              },
-              "type": "object"
-            }
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ComplexType1"
+              }
+            },
+            "description": ""
+          },
+          {
+            "name": "ct2Enum",
+            "in": "formData",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ComplexType2"
+              }
+            },
+            "description": ""
           }
         ],
         "responses": {

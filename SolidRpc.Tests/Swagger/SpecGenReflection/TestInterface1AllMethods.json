@@ -58,6 +58,39 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestFileTypeWithAdditionalData/{additionalData}": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Nullable parameters should be optional",
+        "operationId": "TestFileTypeWithAdditionalData",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "additionalData",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fileContent",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Abstractions.Types.FileContent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestNullableParameter": {
       "get": {
         "tags": [
@@ -191,6 +224,29 @@
       },
       "type": "object",
       "description": "The test struct"
+    },
+    "SolidRpc.Abstractions.Types.FileContent": {
+      "properties": {
+        "Content": {
+          "type": "string",
+          "format": "binary"
+        },
+        "CharSet": {
+          "type": "string"
+        },
+        "ContentType": {
+          "type": "string"
+        },
+        "FileName": {
+          "type": "string"
+        },
+        "LastModified": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "type": "object",
+      "description": "Represents a file content"
     }
   },
   "tags": [

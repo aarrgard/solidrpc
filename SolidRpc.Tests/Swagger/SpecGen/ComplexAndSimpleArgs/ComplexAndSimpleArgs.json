@@ -122,7 +122,7 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "description": ""
+            "description": "The simple type"
           },
           {
             "name": "ct1",
@@ -130,7 +130,8 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/ComplexType1"
-            }
+            },
+            "description": "The complex type"
           }
         ],
         "responses": {

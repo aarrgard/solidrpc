@@ -1,0 +1,77 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestFileTypeWithAdditionalData/{additionalData}": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Nullable parameters should be optional",
+        "operationId": "TestFileTypeWithAdditionalData",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "additionalData",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fileContent",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Abstractions.Types.FileContent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SolidRpc.Abstractions.Types.FileContent": {
+      "properties": {
+        "Content": {
+          "type": "string",
+          "format": "binary"
+        },
+        "CharSet": {
+          "type": "string"
+        },
+        "ContentType": {
+          "type": "string"
+        },
+        "FileName": {
+          "type": "string"
+        },
+        "LastModified": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "type": "object",
+      "description": "Represents a file content"
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
+    }
+  ]
+}

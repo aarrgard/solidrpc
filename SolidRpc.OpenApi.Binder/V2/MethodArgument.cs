@@ -24,6 +24,10 @@ namespace SolidRpc.OpenApi.Binder.V2
             if(ParameterObject.In == "body")
             {
                 contentType = ParameterObject.GetParent<OperationObject>().GetConsumes().FirstOrDefault();
+            } 
+            else if(ParameterObject.In == "formData")
+            {
+                contentType = "application/json";
             }
 
             var collectionFormat = ParameterObject.Type == "array" ? ParameterObject.CollectionFormat ?? "csv" : null;
@@ -117,10 +121,10 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 case "contenttype":
                     latest.SetContentType((string)value);
-                    return new[] { latest };
+                    break; ;
                 case "filename":
                     latest.SetFilename((string)value);
-                    return new[] { latest };
+                    break; ;
                 default:
                     if(value is Stream stream)
                     {
@@ -136,13 +140,19 @@ namespace SolidRpc.OpenApi.Binder.V2
                         latest.SetContentType(TypeExtensions.GetFileTypeContentType(value.GetType(), value));
                         latest.SetFilename(TypeExtensions.GetFileTypeFilename(value.GetType(), value));
                     }
-                    return new[] { latest };
+                    break; ;
             }
+            if(formData.Contains(latest))
+            {
+                return formData;
+            }
+            return formData.Union(new[] { latest }).ToList();
         }
 
         private SolidHttpRequestDataBinary GetLatestBinaryData(IEnumerable<IHttpRequestData> formData)
         {
-            var latest = formData.OfType<SolidHttpRequestDataBinary>().LastOrDefault();
+            var latest = formData.OfType<SolidHttpRequestDataBinary>()
+                .Where(o => o.ContentType == "application/octet-stream").LastOrDefault();
             if(latest == null)
             {
                 latest = new SolidHttpRequestDataBinary("application/octet-stream", null, "temp", (byte[])null);

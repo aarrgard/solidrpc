@@ -1,0 +1,59 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "FileUpload3",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/FileUpload3",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IFileUpload/UploadFile/{additionalData}": {
+      "post": {
+        "tags": [
+          "IFileUpload"
+        ],
+        "description": "Uploads a file. This method will get a \"file\" parameter.",
+        "operationId": "UploadFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "additionalData",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "fileData",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "The file data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IFileUpload",
+      "description": "Test interface to upload a file"
+    }
+  ]
+}

@@ -42,7 +42,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "EnumArgs") continue;
+                //if (subDir.Name != "FileUpload4") continue;
                 CreateSpec(subDir.Name, true);
             }
         }
@@ -176,7 +176,126 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
                 FileName = "filename.txt",
                 ContentType = "application/pdf"
-            };     
+            };
+        }
+
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestFileUpload3()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestFileUpload3).Substring(4));
+
+                var moq = new Mock<FileUpload3.Services.IFileUpload>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+
+                moq.Setup(o => o.UploadFile(
+                    It.IsAny<string>(),
+                    It.Is<FileUpload3.Types.FileData>(a => CompareStructs(a, CreateUpload3Struct())),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult(CreateUpload3Struct()));
+
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload3.Services.IFileUpload>();
+                var res = await proxy.UploadFile("", CreateUpload3Struct());
+
+                CompareStructs(CreateUpload3Struct(), res);
+            }
+        }
+
+        private FileUpload3.Types.FileData CreateUpload3Struct()
+        {
+            return new FileUpload3.Types.FileData()
+            {
+                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                FileName = "filename.txt",
+                ContentType = "application/pdf"
+            };
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestFileUpload4()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestFileUpload4).Substring(4));
+
+                var moq = new Mock<FileUpload4.Services.IFileUpload>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+
+                var complexType = new FileUpload4.Types.ComplexType() { StringData = "MyData" };
+                moq.Setup(o => o.UploadFile(
+                    It.Is<FileUpload4.Types.ComplexType>(c => CompareStructs(c, complexType)),
+                    It.Is<FileUpload4.Types.FileData>(a => CompareStructs(a, CreateUpload4Struct())),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult(CreateUpload4Struct()));
+
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload4.Services.IFileUpload>();
+                var res = await proxy.UploadFile(complexType, CreateUpload4Struct());
+
+                CompareStructs(CreateUpload4Struct(), res);
+            }
+        }
+
+        private FileUpload4.Types.FileData CreateUpload4Struct()
+        {
+            return new FileUpload4.Types.FileData()
+            {
+                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                FileName = "filename.txt",
+                ContentType = "application/pdf"
+            };
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestFileUpload5()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestFileUpload5).Substring(4));
+
+                var moq = new Mock<FileUpload5.Services.IFileUpload>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+
+                var complexType1 = new FileUpload5.Types.ComplexType() { StringData = "MyData" };
+                var complexType2 = new FileUpload5.Types.ComplexType() { StringData = "MyData" };
+                moq.Setup(o => o.UploadFile(
+                    It.Is<FileUpload5.Types.ComplexType>(c => CompareStructs(c, complexType1)),
+                    It.Is<FileUpload5.Types.ComplexType>(c => CompareStructs(c, complexType2)),
+                    It.Is<FileUpload5.Types.FileData>(a => CompareStructs(a, CreateUpload5Struct())),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult(CreateUpload5Struct()));
+
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload5.Services.IFileUpload>();
+                var res = await proxy.UploadFile(complexType1, complexType2, CreateUpload5Struct());
+
+                CompareStructs(CreateUpload5Struct(), res);
+            }
+        }
+
+        private FileUpload5.Types.FileData CreateUpload5Struct()
+        {
+            return new FileUpload5.Types.FileData()
+            {
+                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                FileName = "filename.txt",
+                ContentType = "application/pdf"
+            };
         }
 
         /// <summary>

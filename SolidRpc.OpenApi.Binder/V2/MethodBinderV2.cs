@@ -102,6 +102,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             var prospect = parameters.FirstOrDefault(o => MethodBindingV2.NameMatches(o.Name, parameter.Name));
             if(prospect != null)
             {
+                //
+                // All the form data can be converted to the specified type - supplied data must be on correct format...
+                //
+                if(prospect.In == "formData")
+                {
+                    return true;
+                }
                 return TypeMatches(parameter.ParameterType, prospect);
             }
             if(parameter.IsOptional || parameter.ParameterType == typeof(CancellationToken))
