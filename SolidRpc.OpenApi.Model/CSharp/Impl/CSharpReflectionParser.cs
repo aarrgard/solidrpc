@@ -82,6 +82,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             else
             {
                 cSharpType = cSharpRepository.GetType(CreateTypeName(type));
+                if(cSharpType == null)
+                {
+                    throw new Exception("Cannot find type:"+ CreateTypeName(type));
+                }
                 if (cSharpType.Comment == null)
                 {
                     cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -54,7 +55,8 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private Func<IEnumerable<IHttpRequestData>, object> GetFileData(string contentType, string name, Type type)
         {
-            if(type.IsFileType())
+            var template = FileContentTemplate.GetTemplate(type);
+            if(template.IsTemplateType)
             {
                 return (_) =>
                 {
@@ -68,9 +70,9 @@ namespace SolidRpc.OpenApi.Binder.V2
                     {
                         data = Activator.CreateInstance(type);
                     }
-                    type.SetFileTypeStreamData(data, valData.GetBinaryValue());
-                    type.SetFileTypeContentType(data, valData.ContentType);
-                    type.SetFileTypeFilename(data, valData.Filename);
+                    template.SetContent(data, valData.GetBinaryValue());
+                    template.SetContentType(data, valData.ContentType);
+                    template.SetFileName(data, valData.Filename);
                     return data;
                 };
             }
@@ -139,9 +141,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                     }
                     else
                     {
-                        latest.SetBinaryData(name, TypeExtensions.GetFileTypeStreamData(value.GetType(), value));
-                        latest.SetContentType(TypeExtensions.GetFileTypeContentType(value.GetType(), value));
-                        latest.SetFilename(TypeExtensions.GetFileTypeFilename(value.GetType(), value));
+                        var template = FileContentTemplate.GetTemplate(value.GetType());
+                        latest.SetBinaryData(name, template.GetContent(value));
+                        latest.SetContentType(template.GetContentType(value));
+                        latest.SetFilename(template.GetFileName(value));
                     }
                     break; ;
             }

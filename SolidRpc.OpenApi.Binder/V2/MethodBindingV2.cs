@@ -420,7 +420,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     throw new Exception($"Operation does not support content type {response.ContentType}. Supported content types are {string.Join(",", Produces)}");
                 }
             }
-            switch (response.ContentType.ToLower())
+            switch (response.ContentType?.ToLower())
             {
                 case "text/javascript":
                 case "application/json":
@@ -430,14 +430,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                         return respContent;
                     }
             }
-            if(typeof(T).IsFileType())
+            var template = FileContentTemplate.GetTemplate(typeof(T));
+            if(template.IsTemplateType)
             {
                 var res = Activator.CreateInstance<T>();
-                typeof(T).SetFileTypeStreamData(res, response.ResponseStream);
-                typeof(T).SetFileTypeContentType(res, response.ContentType);
-                typeof(T).SetFileTypeFilename(res, response.Filename);
-                typeof(T).SetFileTypeLastModified(res, response.LastModified);
-                typeof(T).SetFileTypeLocation(res, response.Location);
+                template.SetContent(res, response.ResponseStream);
+                template.SetContentType(res, response.ContentType);
+                template.SetFileName(res, response.Filename);
+                template.SetLastModified(res, response.LastModified);
+                template.SetLocation(res, response.Location);
                 return res;
             }
             throw new Exception("Cannot handle content type:" + response.ContentType);
@@ -595,19 +596,20 @@ namespace SolidRpc.OpenApi.Binder.V2
             //
             // map return types
             //
-            if (objType.IsFileType())
+            var fileTemplate = FileContentTemplate.GetTemplate(objType);
+            if (fileTemplate.IsTemplateType)
             {
-                var charSet = objType.GetFileTypeCharSet(obj);
-                var retContentType = objType.GetFileTypeContentType(obj);
+                var charSet = fileTemplate.GetCharSet(obj);
+                var retContentType = fileTemplate.GetContentType(obj);
                 if(!string.IsNullOrEmpty(charSet))
                 {
                     retContentType = $"{retContentType}; charset=\"{charSet}\"";
                 }
                 response.ContentType = retContentType;
-                response.ResponseStream = objType.GetFileTypeStreamData(obj);
-                response.Filename = objType.GetFileTypeFilename(obj);
-                response.LastModified = objType.GetFileTypeLastModified(obj);
-                response.Location = objType.GetFileTypeLocation(obj);
+                response.ResponseStream = fileTemplate.GetContent(obj);
+                response.Filename = fileTemplate.GetFileName(obj);
+                response.LastModified = fileTemplate.GetLastModified(obj);
+                response.Location = fileTemplate.GetLocation(obj);
                 return Task.CompletedTask;
             }
 
@@ -620,8 +622,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 case null:
                 case "application/json":
-                    response.ContentType = "application/json";
                     response.ResponseStream = JsonHelper.Serialize(obj, objType);
+                    response.ContentType = "application/json";
                     break;
                 default:
                     throw new Exception("Cannot handle content type:" + contentType);

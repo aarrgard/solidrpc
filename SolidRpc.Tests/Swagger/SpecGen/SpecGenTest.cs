@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 using SolidRpc.OpenApi.DotNetTool;
@@ -43,7 +44,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -95,7 +96,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var moq = new Mock<EnumArgs.Services.IEnumArgs>(MockBehavior.Strict);
                 ctx.AddServerAndClientService(moq.Object, config);
-                
+
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<EnumArgs.Services.IEnumArgs>();
 
@@ -106,6 +107,70 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var res = await proxy.GetEnumTypeAsync(EnumArgs.Types.TestEnum.Two);
                 Assert.AreEqual(EnumArgs.Types.TestEnum.Two, res);
+            }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestStringValuesArg()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestStringValuesArg).Substring(4));
+
+                var moq = new Mock<StringValuesArg.Services.IStringValuesArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<StringValuesArg.Services.IStringValuesArg>();
+
+                var stringValues = new StringValues(new[] { "test1", "test2" });
+                var complexType = new StringValuesArg.Types.ComplexType() { StringValues = stringValues };
+                moq.Setup(o => o.GetStringValueArgs(
+                    It.Is<StringValues>(a => a == stringValues),
+                    It.Is<StringValuesArg.Types.ComplexType>(a => CompareStructs(complexType, a))
+                    )).Returns(complexType);
+
+                var res = proxy.GetStringValueArgs(stringValues, complexType);
+                CompareStructs(complexType, res);
+            }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestDictionaryArg()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestDictionaryArg).Substring(4));
+
+                var moq = new Mock<DictionaryArg.Services.IDictionaryArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<DictionaryArg.Services.IDictionaryArg>();
+
+                var dictArg = new Dictionary<string, DictionaryArg.Types.ComplexType>()
+                {
+                    { "test1", new DictionaryArg.Types.ComplexType() {
+                        ComplexTypes = new Dictionary<string, DictionaryArg.Types.ComplexType>()
+                        {
+                            { "test3", new DictionaryArg.Types.ComplexType() }
+                        }
+                    }},
+                    { "test2", new DictionaryArg.Types.ComplexType() }
+                };
+
+                moq.Setup(o => o.GetDictionaryValues(
+                    It.Is<IDictionary<string, DictionaryArg.Types.ComplexType>>(a => CompareStructs(dictArg, a))
+                    )).Returns(dictArg);
+
+                var res = proxy.GetDictionaryValues(dictArg);
+                CompareStructs(dictArg, res);
             }
         }
 
@@ -126,7 +191,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload1.Services.IFileUpload>();
 
                 moq.Setup(o => o.UploadFile(
-                    It.Is<Stream>(a => CompareStructs(a, new MemoryStream(new byte[] { 0, 1, 2, 3 }))),
+                    It.Is<Stream>(a => CompareStructs(new MemoryStream(new byte[] { 0, 1, 2, 3 }), a)),
                     It.Is<string>(a => a == "filename.txt"),
                     It.Is<string>(a => a == "application/pdf"),
                     It.IsAny<CancellationToken>()
@@ -173,7 +238,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             return new FileUpload2.Types.FileData()
             {
-                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                Content = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
                 FileName = "filename.txt",
                 ContentType = "application/pdf"
             };
@@ -212,7 +277,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             return new FileUpload3.Types.FileData()
             {
-                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                Content = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
                 FileName = "filename.txt",
                 ContentType = "application/pdf"
             };
@@ -251,7 +316,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             return new FileUpload4.Types.FileData()
             {
-                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                Content = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
                 FileName = "filename.txt",
                 ContentType = "application/pdf"
             };
@@ -292,7 +357,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             return new FileUpload5.Types.FileData()
             {
-                FileContent = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                Content = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
                 FileName = "filename.txt",
                 ContentType = "application/pdf"
             };

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http.Multipart;
 using System;
@@ -121,7 +122,22 @@ namespace SolidRpc.OpenApi.Binder.Http
                      .Where(o => o.GetParameters().Length == 2)
                      .Where(o => o.IsGenericMethod)
                      .Single();
-            return (Func<IEnumerable<IHttpRequestData>, object>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+            var arrFunc = (Func<IEnumerable<IHttpRequestData>, object>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+
+            if(!type.IsAssignableFrom(enumType.MakeArrayType()))
+            {
+                if(type == typeof(StringValues))
+                {
+                    var oldArrFunc = arrFunc;
+                    arrFunc = _ => new StringValues((string[])oldArrFunc(_));
+                }
+                else
+                {
+                    throw new Exception($"Cannot assign {enumType}[] to {type}");
+                }
+            }
+
+            return arrFunc;
         }
 
         private static Func<IEnumerable<IHttpRequestData>, IEnumerable<T>> CreateEnumExtractor<T>(string contentType, string name)

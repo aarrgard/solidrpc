@@ -73,6 +73,20 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// Returns the generic arguments - null if type is not a generic type.
         /// </summary>
         /// <returns></returns>
+        ICSharpType GetGenericType();
+
+        /// <summary>
+        /// Returns the generic arguments - null if type is not a generic type.
+        /// </summary>
+        /// <returns></returns>
         ICollection<ICSharpType> GetGenericArguments();
+
+        /// <summary>
+        /// Returns true if the type is a dictionary type.
+        /// </summary>
+        /// <param name="keyType"></param>
+        /// <param name="valueType"></param>
+        /// <returns></returns>
+        bool IsDictionaryType(out ICSharpType keyType, out ICSharpType valueType);
     }
 }

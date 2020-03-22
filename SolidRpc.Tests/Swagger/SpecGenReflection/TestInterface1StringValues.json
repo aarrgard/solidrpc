@@ -9,33 +9,36 @@
     "https"
   ],
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestFileTypeWithAdditionalData/{additionalData}": {
-      "post": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStringValues/{data}": {
+      "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
-        "description": "Nullable parameters should be optional",
-        "operationId": "TestFileTypeWithAdditionalData",
-        "consumes": [
-          "multipart/form-data"
+        "description": "Tests a set of string values",
+        "operationId": "TestStringValues",
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "name": "additionalData",
+            "name": "data",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "fileContent",
-            "in": "formData",
-            "required": true,
-            "type": "file"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
       }

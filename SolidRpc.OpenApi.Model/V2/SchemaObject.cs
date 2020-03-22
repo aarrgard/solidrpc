@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -121,6 +122,13 @@ namespace SolidRpc.OpenApi.Model.V2
                 itemBase.Format = "uuid";
                 return;
             }
+            else if (type == typeof(Microsoft.Extensions.Primitives.StringValues))
+            {
+                itemBase.Type = "array";
+                itemBase.Items = itemBase.Items ?? new SchemaObject(itemBase);
+                itemBase.Items.Type = "string";
+                return;
+            }
 
             throw new NotImplementedException(type.FullName);
         }
@@ -183,7 +191,7 @@ namespace SolidRpc.OpenApi.Model.V2
                 return false;
             }
             var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
-            return TypeExtensions.IsFileType(GetClrType().FullName, props);
+            return FileContentTemplate.IsFileType(GetClrType().FullName, props);
         }
 
         /// <summary>

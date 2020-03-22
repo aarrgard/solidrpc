@@ -212,7 +212,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 {
                     return GetParent<ICSharpRepository>().GetType(fullName.Substring(0,fullName.Length-2)) ?? throw new Exception("Array type does not exist in repository.");
                 }
-                var (genType, genArgs, rest) = CSharpRepository.ReadType(fullName);
+                var (genType, genArgs) = CSharpRepository.ReadType(fullName);
                 switch (genType)
                 {
                     case "System.Collections.Generic.IEnumerable":
@@ -227,7 +227,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             get
             {
-                var (genType, genArgs, rest) = CSharpRepository.ReadType(FullName);
+                var (genType, genArgs) = CSharpRepository.ReadType(FullName);
                 switch (genType)
                 {
                     case "System.Threading.Tasks.Task":
@@ -242,7 +242,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             get
             {
-                var (genType, genArgs, rest) = CSharpRepository.ReadType(FullName);
+                var (genType, genArgs) = CSharpRepository.ReadType(FullName);
                 switch (genType)
                 {
                     case "System.Nullable":
@@ -312,7 +312,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }
 
             // parse name
-            var (typeName, genArgs, rest) = CSharpRepository.ReadType(fullName);
+            var (typeName, genArgs) = CSharpRepository.ReadType(fullName);
 
             if(typeName == "System.Nullable" && genArgs.Count() == 1)
             {
@@ -341,7 +341,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                     {
                         simplifiedName = $"{simplifiedName}<{string.Join(",", genArgs.Select(o => SimplifyName(o)))}>";
                     }
-                    simplifiedName = $"{simplifiedName}{rest}";
+                    simplifiedName = $"{simplifiedName}";
                     return simplifiedName;
                 }
             }

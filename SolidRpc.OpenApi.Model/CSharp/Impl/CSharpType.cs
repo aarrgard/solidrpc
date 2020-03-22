@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,7 +39,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             get
             {
                 var runtimeProps = Properties.ToDictionary(o => o.Name, o => o.PropertyType.RuntimeType);
-                return TypeExtensions.IsFileType(FullName, runtimeProps);
+                return FileContentTemplate.IsFileType(FullName, runtimeProps);
             }
         }
 
@@ -80,9 +81,41 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <returns></returns>
         public ICollection<ICSharpType> GetGenericArguments()
         {
-            var (typeName, genArgs, rest) = CSharpRepository.ReadType(FullName);
+            var (typeName, genArgs) = CSharpRepository.ReadType(FullName);
             var repo = GetParent<ICSharpRepository>();
             return genArgs?.Select(o => repo.GetType(o)).ToList();
+        }
+
+        public ICSharpType GetGenericType()
+        {
+            var (typeName, genArgs) = CSharpRepository.ReadType(FullName);
+            if (genArgs.Any())
+            {
+                var repo = GetParent<ICSharpRepository>();
+                return repo.GetType(typeName);
+            }
+            return null;
+        }
+
+        public bool IsDictionaryType(out ICSharpType keyType, out ICSharpType valueType)
+        {
+            if (!IsGenericType)
+            {
+                keyType = null;
+                valueType = null;
+                return false;
+            }
+            var (typeName, genArgs) = CSharpRepository.ReadType(FullName);
+            if(typeName != "System.Collections.Generic.IDictionary")
+            {
+                keyType = null;
+                valueType = null;
+                return false;
+            }
+            var repo = GetParent<ICSharpRepository>();
+            keyType = repo.GetType(genArgs[0]);
+            valueType = repo.GetType(genArgs[1]);
+            return true;
         }
 
         /// <summary>

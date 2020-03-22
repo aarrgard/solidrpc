@@ -9,28 +9,30 @@
     "https"
   ],
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestFileTypeWithAdditionalData/{additionalData}": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestDictionary": {
       "post": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
-        "description": "Nullable parameters should be optional",
-        "operationId": "TestFileTypeWithAdditionalData",
+        "description": "Tests a dictionary",
+        "operationId": "TestDictionary",
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "parameters": [
           {
-            "name": "additionalData",
-            "in": "path",
+            "name": "data",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "fileContent",
-            "in": "formData",
-            "required": true,
-            "type": "file"
+            "schema": {
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
           }
         ],
         "responses": {

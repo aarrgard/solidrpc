@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.V2;
 using System;
@@ -139,7 +140,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             {
                 parameters = parameters.Where(o =>
                 {
-                    if (TypeExtensions.FileTypeProperties.TryGetValue(o.Name.ToLower(), out Type t))
+                    if (FileContentTemplate.PropertyTypes.TryGetValue(o.Name.ToLower(), out Type t))
                     {
                         return o.ParameterType.RuntimeType != t;
                     }
@@ -305,9 +306,21 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 CreateEnum(itemBase, (ICSharpEnum)type);
                 return;
             }
+            else if (type.IsDictionaryType(out ICSharpType keyType, out ICSharpType valueType))
+            {
+                if(keyType.RuntimeType != typeof(string))
+                {
+                    throw new Exception("Dictionaries must have a key type of string.");
+                }
+                itemBase.Type = "object";
+                var so = (SchemaObject)itemBase;
+                so.AdditionalProperties = so.AdditionalProperties ?? new SchemaObject(so);
+                SetItemProps(so.AdditionalProperties, false, valueType);
+                return;
+            }
             else
             {
-                var refName = CreateRefObject(itemBase, (ICSharpClass)type);
+                var refName = CreateRefObject(itemBase, type);
                 itemBase.Ref = refName;
                 return;
             }
@@ -319,19 +332,22 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             node.Enum = e.EnumValues.Select(o => o.Name).ToList();
         }
 
-        private string CreateRefObject(ModelBase node, ICSharpClass clazz)
+        private string CreateRefObject(ModelBase node, ICSharpType type)
         {
-            var defName = TypeDefinitionNameMapper(clazz);
+            var defName = TypeDefinitionNameMapper(type);
             var definitions = node.GetParent<SwaggerObject>().GetDefinitions();
             if(!definitions.ContainsKey(defName))
             {
                 var so = new SchemaObject(definitions)
                 {
                     Type = "object",
-                    Description = clazz.Comment?.Summary
+                    Description = type.Comment?.Summary
                 };
                 definitions[defName] = so;
-                so.Properties = CreateDefinitionsObject(so, clazz);
+                if(type is ICSharpClass clazz)
+                {
+                    so.Properties = CreateDefinitionsObject(so, clazz);
+                }
             }
 
             return $"#/definitions/{defName}";

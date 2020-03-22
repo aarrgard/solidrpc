@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Serialization;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Model.Serialization;
 using SolidRpc.OpenApi.Model.Serialization.Newtonsoft;
 using System;
@@ -74,32 +75,34 @@ namespace SolidRpc.OpenApi.Model.Serialization
         public void SerializeToFileType(object fileTypeInstance, Type type, object o, string mediaType, Encoding charSet = null, bool prettyFormat = false)
         {
             var fileType = fileTypeInstance?.GetType() ?? typeof(object);
-            if (!fileType.IsFileType())
+            var template = FileContentTemplate.GetTemplate(fileType);
+            if (!template.IsTemplateType)
             {
                 throw new ArgumentException("Supplied file type instance is not a file type");
             }
             var ms = new MemoryStream();
             SerializeToStream(ms, type, o, mediaType, charSet, prettyFormat);
-            fileType.SetFileTypeStreamData(fileTypeInstance, new MemoryStream(ms.ToArray()));
-            fileType.SetFileTypeFilename(fileTypeInstance, SolidRpcTypeStore.GetTypeName(type));
-            fileType.SetFileTypeContentType(fileTypeInstance, mediaType);
-            fileType.SetFileTypeCharSet(fileTypeInstance, charSet?.HeaderName);
+            template.SetContent(fileTypeInstance, new MemoryStream(ms.ToArray()));
+            template.SetFileName(fileTypeInstance, SolidRpcTypeStore.GetTypeName(type));
+            template.SetContentType(fileTypeInstance, mediaType);
+            template.SetCharSet(fileTypeInstance, charSet?.HeaderName);
 
         }
 
         public void DeserializeFromFileType<T>(object fileTypeInstance, out T o)
         {
             var fileType = fileTypeInstance?.GetType() ?? typeof(object);
-            if (!fileType.IsFileType())
+            var template = FileContentTemplate.GetTemplate(fileType);
+            if (!template.IsTemplateType)
             {
                 throw new ArgumentException("Supplied file type instance is not a file type");
             }
-            var typeName = fileType.GetFileTypeFilename(fileTypeInstance);
+            var typeName = template.GetFileName(fileTypeInstance);
             var type = SolidRpcTypeStore.GetType(typeName);
-            var mediaType = fileType.GetFileTypeContentType(fileTypeInstance);
-            var charSet = fileType.GetFileTypeCharSet(fileTypeInstance);
+            var mediaType = template.GetContentType(fileTypeInstance);
+            var charSet = template.GetCharSet(fileTypeInstance);
             var encoding = charSet == null ? null : Encoding.GetEncoding(charSet);
-            var stream = fileType.GetFileTypeStreamData(fileTypeInstance);
+            var stream = template.GetContent(fileTypeInstance);
             object tmp;
             DeserializeFromStream(stream, type, out tmp, mediaType, encoding);
             o = (T)tmp;

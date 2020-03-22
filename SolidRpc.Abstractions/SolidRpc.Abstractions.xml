@@ -1140,6 +1140,11 @@
             The last modified date of the resource.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.Location">
+            <summary>
+            The location of the content
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContentNotFoundException">
             <summary>
             Raised when the file content is not found
@@ -1158,6 +1163,143 @@
         <member name="M:SolidRpc.Abstractions.Types.FileContentNotFoundException.#ctor(System.String)">
             <summary>
             Constructs a new exception
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.FileContentTemplate">
+            <summary>
+            Represents a file content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.PropertyTypes">
+            <summary>
+            The properties 
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.RequiredProps">
+            <summary>
+            The required properties
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentTemplate.IsFileType(System.String,System.Collections.Generic.Dictionary{System.String,System.Type})">
+            <summary>
+            Determines if the supplied type is a file type based on the name and/or properties.
+            </summary>
+            <param name="typeName"></param>
+            <param name="propertyTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentTemplate.GetTemplate(System.Type)">
+            <summary>
+            REturns the template spec for supplied type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentTemplate.#ctor(System.Type,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Constructs an instance
+            </summary>
+            <param name="otherType"></param>
+            <param name="requiredProps"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentTemplate.HandleTemplateType(System.Type,System.Type,System.Boolean)">
+            <summary>
+            Adds support for plain streams
+            </summary>
+            <param name="templateType"></param>
+            <param name="otherType"></param>
+            <param name="isTemplateType"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetContent">
+            <summary>
+            Sets the content on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetContent">
+            <summary>
+            Gets the content from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetCharSet">
+            <summary>
+            Sets the charset on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetCharSet">
+            <summary>
+            Gets the charset from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetContentType">
+            <summary>
+            Sets the content type on the template  copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetContentType">
+            <summary>
+            Returns the content type from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetFileName">
+            <summary>
+            Sets the filename on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetFileName">
+            <summary>
+            Returns the filename from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetLastModified">
+            <summary>
+            Sets the last modified on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetLastModified">
+            <summary>
+            Returns the last modified from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetLocation">
+            <summary>
+            Sets the location in the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetLocation">
+            <summary>
+            Returns the location from the template copy
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.HttpRequest">
+            <summary>
+            Represents a HttpRequest. We can use this type to create dynamic invocation
+            handlers that intercepts all the data sent to it.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Method">
+            <summary>
+            The method(GET,POST,PUT,etc)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Uri">
+            <summary>
+            The uri
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Headers">
+            <summary>
+            The headers
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Query">
+            <summary>
+            The query parameters
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Body">
+            <summary>
+            The body.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.NameValuePair">
@@ -1195,196 +1337,49 @@
             Constructs a new exception
             </summary>
         </member>
+        <member name="T:SolidRpc.Abstractions.TypeTemplate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.TypeTemplate.#ctor(System.Type,System.Type,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="templateType"></param>
+            <param name="otherType"></param>
+            <param name="requiredProps"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.TypeTemplate.HandleTemplateType(System.Type,System.Type,System.Boolean)">
+            <summary>
+            Adds support for subclasses to override logic.
+            </summary>
+            <param name="templateType"></param>
+            <param name="otherType"></param>
+            <param name="isTemplateType"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.TypeTemplate.IsTemplateType">
+            <summary>
+            Returns true if this is a template type.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.TypeTemplate`1">
+            <summary>
+            The type template can be used to access similar types.
+            </summary>
+            <typeparam name="TTemplate"></typeparam>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:SolidRpc.Abstractions.TypeTemplate`1.#ctor(System.Type,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Constructs a new instance.
+            </summary>
+        </member>
         <member name="T:System.TypeExtensions">
             <summary>
             Contains extension methods for the Type
             </summary>
-        </member>
-        <member name="F:System.TypeExtensions.FileTypeProperties">
-            <summary>
-            The file type properties that can exist on a file type.
-            </summary>
-        </member>
-        <member name="T:System.TypeExtensions.FileTypeHelper">
-            <summary>
-            Contains information about a file type
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.IsFileType">
-            <summary>
-            Returns true if this type is a file type.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.SetStreamData">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.GetStreamData">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.SetContentType">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.GetContentType">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.SetFilename">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.GetFilename">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.SetCharSet">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.GetCharSet">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.SetLastModified">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.GetLastModified">
-            <summary>
-            The method we use to set the stream data.
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.SetLocation">
-            <summary>
-            The location of the file
-            </summary>
-        </member>
-        <member name="P:System.TypeExtensions.FileTypeHelper.GetLocation">
-            <summary>
-            The location of the file
-            </summary>
-        </member>
-        <member name="M:System.TypeExtensions.IsFileType(System.String,System.Collections.Generic.Dictionary{System.String,System.Type})">
-            <summary>
-            Returns true if the type is a file type.
-            </summary>
-            <param name="typeName"></param>
-            <param name="propertyTypes"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.IsFileType(System.Type)">
-            <summary>
-            Returns true if the supplied type is a  file type
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.SetFileTypeStreamData(System.Type,System.Object,System.IO.Stream)">
-            <summary>
-            Set the stream data on supplied structure.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <param name="data"></param>
-        </member>
-        <member name="M:System.TypeExtensions.SetFileTypeContentType(System.Type,System.Object,System.String)">
-            <summary>
-            Set the stream data on supplied structure.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <param name="contentType"></param>
-        </member>
-        <member name="M:System.TypeExtensions.SetFileTypeFilename(System.Type,System.Object,System.String)">
-            <summary>
-            Set the stream data on supplied structure.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <param name="fileName"></param>
-        </member>
-        <member name="M:System.TypeExtensions.SetFileTypeCharSet(System.Type,System.Object,System.String)">
-            <summary>
-            Set the stream data on supplied structure.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <param name="charSet"></param>
-        </member>
-        <member name="M:System.TypeExtensions.SetFileTypeLastModified(System.Type,System.Object,System.Nullable{System.DateTimeOffset})">
-            <summary>
-            Set the stream data on supplied structure.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <param name="lastModified"></param>
-        </member>
-        <member name="M:System.TypeExtensions.SetFileTypeLocation(System.Type,System.Object,System.String)">
-            <summary>
-            Set the location data on supplied structure.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <param name="location"></param>
-        </member>
-        <member name="M:System.TypeExtensions.GetFileTypeStreamData(System.Type,System.Object)">
-            <summary>
-            Returns the stream data.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.GetFileTypeContentType(System.Type,System.Object)">
-            <summary>
-            Returns the content type.
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.GetFileTypeFilename(System.Type,System.Object)">
-            <summary>
-            Returns the filename
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.GetFileTypeCharSet(System.Type,System.Object)">
-            <summary>
-            Returns the charset
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.GetFileTypeLastModified(System.Type,System.Object)">
-            <summary>
-            Returns the last modified
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.GetFileTypeLocation(System.Type,System.Object)">
-            <summary>
-            Returns the location
-            </summary>
-            <param name="type"></param>
-            <param name="impl"></param>
-            <returns></returns>
         </member>
         <member name="M:System.TypeExtensions.IsEnumType(System.Type,System.Type@)">
             <summary>

@@ -20,6 +20,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload5.Types
         /// <summary>
         /// The file content
         /// </summary>
-        public Stream FileContent { get; set; }
+        public Stream Content { get; set; }
     }
 }

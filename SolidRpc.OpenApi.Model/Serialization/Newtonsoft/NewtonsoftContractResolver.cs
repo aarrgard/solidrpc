@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Concurrent;
@@ -58,10 +59,18 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             {
                 return base.CreateContract(type);
             }
-            var converterType = typeof(NewtonsoftConverter<>).MakeGenericType(type);
-            var contract = new JsonObjectContract(type);
-            contract.Converter = (JsonConverter) Activator.CreateInstance(converterType);
-            return contract;
+            if (type == typeof(StringValues))
+            {
+                var contract = new JsonObjectContract(type);
+                contract.Converter = new StringValuesConverter();
+                return contract;
+            }
+            {
+                var converterType = typeof(NewtonsoftConverter<>).MakeGenericType(type);
+                var contract = new JsonObjectContract(type);
+                contract.Converter = (JsonConverter)Activator.CreateInstance(converterType);
+                return contract;
+            }
         }
     }
 }

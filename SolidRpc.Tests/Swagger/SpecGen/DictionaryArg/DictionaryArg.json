@@ -1,0 +1,75 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "DictionaryArg",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/DictionaryArg",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IDictionaryArg/GetDictionaryValues": {
+      "post": {
+        "tags": [
+          "IDictionaryArg"
+        ],
+        "description": "Consumes one complex type an a simple string...",
+        "operationId": "GetDictionaryValues",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "strings",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "additionalProperties": {
+                "$ref": "#/definitions/ComplexType"
+              },
+              "type": "object"
+            },
+            "description": "The strings"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "additionalProperties": {
+                "$ref": "#/definitions/ComplexType"
+              },
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType": {
+      "properties": {
+        "ComplexTypes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ComplexType"
+          },
+          "type": "object",
+          "description": "ComplexType1"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType1"
+    }
+  },
+  "tags": [
+    {
+      "name": "IDictionaryArg",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Serialization;
 using System.IO;
 using SolidRpc.Abstractions.Types;
+using Microsoft.Extensions.Primitives;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -73,8 +74,30 @@ namespace SolidRpc.Tests.Serialization
 
             TestSerializeDeserialize(serFact, "test", str => Assert.AreEqual("\"test\"", str));
             TestSerializeDeserialize(serFact, 12, str => Assert.AreEqual("12", str));
-            TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\"}", str));
         }
 
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestStringValues()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            TestSerializeDeserialize(serFact, new StringValues(new[] { "1", "2" }), str => Assert.AreEqual("[\"1\",\"2\"]", str));
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestComplexType()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\"}", str));
+        }
     }
 }

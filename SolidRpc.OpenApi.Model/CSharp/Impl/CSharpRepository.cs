@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
@@ -11,6 +13,54 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
     /// </summary>
     public class CSharpRepository : ICSharpRepository, ICSharpMember
     {
+        private class TypeNameHandler
+        {
+            private StringBuilder _typeName = new StringBuilder();
+            private StringBuilder _genArg = new StringBuilder();
+            private IList<string> _genArgs;
+            private int _genericTypeIdx = 0;
+            internal void HandleChar(char c)
+            {
+                if (c == '<')
+                {
+                    _genericTypeIdx++;
+                    return;
+                }
+                if (c == '>')
+                {
+                    _genericTypeIdx--;
+                    PushGenArg();
+                    return;
+                }
+                if (c == ',')
+                {
+                    PushGenArg();
+                    return;
+                }
+                if (_genericTypeIdx == 0)
+                {
+                    _typeName.Append(c);
+                }
+                else
+                {
+                    _genArg.Append(c);
+                }
+            }
+
+            private void PushGenArg()
+            {
+                if (_genArgs == null) _genArgs = new List<string>();
+                _genArgs.Add(_genArg.ToString().Trim());
+                _genArg.Clear();
+            }
+
+            internal (string, IList<string>) GetResult()
+            {
+                if (_genericTypeIdx != 0) throw new Exception("type index not at 0");
+                return (_typeName.ToString().Trim(), _genArgs);
+            }
+        }
+
         private ConcurrentDictionary<string, Type> s_systemTypes = new ConcurrentDictionary<string, Type>();
         
         /// <summary>
@@ -18,53 +68,14 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         /// <param name="fullName"></param>
         /// <returns></returns>
-        public static (string, IList<string>, string) ReadType(string fullName)
+        public static (string, IList<string>) ReadType(string fullName)
         {
-            if (string.IsNullOrEmpty(fullName))
+            var tnh = new TypeNameHandler();
+            for (int i = 0; i < fullName.Length; i++)
             {
-                return (fullName, null, null);
+                tnh.HandleChar(fullName[i]);
             }
-            if (fullName.StartsWith(">"))
-            {
-                return (null, null, fullName.Substring(1));
-            }
-            var genIdxStart = fullName.IndexOf('<');
-            if (genIdxStart == -1)
-            {
-                var genIdxEnd = fullName.IndexOf('>');
-                if (genIdxEnd > -1)
-                {
-                    return (fullName.Substring(0, genIdxEnd), null, fullName.Substring(genIdxEnd));
-                }
-                else
-                {
-                    return (fullName, null, "");
-                }
-            }
-
-            var genArgs = new List<string>();
-            var genType = fullName.Substring(0, genIdxStart);
-            var work = fullName.Substring(genIdxStart + 1);
-            var rest = "";
-            while (work != null)
-            {
-                string argType;
-                IList<string> args;
-                (argType, args, rest) = ReadType(work);
-                if (!string.IsNullOrEmpty(argType))
-                {
-                    if (args == null)
-                    {
-                        genArgs.Add($"{argType}");
-                    }
-                    else
-                    {
-                        genArgs.Add($"{argType}<{string.Join(",", args)}>");
-                    }
-                }
-                work = rest;
-            }
-            return (genType, genArgs, rest);
+            return tnh.GetResult();
         }
 
         /// <summary>
@@ -88,9 +99,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             GetClass(typeof(double), "double");
             GetClass(typeof(decimal), "decimal");
             GetClass(typeof(string), "string");
+            GetClass(typeof(DateTime), typeof(DateTime).FullName);
+            GetClass(typeof(DateTimeOffset), typeof(DateTimeOffset).FullName);
             LoadSystemTypes(typeof(int).Assembly);
             LoadSystemTypes(typeof(Uri).Assembly);
             LoadSystemTypes(typeof(Guid).Assembly);
+            LoadSystemTypes(typeof(StringValues).Assembly);
         }
 
         private void LoadSystemTypes(Assembly assembly)
@@ -224,9 +238,22 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             var member = Types.GetOrAdd(fullName, _ =>
             {
+                // create runtime type
+                Type runtimeType = null;
+                var (typeName, genArgs) = ReadType(_);
+                if(genArgs != null)
+                {
+                    var genType = GetType($"{typeName}`{genArgs.Count}")?.RuntimeType;
+                    var genArgTypes = genArgs.Select(o => GetType(o)?.RuntimeType).ToArray();
+                    if(genType != null && genArgTypes.All(o => o!=null))
+                    {
+                        runtimeType = genType.MakeGenericType(genArgTypes);
+                    }
+                }
+
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
-                return new CSharpClass(ns, qn.Name, null);
+                return new CSharpClass(ns, qn.Name, runtimeType);
             });
             if (member is ICSharpClass clz)
             {
@@ -320,7 +347,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 return (ICSharpType)member;
             }
-            var (genType, genArgs, rest) = ReadType(fullName);
+            var (genType, genArgs) = ReadType(fullName);
             if (genArgs != null) genType = $"{genType}`{genArgs.Count}";
             if (Types.TryGetValue(genType, out member))
             {

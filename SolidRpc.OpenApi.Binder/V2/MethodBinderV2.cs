@@ -5,7 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
 
@@ -117,7 +119,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             if(parameters.Any(o => o.IsBinaryType()))
             {
-                if(TypeExtensions.FileTypeProperties.Keys.Any(o => parameter.Name.Equals(o, StringComparison.InvariantCultureIgnoreCase)))
+                if(FileContentTemplate.PropertyTypes.Keys.Any(o => parameter.Name.Equals(o, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     return true;
                 }
@@ -154,7 +156,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return true;
             }
-            if (type.IsEnum && item.GetClrType() == typeof(string))
+            if (type.IsEnum && clrType == typeof(string))
             {
                 return true;
             }
@@ -164,6 +166,10 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             // this test can be removed when we register converters in the IoC container.
             if (type == typeof(DateTime) && clrType == typeof(DateTimeOffset))
+            {
+                return true;
+            }
+            if(clrType == typeof(string[]) && type == typeof(StringValues))
             {
                 return true;
             }

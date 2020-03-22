@@ -58,6 +58,39 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestDictionary": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a dictionary",
+        "operationId": "TestDictionary",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestFileTypeWithAdditionalData/{additionalData}": {
       "post": {
         "tags": [
@@ -66,7 +99,7 @@
         "description": "Nullable parameters should be optional",
         "operationId": "TestFileTypeWithAdditionalData",
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "parameters": [
           {
@@ -77,11 +110,9 @@
           },
           {
             "name": "fileContent",
-            "in": "body",
+            "in": "formData",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/SolidRpc.Abstractions.Types.FileContent"
-            }
+            "type": "file"
           }
         ],
         "responses": {
@@ -132,6 +163,40 @@
         "responses": {
           "200": {
             "description": "Success"
+          }
+        }
+      }
+    },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestStringValues/{data}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a set of string values",
+        "operationId": "TestStringValues",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
       }
@@ -224,29 +289,6 @@
       },
       "type": "object",
       "description": "The test struct"
-    },
-    "SolidRpc.Abstractions.Types.FileContent": {
-      "properties": {
-        "Content": {
-          "type": "string",
-          "format": "binary"
-        },
-        "CharSet": {
-          "type": "string"
-        },
-        "ContentType": {
-          "type": "string"
-        },
-        "FileName": {
-          "type": "string"
-        },
-        "LastModified": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "type": "object",
-      "description": "Represents a file content"
     }
   },
   "tags": [

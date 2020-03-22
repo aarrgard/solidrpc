@@ -263,7 +263,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
             }
 
             // handle generic types
-            var (genType, genArgs, rest) = Model.CSharp.Impl.CSharpRepository.ReadType(typeName);
+            var (genType, genArgs) = Model.CSharp.Impl.CSharpRepository.ReadType(typeName);
             if (genArgs != null)
             {
                 var suffix = $"`{genArgs.Count}";
