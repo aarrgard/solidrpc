@@ -79,6 +79,13 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// <param name="data"></param>
             /// <returns></returns>
             Task TestDictionary(IDictionary<string, StringValues> data);
+
+            /// <summary>
+            /// Tests a http request argument
+            /// </summary>
+            /// <param name="req"></param>
+            /// <returns></returns>
+            Task TestHttpRequest(HttpRequest req);
         }
 
         /// <summary>
@@ -95,6 +102,17 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// Recursive property
             /// </summary>
             public IEnumerable<TestStruct> Recurse { get; set; }
+        }
+
+        /// <summary>
+        /// Represents a request
+        /// </summary>
+        public class HttpRequest
+        {
+            /// <summary>
+            /// The uri
+            /// </summary>
+            public Uri Uri { get; set; }
         }
 
         private IServiceProvider ServiceProvider { 
@@ -253,6 +271,24 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1Dictionary)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            Assert.AreEqual(1, binding.Arguments.Count());
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1HttpRequest()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestHttpRequest));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1HttpRequest)}.json"), spec);
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
             Assert.AreEqual(1, binding.Arguments.Count());

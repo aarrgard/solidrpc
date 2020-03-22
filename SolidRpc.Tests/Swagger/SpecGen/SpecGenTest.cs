@@ -142,6 +142,36 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
+        public async Task TestHttpRequestArgs()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestHttpRequestArgs).Substring(4));
+
+                var moq = new Mock<HttpRequestArgs.Services.IHttpRequestArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<HttpRequestArgs.Services.IHttpRequestArgs>();
+
+                var stringValues = new StringValues(new[] { "test1", "test2" });
+                var req = new HttpRequestArgs.Types.HttpRequest() { 
+                    Uri = new Uri("http://dummy.site/test") 
+                };
+                moq.Setup(o => o.TestInvokeRequest(
+                    It.IsAny<HttpRequestArgs.Types.HttpRequest>(),
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult(req));
+
+                var res = await proxy.TestInvokeRequest(null);
+                CompareStructs(req, res);
+            }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
         public async Task TestDictionaryArg()
         {
             using (var ctx = CreateKestrelHostContext())

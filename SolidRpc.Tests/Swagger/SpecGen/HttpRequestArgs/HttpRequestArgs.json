@@ -1,0 +1,54 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "HttpRequestArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/HttpRequestArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IHttpRequestArgs/TestInvokeRequest": {
+      "get": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "HttpRequest": {
+      "properties": {
+        "Uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "Uri"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType1"
+    }
+  },
+  "tags": [
+    {
+      "name": "IHttpRequestArgs",
+      "description": "Invokes the request."
+    }
+  ]
+}

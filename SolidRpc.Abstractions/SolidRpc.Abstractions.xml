@@ -1302,6 +1302,102 @@
             The body.
             </summary>
         </member>
+        <member name="T:SolidRpc.Abstractions.Types.HttpRequestTemplate">
+            <summary>
+            Represents a file content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.PropertyTypes">
+            <summary>
+            The properties 
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.RequiredProps">
+            <summary>
+            The required properties
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetTemplate(System.Type)">
+            <summary>
+            Returns the template spec for supplied type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestTemplate.IsHttpRequestType(System.String,System.Collections.Generic.Dictionary{System.String,System.Type})">
+            <summary>
+            Returns true if specified information matches a http request type.
+            </summary>
+            <param name="typeName"></param>
+            <param name="propertyTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestTemplate.HandleTemplateType(System.Type,System.Type,System.Boolean)">
+            <summary>
+            Ensures that out type has correct name.
+            </summary>
+            <param name="templateType"></param>
+            <param name="otherType"></param>
+            <param name="isTemplateType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestTemplate.#ctor(System.Type,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Constructs an instance
+            </summary>
+            <param name="otherType"></param>
+            <param name="requiredProps"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetMethod">
+            <summary>
+            Sets the method on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetMethod">
+            <summary>
+            Gets the conmethodtent from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetUri">
+            <summary>
+            Sets the uri on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetUri">
+            <summary>
+            Gets the uri from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetHeaders">
+            <summary>
+            Sets the headers on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetHeaders">
+            <summary>
+            Gets the headers from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetQuery">
+            <summary>
+            Sets the query on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetQuery">
+            <summary>
+            Gets the query from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetBody">
+            <summary>
+            Sets the query on the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetBody">
+            <summary>
+            Gets the query from the template copy
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Types.NameValuePair">
             <summary>
             Represents a name/value pair
@@ -1380,6 +1476,20 @@
             <summary>
             Contains extension methods for the Type
             </summary>
+        </member>
+        <member name="M:System.TypeExtensions.IsFileContent(System.Type)">
+            <summary>
+            Returns true if the type is a binary template type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsHttpRequest(System.Type)">
+            <summary>
+            Returns true if the type is a HttpRequest template type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
         </member>
         <member name="M:System.TypeExtensions.IsEnumType(System.Type,System.Type@)">
             <summary>

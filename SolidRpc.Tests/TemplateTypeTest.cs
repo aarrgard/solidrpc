@@ -1,5 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.Primitives;
+using NUnit.Framework;
 using SolidRpc.Abstractions.Types;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -14,11 +17,20 @@ namespace SolidRpc.Tests
         {
             public Stream Content { get; set; }
         }
+        private class MyHttpRequest
+        {
+            public Uri Uri { get; set; }
+        }
+        private class NotARequest
+        {
+            public Uri Uri { get; set; }
+        }
+
         /// <summary>
         /// Tests the type store
         /// </summary>
         [Test]
-        public async Task TestFileContentTemplateType()
+        public void TestFileContentTemplateType()
         {
             var x = (object)new FileContent();
             var template = FileContentTemplate.GetTemplate(x.GetType());
@@ -37,7 +49,45 @@ namespace SolidRpc.Tests
         /// Tests the type store
         /// </summary>
         [Test]
-        public async Task TestMyFileType()
+        public void TestHttpRequestTemplateType()
+        {
+            var x = (object)new HttpRequest();
+            var template = HttpRequestTemplate.GetTemplate(x.GetType());
+            Assert.IsTrue(template.IsTemplateType);
+
+            Assert.IsNull(template.GetUri(x));
+            template.SetUri(x, new Uri("http://test.com/testing"));
+            Assert.IsNotNull(template.GetUri(x));
+
+            Assert.IsNull(template.GetMethod(x));
+            template.SetMethod(x, "GET");
+            Assert.IsNotNull(template.GetMethod(x));
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestMyFileType()
+        {
+            var x = (object)new MyHttpRequest();
+            var template = HttpRequestTemplate.GetTemplate(x.GetType());
+            Assert.IsTrue(template.IsTemplateType);
+
+            Assert.IsNull(template.GetUri(x));
+            template.SetUri(x, new Uri("http://test.com/testing"));
+            Assert.IsNotNull(template.GetUri(x));
+
+            Assert.IsNull(template.GetQuery(x));
+            template.SetQuery(x, new Dictionary<string, StringValues>());
+            Assert.IsNull(template.GetQuery(x));
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestMyHttpRequest()
         {
             var x = (object)new MyFileType();
             var template = FileContentTemplate.GetTemplate(x.GetType());
@@ -50,6 +100,18 @@ namespace SolidRpc.Tests
             Assert.IsNull(template.GetContentType(x));
             template.SetContentType(x, "application/json");
             Assert.IsNull(template.GetContentType(x));
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestNotARequest()
+        {
+            var x = (object)new NotARequest();
+            var template = HttpRequestTemplate.GetTemplate(x.GetType());
+            Assert.IsFalse(template.IsTemplateType);
+
         }
     }
 }

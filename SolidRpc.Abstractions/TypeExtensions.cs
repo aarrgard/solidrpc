@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SolidRpc.Abstractions.Types;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,25 @@ namespace System
     /// </summary>
     public static class TypeExtensions
     {
+        /// <summary>
+        /// Returns true if the type is a binary template type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsFileContent(this Type type)
+        {
+            return FileContentTemplate.GetTemplate(type).IsTemplateType;
+        }
+        /// <summary>
+        /// Returns true if the type is a HttpRequest template type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsHttpRequest(this Type type)
+        {
+            return HttpRequestTemplate.GetTemplate(type).IsTemplateType;
+        }
+
         /// <summary>
         /// Returns true if the type is an enum
         /// </summary>

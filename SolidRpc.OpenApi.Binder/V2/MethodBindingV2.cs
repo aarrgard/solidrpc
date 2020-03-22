@@ -36,7 +36,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                         Name = parameterInfo.Name
                     };
                 }
-                if(operationObject.Parameters.Any(o => o.IsBinaryType()))
+                if (parameterInfo.ParameterType.IsHttpRequest())
+                {
+                    return new ParameterObject(operationObject)
+                    {
+                        In = "skip",
+                        Name = parameterInfo.Name
+                    };
+                }
+                if (operationObject.Parameters.Any(o => o.IsBinaryType()))
                 {
                     if (parameterInfo.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                     {

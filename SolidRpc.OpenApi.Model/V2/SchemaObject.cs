@@ -176,6 +176,21 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Returns true if this is a HttpRequest type
+        /// </summary>
+
+        public bool IsHttpRequestType()
+        {
+            var schema = GetRefSchema() ?? this;
+            if (schema.Properties == null)
+            {
+                return false;
+            }
+            var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
+            return HttpRequestTemplate.IsHttpRequestType(schema.GetOperationName(), props);
+        }
+
+        /// <summary>
         /// Returns true if this type is a file type
         /// </summary>
         /// <returns></returns>

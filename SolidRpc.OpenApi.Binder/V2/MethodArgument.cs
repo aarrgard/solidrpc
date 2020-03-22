@@ -41,6 +41,11 @@ namespace SolidRpc.OpenApi.Binder.V2
                 HttpRequestDataBinder = (_, __) => SetFileData(ParameterObject.Name, _, __);
                 HttpRequestDataExtractor = GetFileData(contentType, ParameterObject.Name, ParameterInfo.ParameterType);
             }
+            else if (ParameterInfo.ParameterType.IsHttpRequest())
+            {
+                HttpRequestDataBinder = (_, __) => { return _; };
+                HttpRequestDataExtractor = (_) => { return null; };
+            }
             else
             {
                 var parameterName = parameterObject.Name;

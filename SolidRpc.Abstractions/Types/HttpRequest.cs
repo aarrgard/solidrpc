@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace SolidRpc.Abstractions.Types
 {
@@ -34,6 +34,6 @@ namespace SolidRpc.Abstractions.Types
         /// <summary>
         /// The body.
         /// </summary>
-        public FileContent Body { get; set; }
+        public Stream Body { get; set; }
     }
 }

@@ -25,6 +25,7 @@
     <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1FileTypeWithAdditionalData.json" />
+    <None Remove="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1NullableParameter.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1OptionalParameter.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1StringValues.json" />
@@ -40,6 +41,7 @@
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1StringValues.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1FileTypeWithAdditionalData.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
     <EmbeddedResource Include="Swagger\petstore.json" />

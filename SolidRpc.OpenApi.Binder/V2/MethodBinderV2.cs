@@ -113,10 +113,27 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
                 return TypeMatches(parameter.ParameterType, prospect);
             }
-            if(parameter.IsOptional || parameter.ParameterType == typeof(CancellationToken))
+
+            //
+            // cancellation tokens can be implicitly bound
+            //
+            if(parameter.ParameterType == typeof(CancellationToken))
             {
                 return true;
             }
+
+            //
+            // http requests can be introduced at runtime.
+            //
+            var httpTemplate = HttpRequestTemplate.GetTemplate(parameter.ParameterType);
+            if(httpTemplate.IsTemplateType)
+            {
+                return true;
+            }
+
+            //
+            // find parameter as a binary type argument(if there is a binary argument...)
+            //
             if(parameters.Any(o => o.IsBinaryType()))
             {
                 if(FileContentTemplate.PropertyTypes.Keys.Any(o => parameter.Name.Equals(o, StringComparison.InvariantCultureIgnoreCase)))
@@ -124,6 +141,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                     return true;
                 }
             }
+
+            //
+            // find parameter in the body
+            //
             var bodyParam = parameters.FirstOrDefault(o => o.In == "body");
             if (bodyParam != null)
             {
@@ -132,6 +153,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     return schema.Properties.ContainsKey(parameter.Name);
                 }
+            }
+            if (parameter.IsOptional)
+            {
+                return true;
             }
             return false;
         }

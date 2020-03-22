@@ -75,6 +75,16 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Returns true uf this is a http request type.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsHttpRequestType()
+        {
+            if (Schema == null) return false;
+            return Schema.IsHttpRequestType();
+        }
+
+        /// <summary>
         /// Returns true if this parameter is a file type
         /// </summary>
         /// <returns></returns>

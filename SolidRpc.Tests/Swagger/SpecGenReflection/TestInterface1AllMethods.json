@@ -122,6 +122,21 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestHttpRequest": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a http request argument",
+        "operationId": "TestHttpRequest",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestNullableParameter": {
       "get": {
         "tags": [
@@ -289,6 +304,16 @@
       },
       "type": "object",
       "description": "The test struct"
+    },
+    "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.HttpRequest": {
+      "properties": {
+        "Uri": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "type": "object",
+      "description": "Represents a request"
     }
   },
   "tags": [

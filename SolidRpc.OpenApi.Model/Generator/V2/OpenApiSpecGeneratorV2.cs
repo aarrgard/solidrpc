@@ -190,11 +190,19 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     .Where(o => !o.Name.Equals("filename", StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
             }
-            foreach(var fileType in operationObject.GetParameters().Where(o => o.IsBinaryType()))
+            foreach (var fileType in operationObject.GetParameters().Where(o => o.IsBinaryType()))
             {
                 fileType.In = "formData";
                 fileType.Type = "file";
                 fileType.Schema = null;
+            }
+
+            //
+            // remove all the http request references from the arguments
+            //
+            foreach (var httpRequest in operationObject.GetParameters().Where(o => o.IsHttpRequestType()))
+            {
+                operationObject.Parameters = operationObject.Parameters.Where(o => !ReferenceEquals(o, httpRequest)).ToList();
             }
 
             //

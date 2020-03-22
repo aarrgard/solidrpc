@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.Types;
+﻿using Microsoft.Extensions.Primitives;
+using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace SolidRpc.Abstractions
                     if(requiredProps.Contains(propName))
                     {
                         isTemplateType = false;
+                        break;
                     }
                 }
 
@@ -41,13 +43,33 @@ namespace SolidRpc.Abstractions
                 {
                     throw new Exception("No Get method defined for template property:"+ prop.Name);
                 }
-                getMethod.SetValue(this, CreateGetter(getMethod.PropertyType, otherProp));
+                var getterFunc = CreateGetter(getMethod.PropertyType, prop.PropertyType, otherProp);
+                if(getterFunc != null)
+                {
+                    getMethod.SetValue(this, getterFunc);
+                }
+                else
+                {
+                    isTemplateType = false;
+                    break;
+                }
+
+
                 var setMethod = GetType().GetProperty("Set" + prop.Name);
                 if (setMethod == null)
                 {
                     throw new Exception("No Set method defined for template property:" + prop.Name);
                 }
-                setMethod.SetValue(this, CreateSetter(setMethod.PropertyType, otherProp));
+                var setterFunc = CreateSetter(setMethod.PropertyType, prop.PropertyType, otherProp);
+                if(setterFunc != null)
+                {
+                    setMethod.SetValue(this, setterFunc);
+                }
+                else
+                {
+                    isTemplateType = false;
+                    break;
+                }
                 otherProperties.Remove(propName);
             }
 
@@ -67,86 +89,53 @@ namespace SolidRpc.Abstractions
             return isTemplateType;
         }
 
-        private object CreateSetter(Type propertyType, PropertyInfo pi)
+        private object CreateSetterInternal<T>(Type actionType, PropertyInfo pi)
         {
-            if (typeof(Action<object, Stream>).IsAssignableFrom(propertyType))
+            if (pi == null)
             {
-                if(pi == null)
-                {
-                    return (Action<object, Stream>)((_, __) => { });
-                }
-                if (pi.PropertyType != typeof(Stream))
-                {
-                    throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-                }
-                return (Action<object, Stream>)((_, __) => pi.SetValue(_, __));
+                return (Action<object, T>)((_, __) => { });
             }
-            if (typeof(Action<object, string>).IsAssignableFrom(propertyType))
+            if (typeof(T) != pi.PropertyType)
             {
-                if (pi == null)
-                {
-                    return (Action<object, string>)((_, __) => { });
-                }
-                if (pi.PropertyType != typeof(string))
-                {
-                    throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-                }
-                return (Action<object, string>)((_, __) => pi.SetValue(_, __));
+                return null;
             }
-            if (typeof(Action<object, DateTimeOffset?>).IsAssignableFrom(propertyType))
+            if (actionType != typeof(Action<object, T>))
             {
-                if (pi == null)
-                {
-                    return (Action<object, DateTimeOffset?>)((_, __) => { });
-                }
-                if (pi.PropertyType != typeof(DateTimeOffset?))
-                {
-                    throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-                }
-                return (Action<object, DateTimeOffset?>)((_, __) => pi.SetValue(_, __));
+                throw new Exception($"Property type does not match getter function for property {pi.Name}.");
             }
-            throw new NotImplementedException();
+            return (Action<object, T>)((_, __) => pi.SetValue(_, __));
+        }
+        private object CreateSetter(Type actionType, Type propertyType, PropertyInfo pi)
+        {
+            var methods = typeof(TypeTemplate).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).AsEnumerable();
+            methods = methods.Where(o => o.IsGenericMethod);
+            methods = methods.Where(o => o.Name == nameof(CreateSetterInternal));
+            return methods.Single().MakeGenericMethod(propertyType).Invoke(this, new object[] { actionType, pi });
         }
 
-        private object CreateGetter(Type propertyType, PropertyInfo pi)
+        private object CreateGetterInternal<T>(Type functionType, PropertyInfo pi)
         {
-            if (typeof(Func<object, Stream>).IsAssignableFrom(propertyType))
+            if (pi == null)
             {
-                if (pi == null)
-                {
-                    return (Func<object, Stream>)((_) => null);
-                }
-                if (pi.PropertyType != typeof(Stream))
-                {
-                    throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-                }
-                return (Func<object, Stream>)(_ => (Stream)pi.GetValue(_));
+                return (Func<object, T>)(_ => default(T));
             }
-            if (typeof(Func<object, string>).IsAssignableFrom(propertyType))
+            if (typeof(T) != pi.PropertyType)
             {
-                if (pi == null)
-                {
-                    return (Func<object, string>)((_) => null);
-                }
-                if (pi.PropertyType != typeof(string))
-                {
-                    throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-                }
-                return (Func<object, string>)(_ => (string)pi.GetValue(_));
+                return null;
             }
-            if (typeof(Func<object, DateTimeOffset?>).IsAssignableFrom(propertyType))
+            if (functionType != typeof(Func<object, T>))
             {
-                if (pi == null)
-                {
-                    return (Func<object, DateTimeOffset?>)((_) => null);
-                }
-                if (pi.PropertyType != typeof(DateTimeOffset?))
-                {
-                    throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-                }
-                return (Func<object, DateTimeOffset?>)(_ => (DateTimeOffset?)pi.GetValue(_));
+                throw new Exception($"Property type does not match getter function for property {pi.Name}.");
             }
-            throw new NotImplementedException();
+            return (Func<object, T>)((_) => (T)pi.GetValue(_));
+        }
+
+        private object CreateGetter(Type functionType, Type propertyType, PropertyInfo pi)
+        {
+            var methods = typeof(TypeTemplate).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).AsEnumerable();
+            methods = methods.Where(o => o.IsGenericMethod);
+            methods = methods.Where(o => o.Name == nameof(CreateGetterInternal));
+            return methods.Single().MakeGenericMethod(propertyType).Invoke(this, new object[] { functionType, pi });
         }
 
         /// <summary>
