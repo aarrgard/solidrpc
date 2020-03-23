@@ -34,7 +34,6 @@ namespace SolidRpc.Abstractions
                     if(requiredProps.Contains(propName))
                     {
                         isTemplateType = false;
-                        break;
                     }
                 }
 
@@ -43,16 +42,7 @@ namespace SolidRpc.Abstractions
                 {
                     throw new Exception("No Get method defined for template property:"+ prop.Name);
                 }
-                var getterFunc = CreateGetter(getMethod.PropertyType, prop.PropertyType, otherProp);
-                if(getterFunc != null)
-                {
-                    getMethod.SetValue(this, getterFunc);
-                }
-                else
-                {
-                    isTemplateType = false;
-                    break;
-                }
+                getMethod.SetValue(this, CreateGetter(getMethod.PropertyType, prop.PropertyType, otherProp));
 
 
                 var setMethod = GetType().GetProperty("Set" + prop.Name);
@@ -60,16 +50,8 @@ namespace SolidRpc.Abstractions
                 {
                     throw new Exception("No Set method defined for template property:" + prop.Name);
                 }
-                var setterFunc = CreateSetter(setMethod.PropertyType, prop.PropertyType, otherProp);
-                if(setterFunc != null)
-                {
-                    setMethod.SetValue(this, setterFunc);
-                }
-                else
-                {
-                    isTemplateType = false;
-                    break;
-                }
+                setMethod.SetValue(this, CreateSetter(setMethod.PropertyType, prop.PropertyType, otherProp));
+
                 otherProperties.Remove(propName);
             }
 
@@ -97,7 +79,7 @@ namespace SolidRpc.Abstractions
             }
             if (typeof(T) != pi.PropertyType)
             {
-                return null;
+                return (Action<object, T>)((_, __) => { });
             }
             if (actionType != typeof(Action<object, T>))
             {
@@ -121,7 +103,7 @@ namespace SolidRpc.Abstractions
             }
             if (typeof(T) != pi.PropertyType)
             {
-                return null;
+                return (Func<object, T>)(_ => default(T));
             }
             if (functionType != typeof(Func<object, T>))
             {

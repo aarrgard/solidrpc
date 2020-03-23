@@ -408,7 +408,11 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public T ExtractResponse<T>(IHttpResponse response)
         {
-            if(response.StatusCode != 200)
+            return (T)ExtractResponse(typeof(T), response);
+        }
+        public object ExtractResponse(Type responseType, IHttpResponse response)
+        {
+            if (response.StatusCode != 200)
             {
                 Action exceptionAction;
                 if(ExceptionMappings.TryGetValue(response.StatusCode, out exceptionAction))
@@ -417,9 +421,9 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
                 throw new Exception("Status:"+response.StatusCode);
             }
-            if(typeof(T).IsAssignableFrom(typeof(Stream)))
+            if(responseType.IsAssignableFrom(typeof(Stream)))
             {
-                return (T)(object)response.ResponseStream;
+                return response.ResponseStream;
             }
             if(Produces.Any())
             {
@@ -434,14 +438,14 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case "application/json":
                     using (var s = response.ResponseStream)
                     {
-                        var respContent = JsonHelper.Deserialize<T>(s);
+                        var respContent = JsonHelper.Deserialize(s, responseType);
                         return respContent;
                     }
             }
-            var template = FileContentTemplate.GetTemplate(typeof(T));
+            var template = FileContentTemplate.GetTemplate(responseType);
             if(template.IsTemplateType)
             {
-                var res = Activator.CreateInstance<T>();
+                var res = Activator.CreateInstance(responseType);
                 template.SetContent(res, response.ResponseStream);
                 template.SetContentType(res, response.ContentType);
                 template.SetFileName(res, response.Filename);

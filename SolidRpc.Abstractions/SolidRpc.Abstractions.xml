@@ -227,7 +227,7 @@
             Returns all the method binders.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Boolean,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Boolean,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer,System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
@@ -235,6 +235,7 @@
             <param name="localApi">Does the method have a local implementation</param>
             <param name="methodInfo">The method to creata a binding for</param>
             <param name="baseUriTransformer"></param>
+            <param name="securityKey"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetUrlAsync``1(System.Linq.Expressions.Expression{System.Action{``0}},System.Boolean)">
@@ -346,6 +347,14 @@
             Returns the respone.
             </summary>
             <typeparam name="T"></typeparam>
+            <param name="response"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.ExtractResponse(System.Type,SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
+            <summary>
+            Returns the respone.
+            </summary>
+            <param name="responseType"></param>
             <param name="response"></param>
             <returns></returns>
         </member>
@@ -536,39 +545,56 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeInternalAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object},System.Threading.CancellationToken)">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1">
             <summary>
-            Invokes the specified method with supplied arguments. If there is a SecurityKey specified for the method 
-            it is passed along as an invocation parameter.
-            </summary>
-            <param name="methodInfo"></param>
-            <param name="args"></param>
-            <param name="cancellation"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker`1">
-            <summary>
-            Invokes a method on an object in the service provider.
+            Uses the http stack to invoke the call
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker`1.InvokeInternalAsync``1(System.Linq.Expressions.Expression{System.Action{`0}},System.Threading.CancellationToken)">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker">
             <summary>
-            Invokes the specified method with supplied arguments. If there is a SecurityKey specified for the method 
-            it is passed along as an invocation parameter.
+            Base interface for the invokers
             </summary>
-            <param name="action"></param>
-            <param name="cancellation"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Invokes the specified method with supplied arguments.
+            </summary>
+            <param name="methodInfo"></param>
+            <param name="args"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker`1.InvokeInternalAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Threading.CancellationToken)">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1">
             <summary>
-            Invokes the specified method with supplied arguments. If there is a SecurityKey specified for the method 
-            it is passed along as an invocation parameter.
+            Base interface for the invokers
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Invokes an action
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Executes a function
             </summary>
             <param name="func"></param>
-            <param name="cancellation"></param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.ILocalInvoker`1">
+            <summary>
+            Uses the configured queues to invoke a call
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IQueueInvoker`1">
+            <summary>
+            Uses the configured queues to invoke a call
+            </summary>
+            <typeparam name="T"></typeparam>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation">
             <summary>
@@ -1055,35 +1081,7 @@
             Attribute that can be set on the SolidRpc hosting assemblies to define the 
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetSingletonServices(System.Reflection.Assembly)">
-            <summary>
-            Returns all the services registered in specififed assembly
-            </summary>
-            <param name="assembly"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetImplemenationType(System.Type)">
-            <summary>
-            Returns the implementation type for suplied generic type.
-            </summary>
-            <param name="serviceType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.GetImplemenationType``1">
-            <summary>
-            Returns the implementation type for suplied generic type.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.CreateInstance``1">
-            <summary>
-            Constructs a new instance of specified type.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.#ctor(System.Type,System.Type)">
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.#ctor(System.Type,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
             <summary>
             Constructs a new attribute
             </summary>
@@ -1098,6 +1096,11 @@
         <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ImplementationType">
             <summary>
             The implementation type.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ServiceLifetime">
+            <summary>
+            The service lifetime
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcConstants">

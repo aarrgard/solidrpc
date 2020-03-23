@@ -57,7 +57,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 config.OpenApiSpec,
                 config.InvocationConfiguration.HasImplementation,
                 config.InvocationConfiguration.MethodInfo,
-                config.MethodAddressTransformer
+                config.MethodAddressTransformer,
+                config.SecurityKey
             );
             return true;
         }

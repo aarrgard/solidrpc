@@ -4,19 +4,16 @@ using SolidProxy.Core.Configuration.Runtime;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 [assembly: SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodInvoker), typeof(MethodInvoker))]
-[assembly: SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodInvoker<>), typeof(MethodInvoker<>))]
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
     /// <summary>
@@ -202,106 +199,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             return resp;
 
-        }
-
-        public async Task<object> InvokeInternalAsync(MethodInfo methodInfo, IEnumerable<object> args, CancellationToken cancellation = default(CancellationToken))
-        {
-            var svc = ServiceProvider.GetService(methodInfo.DeclaringType);
-            if (svc == null)
-            {
-                throw new Exception($"Failed to resolve service for type {methodInfo.DeclaringType}");
-            }
-            var proxy = (ISolidProxy)svc;
-            if(proxy == null)
-            {
-                var result = methodInfo.Invoke(svc, args.ToArray());
-                var resultTask = result as Task;
-                if (resultTask != null)
-                {
-                    await resultTask;
-                    return null;
-                }
-                return result;
-            }
-
-            //
-            // Find/add security key
-            //
-            IDictionary<string, object> invocationValues = null;
-            GetRootSegment();
-            if(MethodInfo2Binding.TryGetValue(methodInfo, out IMethodBinding binding))
-            {
-                var securityKey = binding.SecurityKey;
-                if (securityKey != null)
-                {
-                    invocationValues = new Dictionary<string, object>() 
-                    {
-                        { securityKey.Value.Key, new StringValues(securityKey.Value.Value) }
-                    };
-                }
-            }
-            var res = await proxy.InvokeAsync(methodInfo, args?.ToArray(), invocationValues);
-            return res;
-        }
-    }
-
-    /// <summary>
-    /// Implements the method invoker
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class MethodInvoker<T> : MethodInvoker, IMethodInvoker<T>
-    {
-        /// <summary>
-        /// Constructs a new instance
-        /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="serviceProvider"></param>
-        /// <param name="methodBinderStore"></param>
-        /// <param name="proxyConfigurationStore"></param>
-        public MethodInvoker(ILogger<MethodInvoker<T>> logger, IServiceProvider serviceProvider, IMethodBinderStore methodBinderStore, ISolidProxyConfigurationStore proxyConfigurationStore) : base(logger, serviceProvider, methodBinderStore, proxyConfigurationStore)
-        {
-        }
-
-        /// <summary>
-        /// Invokes the action
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="action"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task InvokeInternalAsync<TResult>(Expression<Action<T>> action, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var (mi, args) = GetMethodInfo(action);
-            return InvokeInternalAsync(mi, args, cancellationToken);
-        }
-
-        /// <summary>
-        /// Invokes the function
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="func"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public TResult InvokeInternalAsync<TResult>(Expression<Func<T, TResult>> func, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var (mi, args) = GetMethodInfo(func);
-            return (TResult)(object)InvokeInternalAsync(mi, args, cancellationToken);
-        }
-
-        private static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
-        {
-            if (expr.Body is MethodCallExpression mce)
-            {
-                var args = new List<object>();
-                foreach(var argument in mce.Arguments)
-                {
-                    var le = Expression.Lambda(argument);
-                    args.Add(le.Compile().DynamicInvoke());
-                }
-                
-                return (mce.Method, args.ToArray());
-            }
-            throw new Exception("expression should be a method call.");
         }
     }
 }

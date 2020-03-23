@@ -93,5 +93,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="response"></param>
         /// <returns></returns>
         T ExtractResponse<T>(IHttpResponse response);
+
+        /// <summary>
+        /// Returns the respone.
+        /// </summary>
+        /// <param name="responseType"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        object ExtractResponse(Type responseType, IHttpResponse response);
     }
 }

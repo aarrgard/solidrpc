@@ -187,11 +187,16 @@ namespace SolidRpc.OpenApi.Binder
             throw new NotImplementedException($"Cannot get binder for {openApiSpec.GetType().FullName}");
         }
 
-        public IMethodBinding CreateMethodBinding(string openApiSpec, bool localApi, MethodInfo methodInfo, MethodAddressTransformer baseUriTransformer = null)
+        public IMethodBinding CreateMethodBinding(
+            string openApiSpec, 
+            bool localApi, 
+            MethodInfo methodInfo, 
+            MethodAddressTransformer baseUriTransformer = null,
+            KeyValuePair<string, string>? securityKey = null)
         {
             var parsedSpec = GetOpenApiSpec(openApiSpec, localApi, methodInfo, baseUriTransformer);
             var methodBinder = GetMethodBinder(parsedSpec, methodInfo.DeclaringType.Assembly);
-            return methodBinder.CreateMethodBinding(methodInfo, baseUriTransformer, null);
+            return methodBinder.CreateMethodBinding(methodInfo, baseUriTransformer, securityKey);
         }
 
         public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true)

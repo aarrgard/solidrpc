@@ -31,12 +31,14 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="localApi">Does the method have a local implementation</param>
         /// <param name="methodInfo">The method to creata a binding for</param>
         /// <param name="baseUriTransformer"></param>
+        /// <param name="securityKey"></param>
         /// <returns></returns>
         IMethodBinding CreateMethodBinding(
             string openApiSpec, 
             bool localApi, 
             MethodInfo methodInfo,
-            MethodAddressTransformer baseUriTransformer = null);
+            MethodAddressTransformer baseUriTransformer = null,
+            KeyValuePair<string, string>? securityKey = null);
 
         /// <summary>
         /// Returns the uri to invoke the supplied method.

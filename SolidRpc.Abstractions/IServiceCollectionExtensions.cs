@@ -241,11 +241,29 @@ namespace Microsoft.Extensions.DependencyInjection
             // initialize services
             //
             var assemblies = InitAssemblies();
-            var singletons = assemblies.SelectMany(o => SolidRpcAbstractionProviderAttribute.GetSingletonServices(o)).ToList();
-            foreach(var singleton in singletons)
+
+            var attrs = assemblies.SelectMany(o => o.GetCustomAttributes(true))
+                 .OfType<SolidRpcAbstractionProviderAttribute>();
+            foreach(var attr in attrs)
             {
-                services.RegisterSingletonService(singleton.Key, singleton.Value);
+                switch(attr.ServiceLifetime)
+                {
+                    case ServiceLifetime.Singleton:
+                        services.RegisterSingletonService(attr.ServiceType, attr.ImplementationType);
+                        break;
+                    case ServiceLifetime.Scoped:
+                        services.AddScoped(attr.ServiceType, attr.ImplementationType);
+                        break;
+                    case ServiceLifetime.Transient:
+                        services.AddTransient(attr.ServiceType, attr.ImplementationType);
+                        break;
+                    default:
+                        throw new Exception("Cannot handle service lifetime type");
+                }
             }
+            
+            services.GetSolidConfigurationBuilder();
+
             return services;
         }
 
@@ -411,20 +429,6 @@ namespace Microsoft.Extensions.DependencyInjection
             // make sure that the singleton services are registered
             //
             sc.AddSolidRpcSingletonServices();
-
-            //
-            // check that we have an implementation - register it if that is the case
-            //
-            var serviceRegistration = sc.FirstOrDefault(o => o.ServiceType == mi.DeclaringType);
-            if (serviceRegistration == null)
-            {
-                var implType = SolidRpcAbstractionProviderAttribute.GetImplemenationType(mi.DeclaringType);
-                if (implType != null)
-                {
-                    serviceRegistration = new ServiceDescriptor(mi.DeclaringType, implType, ServiceLifetime.Singleton);
-                    sc.Add(serviceRegistration);
-                }
-            }
 
             //
             // configure method

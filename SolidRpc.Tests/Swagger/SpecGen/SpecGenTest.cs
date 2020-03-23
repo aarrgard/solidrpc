@@ -159,13 +159,18 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     Uri = new Uri("http://dummy.site/test") 
                 };
                 moq.Setup(o => o.TestInvokeRequest(
-                    It.IsAny<HttpRequestArgs.Types.HttpRequest>(),
+                    It.Is<HttpRequestArgs.Types.HttpRequest>(a => CheckHttpReq(a)),
                     It.IsAny<CancellationToken>()
                     )).Returns(Task.FromResult(req));
 
                 var res = await proxy.TestInvokeRequest(null);
                 CompareStructs(req, res);
             }
+        }
+
+        private bool CheckHttpReq(object a)
+        {
+            return true;
         }
 
         /// <summary>

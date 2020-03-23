@@ -224,14 +224,15 @@ namespace SolidRpc.OpenApi.Model.V2
             {
                 newHost = $"{basePath.Host}:{basePath.Port}";
             }
-            string newBasePath;
-            if (basePath.AbsolutePath.EndsWith("/"))
+            string newBasePath = basePath.AbsolutePath;
+
+            if(newBasePath == "/")
             {
-                newBasePath = basePath.AbsolutePath.Substring(0, basePath.AbsolutePath.Length - 1);
+                newBasePath = BasePath;
             }
-            else
+            else if(newBasePath.EndsWith("/"))
             {
-                newBasePath = basePath.AbsolutePath;
+                newBasePath = newBasePath.Substring(0, newBasePath.Length - 1);
             }
             var newSwaggerObject = (SwaggerObject)Clone();
             newSwaggerObject.Host = newHost;
