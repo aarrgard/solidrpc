@@ -1,6 +1,7 @@
 ﻿using SolidProxy.Core.Configuration;
 using SolidProxy.Core.Proxy;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
@@ -11,14 +12,32 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
     /// </summary>
     public interface ISolidAzureFunctionConfig : ISolidProxyInvocationAdviceConfig
     {
+
         /// <summary>
-        /// The authorization level.
+        /// The protocols tha the function should use.
+        /// "http", "queue", etc.
         /// </summary>
-        string AuthLevel { get; set; }
+        ICollection<string> Protocols { get; }
+
+        /// <summary>
+        /// The authorization level in the http protocol
+        /// "anonymous", "admin", "function"
+        /// </summary>
+        string HttpAuthLevel { get; set; }
+
+        /// <summary>
+        /// The name of the queue to poll - if not set it will be based on the openapi operation.
+        /// </summary>
+        string QueueName { get; set; }
+
+        /// <summary>
+        /// The the connection string to connect to the queue.
+        /// </summary>
+        string QueueConnection { get; set; }
     }
 
     /// <summary>
-    /// 
+    /// We nned the advice for the configuration...
     /// </summary>
     /// <typeparam name="TObject"></typeparam>
     /// <typeparam name="TMethod"></typeparam>

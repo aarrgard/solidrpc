@@ -757,14 +757,31 @@
             settings should be.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.AuthLevel">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.Protocols">
             <summary>
-            The authorization level.
+            The protocols tha the function should use.
+            "http", "queue", etc.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.HttpAuthLevel">
+            <summary>
+            The authorization level in the http protocol
+            "anonymous", "admin", "function"
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.QueueName">
+            <summary>
+            The name of the queue to poll - if not set it will be based on the openapi operation.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.QueueConnection">
+            <summary>
+            The the connection string to connect to the queue.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3">
             <summary>
-            
+            We nned the advice for the configuration...
             </summary>
             <typeparam name="TObject"></typeparam>
             <typeparam name="TMethod"></typeparam>

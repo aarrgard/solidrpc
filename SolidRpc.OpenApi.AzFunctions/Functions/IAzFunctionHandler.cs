@@ -50,6 +50,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         IAzHttpFunction CreateHttpFunction(string name);
 
         /// <summary>
+        /// Creates a queue function
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IAzQueueFunction CreateQueueFunction(string name);
+
+        /// <summary>
         /// Triggers a restart by writing some additional data to 
         /// the end of a config file
         /// </summary>
@@ -69,6 +76,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Returns the timer trigger handler.
         /// </summary>
         Type TimerTriggerHandler { get; }
+
+
+        /// <summary>
+        /// Returns the queue trigger handler.
+        /// </summary>
+        Type QueueTriggerHandler { get; }
 
         /// <summary>
         /// The location of the functions app

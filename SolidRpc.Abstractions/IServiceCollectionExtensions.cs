@@ -243,9 +243,12 @@ namespace Microsoft.Extensions.DependencyInjection
             var assemblies = InitAssemblies();
 
             var attrs = assemblies.SelectMany(o => o.GetCustomAttributes(true))
-                 .OfType<SolidRpcAbstractionProviderAttribute>();
-            foreach(var attr in attrs)
+                 .OfType<SolidRpcAbstractionProviderAttribute>()
+                 .GroupBy(o => o.ServiceType);
+            foreach(var serviceAttrs in attrs)
             {
+                var sorted = serviceAttrs.OrderByDescending(o => GetDepth(o.ImplementationType)).ToList();
+                var attr = sorted.First();
                 switch(attr.ServiceLifetime)
                 {
                     case ServiceLifetime.Singleton:
@@ -265,6 +268,17 @@ namespace Microsoft.Extensions.DependencyInjection
             services.GetSolidConfigurationBuilder();
 
             return services;
+        }
+
+        private static object GetDepth(Type t)
+        {
+            int depth = 0;
+            while(t != null && t.BaseType != typeof(object))
+            {
+                depth++;
+                t = t.BaseType;
+            }
+            return depth;
         }
 
         private static ICollection<Assembly> InitAssemblies()

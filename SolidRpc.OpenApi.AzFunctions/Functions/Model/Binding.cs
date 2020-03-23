@@ -60,6 +60,19 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         [DataMember(Name = "runOnStartup", EmitDefaultValue = false)]
         public bool RunOnStartup { get; set; }
         #endregion
+        #region QueueTrigger
+        /// <summary>
+        /// The queue name
+        /// </summary>
+        [DataMember(Name = "queueName", EmitDefaultValue = false)]
+        public string QueueName { get; set; }
+
+        /// <summary>
+        /// The connection name
+        /// </summary>
+        [DataMember(Name = "connection", EmitDefaultValue = false)]
+        public string Connection { get; set; }
+#endregion
         #region ConstantBinder
         /// <summary>
         /// The value for the constant

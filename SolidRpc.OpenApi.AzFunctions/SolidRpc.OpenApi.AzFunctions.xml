@@ -96,6 +96,13 @@
             <param name="name"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateQueueFunction(System.String)">
+            <summary>
+            Creates a queue function
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.TriggerRestart">
             <summary>
             Triggers a restart by writing some additional data to 
@@ -115,6 +122,11 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.TimerTriggerHandler">
             <summary>
             Returns the timer trigger handler.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.QueueTriggerHandler">
+            <summary>
+            Returns the queue trigger handler.
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.BaseDirs">
@@ -148,6 +160,21 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzHttpFunction.AuthLevel">
             <summary>
             The authentication level
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzQueueFunction">
+            <summary>
+            Represents a timer function
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzQueueFunction.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzQueueFunction.Connection">
+            <summary>
+            The connection
             </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzTimerFunction">
@@ -291,6 +318,11 @@
             Returns the http trigger handler
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.QueueTriggerHandler">
+            <summary>
+            Returns the queue trigger handler
+            </summary>
+        </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.HttpScheme">
             <summary>
             Returns the http scheme
@@ -321,6 +353,13 @@
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateHttpFunction(System.String)">
             <summary>
             Creates a http function
+            </summary>
+            <param name="functionName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateQueueFunction(System.String)">
+            <summary>
+            Creates a queue function
             </summary>
             <param name="functionName"></param>
             <returns></returns>
@@ -380,6 +419,41 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.AuthLevel">
             <summary>
             The AuthLevel
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction">
+            <summary>
+            Represents a timer function
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
+            <summary>
+            Constructs a new quue function.
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="subDir"></param>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
+            <summary>
+            Constructs a new timer function
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="subDir"></param>
+            <param name="functionJson"></param>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.TriggerType">
+            <summary>
+            The trigger type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.Connection">
+            <summary>
+            The connection
             </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction">
@@ -520,6 +594,16 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.RunOnStartup">
             <summary>
             Should the trigger run on startup.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.Connection">
+            <summary>
+            The connection name
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.Value">

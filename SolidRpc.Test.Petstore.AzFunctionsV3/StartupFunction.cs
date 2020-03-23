@@ -14,5 +14,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
         {
             return methodInvoker.InvokeAsync(o => o.IsAlive(cancellationToken));
         }
+
     }
 }

@@ -39,12 +39,12 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
-                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                c.GetAdviceConfig<ISolidAzureFunctionConfig>().HttpAuthLevel = "anonymous";
                 return true;
             }
             if (c.Methods.First().DeclaringType == typeof(ISolidRpcContentHandler))
             {
-                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                c.GetAdviceConfig<ISolidAzureFunctionConfig>().HttpAuthLevel = "anonymous";
                 return true;
             }
             return base.ConfigureAzureFunction(c);

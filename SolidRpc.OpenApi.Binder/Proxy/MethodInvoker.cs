@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using SolidProxy.Core.Configuration.Runtime;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -81,19 +80,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
             IServiceProvider serviceProvider,
-            IMethodBinderStore methodBinderStore,
-            ISolidProxyConfigurationStore proxyConfigurationStore)
+            IMethodBinderStore methodBinderStore)
         {
             Logger = logger;
             ServiceProvider = serviceProvider;
-            ProxyConfigurationStore = proxyConfigurationStore;
             MethodBinderStore = methodBinderStore;
             MethodInfo2Binding = new Dictionary<MethodInfo, IMethodBinding>();
         }
 
         public ILogger Logger { get; }
         public IServiceProvider ServiceProvider { get; }
-        public ISolidProxyConfigurationStore ProxyConfigurationStore { get; }
         public IMethodBinderStore MethodBinderStore { get; }
         public Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
         private PathSegment RootSegment => GetRootSegment();

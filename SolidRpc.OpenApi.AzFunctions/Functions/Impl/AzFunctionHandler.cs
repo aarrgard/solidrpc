@@ -104,6 +104,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public Type TimerTriggerHandler => TriggerHandlers.GetOrAdd($".TimerFunction", _ => FindTriggerHandler(_));
 
         /// <summary>
+        /// Returns the queue trigger handler
+        /// </summary>
+        public Type QueueTriggerHandler => TriggerHandlers.GetOrAdd($".QueueFunction", _ => FindTriggerHandler(_));
+
+        /// <summary>
         /// Returns the http scheme
         /// </summary>
         public string HttpScheme
@@ -214,6 +219,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 {
                     func = new AzTimerFunction(this, d.Name, function);
                 }
+                else if (function.Bindings.Any(o => o.Type == "queueTrigger"))
+                {
+                    func = new AzQueueFunction(this, d.Name, function);
+                }
                 else
                 {
                     return false;
@@ -223,6 +232,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             catch (Exception e)
             {
                 throw e;
+            }
+        }
+
+        private string ReadFileContent(FileInfo functionJson)
+        {
+            using (var tr = functionJson.OpenText())
+            {
+                return tr.ReadToEnd();
             }
         }
 
@@ -236,14 +253,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             return timerFunction;
         }
 
-        private string ReadFileContent(FileInfo functionJson)
-        {
-            using (var tr = functionJson.OpenText())
-            {
-                return tr.ReadToEnd();
-            }
-        }
-
         /// <summary>
         /// Creates a http function
         /// </summary>
@@ -254,6 +263,18 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             if (string.IsNullOrEmpty(functionName)) throw new ArgumentNullException(nameof(functionName));
             var httpFunction = new AzHttpFunction(this, functionName);
             return httpFunction;
+        }
+
+        /// <summary>
+        /// Creates a queue function
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <returns></returns>
+        public IAzQueueFunction CreateQueueFunction(string functionName)
+        {
+            if (string.IsNullOrEmpty(functionName)) throw new ArgumentNullException(nameof(functionName));
+            var queueFunction = new AzQueueFunction(this, functionName);
+            return queueFunction;
         }
 
         /// <summary>

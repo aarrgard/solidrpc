@@ -1,0 +1,18 @@
+{
+  "generatedBy": "SolidRpc.OpenApi.AzFunctions-1.0.0.0",
+  "bindings": [
+    {
+      "name": "message",
+      "direction": "in",
+      "type": "serviceBusTrigger",
+      "queueName": "SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOpenApiSpec_arg0_arg1",
+      "connection": "SolidRpcQueueConnection"
+    },
+    {
+      "name": "serviceProvider",
+      "type": "inject"
+    }
+  ],
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctions.QueueFunction.Run"
+}

@@ -57,7 +57,6 @@ namespace SolidRpc.OpenApi.AzFunctions
             services.AddHttpClient();
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
-            services.AddSingleton<ISolidRpcHost, SolidRpcHostAzFunctions>();
             services.AddSolidRpcServices(ConfigureAzureFunction);
         }
 
@@ -67,13 +66,19 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="c"></param>
         protected virtual bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
-            if(c.SecurityKey == null)
+            var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
+            if (c.SecurityKey == null)
             {
-                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "function";
+                azConfig.HttpAuthLevel = "function";
             }
             else
             {
-                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                azConfig.HttpAuthLevel = "anonymous";
+            }
+
+            if(!azConfig.Protocols.Any())
+            {
+                azConfig.Protocols.Add("http");
             }
 
             var method = c.Methods.First();

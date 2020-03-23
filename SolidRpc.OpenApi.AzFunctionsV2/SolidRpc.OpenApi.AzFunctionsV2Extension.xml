@@ -256,6 +256,21 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.QueueFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.QueueFunction.Run(System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="message"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.TimerFunction">
             <summary>
             Handles timer triggers

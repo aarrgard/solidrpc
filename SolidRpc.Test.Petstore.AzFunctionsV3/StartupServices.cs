@@ -20,7 +20,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
             services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
-            services.AddVitec(ConfigureAzureFunction);
+            //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
         }
@@ -30,16 +30,22 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //
             // enable anonyous access to the swagger methods and static content.
             //
+            var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
+
+            if (!azConfig.Protocols.Any(o => o == "http")) azConfig.Protocols.Add("http");
+            if (!azConfig.Protocols.Any(o => o == "queue")) azConfig.Protocols.Add("queue");
+
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
-                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                azConfig.HttpAuthLevel = "anonymous";
                 return true;
             }
             if (c.Methods.First().DeclaringType == typeof(ISolidRpcContentHandler))
             {
-                c.GetAdviceConfig<ISolidAzureFunctionConfig>().AuthLevel = "anonymous";
+                azConfig.HttpAuthLevel = "anonymous";
                 return true;
             }
+
             return base.ConfigureAzureFunction(c);
         }
     }

@@ -29,9 +29,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             Configuration = configuration;
         }
 
-        private ILogger Logger { get; }
-        private IConfiguration Configuration { get; }
-        private Guid HostId { get; }
+        protected ILogger Logger { get; }
+        protected IConfiguration Configuration { get; }
+        protected Guid HostId { get; }
 
         /// <summary>
         /// Returns the host configuration
