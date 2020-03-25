@@ -31,11 +31,11 @@ namespace SolidRpc.Tests.Security
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public override IServiceProvider ConfigureServerServices(IServiceCollection services)
+        public override void ConfigureServerServices(IServiceCollection services)
         {
+            base.ConfigureServerServices(services);
             services.AddSolidRpcSecurityFrontend();
             services.AddSolidRpcSecurityBackend();
-            return base.ConfigureServerServices(services);
         }
 
         /// <summary>

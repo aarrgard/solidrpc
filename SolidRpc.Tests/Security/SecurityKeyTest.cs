@@ -94,8 +94,9 @@ namespace SolidRpc.Tests.Security
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public override IServiceProvider ConfigureServerServices(IServiceCollection services)
+        public override void ConfigureServerServices(IServiceCollection services)
         {
+            base.ConfigureServerServices(services);
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             services.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>
             {
@@ -103,7 +104,6 @@ namespace SolidRpc.Tests.Security
                 conf.SecurityKey = SecurityKey;
                 return true;
             });
-            return base.ConfigureServerServices(services);
         }
 
         /// <summary>

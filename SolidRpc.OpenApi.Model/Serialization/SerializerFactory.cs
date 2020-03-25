@@ -25,6 +25,18 @@ namespace SolidRpc.OpenApi.Model.Serialization
             t = (T)o;
         }
 
+        public void SerializeToStream<T>(Stream s, T o, string contentType, Encoding charSet = null, bool prettyFormat = false)
+        {
+            SerializeToStream(s, typeof(T), o, contentType, charSet, prettyFormat);
+        }
+
+        public void DeserializeFromStream<T>(Stream s, out T t, string contentType, Encoding charSet = null)
+        {
+            object o;
+            DeserializeFromStream(s, typeof(T), out o, contentType, charSet);
+            t = (T)o;
+        }
+
         public void SerializeToStream(Stream s, Type type, object o, string contentType, Encoding charSet = null, bool prettyFormat = false)
         {
             GetSerializer(contentType, charSet).Serialize(s, type, o, prettyFormat);

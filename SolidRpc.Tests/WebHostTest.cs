@@ -149,7 +149,7 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="services"></param>
             /// <returns></returns>
-            public override IServiceProvider ConfigureClientServices(IServiceCollection services)
+            public override void ConfigureClientServices(IServiceCollection services)
             {
                 //
                 // configure server services and use them from a singleton registration.
@@ -167,7 +167,7 @@ namespace SolidRpc.Tests
                         });
                         
                     });
-                return base.ConfigureClientServices(services);
+                base.ConfigureClientServices(services);
             }
 
         }
@@ -242,7 +242,8 @@ namespace SolidRpc.Tests
             {
                 var clientServices = new ServiceCollection();
                 clientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-                _clientServiceProvider = ConfigureClientServices(clientServices);
+                ConfigureClientServices(clientServices);
+                _clientServiceProvider = clientServices.BuildServiceProvider();
                 return Task.CompletedTask;
             }
 
@@ -348,13 +349,11 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="clientServices"></param>
             /// <returns></returns>
-            public virtual IServiceProvider ConfigureClientServices(IServiceCollection clientServices)
+            public virtual void ConfigureClientServices(IServiceCollection clientServices)
             {
-                clientServices.AddHttpClient();
                 AddBaseAddress(clientServices, BaseAddress);
-                ClientServicesCallback(clientServices);
                 WebHostTest.ConfigureClientServices(clientServices, BaseAddress);
-                return clientServices.BuildServiceProvider();
+                ClientServicesCallback(clientServices);
             }
 
             /// <summary>
@@ -368,9 +367,8 @@ namespace SolidRpc.Tests
                 var strBaseAddress = baseAddress.ToString();
                 strBaseAddress = strBaseAddress.Substring(0, strBaseAddress.Length - 1);
 
-                var config = new ConfigurationBuilder();
-                config.AddInMemoryCollection(new Dictionary<string, string>() { { "urls", strBaseAddress } });
-                services.AddSingleton<IConfiguration>(config.Build());
+                services.GetConfigurationBuilder(() => new ConfigurationBuilder(), c => new ChainedConfigurationSource() { Configuration = c })
+                    .AddInMemoryCollection(new Dictionary<string, string>() { { "urls", strBaseAddress } });
             }
 
             /// <summary>
@@ -381,8 +379,9 @@ namespace SolidRpc.Tests
             public IServiceProvider ConfigureServices(IServiceCollection serverServices)
             {
                 serverServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+                WebHostTest.ConfigureServerServices(serverServices);
                 ServerServicesCallback(serverServices);
-                return WebHostTest.ConfigureServerServices(serverServices);
+                return serverServices.BuildServiceProvider();
             }
 
             private Task<Uri> GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
@@ -415,7 +414,7 @@ namespace SolidRpc.Tests
                         .ConfigureInterface<T>()
                         .ConfigureAdvice<ISolidRpcOpenApiConfig>();
                     conf.OpenApiSpec = openApiConfiguration;
-                    conf.MethodAddressTransformer = GetBaseUrl;
+                    conf.SetMethodAddressTransformer(GetBaseUrl);
 
                     clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
                     clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
@@ -472,7 +471,7 @@ namespace SolidRpc.Tests
                         .ConfigureInterface<T>()
                         .ConfigureAdvice<ISolidRpcOpenApiConfig>();
                     conf.OpenApiSpec = config;
-                    conf.MethodAddressTransformer = GetBaseUrl;
+                    conf.SetMethodAddressTransformer(GetBaseUrl);
 
                     clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
                     clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
@@ -538,12 +537,12 @@ namespace SolidRpc.Tests
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public virtual IServiceProvider ConfigureServerServices(IServiceCollection services)
+        public virtual void ConfigureServerServices(IServiceCollection services)
         {
+            ConfigureConfiguration(services);
             services.AddLogging(ConfigureLogging);
             services.AddHttpClient();
             services.AddSolidRpcSingletonServices();
-            return services.BuildServiceProvider();
         }
 
         /// <summary>
@@ -554,12 +553,21 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public virtual void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
+            ConfigureConfiguration(clientServices);
             clientServices.AddLogging(ConfigureLogging);
+            clientServices.AddHttpClient();
             clientServices.AddSolidRpcSingletonServices();
         }
 
+        private void ConfigureConfiguration(IServiceCollection services)
+        {
+            services.GetConfigurationBuilder(() => new ConfigurationBuilder(), c => new ChainedConfigurationSource() { Configuration = c })
+                .AddJsonFile("appsettings.local.json", true);
+            services.BuildConfiguration(() => new ConfigurationBuilder());
+        }
+
         /// <summary>
-        /// Configures the applicatio 
+        /// Configures the application
         /// </summary>
         /// <param name="app"></param>
         public virtual void Configure(IApplicationBuilder app)

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly: SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IHttpInvoker<>), typeof(HttpInvoker<>), ServiceLifetime.Scoped)]
+[assembly: SolidRpcAbstractionProvider(typeof(IHttpInvoker<>), typeof(HttpInvoker<>), SolidRpcAbstractionProviderLifetime.Scoped)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     /// <summary>
@@ -44,35 +44,25 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             {
                 throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");
             }
-            var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
-            if (Logger.IsEnabled(LogLevel.Trace))
-            {
-                Logger.LogTrace($"Getting http client for '{httpClientName}'");
-            }
-            var httpClient = HttpClientFactory.CreateClient(httpClientName);
+
             var httpReq = new SolidHttpRequest();
             await methodBinding.BindArgumentsAsync(httpReq, args);
 
+            AddSecurityKey(methodBinding, httpReq);
 
+
+            var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
             if (Logger.IsEnabled(LogLevel.Trace))
             {
-                Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
+                Logger.LogTrace($"Using client '{httpClientName}' to send data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");
             }
-
+            var httpClient = HttpClientFactory.CreateClient(httpClientName);
             var httpClientReq = new HttpRequestMessage();
             var headers = new Dictionary<string, IEnumerable<string>>();
             //await MethodHeadersTransformer(invocation.ServiceProvider, headers, invocation.SolidProxyInvocationConfiguration.MethodInfo);
             foreach (var additionalHeader in headers)
             {
                 httpClientReq.Headers.Add(additionalHeader.Key, additionalHeader.Value);
-            }
-            //
-            // Add security key header
-            //
-            var securityKey = methodBinding.SecurityKey;
-            if (securityKey != null)
-            {
-                httpClientReq.Headers.Add(securityKey.Value.Key, securityKey.Value.Value);
             }
             httpReq.CopyTo(httpClientReq);
 

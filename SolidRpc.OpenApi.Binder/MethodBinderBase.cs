@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.Transport;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -28,7 +30,7 @@ namespace SolidRpc.OpenApi.Binder
         {
             get
             {
-                 return CachedBindings.Values;
+                return CachedBindings.Values;
             }
         }
 
@@ -36,18 +38,26 @@ namespace SolidRpc.OpenApi.Binder
 
         public IMethodBinding CreateMethodBinding(
             MethodInfo methodInfo,
-            MethodAddressTransformer methodAddressTransformer,
+            IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey)
         {
-            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, methodAddressTransformer, true, securityKey));
+            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, transports, securityKey));
         }
 
-        protected abstract IMethodBinding CreateBinding(
+        private IMethodBinding CreateBinding(
             MethodInfo mi,
-            MethodAddressTransformer methodAddressTransformer, 
-            bool mustExist,
+            IEnumerable<ITransport> transports,
+            KeyValuePair<string, string>? securityKey)
+        {
+            var methodBinding = DoCreateMethodBinding(mi, transports, securityKey);
+            transports.ToList().ForEach(o => o.Configure(methodBinding));
+            return methodBinding;
+        }
+
+        protected abstract IMethodBinding DoCreateMethodBinding(
+            MethodInfo mi,
+            IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey);
     }
 }
-
 

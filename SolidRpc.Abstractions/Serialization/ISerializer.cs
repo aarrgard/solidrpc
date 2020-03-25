@@ -35,7 +35,6 @@ namespace SolidRpc.Abstractions.Serialization
         /// <param name="stream"></param>
         /// <param name="type"></param>
         /// <param name="o"></param>
-        /// <param name="prettyFormat"></param>
         /// <returns></returns>
         void Deserialize(Stream stream, Type type, out object o);
     }

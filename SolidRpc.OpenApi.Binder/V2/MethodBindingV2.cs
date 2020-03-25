@@ -4,6 +4,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
@@ -139,15 +140,15 @@ namespace SolidRpc.OpenApi.Binder.V2
             OperationObject operationObject, 
             MethodInfo methodInfo, 
             ICodeDocMethod codeDocMethod,
-            MethodAddressTransformer methodAddressTransformer,
+            IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey)
         {
             MethodBinder = methodBinder ?? throw new ArgumentNullException(nameof(methodBinder));
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
-            MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodInfo));
             SecurityKey = securityKey;
+            Transports = transports;
         }
 
         public KeyValuePair<string, string>? SecurityKey { get; }
@@ -172,8 +173,6 @@ namespace SolidRpc.OpenApi.Binder.V2
         public OperationObject OperationObject { get; }
 
         public MethodInfo MethodInfo { get; }
-
-        private MethodAddressTransformer MethodAddressTransformer { get; }
 
         private IMethodArgument[] _arguments;
         public IMethodArgument[] Arguments
@@ -272,11 +271,12 @@ namespace SolidRpc.OpenApi.Binder.V2
                 if (_address == null)
                 {
                     var address = OperationObject.GetAddress();
-                    if(MethodAddressTransformer != null)
+                    var methodAddressTransformer = Transports.OfType<IHttpTransport>().Select(o => o.MethodAddressTransformer).FirstOrDefault();
+                    if(methodAddressTransformer != null)
                     {
                         try
                         {
-                            address = MethodAddressTransformer(MethodBinder.ServiceProvider, address, MethodInfo).Result;
+                            address = methodAddressTransformer(MethodBinder.ServiceProvider, address, MethodInfo).Result;
                         }
                         catch (Exception e)
                         {
@@ -508,6 +508,8 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return _patterns;
             }
         }
+
+        public IEnumerable<ITransport> Transports { get; }
 
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {

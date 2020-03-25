@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Abstractions.OpenApi.Binder
+namespace SolidRpc.Abstractions.OpenApi.Transport
 {
     /// <summary>
     /// The method used to transform uri:s

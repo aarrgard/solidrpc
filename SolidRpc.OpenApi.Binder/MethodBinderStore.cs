@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model;
@@ -50,10 +52,12 @@ namespace SolidRpc.OpenApi.Binder
             {
                 if(_methodBinders == null)
                 {
+                    bool dispatchEvents = false;
                     lock(_mutext)
                     {
                         if (_methodBinders == null)
                         {
+                            dispatchEvents = true;
                             Logger.LogInformation("Creating method binders...");
                             ConfigStore.ProxyConfigurations.ToList()
                                 .SelectMany(o => o.InvocationConfigurations)
@@ -65,15 +69,26 @@ namespace SolidRpc.OpenApi.Binder
                                     var config = apiConfig.OpenApiSpec;
                                     var method = apiConfig.InvocationConfiguration.MethodInfo;
                                     var assembly = method.DeclaringType.Assembly;
-                                    var uriTransformer = apiConfig.MethodAddressTransformer;
-                                    var securityKey = apiConfig.SecurityKey;
+                                    var uriTransformer = apiConfig.HttpTransport?.MethodAddressTransformer;
                                     var openApiSpec = GetOpenApiSpec(config, invocConfig.HasImplementation, method, uriTransformer);
                                     var methodBinder = GetMethodBinder(openApiSpec, assembly);
-                                    var methodBinding = methodBinder.CreateMethodBinding(method, uriTransformer, securityKey);
+
+                                    var securityKey = apiConfig.SecurityKey;
+                                    var methodBinding = methodBinder.CreateMethodBinding(method, apiConfig.GetTransports(), securityKey);
                                 });
                             _methodBinders = Bindings.Values;
                             Logger.LogInformation("...created method binders.");
                         }
+                    }
+                    if(dispatchEvents)
+                    {
+                        ServiceProvider.GetRequiredService<IEnumerable<IMethodBindingHandler>>().ToList().ForEach(handler =>
+                        {
+                            Bindings.Values.SelectMany(o => o.MethodBindings).ToList().ForEach(binding =>
+                            {
+                                handler.BindingCreated(binding);
+                            });
+                        });
                     }
                 }
                 return _methodBinders;
@@ -188,15 +203,17 @@ namespace SolidRpc.OpenApi.Binder
         }
 
         public IMethodBinding CreateMethodBinding(
-            string openApiSpec, 
-            bool localApi, 
-            MethodInfo methodInfo, 
-            MethodAddressTransformer baseUriTransformer = null,
+            string openApiSpec,
+            bool localApi,
+            MethodInfo methodInfo,
+            IEnumerable<ITransport> transports = null,
             KeyValuePair<string, string>? securityKey = null)
         {
+            if (transports == null) transports = new ITransport[0];
+            var baseUriTransformer = transports.OfType<IHttpTransport>().Select(o => o.MethodAddressTransformer).FirstOrDefault();
             var parsedSpec = GetOpenApiSpec(openApiSpec, localApi, methodInfo, baseUriTransformer);
             var methodBinder = GetMethodBinder(parsedSpec, methodInfo.DeclaringType.Assembly);
-            return methodBinder.CreateMethodBinding(methodInfo, baseUriTransformer, securityKey);
+            return methodBinder.CreateMethodBinding(methodInfo, transports, securityKey);
         }
 
         public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true)

@@ -78,6 +78,7 @@
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
     <ProjectReference Include="..\SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.AzSvcBus\SolidRpc.OpenApi.AzSvcBus.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator.Impl\SolidRpc.OpenApi.Generator.Impl.csproj" />

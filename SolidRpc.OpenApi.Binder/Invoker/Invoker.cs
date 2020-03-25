@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -139,6 +139,20 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         private async Task<object> ExtractTaskResult<TRes>(object res)
         {
             return await (Task<TRes>)res;
+        }
+
+        protected void AddSecurityKey(IMethodBinding methodBinding, SolidHttpRequest httpReq)
+        {
+            //
+            // Add security key header
+            //
+            var securityKey = methodBinding.SecurityKey;
+            if (securityKey != null)
+            {
+                var headers = httpReq.Headers.ToList();
+                headers.Add(new SolidHttpRequestDataString("text/plain", securityKey.Value.Key, securityKey.Value.Value));
+                httpReq.Headers = headers;
+            }
         }
     }
 }

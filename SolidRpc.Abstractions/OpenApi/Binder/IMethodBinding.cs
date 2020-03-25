@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -31,7 +32,12 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// Returns true if this method is enabled
         /// </summary>
         bool IsEnabled { get; }
-        
+
+        /// <summary>
+        /// Returns the configured transports
+        /// </summary>
+        IEnumerable<ITransport> Transports { get; }
+
         /// <summary>
         /// Returns the security key needed for this invocation.
         /// </summary>

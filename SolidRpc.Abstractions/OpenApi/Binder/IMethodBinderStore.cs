@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -30,14 +31,14 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="openApiSpec">The openapi spec to use. If null we search the assembly.</param>
         /// <param name="localApi">Does the method have a local implementation</param>
         /// <param name="methodInfo">The method to creata a binding for</param>
-        /// <param name="baseUriTransformer"></param>
+        /// <param name="transports"></param>
         /// <param name="securityKey"></param>
         /// <returns></returns>
         IMethodBinding CreateMethodBinding(
             string openApiSpec, 
             bool localApi, 
             MethodInfo methodInfo,
-            MethodAddressTransformer baseUriTransformer = null,
+            IEnumerable<ITransport> transports = null,
             KeyValuePair<string, string>? securityKey = null);
 
         /// <summary>

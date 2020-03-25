@@ -27,6 +27,27 @@ namespace SolidRpc.Abstractions.Serialization
         /// <param name="charSet"></param>
         /// <param name="prettyFormat"></param>
         /// <returns></returns>
+        void SerializeToStream<T>(Stream s, T o, string mediaType = "application/json", Encoding charSet = null, bool prettyFormat = false);
+
+        /// <summary>
+        /// Serializes supplied object to a string representation
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="o"></param>
+        /// <param name="mediaType"></param>
+        /// <param name="charSet"></param>
+        /// <returns></returns>
+        void DeserializeFromStream<T>(Stream s, out T o, string mediaType = "application/json", Encoding charSet = null);
+
+        /// <summary>
+        /// Serializes supplied object to a string representation
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="o"></param>
+        /// <param name="mediaType"></param>
+        /// <param name="charSet"></param>
+        /// <param name="prettyFormat"></param>
+        /// <returns></returns>
         void SerializeToString<T>(out String s, T o, string mediaType = "application/json", Encoding charSet = null, bool prettyFormat = false);
 
         /// <summary>

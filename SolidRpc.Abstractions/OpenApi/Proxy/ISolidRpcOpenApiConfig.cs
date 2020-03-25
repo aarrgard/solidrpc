@@ -1,7 +1,13 @@
-﻿using SolidProxy.Core.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using SolidProxy.Core.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {
@@ -26,15 +32,110 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         KeyValuePair<string, string>? SecurityKey { get; set; }
 
         /// <summary>
-        /// The method to transform the Uri. This delegate is invoked to determine
-        /// the base Uri for the service. Supplied uri is the one obtained from
-        /// the openapi config.
+        /// The configured http transport
         /// </summary>
-        MethodAddressTransformer MethodAddressTransformer { get; set; }
+        IHttpTransport HttpTransport { get; set; }
 
         /// <summary>
-        /// The http headers to add to the invocations
+        /// The configured http transport
         /// </summary>
-        MethodHeadersTransformer MethodHeadersTransformer { get; set; }
+        IQueueTransport QueueTransport { get; set; }
+    }
+
+    /// <summary>
+    /// Extension methods to manipulate the settings
+    /// </summary>
+    public static class ISolidRpcOpenApiConfigExtensions
+    {
+
+        /// <summary>
+        /// Sets the method address transformer on the transports
+        /// </summary>
+        /// <param name="config"></param>
+        public static IEnumerable<ITransport> GetTransports(this ISolidRpcOpenApiConfig config)
+        {
+            var httpTransport = config.HttpTransport;
+            if (httpTransport != null)
+            {
+                yield return httpTransport;
+            }
+            var queueTransport = config.QueueTransport;
+            if (queueTransport != null)
+            {
+                yield return queueTransport;
+            }
+        }
+
+        /// <summary>
+        /// Sets the method address transformer on the transports
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="methodAddressTransformer"></param>
+        public static void SetMethodAddressTransformer(this ISolidRpcOpenApiConfig config, MethodAddressTransformer methodAddressTransformer)
+        {
+            var httpTransport = config.HttpTransport;
+            if (httpTransport == null)
+            {
+                httpTransport = new HttpTransport(methodAddressTransformer, null);
+            }
+            else
+            {
+                httpTransport = httpTransport.SetMethodAddressTransformer(methodAddressTransformer);
+            }
+            config.HttpTransport = httpTransport;
+        }
+
+        /// <summary>
+        /// Sets the queue transport connection name
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="conf"></param>
+        /// <param name="connectionName"></param>
+        public static void SetQueueTransportConnectionString(this ISolidRpcOpenApiConfig config, IConfiguration conf, string connectionName)
+        {
+            var connectionString = conf[connectionName];
+            if(string.IsNullOrEmpty(connectionString)) 
+            {
+                throw new Exception("Cannot find connection string for configuration:"+ connectionName);
+            }
+            config.SetQueueTransportConnectionString(connectionString);
+        }
+        /// <summary>
+        /// Sets the queue transport connection name
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="connectionString"></param>
+        public static void SetQueueTransportConnectionString(this ISolidRpcOpenApiConfig config, string connectionString)
+        {
+            var queueTransport = config.QueueTransport;
+            if (queueTransport == null)
+            {
+                queueTransport = new QueueTransport(null, connectionString, null);
+            }
+            else
+            {
+                queueTransport = queueTransport.SetConnectionString(connectionString);
+            }
+            config.QueueTransport = queueTransport;
+        }
+
+        /// <summary>
+        /// Sets the queue transport inbound handler
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="inboundHandler"></param>
+        public static void SetQueueTransportInboundHandler(this ISolidRpcOpenApiConfig config, string inboundHandler)
+        {
+            var queueTransport = config.QueueTransport;
+            if (queueTransport == null)
+            {
+                queueTransport = new QueueTransport(null, null, inboundHandler);
+            }
+            else
+            {
+                queueTransport = queueTransport.SetInboundHandler(inboundHandler);
+            }
+            config.QueueTransport = queueTransport;
+        }
     }
 }

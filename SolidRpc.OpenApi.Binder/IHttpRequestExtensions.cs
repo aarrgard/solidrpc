@@ -1,6 +1,8 @@
-﻿using SolidRpc.OpenApi.Binder.Http;
+﻿using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -42,7 +44,41 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 return null;
             }
-            return int.Parse(source.HostAndPort.Substring(colonIdx+1));
+            return int.Parse(source.HostAndPort.Substring(colonIdx + 1));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        public static async Task CopyToAsync(this IHttpRequest source, HttpRequest target)
+        {
+            var builder = new UriBuilder
+            {
+                Scheme = source.Scheme,
+                Host = source.GetHost(),
+                Path = source.Path,
+                Query = string.Join("&", source.Query.Select(o => $"{HttpUtility.UrlEncode(o.Name)}={HttpUtility.UrlEncode(o.GetStringValue())}"))
+            };
+            var port = source.GetPort();
+            if (port != null)
+            {
+                builder.Port = port.Value;
+            }
+
+            target.Method = source.Method;
+            target.Uri = builder.Uri;
+
+            var headerDict = source.Headers.GroupBy(o => o.Name)
+                .ToDictionary(o => o.Key, o => o.Select(o2 => o2.GetStringValue()).ToArray());
+            target.Headers = headerDict;
+
+            var content = CreateContent(source.ContentType, source.BodyData);
+            if(content != null)
+            {
+                target.Body = await content.ReadAsStreamAsync();
+            }
         }
 
         /// <summary>
@@ -70,19 +106,21 @@ namespace SolidRpc.Abstractions.OpenApi.Http
 
             source.Headers.ToList().ForEach(o => target.Headers.Add(o.Name, o.GetStringValue()));
 
-            switch (source.ContentType?.ToLower())
+            target.Content = CreateContent(source.ContentType, source.BodyData);
+        }
+
+        private static HttpContent CreateContent(string contentType, IEnumerable<IHttpRequestData> bodyData)
+        {
+            switch (contentType?.ToLower())
             {
                 case null:
-                    break;
+                    return null;
                 case "application/x-www-form-urlencoded":
-                    target.Content = CreateFormUrlEncodedContent(source.BodyData);
-                    break;
+                    return CreateFormUrlEncodedContent(bodyData);
                 case "multipart/form-data":
-                    target.Content = CreateMultipartFormDataContent(source.BodyData);
-                    break;
+                    return CreateMultipartFormDataContent(bodyData);
                 default:
-                    target.Content = CreateBody(source.BodyData);
-                    break;
+                    return CreateBody(bodyData);
             }
         }
 
@@ -92,11 +130,34 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="target"></param>
         /// <param name="source"></param>
         /// <param name="prefixMappings"></param>
-        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source, IDictionary<string, string> prefixMappings = null)
+        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequest source)
         {
-            target.Method = source.Method.Method;
-            var uri = source.RequestUri;
-            if(uri.IsDefaultPort)
+            target.Method = source.Method;
+            target.CopyUri(source.Uri);
+            target.Headers = source.Headers
+                .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
+                .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value))
+                .ToList();
+
+            source.Headers.TryGetValue("Content-Type", out string[] contentTypeValues);
+            var contntTypeValue = contentTypeValues?.FirstOrDefault();
+            if (contntTypeValue != null)
+            {
+                var mediaType = MediaTypeHeaderValue.Parse(contntTypeValue);
+                target.ContentType = mediaType.MediaType;
+                target.BodyData = await SolidHttpRequestData.ExtractContentData(mediaType, source.Body);
+            }
+        }
+
+        /// <summary>
+        /// Copies the uri data to the target
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="uri"></param>
+        /// <param name="prefixMappings"></param>
+        public static void CopyUri(this IHttpRequest target, Uri uri, IDictionary<string, string> prefixMappings = null)
+        {
+            if (uri.IsDefaultPort)
             {
                 target.HostAndPort = uri.Host;
             }
@@ -106,7 +167,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             }
             target.HostAndPort = uri.Host;
             target.Path = uri.AbsolutePath;
-            if(prefixMappings != null)
+            if (prefixMappings != null)
             {
                 foreach (var prefixMapping in prefixMappings)
                 {
@@ -136,6 +197,18 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                         throw new Exception("Cannot parse query string");
                     }
                 }).ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="source"></param>
+        /// <param name="prefixMappings"></param>
+        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source, IDictionary<string, string> prefixMappings = null)
+        {
+            target.Method = source.Method.Method;
+            target.CopyUri(source.RequestUri, prefixMappings);
             target.Headers = source.Headers
                 .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
                 .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value))

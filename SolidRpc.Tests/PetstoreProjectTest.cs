@@ -140,7 +140,7 @@ namespace SolidRpc.Tests
             services.AddSolidRpcSingletonServices();
             services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), (c) =>
             {
-                c.MethodAddressTransformer = GetBaseUrl;
+                c.SetMethodAddressTransformer(GetBaseUrl);
                 return true;
             });
 
@@ -181,7 +181,7 @@ namespace SolidRpc.Tests
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)
                 .ConfigureAdvice<ISolidRpcOpenApiConfig>()
-                .MethodAddressTransformer = GetBaseUrl;
+                .SetMethodAddressTransformer(GetBaseUrl);
 
             var petService = sc.BuildServiceProvider().GetRequiredService<IPet>();
             Assert.AreEqual(4711, (await petService.GetPetById(4711)).Id);

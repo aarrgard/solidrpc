@@ -11,12 +11,15 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Constructs an instance
         /// </summary>
+        /// <param name="scope"></param>
         /// <param name="logger"></param>
-        public ConsoleLogger(Action<string> logger)
+        public ConsoleLogger(Guid scope, Action<string> logger)
         {
             Logger = logger;
+            Scope = scope.ToString().Substring(24);
         }
         private Action<string> Logger { get; }
+        public string Scope { get; }
 
         /// <summary>
         /// 
@@ -52,11 +55,11 @@ namespace SolidRpc.Tests
         {
             if(exception != null)
             {
-                Logger(formatter(state, exception) + ":" + exception.ToString());
+                Logger($"[{Scope}]{formatter(state, exception)}:{exception.ToString()}");
             }
             else
             {
-                Logger(formatter(state, exception));
+                Logger($"[{Scope}]{formatter(state, exception)}");
             }
         }
     }

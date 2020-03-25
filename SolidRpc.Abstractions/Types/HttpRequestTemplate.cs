@@ -109,20 +109,11 @@ namespace SolidRpc.Abstractions.Types
         /// <summary>
         /// Sets the headers on the template copy
         /// </summary>
-        public Action<object, IDictionary<string, StringValues>> SetHeaders { get; private set; }
+        public Action<object, IDictionary<string, string[]>> SetHeaders { get; private set; }
         /// <summary>
         /// Gets the headers from the template copy
         /// </summary>
-        public Func<object, IDictionary<string, StringValues>> GetHeaders { get; private set; }
-
-        /// <summary>
-        /// Sets the query on the template copy
-        /// </summary>
-        public Action<object, IDictionary<string, StringValues>> SetQuery { get; private set; }
-        /// <summary>
-        /// Gets the query from the template copy
-        /// </summary>
-        public Func<object, IDictionary<string, StringValues>> GetQuery { get; private set; }
+        public Func<object, IDictionary<string, string[]>> GetHeaders { get; private set; }
 
         /// <summary>
         /// Sets the query on the template copy

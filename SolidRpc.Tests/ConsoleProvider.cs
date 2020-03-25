@@ -15,8 +15,10 @@ namespace SolidRpc.Tests
         public ConsoleProvider(Action<string> logger)
         {
             Logger = logger;
+            Scope = Guid.NewGuid();
         }
         private Action<string> Logger { get; }
+        private Guid Scope { get; }
 
         /// <summary>
         /// 
@@ -25,7 +27,7 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public ILogger CreateLogger(string categoryName)
         {
-            return new ConsoleLogger(Logger);
+            return new ConsoleLogger(Scope, Logger);
         }
 
         /// <summary>

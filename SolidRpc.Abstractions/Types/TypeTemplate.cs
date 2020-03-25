@@ -130,11 +130,16 @@ namespace SolidRpc.Abstractions
     /// The type template can be used to access similar types.
     /// </summary>
     /// <typeparam name="TTemplate"></typeparam>
-    /// <typeparam name="T"></typeparam>
     public class TypeTemplate<TTemplate> : TypeTemplate where TTemplate : class
     {
         private static ConcurrentDictionary<Type, TypeTemplate<TTemplate>> s_typeInfo = new ConcurrentDictionary<Type, TypeTemplate<TTemplate>>();
 
+        /// <summary>
+        /// Returns the template for supplied type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="ctr"></param>
+        /// <returns></returns>
         public static TypeTemplate<TTemplate> GetTemplate(Type type, Func<Type, TypeTemplate<TTemplate>> ctr)
         {
             return s_typeInfo.GetOrAdd(type, ctr);

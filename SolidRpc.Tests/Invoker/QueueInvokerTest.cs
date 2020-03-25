@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,9 +14,9 @@ namespace SolidRpc.Tests.Invoker
     /// <summary>
     /// Tests the invokers
     /// </summary>
-    public class HttpInvokerTest : WebHostTest
+    public class QueueInvokerTest : WebHostTest
     {
-        public HttpInvokerTest()
+        public QueueInvokerTest()
         {
             SecKey = Guid.NewGuid();
         }
@@ -39,6 +39,11 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            public TestImplementation(ILogger<TestImplementation> logger)
+            {
+                Logger = logger;
+            }
+            private ILogger Logger { get; }
             /// <summary>
             /// 
             /// </summary>
@@ -46,6 +51,7 @@ namespace SolidRpc.Tests.Invoker
             /// <returns></returns>
             public Task<int> DoXAsync(CancellationToken cancellation = default(CancellationToken))
             {
+                Logger.LogTrace("DoXAsync");
                 return Task.FromResult(4711);
             }
         }
@@ -58,6 +64,9 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
+                conf.SetQueueTransportConnectionString(
+                    services.GetSolidRpcService<IConfiguration>(),
+                    "SolidRpcQueueConnection");
                 return true;
             });
 
@@ -65,6 +74,7 @@ namespace SolidRpc.Tests.Invoker
 
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
+            base.ConfigureClientServices(clientServices, baseAddress);
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
                 .SetBaseAddress(baseAddress)
@@ -73,10 +83,12 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
+                conf.SetQueueTransportInboundHandler("generic");
+                conf.SetQueueTransportConnectionString(
+                    clientServices.GetSolidRpcService<IConfiguration>(),
+                    "SolidRpcQueueConnection");
                 return true;
             });
-
-            base.ConfigureClientServices(clientServices, baseAddress);
         }
 
         public Guid SecKey { get; }
@@ -84,23 +96,22 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test]
-        public async Task TestHttpInvokerSimpleInvocation()
+        [Test, Ignore("Requires connection string")]
+        public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())
             {
                 await ctx.StartAsync();
 
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
 
-                var url = await ctx.ClientServiceProvider.GetRequiredService<IMethodBinderStore>()
-                    .GetUrlAsync<ITestInterface>(o => o.DoXAsync(CancellationToken.None));
-                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
-                var resp = await httpClient.GetAsync(url);
-                Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
+                int res = 0;
+                for(int i = 0; i < 100; i++)
+                {
+                    res = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+                }
 
-
-                var invoker = ctx.ClientServiceProvider.GetRequiredService<IHttpInvoker<ITestInterface>>();
-                var res = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+                //await Task.Delay(10000);
                 Assert.AreEqual(4711, res);
             }
         }

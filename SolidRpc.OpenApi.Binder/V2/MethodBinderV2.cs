@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using SolidRpc.OpenApi.Model.V2;
@@ -38,10 +39,9 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IList<OperationObject> Operations { get; }
 
-        protected override IMethodBinding CreateBinding(
-            MethodInfo mi, 
-            MethodAddressTransformer methodAddressTransformer, 
-            bool mustExist,
+        protected override IMethodBinding DoCreateMethodBinding(
+            MethodInfo mi,
+            IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey)
         {
             if (mi == null) throw new ArgumentNullException(nameof(mi));
@@ -49,11 +49,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 throw new ArgumentException("Method does not belong to assembly.");
             }
-            if (methodAddressTransformer == null)
-            {
-                methodAddressTransformer = (_, uri, __) => Task.FromResult(uri);
-            }
-
             var prospects = Operations;
             var binderStatus = new StringBuilder();
             binderStatus.Append($"->#{prospects.Count}");
@@ -80,21 +75,14 @@ namespace SolidRpc.OpenApi.Binder.V2
 
             if (prospects.Count != 1)
             {
-                if(mustExist)
-                {
-                    throw new NotImplementedException(binderStatus.ToString());
-                }
-                else
-                {
-                    return null;
-                }
+                throw new NotImplementedException(binderStatus.ToString());
             }
             return new MethodBindingV2(
                 this, 
                 prospects.Single(),
                 mi, 
-                CodeDocRepo.GetMethodDoc(mi), 
-                methodAddressTransformer,
+                CodeDocRepo.GetMethodDoc(mi),
+                transports,
                 securityKey);
 
         }

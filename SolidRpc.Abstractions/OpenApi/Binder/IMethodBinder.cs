@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -29,12 +30,12 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// Returns the method info from supplied specification.
         /// </summary>
         /// <param name="methodInfo"></param>
-        /// <param name="baseUriTransformer"></param>
+        /// <param name="transports"></param>
         /// <param name="securityKey"></param>
         /// <returns></returns>
         IMethodBinding CreateMethodBinding(
-            MethodInfo methodInfo, 
-            MethodAddressTransformer baseUriTransformer,
+            MethodInfo methodInfo,
+            IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey);
     }
 }

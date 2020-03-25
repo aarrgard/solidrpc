@@ -28,8 +28,9 @@ namespace SolidRpc.Tests
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public override IServiceProvider ConfigureServerServices(IServiceCollection services)
+        public override void ConfigureServerServices(IServiceCollection services)
         {
+            base.ConfigureServerServices(services);
             services.AddMvc().ConfigureApplicationPartManager(apm =>
             {
                 var ap = new AssemblyPart(GetType().Assembly);
@@ -51,7 +52,6 @@ namespace SolidRpc.Tests
                 c.IncludeXmlComments(xmlPath);
             });
 
-            return base.ConfigureServerServices(services);
         }
     }
 }

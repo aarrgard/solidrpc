@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests
 {
@@ -16,6 +17,39 @@ namespace SolidRpc.Tests
     /// </summary>
     public class TestBase
     {
+        public static TaskConsoleLoggerClass TaskConsoleLogger = new TaskConsoleLoggerClass();
+        public class TaskConsoleLoggerClass
+        {
+            SemaphoreSlim logsemaphore = new SemaphoreSlim(0);
+            public TaskConsoleLoggerClass()
+            {
+                StartLogger();
+            }
+
+            private async Task StartLogger()
+            {
+                while(true)
+                {
+                    await logsemaphore.WaitAsync();
+                    lock (LogItems)
+                    {
+                        var log = LogItems.Dequeue();
+                        Console.WriteLine(log);
+                    }
+                }
+            }
+
+            private Queue<string> LogItems = new Queue<string>();
+            public void Log(string log)
+            {
+                lock(LogItems)
+                {
+                    LogItems.Enqueue(log);
+                }
+                logsemaphore.Release();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -64,6 +98,7 @@ namespace SolidRpc.Tests
         {
             builder.SetMinimumLevel(LogLevel.Trace);
             //builder.AddConsole();
+            builder.ClearProviders();
             builder.AddProvider(new ConsoleProvider(Log));
         }
 
@@ -73,7 +108,7 @@ namespace SolidRpc.Tests
         /// <param name="msg"></param>
         protected void Log(string msg)
         {
-            Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss.ffff")}]{msg}");
+            TaskConsoleLogger.Log($"[{DateTime.Now.ToString("HH:mm:ss.ffff")}]{msg}");
         }
 
         /// <summary>

@@ -24,12 +24,7 @@ namespace SolidRpc.Abstractions.Types
         /// <summary>
         /// The headers
         /// </summary>
-        public IDictionary<string, StringValues> Headers { get; set; }
-
-        /// <summary>
-        /// The query parameters
-        /// </summary>
-        public IDictionary<string, StringValues> Query { get; set; }
+        public IDictionary<string, string[]> Headers { get; set; }
 
         /// <summary>
         /// The body.

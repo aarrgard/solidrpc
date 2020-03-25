@@ -155,7 +155,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(IGoogleLocal), typeof(GoogleLocal));
             services.AddSolidRpcBindings(typeof(IGoogleRemote), null, (c) =>
             {
-                c.MethodAddressTransformer = GoogleBaseApiResolver;
+                c.SetMethodAddressTransformer(GoogleBaseApiResolver);
                 return true;
             });
             services.AddTransient<ILoginProvider>(sp => sp.GetRequiredService<GoogleLocal>());

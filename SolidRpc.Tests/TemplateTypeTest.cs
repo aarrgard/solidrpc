@@ -78,9 +78,9 @@ namespace SolidRpc.Tests
             template.SetUri(x, new Uri("http://test.com/testing"));
             Assert.IsNotNull(template.GetUri(x));
 
-            Assert.IsNull(template.GetQuery(x));
-            template.SetQuery(x, new Dictionary<string, StringValues>());
-            Assert.IsNull(template.GetQuery(x));
+            Assert.IsNull(template.GetHeaders(x));
+            template.SetHeaders(x, new Dictionary<string, string[]>());
+            Assert.IsNull(template.GetHeaders(x));
         }
 
         /// <summary>

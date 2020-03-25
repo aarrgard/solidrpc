@@ -35,7 +35,7 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean)">
             <summary>
             Returns the service provider for specified service.
             </summary>
@@ -44,7 +44,7 @@
             <param name="mustExist"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcServiceProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Boolean)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Boolean)">
             <summary>
             Returns the service provider for specified service.
             </summary>
@@ -59,6 +59,7 @@
             </summary>
             <param name="services"></param>
             <param name="serviceType"></param>
+            <param name="implType"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -117,6 +118,20 @@
             <param name="sc"></param>
             <param name="mi"></param>
             <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetConfigurationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder},System.Func{Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfigurationSource})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.BuildConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
@@ -201,12 +216,12 @@
             Returns all the mapped methods
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBinding(System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer,System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBinding(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Returns the method info from supplied specification.
             </summary>
             <param name="methodInfo"></param>
-            <param name="baseUriTransformer"></param>
+            <param name="transports"></param>
             <param name="securityKey"></param>
             <returns></returns>
         </member>
@@ -227,14 +242,14 @@
             Returns all the method binders.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Boolean,System.Reflection.MethodInfo,SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer,System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Boolean,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
             <param name="openApiSpec">The openapi spec to use. If null we search the assembly.</param>
             <param name="localApi">Does the method have a local implementation</param>
             <param name="methodInfo">The method to creata a binding for</param>
-            <param name="baseUriTransformer"></param>
+            <param name="transports"></param>
             <param name="securityKey"></param>
             <returns></returns>
         </member>
@@ -286,6 +301,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.IsEnabled">
             <summary>
             Returns true if this method is enabled
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Transports">
+            <summary>
+            Returns the configured transports
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.SecurityKey">
@@ -358,23 +378,16 @@
             <param name="response"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.MethodAddressTransformer">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBindingHandler">
             <summary>
-            The method used to transform uri:s
+            Interface that can be implemted in order to receive callbacks when a method binding has been created.
             </summary>
-            <param name="serviceProvider"></param>
-            <param name="originalUri"></param>
-            <param name="methodInfo">The method to resolve the uri for(may be null)</param>
-            <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Binder.MethodHeadersTransformer">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBindingHandler.BindingCreated(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
             <summary>
-            The method used to transform headers
+            Invoked the the binding store has created a binding.
             </summary>
-            <param name="serviceProvider"></param>
-            <param name="headers"></param>
-            <param name="methodInfo">The method to transform the headers for</param>
-            <returns></returns>
+            <param name="binding"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
             <summary>
@@ -821,17 +834,237 @@
             the invocation is authorized.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.MethodAddressTransformer">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.HttpTransport">
+            <summary>
+            The configured http transport
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.QueueTransport">
+            <summary>
+            The configured http transport
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions">
+            <summary>
+            Extension methods to manipulate the settings
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.GetTransports(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the method address transformer on the transports
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
+            <summary>
+            Sets the method address transformer on the transports
+            </summary>
+            <param name="config"></param>
+            <param name="methodAddressTransformer"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionString(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,Microsoft.Extensions.Configuration.IConfiguration,System.String)">
+            <summary>
+            Sets the queue transport connection name
+            </summary>
+            <param name="config"></param>
+            <param name="conf"></param>
+            <param name="connectionName"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionString(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
+            <summary>
+            Sets the queue transport connection name
+            </summary>
+            <param name="config"></param>
+            <param name="connectionString"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportInboundHandler(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
+            <summary>
+            Sets the queue transport inbound handler
+            </summary>
+            <param name="config"></param>
+            <param name="inboundHandler"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport">
+            <summary>
+            Represents the settings for the queue transport
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.MethodAddressTransformer">
             <summary>
             The method to transform the Uri. This delegate is invoked to determine
             the base Uri for the service. Supplied uri is the one obtained from
             the openapi config.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.MethodHeadersTransformer">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
+            <summary>
+            
+            </summary>
+            <param name="methodAddressTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.MethodHeadersTransformer">
             <summary>
             The http headers to add to the invocations
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetMethodHeadersTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
+            <summary>
+            
+            </summary>
+            <param name="methodHeadersTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport">
+            <summary>
+            Contains the settings for the http transport.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport">
+            <summary>
+            Contains the settings for the queue transport.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.CreateSafeQueueName(System.String)">
+            <summary>
+            Creates a safe queue name
+            </summary>
+            <param name="queueName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Represents a queue transport
+            </summary>
+            <param name="queueName"></param>
+            <param name="connectionString"></param>
+            <param name="inboundHandler"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
+            <summary>
+             configures this transport
+            </summary>
+            <param name="methodBinding"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetQueueName(System.String)">
+            <summary>
+            Sets the queue name
+            </summary>
+            <param name="queueName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.ConnectionString">
+            <summary>
+            The connection string
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetConnectionString(System.String)">
+            <summary>
+            Sets the connection string
+            </summary>
+            <param name="connectionString"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.InboundHandler">
+            <summary>
+            The inbound handler
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetInboundHandler(System.String)">
+            <summary>
+            Sets the inbound handler
+            </summary>
+            <param name="inboundHandler"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport">
+            <summary>
+            Base type for the transports
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
+            <summary>
+            Method that can be overridden to configure a transport.
+            </summary>
+            <param name="methodBinding"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport">
+            <summary>
+            Represents the settings for the queue transport
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.QueueName">
+            <summary>
+            Returns the qeueue name
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetQueueName(System.String)">
+            <summary>
+            Sets the queue name
+            </summary>
+            <param name="queueName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.ConnectionString">
+            <summary>
+            Returns the connection string to use
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetConnectionString(System.String)">
+            <summary>
+            Sets the connectin string
+            </summary>
+            <param name="connectionString"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.InboundHandler">
+            <summary>
+            Specifies the inbound message handler. If this string is empty
+            then no message handler wiil be configured for the client. 
+            "azfunctions" - means that the azure functions should pickup messages
+            "generic" - means that we should configure a generic handler. 
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetInboundHandler(System.String)">
+            <summary>
+            Sets the inbound handler.
+            </summary>
+            <param name="inboundHandler"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.ITransport">
+            <summary>
+            Base definitions for a transport
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.ITransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
+            <summary>
+            Configures the transport for supplied binding.
+            </summary>
+            <param name="methodBinding"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer">
+            <summary>
+            The method used to transform uri:s
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="originalUri"></param>
+            <param name="methodInfo">The method to resolve the uri for(may be null)</param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer">
+            <summary>
+            The method used to transform headers
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="headers"></param>
+            <param name="methodInfo">The method to transform the headers for</param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">
             <summary>
@@ -892,7 +1125,6 @@
             <param name="stream"></param>
             <param name="type"></param>
             <param name="o"></param>
-            <param name="prettyFormat"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Serialization.ISerializerFactory">
@@ -904,6 +1136,27 @@
             <summary>
             Gets the serializer for suplied media type.
             </summary>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToStream``1(System.IO.Stream,``0,System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Serializes supplied object to a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="o"></param>
+            <param name="mediaType"></param>
+            <param name="charSet"></param>
+            <param name="prettyFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.DeserializeFromStream``1(System.IO.Stream,``0@,System.String,System.Text.Encoding)">
+            <summary>
+            Serializes supplied object to a string representation
+            </summary>
+            <param name="s"></param>
+            <param name="o"></param>
             <param name="mediaType"></param>
             <param name="charSet"></param>
             <returns></returns>
@@ -1004,6 +1257,28 @@
             <param name="fileTypeInstance"></param>
             <param name="o"></param>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcApplication">
+            <summary>
+            Implements some basic features of the application
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.ShutdownToken">
+            <summary>
+            Returns a token that will be cancelled when the application shuts down.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
+            <summary>
+            Adds a startup task that we should wait for before starting to interact with the application.
+            </summary>
+            <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.WaitForStartupTasks">
+            <summary>
+            Ensures that all the startup tasks have completed.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -1093,17 +1368,54 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.SolidRpcAbstractionProviderLifetime">
+            <summary>
+            The lifetime of the service
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.SolidRpcAbstractionProviderLifetime.Singleton">
+            <summary>
+            Should the service be registered as a singleton
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.SolidRpcAbstractionProviderLifetime.Scoped">
+            <summary>
+            Should the service be scoped
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.SolidRpcAbstractionProviderLifetime.Transient">
+            <summary>
+            Create an instance every time the service is resolved
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.SolidRpcAbstractionProviderInstances">
+            <summary>
+            The lifetime of the service
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.SolidRpcAbstractionProviderInstances.One">
+            <summary>
+            We only resolve one intance at a time
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.SolidRpcAbstractionProviderInstances.Many">
+            <summary>
+            There may be many implementation types
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute">
             <summary>
             Attribute that can be set on the SolidRpc hosting assemblies to define the 
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.#ctor(System.Type,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+        <member name="M:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.#ctor(System.Type,System.Type,SolidRpc.Abstractions.SolidRpcAbstractionProviderLifetime,SolidRpc.Abstractions.SolidRpcAbstractionProviderInstances)">
             <summary>
             Constructs a new attribute
             </summary>
             <param name="serviceType"></param>
             <param name="implementationType"></param>
+            <param name="serviceLifetime"></param>
+            <param name="serviceInstances"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ServiceType">
             <summary>
@@ -1116,6 +1428,11 @@
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ServiceLifetime">
+            <summary>
+            The service lifetime
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.SolidRpcAbstractionProviderAttribute.ServiceInstances">
             <summary>
             The service lifetime
             </summary>
@@ -1312,11 +1629,6 @@
             The headers
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Query">
-            <summary>
-            The query parameters
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.Types.HttpRequest.Body">
             <summary>
             The body.
@@ -1398,16 +1710,6 @@
             Gets the headers from the template copy
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetQuery">
-            <summary>
-            Sets the query on the template copy
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.GetQuery">
-            <summary>
-            Gets the query from the template copy
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.Types.HttpRequestTemplate.SetBody">
             <summary>
             Sets the query on the template copy
@@ -1485,7 +1787,14 @@
             The type template can be used to access similar types.
             </summary>
             <typeparam name="TTemplate"></typeparam>
-            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:SolidRpc.Abstractions.TypeTemplate`1.GetTemplate(System.Type,System.Func{System.Type,SolidRpc.Abstractions.TypeTemplate{`0}})">
+            <summary>
+            Returns the template for supplied type.
+            </summary>
+            <param name="type"></param>
+            <param name="ctr"></param>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.TypeTemplate`1.#ctor(System.Type,System.Collections.Generic.IEnumerable{System.String})">
             <summary>

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
@@ -170,7 +171,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 var queueName = azConfig.QueueName;
                 if(string.IsNullOrEmpty(queueName))
                 {
-                    queueName = FixQueueName(mb.Address.LocalPath);
+                    queueName = QueueTransport.CreateSafeQueueName(mb.Address.AbsolutePath);
                 }
                 var connection = azConfig.QueueConnection;
                 if (string.IsNullOrEmpty(connection))
@@ -185,54 +186,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 });
             }
             return functions;
-        }
-
-        private string FixQueueName(string path)
-        {
-            // remove frontend prefix
-            if (path.StartsWith($"{FunctionHandler.HttpRouteFrontendPrefix}/"))
-            {
-                path = path.Substring(FunctionHandler.HttpRouteFrontendPrefix.Length + 1);
-            }
-
-            //
-            // transform wildcard names
-            //
-            var argidx = 0;
-            var level = 0;
-            var sb = new StringBuilder();
-            for (int i = 0; i < path.Length; i++)
-            {
-                if (path[i] == '}')
-                {
-                    level--;
-                    if (level == 0)
-                    {
-                        sb.Append("arg");
-                        sb.Append(argidx++);
-                    }
-                }
-                else if (path[i] == '{')
-                {
-                    level++;
-                }
-                else
-                {
-                    if (level == 0)
-                    {
-                        if(path[i] == '/')
-                        {
-                            sb.Append('_');
-                        }
-                        else
-                        {
-                            sb.Append(path[i]);
-                        }
-                    }
-                }
-            }
-
-            return sb.ToString();
         }
 
         private string FixupPath(string path)
