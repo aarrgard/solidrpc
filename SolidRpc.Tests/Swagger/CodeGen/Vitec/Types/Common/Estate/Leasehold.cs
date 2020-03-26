@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// L&#246;ptid
         /// </summary>
         [DataMember(Name="leaseholdUntil",EmitDefaultValue=false)]
-        public System.DateTimeOffset? LeaseholdUntil { get; set; }
+        public DateTimeOffset? LeaseholdUntil { get; set; }
     
     }
 }

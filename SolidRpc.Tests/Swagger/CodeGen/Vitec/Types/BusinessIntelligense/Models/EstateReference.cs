@@ -42,13 +42,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// 
         /// </summary>
         [DataMember(Name="contractDay",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ContractDay { get; set; }
+        public DateTimeOffset? ContractDay { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="advertisedAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AdvertisedAt { get; set; }
+        public DateTimeOffset? AdvertisedAt { get; set; }
     
     }
 }

@@ -200,11 +200,12 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             //
             // remove all the http request references from the arguments
             //
+            bool foundHttpRequestArg = false;
             foreach (var httpRequest in operationObject.GetParameters().Where(o => o.IsHttpRequestType()))
             {
+                foundHttpRequestArg = true;
                 operationObject.Parameters = operationObject.Parameters.Where(o => !ReferenceEquals(o, httpRequest)).ToList();
             }
-
             //
             // if we have more than one "formData" parameters - convert all the refs to strings
             //
@@ -246,7 +247,31 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             {
                 operationObject.AddProduces("application/json");
             }
+
+
+            // if we removed httprequest arg and no other parameters exists
+            // we put the call on all the other operations available.
+            if (foundHttpRequestArg && !operationObject.GetParameters().Any())
+            {
+                var pathItem = operationObject.GetParent<PathItemObject>();
+                if (pathItem.Get == null) pathItem.Get = CloneOperation(operationObject, "Get");
+                if (pathItem.Put == null) pathItem.Put = CloneOperation(operationObject, "Put");
+                if (pathItem.Post == null) pathItem.Post = CloneOperation(operationObject, "Post");
+                if (pathItem.Head == null) pathItem.Head = CloneOperation(operationObject, "Head");
+                if (pathItem.Options == null) pathItem.Options = CloneOperation(operationObject, "Options");
+                if (pathItem.Patch == null) pathItem.Patch = CloneOperation(operationObject, "Patch");
+                if (pathItem.Delete == null) pathItem.Delete = CloneOperation(operationObject, "Delete");
+            }
+
             return operationObject;
+        }
+
+        private OperationObject CloneOperation(OperationObject operationObject, string method)
+        {
+            var resolver = operationObject.GetParent<IOpenApiSpecResolver>();
+            var newOp = resolver.OpenApiParser.CloneNode(operationObject);
+            newOp.OperationId = $"{operationObject.OperationId}#{method}";
+            return newOp;
         }
 
         private ResponsesObject CreateResponses(OperationObject operationObject, ICSharpMethod method)

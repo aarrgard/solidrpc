@@ -29,7 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Petstore.Types {
         /// 
         /// </summary>
         [DataMember(Name="shipDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ShipDate { get; set; }
+        public DateTimeOffset? ShipDate { get; set; }
     
         /// <summary>
         /// Order Status

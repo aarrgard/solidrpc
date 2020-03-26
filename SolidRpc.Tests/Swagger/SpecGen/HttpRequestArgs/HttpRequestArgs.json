@@ -29,12 +29,130 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest#Put",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest#Post",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest#Delete",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest#Options",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      },
+      "head": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest#Head",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "Invokes the request",
+        "operationId": "TestInvokeRequest#Patch",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
       }
     }
   },
   "definitions": {
     "HttpRequest": {
       "properties": {
+        "Method": {
+          "type": "string",
+          "description": "The method used"
+        },
         "Uri": {
           "type": "string",
           "format": "uri",

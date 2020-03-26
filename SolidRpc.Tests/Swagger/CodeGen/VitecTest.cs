@@ -108,9 +108,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             GetType().Assembly.GetTypes()
                 .Where(o => o.Namespace == typeof(IBusinessIntelligence).Namespace)
                 .SelectMany(o => o.GetMethods())
-                .ToList().ForEach(m =>
+                .SelectMany(m => mbs.CreateMethodBindings(openApiSpec, false, m))
+                .ToList().ForEach(binding =>
                 {
-                    var binding = mbs.CreateMethodBinding(openApiSpec, false, m);
+                    var m = binding.MethodInfo;
                     Log($"Checking: {m.Name}->{binding.Method} {binding.Path}");
                 });
         }

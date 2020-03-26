@@ -33,7 +33,7 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="transports"></param>
         /// <param name="securityKey"></param>
         /// <returns></returns>
-        IMethodBinding CreateMethodBinding(
+        IEnumerable<IMethodBinding> CreateMethodBindings(
             MethodInfo methodInfo,
             IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey);

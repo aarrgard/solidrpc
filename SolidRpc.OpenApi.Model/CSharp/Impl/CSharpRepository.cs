@@ -24,13 +24,19 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 if (c == '<')
                 {
                     _genericTypeIdx++;
-                    return;
+                    if(_genericTypeIdx == 1)
+                    {
+                        return;
+                    }
                 }
                 if (c == '>')
                 {
                     _genericTypeIdx--;
-                    PushGenArg();
-                    return;
+                    if (_genericTypeIdx == 0)
+                    {
+                        PushGenArg();
+                        return;
+                    }
                 }
                 if (c == ',')
                 {
@@ -259,7 +265,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 return clz;
             }
-            throw new Exception("Member is not a class:" + member.GetType().FullName);
+            throw new Exception($"Member({fullName}) is not a class:{member.GetType().FullName}");
         }
 
         /// <summary>

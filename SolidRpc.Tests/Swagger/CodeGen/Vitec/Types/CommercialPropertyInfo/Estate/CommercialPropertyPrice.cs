@@ -29,7 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CommercialPropertyInfo.Esta
         /// Anbud senast
         /// </summary>
         [DataMember(Name="offerNoLaterThen",EmitDefaultValue=false)]
-        public System.DateTimeOffset? OfferNoLaterThen { get; set; }
+        public DateTimeOffset? OfferNoLaterThen { get; set; }
     
     }
 }

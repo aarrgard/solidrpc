@@ -17,13 +17,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         /// Datum fr&#229;n
         /// </summary>
         [DataMember(Name="dateFrom",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateFrom { get; set; }
+        public DateTimeOffset? DateFrom { get; set; }
     
         /// <summary>
         /// Datum till
         /// </summary>
         [DataMember(Name="dateTo",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateTo { get; set; }
+        public DateTimeOffset? DateTo { get; set; }
     
         /// <summary>
         /// Typ av m&#246;tesfiltrering.

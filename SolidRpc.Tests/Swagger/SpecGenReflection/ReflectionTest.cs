@@ -127,6 +127,33 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         }
 
         /// <summary>
+        /// Tests the type parser
+        /// </summary>
+        [Test]
+        public void TestTypeParser()
+        {
+            string type;
+            IList<string> genArgs;
+
+            (type, genArgs) = CSharpRepository.ReadType("int");
+            Assert.AreEqual("int", type);
+            Assert.IsNull(genArgs);
+
+            (type, genArgs) = CSharpRepository.ReadType("System.Nullable<int>");
+            Assert.AreEqual("System.Nullable", type);
+            Assert.AreEqual(new[] { "int" }, genArgs);
+
+            (type, genArgs) = CSharpRepository.ReadType("System.Task<System.Nullable<int>>");
+            Assert.AreEqual("System.Task", type);
+            Assert.AreEqual(new[] { "System.Nullable<int>" }, genArgs);
+
+            (type, genArgs) = CSharpRepository.ReadType("System.Task<int,System.Nullable<int>,float>");
+            Assert.AreEqual("System.Task", type);
+            Assert.AreEqual(new[] { "int", "System.Nullable<int>", "float" }, genArgs);
+
+        }
+
+        /// <summary>
         /// Tests generating the swagger spec from compiled code
         /// </summary>
         [Test]
@@ -182,7 +209,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(2, binding.Arguments.Count());
         }
 
@@ -200,7 +227,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1OptionalParameter)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -218,7 +245,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1NullableParameter)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -236,7 +263,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1FileTypeWithAdditionalData)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(2, binding.Arguments.Count());
         }
 
@@ -254,7 +281,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1StringValues)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -272,7 +299,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1Dictionary)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -290,7 +317,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1HttpRequest)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBinding(spec, false, methodInfo);
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
     }

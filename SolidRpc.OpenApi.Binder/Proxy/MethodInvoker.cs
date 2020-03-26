@@ -140,10 +140,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             IMethodBinding methodInfo, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
-            var args = await methodInfo.ExtractArgumentsAsync(request);
+            if(Logger.IsEnabled(LogLevel.Information))
+            {
+                Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
+            }
 
-            // invoke
+            //
+            // Locate service
+            //
             var svc = ServiceProvider.GetService(methodInfo.MethodInfo.DeclaringType);
             if (svc == null)
             {
@@ -155,6 +159,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"Service for {methodInfo.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
+            //
+            // extract arguments
+            //
+            var args = await methodInfo.ExtractArgumentsAsync(request);
             var invocationValues = new Dictionary<string, object>();
             foreach(var qv in request.Headers)
             {
@@ -171,8 +179,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var resp = new SolidHttpResponse();
             try
             {
+                //
+                // Invoke
+                //
                 var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args, invocationValues);
 
+                //
                 // return response
                 //
                 // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...

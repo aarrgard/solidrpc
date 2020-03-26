@@ -82,27 +82,39 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         }
 
         /// <summary>
+        /// Consturcts a uri based on the information in the http request data.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Uri CreateUri(this IHttpRequest source, bool includeQueryString = true)
+        {
+            var builder = new UriBuilder
+            {
+                Scheme = source.Scheme,
+                Host = source.GetHost(),
+                Path = source.Path
+            };
+            if(includeQueryString)
+            {
+                builder.Query = string.Join("&", source.Query.Select(o => $"{HttpUtility.UrlEncode(o.Name)}={HttpUtility.UrlEncode(o.GetStringValue())}"));
+            }
+            var port = source.GetPort();
+            if (port != null)
+            {
+                builder.Port = port.Value;
+            }
+            return builder.Uri;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
         public static void CopyTo(this IHttpRequest source, HttpRequestMessage target)
         {
-            var builder = new UriBuilder
-            {
-                Scheme = source.Scheme,
-                Host = source.GetHost(),
-                Path = source.Path,
-                Query = string.Join("&", source.Query.Select(o => $"{HttpUtility.UrlEncode(o.Name)}={HttpUtility.UrlEncode(o.GetStringValue())}"))
-            };
-            var port = source.GetPort();
-            if (port != null)
-            {
-                builder.Port = port.Value;
-            }
-
             target.Method = new HttpMethod(source.Method);
-            target.RequestUri = builder.Uri;
+            target.RequestUri = source.CreateUri();
 
             source.Headers.ToList().ForEach(o => target.Headers.Add(o.Name, o.GetStringValue()));
 
@@ -283,7 +295,9 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                     content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
                     break;
                 default:
-                    throw new Exception("Cannot handle content type:" + body.ContentType);
+                    content = new StreamContent(body.GetBinaryValue());
+                    content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
+                    break;
             }
             return content;
         }

@@ -74,7 +74,7 @@ namespace SolidRpc.OpenApi.Binder
                                     var methodBinder = GetMethodBinder(openApiSpec, assembly);
 
                                     var securityKey = apiConfig.SecurityKey;
-                                    var methodBinding = methodBinder.CreateMethodBinding(method, apiConfig.GetTransports(), securityKey);
+                                    var methodBinding = methodBinder.CreateMethodBindings(method, apiConfig.GetTransports(), securityKey);
                                 });
                             _methodBinders = Bindings.Values;
                             Logger.LogInformation("...created method binders.");
@@ -202,7 +202,7 @@ namespace SolidRpc.OpenApi.Binder
             throw new NotImplementedException($"Cannot get binder for {openApiSpec.GetType().FullName}");
         }
 
-        public IMethodBinding CreateMethodBinding(
+        public IEnumerable<IMethodBinding> CreateMethodBindings(
             string openApiSpec,
             bool localApi,
             MethodInfo methodInfo,
@@ -213,7 +213,7 @@ namespace SolidRpc.OpenApi.Binder
             var baseUriTransformer = transports.OfType<IHttpTransport>().Select(o => o.MethodAddressTransformer).FirstOrDefault();
             var parsedSpec = GetOpenApiSpec(openApiSpec, localApi, methodInfo, baseUriTransformer);
             var methodBinder = GetMethodBinder(parsedSpec, methodInfo.DeclaringType.Assembly);
-            return methodBinder.CreateMethodBinding(methodInfo, transports, securityKey);
+            return methodBinder.CreateMethodBindings(methodInfo, transports, securityKey);
         }
 
         public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true)

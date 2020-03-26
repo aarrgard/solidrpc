@@ -1,0 +1,63 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "TwoOpsOneMeth"
+  },
+  "host": "localhost:5001",
+  "schemes": [ "https" ],
+  "paths": {
+    "/DoX/{p}": {
+      "get": {
+        "tags": [ "TwoOpsOneMeth" ],
+        "summary": "This is the get version",
+        "operationId": "TwoOpsOneMeth#get",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [ "TwoOpsOneMeth" ],
+        "summary": "This is the post version",
+        "operationId": "TwoOpsOneMeth#post",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    }
+  }
+}

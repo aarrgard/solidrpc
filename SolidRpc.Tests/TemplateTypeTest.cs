@@ -100,6 +100,12 @@ namespace SolidRpc.Tests
             Assert.IsNull(template.GetContentType(x));
             template.SetContentType(x, "application/json");
             Assert.IsNull(template.GetContentType(x));
+
+            var myFileType = (MyFileType)template.CopyToTemplatedInstance(new FileContent()
+            {
+                Content = new MemoryStream(new byte[4])
+            });
+            Assert.AreEqual(new MemoryStream(new byte[4]), myFileType.Content);
         }
 
         /// <summary>

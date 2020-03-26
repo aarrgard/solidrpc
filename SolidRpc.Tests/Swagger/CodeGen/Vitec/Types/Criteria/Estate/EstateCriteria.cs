@@ -31,13 +31,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Criteria.Estate {
         /// Datum fr&#229;n
         /// </summary>
         [DataMember(Name="dateFrom",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateFrom { get; set; }
+        public DateTimeOffset? DateFrom { get; set; }
     
         /// <summary>
         /// Datum till
         /// </summary>
         [DataMember(Name="dateTo",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateTo { get; set; }
+        public DateTimeOffset? DateTo { get; set; }
     
         /// <summary>
         /// Objekttyp (villa, bostadsr&#228;tt, osv)

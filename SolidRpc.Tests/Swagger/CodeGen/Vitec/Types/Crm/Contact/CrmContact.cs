@@ -67,13 +67,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Crm.Contact {
         /// Skapad
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// &#196;ndrad
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
     }
 }

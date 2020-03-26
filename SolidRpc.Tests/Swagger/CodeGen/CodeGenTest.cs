@@ -1,11 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +57,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
         /// <summary>
         /// Tests generating code from a swagger file
         /// </summary>
-        [Test,Ignore("Works on windows")]
+        [Test]
         public void TestCodeGen()
         {
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
@@ -63,7 +67,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             foreach(var subDir in dir.GetDirectories())
             {
                 if (subDir.Name == "SecurityPermissionAttribute") continue;
-                CreateCode(subDir, true);
+                CreateCode(subDir, false);
             }
         }
 
@@ -167,5 +171,59 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 Assert.AreEqual(0, res);
             }
         }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestTwoOpsOneMeth()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestTwoOpsOneMeth).Substring(4));
+
+                var moq = new Moq.Mock<TwoOpsOneMeth.Services.ITwoOpsOneMeth>();
+
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<TwoOpsOneMeth.Services.ITwoOpsOneMeth>();
+
+                moq.Setup(o => o.TwoOpsOneMeth(
+                    It.Is<int>(i => i == 1), 
+                    It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult<int>(1));
+                var res = await proxy.TwoOpsOneMeth(1);
+                Assert.AreEqual(1, res);
+
+                var url = await ctx.ClientServiceProvider
+                    .GetRequiredService<IMethodBinderStore>()
+                    .GetUrlAsync<TwoOpsOneMeth.Services.ITwoOpsOneMeth>(o => o.TwoOpsOneMeth(4711, CancellationToken.None));
+                var httpClientFact = ctx.ClientServiceProvider
+                    .GetRequiredService<IHttpClientFactory>();
+                var client = httpClientFact.CreateClient();
+
+
+                moq.Setup(o => o.TwoOpsOneMeth(
+                     It.Is<int>(i => i == 4711),
+                     It.IsAny<CancellationToken>()))
+                     .Returns(Task.FromResult<int>(4711));
+                var getReq = await client.GetAsync(url);
+                Assert.AreEqual(HttpStatusCode.OK, getReq.StatusCode);
+                Assert.AreEqual("4711", await getReq.Content.ReadAsStringAsync());
+
+                moq.Setup(o => o.TwoOpsOneMeth(
+                     It.Is<int>(i => i == 4711),
+                     It.IsAny<CancellationToken>()))
+                     .Returns(Task.FromResult<int>(4711));
+                var postReq = await client.PostAsync(url, new StringContent(""));
+                Assert.AreEqual(HttpStatusCode.OK, postReq.StatusCode);
+                Assert.AreEqual("4711", await postReq.Content.ReadAsStringAsync());
+                
+                var deleteReq = await client.DeleteAsync(url);
+                Assert.AreEqual(HttpStatusCode.NotFound, deleteReq.StatusCode);
+            }
+        }
+
+        
     }
 }

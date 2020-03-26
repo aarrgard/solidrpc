@@ -23,13 +23,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Villavardet.Models {
         /// Tilltr&#228;desdag
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AccessDate { get; set; }
+        public DateTimeOffset? AccessDate { get; set; }
     
         /// <summary>
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="contractDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ContractDate { get; set; }
+        public DateTimeOffset? ContractDate { get; set; }
     
         /// <summary>
         /// M&#228;klare

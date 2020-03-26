@@ -29,7 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Datum och tid
         /// </summary>
         [DataMember(Name="dateAndTime",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateAndTime { get; set; }
+        public DateTimeOffset? DateAndTime { get; set; }
     
         /// <summary>
         /// Annulerat (Ja eller nej)

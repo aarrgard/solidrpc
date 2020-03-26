@@ -29,7 +29,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.File.Models {
         /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChangedData",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateChangedData { get; set; }
+        public DateTimeOffset? DateChangedData { get; set; }
     
         /// <summary>
         /// Om filen annonseras eller inte

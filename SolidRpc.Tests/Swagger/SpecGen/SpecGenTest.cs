@@ -2,10 +2,15 @@
 using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
+using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,7 +49,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, false);
+                CreateSpec(subDir.Name, true);
             }
         }
 
@@ -138,6 +143,13 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             }
         }
 
+        public class HttpRequestArgsProxy : HttpRequestArgs.Services.IHttpRequestArgs
+        {
+            public Task<HttpRequest> TestInvokeRequest(HttpRequest req, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                return Task.FromResult(req);
+            }
+        }
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
@@ -148,31 +160,47 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             {
                 var config = ReadOpenApiConfiguration(nameof(TestHttpRequestArgs).Substring(4));
 
-                var moq = new Mock<HttpRequestArgs.Services.IHttpRequestArgs>(MockBehavior.Strict);
-                ctx.AddServerAndClientService(moq.Object, config);
+                var serverStub = new HttpRequestArgsProxy();
+                ctx.AddServerAndClientService<HttpRequestArgs.Services.IHttpRequestArgs>(serverStub, config);
 
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<HttpRequestArgs.Services.IHttpRequestArgs>();
 
-                var stringValues = new StringValues(new[] { "test1", "test2" });
-                var req = new HttpRequestArgs.Types.HttpRequest() { 
-                    Uri = new Uri("http://dummy.site/test") 
-                };
-                moq.Setup(o => o.TestInvokeRequest(
-                    It.Is<HttpRequestArgs.Types.HttpRequest>(a => CheckHttpReq(a)),
-                    It.IsAny<CancellationToken>()
-                    )).Returns(Task.FromResult(req));
-
                 var res = await proxy.TestInvokeRequest(null);
-                CompareStructs(req, res);
+                Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/HttpRequestArgs/Services/IHttpRequestArgs/TestInvokeRequest", res.Uri.AbsolutePath);
+                Assert.AreEqual("GET", res.Method);
+
+                var uri = await ctx.ClientServiceProvider
+                    .GetRequiredService<IHttpInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
+                    .GetUriAsync(o => o.TestInvokeRequest(null, CancellationToken.None));
+
+                var httpClientFact = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFact.CreateClient();
+
+                var getResp = await httpClient.GetAsync(uri);
+                Assert.AreEqual(HttpStatusCode.OK, getResp.StatusCode);
+                var content = await getResp.Content.ReadAsStringAsync();
+                Assert.IsTrue(content.Contains("\"Method\":\"GET\""));
+
+                var putResp = await httpClient.PutAsync(uri, new StringContent("test"));
+                Assert.AreEqual(HttpStatusCode.OK, putResp.StatusCode);
+                content = await putResp.Content.ReadAsStringAsync();
+                Assert.IsTrue(content.Contains("\"Method\":\"PUT\""));
+
+                var postResp = await httpClient.PostAsync(uri, new StringContent("test"));
+                Assert.AreEqual(HttpStatusCode.OK, postResp.StatusCode);
+                content = await postResp.Content.ReadAsStringAsync();
+                Assert.IsTrue(content.Contains("\"Method\":\"POST\""));
+
+                var deleteResp = await httpClient.DeleteAsync(uri);
+                Assert.AreEqual(HttpStatusCode.OK, deleteResp.StatusCode);
+                content = await deleteResp.Content.ReadAsStringAsync();
+                Assert.IsTrue(content.Contains("\"Method\":\"DELETE\""));
+
+
             }
         }
-
-        private bool CheckHttpReq(object a)
-        {
-            return true;
-        }
-
+        
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>

@@ -23,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// L&#246;ptid
         /// </summary>
         [DataMember(Name="leaseUntil",EmitDefaultValue=false)]
-        public System.DateTimeOffset? LeaseUntil { get; set; }
+        public DateTimeOffset? LeaseUntil { get; set; }
     
         /// <summary>
         /// Uppl&#229;tare

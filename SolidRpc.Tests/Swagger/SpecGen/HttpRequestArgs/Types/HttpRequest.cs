@@ -8,6 +8,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types
     public class HttpRequest
     {
         /// <summary>
+        /// The method used
+        /// </summary>
+        public string Method { get; set; }
+
+        /// <summary>
         /// Uri
         /// </summary>
         public Uri Uri { get; set; }

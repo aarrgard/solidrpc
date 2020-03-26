@@ -56,13 +56,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Update.Contact {
         /// PUL-Godk&#228;nnande datum
         /// </summary>
         [DataMember(Name="approvalDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ApprovalDate { get; set; }
+        public DateTimeOffset? ApprovalDate { get; set; }
     
         /// <summary>
         /// GDPR informerad den
         /// </summary>
         [DataMember(Name="gdprApprovalDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? GdprApprovalDate { get; set; }
+        public DateTimeOffset? GdprApprovalDate { get; set; }
     
         /// <summary>
         /// Informerad via

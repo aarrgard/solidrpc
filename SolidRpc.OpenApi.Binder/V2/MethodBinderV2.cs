@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IList<OperationObject> Operations { get; }
 
-        protected override IMethodBinding DoCreateMethodBinding(
+        protected override IEnumerable<IMethodBinding> DoCreateMethodBinding(
             MethodInfo mi,
             IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey)
@@ -73,18 +73,18 @@ namespace SolidRpc.OpenApi.Binder.V2
             binderStatus.Append($"->returntype->#{prospects.Count}");
 
 
-            if (prospects.Count != 1)
+            if (prospects.Count < 1)
             {
                 throw new NotImplementedException(binderStatus.ToString());
             }
-            return new MethodBindingV2(
-                this, 
-                prospects.Single(),
-                mi, 
-                CodeDocRepo.GetMethodDoc(mi),
+            var methodDoc = CodeDocRepo.GetMethodDoc(mi);
+            return prospects.Select(op => new MethodBindingV2(
+                this,
+                op,
+                mi,
+                methodDoc,
                 transports,
-                securityKey);
-
+                securityKey)).ToList();
         }
 
         private bool FindParameter(IEnumerable<ParameterObject> parameters, ParameterInfo parameter)

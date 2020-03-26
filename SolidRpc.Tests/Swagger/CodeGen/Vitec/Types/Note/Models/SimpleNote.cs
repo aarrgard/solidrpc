@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Note.Models {
         /// Datum f&#246;r anteckningen
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public System.DateTimeOffset? Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Anv&#228;ndarid

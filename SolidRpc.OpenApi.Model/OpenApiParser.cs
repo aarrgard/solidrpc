@@ -86,6 +86,21 @@ namespace SolidRpc.OpenApi.Model
             SerializerFactory.SerializeToString(out s, openApiSpec.GetType(), openApiSpec, "application/json", null, formatted);
             return s;
         }
+
+        /// <summary>
+        /// Uses the serializer to clone the node.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public T CloneNode<T>(T node)
+        {
+            string s;
+            SerializerFactory.SerializeToString(out s, node);
+            T newNode;
+            SerializerFactory.DeserializeFromString(s, out newNode);
+            return newNode;
+        }
     }
 
     /// <summary>

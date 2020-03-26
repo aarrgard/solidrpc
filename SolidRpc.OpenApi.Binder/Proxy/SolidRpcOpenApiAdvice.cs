@@ -53,13 +53,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             SecurityKey = config.SecurityKey;
             MethodHeadersTransformer = config.HttpTransport?.MethodHeadersTransformer ?? ((o1, o2, o3) => Task.CompletedTask);
-            MethodBinding = MethodBinderStore.CreateMethodBinding(
+            MethodBinding = MethodBinderStore.CreateMethodBindings(
                 config.OpenApiSpec,
                 config.InvocationConfiguration.HasImplementation,
                 config.InvocationConfiguration.MethodInfo,
                 config.GetTransports(),
                 config.SecurityKey
-            );
+            ).First();
             return true;
         }
 

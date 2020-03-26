@@ -43,8 +43,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             else if (ParameterInfo.ParameterType.IsHttpRequest())
             {
-                HttpRequestDataBinder = (_, __) => { return _; };
-                HttpRequestDataExtractor = (_) => { return null; };
+                HttpRequestDataBinder = (_, __) => { throw new Exception("This one should not be used"); };
+                HttpRequestDataExtractor = (_) => { throw new Exception("This one should not be used"); };
             }
             else
             {
@@ -54,6 +54,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     parameterName = ParameterInfo.Name;
                 }
                 HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
+                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
                 HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
             }
         }
@@ -178,6 +179,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 case "skip":
                     return null;
+                case "request":
+                    return "";
                 case "header":
                     return nameof(IHttpRequest.Headers);
                 case "query":
@@ -279,11 +282,10 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public Task<object> ExtractArgumentAsync(IHttpRequest request)
         {
-            var res = ExtractPath(request, ArgumentPath.GetEnumerator(), false, request);
-            return Task.FromResult(res);
+            return ExtractPath(request, ArgumentPath.GetEnumerator(), false, request);
         }
 
-        private object ExtractPath(IHttpRequest request, IEnumerator<string> pathEnumerator, bool filteredList, object val)
+        private async Task<object> ExtractPath(IHttpRequest request, IEnumerator<string> pathEnumerator, bool filteredList, object val)
         {
             // if we have reach end of path - return value
             if (!pathEnumerator.MoveNext())
@@ -295,16 +297,20 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return val;
             }
             var pathElement = pathEnumerator.Current;
-            if (string.IsNullOrEmpty(pathElement))
+            if(pathElement == null)
             {
                 return null;
+            }
+            if(pathElement == "")
+            {
+                return await ExtractRequest(request);
             }
             if(val is IEnumerable<IHttpRequestData> rdEnum)
             {
                 if(!filteredList)
                 {
                     var subVal = rdEnum.Where(o => o.Name == pathElement);
-                    return ExtractPath(request, pathEnumerator, true, subVal);
+                    return await ExtractPath(request, pathEnumerator, true, subVal);
                 }
                 val = rdEnum.FirstOrDefault();
             }
@@ -320,7 +326,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (prop != null)
             {
                 var propValue = prop.GetValue(val);
-                var newValue = ExtractPath(request, pathEnumerator, filteredList, propValue);
+                var newValue = await ExtractPath(request, pathEnumerator, filteredList, propValue);
                 return newValue;
             }
             if (val is IHttpRequestData rd)
@@ -333,6 +339,19 @@ namespace SolidRpc.OpenApi.Binder.V2
                 throw new Exception("Cannot extract args from request data!");
             }
             throw new Exception($"Cannot find path {pathElement} in {val.GetType().FullName}");
+        }
+
+        private async Task<object> ExtractRequest(IHttpRequest request)
+        {
+            var httpRequest = new HttpRequest();
+            await request.CopyToAsync(httpRequest);
+            if(ParameterInfo.ParameterType.IsAssignableFrom(typeof(HttpRequest)))
+            {
+                return httpRequest;
+            }
+
+            var template = HttpRequestTemplate.GetTemplate(ParameterInfo.ParameterType);
+            return template.CopyToTemplatedInstance(httpRequest);
         }
     }
 }

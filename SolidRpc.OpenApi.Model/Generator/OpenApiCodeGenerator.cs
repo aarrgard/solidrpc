@@ -140,7 +140,7 @@ namespace SolidRpc.OpenApi.Model.Generator
             };
             InterfaceNameMapper = qn => MakeSafeName(NameStartsWithLetter(CapitalizeFirstChar(qn), 'I'));
             ClassNameMapper = (s) => { return MakeSafeName(CapitalizeFirstChar(s)); };
-            MethodNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)); };
+            MethodNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)).Split('#').First(); };
             ParameterNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, false)); };
             PropertyNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)); };
             ExceptionNameMapper = (s) => { return MakeSafeName(NameEndsWith(CreateCamelCase(s, true), "Exception")); };
@@ -274,9 +274,13 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// <param name="csharpRepository"></param>
         /// <param name="cSharpObject"></param>
         /// <returns></returns>
-        protected ICSharpClass GetClass(ICSharpRepository csharpRepository, CSharpObject cSharpObject)
+        protected ICSharpType GetType(ICSharpRepository csharpRepository, CSharpObject cSharpObject)
         {
-            var cls = csharpRepository.GetClass(cSharpObject.Name);
+            var cls = csharpRepository.GetType(cSharpObject.Name);
+            if(cls == null)
+            {
+                cls = csharpRepository.GetClass(cSharpObject.Name);
+            }
             if(!cls.Initialized)
             {
                 cls.Initialized = true;
@@ -291,7 +295,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                 // add missing properties
                 foreach (var prop in cSharpObject.Properties)
                 {
-                    var propType = GetClass(csharpRepository, prop.PropertyType);
+                    var propType = GetType(csharpRepository, prop.PropertyType);
                     if(!prop.Required && (propType.RuntimeType?.IsValueType ?? false)) 
                     {
                         propType = csharpRepository.GetClass($"System.Nullable<{propType.FullName}>");
@@ -311,7 +315,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                 }
                 if (cSharpObject.ArrayElement != null)
                 {
-                    GetClass(csharpRepository, cSharpObject.ArrayElement);
+                    GetType(csharpRepository, cSharpObject.ArrayElement);
                 }
             }
             return cls;
@@ -447,6 +451,60 @@ namespace SolidRpc.OpenApi.Model.Generator
                 CSharpMember.AddNamespacesFromName(namespaces, qns.Namespace, $"{qns.Name}.{name}");
             }
             namespaces.Remove(ns);
+        }
+
+        protected IEnumerable<Agnostic.CSharpMethod> MergeMethods(IEnumerable<Agnostic.CSharpMethod> cSharpMethods)
+        {
+            var retVal = new Dictionary<string, Agnostic.CSharpMethod>();
+            foreach (var cSharpMethod in cSharpMethods)
+            {
+                var key = $"{cSharpMethod.InterfaceName}.{cSharpMethod.MethodName}";
+                if (!retVal.TryGetValue(key, out Agnostic.CSharpMethod existing))
+                {
+                    retVal[key] = cSharpMethod;
+                    continue;
+                }
+                if(SameArgs(cSharpMethod, existing))
+                {
+                    continue;
+                }
+
+                throw new Exception("Implement"+key);
+            }
+            return retVal.Values;
+        }
+
+        private bool SameArgs(Agnostic.CSharpMethod csm1, Agnostic.CSharpMethod csm2)
+        {
+            // compare args
+            if(csm1.Parameters.Count() != csm2.Parameters.Count())
+            {
+                return false;
+            }
+            var csmp1 = csm1.Parameters.GetEnumerator();
+            var csmp2 = csm2.Parameters.GetEnumerator();
+            for (int i = 0; i < csm1.Parameters.Count(); i++)
+            {
+                csmp1.MoveNext();
+                csmp2.MoveNext();
+                if (csmp1.Current.Name != csmp2.Current.Name)
+                {
+                    return false;
+                }
+                if (!SameType(csmp1.Current.ParameterType, csmp2.Current.ParameterType)) {
+                    return false;
+                }
+            }
+            if (!SameType(csm1.ReturnType, csm1.ReturnType))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool SameType(CSharpObject o1, CSharpObject o2)
+        {
+            return o1.Name.Equals(o2.Name);
         }
     }
 }

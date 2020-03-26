@@ -216,7 +216,7 @@
             Returns all the mapped methods
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBinding(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBindings(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Returns the method info from supplied specification.
             </summary>
@@ -242,7 +242,7 @@
             Returns all the method binders.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBinding(System.String,System.Boolean,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBindings(System.String,System.Boolean,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
@@ -564,6 +564,20 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1.GetUriAsync(System.Linq.Expressions.Expression{System.Action{`0}},System.Boolean)">
+            <summary>
+            Returns the uri where we invoke the specified method.
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1.GetUriAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean)">
+            <summary>
+            Returns the uri where we invoke the specified method.
+            </summary>
+            <param name="func"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker">
             <summary>
             Base interface for the invokers
@@ -659,6 +673,14 @@
             Creates a specification that contains the specified method.
             </summary>
             <param name="methods"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser.CloneNode``1(``0)">
+            <summary>
+            Uses the serializer to clone the supplied node.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="node"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiSpec">
@@ -1368,6 +1390,28 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.SolidRpcApplication">
+            <summary>
+            Implements the solid application logic
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.SolidRpcApplication.ShutdownToken">
+            <summary>
+            Returns the shutdown token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
+            <summary>
+            Adds a startup task
+            </summary>
+            <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.WaitForStartupTasks">
+            <summary>
+            Invoked to wait for all the startup tasks to complete.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcAbstractionProviderLifetime">
             <summary>
             The lifetime of the service
@@ -1765,7 +1809,7 @@
             Constructs a new instance
             </summary>
             <param name="templateType"></param>
-            <param name="otherType"></param>
+            <param name="templatedType"></param>
             <param name="requiredProps"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.TypeTemplate.HandleTemplateType(System.Type,System.Type,System.Boolean)">
@@ -1780,6 +1824,16 @@
         <member name="P:SolidRpc.Abstractions.TypeTemplate.IsTemplateType">
             <summary>
             Returns true if this is a template type.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.TypeTemplate.TemplateType">
+            <summary>
+            The templated type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.TypeTemplate.TemplatedType">
+            <summary>
+            The templated type
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.TypeTemplate`1">
@@ -1800,6 +1854,13 @@
             <summary>
             Constructs a new instance.
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.TypeTemplate`1.CopyToTemplatedInstance(`0)">
+            <summary>
+            Copies the information in a template instance to a templated instance.
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
         </member>
         <member name="T:System.TypeExtensions">
             <summary>

@@ -11,25 +11,25 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Maklarstatistik.Models {
         /// &#196;ndringsdatum fr&#229;n och med
         /// </summary>
         [DataMember(Name="changeAtFrom",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ChangeAtFrom { get; set; }
+        public DateTimeOffset? ChangeAtFrom { get; set; }
     
         /// <summary>
         /// &#196;ndringsdatum till och med
         /// </summary>
         [DataMember(Name="changeAtTo",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ChangeAtTo { get; set; }
+        public DateTimeOffset? ChangeAtTo { get; set; }
     
         /// <summary>
         /// Kontraktsdatum fr&#229;n och med, max tre m&#229;nader tidigare &#228;n ContractDateTo
         /// </summary>
         [DataMember(Name="contractDateFrom",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ContractDateFrom { get; set; }
+        public DateTimeOffset? ContractDateFrom { get; set; }
     
         /// <summary>
         /// Kontraktsdatum till och med, max tre m&#229;nader senare &#228;n ContractDateFrom
         /// </summary>
         [DataMember(Name="contractDateTo",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ContractDateTo { get; set; }
+        public DateTimeOffset? ContractDateTo { get; set; }
     
     }
 }

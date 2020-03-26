@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Hits.BusinessIntelligense {
         /// Tidpunkt f&#246;r bes&#246;k
         /// </summary>
         [DataMember(Name="occurredAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? OccurredAt { get; set; }
+        public DateTimeOffset? OccurredAt { get; set; }
     
         /// <summary>
         /// Bes&#246;kets l&#228;ngd

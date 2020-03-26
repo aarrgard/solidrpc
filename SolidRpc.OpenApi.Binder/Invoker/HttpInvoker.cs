@@ -7,6 +7,7 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,6 +37,30 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         }
 
         private IHttpClientFactory HttpClientFactory { get; }
+
+        public Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true)
+        {
+            var (mi, args) = GetMethodInfo(action);
+            return GetUriAsync(mi, args, includeQueryString);
+        }
+
+        public Task<Uri> GetUriAsync<TRes>(Expression<Func<T, TRes>> func, bool includeQueryString = true)
+        {
+            var (mi, args) = GetMethodInfo(func);
+            return GetUriAsync(mi, args, includeQueryString);
+        }
+
+        private async Task<Uri> GetUriAsync(MethodInfo mi, object[] args, bool includeQueryString)
+        {
+            var methodBinding = MethodBinderStore.GetMethodBinding(mi);
+            if (methodBinding == null)
+            {
+                throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");
+            }
+            var req = new SolidHttpRequest();
+            await methodBinding.BindArgumentsAsync(req, args);
+            return req.CreateUri(includeQueryString);
+        }
 
         protected override async Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, MethodInfo mi, object[] args)
         {

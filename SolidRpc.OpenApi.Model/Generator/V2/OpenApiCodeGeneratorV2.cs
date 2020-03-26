@@ -79,9 +79,11 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 swaggerOperation.Parameters = CreateParameters(swaggerOperation, op.GetParameters());
                 swaggerOperation.Security = CreateSecurity(op.Security);
                 return OperationMapper(CodeSettings, swaggerOperation);
-            }).ToList();
+            });
 
-            cSharpMethods.ForEach(csm =>
+            cSharpMethods = MergeMethods(cSharpMethods);
+
+            cSharpMethods.ToList().ForEach(csm =>
             {
                 var i = cSharpRepository.GetInterface(csm.InterfaceName);
                 AddCodeGeneratorAttribute(i);
@@ -92,7 +94,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 i.ParseComment(comment);
 
                 // handle return type
-                var returnType = (ICSharpType)GetClass(cSharpRepository, csm.ReturnType);
+                var returnType = GetType(cSharpRepository, csm.ReturnType);
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
                     returnType = CreateTask(returnType);
@@ -103,7 +105,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 comment += $"<a href=\"{csm.MethodSummary?.ExternalUri}\">{csm.MethodSummary?.ExternalDescription}</a>";
                 foreach (var e in csm.Exceptions)
                 {
-                    var ex = GetClass(cSharpRepository, e);
+                    var ex = (ICSharpClass)GetType(cSharpRepository, e);
                     //
                     // if more than one exeptions has the same description
                     // we might have som problem to determine which one goes
@@ -139,7 +141,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
 
                 foreach (var p in csm.Parameters.OrderBy(o => o.Optional ? 1 : 0))
                 {
-                    var parameterType = (ICSharpType)GetClass(cSharpRepository, p.ParameterType);
+                    var parameterType = (ICSharpType)GetType(cSharpRepository, p.ParameterType);
                     string defaultValue = null;
                     if (p.Optional)
                     {
@@ -168,9 +170,10 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             {
                 var swaggerDef = GetSwaggerDefinition(null, o);
                 var cSharpObject = DefinitionMapper(CodeSettings, swaggerDef);
-                GetClass(cSharpRepository, cSharpObject);
+                GetType(cSharpRepository, cSharpObject);
             });
           }
+
 
         private IEnumerable<IDictionary<string, IEnumerable<string>>> CreateSecurity(IEnumerable<SecurityRequirementObject> security)
         {

@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Estate.Models {
         /// Uppgiften kontrollerad
         /// </summary>
         [DataMember(Name="taskControlled",EmitDefaultValue=false)]
-        public System.DateTimeOffset? TaskControlled { get; set; }
+        public DateTimeOffset? TaskControlled { get; set; }
     
         /// <summary>
         /// Anteckningar

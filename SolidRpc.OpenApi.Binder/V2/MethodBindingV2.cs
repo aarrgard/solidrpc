@@ -41,7 +41,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     return new ParameterObject(operationObject)
                     {
-                        In = "skip",
+                        In = "request",
                         Name = parameterInfo.Name
                     };
                 }
@@ -116,12 +116,21 @@ namespace SolidRpc.OpenApi.Binder.V2
                     }
                     if (name1.Length <= name1Idx)
                     {
+                        if (name2.Length > name2Idx && name2[name2Idx] == '#')
+                        {
+                            return true;
+                        }
                         return false;
                     }
                     if (name2.Length <= name2Idx)
                     {
+                        if (name1.Length > name1Idx && name1[name1Idx] == '#')
+                        {
+                            return true;
+                        }
                         return false;
                     }
+
                     if (char.ToLower(name1[name1Idx]) == char.ToLower(name2[name2Idx]))
                     {
                         name1Idx++;

@@ -55,19 +55,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Kontraktsdag
         /// </summary>
         [DataMember(Name="contractDay",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ContractDay { get; set; }
+        public DateTimeOffset? ContractDay { get; set; }
     
         /// <summary>
         /// Tilltr&#228;desdag
         /// </summary>
         [DataMember(Name="accessDay",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AccessDay { get; set; }
+        public DateTimeOffset? AccessDay { get; set; }
     
         /// <summary>
         /// Handpenning redovisningsdatum
         /// </summary>
         [DataMember(Name="depositReportedAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DepositReportedAt { get; set; }
+        public DateTimeOffset? DepositReportedAt { get; set; }
     
         /// <summary>
         /// Totala provision
@@ -85,7 +85,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Provisionsdatum
         /// </summary>
         [DataMember(Name="commissionReceivedAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? CommissionReceivedAt { get; set; }
+        public DateTimeOffset? CommissionReceivedAt { get; set; }
     
         /// <summary>
         /// Nyproduktion (ja/nej)
@@ -109,7 +109,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// N&#228;r objektinformationen uppdaterades senast
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// &#196;ndringshistorik. Detta &#228;r en lista p&#229; uppdateringar och vad f&#228;lten var satta till vid dessa uppdateringar

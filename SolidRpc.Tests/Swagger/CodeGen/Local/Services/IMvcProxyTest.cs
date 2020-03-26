@@ -125,7 +125,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="g">The guid to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<Guid> ProxyGuidInQuery(
-            System.Guid? g = null,
+            Guid? g = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -134,7 +134,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="d">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<DateTimeOffset> ProxyDateTimeOffsetInQuery(
-            System.DateTimeOffset? d = null,
+            DateTimeOffset? d = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -143,7 +143,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <param name="d">The datetime to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<DateTimeOffset> ProxyDateTimeInQuery(
-            System.DateTimeOffset? d = null,
+            DateTimeOffset? d = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

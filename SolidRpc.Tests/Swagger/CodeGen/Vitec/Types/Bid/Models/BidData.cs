@@ -23,7 +23,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Bid.Models {
         /// Datum och tid f&#246;r budet
         /// </summary>
         [DataMember(Name="createdAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// Villkor f&#246;r budet

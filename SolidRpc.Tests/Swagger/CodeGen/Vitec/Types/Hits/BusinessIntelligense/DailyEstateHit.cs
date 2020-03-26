@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Hits.BusinessIntelligense {
         /// Dag f&#246;r bes&#246;ket. (ev. tidangivelse ignoreras)
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public System.DateTimeOffset? Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Anges om man vill rapportera f&#246;r enskild timme mellan 0-23.

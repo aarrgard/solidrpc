@@ -12,7 +12,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.BusinessIntelligense.Models
         /// Objektet &#228;ndrades vid detta datum
         /// </summary>
         [DataMember(Name="changedAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ChangedAt { get; set; }
+        public DateTimeOffset? ChangedAt { get; set; }
     
         /// <summary>
         /// Status

@@ -171,6 +171,10 @@ namespace SolidRpc.OpenApi.Model.V2
                 {
                     return "PUT";
                 }
+                else if (pathItem.Options == this)
+                {
+                    return "OPTIONS";
+                }
                 else
                 {
                     throw new System.Exception("Cannot find operation object.");

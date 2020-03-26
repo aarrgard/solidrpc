@@ -18,13 +18,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// Starttid
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? StartsAt { get; set; }
+        public DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// Sluttid
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? EndsAt { get; set; }
+        public DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Visas p&#229; internet
@@ -54,7 +54,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// Bokningsbar p&#229; internet fram till
         /// </summary>
         [DataMember(Name="noLaterThen",EmitDefaultValue=false)]
-        public System.DateTimeOffset? NoLaterThen { get; set; }
+        public DateTimeOffset? NoLaterThen { get; set; }
     
         /// <summary>
         /// URL till till Bookning

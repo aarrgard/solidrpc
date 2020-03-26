@@ -48,7 +48,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Documents.Models {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="changeDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ChangeDate { get; set; }
+        public DateTimeOffset? ChangeDate { get; set; }
     
         /// <summary>
         /// Filtyp

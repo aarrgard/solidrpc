@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Datum
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public System.DateTimeOffset? Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Belopp

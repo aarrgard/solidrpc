@@ -18,12 +18,17 @@ namespace SolidRpc.Abstractions
         /// Constructs a new instance
         /// </summary>
         /// <param name="templateType"></param>
-        /// <param name="otherType"></param>
+        /// <param name="templatedType"></param>
         /// <param name="requiredProps"></param>
-        public TypeTemplate(Type templateType, Type otherType, IEnumerable<string> requiredProps)
+        public TypeTemplate(Type templateType, Type templatedType, IEnumerable<string> requiredProps)
         {
+            TemplateType = templateType;
+            TemplatedType = templatedType;
+
+            Templated2TemplateType = new List<Action<object, object>>();
+            Template2TemplatedType = new List<Action<object, object>>();
             requiredProps = requiredProps.Select(o => o.ToLower()).ToList();
-            var otherProperties = otherType.GetProperties().ToDictionary(o => o.Name.ToLower(), o => o);
+            var otherProperties = templatedType.GetProperties().ToDictionary(o => o.Name.ToLower(), o => o);
 
             bool isTemplateType = true;
             foreach(var prop in templateType.GetProperties())
@@ -38,25 +43,43 @@ namespace SolidRpc.Abstractions
                 }
 
                 var getMethod = GetType().GetProperty("Get" + prop.Name);
-                if(getMethod == null)
+                if(getMethod != null)
                 {
-                    throw new Exception("No Get method defined for template property:"+ prop.Name);
+                    var getter = CreateGetter(prop.PropertyType, otherProp);
+                    getMethod.SetValue(this, getter);
                 }
-                getMethod.SetValue(this, CreateGetter(getMethod.PropertyType, prop.PropertyType, otherProp));
 
 
                 var setMethod = GetType().GetProperty("Set" + prop.Name);
-                if (setMethod == null)
+                if (setMethod != null)
                 {
-                    throw new Exception("No Set method defined for template property:" + prop.Name);
+                    var setter = CreateSetter(prop.PropertyType, otherProp);
+                    setMethod.SetValue(this, setter);
                 }
-                setMethod.SetValue(this, CreateSetter(setMethod.PropertyType, prop.PropertyType, otherProp));
 
                 otherProperties.Remove(propName);
+
+                Templated2TemplateType.Add(CreateCopyFunc(templateType, templatedType, prop.PropertyType, prop.Name));
+                Template2TemplatedType.Add(CreateCopyFunc(templatedType, templateType, prop.PropertyType, prop.Name));
             }
 
             IsTemplateType = isTemplateType && otherProperties.Count == 0;
-            IsTemplateType = HandleTemplateType(templateType, otherType, IsTemplateType);
+            IsTemplateType = HandleTemplateType(templateType, templatedType, IsTemplateType);
+        }
+
+        private Action<object, object> CreateCopyFunc(Type dstType, Type srcType, Type propertyType, string propertyName)
+        {
+            var methods = typeof(TypeTemplate).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).AsEnumerable();
+            methods = methods.Where(o => o.IsGenericMethod);
+            methods = methods.Where(o => o.Name == nameof(CreateCopyFunc));
+            return (Action<object, object>)methods.Single().MakeGenericMethod(dstType, srcType, propertyType).Invoke(this, new object[] { propertyName });
+        }
+
+        private Action<object, object> CreateCopyFunc<TDst, TSrc, TProp>(string propertyName)
+        {
+            var getter = (Func<object, TProp>)CreateGetterInternal<TProp>(typeof(TSrc).GetProperty(propertyName));
+            var setter = (Action<object, TProp>)CreateSetterInternal<TProp>(typeof(TDst).GetProperty(propertyName));
+            return (target, src) => setter(target, getter(src));
         }
 
         /// <summary>
@@ -71,7 +94,7 @@ namespace SolidRpc.Abstractions
             return isTemplateType;
         }
 
-        private object CreateSetterInternal<T>(Type actionType, PropertyInfo pi)
+        private object CreateSetterInternal<T>(PropertyInfo pi)
         {
             if (pi == null)
             {
@@ -81,21 +104,19 @@ namespace SolidRpc.Abstractions
             {
                 return (Action<object, T>)((_, __) => { });
             }
-            if (actionType != typeof(Action<object, T>))
-            {
-                throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-            }
-            return (Action<object, T>)((_, __) => pi.SetValue(_, __));
+            return (Action<object, T>)((_, __) => {
+                pi.SetValue(_, __);
+            });
         }
-        private object CreateSetter(Type actionType, Type propertyType, PropertyInfo pi)
+        private object CreateSetter(Type propertyType, PropertyInfo pi)
         {
             var methods = typeof(TypeTemplate).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).AsEnumerable();
             methods = methods.Where(o => o.IsGenericMethod);
             methods = methods.Where(o => o.Name == nameof(CreateSetterInternal));
-            return methods.Single().MakeGenericMethod(propertyType).Invoke(this, new object[] { actionType, pi });
+            return methods.Single().MakeGenericMethod(propertyType).Invoke(this, new object[] { pi });
         }
 
-        private object CreateGetterInternal<T>(Type functionType, PropertyInfo pi)
+        private object CreateGetterInternal<T>(PropertyInfo pi)
         {
             if (pi == null)
             {
@@ -105,25 +126,35 @@ namespace SolidRpc.Abstractions
             {
                 return (Func<object, T>)(_ => default(T));
             }
-            if (functionType != typeof(Func<object, T>))
-            {
-                throw new Exception($"Property type does not match getter function for property {pi.Name}.");
-            }
-            return (Func<object, T>)((_) => (T)pi.GetValue(_));
+            return (Func<object, T>)((_) => {
+                return (T)pi.GetValue(_);
+            });
         }
 
-        private object CreateGetter(Type functionType, Type propertyType, PropertyInfo pi)
+        private object CreateGetter(Type propertyType, PropertyInfo pi)
         {
             var methods = typeof(TypeTemplate).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).AsEnumerable();
             methods = methods.Where(o => o.IsGenericMethod);
             methods = methods.Where(o => o.Name == nameof(CreateGetterInternal));
-            return methods.Single().MakeGenericMethod(propertyType).Invoke(this, new object[] { functionType, pi });
+            return methods.Single().MakeGenericMethod(propertyType).Invoke(this, new object[] { pi });
         }
 
         /// <summary>
         /// Returns true if this is a template type.
         /// </summary>
         public bool IsTemplateType { get; }
+
+        /// <summary>
+        /// The templated type
+        /// </summary>
+        public Type TemplateType { get; }
+
+        /// <summary>
+        /// The templated type
+        /// </summary>
+        public Type TemplatedType { get; }
+        public ICollection<Action<object, object>> Templated2TemplateType { get; }
+        public ICollection<Action<object, object>> Template2TemplatedType { get; }
     }
 
     /// <summary>
@@ -151,6 +182,18 @@ namespace SolidRpc.Abstractions
         public TypeTemplate(Type otherType, IEnumerable<string> requiredProps)
             :base(typeof(TTemplate), otherType, requiredProps)
         {
+        }
+
+        /// <summary>
+        /// Copies the information in a template instance to a templated instance.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public object CopyToTemplatedInstance(TTemplate source)
+        {
+            var x = Activator.CreateInstance(TemplatedType);
+            Template2TemplatedType.ToList().ForEach(o => o(x, source));
+            return x;
         }
     }
 }

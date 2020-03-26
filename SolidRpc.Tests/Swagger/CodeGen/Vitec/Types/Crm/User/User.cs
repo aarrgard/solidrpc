@@ -187,7 +187,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.CRM.User {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
     }
 }

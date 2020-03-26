@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.ForeignProperty.Cms {
         /// Energideklarationsdatum
         /// </summary>
         [DataMember(Name="energyDeclarationDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? EnergyDeclarationDate { get; set; }
+        public DateTimeOffset? EnergyDeclarationDate { get; set; }
     
         /// <summary>
         /// Energif&#246;rbrukning kr/kvm/&#229;r

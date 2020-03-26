@@ -30,19 +30,19 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Datum
         /// </summary>
         [DataMember(Name="date",EmitDefaultValue=false)]
-        public System.DateTimeOffset? Date { get; set; }
+        public DateTimeOffset? Date { get; set; }
     
         /// <summary>
         /// Fr&#229;n
         /// </summary>
         [DataMember(Name="startTime",EmitDefaultValue=false)]
-        public System.DateTimeOffset? StartTime { get; set; }
+        public DateTimeOffset? StartTime { get; set; }
     
         /// <summary>
         /// Till
         /// </summary>
         [DataMember(Name="endTime",EmitDefaultValue=false)]
-        public System.DateTimeOffset? EndTime { get; set; }
+        public DateTimeOffset? EndTime { get; set; }
     
         /// <summary>
         /// Kommentar

@@ -17,7 +17,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="aktTid",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AktTid { get; set; }
+        public DateTimeOffset? AktTid { get; set; }
     
         /// <summary>
         /// 
@@ -77,13 +77,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="avtalsdag",EmitDefaultValue=false)]
-        public System.DateTimeOffset? Avtalsdag { get; set; }
+        public DateTimeOffset? Avtalsdag { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="tilltrdag",EmitDefaultValue=false)]
-        public System.DateTimeOffset? Tilltrdag { get; set; }
+        public DateTimeOffset? Tilltrdag { get; set; }
     
         /// <summary>
         /// 
@@ -221,7 +221,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Maklarstatistik.Models {
         /// 
         /// </summary>
         [DataMember(Name="annonsTid",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AnnonsTid { get; set; }
+        public DateTimeOffset? AnnonsTid { get; set; }
     
         /// <summary>
         /// 

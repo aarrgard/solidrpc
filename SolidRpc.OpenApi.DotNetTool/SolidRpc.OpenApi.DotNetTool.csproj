@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.OpenApi.Binder\SolidRpc.OpenApi.Binder.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator.Impl\SolidRpc.OpenApi.Generator.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator\SolidRpc.OpenApi.Generator.csproj" />
   </ItemGroup>

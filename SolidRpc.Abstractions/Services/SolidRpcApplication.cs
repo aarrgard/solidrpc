@@ -8,11 +8,22 @@ using System.Threading.Tasks;
 [assembly: SolidRpcAbstractionProviderAttribute(typeof(ISolidRpcApplication), typeof(SolidRpcApplication))]
 namespace SolidRpc.Abstractions.Services
 {
+    /// <summary>
+    /// Implements the solid application logic
+    /// </summary>
     public class SolidRpcApplication : ISolidRpcApplication
     {
         private IList<Task> _startupTasks = new List<Task>();
+
+        /// <summary>
+        /// Returns the shutdown token
+        /// </summary>
         public CancellationToken ShutdownToken => CancellationToken.None;
 
+        /// <summary>
+        /// Adds a startup task
+        /// </summary>
+        /// <param name="startupTask"></param>
         public void AddStartupTask(Task startupTask)
         {
             lock (_startupTasks)
@@ -21,6 +32,10 @@ namespace SolidRpc.Abstractions.Services
             }
         }
 
+        /// <summary>
+        /// Invoked to wait for all the startup tasks to complete.
+        /// </summary>
+        /// <returns></returns>
         public Task WaitForStartupTasks()
         {
             lock(_startupTasks)

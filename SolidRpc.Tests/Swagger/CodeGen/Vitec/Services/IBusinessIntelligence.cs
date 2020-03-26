@@ -27,8 +27,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<OfficeStatisticsSummary>> BusinessIntelligenceOfficeStatistics(
             string licenseId,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             string assignment = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -44,8 +44,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<RealtorStatisticsSummary>> BusinessIntelligenceRealtorStatistics(
             string licenseId,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             string assignment = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -61,8 +61,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<OfficeStatisticsByMonth> BusinessIntelligenceOfficeStatisticsByMonth(
             string licenseId,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             string assignment = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
@@ -90,8 +90,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         Task<SalesReportResponse> BusinessIntelligenceGetSalesReport(
             string customerId,
             string selectionType,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -105,8 +105,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         Task<BusinessIntelligense.SalesReportResponse> BusinessIntelligenceGetEstateReportProdDb(
             string customerId,
             string selectionType,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -120,8 +120,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         Task<SalesReportResponse> BusinessIntelligenceGetEstatesReport(
             string customerId,
             string selectionType,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>
@@ -133,8 +133,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<EstateReferences>> BusinessIntelligenceEstates(
             string customerId,
-            System.DateTimeOffset? dateFrom = null,
-            System.DateTimeOffset? dateTo = null,
+            DateTimeOffset? dateFrom = null,
+            DateTimeOffset? dateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
         /// <summary>

@@ -83,7 +83,9 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             var (typeName, genArgs) = CSharpRepository.ReadType(FullName);
             var repo = GetParent<ICSharpRepository>();
-            return genArgs?.Select(o => repo.GetType(o)).ToList();
+            return genArgs?.Select(o => {
+                return repo.GetType(o) ?? throw new Exception("Cannot find generic arg:" + o);
+            }).ToList();
         }
 
         public ICSharpType GetGenericType()

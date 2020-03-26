@@ -24,13 +24,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Appointment.Models {
         /// Startdatum och tid
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? StartsAt { get; set; }
+        public DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// Slutdatum och tid
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? EndsAt { get; set; }
+        public DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// Hela dagen

@@ -43,7 +43,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         /// M&#246;tesdatum
         /// </summary>
         [DataMember(Name="meetingDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? MeetingDate { get; set; }
+        public DateTimeOffset? MeetingDate { get; set; }
     
         /// <summary>
         /// M&#228;klarens id
@@ -73,13 +73,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         /// Bokningsdatum
         /// </summary>
         [DataMember(Name="bookedDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? BookedDate { get; set; }
+        public DateTimeOffset? BookedDate { get; set; }
     
         /// <summary>
         /// P&#229;skriftsdatum
         /// </summary>
         [DataMember(Name="signatureDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? SignatureDate { get; set; }
+        public DateTimeOffset? SignatureDate { get; set; }
     
         /// <summary>
         /// Objektets status
@@ -109,13 +109,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         /// Kontraktsdatum
         /// </summary>
         [DataMember(Name="agreementDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AgreementDate { get; set; }
+        public DateTimeOffset? AgreementDate { get; set; }
     
         /// <summary>
         /// Tilltr&#228;desdatum
         /// </summary>
         [DataMember(Name="accessDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? AccessDate { get; set; }
+        public DateTimeOffset? AccessDate { get; set; }
     
         /// <summary>
         /// Objektets id

@@ -41,13 +41,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// Senast &#228;ndrad
         /// </summary>
         [DataMember(Name="dateChanged",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateChanged { get; set; }
+        public DateTimeOffset? DateChanged { get; set; }
     
         /// <summary>
         /// Senast bilden &#228;ndrades
         /// </summary>
         [DataMember(Name="dateChangedImageData",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateChangedImageData { get; set; }
+        public DateTimeOffset? DateChangedImageData { get; set; }
     
         /// <summary>
         /// Bildurl

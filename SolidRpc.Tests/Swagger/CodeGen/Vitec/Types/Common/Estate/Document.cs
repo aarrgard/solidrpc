@@ -35,7 +35,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Common.Estate {
         /// &#196;ndringsdatum
         /// </summary>
         [DataMember(Name="dateChangedData",EmitDefaultValue=false)]
-        public System.DateTimeOffset? DateChangedData { get; set; }
+        public DateTimeOffset? DateChangedData { get; set; }
     
         /// <summary>
         /// Dokumentkategori

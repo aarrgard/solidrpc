@@ -19,7 +19,7 @@ namespace SolidRpc.OpenApi.Binder
         {
             OpenApiSpec = openApiSpec;
             Assembly = assembly;
-            CachedBindings = new ConcurrentDictionary<MethodInfo, IMethodBinding>();
+            CachedBindings = new ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>>();
         }
 
         public IOpenApiSpec OpenApiSpec { get; }
@@ -30,31 +30,52 @@ namespace SolidRpc.OpenApi.Binder
         {
             get
             {
-                return CachedBindings.Values;
+                return CachedBindings.Values.SelectMany(o => o);
             }
         }
 
-        private ConcurrentDictionary<MethodInfo, IMethodBinding> CachedBindings { get; }
+        private ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>> CachedBindings { get; }
 
-        public IMethodBinding CreateMethodBinding(
+        public IEnumerable<IMethodBinding> CreateMethodBindings(
             MethodInfo methodInfo,
             IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey)
         {
-            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBinding(_, transports, securityKey));
+            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBindings(_, transports, securityKey));
         }
 
-        private IMethodBinding CreateBinding(
+        private IEnumerable<IMethodBinding> CreateBindings(
             MethodInfo mi,
             IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey)
         {
-            var methodBinding = DoCreateMethodBinding(mi, transports, securityKey);
-            transports.ToList().ForEach(o => o.Configure(methodBinding));
-            return methodBinding;
+            var methodBindings = DoCreateMethodBinding(mi, transports, securityKey);
+
+            // sort em according to the preferred method
+            methodBindings = methodBindings.OrderBy(o => GetMethodIdx(o.Method));
+
+            // Configure transports
+            methodBindings.ToList().ForEach(methodBinding =>
+            {
+                transports.ToList().ForEach(o => o.Configure(methodBinding));
+            });
+
+            return methodBindings;
         }
 
-        protected abstract IMethodBinding DoCreateMethodBinding(
+        private int GetMethodIdx(string method)
+        {
+            switch(method.ToLower())
+            {
+                case "get": return 1;
+                case "options": return 2;
+                case "put": return 3;
+                case "delete": return 4;
+                default: return 100;
+            }
+        }
+
+        protected abstract IEnumerable<IMethodBinding> DoCreateMethodBinding(
             MethodInfo mi,
             IEnumerable<ITransport> transports,
             KeyValuePair<string, string>? securityKey);

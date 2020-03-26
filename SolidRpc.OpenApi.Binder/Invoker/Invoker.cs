@@ -112,7 +112,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return (ResultConverter)Activator.CreateInstance(typeof(ResultConverter<>).MakeGenericType(arg));
         }
 
-        private static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
+        protected static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
         {
             if (expr.Body is MethodCallExpression mce)
             {

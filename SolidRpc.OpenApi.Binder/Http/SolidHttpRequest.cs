@@ -71,5 +71,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// Contains the data in the body.
         /// </summary>
         public IEnumerable<IHttpRequestData> BodyData { get; set; }
+
     }
 }

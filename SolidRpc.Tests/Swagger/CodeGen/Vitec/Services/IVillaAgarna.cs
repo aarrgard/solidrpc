@@ -19,8 +19,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Services {
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<SoldEstate>> VillaAgarnaGetObjectsBetween(
             string customerId,
-            System.DateTimeOffset? criteriaAccessDateFrom = null,
-            System.DateTimeOffset? criteriaAccessDateTo = null,
+            DateTimeOffset? criteriaAccessDateFrom = null,
+            DateTimeOffset? criteriaAccessDateTo = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

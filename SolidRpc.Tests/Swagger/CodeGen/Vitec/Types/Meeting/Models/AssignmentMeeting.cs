@@ -11,13 +11,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Meeting.Models {
         /// 
         /// </summary>
         [DataMember(Name="startsAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? StartsAt { get; set; }
+        public DateTimeOffset? StartsAt { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="endsAt",EmitDefaultValue=false)]
-        public System.DateTimeOffset? EndsAt { get; set; }
+        public DateTimeOffset? EndsAt { get; set; }
     
         /// <summary>
         /// 

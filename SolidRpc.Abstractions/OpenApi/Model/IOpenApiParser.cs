@@ -38,5 +38,13 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <param name="methods"></param>
         /// <returns></returns>
         IOpenApiSpec CreateSpecification(params MethodInfo[] methods);
+        
+        /// <summary>
+        /// Uses the serializer to clone the supplied node.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        T CloneNode<T>(T node);
     }
 }

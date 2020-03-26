@@ -71,6 +71,31 @@ namespace SolidRpc.OpenApi.Model
         /// </summary>
         public string Name { get; }
 
+        public override bool Equals(object obj)
+        {
+            var other = obj as QualifiedName;
+            if (other == null) return false;
+            var e1 = Names.GetEnumerator();
+            var e2 = Names.GetEnumerator();
+            var moved = true;
+            while (moved)
+            {
+                if(e1.MoveNext() != (moved = e2.MoveNext()))
+                {
+                    return false;
+                }
+                if(e1.Current != e2.Current)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return QName;

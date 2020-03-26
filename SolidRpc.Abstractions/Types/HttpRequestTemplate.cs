@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -123,6 +122,5 @@ namespace SolidRpc.Abstractions.Types
         /// Gets the query from the template copy
         /// </summary>
         public Func<object, Stream> GetBody { get; private set; }
-
     }
 }

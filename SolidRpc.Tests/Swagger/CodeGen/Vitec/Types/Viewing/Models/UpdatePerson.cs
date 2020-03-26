@@ -128,13 +128,13 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Vitec.Types.Viewing.Models {
         /// 
         /// </summary>
         [DataMember(Name="approvalDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? ApprovalDate { get; set; }
+        public DateTimeOffset? ApprovalDate { get; set; }
     
         /// <summary>
         /// 
         /// </summary>
         [DataMember(Name="gdprApprovalDate",EmitDefaultValue=false)]
-        public System.DateTimeOffset? GdprApprovalDate { get; set; }
+        public DateTimeOffset? GdprApprovalDate { get; set; }
     
         /// <summary>
         /// 
