@@ -31,7 +31,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public QueueTransport(string queueName, string connectionString, string inboundHandler)
         {
             QueueName = queueName;
-            ConnectionString = connectionString;
+            ConnectionName = connectionString;
             InboundHandler = inboundHandler;
         }
 
@@ -61,22 +61,22 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetQueueName(string queueName)
         {
-            return new QueueTransport(queueName, ConnectionString, InboundHandler);
+            return new QueueTransport(queueName, ConnectionName, InboundHandler);
         }
 
         /// <summary>
-        /// The connection string
+        /// The connection name
         /// </summary>
-        public string ConnectionString { get; }
+        public string ConnectionName { get; }
 
         /// <summary>
-        /// Sets the connection string
+        /// Sets the connection name
         /// </summary>
-        /// <param name="connectionString"></param>
+        /// <param name="connectionName"></param>
         /// <returns></returns>
-        public IQueueTransport SetConnectionString(string connectionString)
+        public IQueueTransport SetConnectionName(string connectionName)
         {
-            return new QueueTransport(QueueName, connectionString, InboundHandler);
+            return new QueueTransport(QueueName, connectionName, InboundHandler);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetInboundHandler(string inboundHandler)
         {
-            return new QueueTransport(QueueName, ConnectionString, inboundHandler);
+            return new QueueTransport(QueueName, ConnectionName, inboundHandler);
         }
     }
 }

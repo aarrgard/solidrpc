@@ -5,7 +5,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// <summary>
     /// Represents a timer function
     /// </summary>
-    public class AzQueueFunction : AzFunction, IAzQueueFunction
+    public class AzSvcBusFunction : AzFunction, IAzSvcBusFunction
     {
 
         private static Function DefaultFunction(IAzFunctionHandler functionHandler)
@@ -20,7 +20,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     new Binding()
                     {
                         Name ="message",
-                        Type =  "queueTrigger",
+                        Type =  "serviceBusTrigger",
                         Direction = "in",
                         QueueName = "myQueue",
                         Connection = "myConnection"
@@ -37,28 +37,28 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
 
         /// <summary>
-        /// Constructs a new quue function.
+        /// Constructs a new svc bus function.
         /// </summary>
         /// <param name="functionHandler"></param>
         /// <param name="subDir"></param>
-        public AzQueueFunction(IAzFunctionHandler functionHandler, string subDir) : base(functionHandler, subDir, DefaultFunction(functionHandler))
+        public AzSvcBusFunction(IAzFunctionHandler functionHandler, string subDir) : base(functionHandler, subDir, DefaultFunction(functionHandler))
         {
         }
 
         /// <summary>
-        /// Constructs a new timer function
+        /// Constructs a new svc bus function
         /// </summary>
         /// <param name="functionHandler"></param>
         /// <param name="subDir"></param>
         /// <param name="functionJson"></param>
-        public AzQueueFunction(IAzFunctionHandler functionHandler, string subDir, Function functionJson) : base(functionHandler, subDir, functionJson)
+        public AzSvcBusFunction(IAzFunctionHandler functionHandler, string subDir, Function functionJson) : base(functionHandler, subDir, functionJson)
         {
         }
 
         /// <summary>
         /// The trigger type
         /// </summary>
-        public override string TriggerType => "queueTrigger";
+        public override string TriggerType => "serviceBusTrigger";
 
 
         /// <summary>

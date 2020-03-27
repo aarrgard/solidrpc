@@ -93,6 +93,20 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             return functions.Values;
         }
 
+        private IAzFunction GetFunction(string functionName)
+        {
+            var funcDir = BaseDirs.First().GetDirectories().Where(o => o.Name == functionName).FirstOrDefault();
+            if(funcDir == null)
+            {
+                return null;
+            }
+            if(GetFunction(funcDir, out IAzFunction func))
+            {
+                return func;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Returns the http trigger handler
         /// </summary>
@@ -223,6 +237,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 {
                     func = new AzQueueFunction(this, d.Name, function);
                 }
+                else if (function.Bindings.Any(o => o.Type == "serviceBusTrigger"))
+                {
+                    func = new AzSvcBusFunction(this, d.Name, function);
+                }
                 else
                 {
                     return false;
@@ -243,38 +261,33 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
-        /// <summary>
-        /// Creates a timer function
-        /// </summary>
-        /// <returns></returns>
-        public IAzTimerFunction CreateTimerFunction(string functionName)
-        {
-            var timerFunction = new AzTimerFunction(this, functionName);
-            return timerFunction;
-        }
 
         /// <summary>
-        /// Creates a http function
+        /// Creates a function
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="functionName"></param>
         /// <returns></returns>
-        public IAzHttpFunction CreateHttpFunction(string functionName)
+        public T CreateFunction<T>(string functionName) where T:class,IAzFunction
         {
             if (string.IsNullOrEmpty(functionName)) throw new ArgumentNullException(nameof(functionName));
-            var httpFunction = new AzHttpFunction(this, functionName);
-            return httpFunction;
-        }
-
-        /// <summary>
-        /// Creates a queue function
-        /// </summary>
-        /// <param name="functionName"></param>
-        /// <returns></returns>
-        public IAzQueueFunction CreateQueueFunction(string functionName)
-        {
-            if (string.IsNullOrEmpty(functionName)) throw new ArgumentNullException(nameof(functionName));
-            var queueFunction = new AzQueueFunction(this, functionName);
-            return queueFunction;
+            if (typeof(T) == typeof(IAzHttpFunction))
+            {
+                return (T)(object)new AzHttpFunction(this, functionName);
+            }
+            if (typeof(T) == typeof(IAzQueueFunction))
+            {
+                return (T)(object)new AzQueueFunction(this, functionName);
+            }
+            if (typeof(T) == typeof(IAzSvcBusFunction))
+            {
+                return (T)(object)new AzSvcBusFunction(this, functionName);
+            }
+            if (typeof(T) == typeof(IAzTimerFunction))
+            {
+                return (T)(object)new AzTimerFunction(this, functionName);
+            }
+            throw new Exception("Cannot create function of type:" + typeof(T));
         }
 
         /// <summary>
@@ -538,6 +551,21 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 return (T)newValue;
             }
             return (T)oldValue;
+        }
+
+        T IAzFunctionHandler.GetOrCreateFunction<T>(string functionName)
+        {
+            var function = GetFunction(functionName);
+            T typedFunction = function as T;
+            if (typedFunction == null && function != null)
+            {
+                function.Delete();
+            }
+            if (typedFunction == null)
+            {
+                typedFunction = CreateFunction<T>(functionName);
+            }
+            return typedFunction;
         }
     }
 }

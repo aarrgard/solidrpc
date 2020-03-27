@@ -40,21 +40,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Creates a new timer function
         /// </summary>
         /// <returns></returns>
-        IAzTimerFunction CreateTimerFunction(string name);
+        T CreateFunction<T>(string name) where T : class, IAzFunction;
 
         /// <summary>
-        /// Creates a http function
+        /// Creates a new timer function
         /// </summary>
-        /// <param name="name"></param>
         /// <returns></returns>
-        IAzHttpFunction CreateHttpFunction(string name);
-
-        /// <summary>
-        /// Creates a queue function
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        IAzQueueFunction CreateQueueFunction(string name);
+        T GetOrCreateFunction<T>(string name) where T : class, IAzFunction;
 
         /// <summary>
         /// Triggers a restart by writing some additional data to 

@@ -32,8 +32,9 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
 
-            if (!azConfig.Protocols.Any(o => o == "http")) azConfig.Protocols.Add("http");
-            if (!azConfig.Protocols.Any(o => o == "queue")) azConfig.Protocols.Add("queue");
+            c.SetHttpTransport();
+            c.SetQueueTransportConnectionName("SolidRpcQueueConnection");
+            c.SetQueueTransportInboundHandler("azqueue");
 
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {

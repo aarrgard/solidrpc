@@ -4,8 +4,8 @@
     {
       "name": "message",
       "direction": "in",
-      "type": "serviceBusTrigger",
-      "queueName": "SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetContent",
+      "type": "queueTrigger",
+      "queueName": "front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent",
       "connection": "SolidRpcQueueConnection"
     },
     {

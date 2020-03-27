@@ -16,6 +16,6 @@ namespace SolidRpc.OpenApi.AzSvcBus
         /// <param name="connectionString"></param>
         /// <param name="queueName"></param>
         /// <returns></returns>
-        QueueClient GetQueueClient(string connectionString, string queueName);
+        QueueClient GetQueueClient(string connectionName, string queueName);
     }
 }

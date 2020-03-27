@@ -76,11 +76,6 @@ namespace SolidRpc.OpenApi.AzFunctions
                 azConfig.HttpAuthLevel = "anonymous";
             }
 
-            if(!azConfig.Protocols.Any())
-            {
-                azConfig.Protocols.Add("http");
-            }
-
             var method = c.Methods.First();
             if (method.DeclaringType == typeof(ISolidRpcHost))
             {

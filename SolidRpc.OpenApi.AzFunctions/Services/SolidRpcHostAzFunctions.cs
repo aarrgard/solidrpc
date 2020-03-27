@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
@@ -24,11 +25,37 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     {
         private class FunctionDef
         {
-            public FunctionDef(string protocol, string path)
+            public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string path)
             {
+                FunctionHandler = functionHandler;
                 Protocol = protocol;
-                Path = path;
+                Path = FixupPath(path);
                 FunctionName = CreateFunctionName();
+            }
+
+            private string FixupPath(string path)
+            {
+                // remove frontend prefix
+                if (path.StartsWith($"{FunctionHandler.HttpRouteFrontendPrefix}/"))
+                {
+                    path = path.Substring(FunctionHandler.HttpRouteFrontendPrefix.Length + 1);
+                }
+                //
+                // transform wildcard names
+                //
+                var level = 0;
+                var sb = new StringBuilder();
+                for (int i = 0; i < path.Length; i++)
+                {
+                    if (path[i] == '}') level--;
+                    if (level == 0)
+                    {
+                        sb.Append(path[i]);
+                    }
+                    if (path[i] == '{') level++;
+                }
+
+                return sb.ToString();
             }
             private string CreateFunctionName()
             {
@@ -57,6 +84,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 }
                 return sb.ToString();
             }
+
+            public IAzFunctionHandler FunctionHandler { get; }
             public string Protocol { get; }
             public string Path { get; }
             public string FunctionName { get; }
@@ -64,7 +93,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private class HttpFunctionDef : FunctionDef
         {
-            public HttpFunctionDef(string protocol, string path) : base(protocol, path) { }
+            public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string path) : base(functionHandler,protocol, path) { }
 
             public string Method { get; set; }
             public string AuthLevel { get; set; }
@@ -72,9 +101,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private class QueueFunctionDef : FunctionDef
         {
-            public QueueFunctionDef(string protocol, string path) : base(protocol, path) { }
+            public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string path) : base(functionHandler, protocol, path) { }
             public string QueueName { get; set; }
             public string Connection { get; set; }
+            public string InboundHandler { get; set; }
         }
 
         /// <summary>
@@ -148,8 +178,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             }
 
             var functions = new List<FunctionDef>();
+            var openApiConfig = config.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             var azConfig = config.ConfigureAdvice<ISolidAzureFunctionConfig>();
-            if (azConfig.Protocols.Any(o => o.ToLower() == "http"))
+            if (openApiConfig.HttpTransport != null)
             {
                 //
                 // handle auth level
@@ -160,57 +191,34 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     throw new Exception($"AuthLevel not set for {mb.MethodInfo.DeclaringType.FullName}.{mb.MethodInfo.Name}");
                 }
 
-                functions.Add(new HttpFunctionDef("http", FixupPath(mb.Address.LocalPath))
+                functions.Add(new HttpFunctionDef(FunctionHandler, "http", mb.Address.LocalPath)
                 {
                     Method = mb.Method.ToLower(),
                     AuthLevel = authLevel
                 });
             }
-            if (azConfig.Protocols.Any(o => o.ToLower() == "queue"))
+            if (openApiConfig.QueueTransport != null)
             {
-                var queueName = azConfig.QueueName;
-                if(string.IsNullOrEmpty(queueName))
-                {
-                    queueName = QueueTransport.CreateSafeQueueName(mb.Address.AbsolutePath);
-                }
-                var connection = azConfig.QueueConnection;
+                var queueName = openApiConfig.QueueTransport.QueueName;
+                var connection = openApiConfig.QueueTransport.ConnectionName;
+                var inboundHandler = openApiConfig.QueueTransport.InboundHandler;
+
                 if (string.IsNullOrEmpty(connection))
                 {
                     connection = "SolidRpcQueueConnection";
                 }
 
-                functions.Add(new QueueFunctionDef("queue", FixupPath(mb.Address.LocalPath))
+                if(new[] { "azqueue", "azsvcbus"}.Contains(inboundHandler))
                 {
-                    QueueName = queueName,
-                    Connection = connection
-                });
+                    functions.Add(new QueueFunctionDef(FunctionHandler, "queue", mb.Address.LocalPath)
+                    {
+                        QueueName = queueName,
+                        Connection = connection,
+                        InboundHandler = inboundHandler
+                    });
+                }
             }
             return functions;
-        }
-
-        private string FixupPath(string path)
-        {
-            // remove frontend prefix
-            if (path.StartsWith($"{FunctionHandler.HttpRouteFrontendPrefix}/"))
-            {
-                path = path.Substring(FunctionHandler.HttpRouteFrontendPrefix.Length + 1);
-            }
-            //
-            // transform wildcard names
-            //
-            var level = 0;
-            var sb = new StringBuilder();
-            for(int i = 0; i < path.Length; i++)
-            {
-                if (path[i] == '}') level--;
-                if(level == 0)
-                {
-                    sb.Append(path[i]);
-                }
-                if (path[i] == '{') level++;
-            }
-
-            return sb.ToString();
         }
 
         private async Task<bool> WriteHttpFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
@@ -218,7 +226,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var existingFunctions = FunctionHandler.GetFunctions().OfType<IAzHttpFunction>().ToList();
             var touchedFunctions = new List<IAzFunction>();
             var functionNames = new HashSet<string>(functionDefs.Select(o => o.FunctionName));
-            var paths = functionDefs.Select(o => o.Path).Distinct().ToList();
             var modified = false;
 
             //
@@ -236,25 +243,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             // handle http functions
             //
             var httpFunctionDefs = functionDefs.OfType<HttpFunctionDef>().ToList();
-            foreach(var path in paths)
+            var httpPaths = httpFunctionDefs.Select(o => o.Path).Distinct().ToList();
+            foreach (var path in httpPaths)
             {
                 var functionName = httpFunctionDefs.Where(o => o.Path == path).Select(o => o.FunctionName).Single();
                 var methods = httpFunctionDefs.Where(o => o.Path == path).Select(o => o.Method).OrderBy(o => o).ToArray();
                 var authLevel = httpFunctionDefs.Where(o => o.Path == path).Select(o => o.AuthLevel).Single();
-                var function = existingFunctions.Where(o => o.Name == functionName).FirstOrDefault();
-                var httpFunction = function as IAzHttpFunction;
-                if (httpFunction == null && function != null)
-                {
-                    function.Delete();
-                }
-                if (httpFunction == null)
-                {
-                    httpFunction = FunctionHandler.CreateHttpFunction(functionName);
-                }
+
+                var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
                 httpFunction.AuthLevel = authLevel;
                 httpFunction.Route = FunctionHandler.CreateRoute(path);
                 httpFunction.Methods = methods;
-
                 touchedFunctions.Add(httpFunction);
             }
 
@@ -266,23 +265,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             foreach(var queueFunctionDef in queueFunctionDefs)
             {
                 var functionName = queueFunctionDef.FunctionName;
-                var function = existingFunctions.Where(o => o.Name == functionName).FirstOrDefault();
-                var queueFunction = function as IAzQueueFunction;
-                if (queueFunction == null && function != null)
+                var inboundHandler = queueFunctionDef.InboundHandler;
+                if (inboundHandler.Equals("azqueue", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    function.Delete();
+                    var queueFunction = FunctionHandler.GetOrCreateFunction<IAzQueueFunction>(functionName);
+                    queueFunction.QueueName = queueFunctionDef.QueueName;
+                    queueFunction.Connection = queueFunctionDef.Connection;
+                    touchedFunctions.Add(queueFunction);
                 }
-                if (queueFunction == null)
+                else if (inboundHandler.Equals("azsvcbus", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    queueFunction = FunctionHandler.CreateQueueFunction(functionName);
+                    var queueFunction = FunctionHandler.GetOrCreateFunction<IAzSvcBusFunction>(functionName);
+                    queueFunction.QueueName = queueFunctionDef.QueueName;
+                    queueFunction.Connection = queueFunctionDef.Connection;
+                    touchedFunctions.Add(queueFunction);
                 }
-
-                tasks.Add(CheckQueueAsync(queueFunctionDef.Connection, queueFunctionDef.QueueName, cancellationToken));
-
-                queueFunction.QueueName = queueFunctionDef.QueueName;
-                queueFunction.Connection = queueFunctionDef.Connection;
-
-                touchedFunctions.Add(queueFunction);
+                else
+                {
+                    throw new Exception("Cannot handle inbound handler:" + inboundHandler);
+                }
             }
             await Task.WhenAll(tasks);
 

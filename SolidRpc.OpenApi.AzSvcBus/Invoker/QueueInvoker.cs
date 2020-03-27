@@ -98,7 +98,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
                 // 4. Dispatch it.
                 var msg = new Message(ms.ToArray());
                 msg.MessageId = messageId.ToString();
-                var qc = QueueClientStore.GetQueueClient(queueTransport.ConnectionString, queueTransport.QueueName);
+                var qc = QueueClientStore.GetQueueClient(queueTransport.ConnectionName, queueTransport.QueueName);
                 await qc.SendAsync(msg);
 
                 //

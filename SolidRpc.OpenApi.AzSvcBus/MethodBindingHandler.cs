@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -26,18 +27,21 @@ namespace SolidRpc.OpenApi.AzSvcBus
     {
         public const string GenericInboundHandler = "generic";
         public MethodBindingHandler(
-            ILogger<MethodBindingHandler> logger, 
+            ILogger<MethodBindingHandler> logger,
+            IConfiguration configuration,
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
             IMethodInvoker methodInvoker)
         {
             Logger = logger;
+            Configuration = configuration;
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
             MethodInvoker = methodInvoker;
         }
 
         private ILogger Logger { get; }
+        public IConfiguration Configuration { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private IMethodInvoker MethodInvoker { get; }
@@ -74,7 +78,7 @@ namespace SolidRpc.OpenApi.AzSvcBus
                 }
                 return;
             }
-            SolidRpcApplication.AddStartupTask(SetupQueueReceiver(binding, queueTransport.ConnectionString, queueTransport.QueueName, SolidRpcApplication.ShutdownToken));
+            SolidRpcApplication.AddStartupTask(SetupQueueReceiver(binding, queueTransport.ConnectionName, queueTransport.QueueName, SolidRpcApplication.ShutdownToken));
         }
 
         /// <summary>
@@ -83,8 +87,14 @@ namespace SolidRpc.OpenApi.AzSvcBus
         /// <param name="connectionString"></param>
         /// <param name="queueName"></param>
         /// <returns></returns>
-        private async Task SetupQueueReceiver(IMethodBinding binding, string connectionString, string queueName, CancellationToken cancellationToken)
+        private async Task SetupQueueReceiver(IMethodBinding binding, string connectionName, string queueName, CancellationToken cancellationToken)
         {
+            var connectionString = Configuration[connectionName];
+            if(string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("Cannot find connection string for connection name:" + connectionName);
+            }
+
             //
             // make sure that the queue exists
             //

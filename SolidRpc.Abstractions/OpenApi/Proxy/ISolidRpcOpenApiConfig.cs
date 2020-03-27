@@ -67,6 +67,19 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         }
 
         /// <summary>
+        /// Activates the http transport
+        /// </summary>
+        /// <param name="config"></param>
+        public static void SetHttpTransport(this ISolidRpcOpenApiConfig config)
+        {
+            var httpTransport = config.HttpTransport;
+            if (httpTransport == null)
+            {
+                httpTransport = new HttpTransport(null, null);
+            }
+            config.HttpTransport = httpTransport;
+        }
+        /// <summary>
         /// Sets the method address transformer on the transports
         /// </summary>
         /// <param name="config"></param>
@@ -84,37 +97,21 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             }
             config.HttpTransport = httpTransport;
         }
-
         /// <summary>
         /// Sets the queue transport connection name
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="conf"></param>
         /// <param name="connectionName"></param>
-        public static void SetQueueTransportConnectionString(this ISolidRpcOpenApiConfig config, IConfiguration conf, string connectionName)
-        {
-            var connectionString = conf[connectionName];
-            if(string.IsNullOrEmpty(connectionString)) 
-            {
-                throw new Exception("Cannot find connection string for configuration:"+ connectionName);
-            }
-            config.SetQueueTransportConnectionString(connectionString);
-        }
-        /// <summary>
-        /// Sets the queue transport connection name
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="connectionString"></param>
-        public static void SetQueueTransportConnectionString(this ISolidRpcOpenApiConfig config, string connectionString)
+        public static void SetQueueTransportConnectionName(this ISolidRpcOpenApiConfig config, string connectionName)
         {
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(null, connectionString, null);
+                queueTransport = new QueueTransport(null, connectionName, null);
             }
             else
             {
-                queueTransport = queueTransport.SetConnectionString(connectionString);
+                queueTransport = queueTransport.SetConnectionName(connectionName);
             }
             config.QueueTransport = queueTransport;
         }

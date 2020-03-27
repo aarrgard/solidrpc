@@ -4,8 +4,8 @@
     {
       "name": "message",
       "direction": "in",
-      "type": "serviceBusTrigger",
-      "queueName": "SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOpenApiSpec_arg0_arg1",
+      "type": "queueTrigger",
+      "queueName": "front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/%7BassemblyName%7D/%7BopenApiSpecResolverAddress%7D",
       "connection": "SolidRpcQueueConnection"
     },
     {

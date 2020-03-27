@@ -83,24 +83,16 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateTimerFunction(System.String)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateFunction``1(System.String)">
             <summary>
             Creates a new timer function
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateHttpFunction(System.String)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.GetOrCreateFunction``1(System.String)">
             <summary>
-            Creates a http function
+            Creates a new timer function
             </summary>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateQueueFunction(System.String)">
-            <summary>
-            Creates a queue function
-            </summary>
-            <param name="name"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.TriggerRestart">
@@ -173,6 +165,21 @@
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzQueueFunction.Connection">
+            <summary>
+            The connection
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzSvcBusFunction">
+            <summary>
+            Represents a timer function
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzSvcBusFunction.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzSvcBusFunction.Connection">
             <summary>
             The connection
             </summary>
@@ -344,23 +351,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateTimerFunction(System.String)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateFunction``1(System.String)">
             <summary>
-            Creates a timer function
+            Creates a function
             </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateHttpFunction(System.String)">
-            <summary>
-            Creates a http function
-            </summary>
-            <param name="functionName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateQueueFunction(System.String)">
-            <summary>
-            Creates a queue function
-            </summary>
+            <typeparam name="T"></typeparam>
             <param name="functionName"></param>
             <returns></returns>
         </member>
@@ -452,6 +447,41 @@
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.Connection">
+            <summary>
+            The connection
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction">
+            <summary>
+            Represents a timer function
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
+            <summary>
+            Constructs a new svc bus function.
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="subDir"></param>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,SolidRpc.OpenApi.AzFunctions.Functions.Model.Function)">
+            <summary>
+            Constructs a new svc bus function
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="subDir"></param>
+            <param name="functionJson"></param>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.TriggerType">
+            <summary>
+            The trigger type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.Connection">
             <summary>
             The connection
             </summary>

@@ -84,16 +84,8 @@ namespace Microsoft.Extensions.DependencyInjection
             var functionName = $"Timer_{typeof(TService).FullName}.{mi.Name}".Replace(".", "_");
             var funcHandler = services.GetAzFunctionHandler();
             var azFunc = funcHandler.GetFunctions().SingleOrDefault(o => o.Name == functionName);
-            if (azFunc != null && false == azFunc is IAzTimerFunction)
-            {
-                azFunc.Delete();
-                azFunc = null;
-            }
-            var timerFunc = (IAzTimerFunction)azFunc;
-            if (timerFunc == null)
-            {
-                timerFunc = funcHandler.CreateTimerFunction(functionName);
-            }
+
+            var timerFunc = funcHandler.CreateFunction<IAzTimerFunction>(functionName);
             timerFunc.RunOnStartup = runOnStartup;
             timerFunc.Schedule = schedule;
             timerFunc.ServiceType = typeof(TService).FullName;

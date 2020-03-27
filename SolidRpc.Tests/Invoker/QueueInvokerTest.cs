@@ -64,8 +64,7 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
-                conf.SetQueueTransportConnectionString(
-                    services.GetSolidRpcService<IConfiguration>(),
+                conf.SetQueueTransportConnectionName(
                     "SolidRpcQueueConnection");
                 return true;
             });
@@ -83,9 +82,8 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
-                conf.SetQueueTransportInboundHandler("generic");
-                conf.SetQueueTransportConnectionString(
-                    clientServices.GetSolidRpcService<IConfiguration>(),
+                //conf.SetQueueTransportInboundHandler("generic");
+                conf.SetQueueTransportConnectionName(
                     "SolidRpcQueueConnection");
                 return true;
             });
@@ -96,7 +94,7 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Requires connection string")]
+        [Test]
         public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())
@@ -106,7 +104,7 @@ namespace SolidRpc.Tests.Invoker
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
 
                 int res = 0;
-                for(int i = 0; i < 100; i++)
+                for(int i = 0; i < 1; i++)
                 {
                     res = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
                 }

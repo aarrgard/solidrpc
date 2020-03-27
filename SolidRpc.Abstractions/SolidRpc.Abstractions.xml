@@ -792,26 +792,10 @@
             settings should be.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.Protocols">
-            <summary>
-            The protocols tha the function should use.
-            "http", "queue", etc.
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.HttpAuthLevel">
             <summary>
             The authorization level in the http protocol
             "anonymous", "admin", "function"
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.QueueName">
-            <summary>
-            The name of the queue to poll - if not set it will be based on the openapi operation.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.QueueConnection">
-            <summary>
-            The the connection string to connect to the queue.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3">
@@ -877,6 +861,12 @@
             </summary>
             <param name="config"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetHttpTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Activates the http transport
+            </summary>
+            <param name="config"></param>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
             <summary>
             Sets the method address transformer on the transports
@@ -884,20 +874,12 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionString(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,Microsoft.Extensions.Configuration.IConfiguration,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionName(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
             <summary>
             Sets the queue transport connection name
             </summary>
             <param name="config"></param>
-            <param name="conf"></param>
             <param name="connectionName"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionString(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
-            <summary>
-            Sets the queue transport connection name
-            </summary>
-            <param name="config"></param>
-            <param name="connectionString"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportInboundHandler(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
             <summary>
@@ -980,16 +962,16 @@
             <param name="queueName"></param>
             <returns></returns>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.ConnectionString">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.ConnectionName">
             <summary>
-            The connection string
+            The connection name
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetConnectionString(System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetConnectionName(System.String)">
             <summary>
-            Sets the connection string
+            Sets the connection name
             </summary>
-            <param name="connectionString"></param>
+            <param name="connectionName"></param>
             <returns></returns>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.InboundHandler">
@@ -1032,23 +1014,24 @@
             <param name="queueName"></param>
             <returns></returns>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.ConnectionString">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.ConnectionName">
             <summary>
-            Returns the connection string to use
+            Returns the connection name to use(key in configuration)
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetConnectionString(System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetConnectionName(System.String)">
             <summary>
-            Sets the connectin string
+            Sets the connection name
             </summary>
-            <param name="connectionString"></param>
+            <param name="connectionName"></param>
             <returns></returns>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.InboundHandler">
             <summary>
             Specifies the inbound message handler. If this string is empty
             then no message handler wiil be configured for the client. 
-            "azfunctions" - means that the azure functions should pickup messages
+            "azqueue" - means that the azure functions should pickup messages
+            "azsvcbus" - means that the azure functions should pickup messages
             "generic" - means that we should configure a generic handler. 
             </summary>
         </member>
