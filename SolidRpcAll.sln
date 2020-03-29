@@ -64,7 +64,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Vitec.Impl", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFunctionsV3", "SolidRpc.Test.Petstore.AzFunctionsV3\SolidRpc.Test.Petstore.AzFunctionsV3.csproj", "{CCB865BA-6424-4617-A893-AACA45551D15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.AzSvcBus", "SolidRpc.OpenApi.AzSvcBus\SolidRpc.OpenApi.AzSvcBus.csproj", "{B91FCE09-DDD1-4F3A-81E4-C9EAF69E3741}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzSvcBus", "SolidRpc.OpenApi.AzSvcBus\SolidRpc.OpenApi.AzSvcBus.csproj", "{B91FCE09-DDD1-4F3A-81E4-C9EAF69E3741}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.AzQueue", "SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj", "{43603697-8345-4B96-9B07-BFE3989D6717}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -176,6 +178,10 @@ Global
 		{B91FCE09-DDD1-4F3A-81E4-C9EAF69E3741}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B91FCE09-DDD1-4F3A-81E4-C9EAF69E3741}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B91FCE09-DDD1-4F3A-81E4-C9EAF69E3741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43603697-8345-4B96-9B07-BFE3989D6717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43603697-8345-4B96-9B07-BFE3989D6717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43603697-8345-4B96-9B07-BFE3989D6717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43603697-8345-4B96-9B07-BFE3989D6717}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +213,7 @@ Global
 		{33DA0CD0-9DE4-4EAD-B5E0-B6676C9160DA} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
 		{CCB865BA-6424-4617-A893-AACA45551D15} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
 		{B91FCE09-DDD1-4F3A-81E4-C9EAF69E3741} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{43603697-8345-4B96-9B07-BFE3989D6717} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}

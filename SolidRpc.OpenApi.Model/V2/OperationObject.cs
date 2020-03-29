@@ -192,6 +192,15 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Returns the absolute path.
+        /// </summary>
+        /// <returns></returns>
+        public string GetAbsolutePath()
+        {
+            return $"{GetParent<SwaggerObject>().GetBasePath()}{GetPath().Substring(1)}";
+        }
+
+        /// <summary>
         /// Returns the address to this operation
         /// </summary>
         /// <returns></returns>

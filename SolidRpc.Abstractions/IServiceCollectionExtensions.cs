@@ -301,6 +301,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctions", false);
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctionsV1Extension", false);
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctionsV2Extension", false);
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.AzQueue", false);
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzSvcBus", false);
                 s_LoadedAssemblies = assemblies;
             }

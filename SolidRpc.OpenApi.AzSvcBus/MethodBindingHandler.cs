@@ -25,7 +25,9 @@ namespace SolidRpc.OpenApi.AzSvcBus
     /// </summary>
     public class MethodBindingHandler : IMethodBindingHandler
     {
+        public const string SvcBusQueueType = "AzSvcBus";
         public const string GenericInboundHandler = "generic";
+
         public MethodBindingHandler(
             ILogger<MethodBindingHandler> logger,
             IConfiguration configuration,
@@ -56,29 +58,30 @@ namespace SolidRpc.OpenApi.AzSvcBus
             var queueTransport = binding.Transports.OfType<IQueueTransport>().FirstOrDefault();
             if (queueTransport == null)
             {
-                if(Logger.IsEnabled(LogLevel.Trace))
+                if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"No queue transport configured for binding {binding.OperationId} - cannot configure queue" );
+                    Logger.LogTrace($"No queue transport configured for binding {binding.OperationId} - cannot configure queue");
                 }
                 return;
             }
-            if(string.IsNullOrEmpty(queueTransport.InboundHandler))
+            if (!string.Equals(queueTransport.QueueType, SvcBusQueueType, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"No queue handler configured for binding {binding.OperationId} - will not configure queue");
+                    Logger.LogTrace($"Queue type({queueTransport.QueueType}) is not a {SvcBusQueueType} for binding {binding.OperationId} - will not configure svcbus queue");
                 }
                 return;
             }
-            if(!queueTransport.InboundHandler.Equals(GenericInboundHandler, StringComparison.InvariantCultureIgnoreCase))
+            bool startReceiver = string.Equals(queueTransport.InboundHandler, GenericInboundHandler, StringComparison.InvariantCultureIgnoreCase);
+            if (!startReceiver)
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Inbound handler not {GenericInboundHandler}({queueTransport.InboundHandler}) {binding.OperationId} - will not configure queue");
+                    Logger.LogTrace($"Inbound handler not {GenericInboundHandler}({queueTransport.InboundHandler}) {binding.OperationId} - will not startup generic receiver");
                 }
                 return;
             }
-            SolidRpcApplication.AddStartupTask(SetupQueueReceiver(binding, queueTransport.ConnectionName, queueTransport.QueueName, SolidRpcApplication.ShutdownToken));
+            SolidRpcApplication.AddStartupTask(SetupQueueReceiver(binding, queueTransport.ConnectionName, queueTransport.QueueName, startReceiver, SolidRpcApplication.ShutdownToken));
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace SolidRpc.OpenApi.AzSvcBus
         /// <param name="connectionString"></param>
         /// <param name="queueName"></param>
         /// <returns></returns>
-        private async Task SetupQueueReceiver(IMethodBinding binding, string connectionName, string queueName, CancellationToken cancellationToken)
+        private async Task SetupQueueReceiver(IMethodBinding binding, string connectionName, string queueName, bool startReceiver, CancellationToken cancellationToken)
         {
             var connectionString = Configuration[connectionName];
             if(string.IsNullOrEmpty(connectionString))
@@ -110,12 +113,15 @@ namespace SolidRpc.OpenApi.AzSvcBus
                 var queue = await mgmt.CreateQueueAsync(queueName, cancellationToken);
             }
 
-            var gc = new QueueClient(connectionString, queueName, ReceiveMode.PeekLock);
-            gc.RegisterMessageHandler(MessageHandler, new MessageHandlerOptions(ExceptionHandler)
+            if(startReceiver)
             {
-                MaxConcurrentCalls = 100,
-                AutoComplete = true
-            });
+                var gc = new QueueClient(connectionString, queueName, ReceiveMode.PeekLock);
+                gc.RegisterMessageHandler(MessageHandler, new MessageHandlerOptions(ExceptionHandler)
+                {
+                    MaxConcurrentCalls = 100,
+                    AutoComplete = true
+                });
+            }
         }
 
         private Task ExceptionHandler(ExceptionReceivedEventArgs arg)

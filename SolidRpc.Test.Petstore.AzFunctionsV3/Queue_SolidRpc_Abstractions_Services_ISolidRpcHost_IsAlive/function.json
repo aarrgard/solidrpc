@@ -5,8 +5,8 @@
       "name": "message",
       "direction": "in",
       "type": "queueTrigger",
-      "queueName": "front/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive",
-      "connection": "SolidRpcQueueConnection"
+      "queueName": "front-solidrpc-abstractions-services-isolidrpchost-isalive",
+      "connection": "SolidRpcAzQueueConnection"
     },
     {
       "name": "serviceProvider",

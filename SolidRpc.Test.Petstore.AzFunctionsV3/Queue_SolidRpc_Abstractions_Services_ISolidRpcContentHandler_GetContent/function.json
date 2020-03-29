@@ -5,8 +5,8 @@
       "name": "message",
       "direction": "in",
       "type": "queueTrigger",
-      "queueName": "front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent",
-      "connection": "SolidRpcQueueConnection"
+      "queueName": "f5t-s8c-a12s-services-isolidrpccontenthandler-getcontent",
+      "connection": "SolidRpcAzQueueConnection"
     },
     {
       "name": "serviceProvider",

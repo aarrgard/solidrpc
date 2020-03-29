@@ -9,8 +9,6 @@ using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
@@ -104,7 +102,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string path) : base(functionHandler, protocol, path) { }
             public string QueueName { get; set; }
             public string Connection { get; set; }
-            public string InboundHandler { get; set; }
+            public string QueueType { get; set; }
         }
 
         /// <summary>
@@ -202,19 +200,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 var queueName = openApiConfig.QueueTransport.QueueName;
                 var connection = openApiConfig.QueueTransport.ConnectionName;
                 var inboundHandler = openApiConfig.QueueTransport.InboundHandler;
+                var queueType = openApiConfig.QueueTransport.QueueType;
 
-                if (string.IsNullOrEmpty(connection))
-                {
-                    connection = "SolidRpcQueueConnection";
-                }
-
-                if(new[] { "azqueue", "azsvcbus"}.Contains(inboundHandler))
+                if(string.Equals(inboundHandler, "azfunctions", StringComparison.CurrentCultureIgnoreCase))
                 {
                     functions.Add(new QueueFunctionDef(FunctionHandler, "queue", mb.Address.LocalPath)
                     {
                         QueueName = queueName,
                         Connection = connection,
-                        InboundHandler = inboundHandler
+                        QueueType = queueType
                     });
                 }
             }
@@ -265,24 +259,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             foreach(var queueFunctionDef in queueFunctionDefs)
             {
                 var functionName = queueFunctionDef.FunctionName;
-                var inboundHandler = queueFunctionDef.InboundHandler;
-                if (inboundHandler.Equals("azqueue", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var queueFunction = FunctionHandler.GetOrCreateFunction<IAzQueueFunction>(functionName);
-                    queueFunction.QueueName = queueFunctionDef.QueueName;
-                    queueFunction.Connection = queueFunctionDef.Connection;
-                    touchedFunctions.Add(queueFunction);
-                }
-                else if (inboundHandler.Equals("azsvcbus", StringComparison.InvariantCultureIgnoreCase))
+                var queueType = queueFunctionDef.QueueType;
+
+                if (queueType.Equals("azsvcbus", StringComparison.InvariantCultureIgnoreCase))
                 {
                     var queueFunction = FunctionHandler.GetOrCreateFunction<IAzSvcBusFunction>(functionName);
                     queueFunction.QueueName = queueFunctionDef.QueueName;
                     queueFunction.Connection = queueFunctionDef.Connection;
                     touchedFunctions.Add(queueFunction);
                 }
+                else if(queueType.Equals("azqueue", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var queueFunction = FunctionHandler.GetOrCreateFunction<IAzQueueFunction>(functionName);
+                    queueFunction.QueueName = queueFunctionDef.QueueName;
+                    queueFunction.Connection = queueFunctionDef.Connection;
+                    touchedFunctions.Add(queueFunction);
+                }
                 else
                 {
-                    throw new Exception("Cannot handle inbound handler:" + inboundHandler);
+                    throw new Exception("Cannot handle queue type:" + queueType);
                 }
             }
             await Task.WhenAll(tasks);

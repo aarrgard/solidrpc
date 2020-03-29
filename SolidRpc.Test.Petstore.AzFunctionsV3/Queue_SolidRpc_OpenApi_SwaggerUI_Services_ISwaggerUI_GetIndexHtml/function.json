@@ -5,8 +5,8 @@
       "name": "message",
       "direction": "in",
       "type": "queueTrigger",
-      "queueName": "front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml",
-      "connection": "SolidRpcQueueConnection"
+      "queueName": "f5t-s8c-openapi-swaggerui-services-iswaggerui-getindexhtml",
+      "connection": "SolidRpcAzQueueConnection"
     },
     {
       "name": "serviceProvider",

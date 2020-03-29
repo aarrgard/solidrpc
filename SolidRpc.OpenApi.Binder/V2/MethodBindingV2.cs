@@ -520,6 +520,8 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public IEnumerable<ITransport> Transports { get; }
 
+        public string AbsolutePath => OperationObject.GetAbsolutePath();
+
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {
             // extract path data

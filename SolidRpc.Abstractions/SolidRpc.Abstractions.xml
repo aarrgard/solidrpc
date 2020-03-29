@@ -328,6 +328,11 @@
             The path relative to the base path of the binder.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.AbsolutePath">
+            <summary>
+            Returns the absolute path to his method.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Address">
             <summary>
             The base address to this method.
@@ -874,6 +879,25 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetAzSvcBusTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the queue transport to "AzSvcBus"
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetAzQueueTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the queue transport to "AzQueue"
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
+            <summary>
+            Sets the queue transport type
+            </summary>
+            <param name="config"></param>
+            <param name="queueType"></param>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionName(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
             <summary>
             Sets the queue transport connection name
@@ -929,19 +953,21 @@
             Contains the settings for the queue transport.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.CreateSafeQueueName(System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.CreateSafeQueueName(System.String,System.String)">
             <summary>
             Creates a safe queue name
             </summary>
+            <param name="queueType"></param>
             <param name="queueName"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(System.String,System.String,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(System.String,System.String,System.String,System.String)">
             <summary>
             Represents a queue transport
             </summary>
             <param name="queueName"></param>
             <param name="connectionString"></param>
+            <param name="queueType"></param>
             <param name="inboundHandler"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
@@ -972,6 +998,18 @@
             Sets the connection name
             </summary>
             <param name="connectionName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.QueueType">
+            <summary>
+            The queue type
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetQueueType(System.String)">
+            <summary>
+            Sets the queue type
+            </summary>
+            <param name="queueType"></param>
             <returns></returns>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.InboundHandler">
@@ -1026,13 +1064,24 @@
             <param name="connectionName"></param>
             <returns></returns>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.QueueType">
+            <summary>
+            Specifies the queue type. AzSvcBus, AzQueue, Memory, etc.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetQueueType(System.String)">
+            <summary>
+            Sets the inbound handler.
+            </summary>
+            <param name="queueType"></param>
+            <returns></returns>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.InboundHandler">
             <summary>
             Specifies the inbound message handler. If this string is empty
             then no message handler wiil be configured for the client. 
-            "azqueue" - means that the azure functions should pickup messages
-            "azsvcbus" - means that the azure functions should pickup messages
-            "generic" - means that we should configure a generic handler. 
+            "azfunction" - means that the azure functions should pickup messages
+            "generic" - means that we register a generic message handler for service bus.
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetInboundHandler(System.String)">

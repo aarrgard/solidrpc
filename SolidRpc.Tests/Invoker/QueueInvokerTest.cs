@@ -31,7 +31,7 @@ namespace SolidRpc.Tests.Invoker
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> DoXAsync(CancellationToken cancellation = default(CancellationToken));
+            Task<int> DoYAsync(CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace SolidRpc.Tests.Invoker
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> DoXAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task<int> DoYAsync(CancellationToken cancellation = default(CancellationToken))
             {
-                Logger.LogTrace("DoXAsync");
+                Logger.LogTrace("DoYAsync");
                 return Task.FromResult(4711);
             }
         }
@@ -64,8 +64,7 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
-                conf.SetQueueTransportConnectionName(
-                    "SolidRpcQueueConnection");
+                conf.SetAzQueueTransport();
                 return true;
             });
 
@@ -82,9 +81,7 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
-                //conf.SetQueueTransportInboundHandler("generic");
-                conf.SetQueueTransportConnectionName(
-                    "SolidRpcQueueConnection");
+                conf.SetAzQueueTransport();
                 return true;
             });
         }
@@ -94,7 +91,7 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test]
+        [Test, Ignore("Requires settings")]
         public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())
@@ -106,10 +103,10 @@ namespace SolidRpc.Tests.Invoker
                 int res = 0;
                 for(int i = 0; i < 1; i++)
                 {
-                    res = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(CancellationToken.None));
                 }
 
-                //await Task.Delay(10000);
+                await Task.Delay(10000);
                 Assert.AreEqual(4711, res);
             }
         }

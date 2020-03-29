@@ -59,6 +59,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         string Path { get; }
 
         /// <summary>
+        /// Returns the absolute path to his method.
+        /// </summary>
+        string AbsolutePath { get; }
+
+        /// <summary>
         /// The base address to this method.
         /// </summary>
         Uri Address { get; set; }

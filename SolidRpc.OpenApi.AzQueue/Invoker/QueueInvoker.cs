@@ -1,5 +1,5 @@
-﻿using Microsoft.Azure.ServiceBus;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Queue;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -8,7 +8,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
-using SolidRpc.OpenApi.AzSvcBus.Invoker;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 [assembly: SolidRpcAbstractionProvider(typeof(IQueueInvoker<>), typeof(QueueInvoker<>), SolidRpcAbstractionProviderLifetime.Scoped)]
-namespace SolidRpc.OpenApi.AzSvcBus.Invoker
+namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>
     /// The queue invoker dispatches messages to the service bus.
@@ -32,7 +32,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
             IMethodBinderStore methodBinderStore, 
             IServiceProvider serviceProvider,
             ISerializerFactory serializerFactory,
-            IQueueClientStore queueClientStore) : base(logger, methodBinderStore, serviceProvider)
+            ICloudQueueStore queueClientStore) : base(logger, methodBinderStore, serviceProvider)
         {
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
@@ -41,13 +41,16 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
 
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
-        private IQueueClientStore QueueClientStore { get; }
+        private ICloudQueueStore QueueClientStore { get; }
 
         protected override async Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, MethodInfo mi, object[] args)
         {
-            var messageId = Guid.NewGuid();
             try
             {
+                if (Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace($"Started dispatching message...");
+                }
                 //
                 // determine if we can dispatch the method invocation using the  
                 // queue transport.
@@ -69,11 +72,6 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
                 //
                 await SolidRpcApplication.WaitForStartupTasks();
 
-                if (Logger.IsEnabled(LogLevel.Trace))
-                {
-                    Logger.LogTrace($"Started dispatching message {messageId}");
-                }
-
                 //
                 // so we do
                 // 1. Bind the arguments using the openapi spec
@@ -92,14 +90,17 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
                 await httpReq.CopyToAsync(httpReqData);
 
                 // 3. Serialize it
-                var ms = new MemoryStream();
-                SerializerFactory.SerializeToStream(ms, httpReqData);
+                string message;
+                SerializerFactory.SerializeToString(out message, httpReqData);
 
                 // 4. Dispatch it.
-                var msg = new Message(ms.ToArray());
-                msg.MessageId = messageId.ToString();
+                var msg = new CloudQueueMessage(message);
                 var qc = QueueClientStore.GetQueueClient(queueTransport.ConnectionName, queueTransport.QueueName);
-                await qc.SendAsync(msg);
+                await qc.AddMessageAsync(msg);
+                if (Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace($"Sent message {msg.Id}");
+                }
 
                 //
                 // Handle respose
@@ -119,7 +120,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
             {
                 if(Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Done dispatching message {messageId}");
+                    Logger.LogTrace($"...done dispatching message.");
                 }
             }
         }

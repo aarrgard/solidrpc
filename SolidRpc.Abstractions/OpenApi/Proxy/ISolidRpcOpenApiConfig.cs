@@ -1,13 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using SolidProxy.Core.Configuration;
-using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidProxy.Core.Configuration;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.OpenApi.Transport.Impl;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {
@@ -97,6 +91,44 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             }
             config.HttpTransport = httpTransport;
         }
+
+        /// <summary>
+        /// Sets the queue transport to "AzSvcBus"
+        /// </summary>
+        /// <param name="config"></param>
+        public static void SetAzSvcBusTransport(this ISolidRpcOpenApiConfig config)
+        {
+            config.SetQueueTransport("AzSvcBus");
+        }
+
+        /// <summary>
+        /// Sets the queue transport to "AzQueue"
+        /// </summary>
+        /// <param name="config"></param>
+        public static void SetAzQueueTransport(this ISolidRpcOpenApiConfig config)
+        {
+            config.SetQueueTransport("AzQueue");
+        }
+
+        /// <summary>
+        /// Sets the queue transport type
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="queueType"></param>
+        public static void SetQueueTransport(this ISolidRpcOpenApiConfig config, string queueType)
+        {
+            var queueTransport = config.QueueTransport;
+            if (queueTransport == null)
+            {
+                queueTransport = new QueueTransport(null, null, queueType, null);
+            }
+            else
+            {
+                queueTransport = queueTransport.SetQueueType(queueType);
+            }
+            config.QueueTransport = queueTransport;
+        }
+
         /// <summary>
         /// Sets the queue transport connection name
         /// </summary>
@@ -107,7 +139,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(null, connectionName, null);
+                queueTransport = new QueueTransport(null, connectionName, null, null);
             }
             else
             {
@@ -126,7 +158,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(null, null, inboundHandler);
+                queueTransport = new QueueTransport(null, null, null, inboundHandler);
             }
             else
             {

@@ -30,11 +30,22 @@
         IQueueTransport SetConnectionName(string connectionName);
 
         /// <summary>
+        /// Specifies the queue type. AzSvcBus, AzQueue, Memory, etc.
+        /// </summary>
+        string QueueType { get; }
+
+        /// <summary>
+        /// Sets the inbound handler.
+        /// </summary>
+        /// <param name="queueType"></param>
+        /// <returns></returns>
+        IQueueTransport SetQueueType(string queueType);
+
+        /// <summary>
         /// Specifies the inbound message handler. If this string is empty
         /// then no message handler wiil be configured for the client. 
-        /// "azqueue" - means that the azure functions should pickup messages
-        /// "azsvcbus" - means that the azure functions should pickup messages
-        /// "generic" - means that we should configure a generic handler. 
+        /// "azfunction" - means that the azure functions should pickup messages
+        /// "generic" - means that we register a generic message handler for service bus.
         /// </summary>
         string InboundHandler { get; }
 
