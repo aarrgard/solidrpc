@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services;
@@ -62,7 +63,8 @@ namespace SolidRpc.Security.Back.Services
 
         public async Task<IEnumerable<Uri>> LoginScripts(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var baseScript = await MethodBinderStore.GetUrlAsync<ISolidRpcSecurity>(o => o.LoginScript(cancellationToken));
+            var httpInvoker = ServiceProvider.GetRequiredService<IHttpInvoker<ISolidRpcSecurity>>();
+            var baseScript = await httpInvoker.GetUriAsync(o => o.LoginScript(cancellationToken));
             var loginProviders = ServiceProvider.GetRequiredService<IEnumerable<ILoginProvider>>();
             var providers = await Task.WhenAll(loginProviders.Select(o => o.LoginProvider(cancellationToken)));
             return providers.SelectMany(o => o.Script).Union(new[] {

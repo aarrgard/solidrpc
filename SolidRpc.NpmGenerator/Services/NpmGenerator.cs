@@ -12,6 +12,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.NpmGenerator.InternalServices;
 using SolidRpc.NpmGenerator.Types;
 
@@ -34,11 +35,12 @@ namespace SolidRpc.NpmGenerator.Services
         /// <param name="typescriptGenerator"></param>
         /// <param name="serviceProvider"></param>
         public NpmGenerator(
-            ILogger<NpmGenerator> logger, 
+            ILogger<NpmGenerator> logger,
             IHttpClientFactory httpClientFactory,
             IMethodBinderStore methodBinderStore,
             ICodeNamespaceGenerator codeNamespaceGenerator,
             ITypescriptGenerator typescriptGenerator,
+            IHttpInvoker<INpmGenerator> httpInvoker,
             IServiceProvider serviceProvider)
         {
             Logger = logger;
@@ -46,6 +48,7 @@ namespace SolidRpc.NpmGenerator.Services
             CodeNamespaceGenerator = codeNamespaceGenerator;
             TypescriptGenerator = typescriptGenerator;
             HttpClientFactory = httpClientFactory;
+            HttpInvoker = httpInvoker;
             ServiceProvider = serviceProvider;
         }
 
@@ -54,6 +57,7 @@ namespace SolidRpc.NpmGenerator.Services
         private ICodeNamespaceGenerator CodeNamespaceGenerator { get; }
         private ITypescriptGenerator TypescriptGenerator { get; }
         private IHttpClientFactory HttpClientFactory { get; }
+        private IHttpInvoker<INpmGenerator> HttpInvoker { get; }
         private IServiceProvider ServiceProvider { get; }
 
         /// <summary>
@@ -168,7 +172,7 @@ namespace SolidRpc.NpmGenerator.Services
             };
             if(!string.Equals(name,"solidrpc", StringComparison.InvariantCultureIgnoreCase))
             {
-                var solidRpcNpmPackage = await MethodBinderStore.GetUrlAsync<INpmGenerator>(o => o.CreateNpm("SolidRpc", cancellationToken));
+                var solidRpcNpmPackage = await HttpInvoker.GetUriAsync(o => o.CreateNpm("SolidRpc", cancellationToken));
                 deps["solidrpc"] = solidRpcNpmPackage.ToString();
             }
             return new NpmPackageFile()

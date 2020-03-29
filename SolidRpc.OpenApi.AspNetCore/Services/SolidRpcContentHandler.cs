@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ISolidRpcContentHandler), typeof(SolidRpcContentHandler))]
+[assembly: SolidRpcService(typeof(ISolidRpcContentHandler), typeof(SolidRpcContentHandler))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>

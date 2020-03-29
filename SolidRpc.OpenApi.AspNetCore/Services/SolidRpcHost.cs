@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ISolidRpcHost), typeof(SolidRpcHost))]
+[assembly: SolidRpcService(typeof(ISolidRpcHost), typeof(SolidRpcHost))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>

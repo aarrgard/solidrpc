@@ -14,7 +14,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ISolidRpcHost), typeof(SolidRpcHostAzFunctionsV2))]
+[assembly: SolidRpcService(typeof(ISolidRpcHost), typeof(SolidRpcHostAzFunctionsV2))]
 namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
 {
     public class SolidRpcHostAzFunctionsV2 : SolidRpcHostAzFunctions

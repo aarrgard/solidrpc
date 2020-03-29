@@ -48,15 +48,23 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <param name="config"></param>
         public static IEnumerable<ITransport> GetTransports(this ISolidRpcOpenApiConfig config)
         {
+            bool transportFound = false;
             var httpTransport = config.HttpTransport;
             if (httpTransport != null)
             {
+                transportFound = true;
                 yield return httpTransport;
             }
             var queueTransport = config.QueueTransport;
             if (queueTransport != null)
             {
+                transportFound = true;
                 yield return queueTransport;
+            }
+            if(!transportFound)
+            {
+                config.HttpTransport = new HttpTransport(null, null);
+                yield return config.HttpTransport;
             }
         }
 

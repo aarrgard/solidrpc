@@ -40,6 +40,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private MethodHeadersTransformer MethodHeadersTransformer { get; set; }
         private IMethodBinding MethodBinding { get; set; }
         private KeyValuePair<string, string>? SecurityKey { get; set; }
+        private Uri OperationAddress { get; set; }
 
         /// <summary>
         /// Confugures the proxy
@@ -55,11 +56,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             MethodHeadersTransformer = config.HttpTransport?.MethodHeadersTransformer ?? ((o1, o2, o3) => Task.CompletedTask);
             MethodBinding = MethodBinderStore.CreateMethodBindings(
                 config.OpenApiSpec,
-                config.InvocationConfiguration.HasImplementation,
                 config.InvocationConfiguration.MethodInfo,
                 config.GetTransports(),
                 config.SecurityKey
             ).First();
+            OperationAddress = MethodBinding.Transports.OfType<IHttpTransport>().Select(o => o.OperationAddress).FirstOrDefault();
             return true;
         }
 
@@ -78,9 +79,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             var httpClient = HttpClientFactory.CreateClient(httpClientName);
             var httpReq = new SolidHttpRequest();
-            await MethodBinding.BindArgumentsAsync(httpReq, invocation.Arguments);
+            await MethodBinding.BindArgumentsAsync(httpReq, invocation.Arguments, OperationAddress);
 
- 
             if (Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Sending data to remote host {httpReq.Scheme}://{httpReq.HostAndPort}{httpReq.Path}");

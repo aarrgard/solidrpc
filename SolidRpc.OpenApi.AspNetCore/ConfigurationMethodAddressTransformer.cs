@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly:SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer))]
+[assembly:SolidRpc.Abstractions.SolidRpcService(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer))]
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -83,7 +83,7 @@ namespace SolidRpc.OpenApi.Binder
         private HostString Host { get; }
         private string PathPrefix { get; }
 
-        Task<Uri> IMethodAddressTransformer.TransformUriAsync(Uri uri, MethodInfo methodInfo)
+        Uri IMethodAddressTransformer.TransformUriAsync(Uri uri, MethodInfo methodInfo)
         {
             //
             // we are only interested in transforming the base path
@@ -91,7 +91,7 @@ namespace SolidRpc.OpenApi.Binder
             //
             if(methodInfo != null)
             {
-                return Task.FromResult(uri);
+                return uri;
             }
             var newUri = new UriBuilder(uri);
             if (!string.IsNullOrEmpty(Scheme))
@@ -118,7 +118,7 @@ namespace SolidRpc.OpenApi.Binder
             {
                 newUri.Path = $"{PathPrefix}{newUri.Path}";
             }
-            return Task.FromResult(newUri.Uri);
+            return newUri.Uri;
         }
     }
 }

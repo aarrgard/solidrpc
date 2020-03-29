@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IOpenApiSpecResolver), typeof(OpenApiSpecResolverAssembly))]
+[assembly: SolidRpcService(typeof(IOpenApiSpecResolver), typeof(OpenApiSpecResolverAssembly))]
 namespace SolidRpc.OpenApi.Model
 {
     /// <summary>

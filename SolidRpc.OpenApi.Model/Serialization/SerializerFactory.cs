@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ISerializerFactory), typeof(SerializerFactory))]
+[assembly: SolidRpcService(typeof(ISerializerFactory), typeof(SerializerFactory))]
 namespace SolidRpc.OpenApi.Model.Serialization
 {
     public class SerializerFactory : ISerializerFactory

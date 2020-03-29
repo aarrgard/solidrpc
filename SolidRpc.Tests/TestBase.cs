@@ -48,6 +48,17 @@ namespace SolidRpc.Tests
                 }
                 logsemaphore.Release();
             }
+
+            public void Flush()
+            {
+                lock (LogItems)
+                {
+                    while(LogItems.TryDequeue(out string log))
+                    {
+                        Console.WriteLine(log);
+                    }
+                }
+            }
         }
 
         /// <summary>

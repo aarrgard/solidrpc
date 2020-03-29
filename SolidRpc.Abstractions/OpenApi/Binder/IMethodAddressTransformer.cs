@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Binder
 {
@@ -13,6 +12,6 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// Returns the uri for supplied method. If no method is supplied
         /// the base address for the open api spec is determined.
         /// </summary>
-        Task<Uri> TransformUriAsync(Uri uri, MethodInfo methodInfo = null);
+        Uri TransformUriAsync(Uri uri, MethodInfo methodInfo = null);
     }
 }

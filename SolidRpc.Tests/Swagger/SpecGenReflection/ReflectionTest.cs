@@ -209,7 +209,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(2, binding.Arguments.Count());
         }
 
@@ -227,7 +227,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1OptionalParameter)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -245,7 +245,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1NullableParameter)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -263,7 +263,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1FileTypeWithAdditionalData)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(2, binding.Arguments.Count());
         }
 
@@ -281,7 +281,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1StringValues)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -299,7 +299,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1Dictionary)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
 
@@ -317,7 +317,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1HttpRequest)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, false, methodInfo).First();
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
         }
     }

@@ -6,7 +6,7 @@ using SolidRpc.OpenApi.AzSvcBus;
 using System;
 using System.Collections.Concurrent;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IQueueClientStore), typeof(QueueClientStore), SolidRpcAbstractionProviderLifetime.Singleton)]
+[assembly: SolidRpcService(typeof(IQueueClientStore), typeof(QueueClientStore), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzSvcBus
 {
     public class QueueClientStore : IQueueClientStore

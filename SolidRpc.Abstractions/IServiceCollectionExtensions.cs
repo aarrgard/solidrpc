@@ -244,13 +244,13 @@ namespace Microsoft.Extensions.DependencyInjection
             var assemblies = InitAssemblies();
 
             var attrs = assemblies.SelectMany(o => o.GetCustomAttributes(true))
-                 .OfType<SolidRpcAbstractionProviderAttribute>()
+                 .OfType<SolidRpcServiceAttribute>()
                  .GroupBy(o => o.ServiceType);
             foreach(var serviceAttrs in attrs)
             {
                 var instances = serviceAttrs.Select(o => o.ServiceInstances).Distinct().Single();
                 var sorted = serviceAttrs.OrderByDescending(o => GetDepth(o.ImplementationType)).ToList();
-                if(instances == SolidRpcAbstractionProviderInstances.One)
+                if(instances == SolidRpcServiceInstances.One)
                 {
                     sorted = sorted.Take(1).ToList();
                 }
@@ -258,13 +258,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     switch (attr.ServiceLifetime)
                     {
-                        case SolidRpcAbstractionProviderLifetime.Singleton:
+                        case SolidRpcServiceLifetime.Singleton:
                             services.RegisterSingletonService(attr.ServiceType, attr.ImplementationType);
                             break;
-                        case SolidRpcAbstractionProviderLifetime.Scoped:
+                        case SolidRpcServiceLifetime.Scoped:
                             services.AddScoped(attr.ServiceType, attr.ImplementationType);
                             break;
-                        case SolidRpcAbstractionProviderLifetime.Transient:
+                        case SolidRpcServiceLifetime.Transient:
                             services.AddTransient(attr.ServiceType, attr.ImplementationType);
                             break;
                         default:

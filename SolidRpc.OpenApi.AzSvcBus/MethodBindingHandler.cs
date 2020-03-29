@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IMethodBindingHandler), typeof(MethodBindingHandler), SolidRpcAbstractionProviderLifetime.Singleton, SolidRpcAbstractionProviderInstances.Many)]
+[assembly: SolidRpcService(typeof(IMethodBindingHandler), typeof(MethodBindingHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AzSvcBus
 {
     /// <summary>

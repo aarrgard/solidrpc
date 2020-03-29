@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly: SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodBinderStore), typeof(MethodBinderStore))]
+[assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodBinderStore), typeof(MethodBinderStore))]
 namespace SolidRpc.OpenApi.Binder
 {
     /// <summary>
@@ -33,6 +33,7 @@ namespace SolidRpc.OpenApi.Binder
             Bindings = new ConcurrentDictionary<string, IMethodBinder>();
             ParsedSpecs = new ConcurrentDictionary<string, IOpenApiSpec>();
             SpecResolvers = new ConcurrentDictionary<string, IOpenApiSpecResolver>();
+            MethodBindings = new ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>>();
             ConfigStore = configStore;
             OpenApiParser = openApiParser;
             ServiceProvider = serviceProvider;
@@ -40,6 +41,7 @@ namespace SolidRpc.OpenApi.Binder
         private ConcurrentDictionary<string, IMethodBinder> Bindings { get; }
         private ConcurrentDictionary<string, IOpenApiSpec> ParsedSpecs { get; }
         private ConcurrentDictionary<string, IOpenApiSpecResolver> SpecResolvers { get; }
+        private ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>> MethodBindings { get; }
         private ISolidProxyConfigurationStore ConfigStore { get; }
         private ILogger Logger { get; }
         private IOpenApiParser OpenApiParser { get; }
@@ -65,16 +67,7 @@ namespace SolidRpc.OpenApi.Binder
                                 .ToList()
                                 .ForEach(invocConfig =>
                                 {
-                                    var apiConfig = invocConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                                    var config = apiConfig.OpenApiSpec;
-                                    var method = apiConfig.InvocationConfiguration.MethodInfo;
-                                    var assembly = method.DeclaringType.Assembly;
-                                    var uriTransformer = apiConfig.HttpTransport?.MethodAddressTransformer;
-                                    var openApiSpec = GetOpenApiSpec(config, invocConfig.HasImplementation, method, uriTransformer);
-                                    var methodBinder = GetMethodBinder(openApiSpec, assembly);
-
-                                    var securityKey = apiConfig.SecurityKey;
-                                    var methodBinding = methodBinder.CreateMethodBindings(method, apiConfig.GetTransports(), securityKey);
+                                    GetMethodBinding(invocConfig.MethodInfo);
                                 });
                             _methodBinders = Bindings.Values;
                             Logger.LogInformation("...created method binders.");
@@ -103,7 +96,7 @@ namespace SolidRpc.OpenApi.Binder
             return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, assembly));
         }
 
-        private IOpenApiSpec GetOpenApiSpec(string openApiSpec, bool localApi, Assembly assembly, MethodAddressTransformer methodAddressTransformer)
+        private IOpenApiSpec GetOpenApiSpec(string openApiSpec, Assembly assembly)
         {
             IOpenApiSpec parsedSpec;
             var openApiSpecResolver = GetOpenApiSpecResolver(assembly);
@@ -122,10 +115,10 @@ namespace SolidRpc.OpenApi.Binder
                     return OpenApiParser.ParseSpec(openApiSpecResolver, "local", openApiSpec);
                 });
             }
-            return GetOpenApiSpec(parsedSpec, localApi, methodAddressTransformer);
+            return parsedSpec;
         }
 
-        private IOpenApiSpec GetOpenApiSpec(string openApiSpec, bool localApi, MethodInfo methodInfo, MethodAddressTransformer methodAddressTransformer)
+        private IOpenApiSpec GetOpenApiSpec(string openApiSpec, MethodInfo methodInfo)
         {
             IOpenApiSpec parsedSpec;
             var assembly = methodInfo.DeclaringType.Assembly;
@@ -134,7 +127,7 @@ namespace SolidRpc.OpenApi.Binder
             {
                 if (!openApiSpecResolver.TryResolveApiSpec($"{methodInfo.DeclaringType.FullName}.json", out parsedSpec))
                 {
-                    return GetOpenApiSpec(openApiSpec, localApi, assembly, methodAddressTransformer);
+                    return GetOpenApiSpec(openApiSpec, assembly);
                 }
             }
             else
@@ -144,7 +137,7 @@ namespace SolidRpc.OpenApi.Binder
                     return OpenApiParser.ParseSpec(openApiSpecResolver, "local", openApiSpec);
                 });
             }
-            return GetOpenApiSpec(parsedSpec, localApi, methodAddressTransformer);
+            return parsedSpec;
         }
 
         public IOpenApiSpecResolver GetOpenApiSpecResolver(Assembly assembly)
@@ -155,41 +148,6 @@ namespace SolidRpc.OpenApi.Binder
                 resolver.AddAssemblyResources(assembly);
                 return resolver;
             });
-        }
-
-        private IOpenApiSpec GetOpenApiSpec(IOpenApiSpec openApiSpec, bool localApi, MethodAddressTransformer methodAddressTransformer)
-        {
-            if (methodAddressTransformer == null)
-            {
-                methodAddressTransformer = (sp, uri, mi) =>
-                {
-                    if(!localApi)
-                    {
-                        return Task.FromResult(uri);
-                    }
-                    var trans = (IMethodAddressTransformer)sp.GetService(typeof(IMethodAddressTransformer));
-                    if(trans != null)
-                    {
-                        return trans.TransformUriAsync(uri, mi);
-                    }
-                    else
-                    {
-                        return Task.FromResult(uri);
-                    }
-                };
-            }
-            var newBaseAddress = methodAddressTransformer(ServiceProvider, openApiSpec.BaseAddress, null).Result;
-            if (newBaseAddress == openApiSpec.BaseAddress)
-            {
-                return openApiSpec;
-            }
-            var key = $"{newBaseAddress.ToString()}{openApiSpec.GetHashCode()}";
-            IOpenApiSpec newParsedSpec;
-            if(!ParsedSpecs.TryGetValue(key, out newParsedSpec)) {
-                newParsedSpec = openApiSpec.SetBaseAddress(newBaseAddress);
-                ParsedSpecs[key] = newParsedSpec;
-            }
-            return newParsedSpec;
         }
 
         private IMethodBinder CreateMethodBinder(IOpenApiSpec openApiSpec, Assembly assembly)
@@ -204,76 +162,14 @@ namespace SolidRpc.OpenApi.Binder
 
         public IEnumerable<IMethodBinding> CreateMethodBindings(
             string openApiSpec,
-            bool localApi,
             MethodInfo methodInfo,
             IEnumerable<ITransport> transports = null,
             KeyValuePair<string, string>? securityKey = null)
         {
             if (transports == null) transports = new ITransport[0];
-            var baseUriTransformer = transports.OfType<IHttpTransport>().Select(o => o.MethodAddressTransformer).FirstOrDefault();
-            var parsedSpec = GetOpenApiSpec(openApiSpec, localApi, methodInfo, baseUriTransformer);
+            var parsedSpec = GetOpenApiSpec(openApiSpec, methodInfo);
             var methodBinder = GetMethodBinder(parsedSpec, methodInfo.DeclaringType.Assembly);
             return methodBinder.CreateMethodBindings(methodInfo, transports, securityKey);
-        }
-
-        public async Task<Uri> GetUrlAsync<T>(Expression<Action<T>> expression, bool includeQueryString = true)
-        {
-            // find the binding
-            var (mi, args) = GetMethodInfoAndArguments(expression);
-            var imi = MethodBinders
-                .SelectMany(o => o.MethodBindings)
-                .Where(o => MethodMatches(o.MethodInfo,mi))
-                .FirstOrDefault();
-            if(imi == null)
-            {
-                return null;
-            }
-            var req = new SolidHttpRequest();
-            await imi.BindArgumentsAsync(req, args);
-            var uriBuilder = new UriBuilder();
-            uriBuilder.Scheme = req.Scheme;
-            var hostParts = req.HostAndPort.Split(':');
-            uriBuilder.Host = hostParts[0];
-            if (hostParts.Length > 1)
-            {
-                uriBuilder.Port = int.Parse(hostParts[1]);
-            }
-            uriBuilder.Path = req.Path;
-            if(includeQueryString)
-            {
-                uriBuilder.Query = string.Join("&", req.Query.Select(o => $"{o.Name}={o.GetStringValue()}"));
-            }
-            return uriBuilder.Uri;
-        }
-
-        private bool MethodMatches(MethodInfo mi1, MethodInfo mi2)
-        {
-            if (mi1.Name != mi2.Name)
-            {
-                return false;
-            }
-            if (mi1.DeclaringType != mi2.DeclaringType)
-            {
-                return false;
-            }
-            var mi1p = mi1.GetParameters();
-            var mi2p = mi2.GetParameters();
-            if (mi1p.Length != mi2p.Length)
-            {
-                return false;
-            }
-            for(int i = 0; i < mi1p.Length; i++) 
-            {
-                if (mi1p[i].Name != mi2p[i].Name)
-                {
-                    return false;
-                }
-                if (mi1p[i].ParameterType != mi2p[i].ParameterType)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         private (MethodInfo, object[]) GetMethodInfoAndArguments(LambdaExpression expression)
@@ -300,9 +196,31 @@ namespace SolidRpc.OpenApi.Binder
 
         public IMethodBinding GetMethodBinding(MethodInfo methodInfo)
         {
-            return MethodBinders.SelectMany(o => o.MethodBindings)
-                .Where(o => o.MethodInfo == methodInfo)
-                .FirstOrDefault();
+            return MethodBindings.GetOrAdd(methodInfo, CreateMethodBinding).FirstOrDefault();
+        }
+
+        private IEnumerable<IMethodBinding> CreateMethodBinding(MethodInfo mi)
+        {
+            var invocConfig = ConfigStore.ProxyConfigurations
+                .SelectMany(o => o.InvocationConfigurations)
+                .Where(o => o.MethodInfo == mi).FirstOrDefault();
+            if(invocConfig == null)
+            {
+                throw new ArgumentException("No proxy configuration exists for method:"+mi.Name);
+            }
+            if(!invocConfig.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+            {
+                throw new ArgumentException("No solid rpc open api configuration exists for method:"+mi.Name);
+            }
+            var apiConfig = invocConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>();
+            var config = apiConfig.OpenApiSpec;
+            var method = apiConfig.InvocationConfiguration.MethodInfo;
+            var assembly = method.DeclaringType.Assembly;
+            var openApiSpec = GetOpenApiSpec(config, method);
+            var methodBinder = GetMethodBinder(openApiSpec, assembly);
+
+            var securityKey = apiConfig.SecurityKey;
+            return methodBinder.CreateMethodBindings(method, apiConfig.GetTransports(), securityKey);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Transport
 {
@@ -11,5 +10,5 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
     /// <param name="originalUri"></param>
     /// <param name="methodInfo">The method to resolve the uri for(may be null)</param>
     /// <returns></returns>
-    public delegate Task<Uri> MethodAddressTransformer(IServiceProvider serviceProvider, Uri originalUri, MethodInfo methodInfo);
+    public delegate Uri MethodAddressTransformer(IServiceProvider serviceProvider, Uri originalUri, MethodInfo methodInfo);
 }

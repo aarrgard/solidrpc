@@ -3,16 +3,18 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IHttpInvoker<>), typeof(HttpInvoker<>), SolidRpcAbstractionProviderLifetime.Scoped)]
+[assembly: SolidRpcService(typeof(IHttpInvoker<>), typeof(HttpInvoker<>), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     /// <summary>
@@ -57,8 +59,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             {
                 throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");
             }
+            var operationAddress = methodBinding.Transports
+                .OfType<IHttpTransport>().Select(o => o.OperationAddress)
+                .FirstOrDefault();
             var req = new SolidHttpRequest();
-            await methodBinding.BindArgumentsAsync(req, args);
+            await methodBinding.BindArgumentsAsync(req, args, operationAddress);
             return req.CreateUri(includeQueryString);
         }
 
@@ -70,11 +75,12 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");
             }
 
+            var operationAddress = methodBinding.Transports.OfType<IHttpTransport>().Select(o => o.OperationAddress).FirstOrDefault();
+
             var httpReq = new SolidHttpRequest();
-            await methodBinding.BindArgumentsAsync(httpReq, args);
+            await methodBinding.BindArgumentsAsync(httpReq, args, operationAddress);
 
             AddSecurityKey(methodBinding, httpReq);
-
 
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
             if (Logger.IsEnabled(LogLevel.Trace))

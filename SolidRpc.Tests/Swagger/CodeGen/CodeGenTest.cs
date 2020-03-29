@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
 using System.Collections.Generic;
@@ -196,8 +197,8 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 Assert.AreEqual(1, res);
 
                 var url = await ctx.ClientServiceProvider
-                    .GetRequiredService<IMethodBinderStore>()
-                    .GetUrlAsync<TwoOpsOneMeth.Services.ITwoOpsOneMeth>(o => o.TwoOpsOneMeth(4711, CancellationToken.None));
+                    .GetRequiredService<IHttpInvoker<TwoOpsOneMeth.Services.ITwoOpsOneMeth>>()
+                    .GetUriAsync(o => o.TwoOpsOneMeth(4711, CancellationToken.None));
                 var httpClientFact = ctx.ClientServiceProvider
                     .GetRequiredService<IHttpClientFactory>();
                 var client = httpClientFact.CreateClient();

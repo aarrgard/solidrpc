@@ -188,7 +188,7 @@ namespace SolidRpc.Tests.Swagger
         {
             var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.FindPetsByStatus));
-            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), true, mi).First();
+            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), mi).First();
             Assert.AreEqual("findPetsByStatus", smi.OperationId);
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "status"));
@@ -210,7 +210,7 @@ namespace SolidRpc.Tests.Swagger
             var methodBinderStore = GetMethodBinderStore();
 
             var mi = typeof(IPet).GetMethod(nameof(IPet.GetPetById));
-            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), true, mi).First();
+            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), mi).First();
             Assert.AreEqual("getPetById", smi.OperationId);
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
@@ -230,7 +230,7 @@ namespace SolidRpc.Tests.Swagger
         {
             var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.UpdatePetWithForm));
-            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), true, mi).First();
+            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), mi).First();
             Assert.AreEqual("updatePetWithForm", smi.OperationId);
             Assert.AreEqual(4, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
@@ -254,7 +254,7 @@ namespace SolidRpc.Tests.Swagger
         {
             var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IPet).GetMethod(nameof(IPet.UploadFile));
-            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), true, mi).First();
+            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), mi).First();
             Assert.AreEqual("uploadFile", smi.OperationId);
             Assert.AreEqual(4, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "petId"));
@@ -279,7 +279,7 @@ namespace SolidRpc.Tests.Swagger
         {
             var methodBinderStore = GetMethodBinderStore();
             var mi = typeof(IStore).GetMethod(nameof(IStore.PlaceOrder));
-            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), true, mi).First();
+            var smi = methodBinderStore.CreateMethodBindings(GetManifestResourceAsString("petstore.json"), mi).First();
             Assert.AreEqual("placeOrder", smi.OperationId);
             Assert.AreEqual(2, smi.Arguments.Count());
             Assert.IsNotNull(smi.Arguments.Single(o => o.Name == "body"));

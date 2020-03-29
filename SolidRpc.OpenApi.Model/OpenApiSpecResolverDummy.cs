@@ -3,7 +3,7 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model;
 using System;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IOpenApiSpecResolver), typeof(OpenApiSpecResolverAssembly))]
+[assembly: SolidRpcService(typeof(IOpenApiSpecResolver), typeof(OpenApiSpecResolverAssembly))]
 namespace SolidRpc.OpenApi.Model
 {
     /// <summary>

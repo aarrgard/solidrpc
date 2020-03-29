@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Vitec.Services;
 using System;
@@ -108,11 +109,11 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             GetType().Assembly.GetTypes()
                 .Where(o => o.Namespace == typeof(IBusinessIntelligence).Namespace)
                 .SelectMany(o => o.GetMethods())
-                .SelectMany(m => mbs.CreateMethodBindings(openApiSpec, false, m))
+                .SelectMany(m => mbs.CreateMethodBindings(openApiSpec, m))
                 .ToList().ForEach(binding =>
                 {
                     var m = binding.MethodInfo;
-                    Log($"Checking: {m.Name}->{binding.Method} {binding.Path}");
+                    Log($"Checking: {m.Name}->{binding.Method} {binding.LocalPath}");
                 });
         }
     }

@@ -92,8 +92,8 @@ namespace SolidRpc.Tests.Invoker
                 await ctx.StartAsync();
 
 
-                var url = await ctx.ClientServiceProvider.GetRequiredService<IMethodBinderStore>()
-                    .GetUrlAsync<ITestInterface>(o => o.DoXAsync(CancellationToken.None));
+                var url = await ctx.ClientServiceProvider.GetRequiredService<IHttpInvoker<ITestInterface>>()
+                    .GetUriAsync(o => o.DoXAsync(CancellationToken.None));
                 var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
                 var resp = await httpClient.GetAsync(url);
                 Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
@@ -103,6 +103,11 @@ namespace SolidRpc.Tests.Invoker
                 var res = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
                 Assert.AreEqual(4711, res);
             }
+        }
+
+        private object IHttpInvoker<T>()
+        {
+            throw new NotImplementedException();
         }
     }
 }

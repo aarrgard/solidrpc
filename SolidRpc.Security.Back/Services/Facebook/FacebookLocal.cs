@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Security.Services.Facebook;
 using SolidRpc.Security.Types;
 using System;
@@ -10,15 +11,15 @@ namespace SolidRpc.Security.Back.Services.Facebook
 {
     public class FacebookLocal : LoginProviderBase, IFacebookLocal
     {
-        public FacebookLocal(FacebookOptions facebookOptions, IMethodBinderStore methodBinderStore)
+        public FacebookLocal(FacebookOptions facebookOptions, IHttpInvoker<IFacebookLocal> httpInvoker)
         {
             FacebookOptions = facebookOptions;
-            MethodBinderStore = methodBinderStore;
+            HttpInvoker = httpInvoker;
         }
 
         public FacebookOptions FacebookOptions { get; }
 
-        public IMethodBinderStore MethodBinderStore { get; }
+        public IHttpInvoker<IFacebookLocal> HttpInvoker { get; }
 
         public override string ProviderName => "Facebook";
 
@@ -29,7 +30,7 @@ namespace SolidRpc.Security.Back.Services.Facebook
             return new LoginProvider() {
                 Name = ProviderName,
                 Meta = new LoginProviderMeta[0],
-                Script = new[] { await MethodBinderStore.GetUrlAsync<IFacebookLocal>(o => o.LoginScript(cancellationToken)) },
+                Script = new[] { await HttpInvoker.GetUriAsync(o => o.LoginScript(cancellationToken)) },
                 Status = "NotLoggedIn",
                 ButtonHtml = ButtonHtml
             };
@@ -47,8 +48,8 @@ namespace SolidRpc.Security.Back.Services.Facebook
 
         public async Task<WebContent> LoginScript(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var loggedInPostback = (await MethodBinderStore.GetUrlAsync<IFacebookLocal>(o => o.LoggedIn("{accessToken}", cancellationToken))).ToString();
-            var logoutPostback = (await MethodBinderStore.GetUrlAsync<IFacebookLocal>(o => o.LoggedOut("{accessToken}", cancellationToken))).ToString();
+            var loggedInPostback = (await HttpInvoker.GetUriAsync(o => o.LoggedIn("{accessToken}", cancellationToken))).ToString();
+            var logoutPostback = (await HttpInvoker.GetUriAsync(o => o.LoggedOut("{accessToken}", cancellationToken))).ToString();
             return await GetManifestResourceAsWebContent("FacebookLocal.LoginScript.js", new Dictionary<string, string>()
             {
                 { "{your-app-id}", FacebookOptions.AppId },

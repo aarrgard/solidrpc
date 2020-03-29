@@ -5,7 +5,7 @@ namespace SolidRpc.Abstractions
     /// <summary>
     /// The lifetime of the service
     /// </summary>
-    public enum SolidRpcAbstractionProviderLifetime
+    public enum SolidRpcServiceLifetime
     {
         /// <summary>
         /// Should the service be registered as a singleton
@@ -26,7 +26,7 @@ namespace SolidRpc.Abstractions
     /// <summary>
     /// The lifetime of the service
     /// </summary>
-    public enum SolidRpcAbstractionProviderInstances
+    public enum SolidRpcServiceInstances
     {
         /// <summary>
         /// We only resolve one intance at a time
@@ -43,7 +43,7 @@ namespace SolidRpc.Abstractions
     /// Attribute that can be set on the SolidRpc hosting assemblies to define the 
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class SolidRpcAbstractionProviderAttribute : Attribute
+    public class SolidRpcServiceAttribute : Attribute
     {
         /// <summary>
         /// Constructs a new attribute
@@ -52,11 +52,11 @@ namespace SolidRpc.Abstractions
         /// <param name="implementationType"></param>
         /// <param name="serviceLifetime"></param>
         /// <param name="serviceInstances"></param>
-        public SolidRpcAbstractionProviderAttribute(
+        public SolidRpcServiceAttribute(
             Type serviceType, 
             Type implementationType, 
-            SolidRpcAbstractionProviderLifetime serviceLifetime = SolidRpcAbstractionProviderLifetime.Singleton,
-            SolidRpcAbstractionProviderInstances serviceInstances = SolidRpcAbstractionProviderInstances.One)
+            SolidRpcServiceLifetime serviceLifetime = SolidRpcServiceLifetime.Singleton,
+            SolidRpcServiceInstances serviceInstances = SolidRpcServiceInstances.One)
         {
             ServiceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
             ImplementationType = implementationType ?? throw new ArgumentNullException(nameof(implementationType));
@@ -85,10 +85,10 @@ namespace SolidRpc.Abstractions
         /// <summary>
         /// The service lifetime
         /// </summary>
-        public SolidRpcAbstractionProviderLifetime ServiceLifetime { get; }
+        public SolidRpcServiceLifetime ServiceLifetime { get; }
         /// <summary>
         /// The service lifetime
         /// </summary>
-        public SolidRpcAbstractionProviderInstances ServiceInstances { get; }
+        public SolidRpcServiceInstances ServiceInstances { get; }
     }
 }

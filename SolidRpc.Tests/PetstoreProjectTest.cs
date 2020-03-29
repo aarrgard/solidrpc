@@ -189,11 +189,11 @@ namespace SolidRpc.Tests
             await host.StopAsync();
         }
 
-        private Task<Uri> GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
+        private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
         {
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             var url = config["urls"];
-            return Task.FromResult(new Uri(url + baseUri.AbsolutePath));
+            return new Uri(url + baseUri.AbsolutePath);
         }
     }
 }

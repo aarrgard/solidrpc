@@ -12,6 +12,7 @@ using SolidRpc.Security.Services.Microsoft;
 using SolidRpc.Security.Services.Google;
 using SolidRpc.Security.Services.Facebook;
 using SolidRpc.Security.Back.Services.Facebook;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 
 namespace SolidRpc.Tests.Security
 {
@@ -37,7 +38,7 @@ namespace SolidRpc.Tests.Security
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
-            var binder = sp.GetRequiredService<IMethodBinderStore>();
+            var httpInvoker = sp.GetRequiredService<IHttpInvoker<IMicrosoftRemote>>();
             var clientId = Guid.Parse("615993a8-66b3-40ce-a165-96a81edd3677");
             var response_type = new[] { "code" };
             var nounce = "234324";
@@ -45,9 +46,9 @@ namespace SolidRpc.Tests.Security
             var redirect_uri = new Uri("https://arr1-petstore.azurewebsites.net/front/microsoft/login");
             var response_mode = "query";
             var state = "234322";
-            var url = await binder.GetUrlAsync<IMicrosoftRemote>(o => o.Authorize("common", clientId, response_type, redirect_uri, response_mode, scopes, state, nounce, null, null, null, null, CancellationToken.None));
+            var url = await httpInvoker.GetUriAsync(o => o.Authorize("common", clientId, response_type, redirect_uri, response_mode, scopes, state, nounce, null, null, null, null, CancellationToken.None));
             //Process.Start(new ProcessStartInfo("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", url.ToString()));
-            Assert.AreEqual("https://login.microsoftonline.com/common/oauth2/authorize?client_id=615993a8-66b3-40ce-a165-96a81edd3677&response_type=code&redirect_uri=https://arr1-petstore.azurewebsites.net/front/microsoft/login&response_mode=query&scope=openid&state=234322&nounce=234324", url.ToString());
+            Assert.AreEqual("https://login.microsoftonline.com/common/oauth2/authorize?client_id=615993a8-66b3-40ce-a165-96a81edd3677&response_type=code&redirect_uri=https%3a%2f%2farr1-petstore.azurewebsites.net%2ffront%2fmicrosoft%2flogin&response_mode=query&scope=openid&state=234322&nounce=234324", url.ToString());
             //await sp.GetRequiredService<IMicrosoftRemote>().Authorize("common", clientId, response_type, redirect_uri, null, nounce, response_mode, state);
         }
 

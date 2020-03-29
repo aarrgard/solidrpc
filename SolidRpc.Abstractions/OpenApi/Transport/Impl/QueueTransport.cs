@@ -97,7 +97,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
             }
             if (string.IsNullOrEmpty(QueueName))
             {
-                QueueName = CreateSafeQueueName(QueueType, methodBinding.AbsolutePath);
+                QueueName = CreateSafeQueueName(QueueType, methodBinding.LocalPath);
             }
             base.Configure(methodBinding);
         }

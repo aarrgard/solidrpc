@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Invoker
@@ -15,6 +14,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// Returns the uri where we invoke the specified method.
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="includeQueryString"></param>
         /// <returns></returns>
         Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true);
 

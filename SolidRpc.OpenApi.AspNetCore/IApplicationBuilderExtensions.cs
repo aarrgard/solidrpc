@@ -2,12 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,9 +28,21 @@ namespace Microsoft.AspNetCore.Builder
             /// <summary>
             /// The method mapped to the path
             /// </summary>
+            public IHttpTransport HttpTransport { get; set; }
+
+            /// <summary>
+            /// The method binding
+            /// </summary>
             public IMethodBinding MethodBinding { get; set; }
 
+            /// <summary>
+            /// The content handler
+            /// </summary>
             public ISolidRpcContentHandler ContentHandler { get; set; }
+
+            /// <summary>
+            /// The allowed cors origins. 
+            /// </summary>
             public IEnumerable<string> AllowedCorsOrigins { get; }
 
             public override string ToString()
@@ -96,20 +108,28 @@ namespace Microsoft.AspNetCore.Builder
                 .ToList()
                 .ForEach(o =>
                 {
-                    var path = $"{o.Method}{o.Address.LocalPath}";
+                    var httpTransport = o.Transports.OfType<IHttpTransport>().FirstOrDefault();
+                    if(httpTransport == null)
+                    {
+                        applicationBuilder.ApplicationServices.LogInformation<IApplicationBuilder>($"No http transport configured for binding {o.OperationId} - will not map path.");
+                        return;
+                    } 
+                    var path = $"{o.Method}{httpTransport.OperationAddress.LocalPath}";
                     if(!dict.TryGetValue(path, out PathHandler binding))
                     {
                         dict[path] = binding = new PathHandler(allowedCorsOrigins);
                     }
                     binding.MethodBinding = o;
+                    binding.HttpTransport = httpTransport;
 
                     //register an "options" handler
-                    path = $"OPTIONS{o.Address.LocalPath}";
+                    path = $"OPTIONS{httpTransport.OperationAddress.LocalPath}";
                     if (!dict.TryGetValue(path, out binding))
                     {
                         dict[path] = binding = new PathHandler(allowedCorsOrigins);
                     }
                     binding.MethodBinding = o;
+                    binding.HttpTransport = httpTransport;
                 });
 
             //
@@ -164,7 +184,7 @@ namespace Microsoft.AspNetCore.Builder
                 // bind path
                 if(pathHandler.MethodBinding != null)
                 {
-                    ab.Run((ctx) => HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.MethodBinding, ctx));
+                    ab.Run((ctx) => HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.HttpTransport, pathHandler.MethodBinding, ctx));
                 }
                 else if (pathHandler.ContentHandler != null)
                 {
@@ -242,7 +262,7 @@ namespace Microsoft.AspNetCore.Builder
             }
         }
 
-        private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, IMethodBinding methodInfo, HttpContext context)
+        private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, IHttpTransport httpTransport, IMethodBinding methodBinding, HttpContext context)
         {
             try
             {
@@ -257,7 +277,7 @@ namespace Microsoft.AspNetCore.Builder
                 //
                 // handle the access-control(CORS) request for this invocation
                 //
-                if(!CheckCorsIsValid(allowedCorsOrigins, methodInfo, context))
+                if(!CheckCorsIsValid(allowedCorsOrigins, methodBinding, context))
                 {
                     return;
                 }
@@ -266,21 +286,21 @@ namespace Microsoft.AspNetCore.Builder
                 // if the supplied method does not match the handler - return.
                 // This is the case with "OPTIONS" in cors preflight
                 //
-                if(methodInfo.Method != context.Request.Method)
+                if(!string.Equals(methodBinding.Method, context.Request.Method, StringComparison.InvariantCultureIgnoreCase))
                 {
                     context.Response.StatusCode = 204; // No content
                     AddAllowedCorsHeaders(context);
                     return;
                 }
 
-                context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodInfo.OperationId}:{methodInfo.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+                context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodBinding.OperationId}:{methodBinding.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
 
                 // extract information from http context.
                 var request = new SolidRpc.OpenApi.Binder.Http.SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);
 
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
-                var response = await methodInvoker.InvokeAsync(request, methodInfo, context.RequestAborted);
+                var response = await methodInvoker.InvokeAsync(request, methodBinding, context.RequestAborted);
 
                 // send data back
                 AddAllowedCorsHeaders(context);

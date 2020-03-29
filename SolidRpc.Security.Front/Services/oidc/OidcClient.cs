@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services.Oidc;
 using SolidRpc.Security.Types;
@@ -13,14 +14,14 @@ namespace SolidRpc.Security.Front.Services.oidc
     /// </summary>
     public class OidcClient : IOidcClient
     {
-        public OidcClient(ISolidRpcSecurityOptions solidRpcSecurityOptions, IMethodBinderStore methodBinderStore)
+        public OidcClient(ISolidRpcSecurityOptions solidRpcSecurityOptions, IHttpInvoker<IOidcClient> httpInvoker)
         {
             SolidRpcSecurityOptions = solidRpcSecurityOptions;
-            MethodBinderStore = methodBinderStore;
+            HttpInvoker = httpInvoker;
         }
 
         private ISolidRpcSecurityOptions SolidRpcSecurityOptions { get; }
-        private IMethodBinderStore MethodBinderStore { get; }
+        private IHttpInvoker<IOidcClient> HttpInvoker { get; }
 
         public Task LoggedIn(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -34,7 +35,7 @@ namespace SolidRpc.Security.Front.Services.oidc
         /// <returns></returns>
         public async Task<Settings> Settings(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var redirectUri = await MethodBinderStore.GetUrlAsync<IOidcClient>(o => o.LoggedIn(CancellationToken.None));
+            var redirectUri = await HttpInvoker.GetUriAsync(o => o.LoggedIn(CancellationToken.None));
             var settings = new Settings();
             settings.Authority = SolidRpcSecurityOptions.Authority;
             settings.ClientId = SolidRpcSecurityOptions.ClientId;

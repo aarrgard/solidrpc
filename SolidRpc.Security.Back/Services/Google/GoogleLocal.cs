@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Security.Services.Google;
 using SolidRpc.Security.Types;
 using System;
@@ -12,16 +13,16 @@ namespace SolidRpc.Security.Back.Services.Google
 {
     public class GoogleLocal : LoginProviderBase, IGoogleLocal
     {
-        public GoogleLocal(GoogleOptions googleOptions, IMethodBinderStore methodBinderStore)
+        public GoogleLocal(GoogleOptions googleOptions, IHttpInvoker<IGoogleLocal> httpInvoker)
         {
             GoogleOptions = googleOptions;
-            MethodBinderStore = methodBinderStore;
+            HttpInvoker = httpInvoker;
         }
         public override string ProviderName => "Google";
 
         public GoogleOptions GoogleOptions { get; }
 
-        public IMethodBinderStore MethodBinderStore { get; }
+        public IHttpInvoker<IGoogleLocal> HttpInvoker { get; }
         public string ButtonHtml => $"<div class=\"g-signin2\" data-onsuccess=\"onSignIn\" data-theme=\"dark\"></div>";
 
         public override async Task<LoginProvider> LoginProvider(CancellationToken cancellationToken = default(CancellationToken))
@@ -42,7 +43,7 @@ namespace SolidRpc.Security.Back.Services.Google
                 },
                 Script = new[] {
                     new Uri("https://apis.google.com/js/platform.js"),
-                    await MethodBinderStore.GetUrlAsync<IGoogleLocal>(o => o.LoginScript(cancellationToken))
+                    await HttpInvoker.GetUriAsync(o => o.LoginScript(cancellationToken))
                 },
                 Status = "NotLoggedIn",
                 ButtonHtml = ButtonHtml

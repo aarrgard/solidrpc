@@ -7,7 +7,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ISolidRpcContentStore), typeof(SolidRpcContentStore))]
+[assembly: SolidRpcService(typeof(ISolidRpcContentStore), typeof(SolidRpcContentStore))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>

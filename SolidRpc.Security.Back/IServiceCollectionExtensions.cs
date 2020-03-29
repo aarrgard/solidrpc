@@ -1,5 +1,6 @@
 ﻿using SolidProxy.Core.Configuration.Builder;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Security.Back.Services;
 using SolidRpc.Security.Back.Services.Facebook;
@@ -55,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity), mbConfigurator);
             services.GetSolidRpcContentStore().AddMapping(
                 "/.well-known/openid-configuration", 
-                (sp) => sp.GetRequiredService<IMethodBinderStore>().GetUrlAsync<IOidcServer>(o => o.OAuth2Discovery(CancellationToken.None)));
+                (sp) => sp.GetRequiredService<IHttpInvoker<IOidcServer>>().GetUriAsync(o => o.OAuth2Discovery(CancellationToken.None)));
             var sc = new SolidRpcSecurityOptions();
             configurator?.Invoke(null, sc);
             if (sc.AddStaticContent)
@@ -162,7 +163,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        private static async Task<Uri> GoogleBaseApiResolver(IServiceProvider serviceProvider, Uri originalUri, MethodInfo methodInfo)
+        private static Uri GoogleBaseApiResolver(IServiceProvider serviceProvider, Uri originalUri, MethodInfo methodInfo)
         {
             if(methodInfo != null)
             {
@@ -170,10 +171,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     return originalUri;
                 }
-                var bindingStore = serviceProvider.GetRequiredService<IMethodBinderStore>();
-                var bindingInfo = bindingStore.GetMethodBinding(methodInfo);
 
-                var openIdConf = await serviceProvider.GetRequiredService<IGoogleRemote>().OpenIdConfiguration();
+                var openIdConf = serviceProvider.GetRequiredService<IGoogleRemote>().OpenIdConfiguration().Result;
 
                 switch(methodInfo.Name)
                 {

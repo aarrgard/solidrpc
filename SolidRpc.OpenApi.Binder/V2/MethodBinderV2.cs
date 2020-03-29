@@ -16,7 +16,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 {
     public class MethodBinderV2 : MethodBinderBase
     {
-        public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly) : base(schemaObject, assembly)
+        public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly) : base(serviceProvider, schemaObject, assembly)
         {
             ServiceProvider = serviceProvider;
             SchemaObject = schemaObject;
@@ -36,7 +36,6 @@ namespace SolidRpc.OpenApi.Binder.V2
         public IServiceProvider ServiceProvider { get; }
         private SwaggerObject SchemaObject { get; }
         private CodeDocRepository CodeDocRepo { get; }
-
         private IList<OperationObject> Operations { get; }
 
         protected override IEnumerable<IMethodBinding> DoCreateMethodBinding(

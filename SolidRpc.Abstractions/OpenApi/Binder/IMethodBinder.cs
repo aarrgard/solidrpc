@@ -12,6 +12,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
     public interface IMethodBinder
     {
         /// <summary>
+        /// The service provider.
+        /// </summary>
+        IServiceProvider ServiceProvider { get; }
+
+        /// <summary>
         /// The open api spec that this binder gets its information from
         /// </summary>
         IOpenApiSpec OpenApiSpec { get; }

@@ -23,12 +23,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     {
         private class FunctionDef
         {
-            public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string path)
+            public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string functionName, string path)
             {
                 FunctionHandler = functionHandler;
                 Protocol = protocol;
+                FunctionName = CreateFunctionName(functionName);
                 Path = FixupPath(path);
-                FunctionName = CreateFunctionName();
             }
 
             private string FixupPath(string path)
@@ -55,14 +55,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
                 return sb.ToString();
             }
-            private string CreateFunctionName()
+            private string CreateFunctionName(string functionName)
             {
                 int argCount = 0;
                 var sb = new StringBuilder();
                 sb.Append(Protocol.Substring(0, 1).ToUpper());
                 sb.Append(Protocol.Substring(1).ToLower());
                 sb.Append("_");
-                foreach (var c in Path)
+                foreach (var c in functionName)
                 {
                     switch (c)
                     {
@@ -91,7 +91,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private class HttpFunctionDef : FunctionDef
         {
-            public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string path) : base(functionHandler,protocol, path) { }
+            public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string functionName, string path) : base(functionHandler, protocol, functionName, path) { }
 
             public string Method { get; set; }
             public string AuthLevel { get; set; }
@@ -99,7 +99,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private class QueueFunctionDef : FunctionDef
         {
-            public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string path) : base(functionHandler, protocol, path) { }
+            public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string functionName, string path) : base(functionHandler, protocol, functionName, path) { }
             public string QueueName { get; set; }
             public string Connection { get; set; }
             public string QueueType { get; set; }
@@ -178,7 +178,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var functions = new List<FunctionDef>();
             var openApiConfig = config.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             var azConfig = config.ConfigureAdvice<ISolidAzureFunctionConfig>();
-            if (openApiConfig.HttpTransport != null)
+            var httpTransport = openApiConfig.HttpTransport;
+            if (httpTransport != null)
             {
                 //
                 // handle auth level
@@ -189,7 +190,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     throw new Exception($"AuthLevel not set for {mb.MethodInfo.DeclaringType.FullName}.{mb.MethodInfo.Name}");
                 }
 
-                functions.Add(new HttpFunctionDef(FunctionHandler, "http", mb.Address.LocalPath)
+                var functionPath = openApiConfig.HttpTransport.OperationAddress.LocalPath;
+                functions.Add(new HttpFunctionDef(FunctionHandler, "http", mb.LocalPath, httpTransport.OperationAddress.LocalPath)
                 {
                     Method = mb.Method.ToLower(),
                     AuthLevel = authLevel
@@ -204,7 +206,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
                 if(string.Equals(inboundHandler, "azfunctions", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    functions.Add(new QueueFunctionDef(FunctionHandler, "queue", mb.Address.LocalPath)
+                    functions.Add(new QueueFunctionDef(FunctionHandler, "queue", mb.LocalPath, mb.LocalPath)
                     {
                         QueueName = queueName,
                         Connection = connection,

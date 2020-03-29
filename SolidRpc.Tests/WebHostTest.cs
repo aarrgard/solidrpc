@@ -261,6 +261,7 @@ namespace SolidRpc.Tests
             /// </summary>
             public virtual void Dispose()
             {
+                TaskConsoleLogger.Flush();
                 HttpClient?.Dispose();
             }
 
@@ -384,11 +385,11 @@ namespace SolidRpc.Tests
                 return serverServices.BuildServiceProvider();
             }
 
-            private Task<Uri> GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
+            private Uri GetBaseUrl(IServiceProvider serviceProvider, Uri baseUri, MethodInfo methodInfo)
             {
                 var config = serviceProvider.GetRequiredService<IConfiguration>();
                 var url = config["urls"].Split(',').First();
-                return Task.FromResult(new Uri(url + baseUri.AbsolutePath));
+                return new Uri(url + baseUri.AbsolutePath);
             }
 
             /// <summary>

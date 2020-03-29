@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -25,16 +26,22 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <param name="swaggerOptions"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="contentHandler"></param>
-        public SwaggerUI(SwaggerOptions swaggerOptions, IMethodBinderStore methodBinderStore, ISolidRpcContentHandler contentHandler)
+        public SwaggerUI(
+            SwaggerOptions swaggerOptions, 
+            IMethodBinderStore methodBinderStore,
+            ISolidRpcContentHandler contentHandler,
+            IHttpInvoker<ISwaggerUI> httpInvoker)
         {
             SwaggerOptions = swaggerOptions;
             MethodBinderStore = methodBinderStore;
             ContentHandler = contentHandler;
+            HttpInvoker = httpInvoker;
         }
 
         private SwaggerOptions SwaggerOptions { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
+        private IHttpInvoker<ISwaggerUI> HttpInvoker { get; }
 
         /// <summary>
         /// Returns the index.hmtl file.
@@ -244,7 +251,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 swaggerUrls.Add(new SwaggerUrl()
                 {
                     Name = name,
-                    Url = await MethodBinderStore.GetUrlAsync<ISwaggerUI>(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, cancellationToken))
+                    Url = await HttpInvoker.GetUriAsync(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, cancellationToken))
                 });
             }
             return swaggerUrls

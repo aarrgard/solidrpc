@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IOpenApiParser), typeof(OpenApiParser))]
+[assembly: SolidRpcService(typeof(IOpenApiParser), typeof(OpenApiParser))]
 namespace SolidRpc.OpenApi.Model
 {
     /// <summary>

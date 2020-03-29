@@ -51,7 +51,7 @@
             The swagger config
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.OpenApi.SwaggerUI.SwaggerOptions,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.OpenApi.SwaggerUI.SwaggerOptions,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker{SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI})">
             <summary>
             Constructs a new instance
             </summary>

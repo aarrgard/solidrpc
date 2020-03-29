@@ -273,35 +273,18 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return _produces;
             }
         }
-        private Uri _address;
-        public Uri Address {
+        private Uri _operationAddress;
+        public Uri OperationAddress {
             get
             {
-                if (_address == null)
+                if (_operationAddress == null)
                 {
-                    var address = OperationObject.GetAddress();
-                    var methodAddressTransformer = Transports.OfType<IHttpTransport>().Select(o => o.MethodAddressTransformer).FirstOrDefault();
-                    if(methodAddressTransformer != null)
-                    {
-                        try
-                        {
-                            address = methodAddressTransformer(MethodBinder.ServiceProvider, address, MethodInfo).Result;
-                        }
-                        catch (Exception e)
-                        {
-                            throw;
-                        }
-                    }
-                    _address = address;
+                    _operationAddress = OperationObject.GetAddress();
 
                 }
-                return _address;
+                return _operationAddress;
             }
-            set
-            {
-                _address = value ?? throw new ArgumentNullException();
-            }
-        }
+         }
 
         private bool? _isLocal;
         public bool IsLocal
@@ -342,11 +325,15 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public string Path => OperationObject.GetPath()?.Substring(1);
 
-        public async Task BindArgumentsAsync(IHttpRequest request, object[] args)
+        public async Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride)
         {
             if(args.Length != Arguments.Length)
             {
                 throw new ArgumentException($"Number of supplied arguments({args.Length}) does not match number of arguments in method({Arguments.Length}).");
+            }
+            if (addressOverride == null)
+            {
+                addressOverride = OperationAddress;
             }
 
 
@@ -362,16 +349,16 @@ namespace SolidRpc.OpenApi.Binder.V2
             // set path
             // 
             request.Method = Method;
-            request.Scheme = Address.Scheme;
-            if (Address.IsDefaultPort)
+            request.Scheme = addressOverride.Scheme;
+            if (addressOverride.IsDefaultPort)
             {
-                request.HostAndPort = Address.Host;
+                request.HostAndPort = addressOverride.Host;
             }
             else
             {
-                request.HostAndPort = $"{Address.Host}:{Address.Port}";
+                request.HostAndPort = $"{addressOverride.Host}:{addressOverride.Port}";
             }
-            request.Path = Address.LocalPath;
+            request.Path = addressOverride.LocalPath;
 
             foreach (var pathData in request.PathData)
             {
@@ -520,7 +507,9 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public IEnumerable<ITransport> Transports { get; }
 
-        public string AbsolutePath => OperationObject.GetAbsolutePath();
+        public string LocalPath => OperationObject.GetAbsolutePath();
+
+        public string RelativePath => OperationObject.GetPath().Substring(1);
 
         public async Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
         {

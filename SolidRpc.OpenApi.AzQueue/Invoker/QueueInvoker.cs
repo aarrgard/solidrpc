@@ -17,7 +17,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(IQueueInvoker<>), typeof(QueueInvoker<>), SolidRpcAbstractionProviderLifetime.Scoped)]
+[assembly: SolidRpcService(typeof(IQueueInvoker<>), typeof(QueueInvoker<>), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>

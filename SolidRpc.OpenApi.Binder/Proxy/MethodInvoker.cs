@@ -3,6 +3,7 @@ using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
@@ -12,7 +13,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpc.Abstractions.SolidRpcAbstractionProvider(typeof(IMethodInvoker), typeof(MethodInvoker))]
+[assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodInvoker), typeof(MethodInvoker))]
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
     /// <summary>
@@ -37,10 +38,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             public IMethodBinding MethodInfo { get; set; }
 
-            public void AddPath(IMethodBinding methodInfo)
+            public void AddPath(IMethodBinding methodBinding)
             {
                 var work = this;
-                var segments = $"{methodInfo.Method}{methodInfo.Address.LocalPath}".Split('/');
+                var segments = $"{methodBinding.Method}{methodBinding.LocalPath}".Split('/');
                 foreach (var segment in segments)
                 {
                     var key = segment;
@@ -54,7 +55,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     }
                     work = subSegment;
                 }
-                work.MethodInfo = methodInfo;
+                work.MethodInfo = methodBinding;
             }
 
             public IMethodBinding GetMethodInfo(IEnumerator<string> segments)
@@ -110,7 +111,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                             _rootSegment.AddPath(methodBinding);
                             MethodInfo2Binding.Add(methodBinding.MethodInfo, methodBinding);
                             var mi = methodBinding.MethodInfo;
-                            Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodBinding.Address.LocalPath}.");
+                            Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodBinding.LocalPath}.");
                         });
                     }
                 }

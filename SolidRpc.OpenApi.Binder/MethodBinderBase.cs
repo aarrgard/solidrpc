@@ -3,9 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Services;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -15,15 +17,18 @@ namespace SolidRpc.OpenApi.Binder
     public abstract class MethodBinderBase : IMethodBinder
     {
 
-        protected MethodBinderBase(IOpenApiSpec openApiSpec, Assembly assembly)
+        protected MethodBinderBase(IServiceProvider serviceProvider, IOpenApiSpec openApiSpec, Assembly assembly)
         {
-            OpenApiSpec = openApiSpec;
-            Assembly = assembly;
+            ServiceProvider = serviceProvider;
+            OpenApiSpec = openApiSpec ?? throw new ArgumentNullException(nameof(openApiSpec));
+            Assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
             CachedBindings = new ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>>();
+            Application = serviceProvider.GetRequiredService<ISolidRpcApplication>();
         }
 
+        public IServiceProvider ServiceProvider { get; }
+        private ISolidRpcApplication Application { get; }
         public IOpenApiSpec OpenApiSpec { get; }
-
         public Assembly Assembly { get; }
 
         public IEnumerable<IMethodBinding> MethodBindings
@@ -57,7 +62,11 @@ namespace SolidRpc.OpenApi.Binder
             // Configure transports
             methodBindings.ToList().ForEach(methodBinding =>
             {
-                transports.ToList().ForEach(o => o.Configure(methodBinding));
+                transports.ToList().ForEach(o =>
+                {
+                    o.Configure(methodBinding);
+                });
+                
             });
 
             return methodBindings;

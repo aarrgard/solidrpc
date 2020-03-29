@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services.Oidc;
 using System;
@@ -22,14 +23,14 @@ namespace SolidRpc.Security.Front.InternalServices
         /// </summary>
         /// <param name="keyStore"></param>
         public AccessTokenFactory(
-            IMethodBinderStore methodBinderStore,
+            IHttpInvoker<IOidcServer> httpInvoker,
             IOpenIDKeyStore keyStore)
         {
-            MethodBinderStore = methodBinderStore;
+            HttpInvoker = httpInvoker;
             KeyStore = keyStore;
         }
 
-        private IMethodBinderStore MethodBinderStore { get; }
+        private IHttpInvoker<IOidcServer> HttpInvoker { get; }
         private IOpenIDKeyStore KeyStore { get; }
 
         public async Task<IAccessToken> CreateAccessToken(ClaimsIdentity claimsIdentity, CancellationToken cancellationToken)
@@ -61,7 +62,7 @@ namespace SolidRpc.Security.Front.InternalServices
             }
             else
             {
-                var issuer = (await MethodBinderStore.GetUrlAsync<IOidcServer>(o => o.OAuth2Discovery(cancellationToken))).ToString();
+                var issuer = (await HttpInvoker.GetUriAsync(o => o.OAuth2Discovery(cancellationToken))).ToString();
                 issuer = issuer.Substring(0, issuer.IndexOf('/', "https://".Length));
                 _issuer = issuer;
                 return issuer;

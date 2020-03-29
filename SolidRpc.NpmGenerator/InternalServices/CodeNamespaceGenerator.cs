@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.NpmGenerator.Types;
 using SolidRpc.OpenApi.Model.CodeDoc;
 
@@ -132,6 +133,11 @@ namespace SolidRpc.NpmGenerator.InternalServices
         private CodeMethod CreateCodeMethod(CodeNamespace rootNamespace, MethodInfo mi)
         {
             var methodBinding = MethodBinderStore.GetMethodBinding(mi);
+            var httpTransport = methodBinding.Transports.OfType<IHttpTransport>().FirstOrDefault();
+            if(httpTransport == null)
+            {
+                throw new Exception("No http transport configured for method - cannot create");
+            }
             return new CodeMethod()
             {
                 Description = CodeDocRepository.GetMethodDoc(mi).Summary,
@@ -139,8 +145,8 @@ namespace SolidRpc.NpmGenerator.InternalServices
                 Arguments = methodBinding.Arguments.Select(o => CreateCodeMethodArg(rootNamespace, o)).ToList(),
                 ReturnType = ResolveCodeType(rootNamespace, mi.ReturnType),
                 HttpMethod = methodBinding.Method,
-                HttpBaseAddress = methodBinding.MethodBinder.OpenApiSpec.BaseAddress,
-                HttpPath = methodBinding.Path
+                HttpBaseAddress = httpTransport.BaseAddress,
+                HttpPath = httpTransport.Path
             };
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProviderAttribute(typeof(ISolidRpcApplication), typeof(SolidRpcApplication))]
+[assembly: SolidRpcServiceAttribute(typeof(ISolidRpcApplication), typeof(SolidRpcApplication))]
 namespace SolidRpc.Abstractions.Services
 {
     /// <summary>

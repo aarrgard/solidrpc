@@ -1,7 +1,7 @@
 ﻿using SolidRpc.Abstractions;
 using SolidRpc.OpenApi.Model.V3;
 
-[assembly: SolidRpcAbstractionProvider(typeof(OpenApiParserV3), typeof(OpenApiParserV3))]
+[assembly: SolidRpcService(typeof(OpenApiParserV3), typeof(OpenApiParserV3))]
 namespace SolidRpc.OpenApi.Model.V3
 {
     /// <summary>

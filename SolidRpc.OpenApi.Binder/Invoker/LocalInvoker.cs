@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ILocalInvoker<>), typeof(LocalInvoker<>), SolidRpcAbstractionProviderLifetime.Scoped)]
+[assembly: SolidRpcService(typeof(ILocalInvoker<>), typeof(LocalInvoker<>), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     /// <summary>

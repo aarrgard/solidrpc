@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services.Oidc;
@@ -19,18 +20,18 @@ namespace SolidRpc.Security.Back.Services
     {
         public OidcServer(
             IServiceProvider serviceProvider, 
-            IMethodBinderStore methodBinderStore,
+            IHttpInvoker<IOidcServer> httpInvoker,
             ISolidRpcContentHandler contentHandler,
             IAccessTokenFactory tokenFactory)
         {
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
+            HttpInvoker = httpInvoker ?? throw new ArgumentNullException(nameof(httpInvoker));
             ContentHandler = contentHandler ?? throw new ArgumentNullException(nameof(contentHandler));
             TokenFactory = tokenFactory ?? throw new ArgumentNullException(nameof(tokenFactory));
         }
 
         private IServiceProvider ServiceProvider { get; }
-        private IMethodBinderStore MethodBinderStore { get; }
+        private IHttpInvoker<IOidcServer> HttpInvoker { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
         private IAccessTokenFactory TokenFactory { get; }
 
@@ -38,9 +39,9 @@ namespace SolidRpc.Security.Back.Services
         {
             var doc = new OpenIDConnnectDiscovery();
             doc.Issuer = new Uri(await TokenFactory.GetIssuerAsync(cancellationToken));
-            doc.JwksUri = await MethodBinderStore.GetUrlAsync<IOidcServer>(o => o.OAuth2Keys(cancellationToken), false);
-            doc.AuthorizationEndpoint = await MethodBinderStore.GetUrlAsync<IOidcServer>(o => o.OAuth2AuthorizeGet(null, null, null, null, null, cancellationToken), false);
-            doc.TokenEndpoint = await MethodBinderStore.GetUrlAsync<IOidcServer>(o => o.OAuth2TokenGet(cancellationToken), false);
+            doc.JwksUri = await HttpInvoker.GetUriAsync(o => o.OAuth2Keys(cancellationToken), false);
+            doc.AuthorizationEndpoint = await HttpInvoker.GetUriAsync(o => o.OAuth2AuthorizeGet(null, null, null, null, null, cancellationToken), false);
+            doc.TokenEndpoint = await HttpInvoker.GetUriAsync(o => o.OAuth2TokenGet(cancellationToken), false);
             return doc;
         }
 

@@ -54,19 +54,14 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         string Method { get; }
 
         /// <summary>
-        /// The path relative to the base path of the binder.
+        /// Returns the local path.(Represents a Uri.LocalPath ie not url encoded AbsolutePath)
         /// </summary>
-        string Path { get; }
+        string LocalPath { get; }
 
         /// <summary>
-        /// Returns the absolute path to his method.
+        /// Returns the relative path of the operation. Relative to the base url and does not start with a slash.
         /// </summary>
-        string AbsolutePath { get; }
-
-        /// <summary>
-        /// The base address to this method.
-        /// </summary>
-        Uri Address { get; set; }
+        string RelativePath { get; }
 
         /// <summary>
         /// All the arguments.
@@ -79,7 +74,8 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// </summary>
         /// <param name="request"></param>
         /// <param name="args"></param>
-        Task BindArgumentsAsync(IHttpRequest request, object[] args);
+        /// <param name="addressOverride"></param>
+        Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride = null);
 
         /// <summary>
         /// Extracts the arguments from supplied request.

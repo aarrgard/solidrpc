@@ -6,7 +6,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.OpenApi.AzQueue;
 using System.Collections.Concurrent;
 
-[assembly: SolidRpcAbstractionProvider(typeof(ICloudQueueStore), typeof(CloudQueueStore), SolidRpcAbstractionProviderLifetime.Singleton)]
+[assembly: SolidRpcService(typeof(ICloudQueueStore), typeof(CloudQueueStore), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzQueue
 {
     public class CloudQueueStore : ICloudQueueStore
