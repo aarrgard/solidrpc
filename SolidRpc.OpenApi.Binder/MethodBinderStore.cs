@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 [assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodBinderStore), typeof(MethodBinderStore))]
@@ -92,7 +94,7 @@ namespace SolidRpc.OpenApi.Binder
         {
             if (openApiSpec == null) throw new ArgumentNullException(nameof(openApiSpec));
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-            var key = $"{assembly.GetName().Name}:{assembly.GetName().Version}:{openApiSpec.GetHashCode()}";
+            var key = $"{assembly.GetName().Name}:{openApiSpec.OpenApiSpecResolverAddress}";
             return Bindings.GetOrAdd(key, _ => CreateMethodBinder(openApiSpec, assembly));
         }
 
@@ -134,7 +136,9 @@ namespace SolidRpc.OpenApi.Binder
             {
                 parsedSpec = ParsedSpecs.GetOrAdd(openApiSpec, _ =>
                 {
-                    return OpenApiParser.ParseSpec(openApiSpecResolver, "local", openApiSpec);
+                    var hash = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(openApiSpec));
+                    var hex = BitConverter.ToString(hash).Replace("-", string.Empty);
+                    return OpenApiParser.ParseSpec(openApiSpecResolver, hex, openApiSpec);
                 });
             }
             return parsedSpec;

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SolidRpc.Abstractions.Types.RateLimit
 {
     /// <summary>
-    /// Identifies a 
+    /// Token returned from a resource request
     /// </summary>
     public class RateLimitToken
     {
@@ -19,5 +17,10 @@ namespace SolidRpc.Abstractions.Types.RateLimit
         /// was issued from the service.
         /// </summary>
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// The time when the token expires
+        /// </summary>
+        public DateTimeOffset Expires { get; set; }
     }
 }

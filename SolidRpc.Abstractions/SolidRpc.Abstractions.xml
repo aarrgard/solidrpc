@@ -1959,7 +1959,7 @@
         </member>
         <member name="T:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken">
             <summary>
-            Identifies a 
+            Token returned from a resource request
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken.ResourceName">
@@ -1971,6 +1971,11 @@
             <summary>
             The unique id of this token. This guid may be empty if no token
             was issued from the service.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken.Expires">
+            <summary>
+            The time when the token expires
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.TypeTemplate">

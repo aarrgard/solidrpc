@@ -19,11 +19,31 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
     /// </summary>
     public class SolidRpcRateLimitMemory : ISolidRpcRateLimit
     {
+        private static readonly LeaseToken EmptyLease = new LeaseToken(Guid.Empty);
+
+        private class LeaseToken
+        {
+            public LeaseToken()
+            {
+                Id = Guid.NewGuid();
+                Expires = DateTimeOffset.Now.AddMinutes(1);
+            }
+            internal LeaseToken(Guid id)
+            {
+                Id = id;
+                Expires = DateTimeOffset.MinValue;
+            }
+            public Guid Id { get; }
+            public DateTimeOffset Expires { get; }
+        }
+
 
         private class ResourceItem
         {
+            private object _mutex = new object();
             private SemaphoreSlim _semaphore = new SemaphoreSlim(0);
-            private HashSet<Guid> _leases = new HashSet<Guid>();
+            private LinkedList<LeaseToken> _leases = new LinkedList<LeaseToken>();
+            private Dictionary<Guid, LinkedListNode<LeaseToken>> _leasesById = new Dictionary<Guid, LinkedListNode<LeaseToken>>();
 
             public ResourceItem(string resourceName)
             {
@@ -34,24 +54,29 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
             public void RemoveToken(Guid id)
             {
-                lock(_leases)
+                lock(_mutex)
                 {
-                    _leases.Remove(id);
+                    if(_leasesById.TryGetValue(id, out LinkedListNode<LeaseToken> leaseToken))
+                    {
+                        _leases.Remove(leaseToken);
+                        _leasesById.Remove(id);
+                    }
                 }
                 _semaphore.Release();
             }
 
-            public async Task<Guid> GetTokenAsync(TimeSpan timeout, CancellationToken cancellationToken)
+            public async Task<LeaseToken> GetTokenAsync(TimeSpan timeout, CancellationToken cancellationToken)
             {
                 var timedOut = DateTime.Now.Add(timeout);
                 do
                 {
-                    lock (_leases)
+                    lock (_mutex)
                     {
                         if(CanAddLease())
                         {
-                            var lease = Guid.NewGuid();
-                            _leases.Add(lease);
+                            var lease = new LeaseToken();
+                            var leaseNode = _leases.AddLast(lease);
+                            _leasesById.Add(lease.Id, leaseNode);
                             return lease;
                         }
                     }
@@ -59,11 +84,17 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 }
                 while (DateTime.Now < timedOut);
 
-                return Guid.Empty;
+                return EmptyLease;
             }
 
             private bool CanAddLease()
             {
+                while(_leases.First?.Value?.Expires < DateTimeOffset.Now)
+                {
+                    var leaseNode = _leases.First;
+                    _leases.Remove(leaseNode);
+                    _leasesById.Remove(leaseNode.Value.Id);
+                }
                 if(MaxConcurrentCalls != null)
                 {
                     if (_leases.Count >= MaxConcurrentCalls)
@@ -120,7 +151,8 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             return new RateLimitToken()
             {
                 ResourceName = resourceName,
-                Id = token
+                Id = token.Id,
+                Expires = token.Expires
             };
         }
 
