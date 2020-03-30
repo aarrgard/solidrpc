@@ -33,7 +33,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
 
             // invoke the method
             var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-            var res = await methodInvoker.InvokeAsync(solidReq, cancellationToken);
+            var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
 
             //log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
 

@@ -300,7 +300,7 @@ namespace Microsoft.AspNetCore.Builder
                 await request.CopyFromAsync(context.Request);
 
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
-                var response = await methodInvoker.InvokeAsync(request, methodBinding, context.RequestAborted);
+                var response = await methodInvoker.InvokeAsync(context.RequestServices, request, methodBinding, context.RequestAborted);
 
                 // send data back
                 AddAllowedCorsHeaders(context);

@@ -23,5 +23,5 @@
     }
   ],
   "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
-  "entryPoint": "SolidRpc.OpenApi.AzFunctions.TimerFunction.Run"
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.TimerFunction.Run"
 }

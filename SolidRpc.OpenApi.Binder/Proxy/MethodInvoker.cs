@@ -3,7 +3,6 @@ using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
@@ -80,17 +79,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
-            IServiceProvider serviceProvider,
             IMethodBinderStore methodBinderStore)
         {
             Logger = logger;
-            ServiceProvider = serviceProvider;
             MethodBinderStore = methodBinderStore;
             MethodInfo2Binding = new Dictionary<MethodInfo, IMethodBinding>();
         }
 
         public ILogger Logger { get; }
-        public IServiceProvider ServiceProvider { get; }
         public IMethodBinderStore MethodBinderStore { get; }
         public Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
         private PathSegment RootSegment => GetRootSegment();
@@ -120,6 +116,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         }
 
         public Task<IHttpResponse> InvokeAsync(
+            IServiceProvider serviceProvider,
             IHttpRequest request, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -133,10 +130,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     StatusCode = 404
                 });
             }
-            return InvokeAsync(request, methodInfo, cancellationToken);
+            return InvokeAsync(serviceProvider, request, methodInfo, cancellationToken);
         }
 
         public async Task<IHttpResponse> InvokeAsync(
+            IServiceProvider serviceProvider,
             IHttpRequest request, 
             IMethodBinding methodInfo, 
             CancellationToken cancellationToken = default(CancellationToken))
@@ -149,7 +147,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // Locate service
             //
-            var svc = ServiceProvider.GetService(methodInfo.MethodInfo.DeclaringType);
+            var svc = serviceProvider.GetService(methodInfo.MethodInfo.DeclaringType);
             if (svc == null)
             {
                 throw new Exception($"Failed to resolve service for type {methodInfo.MethodInfo.DeclaringType}");

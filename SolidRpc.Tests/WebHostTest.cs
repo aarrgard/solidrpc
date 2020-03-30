@@ -163,7 +163,7 @@ namespace SolidRpc.Tests
                     {
                         services.AddHttpClient(binder.OpenApiSpec.Title).ConfigurePrimaryHttpMessageHandler(ch =>
                         {
-                            return new SolidRpcHttpMessageHandler(_serverServiceProvider.GetRequiredService<IMethodInvoker>());
+                            return new SolidRpcHttpMessageHandler(_serverServiceProvider, _serverServiceProvider.GetRequiredService<IMethodInvoker>());
                         });
                         
                     });

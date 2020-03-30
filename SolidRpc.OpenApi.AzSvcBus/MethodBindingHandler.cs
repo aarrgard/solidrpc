@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -33,13 +34,15 @@ namespace SolidRpc.OpenApi.AzSvcBus
             IConfiguration configuration,
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
-            IMethodInvoker methodInvoker)
+            IMethodInvoker methodInvoker,
+            IServiceScopeFactory serviceScopeFactory)
         {
             Logger = logger;
             Configuration = configuration;
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
             MethodInvoker = methodInvoker;
+            ServiceScopeFactory = serviceScopeFactory;
         }
 
         private ILogger Logger { get; }
@@ -47,6 +50,7 @@ namespace SolidRpc.OpenApi.AzSvcBus
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private IMethodInvoker MethodInvoker { get; }
+        private IServiceScopeFactory ServiceScopeFactory { get; }
 
         /// <summary>
         /// Invoked when a binding has been created. If there is a Queue transport
@@ -143,7 +147,10 @@ namespace SolidRpc.OpenApi.AzSvcBus
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(httpRequest);
 
-                await MethodInvoker.InvokeAsync(request, cancellationToken);
+                using (var scope = ServiceScopeFactory.CreateScope())
+                {
+                    await MethodInvoker.InvokeAsync(scope.ServiceProvider, request, cancellationToken);
+                }
             } 
             finally
             {

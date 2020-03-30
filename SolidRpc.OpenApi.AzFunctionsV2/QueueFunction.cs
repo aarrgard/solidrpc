@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
 
             // invoke the method
             var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-            var res = await methodInvoker.InvokeAsync(solidReq, cancellationToken);
+            var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
 
             if(res.StatusCode >= 200 && res.StatusCode < 300)
             {

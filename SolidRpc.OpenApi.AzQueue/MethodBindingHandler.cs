@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -31,13 +32,15 @@ namespace SolidRpc.OpenApi.AzQueue
             ICloudQueueStore cloudQueueStore,
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
-            IMethodInvoker methodInvoker)
+            IMethodInvoker methodInvoker,
+            IServiceScopeFactory serviceScopeFactory)
         {
             Logger = logger;
             CloudQueueStore = cloudQueueStore;
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
             MethodInvoker = methodInvoker;
+            ServiceScopeFactory = serviceScopeFactory;
         }
 
         private ILogger Logger { get; }
@@ -45,6 +48,7 @@ namespace SolidRpc.OpenApi.AzQueue
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private IMethodInvoker MethodInvoker { get; }
+        private IServiceScopeFactory ServiceScopeFactory { get; }
 
         private Microsoft.WindowsAzure.Storage.Queue.QueueRequestOptions QueueRequestOptions => new Microsoft.WindowsAzure.Storage.Queue.QueueRequestOptions();
         private Microsoft.WindowsAzure.Storage.OperationContext OperationContext => new Microsoft.WindowsAzure.Storage.OperationContext();
@@ -162,7 +166,10 @@ namespace SolidRpc.OpenApi.AzQueue
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(httpRequest);
 
-                await MethodInvoker.InvokeAsync(request, cancellationToken);
+                using (var scope = ServiceScopeFactory.CreateScope())
+                {
+                    await MethodInvoker.InvokeAsync(scope.ServiceProvider, request, cancellationToken);
+                }
 
                 return true;
             }

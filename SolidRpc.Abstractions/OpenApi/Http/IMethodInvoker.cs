@@ -21,18 +21,20 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <summary>
         /// Invokes the supplied request.
         /// </summary>
+        /// <param name="serviceProvider"></param>
         /// <param name="request"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<IHttpResponse> InvokeAsync(IHttpRequest request, CancellationToken cancellation = default(CancellationToken));
+        Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IHttpRequest request, CancellationToken cancellation = default(CancellationToken));
 
         /// <summary>
         /// Invokes the supplied request.
         /// </summary>
+        /// <param name="serviceProvider"></param>
         /// <param name="request"></param>
         /// <param name="methodInfo"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<IHttpResponse> InvokeAsync(IHttpRequest request, IMethodBinding methodInfo, CancellationToken cancellation = default(CancellationToken));
+        Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IHttpRequest request, IMethodBinding methodInfo, CancellationToken cancellation = default(CancellationToken));
     }
 }

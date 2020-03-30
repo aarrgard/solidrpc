@@ -14,5 +14,5 @@
     }
   ],
   "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
-  "entryPoint": "SolidRpc.OpenApi.AzFunctions.QueueFunction.Run"
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.QueueFunction.Run"
 }
