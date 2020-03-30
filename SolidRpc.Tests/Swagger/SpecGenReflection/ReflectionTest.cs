@@ -86,6 +86,13 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// <param name="req"></param>
             /// <returns></returns>
             Task TestHttpRequest(HttpRequest req);
+
+            /// <summary>
+            /// Tests a TimeSpan argument
+            /// </summary>
+            /// <param name="ts"></param>
+            /// <returns></returns>
+            Task<TimeSpan> TestTimeSpan(TimeSpan ts);
         }
 
         /// <summary>
@@ -316,6 +323,24 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1HttpRequest)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
+            Assert.AreEqual(1, binding.Arguments.Count());
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1TimeSpan()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestTimeSpan));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TimeSpan)}.json"), spec);
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());

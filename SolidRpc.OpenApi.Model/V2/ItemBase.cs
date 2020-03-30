@@ -181,6 +181,8 @@ namespace SolidRpc.OpenApi.Model.V2
                             return typeof(DateTime);
                         case "date-time":
                             return typeof(DateTimeOffset);
+                        case "time-span":
+                            return typeof(TimeSpan);
                         case "uuid":
                             return typeof(Guid);
                         case "uri":

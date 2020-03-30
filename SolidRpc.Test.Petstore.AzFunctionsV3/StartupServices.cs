@@ -20,6 +20,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
+            services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();

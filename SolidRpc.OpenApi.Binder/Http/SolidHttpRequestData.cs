@@ -32,6 +32,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         private const string SystemGuid = "System.Guid";
         private const string SystemDateTime = "System.DateTime";
         private const string SystemDateTimeOffset = "System.DateTimeOffset";
+        private const string SystemTimeSpan = "System.TimeSpan";
         private const string SystemUri = "System.Uri";
         private const string SystemString = "System.String";
         private const string SystemIOStream = "System.IO.Stream";
@@ -40,8 +41,8 @@ namespace SolidRpc.OpenApi.Binder.Http
         {
             SystemBoolean, SystemDouble, SystemByte, SystemSingle,
             SystemInt16, SystemInt32, SystemInt64, SystemGuid,
-            SystemDateTime, SystemDateTimeOffset, SystemUri, SystemString,
-            SystemIOStream, SystemThreadingCancellationToken
+            SystemDateTime, SystemDateTimeOffset, SystemTimeSpan,
+            SystemUri, SystemString, SystemIOStream, SystemThreadingCancellationToken
         };
         public static readonly IEnumerable<SolidHttpRequestData> EmptyArray = new SolidHttpRequestData[0];
 
@@ -268,6 +269,17 @@ namespace SolidRpc.OpenApi.Binder.Http
                                     return nullable ? (DateTimeOffset?)null : DateTimeOffset.MinValue;
                                 };
                             };
+                        case SystemTimeSpan:
+                            return (_) => {
+                                if (TimeSpan.TryParse(_?.GetStringValue(), CultureInfo.InvariantCulture, out TimeSpan parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (TimeSpan?)null : TimeSpan.MinValue;
+                                };
+                            };
                         case SystemUri:
                             return (_) => _ == null ? null : new Uri(_.GetStringValue());
                         case SystemString:
@@ -452,6 +464,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
                         case SystemDateTimeOffset:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((DateTimeOffset)val).ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture));
+                        case SystemTimeSpan:
+                            return (_, val) => new SolidHttpRequestDataString(contentType, name, ((TimeSpan)val).ToString());
                         case SystemUri:
                             return (_, val) => new SolidHttpRequestDataString(contentType, name, ((Uri)val).ToString());
                         case SystemString:

@@ -165,13 +165,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var invocationValues = new Dictionary<string, object>();
             foreach(var qv in request.Headers)
             {
-                if(invocationValues.TryGetValue(qv.Name, out object value))
+                var headerName = qv.Name.ToLower();
+                if(invocationValues.TryGetValue(headerName, out object value))
                 {
-                    invocationValues[qv.Name] = StringValues.Concat((StringValues)value, qv.GetStringValue());
+                    invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
                 }
                 else
                 {
-                    invocationValues.Add(qv.Name, new StringValues(qv.GetStringValue()));
+                    invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
                 }
             }
 

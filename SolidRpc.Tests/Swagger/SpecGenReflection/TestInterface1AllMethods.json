@@ -364,6 +364,36 @@
           }
         }
       }
+    },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestTimeSpan/{ts}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a TimeSpan argument",
+        "operationId": "TestTimeSpan",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ts",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "time-span"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "time-span"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {

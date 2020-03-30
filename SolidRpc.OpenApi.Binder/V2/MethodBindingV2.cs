@@ -213,6 +213,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     _exceptionMappings = new Dictionary<int, Action>();
                     _exceptionMappings[UnauthorizedException.HttpStatusCode] = CreateExceptionThrower(typeof(UnauthorizedException));
                     _exceptionMappings[FileContentNotFoundException.HttpStatusCode] = CreateExceptionThrower(typeof(FileContentNotFoundException));
+                    _exceptionMappings[RateLimitExceededException.HttpStatusCode] = CreateExceptionThrower(typeof(RateLimitExceededException));
                     CodeDocMethod.ExceptionDocumentation.ToList().ForEach(o =>
                     {
                         var exceptionType = MethodInfo.DeclaringType.Assembly.GetType(o.ExceptionType);
@@ -541,8 +542,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             for (int i = 0; i < patterns.Count; i++)
             {
                 if (patterns[i] == null) continue;
-                var data = HttpUtility.UrlDecode(pathElements[i]);
-                pathData.Add(new SolidHttpRequestDataString("text/plain", patterns[i], data));
+                //var data = HttpUtility.UrlDecode(pathElements[i]); // we do not need to do this
+                pathData.Add(new SolidHttpRequestDataString("text/plain", patterns[i], pathElements[i]));
             }
 
             request.PathData = pathData;

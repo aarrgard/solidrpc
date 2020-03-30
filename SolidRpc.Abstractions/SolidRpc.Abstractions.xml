@@ -134,6 +134,23 @@
             <param name="services"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimit(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Uri,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <param name="baseAddress"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimitMemory(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
             <summary>
             Interface that can be implemented to resolve the base uri.
@@ -918,6 +935,21 @@
             <param name="config"></param>
             <param name="inboundHandler"></param>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig">
+            <summary>
+            Interface used to configure the rate limits for an invocation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig.ResourceName">
+            <summary>
+            The resource name to use for the rate limiting scheme
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig.Timeout">
+            <summary>
+            The amount of time to wait for the resource to become available.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport">
             <summary>
             Represents the settings for the queue transport
@@ -1443,6 +1475,43 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit">
+            <summary>
+            Service that we can invoke to throttle requests.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit.GetRateLimitTokenAsync(System.String,System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+            Returns the rate limit token.
+            </summary>
+            <param name="resourceName"></param>
+            <param name="timeout"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit.ReturnRateLimitTokenAsync(SolidRpc.Abstractions.Types.RateLimit.RateLimitToken,System.Threading.CancellationToken)">
+            <summary>
+            Returns a rate limit token.
+            </summary>
+            <param name="rateLimitToken"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit.GetRateLimitSettingsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns the rate limit settings
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit.UpdateRateLimitSetting(SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting,System.Threading.CancellationToken)">
+            <summary>
+            Updates the rate limit settings
+            </summary>
+            <param name="setting"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.SolidRpcApplication">
             <summary>
             Implements the solid application logic
@@ -1850,6 +1919,58 @@
         <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor(System.String)">
             <summary>
             Constructs a new exception
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.RateLimitExceededException">
+            <summary>
+            Raised when the rate limit has been exceeded
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Types.RateLimitExceededException.HttpStatusCode">
+            <summary>
+            The http status code
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.RateLimitExceededException.#ctor">
+            <summary>
+            Constructs a new exception
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.RateLimitExceededException.#ctor(System.String)">
+            <summary>
+            Constructs a new exception
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting">
+            <summary>
+            Specifies the rate limit settings for the specified resource
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting.ResourceName">
+            <summary>
+            The name of the resource.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting.MaxConcurrentCalls">
+            <summary>
+            If set specifies the maximum number of concurrent calls
+            there can be to the resource
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken">
+            <summary>
+            Identifies a 
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken.ResourceName">
+            <summary>
+            The name of the resource.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken.Id">
+            <summary>
+            The unique id of this token. This guid may be empty if no token
+            was issued from the service.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.TypeTemplate">

@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest+Interface1/TestTimeSpan/{ts}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a TimeSpan argument",
+        "operationId": "TestTimeSpan",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ts",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "time-span"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "time-span"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
+    }
+  ]
+}

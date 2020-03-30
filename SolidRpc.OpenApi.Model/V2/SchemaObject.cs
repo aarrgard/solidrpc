@@ -110,6 +110,12 @@ namespace SolidRpc.OpenApi.Model.V2
                 itemBase.Format = "date-time";
                 return;
             }
+            else if (type == typeof(System.TimeSpan))
+            {
+                itemBase.Type = "string";
+                itemBase.Format = "time-span";
+                return;
+            }
             else if (type == typeof(System.Uri))
             {
                 itemBase.Type = "string";

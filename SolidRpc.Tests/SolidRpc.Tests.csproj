@@ -31,6 +31,7 @@
     <None Remove="Swagger\SpecGenReflection\TestInterface1StringValues.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
+    <None Remove="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />
     <None Remove="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <None Remove="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
   </ItemGroup>
@@ -42,6 +43,7 @@
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1FileTypeWithAdditionalData.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
     <EmbeddedResource Include="Swagger\petstore.json" />
