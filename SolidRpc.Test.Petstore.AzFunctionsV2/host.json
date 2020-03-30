@@ -3,6 +3,9 @@
   "extensions": {
     "http": {
       "routePrefix": "test"
+    },
+    "queues": {
+      "maxPollingInterval": "00:00:10"
     }
   },
   "logging": {

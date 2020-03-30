@@ -26,6 +26,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <param name="swaggerOptions"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="contentHandler"></param>
+        /// <param name="httpInvoker"></param>
         public SwaggerUI(
             SwaggerOptions swaggerOptions, 
             IMethodBinderStore methodBinderStore,
@@ -153,6 +154,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 .Where(o => o.OpenApiSpec.OpenApiSpecResolverAddress == openApiSpecResolverAddress)
                 .FirstOrDefault();
 
+            var hostedAddress = binder?.HostedAddress;
             var openApiSpec = binder?.OpenApiSpec;
 
             //
@@ -178,6 +180,16 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 }
             }
 
+            // clone spec and set base address
+            if(hostedAddress != null)
+            {
+                openApiSpec = openApiSpec.SetBaseAddress(hostedAddress);
+            }
+            else
+            {
+                openApiSpec = openApiSpec.Clone();
+            }
+
             //
             // check if there is any content associated
             //
@@ -187,7 +199,6 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 {
                     var indexHtmlPath = new Uri(openApiSpec.BaseAddress, "index.html");
                     var indexHtmlContent = await ContentHandler.GetContent(indexHtmlPath.AbsolutePath);
-                    openApiSpec = openApiSpec.Clone();
                     openApiSpec.SetExternalDoc("Navigate to the site", indexHtmlPath);
                 }
                 catch(FileContentNotFoundException)

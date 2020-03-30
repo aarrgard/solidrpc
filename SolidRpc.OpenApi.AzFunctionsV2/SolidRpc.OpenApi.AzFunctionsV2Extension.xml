@@ -256,38 +256,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.QueueFunction">
-            <summary>
-            Handles timer triggers
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.QueueFunction.Run(System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
-            <summary>
-            Runs the trigger logic.
-            </summary>
-            <param name="message"></param>
-            <param name="log"></param>
-            <param name="serviceProvider"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.TimerFunction">
-            <summary>
-            Handles timer triggers
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.TimerFunction.Run(Microsoft.Azure.WebJobs.TimerInfo,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Type,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Runs the trigger logic.
-            </summary>
-            <param name="myTimer"></param>
-            <param name="log"></param>
-            <param name="serviceProvider"></param>
-            <param name="serviceType"></param>
-            <param name="methodName"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctionsV2.HttpFunction">
             <summary>
             Handles timer triggers
@@ -300,6 +268,38 @@
             <param name="req"></param>
             <param name="log"></param>
             <param name="serviceProvider"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctionsV2.QueueFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.QueueFunction.Run(System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="message"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctionsV2.TimerFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.TimerFunction.Run(Microsoft.Azure.WebJobs.TimerInfo,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Type,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="myTimer"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="serviceType"></param>
+            <param name="methodName"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

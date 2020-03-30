@@ -34,23 +34,5 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
                 functionHandler)
         {
         }
-
-        protected override async Task CheckQueueAsync(string connection, string queueName, CancellationToken cancellationToken)
-        {
-            var connectionString = Configuration[connection];
-            if(string.IsNullOrEmpty(connectionString))
-            {
-                throw new Exception($"No connection string specified for connectin {connection}.");
-            }
-            var mgmt = new ManagementClient(connectionString);
-            try
-            {
-                var queue = await mgmt.GetQueueAsync(queueName, cancellationToken);
-            }
-            catch (Exception e)
-            {
-                var queue = await mgmt.CreateQueueAsync(queueName, cancellationToken);
-            }
-        }
     }
 }

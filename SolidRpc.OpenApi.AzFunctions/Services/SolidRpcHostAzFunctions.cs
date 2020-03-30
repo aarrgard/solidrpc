@@ -61,7 +61,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 var sb = new StringBuilder();
                 sb.Append(Protocol.Substring(0, 1).ToUpper());
                 sb.Append(Protocol.Substring(1).ToLower());
-                sb.Append("_");
                 foreach (var c in functionName)
                 {
                     switch (c)
@@ -219,7 +218,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private async Task<bool> WriteHttpFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
         {
-            var existingFunctions = FunctionHandler.GetFunctions().OfType<IAzHttpFunction>().ToList();
+            var functionTypes = new Type[]
+            {
+                typeof(IAzHttpFunction),
+                typeof(IAzSvcBusFunction),
+                typeof(IAzQueueFunction),
+            };
+            var existingFunctions = FunctionHandler.GetFunctions()
+                .Where(f => functionTypes.Any(ft => ft.IsAssignableFrom(f.GetType()))).ToList();
             var touchedFunctions = new List<IAzFunction>();
             var functionNames = new HashSet<string>(functionDefs.Select(o => o.FunctionName));
             var modified = false;
@@ -289,7 +295,5 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
             return modified;
         }
-
-        protected abstract Task CheckQueueAsync(string connection, string queueName, CancellationToken cancellationToken);
     }
 }

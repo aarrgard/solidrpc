@@ -12,7 +12,6 @@ using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -110,7 +109,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                 {
                     resultType = taskType;
                 }
-                if(resultType.IsValueType)
+                if(resultType?.IsValueType ?? false)
                 {
                     return Activator.CreateInstance(resultType);
                 }

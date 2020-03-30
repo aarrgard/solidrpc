@@ -5,7 +5,7 @@
       "name": "message",
       "direction": "in",
       "type": "queueTrigger",
-      "queueName": "solidrpc-openapi-swaggerui-services-iswaggerui-getindexhtml",
+      "queueName": "s8c-o7i-swaggerui-services-iswaggerui-getopenapispec-arg-arg",
       "connection": "SolidRpcAzQueueConnection"
     },
     {

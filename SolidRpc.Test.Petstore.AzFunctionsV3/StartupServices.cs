@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
 
             c.SetHttpTransport();
-            c.SetQueueTransport("AzQueue");
+            c.SetQueueTransport<QueueInvocationHandler>();
             c.SetQueueTransportInboundHandler("azfunctions");
 
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)

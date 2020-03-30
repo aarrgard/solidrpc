@@ -4,6 +4,69 @@
         <name>SolidRpc.OpenApi.AzFunctionsV1Extension</name>
     </assembly>
     <members>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantAttribute">
+            <summary>
+            Represents a constant value
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantAttribute.#ctor(System.String)">
+            <summary>
+            Constructs a new attribute with supplied value
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantAttribute.Value">
+            <summary>
+            The value
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.ConstantConverterString">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.ConstantConverterString.Convert(SolidRpc.OpenApi.AzFunctions.Bindings.ConstantAttribute)">
+            <summary>
+            
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.ConstantConverterType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.ConstantConverterType._types">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.ConstantConverterType.Convert(SolidRpc.OpenApi.AzFunctions.Bindings.ConstantAttribute)">
+            <summary>
+            
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.ConstantConverterType.FindType(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Bindings.ConstantExtensionConfigProvider.Initialize(Microsoft.Azure.WebJobs.Host.Config.ExtensionConfigContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Bindings.InjectAttribute">
             <summary>
             
@@ -188,6 +251,23 @@
             <param name="req"></param>
             <param name="log"></param>
             <param name="serviceProvider"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctionsV1.TimerFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV1.TimerFunction.Run(Microsoft.Azure.WebJobs.TimerInfo,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Type,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="myTimer"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="serviceType"></param>
+            <param name="methodName"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Config;
 using System;
 using System.Collections.Concurrent;
@@ -10,7 +9,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
     /// <summary>
     /// 
     /// </summary>
-    [Extension("Constant")]
     public class ConstantExtensionConfigProvider : IExtensionConfigProvider
     {
         /// <summary>

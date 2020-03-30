@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -6,7 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AzFunctionsV2
+namespace SolidRpc.OpenApi.AzFunctionsV1
 {
     /// <summary>
     /// Handles timer triggers
@@ -23,7 +24,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
         /// <param name="methodName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task Run(TimerInfo myTimer, ILogger log, IServiceProvider serviceProvider, Type serviceType, string methodName, CancellationToken cancellationToken)
+        public static async Task Run(TimerInfo myTimer, TraceWriter log, IServiceProvider serviceProvider, Type serviceType, string methodName, CancellationToken cancellationToken)
         {
             if (serviceType == null)
             {

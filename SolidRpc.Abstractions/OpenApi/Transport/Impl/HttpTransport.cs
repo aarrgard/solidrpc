@@ -30,7 +30,14 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
             Method = methodBinding.Method;
             Path = methodBinding.RelativePath;
 
-            BaseAddress = TransformAddress(methodBinding, methodBinding.MethodBinder.OpenApiSpec.BaseAddress, null);
+            if(methodBinding.IsLocal)
+            {
+                BaseAddress = methodBinding.MethodBinder.HostedAddress;
+            }
+            else
+            {
+                BaseAddress = TransformAddress(methodBinding, methodBinding.MethodBinder.OpenApiSpec.BaseAddress, null);
+            }
             var operationAddress = new Uri(BaseAddress, Path);
             operationAddress = TransformAddress(methodBinding, operationAddress, methodBinding.MethodInfo);
             OperationAddress = operationAddress;

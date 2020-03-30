@@ -36,113 +36,14 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
     },
-    "Estate/GetCommercialProperty": {
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive": {
       "matchCondition": {
-        "route": "/front/Estate/GetCommercialProperty",
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive",
         "methods": [
           "GET"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetCommercialProperty"
-    },
-    "Estate/GetCondominium": {
-      "matchCondition": {
-        "route": "/front/Estate/GetCondominium",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetCondominium"
-    },
-    "Estate/GetCottage": {
-      "matchCondition": {
-        "route": "/front/Estate/GetCottage",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetCottage"
-    },
-    "Estate/GetEstateList": {
-      "matchCondition": {
-        "route": "/front/Estate/GetEstateList",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetEstateList"
-    },
-    "Estate/GetFarm": {
-      "matchCondition": {
-        "route": "/front/Estate/GetFarm",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetFarm"
-    },
-    "Estate/GetForeignProperty": {
-      "matchCondition": {
-        "route": "/front/Estate/GetForeignProperty",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetForeignProperty"
-    },
-    "Estate/GetHouse": {
-      "matchCondition": {
-        "route": "/front/Estate/GetHouse",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetHouse"
-    },
-    "Estate/GetHousingCooperative": {
-      "matchCondition": {
-        "route": "/front/Estate/GetHousingCooperative",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetHousingCooperative"
-    },
-    "Estate/GetPlot": {
-      "matchCondition": {
-        "route": "/front/Estate/GetPlot",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetPlot"
-    },
-    "Estate/GetPremises": {
-      "matchCondition": {
-        "route": "/front/Estate/GetPremises",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetPremises"
-    },
-    "Estate/GetProject": {
-      "matchCondition": {
-        "route": "/front/Estate/GetProject",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetProject"
-    },
-    "Estate/GetStatuses": {
-      "matchCondition": {
-        "route": "/front/Estate/GetStatuses",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/test/Estate/GetStatuses"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/test/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive"
     },
     "front/{path}": {
       "matchCondition": {

@@ -5,11 +5,11 @@
       "name": "req",
       "direction": "in",
       "type": "httpTrigger",
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
+      "route": "SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive"
     },
     {
       "name": "serviceProvider",
@@ -22,6 +22,6 @@
       "type": "http"
     }
   ],
-  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV1Extension.dll",
-  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV1.HttpFunction.Run"
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.HttpFunction.Run"
 }

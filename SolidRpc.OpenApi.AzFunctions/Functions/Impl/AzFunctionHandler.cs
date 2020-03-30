@@ -199,7 +199,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         {
             return new Dictionary<string, string>()
             {
-                { HttpRouteBackendPrefix, HttpRouteFrontendPrefix }
+                { HttpRouteBackendPrefix, "" },
+                { HttpRouteFrontendPrefix, "" },
             };
         }
 

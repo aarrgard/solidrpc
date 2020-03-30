@@ -58,6 +58,7 @@
             <param name="swaggerOptions"></param>
             <param name="methodBinderStore"></param>
             <param name="contentHandler"></param>
+            <param name="httpInvoker"></param>
         </member>
         <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
             <summary>

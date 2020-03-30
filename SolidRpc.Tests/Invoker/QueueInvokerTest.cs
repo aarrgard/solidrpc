@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -18,7 +20,8 @@ namespace SolidRpc.Tests.Invoker
     {
         public QueueInvokerTest()
         {
-            SecKey = Guid.NewGuid();
+            //SecKey = Guid.NewGuid();
+            SecKey = Guid.Parse("53ca29a5-1b3c-40eb-ba85-23734fbaefd0");
         }
 
         /// <summary>
@@ -63,8 +66,8 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
-                conf.SetAzQueueTransport();
+                conf.SetSecurityKey(SecKey);
+                conf.SetQueueTransport<QueueInvocationHandler>();
                 return true;
             });
 
@@ -73,6 +76,12 @@ namespace SolidRpc.Tests.Invoker
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             base.ConfigureClientServices(clientServices, baseAddress);
+            clientServices.AddSolidRpcServices(conf =>
+            {
+                //conf.SetSecurityKey(SecKey);
+                conf.SetQueueTransport<QueueInvocationHandler>();
+                return true;
+            });
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
                 .SetBaseAddress(baseAddress)
@@ -80,8 +89,8 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
-                conf.SetAzQueueTransport();
+                //conf.SetSecurityKey(SecKey);
+                conf.SetQueueTransport<QueueInvocationHandler>();
                 return true;
             });
         }
@@ -91,19 +100,21 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Requires settings")]
+        [Test, Ignore("Requires passwords")]
         public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())
             {
                 await ctx.StartAsync();
 
-                var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
+                //var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ISolidRpcHost>>();
 
                 int res = 0;
                 for(int i = 0; i < 1; i++)
                 {
-                    res = await invoker.InvokeAsync(o => o.DoYAsync(CancellationToken.None));
+                    //res = await invoker.InvokeAsync(o => o.DoYAsync(CancellationToken.None));
+                    await invoker.InvokeAsync(o => o.IsAlive(CancellationToken.None));
                 }
 
                 await Task.Delay(10000);

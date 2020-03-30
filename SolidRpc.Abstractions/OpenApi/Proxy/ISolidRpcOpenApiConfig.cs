@@ -1,7 +1,10 @@
 ﻿using SolidProxy.Core.Configuration;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.OpenApi.Transport.Impl;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {
@@ -41,6 +44,15 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
     /// </summary>
     public static class ISolidRpcOpenApiConfigExtensions
     {
+        /// <summary>
+        /// Sets the SolidRpcSecurityKey key.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="secKey"></param>
+        public static void SetSecurityKey(this ISolidRpcOpenApiConfig config, Guid secKey)
+        {
+            config.SecurityKey = new KeyValuePair<string, string>("SolidRpcSecurityKey", secKey.ToString());
+        }
 
         /// <summary>
         /// Sets the method address transformer on the transports
@@ -101,30 +113,12 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         }
 
         /// <summary>
-        /// Sets the queue transport to "AzSvcBus"
-        /// </summary>
-        /// <param name="config"></param>
-        public static void SetAzSvcBusTransport(this ISolidRpcOpenApiConfig config)
-        {
-            config.SetQueueTransport("AzSvcBus");
-        }
-
-        /// <summary>
-        /// Sets the queue transport to "AzQueue"
-        /// </summary>
-        /// <param name="config"></param>
-        public static void SetAzQueueTransport(this ISolidRpcOpenApiConfig config)
-        {
-            config.SetQueueTransport("AzQueue");
-        }
-
-        /// <summary>
         /// Sets the queue transport type
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="queueType"></param>
-        public static void SetQueueTransport(this ISolidRpcOpenApiConfig config, string queueType)
+        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config) where T:IInvocationHandler
         {
+            string queueType = typeof(T).Assembly.GetName().Name.Split('.').Last();
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {

@@ -27,6 +27,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         Assembly Assembly { get; }
 
         /// <summary>
+        /// This is the base address for this assembly. It has
+        /// been transformed by the registered UrlTransformer to 
+        /// match the current hosting setting.
+        /// </summary>
+        Uri HostedAddress { get; }
+
+        /// <summary>
         /// Returns all the mapped methods
         /// </summary>
         IEnumerable<IMethodBinding> MethodBindings { get; }

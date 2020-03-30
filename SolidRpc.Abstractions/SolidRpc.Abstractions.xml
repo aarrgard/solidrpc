@@ -216,6 +216,13 @@
             The associated assembly.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.HostedAddress">
+            <summary>
+            This is the base address for this assembly. It has
+            been transformed by the registered UrlTransformer to 
+            match the current hosting setting.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.MethodBindings">
             <summary>
             Returns all the mapped methods
@@ -575,6 +582,12 @@
             <param name="func"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvocationHandler">
+            <summary>
+            The invocation handler is responsible for doing
+            the actual invokation
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker">
             <summary>
             Base interface for the invokers
@@ -613,6 +626,11 @@
             Uses the configured queues to invoke a call
             </summary>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IQueueInvoker">
+            <summary>
+            Represents a queue invoker
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IQueueInvoker`1">
             <summary>
@@ -852,6 +870,13 @@
             Extension methods to manipulate the settings
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Guid)">
+            <summary>
+            Sets the SolidRpcSecurityKey key.
+            </summary>
+            <param name="config"></param>
+            <param name="secKey"></param>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.GetTransports(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>
             Sets the method address transformer on the transports
@@ -871,24 +896,11 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetAzSvcBusTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
-            <summary>
-            Sets the queue transport to "AzSvcBus"
-            </summary>
-            <param name="config"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetAzQueueTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
-            <summary>
-            Sets the queue transport to "AzQueue"
-            </summary>
-            <param name="config"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>
             Sets the queue transport type
             </summary>
             <param name="config"></param>
-            <param name="queueType"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionName(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
             <summary>

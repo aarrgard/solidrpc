@@ -32,10 +32,5 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
                 functionHandler)
         {
         }
-
-        protected override Task CheckQueueAsync(string connection, string queueName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

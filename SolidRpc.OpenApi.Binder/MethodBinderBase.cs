@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
@@ -24,6 +25,16 @@ namespace SolidRpc.OpenApi.Binder
             Assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
             CachedBindings = new ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>>();
             Application = serviceProvider.GetRequiredService<ISolidRpcApplication>();
+            HostedAddress = TransformAddress(OpenApiSpec.BaseAddress);
+        }
+
+        private Uri TransformAddress(Uri uri)
+        {
+            var configuration = (IConfiguration)ServiceProvider.GetService(typeof(IConfiguration));
+            if (configuration == null) return uri;
+            var methodAddressResolver = (IMethodAddressTransformer)ServiceProvider.GetService(typeof(IMethodAddressTransformer));
+            if (methodAddressResolver == null) return uri;
+            return methodAddressResolver.TransformUriAsync(uri, null);
         }
 
         public IServiceProvider ServiceProvider { get; }
@@ -40,6 +51,8 @@ namespace SolidRpc.OpenApi.Binder
         }
 
         private ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>> CachedBindings { get; }
+
+        public Uri HostedAddress { get; }
 
         public IEnumerable<IMethodBinding> CreateMethodBindings(
             MethodInfo methodInfo,

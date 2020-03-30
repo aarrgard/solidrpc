@@ -21,7 +21,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public class StaticContent
         {
             /// <summary>
-            /// Constructs a new instalce
+            /// Constructs a new instance
             /// </summary>
             /// <param name="assembly"></param>
             /// <param name="resourceName"></param>
