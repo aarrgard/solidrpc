@@ -37,7 +37,7 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test]
+        [Test, Ignore("Requires password")]
         public async Task TestStartProject()
         {
             //var (httpClient,cookieContainer) = CreateHttpClient();
