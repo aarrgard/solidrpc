@@ -5,10 +5,10 @@ using Microsoft.WindowsAzure.Storage.Table;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services.RateLimit;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.RateLimit;
 using SolidRpc.OpenApi.AzFunctionsV2Extension.Services;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,6 +28,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             Configuration = configuration;
             SerializerFactory = serializerFactory;
 
+            ResoureSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
             var storageConnectionString = Configuration["AzureWebJobsStorage"];
             if(!string.IsNullOrEmpty(storageConnectionString))
             {
@@ -40,6 +41,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
         private IConfiguration Configuration { get; }
         private ISerializerFactory SerializerFactory { get; }
         private CloudTableClient CloudTableClient { get; }
+        private ConcurrentDictionary<string, SemaphoreSlim> ResoureSemaphores { get; }
 
         private TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private OperationContext OperationContext => new OperationContext();
@@ -57,35 +59,62 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
         {
             var timedOut = DateTime.Now.Add(timeout);
 
-            var cloudTable = await GetCloudTableAsync(cancellationToken);
-            if (cloudTable == null) return new RateLimitToken();
-
             //
-            // insert a new row in the table.
+            // make sure that there is only one call terrorising the table storage
             //
-            var rateLimitToken = new RateLimitToken()
+            var resourceSemaphore = ResoureSemaphores.GetOrAdd(resourceName, _ => new SemaphoreSlim(1));
+            var canEnter = await resourceSemaphore.WaitAsync(timeout, cancellationToken);
+            if(!canEnter) 
             {
-                ResourceName = resourceName,
-                Id = Guid.NewGuid(),
-                Expires = DateTimeOffset.Now.AddMinutes(1)
-            };
-            var entity = new SolidRpcRateLimitEntity(rateLimitToken.ResourceName, rateLimitToken.Id.ToString());
-            entity.Expires = rateLimitToken.Expires;
-            await cloudTable.ExecuteAsync(TableOperation.Insert(entity), TableRequestOptions, OperationContext, cancellationToken);
+                return new RateLimitToken();
+            }
 
-            do
+            try
             {
-                var nbrAhead = await CanEnter(cloudTable, resourceName, rateLimitToken.Id, cancellationToken);
-                if(nbrAhead <= 0)
+                var cloudTable = await GetCloudTableAsync(cancellationToken);
+                if (cloudTable == null) return new RateLimitToken();
+
+                //
+                // insert a new row in the table.
+                //
+                var rateLimitToken = new RateLimitToken()
                 {
-                    return rateLimitToken;
-                }
-                await Task.Delay(nbrAhead * 50);
-            } while (timedOut > DateTime.Now);
+                    ResourceName = resourceName,
+                    Id = Guid.NewGuid(),
+                    Expires = DateTimeOffset.Now.AddMinutes(1)
+                };
 
-            // remove the token from table storage and return empty token.
-            await ReturnRateLimitTokenAsync(rateLimitToken, cancellationToken);
-            return new RateLimitToken();
+                try
+                {
+                    var entity = new SolidRpcRateLimitEntity(rateLimitToken.ResourceName, rateLimitToken.Id.ToString());
+                    entity.Expires = rateLimitToken.Expires;
+                    await cloudTable.ExecuteAsync(TableOperation.Insert(entity), TableRequestOptions, OperationContext, cancellationToken);
+
+                    do
+                    {
+                        var nbrAhead = await CanEnter(cloudTable, resourceName, rateLimitToken.Id, cancellationToken);
+                        if (nbrAhead <= 0)
+                        {
+                            return rateLimitToken;
+                        }
+                        await Task.Delay(nbrAhead * 50);
+                    } while (timedOut > DateTime.Now);
+
+                    // remove the token from table storage and return empty token.
+                    await ReturnRateLimitTokenAsync(rateLimitToken, cancellationToken);
+                    return new RateLimitToken();
+                }
+                catch (Exception e)
+                {
+                    // make sure that we return the token
+                    await ReturnRateLimitTokenAsync(rateLimitToken, CancellationToken.None);
+                    throw;
+                }
+            }
+            finally
+            {
+                resourceSemaphore.Release();
+            }
         }
 
         private async Task<int> CanEnter(CloudTable cloudTable, string resourceName, Guid id, CancellationToken cancellationToken)
@@ -164,6 +193,10 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             } 
             catch(StorageException se)
             {
+                if(se.RequestInformation.HttpStatusCode == 404)
+                {
+                    return;
+                }
                 throw;
             }
         }
