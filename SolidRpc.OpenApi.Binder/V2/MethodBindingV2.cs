@@ -296,7 +296,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     var proxy = (ISolidProxy)MethodBinder.ServiceProvider.GetService(MethodInfo.DeclaringType);
                     var advicePipeline = proxy.GetInvocationAdvices(MethodInfo);
-                    _isLocal = advicePipeline.OfType<ISolidProxyInvocationAdvice>().Any();
+                    _isLocal = advicePipeline.OfType<SolidProxyInvocationImplAdvice>().Any();
                 }
                 return _isLocal.Value;
             }

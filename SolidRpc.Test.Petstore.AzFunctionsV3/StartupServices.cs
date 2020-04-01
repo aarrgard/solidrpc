@@ -4,9 +4,9 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
-using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
+using System;
 using System.Linq;
 using System.Threading;
 
@@ -22,6 +22,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             base.ConfigureServices(services);
             services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
+            //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
             services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
@@ -34,6 +35,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             // enable anonyous access to the swagger methods and static content.
             //
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
+
+            //c.GetAdviceConfig<ISolidRpcRateLimitConfig>().ResourceName = c.Methods.First().DeclaringType.Assembly.GetName().Name;
 
             //c.SetHttpTransport();
             //c.SetQueueTransport<QueueInvocationHandler>();

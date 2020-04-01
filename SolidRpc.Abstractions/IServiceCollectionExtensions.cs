@@ -508,30 +508,37 @@ namespace Microsoft.Extensions.DependencyInjection
             if (configuration == null) return;
             var method = openApiProxyConfig.Methods.Single();
             var assemblyName = method.DeclaringType.Assembly.GetName().Name;
-            var methodName = $"{method.DeclaringType.FullName}.{method.Name}";
-            if(methodName.StartsWith($"{assemblyName}."))
+            var interfaceName = method.DeclaringType.FullName;
+            if (interfaceName.StartsWith($"{assemblyName}."))
             {
-                methodName = methodName.Substring(assemblyName.Length+1);
+                interfaceName = interfaceName.Substring(assemblyName.Length+1);
             }
             var key1 = "SolidRpcSecurityKey";
             var key2 = $"{key1}.{assemblyName}";
-            var key3 = $"{key2}.{methodName}";
-            var val = configuration[key3];
+            var key3 = $"{key2}.{interfaceName}";
+            var key4 = $"{key3}.{method.Name}";
+            var val = configuration[key4];
             if (val != null)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key3.ToLower(), val);
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
+                return;
+            }
+            val = configuration[key3];
+            if (val != null)
+            {
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
                 return;
             }
             val = configuration[key2];
             if (val != null)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key2.ToLower(), val);
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
                 return;
             }
             val = configuration[key1];
             if (val != null)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1.ToLower(), val);
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
                 return;
             }
         }
