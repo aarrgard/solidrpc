@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Concurrent;
@@ -69,7 +71,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
     public abstract class Invoker<T> : IInvoker<T> where T:class
     {
- 
+        private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
+
         private static ConcurrentDictionary<Type, ResultConverter> s_ResultConverters = new ConcurrentDictionary<Type, ResultConverter>();
         private static readonly MethodInfo s_taskresultmethod = typeof(Invoker<T>).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Where(o => o.IsGenericMethod)
@@ -87,24 +90,24 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         protected IMethodBinderStore MethodBinderStore { get; }
         protected IServiceProvider ServiceProvider { get; }
 
-        public Task InvokeAsync(Expression<Action<T>> action)
+        public Task InvokeAsync(Expression<Action<T>> action, SolidRpcHostInstance targetInstance)
         {
             var (mi, args) = GetMethodInfo(action);
             var converter = s_ResultConverters.GetOrAdd(mi.ReturnType, CreateConverter);
-            return InvokeMethodAsync(converter.ConvertToObjectTask, mi, args);
+            return InvokeMethodAsync(converter.ConvertToObjectTask, targetInstance, mi, args);
         }
 
-        public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func)
+        public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, SolidRpcHostInstance targetInstance)
         {
             var (mi, args) = GetMethodInfo(func);
             var converter = s_ResultConverters.GetOrAdd(mi.ReturnType, CreateConverter);
-            return (TResult)converter.ConvertToTResult(InvokeMethodAsync(converter.ConvertToObjectTask, mi, args));
+            return (TResult)converter.ConvertToTResult(InvokeMethodAsync(converter.ConvertToObjectTask, targetInstance, mi, args));
         }
 
-        public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args)
+        public Task<object> InvokeAsync(SolidRpcHostInstance targetInstance, MethodInfo mi, IEnumerable<object> args)
         {
             var converter = s_ResultConverters.GetOrAdd(mi.ReturnType, CreateConverter);
-            return InvokeMethodAsync(converter.ConvertToObjectTask, mi, args.ToArray());
+            return InvokeMethodAsync(converter.ConvertToObjectTask, targetInstance, mi, args.ToArray());
         }
 
         private ResultConverter CreateConverter(Type arg)
@@ -128,7 +131,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             throw new Exception("expression should be a method call.");
         }
 
-        protected abstract Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, MethodInfo mi, object[] args);
+        protected abstract Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args);
 
         private async Task<object> ExtractNullResult(Task res)
         {
@@ -153,6 +156,27 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 headers.Add(new SolidHttpRequestDataString("text/plain", securityKey.Value.Key, securityKey.Value.Value));
                 httpReq.Headers = headers;
             }
+        }
+
+        protected void AddTargetInstance(SolidRpcHostInstance targetInstance, SolidHttpRequest httpReq)
+        {
+            if(targetInstance == null)
+            {
+                return;
+            }
+
+            var newCookies = EmptyCookieList;
+            
+            // add the cookies if set
+            if (targetInstance.HttpCookies != null)
+            {
+                newCookies = targetInstance.HttpCookies.Select(o => new SolidHttpRequestDataString("text/plain", "Cookie", $"{o.Key}={o.Value}"));
+            }
+
+            // add the "x-solidrpchosttarget"
+            newCookies = newCookies.Union(new[] { new SolidHttpRequestDataString("text/plain", "X-SolidRpcTargetHost", targetInstance.HostId.ToString()) });
+
+            httpReq.Headers = httpReq.Headers.Union(newCookies).ToList();
         }
     }
 }

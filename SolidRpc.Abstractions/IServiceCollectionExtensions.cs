@@ -260,7 +260,14 @@ namespace Microsoft.Extensions.DependencyInjection
                     switch (attr.ServiceLifetime)
                     {
                         case SolidRpcServiceLifetime.Singleton:
-                            services.RegisterSingletonService(attr.ServiceType, attr.ImplementationType);
+                            if(instances == SolidRpcServiceInstances.One)
+                            {
+                                services.RegisterSingletonService(attr.ServiceType, attr.ImplementationType);
+                            }
+                            else
+                            {
+                                services.AddSingleton(attr.ServiceType, attr.ImplementationType);
+                            }
                             break;
                         case SolidRpcServiceLifetime.Scoped:
                             services.AddScoped(attr.ServiceType, attr.ImplementationType);
@@ -512,19 +519,19 @@ namespace Microsoft.Extensions.DependencyInjection
             var val = configuration[key3];
             if (val != null)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key3, val);
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key3.ToLower(), val);
                 return;
             }
             val = configuration[key2];
             if (val != null)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key2, val);
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key2.ToLower(), val);
                 return;
             }
             val = configuration[key1];
             if (val != null)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
+                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1.ToLower(), val);
                 return;
             }
         }
@@ -612,30 +619,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 // disable the implementation
                 conf.GetAdviceConfig<ISolidProxyInvocationImplAdviceConfig>().Enabled = false;
 
-                return configurator?.Invoke(conf) ?? true;
-            });
-            return services;
-        }
-
-        /// <summary>
-        /// Returns the configuration builder
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configurator"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddSolidRpcRateLimitMemory(
-            this IServiceCollection services,
-            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
-        {
-            var methods = typeof(ISolidRpcRateLimit).GetMethods();
-            var openApiParser = services.GetSolidRpcOpenApiParser();
-            var openApiSpec = openApiParser.CreateSpecification(methods.ToArray())
-                .WriteAsJsonString();
-
-            services.AddSolidRpcBindings(typeof(ISolidRpcRateLimit), null, conf =>
-            {
-                conf.OpenApiSpec = openApiSpec;
-                conf.GetAdviceConfig<ISolidProxyInvocationImplAdviceConfig>().Enabled = true;
                 return configurator?.Invoke(conf) ?? true;
             });
             return services;

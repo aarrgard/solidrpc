@@ -51,7 +51,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <param name="secKey"></param>
         public static void SetSecurityKey(this ISolidRpcOpenApiConfig config, Guid secKey)
         {
-            config.SecurityKey = new KeyValuePair<string, string>("SolidRpcSecurityKey", secKey.ToString());
+            config.SecurityKey = new KeyValuePair<string, string>("solidrpcsecuritykey", secKey.ToString());
         }
 
         /// <summary>

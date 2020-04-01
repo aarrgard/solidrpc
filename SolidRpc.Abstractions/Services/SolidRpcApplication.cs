@@ -13,12 +13,13 @@ namespace SolidRpc.Abstractions.Services
     /// </summary>
     public class SolidRpcApplication : ISolidRpcApplication
     {
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private IList<Task> _startupTasks = new List<Task>();
 
         /// <summary>
         /// Returns the shutdown token
         /// </summary>
-        public CancellationToken ShutdownToken => CancellationToken.None;
+        public CancellationToken ShutdownToken => _cancellationTokenSource.Token;
 
         /// <summary>
         /// Adds a startup task
@@ -30,6 +31,11 @@ namespace SolidRpc.Abstractions.Services
             {
                 _startupTasks.Add(startupTask);
             }
+        }
+
+        public void StopApplication()
+        {
+            _cancellationTokenSource.Cancel();
         }
 
         /// <summary>

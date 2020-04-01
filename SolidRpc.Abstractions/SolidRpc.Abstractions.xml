@@ -143,14 +143,6 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimitMemory(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Returns the configuration builder
-            </summary>
-            <param name="services"></param>
-            <param name="configurator"></param>
-            <returns></returns>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
             <summary>
             Interface that can be implemented to resolve the base uri.
@@ -599,6 +591,7 @@
             Returns the uri where we invoke the specified method.
             </summary>
             <param name="func"></param>
+            <param name="includeQueryString"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvocationHandler">
@@ -612,10 +605,11 @@
             Base interface for the invokers
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(SolidRpc.Abstractions.Types.SolidRpcHostInstance,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
             Invokes the specified method with supplied arguments.
             </summary>
+            <param name="targetInstance"></param>
             <param name="methodInfo"></param>
             <param name="args"></param>
             <returns></returns>
@@ -626,18 +620,20 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}},SolidRpc.Abstractions.Types.SolidRpcHostInstance)">
             <summary>
             Invokes an action
             </summary>
             <param name="action"></param>
+            <param name="targetInstance"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},SolidRpc.Abstractions.Types.SolidRpcHostInstance)">
             <summary>
             Executes a function
             </summary>
             <param name="func"></param>
+            <param name="targetInstance"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.ILocalInvoker`1">
@@ -1386,6 +1382,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.StopApplication">
+            <summary>
+            Stops this application
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -1461,6 +1462,30 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.GetHostInstance(System.Threading.CancellationToken)">
+            <summary>
+            Returns the id of this host. This method can be used to determine if a host is up and running by
+            comparing the returned value with the instance that we want to send to. If a host goes down it is 
+            removed from the router and another instance probably responds to the call.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.SyncHostsFromStore(System.Threading.CancellationToken)">
+            <summary>
+            This method is invoked on all the hosts in a store when a new host is available.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.CheckHost(SolidRpc.Abstractions.Types.SolidRpcHostInstance,System.Threading.CancellationToken)">
+            <summary>
+            Invokes the "GetHostInstance" targeted for supplied instance and resturns the result
+            </summary>
+            <param name="hostInstance"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.GetHostConfiguration(System.Threading.CancellationToken)">
             <summary>
             Returns the host configuration.
@@ -1471,6 +1496,36 @@
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.IsAlive(System.Threading.CancellationToken)">
             <summary>
             Function that determines if the host is alive.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHostStore">
+            <summary>
+            The host store is responsible for storing persistent information about 
+            a host in a cluster. Usually hosts are placed behind a load balancer that
+            can route to a specific host based on some cookie or header information.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHostStore.AddHostInstanceAsync(SolidRpc.Abstractions.Types.SolidRpcHostInstance,System.Threading.CancellationToken)">
+            <summary>
+            Adds a host instance to the host store.
+            </summary>
+            <param name="hostInstance"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHostStore.RemoveHostInstanceAsync(SolidRpc.Abstractions.Types.SolidRpcHostInstance,System.Threading.CancellationToken)">
+            <summary>
+            Removes a host instance from the store.
+            </summary>
+            <param name="hostInstance"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHostStore.ListHostInstancesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Lists the stored host instances
             </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
@@ -1976,6 +2031,33 @@
         <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken.Expires">
             <summary>
             The time when the token expires
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.SolidRpcHostInstance">
+            <summary>
+            Represents a solid rpc host.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.HostId">
+            <summary>
+            The unique id of this host. This id is regenerated every time a 
+            new memory context is created
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.Started">
+            <summary>
+            The time this host was started.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.LastAlive">
+            <summary>
+            The last time this host was alive. This field is set(and returned) when a client
+            invokes the ISolidRpcHost.GetHostInstance.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.HttpCookies">
+            <summary>
+            The cookie to set in order to reach this host
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.TypeTemplate">

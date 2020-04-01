@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -67,7 +68,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return req.CreateUri(includeQueryString);
         }
 
-        protected override async Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, MethodInfo mi, object[] args)
+        protected override async Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
             var methodBinding = MethodBinderStore.GetMethodBinding(mi);
             if(methodBinding == null)
@@ -80,6 +81,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var httpReq = new SolidHttpRequest();
             await methodBinding.BindArgumentsAsync(httpReq, args, operationAddress);
 
+            AddTargetInstance(targetInstance, httpReq);
             AddSecurityKey(methodBinding, httpReq);
 
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;

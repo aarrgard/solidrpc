@@ -21,6 +21,33 @@ namespace SolidRpc.Abstractions.Services
         Task<Guid> GetHostId(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Returns the id of this host. This method can be used to determine if a host is up and running by
+        /// comparing the returned value with the instance that we want to send to. If a host goes down it is 
+        /// removed from the router and another instance probably responds to the call.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<SolidRpcHostInstance> GetHostInstance(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// This method is invoked on all the hosts in a store when a new host is available.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<IEnumerable<SolidRpcHostInstance>> SyncHostsFromStore(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Invokes the "GetHostInstance" targeted for supplied instance and resturns the result
+        /// </summary>
+        /// <param name="hostInstance"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<SolidRpcHostInstance> CheckHost(SolidRpcHostInstance hostInstance, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Returns the host configuration.
         /// </summary>
         /// <param name="cancellationToken"></param>

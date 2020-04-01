@@ -9,7 +9,7 @@
       "methods": [
         "post"
       ],
-      "route": "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting"
+      "route": "SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost"
     },
     {
       "name": "serviceProvider",

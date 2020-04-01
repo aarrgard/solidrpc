@@ -22,6 +22,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             base.ConfigureServices(services);
             services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
+            services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
@@ -34,9 +35,9 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
 
-            c.SetHttpTransport();
-            c.SetQueueTransport<QueueInvocationHandler>();
-            c.SetQueueTransportInboundHandler("azfunctions");
+            //c.SetHttpTransport();
+            //c.SetQueueTransport<QueueInvocationHandler>();
+            //c.SetQueueTransportInboundHandler("azfunctions");
 
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
@@ -49,7 +50,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 return true;
             }
 
-            return base.ConfigureAzureFunction(c);
+            var res = base.ConfigureAzureFunction(c);
+            return true;
         }
     }
 }

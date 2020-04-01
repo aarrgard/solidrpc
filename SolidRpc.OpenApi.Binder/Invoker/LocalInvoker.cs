@@ -4,6 +4,7 @@ using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         {
         }
 
-        protected override Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, MethodInfo mi, object[] args)
+        protected override Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
             var service = ServiceProvider.GetService(mi.DeclaringType);
             if(service == null)

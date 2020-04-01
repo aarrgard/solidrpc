@@ -120,25 +120,28 @@ namespace SolidRpc.OpenApi.Binder
             return parsedSpec;
         }
 
-        private IOpenApiSpec GetOpenApiSpec(string openApiSpec, MethodInfo methodInfo)
+        private IOpenApiSpec GetOpenApiSpec(string strOpenApiSpec, MethodInfo methodInfo)
         {
             IOpenApiSpec parsedSpec;
             var assembly = methodInfo.DeclaringType.Assembly;
             var openApiSpecResolver = GetOpenApiSpecResolver(assembly);
-            if (openApiSpec == null)
+            if (strOpenApiSpec == null)
             {
                 if (!openApiSpecResolver.TryResolveApiSpec($"{methodInfo.DeclaringType.FullName}.json", out parsedSpec))
                 {
-                    return GetOpenApiSpec(openApiSpec, assembly);
+                    return GetOpenApiSpec(strOpenApiSpec, assembly);
                 }
             }
             else
             {
-                parsedSpec = ParsedSpecs.GetOrAdd(openApiSpec, _ =>
+                parsedSpec = ParsedSpecs.GetOrAdd(strOpenApiSpec, _ =>
                 {
-                    var hash = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(openApiSpec));
+                    parsedSpec = OpenApiParser.ParseSpec(openApiSpecResolver, "local", strOpenApiSpec);
+                    var md5Source = parsedSpec.Title + string.Join(";", parsedSpec.Operations.Select(o => o.OperationId));
+                    var hash = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(md5Source));
                     var hex = BitConverter.ToString(hash).Replace("-", string.Empty);
-                    return OpenApiParser.ParseSpec(openApiSpecResolver, hex, openApiSpec);
+                    parsedSpec.SetOpenApiSpecResolver(openApiSpecResolver, hex);
+                    return parsedSpec;
                 });
             }
             return parsedSpec;

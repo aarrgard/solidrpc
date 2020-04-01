@@ -7,9 +7,9 @@
       "type": "httpTrigger",
       "authLevel": "function",
       "methods": [
-        "post"
+        "get"
       ],
-      "route": "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting"
+      "route": "SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore"
     },
     {
       "name": "serviceProvider",

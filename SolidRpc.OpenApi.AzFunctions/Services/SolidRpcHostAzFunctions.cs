@@ -8,8 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
@@ -108,28 +110,37 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// Constructs a new instance
         /// </summary>
         /// <param name="logger"></param>
+        /// <param name="serviceProvider"></param>
         /// <param name="configuration"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="configurationStore"></param>
         /// <param name="contentHandler"></param>
         /// <param name="functionHandler"></param>
         public SolidRpcHostAzFunctions(
-            ILogger<SolidRpcHost> logger, 
+            ILogger<SolidRpcHost> logger,
+            IServiceProvider serviceProvider,
             IConfiguration configuration,
             IMethodBinderStore methodBinderStore,
             ISolidProxyConfigurationStore configurationStore,
             ISolidRpcContentHandler contentHandler,
             IAzFunctionHandler functionHandler)
-            : base(logger, configuration)
+            : base(logger, serviceProvider, configuration)
         {
-            Logger = logger;
             MethodBinderStore = methodBinderStore;
             ContentHandler = contentHandler;
             FunctionHandler = functionHandler;
             ConfigurationStore = configurationStore;
+
+            var instanceid = configuration["WEBSITE_INSTANCE_ID"];
+            if (!string.IsNullOrEmpty(instanceid))
+            {
+                HttpCookies = new Dictionary<string, string>()
+                {
+                    { "ARRAffinity", instanceid }
+                };
+            }
         }
 
-        private ILogger Logger { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
         private IAzFunctionHandler FunctionHandler { get; }

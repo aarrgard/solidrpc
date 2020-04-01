@@ -25,5 +25,9 @@ namespace SolidRpc.Abstractions.Services
         /// <returns></returns>
         Task WaitForStartupTasks();
 
+        /// <summary>
+        /// Stops this application
+        /// </summary>
+        void StopApplication();
     }
 }

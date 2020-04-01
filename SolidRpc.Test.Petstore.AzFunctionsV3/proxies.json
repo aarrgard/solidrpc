@@ -81,6 +81,51 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting"
     },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

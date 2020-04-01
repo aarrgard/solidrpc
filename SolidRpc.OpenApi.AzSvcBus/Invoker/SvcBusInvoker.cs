@@ -43,7 +43,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
         private ISerializerFactory SerializerFactory { get; }
         private IQueueClientStore QueueClientStore { get; }
 
-        protected override async Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, MethodInfo mi, object[] args)
+        protected override async Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
             var messageId = Guid.NewGuid();
             try
@@ -85,6 +85,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
                 // 1. Bind the arguments using the openapi spec
                 var httpReq = new SolidHttpRequest();
                 await methodBinding.BindArgumentsAsync(httpReq, args);
+                AddTargetInstance(targetInstance, httpReq);
                 AddSecurityKey(methodBinding, httpReq);
 
                 // 2. Copy it to a representation that the serializer can use

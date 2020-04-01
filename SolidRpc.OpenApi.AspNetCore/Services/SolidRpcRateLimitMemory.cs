@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services.RateLimit;
 using SolidRpc.Abstractions.Types.RateLimit;
-using SolidRpc.OpenApi.AspNetCore.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,7 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(ISolidRpcRateLimit), typeof(SolidRpcRateLimitMemory))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>
@@ -80,7 +77,22 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                             return lease;
                         }
                     }
-                    await _semaphore.WaitAsync(timedOut - DateTime.Now, cancellationToken);
+
+                    //
+                    // wait until next lease expires or until we time out.
+                    //
+                    var wait = timedOut - DateTime.Now;
+                    var nextLeaseExpires = _leases.First?.Value?.Expires;
+                    if(nextLeaseExpires != null)
+                    {
+                        var expireWait = nextLeaseExpires.Value - DateTime.Now;
+                        if(expireWait < wait)
+                        {
+                            wait = expireWait;
+                        }
+                    }
+
+                    await _semaphore.WaitAsync(wait, cancellationToken);
                 }
                 while (DateTime.Now < timedOut);
 

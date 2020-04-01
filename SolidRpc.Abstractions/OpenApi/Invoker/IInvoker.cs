@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,10 +16,11 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the specified method with supplied arguments.
         /// </summary>
+        /// <param name="targetInstance"></param>
         /// <param name="methodInfo"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        Task<object> InvokeAsync(MethodInfo methodInfo, IEnumerable<object> args);
+        Task<object> InvokeAsync(SolidRpcHostInstance targetInstance, MethodInfo methodInfo, IEnumerable<object> args);
     }
 
     /// <summary>
@@ -31,14 +33,16 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// Invokes an action
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="targetInstance"></param>
         /// <returns></returns>
-        Task InvokeAsync(Expression<Action<T>> action);
+        Task InvokeAsync(Expression<Action<T>> action, SolidRpcHostInstance targetInstance = null);
 
         /// <summary>
         /// Executes a function
         /// </summary>
         /// <param name="func"></param>
+        /// <param name="targetInstance"></param>
         /// <returns></returns>
-        TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func);
+        TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, SolidRpcHostInstance targetInstance = null);
     }
 }

@@ -17,3 +17,4 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
 
     }
 }
+ 

@@ -303,5 +303,18 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+            <summary>
+            Extension methods fro the http request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimitTableStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
