@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -7,7 +6,6 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,14 +25,26 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// 
         /// </summary>
+        public class ComplexStruct
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public int Value { get; set; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public interface ITestInterface
         {
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> DoYAsync(CancellationToken cancellation = default(CancellationToken));
+            Task<int> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -50,12 +60,13 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> DoYAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task<int> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 Logger.LogTrace("DoYAsync");
-                return Task.FromResult(4711);
+                return Task.FromResult(myStruct.Value);
             }
         }
 
@@ -68,6 +79,7 @@ namespace SolidRpc.Tests.Invoker
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetSecurityKey(SecKey);
                 conf.SetQueueTransport<QueueInvocationHandler>();
+                conf.SetQueueTransportInboundHandler("generic");
                 return true;
             });
 
@@ -100,21 +112,21 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Requires passwords")]
+        [Test, Ignore("Requires password")]
         public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())
             {
                 await ctx.StartAsync();
 
-                //var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
-                var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ISolidRpcHost>>();
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
+                //var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ISolidRpcHost>>();
 
                 int res = 0;
                 for(int i = 0; i < 1; i++)
                 {
-                    //res = await invoker.InvokeAsync(o => o.DoYAsync(CancellationToken.None));
-                    await invoker.InvokeAsync(o => o.IsAlive(CancellationToken.None));
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None)); ;
+                    //await invoker.InvokeAsync(o => o.IsAlive(CancellationToken.None));
                 }
 
                 await Task.Delay(10000);

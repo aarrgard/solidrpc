@@ -11,7 +11,7 @@
     "https"
   ],
   "paths": {
-    "/Swagger/Binder/SecurityTest+ITestInterface/DoXAsync": {
+    "/Swagger/Binder/SecurityTest/ITestInterface/DoXAsync": {
       "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"

@@ -24,14 +24,27 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// 
         /// </summary>
+        public class ComplexStruct
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public int Value { get; set; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         public interface ITestInterface
         {
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> DoXAsync(CancellationToken cancellation = default(CancellationToken));
+            Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -42,11 +55,12 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> DoXAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
-                return Task.FromResult(4711);
+                return Task.FromResult(myStruct.Value);
             }
         }
 
@@ -91,16 +105,14 @@ namespace SolidRpc.Tests.Invoker
             {
                 await ctx.StartAsync();
 
-
                 var url = await ctx.ClientServiceProvider.GetRequiredService<IHttpInvoker<ITestInterface>>()
-                    .GetUriAsync(o => o.DoXAsync(CancellationToken.None));
+                    .GetUriAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None));
                 var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
-                var resp = await httpClient.GetAsync(url);
+                var resp = await httpClient.PostAsync(url, new StringContent("{}"));
                 Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
 
-
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IHttpInvoker<ITestInterface>>();
-                var res = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+                var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None));
                 Assert.AreEqual(4711, res);
             }
         }

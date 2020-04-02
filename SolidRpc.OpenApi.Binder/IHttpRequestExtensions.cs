@@ -54,29 +54,16 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="target"></param>
         public static async Task CopyToAsync(this IHttpRequest source, HttpRequest target)
         {
-            var builder = new UriBuilder
-            {
-                Scheme = source.Scheme,
-                Host = source.GetHost(),
-                Path = source.Path,
-                Query = string.Join("&", source.Query.Select(o => $"{HttpUtility.UrlEncode(o.Name)}={HttpUtility.UrlEncode(o.GetStringValue())}"))
-            };
-            var port = source.GetPort();
-            if (port != null)
-            {
-                builder.Port = port.Value;
-            }
-
             target.Method = source.Method;
-            target.Uri = builder.Uri;
+            target.Uri = CreateUri(source);
 
-            var headerDict = source.Headers.GroupBy(o => o.Name)
+            target.Headers = source.Headers.GroupBy(o => o.Name)
                 .ToDictionary(o => o.Key, o => o.Select(o2 => o2.GetStringValue()).ToArray());
-            target.Headers = headerDict;
 
             var content = CreateContent(source.ContentType, source.BodyData);
-            if(content != null)
+            if (content != null)
             {
+                content.Headers.ToList().ForEach(o => { target.Headers[o.Key] = o.Value.ToArray(); });
                 target.Body = await content.ReadAsStreamAsync();
             }
         }
@@ -115,7 +102,6 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         {
             target.Method = new HttpMethod(source.Method);
             target.RequestUri = source.CreateUri();
-
             source.Headers.ToList().ForEach(o => target.Headers.Add(o.Name, o.GetStringValue()));
 
             target.Content = CreateContent(source.ContentType, source.BodyData);
@@ -152,10 +138,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 .ToList();
 
             source.Headers.TryGetValue("Content-Type", out string[] contentTypeValues);
-            var contntTypeValue = contentTypeValues?.FirstOrDefault();
-            if (contntTypeValue != null)
+            var contentTypeValue = contentTypeValues?.FirstOrDefault();
+            if (contentTypeValue != null)
             {
-                var mediaType = MediaTypeHeaderValue.Parse(contntTypeValue);
+                var mediaType = MediaTypeHeaderValue.Parse(contentTypeValue);
                 target.ContentType = mediaType.MediaType;
                 target.BodyData = await SolidHttpRequestData.ExtractContentData(mediaType, source.Body);
             }

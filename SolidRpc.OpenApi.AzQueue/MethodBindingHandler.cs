@@ -168,7 +168,15 @@ namespace SolidRpc.OpenApi.AzQueue
 
                 using (var scope = ServiceScopeFactory.CreateScope())
                 {
-                    await MethodInvoker.InvokeAsync(scope.ServiceProvider, request, cancellationToken);
+                    var resp = await MethodInvoker.InvokeAsync(scope.ServiceProvider, request, cancellationToken);
+                    if(resp.StatusCode >= 200 && resp.StatusCode < 300)
+                    {
+                        // ok
+                    }
+                    else
+                    {
+                        throw new Exception("Invocation not successful:" + resp.StatusCode);
+                    }
                 }
 
                 return true;

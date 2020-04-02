@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
@@ -39,6 +40,12 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 
         private JsonContract CreateContractInternal(Type type)
         {
+            if (typeof(Stream).IsAssignableFrom(type))
+            {
+                var contract = new JsonObjectContract(type);
+                contract.Converter = new StreamConverter();
+                return contract;
+            }
             if (type.Assembly == typeof(string).Assembly)
             {
                 return base.CreateContract(type);

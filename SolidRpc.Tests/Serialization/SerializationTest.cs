@@ -53,6 +53,11 @@ namespace SolidRpc.Tests.Serialization
 
             Assert.AreEqual(val, copy);
 
+            if(((object)val) is MemoryStream ms) 
+            {
+                ms.Position = 0;
+            }
+
             var fileType = new FileContent();
             serFact.SerializeToFileType(fileType, val);
 
@@ -98,6 +103,18 @@ namespace SolidRpc.Tests.Serialization
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
             TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\"}", str));
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestStreamType()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            TestSerializeDeserialize(serFact, new MemoryStream(new byte[] { 1,2,3 }), str => Assert.AreEqual("\"AQID\"", str));
         }
     }
 }

@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                 name = name.Replace('+', '.'); // fix inner class name problem. no + allowed
                 return name;
             };
-            MapPath = s => $"/{s.Replace('.', '/')}";
+            MapPath = s => $"/{s.Replace('.', '/').Replace('+','/')}";
         }
 
         /// <summary>

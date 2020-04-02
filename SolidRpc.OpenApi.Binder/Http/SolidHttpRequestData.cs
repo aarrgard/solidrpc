@@ -294,6 +294,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                 case "application/json":
                     return (_) =>
                     {
+                        if (_ == null) return null;
                         using (var s = _.GetBinaryValue())
                         {
                             return JsonHelper.Deserialize(s, type);
