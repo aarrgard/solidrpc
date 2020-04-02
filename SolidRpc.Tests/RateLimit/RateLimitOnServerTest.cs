@@ -98,9 +98,7 @@ namespace SolidRpc.Tests.RateLimit
                 var mi = conf.Methods.First();
                 if(mi.Name == nameof(ITestInterface.RateLimitedMethod))
                 {
-                    var rateLimitConfig = conf.GetAdviceConfig<ISolidRpcRateLimitConfig>();
-                    rateLimitConfig.ResourceName = $"{mi.DeclaringType.FullName}.{mi.Name}";
-                    rateLimitConfig.Timeout = new TimeSpan(0, 0, 1);
+                    conf.SetRateLimit($"{mi.DeclaringType.FullName}.{mi.Name}", new TimeSpan(0, 0, 1));
                 }
 
                 return true;

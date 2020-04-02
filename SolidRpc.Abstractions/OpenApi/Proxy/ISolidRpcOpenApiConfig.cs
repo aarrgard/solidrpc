@@ -168,5 +168,23 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             }
             config.QueueTransport = queueTransport;
         }
+
+        /// <summary>
+        /// Sets the rate limit on this configuration.
+        /// <code>
+        /// var rateLimitConfig = config.GetAdviceConfig&lt;ISolidRpcRateLimitConfig&gt;();
+        /// rateLimitConfig.ResourceName = resourceName;
+        /// rateLimitConfig.Timeout = timeout;
+        /// </code>
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        public static void SetRateLimit(this ISolidRpcOpenApiConfig config, string resourceName, TimeSpan timeout)
+        {
+            var rateLimitConfig = config.GetAdviceConfig<ISolidRpcRateLimitConfig>();
+            rateLimitConfig.ResourceName = resourceName;
+            rateLimitConfig.Timeout = timeout;
+        }
     }
 }
