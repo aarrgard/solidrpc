@@ -268,10 +268,10 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <summary>
         /// Adds the security key
         /// </summary>
-        /// <param name="keyName"></param>
-        public void AddSolidRpcSecurityKey(string keyName)
+        /// <param name="securityDefinitionName"></param>
+        /// <param name="headerName"></param>
+        public void AddApiKeyAuth(string securityDefinitionName, string headerName)
         {
-            var securityDefinitionName = $"SolidRpcSecurity.{keyName}";
             if(Security == null)
             {
                 Security = new SecurityRequirementObject[0];
@@ -295,7 +295,7 @@ namespace SolidRpc.OpenApi.Model.V2
                 securityDefinitions[securityDefinitionName] = sso = new SecuritySchemeObject(securityDefinitions);
                 sso.Type = "apiKey";
                 sso.In = "header";
-                sso.Name = keyName;
+                sso.Name = headerName;
             }
         }
     }

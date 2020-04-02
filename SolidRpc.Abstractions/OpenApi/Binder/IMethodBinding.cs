@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Http;
+﻿using SolidProxy.Core.Configuration;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// The method info structure this binding represents.
         /// </summary>
         MethodInfo MethodInfo { get; }
+
+        /// <summary>
+        /// Returns the configuration for specified advice.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        T GetSolidProxyConfig<T>() where T : class, ISolidProxyInvocationAdviceConfig;
 
         /// <summary>
         /// Returns true if the underlying method ends in an 

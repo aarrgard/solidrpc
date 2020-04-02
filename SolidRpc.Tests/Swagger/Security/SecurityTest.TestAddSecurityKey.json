@@ -31,16 +31,24 @@
         },
         "security": [
           {
-            "SolidRpcSecurity.test": []
+            "security-definition1": []
+          },
+          {
+            "security-definition2": []
           }
         ]
       }
     }
   },
   "securityDefinitions": {
-    "SolidRpcSecurity.test": {
+    "security-definition1": {
       "type": "apiKey",
-      "name": "test",
+      "name": "security-header1",
+      "in": "header"
+    },
+    "security-definition2": {
+      "type": "apiKey",
+      "name": "security-header2",
       "in": "header"
     }
   },

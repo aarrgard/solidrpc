@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.SwaggerUI.Types;
@@ -220,9 +221,18 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 {
                     if(localOperations.TryGetValue(op.OperationId, out IMethodBinding binding))
                     {
-                        if(binding.SecurityKey != null)
+                        if (binding.SecurityKey != null)
                         {
-                            op.AddSolidRpcSecurityKey(binding.SecurityKey.Value.Key);
+                            var definitionName = $"SolidRpcSecurity.{binding.SecurityKey.Value.Key}";
+                            var headerName = "solidrpcsecuritykey";
+                            op.AddApiKeyAuth(definitionName, headerName);
+                        }
+                        var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
+                        if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            var definitionName = $"AzureFunctions";
+                            var headerName = "x-functions-key";
+                            op.AddApiKeyAuth(definitionName, headerName);
                         }
                     }
                     else

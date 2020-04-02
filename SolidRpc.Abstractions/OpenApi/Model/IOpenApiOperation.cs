@@ -13,7 +13,8 @@
         /// <summary>
         /// Sets 
         /// </summary>
-        /// <param name="keyName"></param>
-        void AddSolidRpcSecurityKey(string keyName);
+        /// <param name="securityDefinitionName"></param>
+        /// <param name="headerName"></param>
+        void AddApiKeyAuth(string securityDefinitionName, string headerName);
     }
 }

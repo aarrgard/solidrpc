@@ -303,6 +303,13 @@
             The method info structure this binding represents.
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.GetSolidProxyConfig``1">
+            <summary>
+            Returns the configuration for specified advice.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.IsLocal">
             <summary>
             Returns true if the underlying method ends in an 
@@ -663,11 +670,12 @@
             Returns the operation id.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.AddSolidRpcSecurityKey(System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.AddApiKeyAuth(System.String,System.String)">
             <summary>
             Sets 
             </summary>
-            <param name="keyName"></param>
+            <param name="securityDefinitionName"></param>
+            <param name="headerName"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiParser">
             <summary>

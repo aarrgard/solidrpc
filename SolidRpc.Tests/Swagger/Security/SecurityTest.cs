@@ -31,7 +31,11 @@ namespace SolidRpc.Tests.Swagger.Binder
             services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface));
-            spec.Operations.ToList().ForEach(o => o.AddSolidRpcSecurityKey("test"));
+            spec.Operations.ToList().ForEach(o =>
+            {
+                o.AddApiKeyAuth("security-definition1", "security-header1");
+                o.AddApiKeyAuth("security-definition2", "security-header2");
+            });
             var template = GetManifestResourceAsString(nameof(TestAddSecurityKey) + ".json");
             var strSpec = spec.WriteAsJsonString(true);
             

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
+using SolidProxy.Core.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Types;
@@ -18,7 +19,6 @@ namespace SolidRpc.OpenApi.Binder.V2
     {
         public MethodBinderV2(IServiceProvider serviceProvider, SwaggerObject schemaObject, Assembly assembly) : base(serviceProvider, schemaObject, assembly)
         {
-            ServiceProvider = serviceProvider;
             SchemaObject = schemaObject;
             CodeDocRepo = new CodeDocRepository();
 
@@ -33,7 +33,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             }).Where(o => o != null).ToList();
         }
 
-        public IServiceProvider ServiceProvider { get; }
         private SwaggerObject SchemaObject { get; }
         private CodeDocRepository CodeDocRepo { get; }
         private IList<OperationObject> Operations { get; }
@@ -186,6 +185,16 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return true;
             }
             return false;
+        }
+
+        public T GetSolidProxyConfig<T>(MethodInfo methodInfo) where T : class, ISolidProxyInvocationAdviceConfig
+        {
+            var invocConf = ConfigStore.ProxyConfigurations
+                .SelectMany(o => o.InvocationConfigurations).Where(o => o.MethodInfo == methodInfo)
+                .FirstOrDefault();
+            if (invocConf == null) return default(T);
+            if (!invocConf.IsAdviceConfigured<T>()) return default(T);
+            return invocConf.ConfigureAdvice<T>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidProxy.Core.Configuration;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -645,6 +646,11 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
 
             return Task.CompletedTask;
+        }
+
+        public T GetSolidProxyConfig<T>() where T : class, ISolidProxyInvocationAdviceConfig
+        {
+            return MethodBinder.GetSolidProxyConfig<T>(MethodInfo);
         }
     }
 }

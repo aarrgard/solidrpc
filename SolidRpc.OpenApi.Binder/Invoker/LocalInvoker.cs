@@ -57,7 +57,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             {
                 invocationValues = new Dictionary<string, object>()
                 {
-                    { securityKey.Value.Key, new StringValues(securityKey.Value.Value) }
+                    { securityKey.Value.Key.ToLower(), new StringValues(securityKey.Value.Value) }
                 };
 
             }

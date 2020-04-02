@@ -5,10 +5,10 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.Abstractions.Services;
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -24,8 +24,8 @@ namespace SolidRpc.OpenApi.Binder
             OpenApiSpec = openApiSpec ?? throw new ArgumentNullException(nameof(openApiSpec));
             Assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
             CachedBindings = new ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>>();
-            Application = serviceProvider.GetRequiredService<ISolidRpcApplication>();
             HostedAddress = TransformAddress(OpenApiSpec.BaseAddress);
+            ConfigStore = ServiceProvider.GetRequiredService<ISolidProxyConfigurationStore>();
         }
 
         private Uri TransformAddress(Uri uri)
@@ -38,7 +38,6 @@ namespace SolidRpc.OpenApi.Binder
         }
 
         public IServiceProvider ServiceProvider { get; }
-        private ISolidRpcApplication Application { get; }
         public IOpenApiSpec OpenApiSpec { get; }
         public Assembly Assembly { get; }
 
@@ -50,9 +49,9 @@ namespace SolidRpc.OpenApi.Binder
             }
         }
 
-        private ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>> CachedBindings { get; }
-
         public Uri HostedAddress { get; }
+        protected ISolidProxyConfigurationStore ConfigStore { get; }
+        private ConcurrentDictionary<MethodInfo, IEnumerable<IMethodBinding>> CachedBindings { get; }
 
         public IEnumerable<IMethodBinding> CreateMethodBindings(
             MethodInfo methodInfo,
