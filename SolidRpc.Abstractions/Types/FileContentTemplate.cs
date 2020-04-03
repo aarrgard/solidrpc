@@ -148,5 +148,13 @@ namespace SolidRpc.Abstractions.Types
         /// Returns the location from the template copy
         /// </summary>
         public Func<object, string> GetLocation { get; private set; }
+        /// <summary>
+        /// Sets the etag in the template copy
+        /// </summary>
+        public Action<object, string> SetETag { get; private set; }
+        /// <summary>
+        /// Returns the etag from the template copy
+        /// </summary>
+        public Func<object, string> GetETag { get; private set; }
     }
 }

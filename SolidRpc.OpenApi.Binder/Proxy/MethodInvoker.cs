@@ -57,7 +57,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 work.MethodInfo = methodBinding;
             }
 
-            public IMethodBinding GetMethodInfo(IEnumerator<string> segments)
+            public IMethodBinding GetMethodBinding(IEnumerator<string> segments)
             {
                 if (!segments.MoveNext())
                 {
@@ -70,7 +70,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",", SubSegments.Keys)}");
                     }
                 }
-                return subSegment.GetMethodInfo(segments);
+                return subSegment.GetMethodBinding(segments);
             }
         }
 
@@ -93,26 +93,27 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         private PathSegment GetRootSegment()
         {
-            if(_rootSegment == null)
+            var rootSegment = _rootSegment;
+            if (rootSegment != null)
             {
-                lock(_mutex)
-                {
-                    if(_rootSegment == null)
-                    {
-                        _rootSegment = new PathSegment();
-                        MethodBinderStore.MethodBinders
-                            .SelectMany(o => o.MethodBindings)
-                            .ToList().ForEach(methodBinding =>
-                        {
-                            _rootSegment.AddPath(methodBinding);
-                            MethodInfo2Binding.Add(methodBinding.MethodInfo, methodBinding);
-                            var mi = methodBinding.MethodInfo;
-                            Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodBinding.LocalPath}.");
-                        });
-                    }
-                }
+                return rootSegment;
             }
-            return _rootSegment;
+            lock(_mutex)
+            {
+                rootSegment = new PathSegment();
+                MethodBinderStore.MethodBinders
+                    .SelectMany(o => o.MethodBindings)
+                    .ToList().ForEach(methodBinding =>
+                {
+                    rootSegment.AddPath(methodBinding);
+                    MethodInfo2Binding.Add(methodBinding.MethodInfo, methodBinding);
+                    var mi = methodBinding.MethodInfo;
+                    Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodBinding.LocalPath}.");
+                });
+
+            }
+            _rootSegment = rootSegment;
+            return rootSegment;
         }
 
         public Task<IHttpResponse> InvokeAsync(
@@ -121,7 +122,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var pathKey = $"{request.Method}{request.Path}";
-            var methodInfo = RootSegment.GetMethodInfo(pathKey.Split('/').AsEnumerable().GetEnumerator());
+            var methodInfo = RootSegment.GetMethodBinding(pathKey.Split('/').AsEnumerable().GetEnumerator());
             if(methodInfo == null)
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);

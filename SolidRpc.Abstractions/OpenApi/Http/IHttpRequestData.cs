@@ -19,6 +19,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         Encoding Encoding { get; }
 
         /// <summary>
+        /// The etag - stored in the ETag header
+        /// </summary>
+        string ETag { get; }
+
+        /// <summary>
         /// File filename - usually stored in the Content-Disposition header.
         /// </summary>
         string Filename { get; }

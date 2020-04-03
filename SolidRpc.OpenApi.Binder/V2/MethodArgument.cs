@@ -79,6 +79,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     template.SetContent(data, valData.GetBinaryValue());
                     template.SetContentType(data, valData.ContentType);
                     template.SetFileName(data, valData.Filename);
+                    template.SetETag(data, valData.ETag);
                     return data;
                 };
             }
@@ -151,6 +152,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                         latest.SetBinaryData(name, template.GetContent(value));
                         latest.SetContentType(template.GetContentType(value));
                         latest.SetFilename(template.GetFileName(value));
+                        latest.SetETag(template.GetETag(value));
                     }
                     break; ;
             }

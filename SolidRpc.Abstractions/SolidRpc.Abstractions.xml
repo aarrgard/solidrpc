@@ -485,6 +485,11 @@
             The encoding - stored in the Content-Type header
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.ETag">
+            <summary>
+            The etag - stored in the ETag header
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Filename">
             <summary>
             File filename - usually stored in the Content-Disposition header.
@@ -537,6 +542,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Location">
             <summary>
             The location - stored in Location header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ETag">
+            <summary>
+            The ETag - stored in Location header
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.LastModified">
@@ -1724,6 +1734,11 @@
             The location of the content
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContent.ETag">
+            <summary>
+            The ETag.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContentNotFoundException">
             <summary>
             Raised when the file content is not found
@@ -1848,6 +1863,16 @@
         <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetLocation">
             <summary>
             Returns the location from the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.SetETag">
+            <summary>
+            Sets the etag in the template copy
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetETag">
+            <summary>
+            Returns the etag from the template copy
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.HttpRequest">

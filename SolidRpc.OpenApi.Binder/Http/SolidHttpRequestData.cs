@@ -328,6 +328,12 @@ namespace SolidRpc.OpenApi.Binder.Http
 
                     data.SetFilename(section.Headers.ContentDisposition?.FileName);
 
+                    var etag = string.Join("", section.Headers.GetValues("X-ETag"));
+                    if(!string.IsNullOrEmpty(etag))
+                    {
+                        data.SetETag(etag);
+                    }
+
                     bodyData.Add(data);
 
                     section = await reader.ReadNextSectionAsync();
@@ -499,6 +505,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The content type
         /// </summary>
         public string ContentType { get; protected set; }
+
+        /// <summary>
+        /// The ETag
+        /// </summary>
+        public string ETag { get; protected set; }
 
         /// <summary>
         /// The content type

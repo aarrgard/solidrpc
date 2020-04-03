@@ -38,5 +38,10 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The location of the resource
         /// </summary>
         public string Location { get; set; }
+
+        /// <summary>
+        /// The ETag.
+        /// </summary>
+        public string ETag { get; set; }
     }
 }

@@ -1,0 +1,52 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "EtagArg",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/EtagArg",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGen/ETagArg/Services/IETagArg/GetEtagStruct": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGen.ETagArg.Services.IETagArg"
+        ],
+        "description": "Consumes two complex types an a simple string...",
+        "operationId": "GetEtagStruct",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "fileType",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGen.ETagArg.Services.IETagArg",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}

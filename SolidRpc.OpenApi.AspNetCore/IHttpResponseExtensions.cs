@@ -35,6 +35,10 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 target.Location = loc;
             }
+            if (source.Headers.TryGetValue("ETag", out StringValues etag))
+            {
+                target.ETag = etag;
+            }
         }
         /// <summary>
         /// 
@@ -50,12 +54,16 @@ namespace SolidRpc.OpenApi.Binder.Http
                 var cd = new ContentDispositionHeaderValue("inline") { FileName = source.Filename };
                 target.Headers.Add("Content-Disposition", cd.ToString());
             }
+            if (!string.IsNullOrEmpty(source.ETag))
+            {
+                target.Headers.Add("ETag", $"\"{source.ETag}\"");
+            }
             if (!string.IsNullOrEmpty(source.ContentType))
             {
                 target.ContentType = source.ContentType;
                 await source.ResponseStream.CopyToAsync(target.Body);
             }
-            if(!string.IsNullOrEmpty(source.Location))
+            if (!string.IsNullOrEmpty(source.Location))
             {
                 target.StatusCode = 302;
                 target.Headers.Add("Location", source.Location);

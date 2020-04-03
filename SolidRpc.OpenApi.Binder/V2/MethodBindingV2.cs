@@ -449,6 +449,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 template.SetFileName(res, response.Filename);
                 template.SetLastModified(res, response.LastModified);
                 template.SetLocation(res, response.Location);
+                template.SetETag(res, response.ETag);
                 return res;
             }
             throw new Exception("Cannot handle content type:" + response.ContentType);
@@ -616,7 +617,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (fileTemplate.IsTemplateType)
             {
                 var charSet = fileTemplate.GetCharSet(obj);
-                var retContentType = fileTemplate.GetContentType(obj);
+                var retContentType = fileTemplate.GetContentType(obj) ?? "application/octet-stream";
                 if(!string.IsNullOrEmpty(charSet))
                 {
                     retContentType = $"{retContentType}; charset=\"{charSet}\"";
@@ -626,6 +627,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 response.Filename = fileTemplate.GetFileName(obj);
                 response.LastModified = fileTemplate.GetLastModified(obj);
                 response.Location = fileTemplate.GetLocation(obj);
+                response.ETag = fileTemplate.GetETag(obj);
                 return Task.CompletedTask;
             }
 

@@ -2,10 +2,8 @@
 using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
-using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
-using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -145,7 +143,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
         public class HttpRequestArgsProxy : HttpRequestArgs.Services.IHttpRequestArgs
         {
-            public Task<HttpRequest> TestInvokeRequest(HttpRequest req, CancellationToken cancellationToken = default(CancellationToken))
+            public Task<HttpRequestArgs.Types.HttpRequest> TestInvokeRequest(HttpRequestArgs.Types.HttpRequest req, CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.FromResult(req);
             }
@@ -528,6 +526,40 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 Assert.IsNotNull(res.NullableInt);
                 Assert.IsNotNull(res.NullableLong);
             }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestETagArg()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestETagArg).Substring(4));
+
+
+                var moq = new Mock<ETagArg.Services.IETagArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<ETagArg.Services.IETagArg>();
+
+                moq.Setup(o => o.GetEtagStruct(It.Is<ETagArg.Types.FileType>(a => a.ETag == "ETag"))).Returns(() =>
+                {
+                    return CreateFileStruct();
+                });
+                var res = proxy.GetEtagStruct(CreateFileStruct());
+                CompareStructs(CreateFileStruct(), res);
+            }
+        }
+
+        private ETagArg.Types.FileType CreateFileStruct()
+        {
+            return new ETagArg.Types.FileType()
+            {
+                Content = new MemoryStream(new byte[] { 1,2,3,4,5}),
+                ETag = "ETag"
+            };
         }
     }
 }

@@ -37,5 +37,10 @@ namespace SolidRpc.Abstractions.Types
         /// The location of the content
         /// </summary>
         public string Location { get; set; }
+
+        /// <summary>
+        /// The ETag.
+        /// </summary>
+        public string ETag { get; set; }
     }
 }

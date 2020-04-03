@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Http
@@ -12,6 +13,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
     /// </summary>
     public static class IHttpResponseExtensions
     {
+        private static Regex ETagRegex = new Regex("\"(.*)\"");
         /// <summary>
         /// 
         /// </summary>
@@ -31,6 +33,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 if (source.Headers.Location != null)
                 {
                     target.Location = source.Headers.Location.ToString();
+                }
+                if (source.Headers.ETag != null)
+                {
+                    target.ETag = source.Headers.ETag.Tag;
+                    target.ETag = target.ETag.Substring(1, target.ETag.Length - 2);
                 }
                 var ms = new MemoryStream();
                 await source.Content.CopyToAsync(ms);
@@ -92,10 +99,15 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.Headers.CacheControl.MaxAge = new TimeSpan(24, 0, 0);
             }
 
-            if(source.Location != null)
+            if (source.Location != null)
             {
                 target.StatusCode = HttpStatusCode.Redirect;
                 target.Headers.Location = new Uri(source.Location);
+            }
+
+            if (source.ETag != null)
+            {
+                target.Headers.ETag = EntityTagHeaderValue.Parse(source.ETag);
             }
 
             return Task.CompletedTask;

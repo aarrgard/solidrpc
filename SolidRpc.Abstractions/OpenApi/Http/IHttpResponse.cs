@@ -29,6 +29,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         string Location { get; set; }
 
         /// <summary>
+        /// The ETag - stored in Location header
+        /// </summary>
+        string ETag { get; set; }
+
+        /// <summary>
         /// Accessor for the "Last-Modified" header.
         /// </summary>
         DateTimeOffset? LastModified { get; set; }

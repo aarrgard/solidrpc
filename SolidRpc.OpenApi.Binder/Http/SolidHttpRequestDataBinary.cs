@@ -69,6 +69,15 @@ namespace SolidRpc.OpenApi.Binder.Http
         }
 
         /// <summary>
+        /// Sets the ETag
+        /// </summary>
+        /// <param name="v"></param>
+        public void SetETag(string eTag)
+        {
+            ETag = eTag;
+        }
+
+        /// <summary>
         /// Sets the binary data.
         /// </summary>
         /// <param name="name"></param>
