@@ -164,10 +164,22 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"Service for {methodInfo.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
+            var resp = new SolidHttpResponse();
             //
             // extract arguments
             //
-            var args = await methodInfo.ExtractArgumentsAsync(request);
+            object[] args;
+            try
+            {
+                args = await methodInfo.ExtractArgumentsAsync(request);
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e, "Failed to extract arguments - returning 400 - bad request");
+                resp.StatusCode = 400;
+                return resp;
+            }
+
             var invocationValues = new Dictionary<string, object>();
             foreach(var qv in request.Headers)
             {
@@ -182,7 +194,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
             }
 
-            var resp = new SolidHttpResponse();
             try
             {
                 //

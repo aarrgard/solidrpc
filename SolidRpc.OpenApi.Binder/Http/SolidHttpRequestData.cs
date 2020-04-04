@@ -324,14 +324,13 @@ namespace SolidRpc.OpenApi.Binder.Http
                     var data = new SolidHttpRequestDataBinary(sectionMediaType.MediaType, sectionMediaType.CharSet, "body", (byte[])null);
 
                     var stream = await section.ReadAsStreamAsync();
-                    data.SetBinaryData(section.Headers.ContentDisposition?.Name, stream);
+                    data.SetBinaryData(StripQuotes(section.Headers.ContentDisposition?.Name), stream);
 
-                    data.SetFilename(section.Headers.ContentDisposition?.FileName);
+                    data.SetFilename(StripQuotes(section.Headers.ContentDisposition?.FileName));
 
-                    var etag = string.Join("", section.Headers.GetValues("X-ETag"));
-                    if(!string.IsNullOrEmpty(etag))
+                    if(section.Headers.TryGetValues("X-ETag", out IEnumerable<string> etag))
                     {
-                        data.SetETag(etag);
+                        data.SetETag(StripQuotes(string.Join("", etag)));
                     }
 
                     bodyData.Add(data);
@@ -386,6 +385,16 @@ namespace SolidRpc.OpenApi.Binder.Http
             }
             return bodyData;
         }
+
+        private static string StripQuotes(string str)
+        {
+            if (str == null) return null;
+            if (str.Length < 2) return str;
+            if (str[0] != '"') return str;
+            if (str[str.Length - 1] != '"') return str;
+            return str.Substring(1,str.Length-2);
+        }
+
         private static Type GetEnumType(Type type)
         {
             if (type.IsGenericType)

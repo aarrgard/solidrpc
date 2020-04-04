@@ -377,9 +377,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     continue;
                 }
                 Type impl = implementationAssembly.GetTypes()
-                        .Where(o => t.IsAssignableFrom(o))
-                        .OrderBy(o => o == t ? 1 : 0)
-                        .SingleOrDefault();
+                    .Where(o => !o.IsInterface)
+                    .Where(o => t.IsAssignableFrom(o))
+                    .OrderBy(o => o == t ? 1 : 0)
+                    .SingleOrDefault();
                 if(impl == null)
                 {
                     continue;
