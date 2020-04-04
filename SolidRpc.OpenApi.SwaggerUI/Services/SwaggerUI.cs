@@ -10,6 +10,7 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.SwaggerUI.Types;
@@ -214,6 +215,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             if(binder != null)
             {
                 var localOperations = binder.MethodBindings
+                    .Where(o => o.Transports.OfType<IHttpTransport>().Any())
                     .Where(o => o.IsEnabled)
                     .Where(o => o.IsLocal)
                     .ToDictionary(o => o.OperationId, o => o);
