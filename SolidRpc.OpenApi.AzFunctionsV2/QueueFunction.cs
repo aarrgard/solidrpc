@@ -1,8 +1,6 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;

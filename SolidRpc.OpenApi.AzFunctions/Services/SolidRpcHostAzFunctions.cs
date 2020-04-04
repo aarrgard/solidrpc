@@ -25,11 +25,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     {
         private class FunctionDef
         {
-            public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string functionName, string path)
+            public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path)
             {
                 FunctionHandler = functionHandler;
                 Protocol = protocol;
-                FunctionName = CreateFunctionName(functionName);
+                FunctionName = CreateFunctionName(openApiPath);
                 Path = FixupPath(path);
             }
 
@@ -63,21 +63,27 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 var sb = new StringBuilder();
                 sb.Append(Protocol.Substring(0, 1).ToUpper());
                 sb.Append(Protocol.Substring(1).ToLower());
+                int level = 0;
                 foreach (var c in functionName)
                 {
                     switch (c)
                     {
+                        case '{':
+                            sb.Append($"arg{argCount++}");
+                            level++;
+                            break;
                         case '}':
+                            level--;
                             break;
                         case '.':
                         case '/':
                             sb.Append('_');
                             break;
-                        case '{':
-                            sb.Append($"arg{argCount++}");
-                            break;
                         default:
-                            sb.Append(c);
+                            if(level == 0)
+                            {
+                                sb.Append(c);
+                            }
                             break;
                     }
                 }
@@ -92,7 +98,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private class HttpFunctionDef : FunctionDef
         {
-            public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string functionName, string path) : base(functionHandler, protocol, functionName, path) { }
+            public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
 
             public string Method { get; set; }
             public string AuthLevel { get; set; }
@@ -100,7 +106,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private class QueueFunctionDef : FunctionDef
         {
-            public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string functionName, string path) : base(functionHandler, protocol, functionName, path) { }
+            public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
             public string QueueName { get; set; }
             public string Connection { get; set; }
             public string QueueType { get; set; }

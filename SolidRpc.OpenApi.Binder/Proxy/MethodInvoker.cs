@@ -106,9 +106,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     .ToList().ForEach(methodBinding =>
                 {
                     rootSegment.AddPath(methodBinding);
-                    MethodInfo2Binding.Add(methodBinding.MethodInfo, methodBinding);
                     var mi = methodBinding.MethodInfo;
                     Logger.LogInformation($"Added {mi.DeclaringType.FullName}.{mi.Name}@{methodBinding.LocalPath}.");
+
+                    // we may have several bindings to the same method - choose the first one.
+                    if (!MethodInfo2Binding.ContainsKey(mi))
+                    {
+                        MethodInfo2Binding[mi] = methodBinding;
+                    }
                 });
 
             }
