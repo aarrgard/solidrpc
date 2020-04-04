@@ -616,6 +616,18 @@ namespace SolidRpc.OpenApi.Binder.V2
             var fileTemplate = FileContentTemplate.GetTemplate(objType);
             if (fileTemplate.IsTemplateType)
             {
+                if(obj == null)
+                {
+                    //
+                    // So we do not have anything to return. Should we
+                    // 1. Return null as application/json
+                    // 2. Raise a 404
+                    // 3. Return an empty stream
+                    //
+                    response.ContentType = "application/json";
+                    response.ResponseStream = new MemoryStream(Encoding.ASCII.GetBytes("null"));
+                    return Task.CompletedTask;
+                }
                 var charSet = fileTemplate.GetCharSet(obj);
                 var retContentType = fileTemplate.GetContentType(obj) ?? "application/octet-stream";
                 if(!string.IsNullOrEmpty(charSet))

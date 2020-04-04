@@ -10,6 +10,26 @@
     "https"
   ],
   "paths": {
+    "/Services/IHttpRequestArgs/ReturnNullRequest": {
+      "get": {
+        "tags": [
+          "IHttpRequestArgs"
+        ],
+        "description": "REturns null",
+        "operationId": "ReturnNullRequest",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/HttpRequest"
+            }
+          }
+        }
+      }
+    },
     "/Services/IHttpRequestArgs/TestInvokeRequest": {
       "get": {
         "tags": [

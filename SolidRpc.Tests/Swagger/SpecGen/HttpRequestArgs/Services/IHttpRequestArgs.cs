@@ -16,5 +16,12 @@ namespace SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<HttpRequest> TestInvokeRequest(HttpRequest req, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// REturns null
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<HttpRequest> ReturnNullRequest(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

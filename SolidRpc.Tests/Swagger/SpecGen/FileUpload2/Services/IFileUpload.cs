@@ -16,5 +16,12 @@ namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload2.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<FileData> UploadFile(FileData fileData, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the file data as null
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileData> NullData(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

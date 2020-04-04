@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
+using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,7 +48,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -143,6 +144,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
         public class HttpRequestArgsProxy : HttpRequestArgs.Services.IHttpRequestArgs
         {
+            public Task<HttpRequest> ReturnNullRequest(CancellationToken cancellationToken = default(CancellationToken))
+            {
+                return Task.FromResult<HttpRequest>(null);
+            }
+
             public Task<HttpRequestArgs.Types.HttpRequest> TestInvokeRequest(HttpRequestArgs.Types.HttpRequest req, CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.FromResult(req);
@@ -195,6 +201,17 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 content = await deleteResp.Content.ReadAsStringAsync();
                 Assert.IsTrue(content.Contains("\"Method\":\"DELETE\""));
 
+                //
+                // Null request
+                //
+                var nullRequestUri = await ctx.ClientServiceProvider
+                    .GetRequiredService<IHttpInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
+                    .GetUriAsync(o => o.ReturnNullRequest(CancellationToken.None));
+                
+                var nullResp = await httpClient.GetAsync(nullRequestUri);
+                Assert.AreEqual(HttpStatusCode.OK, nullResp.StatusCode);
+                content = await nullResp.Content.ReadAsStringAsync();
+                Assert.IsTrue(content.Contains("null"));
 
             }
         }
@@ -290,8 +307,13 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<FileUpload2.Services.IFileUpload>();
                 var res = await proxy.UploadFile(CreateUpload2Struct());
-
                 CompareStructs(CreateUpload2Struct(), res);
+
+                moq.Setup(o => o.NullData(
+                    It.IsAny<CancellationToken>()
+                    )).Returns(Task.FromResult<FileUpload2.Types.FileData>(null));
+                res = await proxy.NullData();
+                Assert.IsNull(res);
             }
         }
 

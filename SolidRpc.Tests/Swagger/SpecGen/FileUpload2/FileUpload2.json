@@ -10,6 +10,26 @@
     "https"
   ],
   "paths": {
+    "/Services/IFileUpload/NullData": {
+      "get": {
+        "tags": [
+          "IFileUpload"
+        ],
+        "description": "Returns the file data as null",
+        "operationId": "NullData",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/IFileUpload/UploadFile": {
       "post": {
         "tags": [
