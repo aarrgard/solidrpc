@@ -181,5 +181,18 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             resourceItem.MaxConcurrentCalls = setting.MaxConcurrentCalls;
             return Task.CompletedTask;
         }
+
+        public async Task<RateLimitToken> GetSingeltonTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var resourceItem = ResourceItems.GetOrAdd(resourceName, CreateResourceItem);
+            resourceItem.MaxConcurrentCalls = 1;
+            var token = await resourceItem.GetTokenAsync(timeout, cancellationToken);
+            return new RateLimitToken()
+            {
+                ResourceName = resourceName,
+                Id = token.Id,
+                Expires = token.Expires
+            };
+        }
     }
 }

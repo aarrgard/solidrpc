@@ -1575,6 +1575,15 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit.GetSingeltonTokenAsync(System.String,System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+            Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.
+            </summary>
+            <param name="resourceName"></param>
+            <param name="timeout"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit.ReturnRateLimitTokenAsync(SolidRpc.Abstractions.Types.RateLimit.RateLimitToken,System.Threading.CancellationToken)">
             <summary>
             Returns a rate limit token.

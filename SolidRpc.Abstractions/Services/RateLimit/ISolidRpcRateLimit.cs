@@ -21,6 +21,15 @@ namespace SolidRpc.Abstractions.Services.RateLimit
         Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<RateLimitToken> GetSingeltonTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Returns a rate limit token.
         /// </summary>
         /// <param name="rateLimitToken"></param>

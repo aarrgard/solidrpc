@@ -55,7 +55,17 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             return _cloudTable = cloudTable;
         }
 
-        public async Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<RateLimitToken> GetSingeltonTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetRateLimitTokenAsync(resourceName, timeout, true, cancellationToken);
+        }
+
+        public Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetRateLimitTokenAsync(resourceName, timeout, false, cancellationToken);
+        }
+
+        public async Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, bool singelton, CancellationToken cancellationToken = default(CancellationToken))
         {
             var timedOut = DateTime.Now.Add(timeout);
 
@@ -92,7 +102,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
 
                     do
                     {
-                        var nbrAhead = await CanEnter(cloudTable, resourceName, rateLimitToken.Id, cancellationToken);
+                        var nbrAhead = await CanEnter(cloudTable, resourceName, rateLimitToken.Id, singelton, cancellationToken);
                         if (nbrAhead <= 0)
                         {
                             return rateLimitToken;
@@ -117,7 +127,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             }
         }
 
-        private async Task<int> CanEnter(CloudTable cloudTable, string resourceName, Guid id, CancellationToken cancellationToken)
+        private async Task<int> CanEnter(CloudTable cloudTable, string resourceName, Guid id, bool singelton, CancellationToken cancellationToken)
         {
             //
             // list the rows in the table - should include the settings
@@ -167,11 +177,22 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
 
             if (settings == null)
             {
-                settings = new RateLimitSetting()
+                if(singelton)
                 {
-                    ResourceName = resourceName
-                };
-                await UpdateRateLimitSetting(settings, cancellationToken);
+                    settings = new RateLimitSetting()
+                    {
+                        ResourceName = resourceName,
+                        MaxConcurrentCalls = 1
+                    };
+                }
+                else
+                {
+                    settings = new RateLimitSetting()
+                    {
+                        ResourceName = resourceName
+                    };
+                    await UpdateRateLimitSetting(settings, cancellationToken);
+                }
             }
 
             if (settings.MaxConcurrentCalls != null)
