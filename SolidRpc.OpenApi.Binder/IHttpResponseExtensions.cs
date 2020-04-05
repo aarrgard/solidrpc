@@ -107,7 +107,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
 
             if (source.ETag != null)
             {
-                target.Headers.ETag = EntityTagHeaderValue.Parse(source.ETag);
+                target.Headers.ETag = EntityTagHeaderValue.Parse($"\"{source.ETag}\"");
             }
 
             return Task.CompletedTask;

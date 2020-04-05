@@ -135,6 +135,15 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}"
     },
+    "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

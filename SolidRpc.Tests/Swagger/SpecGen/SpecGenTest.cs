@@ -48,7 +48,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, false);
+                CreateSpec(subDir.Name, true);
             }
         }
 
@@ -88,13 +88,24 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             return dir;
         }
 
+        public async Task RunTestInContext(Func<TestHostContext, Task> testFunc)
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await testFunc(ctx);
+            }
+            using (var ctx = CreateHttpMessageHandlerContext())
+            {
+                await testFunc(ctx);
+            }
+        }
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestEnumArgs()
+        public Task TestEnumArgs()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestEnumArgs).Substring(4));
 
@@ -111,16 +122,16 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var res = await proxy.GetEnumTypeAsync(EnumArgs.Types.TestEnum.Two);
                 Assert.AreEqual(EnumArgs.Types.TestEnum.Two, res);
-            }
+            });
         }
 
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestStringValuesArg()
+        public Task TestStringValuesArg()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestStringValuesArg).Substring(4));
 
@@ -139,7 +150,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var res = proxy.GetStringValueArgs(stringValues, complexType);
                 CompareStructs(complexType, res);
-            }
+            });
         }
 
         public class HttpRequestArgsProxy : HttpRequestArgs.Services.IHttpRequestArgs
@@ -207,22 +218,22 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var nullRequestUri = await ctx.ClientServiceProvider
                     .GetRequiredService<IHttpInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
                     .GetUriAsync(o => o.ReturnNullRequest(CancellationToken.None));
-                
+
                 var nullResp = await httpClient.GetAsync(nullRequestUri);
                 Assert.AreEqual(HttpStatusCode.OK, nullResp.StatusCode);
                 content = await nullResp.Content.ReadAsStringAsync();
                 Assert.IsTrue(content.Contains("null"));
 
-            }
+            };
         }
         
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestDictionaryArg()
+        public Task TestDictionaryArg()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestDictionaryArg).Substring(4));
 
@@ -249,16 +260,16 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var res = proxy.GetDictionaryValues(dictArg);
                 CompareStructs(dictArg, res);
-            }
+            });
         }
 
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestFileUpload1()
+        public Task TestFileUpload1()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload1).Substring(4));
 
@@ -276,12 +287,12 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     )).Returns(Task.CompletedTask);
 
                 await proxy.UploadFile(
-                    new MemoryStream(new byte[] { 0, 1, 2, 3 }), 
-                    "filename.txt", 
+                    new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                    "filename.txt",
                     "application/pdf");
 
                 Assert.AreEqual(1, moq.Invocations.Count);
-            }
+            });
         }
 
         /// <summary>
@@ -332,9 +343,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestFileUpload3()
+        public Task TestFileUpload3()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload3).Substring(4));
 
@@ -353,7 +364,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var res = await proxy.UploadFile("", CreateUpload3Struct());
 
                 CompareStructs(CreateUpload3Struct(), res);
-            }
+            });
         }
 
         private FileUpload3.Types.FileData CreateUpload3Struct()
@@ -370,9 +381,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestFileUpload4()
+        public Task TestFileUpload4()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload4).Substring(4));
 
@@ -392,7 +403,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var res = await proxy.UploadFile(complexType, CreateUpload4Struct());
 
                 CompareStructs(CreateUpload4Struct(), res);
-            }
+            });
         }
 
         private FileUpload4.Types.FileData CreateUpload4Struct()
@@ -409,9 +420,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestFileUpload5()
+        public Task TestFileUpload5()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestFileUpload5).Substring(4));
 
@@ -433,7 +444,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var res = await proxy.UploadFile(complexType1, complexType2, CreateUpload5Struct());
 
                 CompareStructs(CreateUpload5Struct(), res);
-            }
+            });
         }
 
         private FileUpload5.Types.FileData CreateUpload5Struct()
@@ -450,9 +461,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestOneComplexArg()
+        public Task TestOneComplexArg()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestOneComplexArg).Substring(4));
 
@@ -467,16 +478,16 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<OneComplexArg.Services.IOneComplexArg>();
                 var res = proxy.GetComplexType(new OneComplexArg.Types.ComplexType1());
                 CompareStructs(new OneComplexArg.Types.ComplexType1(), res);
-            }
+            });
         }
 
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestMoreComplexArgs()
+        public Task TestMoreComplexArgs()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestMoreComplexArgs).Substring(4));
 
@@ -506,16 +517,16 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     ct2Arr
                     );
                 Assert.AreEqual("test", res);
-            }
+            });
         }
 
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestNullableTypes()
+        public Task TestNullableTypes()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestNullableTypes).Substring(4));
 
@@ -547,16 +558,16 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 });
                 Assert.IsNotNull(res.NullableInt);
                 Assert.IsNotNull(res.NullableLong);
-            }
+            });
         }
 
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
-        public async Task TestETagArg()
+        public Task TestETagArg()
         {
-            using (var ctx = CreateKestrelHostContext())
+            return RunTestInContext(async ctx =>
             {
                 var config = ReadOpenApiConfiguration(nameof(TestETagArg).Substring(4));
 
@@ -572,7 +583,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 });
                 var res = proxy.GetEtagStruct(CreateFileStruct());
                 CompareStructs(CreateFileStruct(), res);
-            }
+            });
         }
 
         private ETagArg.Types.FileType CreateFileStruct()
@@ -582,6 +593,31 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 Content = new MemoryStream(new byte[] { 1,2,3,4,5}),
                 ETag = "ETag"
             };
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestUrlEncodeArg()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestUrlEncodeArg).Substring(4));
+
+                var moq = new Mock<UrlEncodeArg.Services.IUrlEncodeArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlEncodeArg.Services.IUrlEncodeArg>();
+
+                var stringCheck1 = "one/one";
+                moq.Setup(o => o.ProxyString(It.Is<string>(a => a == stringCheck1))).Returns(() => stringCheck1);
+                Assert.AreEqual(stringCheck1, proxy.ProxyString(stringCheck1));
+
+                var stringCheck2 = "one+one";
+                moq.Setup(o => o.ProxyString(It.Is<string>(a => a == stringCheck2))).Returns(() => stringCheck2);
+                Assert.AreEqual(stringCheck2, proxy.ProxyString(stringCheck2));
+            });
         }
     }
 }

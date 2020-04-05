@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Threading;
@@ -23,28 +24,31 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task Run(string message, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static Task Run(string message, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            //
-            // deserialize the message
-            //
-            var serFact = serviceProvider.GetRequiredService<ISerializerFactory>();
-            HttpRequest httpReq;
-            serFact.DeserializeFromString(message, out httpReq);
+            return AzFunction.DoRun(async () =>
+            { 
+                //
+                // deserialize the message
+                //
+                var serFact = serviceProvider.GetRequiredService<ISerializerFactory>();
+                HttpRequest httpReq;
+                serFact.DeserializeFromString(message, out httpReq);
 
-            var solidReq = new SolidHttpRequest();
-            await solidReq.CopyFromAsync(httpReq);
+                var solidReq = new SolidHttpRequest();
+                await solidReq.CopyFromAsync(httpReq);
 
-            // invoke the method
-            var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-            var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
+                // invoke the method
+                var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
+                var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
 
-            if(res.StatusCode >= 200 && res.StatusCode < 300)
-            {
-                // this is ok
-                return;
-            }
-            throw new Exception($"Response code is not ok - {res.StatusCode}");
+                if (res.StatusCode >= 200 && res.StatusCode < 300)
+                {
+                    // this is ok
+                    return;
+                }
+                throw new Exception($"Response code is not ok - {res.StatusCode}");
+            });
         }
     }
 }

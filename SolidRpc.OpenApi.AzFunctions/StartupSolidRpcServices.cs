@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.OpenApi.AzFunctions.Services;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using SolidRpc.OpenApi.Binder;
-using SolidProxy.Core.Configuration.Builder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 
 namespace SolidRpc.OpenApi.AzFunctions

@@ -495,7 +495,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     var callKey = i.GetValue<StringValues>(key);
                     if(!value.Equals(callKey.ToString(), StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new UnauthorizedException();
+                        throw new UnauthorizedException("SolidRpcSecurityKey differs");
                     }
                     return Task.CompletedTask;
                 });

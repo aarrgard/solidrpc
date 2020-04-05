@@ -1,6 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.OpenApi.Binder.Http;
-using System;
+﻿using Microsoft.AspNetCore.Http.Features;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -16,25 +15,6 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public static Uri GetUri(this Microsoft.AspNetCore.Http.HttpRequest request)
-        {
-            var uriBuilder = new UriBuilder();
-            uriBuilder.Scheme = request.Scheme;
-            uriBuilder.Host = request.Host.Host;
-            if(request.Host.Port != null)
-            {
-                uriBuilder.Port = request.Host.Port.Value;
-            }
-            uriBuilder.Path = $"{request.PathBase}{request.Path}";
-            uriBuilder.Query = request.QueryString.ToString();
-            return uriBuilder.Uri;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="target"></param>
         /// <param name="source"></param>
         /// <param name="prefixMappings"></param>
@@ -44,7 +24,16 @@ namespace SolidRpc.OpenApi.Binder.Http
             target.Scheme = source.Scheme;
             target.Method = source.Method;
             target.HostAndPort = source.Host.ToString();
-            target.Path = $"{source.PathBase}{source.Path}";
+
+            //
+            // The kestrel team dont like encoded values in the path som we cannot use it to bind stuff...
+            // https://github.com/aspnet/Mvc/issues/6388 - its a wont - fix 2017...
+            //
+            var rawTarget = ((IHttpRequestFeature)source.HttpContext.Features[typeof(IHttpRequestFeature)]).RawTarget;
+            target.Path = rawTarget;
+            //target.Path = $"{source.PathBase}{source.Path}";
+
+
             if (prefixMappings != null)
             {
                 foreach (var prefixMapping in prefixMappings)

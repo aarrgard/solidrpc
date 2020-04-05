@@ -432,6 +432,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             switch (response.ContentType?.ToLower())
             {
+                case null:
+                    return null;
                 case "text/javascript":
                 case "application/json":
                     using (var s = response.ResponseStream)
@@ -531,6 +533,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return args;
         }
 
+
         private void ExtractPathData(IHttpRequest request)
         {
             // create path data
@@ -544,8 +547,8 @@ namespace SolidRpc.OpenApi.Binder.V2
             for (int i = 0; i < patterns.Count; i++)
             {
                 if (patterns[i] == null) continue;
-                //var data = HttpUtility.UrlDecode(pathElements[i]); // we do not need to do this
-                pathData.Add(new SolidHttpRequestDataString("text/plain", patterns[i], pathElements[i]));
+                var data = HttpUtility.UrlDecode(pathElements[i]);
+                pathData.Add(new SolidHttpRequestDataString("text/plain", patterns[i], data));
             }
 
             request.PathData = pathData;

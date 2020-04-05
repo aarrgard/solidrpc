@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
@@ -23,24 +24,27 @@ namespace SolidRpc.OpenApi.AzFunctionsV1
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            // copy data from req to generic structure
-            // skip api prefix.
-            var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
-            var solidReq = new SolidHttpRequest();
-            await solidReq.CopyFromAsync(req, funcHandler.GetPrefixMappings());
+            return AzFunction.DoRun(async () => 
+            {
+                // copy data from req to generic structure
+                // skip api prefix.
+                var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
+                var solidReq = new SolidHttpRequest();
+                await solidReq.CopyFromAsync(req, funcHandler.GetPrefixMappings());
 
-            // invoke the method
-            var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-            var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
+                // invoke the method
+                var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
+                var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
 
-            log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
+                log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
 
-            // return the response.
-            var httpResponse = new HttpResponseMessage();
-            await res.CopyToAsync(httpResponse, req);
-            return httpResponse;
+                // return the response.
+                var httpResponse = new HttpResponseMessage();
+                await res.CopyToAsync(httpResponse, req);
+                return httpResponse;
+            });
         }
     }
 }

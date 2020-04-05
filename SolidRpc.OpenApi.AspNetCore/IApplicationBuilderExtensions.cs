@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -226,11 +228,63 @@ namespace Microsoft.AspNetCore.Builder
             }
             if(segment.StartsWith("/{"))
             {
-                ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
-                ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
+                // we need to use the "raw" url to get correct data 
+                var reqFeat = (IHttpRequestFeature)ctx.Features[typeof(IHttpRequestFeature)];
+                var rawPath = reqFeat.RawTarget;
+
+                var nextSegment = GetNextSegment(ctx.Request.PathBase, rawPath);
+                
+                path = ctx.Request.Path.Value;
+                if (!path.StartsWith(nextSegment))
+                {
+                    throw new Exception("Path does not start with extracted next segement");
+                }
+
+                ctx.Request.Path = path.Substring(nextSegment.Length);
+                ctx.Request.PathBase = ctx.Request.PathBase.Add(nextSegment);
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Returns the next segment. We use strict matching against the decoded path
+        /// so that we dont allow double escaped sequences. 
+        /// https://owasp.org/www-community/Double_Encoding
+        /// </summary>
+        /// <param name="pathBase"></param>
+        /// <param name="rawPath"></param>
+        /// <returns></returns>
+        private static string GetNextSegment(string pathBase, string rawPath)
+        {
+            var rawPathDecoded = HttpUtility.UrlDecode(rawPath);
+
+            if (!rawPathDecoded.StartsWith(pathBase))
+            {
+                throw new Exception("raw path does not start with path base!");
+            }
+
+            // split raw path into segments and rremove decoded version from path base
+            var segments = rawPath.Split('/').AsEnumerable().GetEnumerator();
+            if(!segments.MoveNext()) throw new Exception("Cannot move to next segment!");
+            if(segments.Current != "") throw new Exception("Paths does not start with slash!");
+            while (pathBase.Length > 0)
+            {
+                if (!segments.MoveNext()) throw new Exception("Cannot move to next segment!");
+                var urlDecdedSegment = "/" + HttpUtility.UrlDecode(segments.Current);
+                if (!pathBase.StartsWith(urlDecdedSegment))
+                {
+                    throw new Exception("Something is rotten in the state of denmark!");
+                }
+                pathBase = pathBase.Substring(urlDecdedSegment.Length);
+            }
+
+            if(!segments.MoveNext())
+            {
+                return null;
+            }
+
+            return "/" + HttpUtility.UrlDecode(segments.Current);
         }
 
         private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, ISolidRpcContentHandler contentHandler, HttpContext ctx)
@@ -271,6 +325,7 @@ namespace Microsoft.AspNetCore.Builder
                 //
                 if (context.Request.Path != "")
                 {
+                    context.Response.StatusCode = 404;
                     return;
                 }
 
@@ -294,6 +349,7 @@ namespace Microsoft.AspNetCore.Builder
                 }
 
                 context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodBinding.OperationId}:{methodBinding.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+
 
                 // extract information from http context.
                 var request = new SolidRpc.OpenApi.Binder.Http.SolidHttpRequest();

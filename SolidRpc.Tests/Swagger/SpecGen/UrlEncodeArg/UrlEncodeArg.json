@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UrlEncodeArg",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/UrlEncodeArg",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IUrlEncodeArg/ProxyString/{s}": {
+      "get": {
+        "tags": [
+          "IUrlEncodeArg"
+        ],
+        "description": "Proxies the string",
+        "operationId": "ProxyString",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IUrlEncodeArg",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}
