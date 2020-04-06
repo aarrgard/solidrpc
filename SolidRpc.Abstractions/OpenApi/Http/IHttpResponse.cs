@@ -14,9 +14,14 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         int StatusCode { get; set; }
 
         /// <summary>
-        /// Returns the content type - stored in the Content-Type header.
+        /// Returns the media type - stored in the Content-Type header.
         /// </summary>
-        string ContentType { get; set; }
+        string MediaType { get; set; }
+
+        /// <summary>
+        /// Returns the char et - stored in the Content-Type header.
+        /// </summary>
+        string CharSet { get; set; }
 
         /// <summary>
         /// The filename - stored in Content-Disposition header

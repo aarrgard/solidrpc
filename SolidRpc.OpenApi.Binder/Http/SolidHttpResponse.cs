@@ -22,7 +22,12 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// The content type
         /// </summary>
-        public string ContentType { get; set; }
+        public string MediaType { get; set; }
+
+        /// <summary>
+        /// The char set
+        /// </summary>
+        public string CharSet { get; set; }
 
         /// <summary>
         /// The file name

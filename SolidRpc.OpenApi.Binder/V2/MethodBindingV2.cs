@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using SolidProxy.Core.Configuration;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
@@ -6,6 +7,7 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
@@ -15,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -159,6 +162,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
             SecurityKey = securityKey;
             Transports = transports;
+            SerializerFactory = MethodBinder.ServiceProvider.GetRequiredService<ISerializerFactory>();
         }
 
         public KeyValuePair<string, string>? SecurityKey { get; }
@@ -419,18 +423,39 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
                 throw new Exception("Status:"+response.StatusCode);
             }
-            if(responseType.IsAssignableFrom(typeof(Stream)))
+            var template = FileContentTemplate.GetTemplate(responseType);
+            if (template.IsTemplateType)
             {
-                return response.ResponseStream;
-            }
-            if(Produces.Any())
-            {
-                if (!Produces.Any(o => ContentTypeMatches(o, response.ContentType)))
+                if(string.IsNullOrEmpty(response.MediaType))
                 {
-                    throw new Exception($"Operation does not support content type {response.ContentType}. Supported content types are {string.Join(",", Produces)}");
+                    return null;
+                }
+                object res;
+                if(typeof(Stream).IsAssignableFrom(responseType))
+                {
+                    res = new MemoryStream();
+                }
+                else
+                {
+                    res = Activator.CreateInstance(responseType);
+                }
+                template.SetContent(res, response.ResponseStream);
+                template.SetContentType(res, response.MediaType);
+                template.SetCharSet(res, response.CharSet);
+                template.SetFileName(res, response.Filename);
+                template.SetLastModified(res, response.LastModified);
+                template.SetLocation(res, response.Location);
+                template.SetETag(res, response.ETag);
+                return res;
+            }
+            if (Produces.Any())
+            {
+                if (!Produces.Any(o => ContentTypeMatches(o, response.MediaType)))
+                {
+                    throw new Exception($"Operation does not support content type {response.MediaType}. Supported content types are {string.Join(",", Produces)}");
                 }
             }
-            switch (response.ContentType?.ToLower())
+            switch (response.MediaType?.ToLower())
             {
                 case null:
                     return null;
@@ -442,19 +467,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                         return respContent;
                     }
             }
-            var template = FileContentTemplate.GetTemplate(responseType);
-            if(template.IsTemplateType)
-            {
-                var res = Activator.CreateInstance(responseType);
-                template.SetContent(res, response.ResponseStream);
-                template.SetContentType(res, response.ContentType);
-                template.SetFileName(res, response.Filename);
-                template.SetLastModified(res, response.LastModified);
-                template.SetLocation(res, response.Location);
-                template.SetETag(res, response.ETag);
-                return res;
-            }
-            throw new Exception("Cannot handle content type:" + response.ContentType);
+            throw new Exception("Cannot handle content type:" + response.MediaType);
+        }
+
+        private string RemoveQuotes(string str)
+        {
+            if (str == null) return null;
+            if (!str.StartsWith("\"")) return str;
+            if (!str.EndsWith("\"")) return str;
+            return str.Substring(1, str.Length - 2);
         }
 
         private bool ContentTypeMatches(string contentTypePattern, string contentType)
@@ -511,6 +532,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         }
 
         public IEnumerable<ITransport> Transports { get; }
+        private ISerializerFactory SerializerFactory { get; }
 
         public string LocalPath => OperationObject.GetAbsolutePath();
 
@@ -621,23 +643,12 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if(obj == null)
                 {
-                    //
-                    // So we do not have anything to return. Should we
-                    // 1. Return null as application/json
-                    // 2. Raise a 404
-                    // 3. Return an empty stream
-                    //
-                    response.ContentType = "application/json";
-                    response.ResponseStream = new MemoryStream(Encoding.ASCII.GetBytes("null"));
+                    // nothinh to resturn - make sure that the content type is empty
+                    response.MediaType = null;
                     return Task.CompletedTask;
                 }
-                var charSet = fileTemplate.GetCharSet(obj);
-                var retContentType = fileTemplate.GetContentType(obj) ?? "application/octet-stream";
-                if(!string.IsNullOrEmpty(charSet))
-                {
-                    retContentType = $"{retContentType}; charset=\"{charSet}\"";
-                }
-                response.ContentType = retContentType;
+                response.MediaType = fileTemplate.GetContentType(obj) ?? "application/octet-stream";
+                response.CharSet = fileTemplate.GetCharSet(obj);
                 response.ResponseStream = fileTemplate.GetContent(obj);
                 response.Filename = fileTemplate.GetFileName(obj);
                 response.LastModified = fileTemplate.GetLastModified(obj);
@@ -656,7 +667,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 case null:
                 case "application/json":
                     response.ResponseStream = JsonHelper.Serialize(obj, objType);
-                    response.ContentType = "application/json";
+                    response.MediaType = "application/json";
                     break;
                 default:
                     throw new Exception("Cannot handle content type:" + contentType);

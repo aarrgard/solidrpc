@@ -529,9 +529,14 @@
             Returns the status code
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ContentType">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.MediaType">
             <summary>
-            Returns the content type - stored in the Content-Type header.
+            Returns the media type - stored in the Content-Type header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.CharSet">
+            <summary>
+            Returns the char et - stored in the Content-Type header.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Filename">

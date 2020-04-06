@@ -402,28 +402,6 @@ namespace SolidRpc.Tests
             }
 
             /// <summary>
-            /// Adds an openapi proxy
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="openApiConfiguration"></param>
-            public void AddOpenApiProxy<T>(string openApiConfiguration) where T : class
-            {
-                AddClientService(clientServices =>
-                {
-                    clientServices.AddTransient<T, T>();
-                    var conf = clientServices.GetSolidConfigurationBuilder()
-                        .ConfigureInterface<T>()
-                        .ConfigureAdvice<ISolidRpcOpenApiConfig>();
-                    conf.OpenApiSpec = openApiConfiguration;
-                    conf.SetMethodAddressTransformer(GetBaseUrl);
-
-                    clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
-                    clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
-                    clientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
-                });
-            }
-
-            /// <summary>
             /// Adds a callback to add the server services
             /// </summary>
             /// <param name="sc"></param>

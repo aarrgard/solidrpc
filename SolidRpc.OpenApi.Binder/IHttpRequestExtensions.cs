@@ -231,8 +231,15 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                     part = new StreamContent(d.GetBinaryValue());
                     var contentType = binary.ContentType ?? "application/octet-stream";
                     part.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-                    part.Headers.Add("X-ETag", d.ETag);
-                    if (binary.Filename == null)
+                    if(binary.Encoding != null)
+                    {
+                        part.Headers.ContentType.CharSet = binary.Encoding.HeaderName;
+                    }
+                    if(!string.IsNullOrEmpty(d.ETag))
+                    {
+                        part.Headers.Add("X-ETag", d.ETag);
+                    }
+                    if (string.IsNullOrEmpty(binary.Filename))
                     {
                         content.Add(part, binary.Name);
                     }

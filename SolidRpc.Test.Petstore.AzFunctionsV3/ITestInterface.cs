@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,14 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
 
         public async Task<FileContent> UploadFile(string container, FileContent fileContent)
         {
+            string strContent;
+            using (var sr = new StreamReader(fileContent.Content))
+            {
+                strContent = sr.ReadToEnd();
+            }
+            fileContent.ETag = $"{Convert.ToBase64String(new byte[] { 1, 2, 3, 4, 5 })}";
+            fileContent.Content = new MemoryStream(Encoding.UTF8.GetBytes(strContent));
+            fileContent.CharSet = Encoding.UTF8.HeaderName;
             return fileContent;
         }
     }

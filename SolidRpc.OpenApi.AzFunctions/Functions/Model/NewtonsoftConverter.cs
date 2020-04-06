@@ -19,17 +19,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// </summary>
         public NewtonsoftConverter()
         {
+            HasDataContract = typeof(T).GetCustomAttribute<DataContractAttribute>() != null;
             ReadPropertyHandler = new ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>>();
             PropertyWriters = CreatePropertyWriters();
         }
+        private bool HasDataContract { get; }
 
         private IEnumerable<Action<JsonWriter, object, JsonSerializer>> CreatePropertyWriters()
         {
             var pWriters = new List<Action<JsonWriter, object, JsonSerializer>>();
             var props = typeof(T)
                 .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
-                .ToList();
+                .Where(o => o.CanWrite && o.CanRead);
+            
+
+            // if class has a "DataContract" attribute - require th "DataMember" on property
+            if(HasDataContract)
+            {
+                props = props.Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null);
+            }
 
             foreach(var prop in props)
             {
@@ -116,11 +124,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         {
             var props = typeof(T)
                 .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
-                .Where(o => string.Equals(o.GetCustomAttribute<DataMemberAttribute>().Name, propertyName))
-                .ToList();
+                .Where(o => o.CanWrite && o.CanRead);
 
-            if(props.Count == 1)
+
+            // if class has a "DataContract" attribute - require th "DataMember" on property
+            if (HasDataContract)
+            {
+                props = props.Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null);
+            }
+
+            if(props.Count() == 1)
             {
                 var prop = props.First();
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -132,7 +145,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
                     prop.SetValue(o, val);
                 };
             }
-            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
+            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count()} props.");
         }
 
         /// <summary>

@@ -21,5 +21,10 @@ namespace SolidRpc.Tests.Swagger.SpecGen.FileUpload2.Types
         /// The file content
         /// </summary>
         public Stream Content { get; set; }
+
+        /// <summary>
+        /// The charset
+        /// </summary>
+        public string CharSet { get; set; }
     }
 }

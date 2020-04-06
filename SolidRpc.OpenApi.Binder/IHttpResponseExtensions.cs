@@ -24,7 +24,8 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             target.StatusCode = (int)source.StatusCode;
             if (source.Content != null)
             {
-                target.ContentType = source.Content.Headers?.ContentType?.MediaType;
+                target.MediaType = source.Content.Headers?.ContentType?.MediaType;
+                target.CharSet = RemoveQuotes(source.Content.Headers?.ContentType?.CharSet);
                 target.Filename = source.Content.Headers?.ContentDisposition?.FileName;
                 if (source.Headers.Date.HasValue)
                 {
@@ -43,6 +44,14 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 await source.Content.CopyToAsync(ms);
                 target.ResponseStream = new MemoryStream(ms.ToArray());
             }
+        }
+
+        private static string RemoveQuotes(string str)
+        {
+            if (str == null) return null;
+            if (!str.StartsWith("\"")) return str;
+            if (!str.EndsWith("\"")) return str;
+            return str.Substring(1, str.Length - 2);
         }
 
         /// <summary>
@@ -72,7 +81,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 }
             }
 
-            if (!string.IsNullOrEmpty(source.ContentType))
+            if (!string.IsNullOrEmpty(source.MediaType))
             {
                 if(target.StatusCode == HttpStatusCode.NotModified)
                 {
@@ -83,7 +92,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 {
                     target.Content = new StreamContent(source.ResponseStream);
                 }
-                target.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(source.ContentType);
+                target.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(source.MediaType);
             }
             if (!string.IsNullOrEmpty(source.Filename))
             {
@@ -107,11 +116,16 @@ namespace SolidRpc.Abstractions.OpenApi.Http
 
             if (source.ETag != null)
             {
-                target.Headers.ETag = EntityTagHeaderValue.Parse($"\"{source.ETag}\"");
+                target.Headers.ETag = EntityTagHeaderValue.Parse(AddQuotesIfMissing(source.ETag));
             }
 
             return Task.CompletedTask;
         }
 
+        private static string AddQuotesIfMissing(string eTag)
+        {
+            if (eTag.StartsWith("\"")) return eTag;
+            return $"\"{eTag}\"";
+        }
     }
 }

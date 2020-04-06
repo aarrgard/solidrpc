@@ -144,6 +144,15 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}"
     },
+    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -330,11 +331,13 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
         private FileUpload2.Types.FileData CreateUpload2Struct()
         {
+            var enc = Encoding.UTF8;
             return new FileUpload2.Types.FileData()
             {
-                Content = new MemoryStream(new byte[] { 0, 1, 2, 3 }),
+                Content = new MemoryStream(enc.GetBytes("{\"test\":\"test\"}")),
+                CharSet = enc.HeaderName,
                 FileName = "filename.txt",
-                ContentType = "application/pdf"
+                ContentType = "application/json"
             };
         }
 

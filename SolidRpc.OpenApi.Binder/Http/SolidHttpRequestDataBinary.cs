@@ -62,6 +62,22 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <summary>
         /// Sets the filename
         /// </summary>
+        /// <param name="charSet"></param>
+        public void SetCharSet(string charSet)
+        {
+            if(string.IsNullOrEmpty(charSet))
+            {
+                Encoding = null;
+            }
+            else
+            {
+                Encoding = Encoding.GetEncoding(charSet);
+            }
+        }
+
+        /// <summary>
+        /// Sets the filename
+        /// </summary>
         /// <param name="filename"></param>
         public void SetFilename(string filename)
         {

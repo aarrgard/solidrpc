@@ -19,7 +19,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         public static async Task CopyFromAsync(this IHttpResponse target, Microsoft.AspNetCore.Http.HttpResponse source)
         {
             target.StatusCode = source.StatusCode;
-            target.ContentType = source.ContentType;
+            target.MediaType = source.ContentType;
             if (source.ContentLength != null)
             {
                 var ms = new MemoryStream();
@@ -56,11 +56,16 @@ namespace SolidRpc.OpenApi.Binder.Http
             }
             if (!string.IsNullOrEmpty(source.ETag))
             {
-                target.Headers.Add("ETag", $"\"{source.ETag}\"");
+                target.Headers.Add("ETag", AddQuotesIfMissing(source.ETag));
             }
-            if (!string.IsNullOrEmpty(source.ContentType))
+            if (!string.IsNullOrEmpty(source.MediaType))
             {
-                target.ContentType = source.ContentType;
+                var ct = new MediaTypeHeaderValue(source.MediaType);
+                if(!string.IsNullOrEmpty(source.CharSet))
+                {
+                    ct.CharSet = source.CharSet;
+                }
+                target.ContentType = ct.ToString();
                 await source.ResponseStream.CopyToAsync(target.Body);
             }
             if (!string.IsNullOrEmpty(source.Location))
@@ -68,6 +73,12 @@ namespace SolidRpc.OpenApi.Binder.Http
                 target.StatusCode = 302;
                 target.Headers.Add("Location", source.Location);
             }
+        }
+
+        private static string AddQuotesIfMissing(string eTag)
+        {
+            if (eTag.StartsWith("\"")) return eTag;
+            return $"\"{eTag}\"";
         }
     }
 }
