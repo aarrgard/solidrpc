@@ -126,24 +126,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting"
     },
-    "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}"
-    },
-    "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}"
-    },
     "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}": {
       "matchCondition": {
         "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}",
@@ -152,6 +134,15 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}"
+    },
+    "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}"
     },
     "front/{path}": {
       "matchCondition": {

@@ -934,11 +934,13 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String,System.String)">
             <summary>
             Sets the queue transport type
             </summary>
             <param name="config"></param>
+            <param name="connectionName"></param>
+            <param name="queueName"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransportConnectionName(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
             <summary>

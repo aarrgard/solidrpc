@@ -17,11 +17,20 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
         {
             // read base54 encoded stream and return as memory stream.
             var base64EncodedStream = (string)reader.Value;
+            if(base64EncodedStream == null)
+            {
+                return null;
+            }
             return new MemoryStream(Convert.FromBase64String(base64EncodedStream));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            if(value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
             // Write stream to memory stream and convert to base64
             var ms = new MemoryStream();
             ((Stream)value).CopyTo(ms);

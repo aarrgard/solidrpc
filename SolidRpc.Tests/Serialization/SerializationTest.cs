@@ -22,11 +22,13 @@ namespace SolidRpc.Tests.Serialization
         private class ComplexType
         {
             public string MyData { get; set; }
+            public Stream MyStream { get; set; }
             public override bool Equals(object obj)
             {
                 if(obj is ComplexType other)
                 {
                     if (!Equals(other.MyData, MyData)) return false;
+                    if (!Equals(other.MyStream, MyStream)) return false;
                     return true;
                 }
                 return false;
@@ -102,7 +104,7 @@ namespace SolidRpc.Tests.Serialization
             var sp = GetServiceProvider();
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
-            TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\"}", str));
+            TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\",\"MyStream\":null}", str));
         }
 
         /// <summary>
@@ -114,7 +116,7 @@ namespace SolidRpc.Tests.Serialization
             var sp = GetServiceProvider();
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
-            TestSerializeDeserialize(serFact, new MemoryStream(new byte[] { 1,2,3 }), str => Assert.AreEqual("\"AQID\"", str));
+            TestSerializeDeserialize(serFact, new MemoryStream(new byte[] { 1, 2, 3 }), str => Assert.AreEqual("\"AQID\"", str));
         }
     }
 }

@@ -14,7 +14,15 @@
             Assign this interceptor to intercept all the invokations.
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.AzFunction.DoRun``1(System.Func{``0})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.AzFunction.DoRun(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Performs the invocation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="del"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.AzFunction.DoRun``1(System.Func{System.Threading.Tasks.Task{``0}})">
             <summary>
             Performs the invocation.
             </summary>

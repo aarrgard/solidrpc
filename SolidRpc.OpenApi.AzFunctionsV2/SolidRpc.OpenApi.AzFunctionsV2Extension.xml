@@ -276,7 +276,7 @@
             Handles timer triggers
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.QueueFunction.Run(System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV2.QueueFunction.Run(System.String,System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
             <summary>
             Runs the trigger logic.
             </summary>

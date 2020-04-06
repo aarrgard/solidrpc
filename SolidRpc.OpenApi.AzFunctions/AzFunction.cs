@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.AzFunctions
 {
@@ -12,7 +11,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <summary>
         /// Assign this interceptor to intercept all the invokations.
         /// </summary>
-        public static Func<Func<object>,object> Interceptor = (_) => _();
+        public static Func<Func<Task<object>>, Task<object>> Interceptor = (_) => _();
 
         /// <summary>
         /// Performs the invocation.
@@ -20,9 +19,25 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <typeparam name="T"></typeparam>
         /// <param name="del"></param>
         /// <returns></returns>
-        public static T DoRun<T>(Func<T> del)
+        public static async Task DoRun(Func<Task> del)
         {
-            return (T)Interceptor(() => del());
+            await Interceptor(async () =>
+            {
+                await del();
+                return null;
+            });
+        }
+
+        /// <summary>
+        /// Performs the invocation.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="del"></param>
+        /// <returns></returns>
+        public static async Task<T> DoRun<T>(Func<Task<T>> del)
+        {
+            var res = await Interceptor(async () => await del());
+            return (T)res;
         }
     }
 }

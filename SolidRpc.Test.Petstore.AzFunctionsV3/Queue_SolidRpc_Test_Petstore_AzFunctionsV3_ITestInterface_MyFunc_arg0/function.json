@@ -1,0 +1,18 @@
+{
+  "generatedBy": "SolidRpc.OpenApi.AzFunctions-1.0.0.0",
+  "bindings": [
+    {
+      "name": "message",
+      "direction": "in",
+      "type": "queueTrigger",
+      "queueName": "eo-rdbms-services-irdbms-addjsonfromstoreasync-arg-arg-arg",
+      "connection": "AzureWebJobsStorage"
+    },
+    {
+      "name": "serviceProvider",
+      "type": "inject"
+    }
+  ],
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.QueueFunction.Run"
+}

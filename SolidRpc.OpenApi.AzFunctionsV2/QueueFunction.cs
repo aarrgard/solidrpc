@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Queue.Protocol;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
@@ -24,10 +25,14 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task Run(string message, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
             return AzFunction.DoRun(async () =>
             { 
+                if(log.IsEnabled(LogLevel.Trace))
+                {
+                    log.LogTrace($"Picked up message({id}) from queue:{message}");
+                }
                 //
                 // deserialize the message
                 //
