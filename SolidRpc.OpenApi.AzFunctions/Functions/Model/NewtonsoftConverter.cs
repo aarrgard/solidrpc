@@ -19,27 +19,19 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// </summary>
         public NewtonsoftConverter()
         {
-            HasDataContract = typeof(T).GetCustomAttribute<DataContractAttribute>() != null;
             ReadPropertyHandler = new ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>>();
             PropertyWriters = CreatePropertyWriters();
         }
-        private bool HasDataContract { get; }
 
         private IEnumerable<Action<JsonWriter, object, JsonSerializer>> CreatePropertyWriters()
         {
             var pWriters = new List<Action<JsonWriter, object, JsonSerializer>>();
             var props = typeof(T)
                 .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.CanWrite && o.CanRead);
-            
+                .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
+                .ToList();
 
-            // if class has a "DataContract" attribute - require th "DataMember" on property
-            if(HasDataContract)
-            {
-                props = props.Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null);
-            }
-
-            foreach(var prop in props)
+            foreach (var prop in props)
             {
                 var attr = prop.GetCustomAttribute<DataMemberAttribute>();
                 var writeMethod = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -56,7 +48,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         private void WriteProperty<Tp>(DataMemberAttribute attr, PropertyInfo prop, JsonWriter writer, object o, JsonSerializer serializer)
         {
             var val = (Tp)prop.GetValue(o);
-            if(!attr.EmitDefaultValue && Equals(val, default(Tp)))
+            if (!attr.EmitDefaultValue && Equals(val, default(Tp)))
             {
                 return;
             }
@@ -65,7 +57,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         }
 
         private ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>> ReadPropertyHandler { get; }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -91,12 +83,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// <returns></returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if(reader.TokenType != JsonToken.StartObject)
+            if (reader.TokenType != JsonToken.StartObject)
             {
                 throw new Exception("Not start of object");
             }
             reader.Read();
-            if(existingValue == null)
+            if (existingValue == null)
             {
                 existingValue = Activator.CreateInstance(typeof(T));
             }
@@ -124,16 +116,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         {
             var props = typeof(T)
                 .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.CanWrite && o.CanRead);
+                .Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null)
+                .Where(o => string.Equals(o.GetCustomAttribute<DataMemberAttribute>().Name, propertyName))
+                .ToList();
 
-
-            // if class has a "DataContract" attribute - require th "DataMember" on property
-            if (HasDataContract)
-            {
-                props = props.Where(o => o.GetCustomAttribute<DataMemberAttribute>() != null);
-            }
-
-            if(props.Count() == 1)
+            if (props.Count == 1)
             {
                 var prop = props.First();
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -145,7 +132,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
                     prop.SetValue(o, val);
                 };
             }
-            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count()} props.");
+            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
         }
 
         /// <summary>
@@ -157,7 +144,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             writer.WriteStartObject();
-            foreach(var pWriter in PropertyWriters)
+            foreach (var pWriter in PropertyWriters)
             {
                 pWriter(writer, value, serializer);
             }
