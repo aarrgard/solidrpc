@@ -22,7 +22,8 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         public static async Task CopyFromAsync(this IHttpResponse target, HttpResponseMessage source)
         {
             target.StatusCode = (int)source.StatusCode;
-            if (source.Content != null)
+            target.MediaType = source.Content?.Headers?.ContentType?.MediaType;
+            if (!string.IsNullOrEmpty(target.MediaType))
             {
                 target.MediaType = source.Content.Headers?.ContentType?.MediaType;
                 target.CharSet = RemoveQuotes(source.Content.Headers?.ContentType?.CharSet);
@@ -30,10 +31,6 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 if (source.Headers.Date.HasValue)
                 {
                     target.LastModified = source.Headers.Date.Value.DateTime;
-                }
-                if (source.Headers.Location != null)
-                {
-                    target.Location = source.Headers.Location.ToString();
                 }
                 if (source.Headers.ETag != null)
                 {
@@ -43,6 +40,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 var ms = new MemoryStream();
                 await source.Content.CopyToAsync(ms);
                 target.ResponseStream = new MemoryStream(ms.ToArray());
+            }
+            if (source.Headers.Location != null)
+            {
+                target.Location = source.Headers.Location.ToString();
             }
         }
 

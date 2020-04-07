@@ -1,0 +1,71 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Redirect",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/Redirect",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IRedirect/Redirect": {
+      "post": {
+        "tags": [
+          "IRedirect"
+        ],
+        "description": "Redirects",
+        "operationId": "Redirect",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "r",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IRedirect/Redirected": {
+      "get": {
+        "tags": [
+          "IRedirect"
+        ],
+        "description": "The redirected resource.",
+        "operationId": "Redirected",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IRedirect",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}

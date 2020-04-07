@@ -49,7 +49,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -621,6 +621,38 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 moq.Setup(o => o.ProxyString(It.Is<string>(a => a == stringCheck2))).Returns(() => stringCheck2);
                 Assert.AreEqual(stringCheck2, proxy.ProxyString(stringCheck2));
             });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestRedirect()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestRedirect).Substring(4));
+
+                var moq = new Mock<Redirect.Services.IRedirect>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<Redirect.Services.IRedirect>();
+
+                var location = await ctx.ClientServiceProvider.GetRequiredService<IHttpInvoker<Redirect.Services.IRedirect>>().GetUriAsync(o => o.Redirected());
+                
+                //moq.Setup(o => o.Redirect(It.Is<Redirect.Types.Redirect>(a => CompareStructs(a, CreateRedirect())))).Returns(() => CreateRedirect());
+                moq.Setup(o => o.Redirect(It.IsAny<Redirect.Types.Redirect>())).Returns(() => CreateRedirect(location.ToString()));
+                //moq.Setup(o => o.Redirected()).Returns(() => CreateRedirect(location.ToString()));
+                CompareStructs(CreateRedirect(location.ToString()), proxy.Redirect(CreateRedirect(location.ToString())));
+            });
+        }
+
+        private Redirect.Types.Redirect CreateRedirect(string location)
+        {
+            return new Redirect.Types.Redirect()
+            {
+                Location = location
+            };
         }
     }
 }

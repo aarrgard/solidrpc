@@ -228,7 +228,9 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 HttpContent part;
                 if (d is SolidHttpRequestDataBinary binary)
                 {
-                    part = new StreamContent(d.GetBinaryValue());
+                    var streamContent = d.GetBinaryValue();
+                    if (streamContent == null) continue;
+                    part = new StreamContent(streamContent);
                     var contentType = binary.ContentType ?? "application/octet-stream";
                     part.Headers.ContentType = new MediaTypeHeaderValue(contentType);
                     if(binary.Encoding != null)
@@ -258,6 +260,8 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                     throw new Exception("Cannot handle data");
                 }
             }
+            // return null if no contents were added.
+            if (!content.Any()) return null;
             return content;
         }
 

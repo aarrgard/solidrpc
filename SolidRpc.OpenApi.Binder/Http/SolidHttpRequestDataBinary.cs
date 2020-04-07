@@ -42,6 +42,7 @@ namespace SolidRpc.OpenApi.Binder.Http
 
         public override Stream GetBinaryValue()
         {
+            if (BinaryData == null) return null;
             return new MemoryStream(BinaryData);
         }
 
@@ -100,6 +101,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// <param name="value"></param>
         public void SetBinaryData(string name, Stream value)
         {
+            if(value == null)
+            {
+                BinaryData = null;
+                return;
+            }
             Name = name;
             var ms = new MemoryStream();
             value.CopyTo(ms);

@@ -414,7 +414,8 @@ namespace SolidRpc.OpenApi.Binder.V2
         }
         public object ExtractResponse(Type responseType, IHttpResponse response)
         {
-            if (response.StatusCode != 200)
+            var validResponses = new int[] { 200, 204, 302 };
+            if (!validResponses.Contains(response.StatusCode))
             {
                 Action exceptionAction;
                 if(ExceptionMappings.TryGetValue(response.StatusCode, out exceptionAction))
@@ -426,10 +427,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             var template = FileContentTemplate.GetTemplate(responseType);
             if (template.IsTemplateType)
             {
-                if(string.IsNullOrEmpty(response.MediaType))
-                {
-                    return null;
-                }
                 object res;
                 if(typeof(Stream).IsAssignableFrom(responseType))
                 {
@@ -446,6 +443,12 @@ namespace SolidRpc.OpenApi.Binder.V2
                 template.SetLastModified(res, response.LastModified);
                 template.SetLocation(res, response.Location);
                 template.SetETag(res, response.ETag);
+
+                if (string.IsNullOrEmpty(response.MediaType) && string.IsNullOrEmpty(response.Location))
+                {
+                    return null;
+                }
+
                 return res;
             }
             if (Produces.Any())
@@ -647,9 +650,13 @@ namespace SolidRpc.OpenApi.Binder.V2
                     response.MediaType = null;
                     return Task.CompletedTask;
                 }
-                response.MediaType = fileTemplate.GetContentType(obj) ?? "application/octet-stream";
-                response.CharSet = fileTemplate.GetCharSet(obj);
                 response.ResponseStream = fileTemplate.GetContent(obj);
+                response.MediaType = fileTemplate.GetContentType(obj);
+                if(response.ResponseStream != null && response.MediaType == null)
+                {
+                    response.MediaType = "application/octet-stream";
+                }
+                response.CharSet = fileTemplate.GetCharSet(obj);
                 response.Filename = fileTemplate.GetFileName(obj);
                 response.LastModified = fileTemplate.GetLastModified(obj);
                 response.Location = fileTemplate.GetLocation(obj);

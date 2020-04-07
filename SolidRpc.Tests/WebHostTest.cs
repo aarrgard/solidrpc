@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SolidProxy.Core.IoC;
@@ -77,6 +78,24 @@ namespace SolidRpc.Tests
             /// </summary>
             public override IServiceProvider ServerServiceProvider => WebHost.Services;
 
+            public override void ConfigureClientServices(IServiceCollection clientServices)
+            {
+                base.ConfigureClientServices(clientServices);
+
+                clientServices.AddHttpClient(Options.DefaultName).ConfigurePrimaryHttpMessageHandler(o => new HttpClientHandler()
+                {
+                    AllowAutoRedirect = false
+                });
+                ServerServiceProvider.GetRequiredService<IMethodBinderStore>()
+                    .MethodBinders.ToList().ForEach(binder =>
+                    {
+                        clientServices.AddHttpClient(binder.OpenApiSpec.Title).ConfigurePrimaryHttpMessageHandler(sp => new HttpClientHandler()
+                        {
+                            AllowAutoRedirect = false
+                        });
+                    });
+
+            }
             /// <summary>
             /// 
             /// </summary>
@@ -161,11 +180,10 @@ namespace SolidRpc.Tests
                 _serverServiceProvider.GetRequiredService<IMethodBinderStore>()
                     .MethodBinders.ToList().ForEach(binder =>
                     {
-                        services.AddHttpClient(binder.OpenApiSpec.Title).ConfigurePrimaryHttpMessageHandler(ch =>
+                        services.AddHttpClient(binder.OpenApiSpec.Title).ConfigurePrimaryHttpMessageHandler(sp =>
                         {
                             return new SolidRpcHttpMessageHandler(_serverServiceProvider, _serverServiceProvider.GetRequiredService<IMethodInvoker>());
                         });
-                        
                     });
                 base.ConfigureClientServices(services);
             }

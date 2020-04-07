@@ -67,6 +67,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return (_) =>
                 {
                     var valData = _.FirstOrDefault();
+                    if (valData == null) return null;
                     object data;
                     if(typeof(Stream).IsAssignableFrom(type))
                     {
