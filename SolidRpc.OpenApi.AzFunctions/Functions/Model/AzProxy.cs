@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
 {
@@ -18,5 +19,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// </summary>
         [DataMember(Name = "backendUri", EmitDefaultValue = false)]
         public string BackendUri { get; set; }
+
+        /// <summary>
+        /// The response overrides
+        /// </summary>
+        [DataMember(Name = "responseOverrides", EmitDefaultValue = false)]
+        public Dictionary<string, string> ResponseOverrides { get; set; }
     }
 }

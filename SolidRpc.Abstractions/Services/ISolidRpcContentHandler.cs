@@ -33,6 +33,6 @@ namespace SolidRpc.Abstractions.Services
         /// <summary>
         /// Returns all the path mappings.
         /// </summary>
-        Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

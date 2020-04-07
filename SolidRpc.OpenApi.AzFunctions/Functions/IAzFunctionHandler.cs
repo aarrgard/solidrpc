@@ -57,7 +57,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// <summary>
         /// Puts all the functions in the proxies file.
         /// </summary>
-        void SyncProxiesFile(IDictionary<string, string> staticRoutes);
+        void SyncProxiesFile(
+            IDictionary<string, string> staticRoutes, 
+            IDictionary<string, string> redirects);
 
         /// <summary>
         /// Returns the http trigger handler.

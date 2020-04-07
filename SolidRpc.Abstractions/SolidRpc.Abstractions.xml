@@ -1449,7 +1449,7 @@
             paths then all the assemly base paths are returned from this property.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.GetPathMappingsAsync(System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.GetPathMappingsAsync(System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns all the path mappings.
             </summary>
@@ -1481,12 +1481,13 @@
             <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
             <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
         </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddMapping(System.String,System.Func{System.IServiceProvider,System.Threading.Tasks.Task{System.Uri}})">
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddMapping(System.String,System.Func{System.IServiceProvider,System.Threading.Tasks.Task{System.Uri}},System.Boolean)">
             <summary>
             Use this method to expose a static path to a dynamic resource.
             </summary>
             <param name="path"></param>
             <param name="mapping"></param>
+            <param name="isRedirect"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
             <summary>

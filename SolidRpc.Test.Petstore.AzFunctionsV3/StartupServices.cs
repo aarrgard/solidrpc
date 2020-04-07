@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
@@ -42,6 +43,15 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
+
+            services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
+            {
+                return await sp.GetRequiredService<IHttpInvoker<ISolidRpcContentHandler>>().GetUriAsync(o => o.GetContent("A*", CancellationToken.None));
+            });
+            services.GetSolidRpcContentStore().AddMapping("/", async sp =>
+            {
+                return await sp.GetRequiredService<IHttpInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(CancellationToken.None));
+            }, true);
         }
 
         protected override bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)

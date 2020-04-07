@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -169,8 +168,26 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var startTime = DateTime.Now;
             var modified = await WriteHttpFunctionsAsync(functionDefs,cancellationToken);
 
-            var staticRoutes = await ContentHandler.GetPathMappingsAsync(cancellationToken); 
-            FunctionHandler.SyncProxiesFile(staticRoutes.ToDictionary(o => o.Name, o => o.Value));
+            //
+            // get the static routes
+            //
+            var staticRoutes = (await ContentHandler.GetPathMappingsAsync(false, cancellationToken)).ToList();
+            var wildcardRoutes = staticRoutes.Where(o => o.Name.EndsWith("*")).Where(o => o.Value.EndsWith("*")).ToList();
+            staticRoutes.RemoveAll(o => wildcardRoutes.Any(o2 => o.Name == o2.Name));
+            staticRoutes.AddRange(wildcardRoutes.Select(o => new NameValuePair() {
+                Name = o.Name.Replace("*", "{arg}"),
+                Value = o.Value.Replace("*", "{arg}")
+            }));
+
+            //
+            // get the redirects
+            //
+            var redirects = (await ContentHandler.GetPathMappingsAsync(true, cancellationToken)).ToList();
+
+            FunctionHandler.SyncProxiesFile(
+                staticRoutes.ToDictionary(o => o.Name, o => o.Value),
+                redirects.ToDictionary(o => o.Name, o => o.Value)
+                );
 
             if (modified)
             {

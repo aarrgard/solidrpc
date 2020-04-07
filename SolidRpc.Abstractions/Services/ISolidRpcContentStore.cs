@@ -39,6 +39,7 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         /// <param name="path"></param>
         /// <param name="mapping"></param>
-        void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping);
+        /// <param name="isRedirect"></param>
+        void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping, bool isRedirect = false);
     }
 }

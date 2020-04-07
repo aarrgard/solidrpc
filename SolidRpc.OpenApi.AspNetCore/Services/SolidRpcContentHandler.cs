@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static SolidRpc.OpenApi.AspNetCore.Services.SolidRpcContentStore;
 
 [assembly: SolidRpcService(typeof(ISolidRpcContentHandler), typeof(SolidRpcContentHandler))]
 namespace SolidRpc.OpenApi.AspNetCore.Services
@@ -65,14 +66,16 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// Returns the path mappings
         /// </summary>
-        public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken)
         {
-            var tasks = ContentStore.DynamicContents.Select(async o =>
+            var tasks = ContentStore.DynamicContents
+                .Where(o => o.Value.IsRedirect == redirects)
+                .Select(async o =>
             {
                 return new NameValuePair()
                 {
                     Name = o.Key,
-                    Value = (await o.Value(ServiceProvider))?.ToString()
+                    Value = (await o.Value.UriResolver(ServiceProvider))?.ToString()
                 };
             });
             return (await Task.WhenAll(tasks));
@@ -113,11 +116,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             //
             // check path mappings
             //
-            if(ContentStore.DynamicContents.TryGetValue(path, out Func<IServiceProvider, Task<Uri>> fetcher))
+            if(ContentStore.DynamicContents.TryGetValue(path, out DynamicMapping dm))
             {
                 return async (_, cancellationToken) =>
                 {
-                    var uri = await fetcher(ServiceProvider);
+                    var uri = await dm.UriResolver(ServiceProvider);
                     var httpClient = HttpClientFactory.CreateClient();
                     var resp = await httpClient.GetAsync(uri, cancellationToken);
                     var ms = new MemoryStream();
@@ -127,7 +130,8 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                     {
                         Content = new MemoryStream(ms.ToArray()),
                         CharSet = resp.Content?.Headers?.ContentType?.CharSet,
-                        ContentType = resp.Content?.Headers?.ContentType?.MediaType
+                        ContentType = resp.Content?.Headers?.ContentType?.MediaType,
+                        Location = resp.Headers?.Location?.ToString()
                     };
                 };
             }

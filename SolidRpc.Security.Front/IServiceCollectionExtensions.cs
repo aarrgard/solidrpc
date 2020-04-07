@@ -39,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (string.IsNullOrEmpty(opts.Authority))
                 {
                     var contentHandler = sp.GetRequiredService<ISolidRpcContentHandler>();
-                    var pathMappings = contentHandler.GetPathMappingsAsync().Result;
+                    var pathMappings = contentHandler.GetPathMappingsAsync(false).Result;
                     var wellKnown = pathMappings.Where(o => o.Name == "/.well-known/openid-configuration").Select(o => o.Value).FirstOrDefault();
                     if (wellKnown == null)
                     {

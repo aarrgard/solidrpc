@@ -325,15 +325,20 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Syncronizes the proxies file with the functions.
         /// </summary>
-        public void SyncProxiesFile(IDictionary<string, string> staticRoutes)
+        public void SyncProxiesFile(
+            IDictionary<string, string> staticRoutes,
+            IDictionary<string, string> redirects)
         {
-            SyncProxiesFile(BaseDir, staticRoutes);
+            SyncProxiesFile(BaseDir, staticRoutes, redirects);
             if(DevDir != null)
             {
-                SyncProxiesFile(DevDir, staticRoutes);
+                SyncProxiesFile(DevDir, staticRoutes, redirects);
             }
         }
-        private void SyncProxiesFile(DirectoryInfo baseDir, IDictionary<string, string> staticRoutes)
+        private void SyncProxiesFile(
+            DirectoryInfo baseDir, 
+            IDictionary<string, string> staticRoutes,
+            IDictionary<string, string> redirects)
         {
             var scheme = Environment.GetEnvironmentVariable(ConfigurationMethodAddressTransformer.ConfigScheme) ?? "http";
             // add the content fetcher 
@@ -383,6 +388,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 {
                     continue;
                 }
+                if (redirects.Any(o => FixRouteName(o.Key) == proxy.Key))
+                {
+                    continue;
+                }
                 // remove proxy if route prefix is null
                 if (string.IsNullOrEmpty(HttpRouteBackendPrefix))
                 {
@@ -409,7 +418,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 var methods = o.Select(o2 => o2.Method).ToList();
                 var backendUri = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{o.Key}";
                 var frontEndRoute = CreateFrontendRoute(o.Key);
-                var proxyModified = CreateProxy(proxies.Proxies, o.Key, methods, frontEndRoute, backendUri);
+                var proxyModified = CreateProxy(proxies.Proxies, o.Key, methods, frontEndRoute, backendUri, false);
                 if (proxyModified && !modified)
                 {
                     modified = true;
@@ -421,7 +430,19 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             //
             staticRoutes.ToList().ForEach(o =>
             {
-                var proxyModified = CreateProxy(proxies.Proxies, o.Key, new [] { "GET" }, $"/{o.Key}", o.Value);
+                var proxyModified = CreateProxy(proxies.Proxies, o.Key, new[] { "GET" }, $"/{o.Key}", o.Value, false);
+                if (proxyModified && !modified)
+                {
+                    modified = true;
+                }
+            });
+
+            //
+            // write redirects
+            //
+            redirects.ToList().ForEach(o =>
+            {
+                var proxyModified = CreateProxy(proxies.Proxies, o.Key, new[] { "GET" }, $"/{o.Key}", o.Value, true);
                 if (proxyModified && !modified)
                 {
                     modified = true;
@@ -459,7 +480,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
         private string FixRouteName(string key)
         {
-            return key.Replace("*", "");
+            if (key.EndsWith("/"))
+            {
+                key = key.Substring(0, key.Length - 1);
+            }
+            key = key.Replace("*", "");
+            if (key == "") key = "EmPtY";
+            return key;
         }
 
         /// <summary>
@@ -476,9 +503,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             return route;
         }
 
-        private bool CreateProxy(IList<KeyValuePair<string, AzProxy>> proxies, string routeName, IEnumerable<string> methods, string frontendRoute, string backendUri)
+        private bool CreateProxy(IList<KeyValuePair<string, AzProxy>> proxies, string routeName, IEnumerable<string> methods, string frontendRoute, string backendUri, bool redirect)
         {
             routeName = FixRouteName(routeName);
+            if(frontendRoute.EndsWith("/"))
+            {
+                frontendRoute = frontendRoute.Substring(0, frontendRoute.Length-1);
+            }
             var proxyKV = proxies.FirstOrDefault(o => o.Key == routeName);
             if (string.IsNullOrEmpty(proxyKV.Key))
             {
@@ -492,7 +523,18 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             proxy.MatchCondition = proxy.MatchCondition ?? new AzProxyMatchCondition();
             proxy.MatchCondition.Route = SetValue(ref modified, proxy.MatchCondition.Route, frontendRoute);
             proxy.MatchCondition.Methods = SetValue(ref modified, proxy.MatchCondition.Methods, methods);
-            proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, backendUri);
+            if(redirect)
+            {
+                proxy.ResponseOverrides = SetValue(ref modified, proxy.ResponseOverrides, new Dictionary<string, string>
+                {
+                    { "response.statusCode", "302" },
+                    { "response.headers.Location", backendUri }
+                });
+            }
+            else
+            {
+                proxy.BackendUri = SetValue(ref modified, proxy.BackendUri, backendUri);
+            }
             if (modified)
             {
                 return true;

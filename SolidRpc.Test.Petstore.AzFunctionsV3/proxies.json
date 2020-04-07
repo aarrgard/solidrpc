@@ -144,6 +144,27 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}"
     },
+    "A{arg}": {
+      "matchCondition": {
+        "route": "/A{arg}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=A{arg}"
+    },
+    "EmPtY": {
+      "matchCondition": {
+        "route": "/",
+        "methods": [
+          "GET"
+        ]
+      },
+      "responseOverrides": {
+        "response.statusCode": "302",
+        "response.headers.Location": "http://localhost:7071/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
+      }
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

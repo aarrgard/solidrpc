@@ -127,7 +127,7 @@
             the end of a config file
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Puts all the functions in the proxies file.
             </summary>
@@ -390,7 +390,7 @@
             triggers a restart of the application
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Syncronizes the proxies file with the functions.
             </summary>
@@ -590,6 +590,11 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.AzProxy.BackendUri">
             <summary>
             The backend uri
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.AzProxy.ResponseOverrides">
+            <summary>
+            The response overrides
             </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Model.AzProxyMatchCondition">

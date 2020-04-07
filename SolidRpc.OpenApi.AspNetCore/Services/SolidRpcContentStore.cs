@@ -16,6 +16,32 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
     public class SolidRpcContentStore : ISolidRpcContentStore
     {
         /// <summary>
+        /// Represents a dynamc mapping
+        /// </summary>
+        public class DynamicMapping
+        {
+            /// <summary>
+            /// Constructs a new instance
+            /// </summary>
+            /// <param name="uriResolver"></param>
+            /// <param name="isRedirect"></param>
+            public DynamicMapping(Func<IServiceProvider, Task<Uri>> uriResolver, bool isRedirect)
+            {
+                IsRedirect = isRedirect;
+                UriResolver = uriResolver;
+            }
+
+            /// <summary>
+            /// Is this a redirect or proxy call.
+            /// </summary>
+            public bool IsRedirect { get; }
+
+            /// <summary>
+            /// The resolver
+            /// </summary>
+            public Func<IServiceProvider, Task<Uri>> UriResolver { get; }
+        }
+        /// <summary>
         /// Represents a static content.
         /// </summary>
         public class StaticContent
@@ -81,7 +107,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public SolidRpcContentStore()
         {
             StaticContents = new List<StaticContent>();
-            DynamicContents = new Dictionary<string, Func<IServiceProvider, Task<Uri>>>();
+            DynamicContents = new Dictionary<string, DynamicMapping>();
             ContentTypeProvider = new FileExtensionContentTypeProvider();
             Registrations = new HashSet<string>();
         }
@@ -99,7 +125,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// The registered contents
         /// </summary>
-        public IDictionary<string, Func<IServiceProvider, Task<Uri>>> DynamicContents { get; }
+        public IDictionary<string, DynamicMapping> DynamicContents { get; }
 
         /// <summary>
         /// Keeps track of registrations so that we do not add resources more than once.
@@ -168,9 +194,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         /// <param name="path"></param>
         /// <param name="mapping"></param>
-        public void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping)
+        /// <param name="isRedirect"></param>
+        public void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping, bool isRedirect)
         {
-            DynamicContents[path] = mapping;
+            DynamicContents[path] = new DynamicMapping(mapping, isRedirect);
         }
     }
 }
