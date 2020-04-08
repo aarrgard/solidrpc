@@ -380,6 +380,7 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="services"></param>
             /// <param name="baseAddress"></param>
+            /// <param name="addServerUrls"></param>
             protected void AddBaseAddress(IServiceCollection services, Uri baseAddress, bool addServerUrls)
             {
                 if (BaseAddress == null) throw new Exception("No base address set");
@@ -388,7 +389,10 @@ namespace SolidRpc.Tests
 
                 var config = new Dictionary<string,string>();
                 config["SolidRpc:BaseUrl"] = strBaseAddress;
-                config["urls"] = strBaseAddress;
+                if(addServerUrls)
+                {
+                    config["urls"] = strBaseAddress;
+                }
 
                 services.GetConfigurationBuilder(() => new ConfigurationBuilder(), c => new ChainedConfigurationSource() { Configuration = c })
                     .AddInMemoryCollection(config);
