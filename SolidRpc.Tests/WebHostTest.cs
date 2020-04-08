@@ -174,7 +174,7 @@ namespace SolidRpc.Tests
                 // configure server services and use them from a singleton registration.
                 // 
                 var serverServices = new ServiceCollection();
-                AddBaseAddress(serverServices, BaseAddress);
+                AddBaseAddress(serverServices, BaseAddress, true);
                 _serverServiceProvider = ConfigureServices(serverServices);
 
                 _serverServiceProvider.GetRequiredService<IMethodBinderStore>()
@@ -370,7 +370,7 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual void ConfigureClientServices(IServiceCollection clientServices)
             {
-                AddBaseAddress(clientServices, BaseAddress);
+                AddBaseAddress(clientServices, BaseAddress, false);
                 WebHostTest.ConfigureClientServices(clientServices, BaseAddress);
                 ClientServicesCallback(clientServices);
             }
@@ -380,14 +380,18 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="services"></param>
             /// <param name="baseAddress"></param>
-            protected void AddBaseAddress(IServiceCollection services, Uri baseAddress)
+            protected void AddBaseAddress(IServiceCollection services, Uri baseAddress, bool addServerUrls)
             {
                 if (BaseAddress == null) throw new Exception("No base address set");
                 var strBaseAddress = baseAddress.ToString();
                 strBaseAddress = strBaseAddress.Substring(0, strBaseAddress.Length - 1);
 
+                var config = new Dictionary<string,string>();
+                config["SolidRpc:BaseUrl"] = strBaseAddress;
+                config["urls"] = strBaseAddress;
+
                 services.GetConfigurationBuilder(() => new ConfigurationBuilder(), c => new ChainedConfigurationSource() { Configuration = c })
-                    .AddInMemoryCollection(new Dictionary<string, string>() { { "urls", strBaseAddress } });
+                    .AddInMemoryCollection(config);
             }
 
             /// <summary>

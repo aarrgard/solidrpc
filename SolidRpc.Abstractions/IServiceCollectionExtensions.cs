@@ -474,6 +474,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             SetSecurityKey(openApiProxyConfig, sc.GetSolidRpcService<IConfiguration>(false));
+            SetBaseUrl(openApiProxyConfig, sc.GetSolidRpcService<IConfiguration>(false));
             var enabled = configurator?.Invoke(openApiProxyConfig) ?? true;
             if(openApiProxyConfig.Enabled != mc.Enabled)
             {
@@ -508,39 +509,51 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (configuration == null) return;
             var method = openApiProxyConfig.Methods.Single();
+            var sKey = "SecurityKey";
+            var keys = CreateConfigKeys(method, sKey);
+            foreach (var key in keys)
+            {
+                var val = configuration[key];
+                if (val != null)
+                {
+                    openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(sKey, val);
+                    return;
+                }
+            }
+        }
+
+        private static void SetBaseUrl(ISolidRpcOpenApiConfig openApiProxyConfig, IConfiguration configuration)
+        {
+            if (configuration == null) return;
+            var method = openApiProxyConfig.Methods.Single();
+            var sKey = "BaseUrl";
+            var keys = CreateConfigKeys(method, sKey);
+            foreach (var key in keys)
+            {
+                var val = configuration[key];
+                if (val != null)
+                {
+                    var baseUrl = new Uri(val);
+                    openApiProxyConfig.SetMethodAddressTransformer((sp, uri, mi) => {
+                        return new Uri(baseUrl, uri.AbsolutePath);
+                    });
+                    return;
+                }
+            }
+        }
+
+        private static IEnumerable<string> CreateConfigKeys(MethodInfo method, string sKey)
+        {
             var assemblyName = method.DeclaringType.Assembly.GetName().Name;
             var interfaceName = method.DeclaringType.FullName;
             if (interfaceName.StartsWith($"{assemblyName}."))
             {
-                interfaceName = interfaceName.Substring(assemblyName.Length+1);
+                interfaceName = interfaceName.Substring(assemblyName.Length + 1);
             }
-            var key1 = "SolidRpcSecurityKey";
-            var key2 = $"{key1}.{assemblyName}";
-            var key3 = $"{key2}.{interfaceName}";
-            var key4 = $"{key3}.{method.Name}";
-            var val = configuration[key4];
-            if (val != null)
+            var keys = $"SolidRpc.{assemblyName}.{interfaceName}.{method.Name}".Split('.').Distinct().ToArray();
+            for(int i = keys.Length; i > 0; i--)
             {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
-                return;
-            }
-            val = configuration[key3];
-            if (val != null)
-            {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
-                return;
-            }
-            val = configuration[key2];
-            if (val != null)
-            {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
-                return;
-            }
-            val = configuration[key1];
-            if (val != null)
-            {
-                openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(key1, val);
-                return;
+                yield return string.Join(":", keys.Take(i).Union(new[] { sKey }));
             }
         }
 
