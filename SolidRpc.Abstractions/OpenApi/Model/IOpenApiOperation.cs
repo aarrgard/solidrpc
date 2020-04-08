@@ -11,6 +11,11 @@
         string OperationId { get; }
 
         /// <summary>
+        /// Returns the description
+        /// </summary>
+        string Description { get; set; }
+
+        /// <summary>
         /// Sets 
         /// </summary>
         /// <param name="securityDefinitionName"></param>

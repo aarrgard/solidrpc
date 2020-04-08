@@ -134,12 +134,11 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimit(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Uri,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimit(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Returns the configuration builder
             </summary>
             <param name="services"></param>
-            <param name="baseAddress"></param>
             <param name="configurator"></param>
             <returns></returns>
         </member>
@@ -627,6 +626,13 @@
             Base interface for the invokers
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.GetMethodBinding(System.Reflection.MethodInfo)">
+            <summary>
+            Returns the binding for supplied method.
+            </summary>
+            <param name="methodInfo"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(SolidRpc.Abstractions.Types.SolidRpcHostInstance,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
             Invokes the specified method with supplied arguments.
@@ -641,6 +647,20 @@
             Base interface for the invokers
             </summary>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.GetMethodBinding(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Invokes an action
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.GetMethodBinding``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Executes a function
+            </summary>
+            <param name="func"></param>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}},SolidRpc.Abstractions.Types.SolidRpcHostInstance)">
             <summary>
@@ -683,6 +703,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.OperationId">
             <summary>
             Returns the operation id.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.Description">
+            <summary>
+            Returns the description
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.AddApiKeyAuth(System.String,System.String)">

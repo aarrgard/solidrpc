@@ -14,25 +14,36 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <summary>
         /// Returns the index.html file.
         /// </summary>
+        /// <param name="onlyImplemented"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetIndexHtml(CancellationToken cancellationToken = default(CancellationToken));
+        Task<FileContent> GetIndexHtml(
+            bool onlyImplemented = true, 
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the swagger urls.
         /// </summary>
+        /// <param name="onlyImplemented"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<SwaggerUrl>> GetSwaggerUrls(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<SwaggerUrl>> GetSwaggerUrls(
+            bool onlyImplemented = true,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the openapi spec for supplied assembly name.
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <param name="openApiSpecResolverAddress">The name of the openapi resource</param>
+        /// <param name="onlyImplemented"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiSpecResolverAddress, CancellationToken cancellationToken = default(CancellationToken));
+        Task<FileContent> GetOpenApiSpec(
+            string assemblyName, 
+            string openApiSpecResolverAddress,
+            bool onlyImplemented = true,
+            CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

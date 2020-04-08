@@ -66,7 +66,8 @@ namespace SolidRpc.Tests.RateLimit
             clientServices.GetSolidConfigurationBuilder()
                 .AddAdviceDependency(typeof(SolidRpcRateLimitAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
 
-            clientServices.AddSolidRpcRateLimit(baseAddress);
+            base.ConfigureClientServices(clientServices, baseAddress);
+            clientServices.AddSolidRpcRateLimit();
 
             var apiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
@@ -85,7 +86,6 @@ namespace SolidRpc.Tests.RateLimit
 
                 return true;
             });
-            base.ConfigureClientServices(clientServices, baseAddress);
         }
         /// <summary>
         /// 
@@ -101,7 +101,6 @@ namespace SolidRpc.Tests.RateLimit
                });
 
             base.ConfigureServerServices(services);
-
             services.AddSolidRpcRateLimitMemory();
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();

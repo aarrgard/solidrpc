@@ -57,7 +57,18 @@ namespace SolidRpc.OpenApi.Binder.V2
                 HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
                 HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
             }
+
+            if(parameterObject.Default != null)
+            {
+                DefaultValue = new[] { new SolidHttpRequestDataString("text/plain", parameterObject.Name, parameterObject.Default.ToString()) { } };
+            } 
+            else if(parameterInfo.DefaultValue != null)
+            {
+                DefaultValue = new[] { new SolidHttpRequestDataString("text/plain", parameterObject.Name, parameterInfo.DefaultValue.ToString()) { } };
+            }
         }
+
+        private IEnumerable<IHttpRequestData> DefaultValue { get; }
 
         private Func<IEnumerable<IHttpRequestData>, object> GetFileData(string contentType, string name, Type type)
         {
@@ -297,6 +308,11 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if(val is IEnumerable<IHttpRequestData> rdData2)
                 {
+                    // add default value if no value supplied and we have one specified
+                    if(!rdData2.Any() && DefaultValue != null)
+                    {
+                        rdData2 = DefaultValue;
+                    }
                     return HttpRequestDataExtractor(rdData2);
                 }
                 return val;

@@ -23,26 +23,29 @@
             The swagger config
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetIndexHtml(System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the index.html file.
             </summary>
+            <param name="onlyImplemented"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetSwaggerUrls(System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetSwaggerUrls(System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the swagger urls.
             </summary>
+            <param name="onlyImplemented"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetOpenApiSpec(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetOpenApiSpec(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the openapi spec for supplied assembly name.
             </summary>
             <param name="assemblyName"></param>
             <param name="openApiSpecResolverAddress">The name of the openapi resource</param>
+            <param name="onlyImplemented"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -60,26 +63,29 @@
             <param name="contentHandler"></param>
             <param name="httpInvoker"></param>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the index.hmtl file.
             </summary>
+            <param name="onlyImplemented"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetOpenApiSpec(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetOpenApiSpec(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the openapi spec for specified assembly and openapi spec
             </summary>
             <param name="assemblyName"></param>
             <param name="openApiSpecResolverAddress">The address of the openapi spec</param>
+            <param name="onlyImplemented"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetSwaggerUrls(System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetSwaggerUrls(System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the swagger urls.
             </summary>
+            <param name="onlyImplemented"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

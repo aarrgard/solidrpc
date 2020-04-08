@@ -55,7 +55,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         private async Task<Uri> GetUriAsync(MethodInfo mi, object[] args, bool includeQueryString)
         {
-            var methodBinding = MethodBinderStore.GetMethodBinding(mi);
+            var methodBinding = GetMethodBinding(mi);
             if (methodBinding == null)
             {
                 throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");

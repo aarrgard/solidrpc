@@ -39,7 +39,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
-            services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
+            services.AddSolidRpcRateLimit();
+            //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
@@ -50,7 +51,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             });
             services.GetSolidRpcContentStore().AddMapping("/", async sp =>
             {
-                return await sp.GetRequiredService<IHttpInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(CancellationToken.None));
+                return await sp.GetRequiredService<IHttpInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
             }, true);
         }
 

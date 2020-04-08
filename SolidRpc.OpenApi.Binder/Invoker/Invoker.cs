@@ -90,6 +90,22 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         protected IMethodBinderStore MethodBinderStore { get; }
         protected IServiceProvider ServiceProvider { get; }
 
+        public IMethodBinding GetMethodBinding(MethodInfo mi)
+        {
+            return MethodBinderStore.GetMethodBinding(mi);
+        }
+
+        public IMethodBinding GetMethodBinding(Expression<Action<T>> action)
+        {
+            var (mi, _) = GetMethodInfo(action);
+            return GetMethodBinding(mi);
+        }
+
+        public IMethodBinding GetMethodBinding<TResult>(Expression<Func<T, TResult>> func)
+        {
+            var (mi, _) = GetMethodInfo(func);
+            return GetMethodBinding(mi);
+        }
         public Task InvokeAsync(Expression<Action<T>> action, SolidRpcHostInstance targetInstance)
         {
             var (mi, args) = GetMethodInfo(action);
@@ -178,5 +194,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             httpReq.Headers = httpReq.Headers.Union(newCookies).ToList();
         }
+
     }
 }

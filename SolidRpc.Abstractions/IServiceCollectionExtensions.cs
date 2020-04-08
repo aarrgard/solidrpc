@@ -494,7 +494,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 mc.AddPreInvocationCallback(i =>
                 {
                     var callKey = i.GetValue<StringValues>(key);
-                    if(!value.Equals(callKey.ToString(), StringComparison.InvariantCultureIgnoreCase))
+                    if(!value.Equals(callKey.ToString()))
                     {
                         throw new UnauthorizedException("SolidRpcSecurityKey differs");
                     }
@@ -534,8 +534,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (val != null)
                 {
                     var baseUrl = new Uri(val);
-                    openApiProxyConfig.SetMethodAddressTransformer((sp, uri, mi) => {
-                        return new Uri(baseUrl, uri.AbsolutePath);
+                    openApiProxyConfig.SetMethodAddressTransformer((sp, url, mi) => {
+                        if(mi == null) return new Uri(baseUrl, url.AbsolutePath.Substring(1));
+                        return url;
                     });
                     return;
                 }
@@ -619,25 +620,21 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Returns the configuration builder
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="baseAddress"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcRateLimit(
             this IServiceCollection services,
-            Uri baseAddress,
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             var methods = typeof(ISolidRpcRateLimit).GetMethods();
             var openApiParser = services.GetSolidRpcOpenApiParser();
-            var openApiSpec = openApiParser.CreateSpecification(methods.ToArray())
-                .SetBaseAddress(baseAddress)
-                .WriteAsJsonString();
+            var openApiSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
 
             services.AddSolidRpcBindings(typeof(ISolidRpcRateLimit), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
 
-                // disable the implementation
+                // disable the implementation - if any..
                 conf.GetAdviceConfig<ISolidProxyInvocationImplAdviceConfig>().Enabled = false;
 
                 return configurator?.Invoke(conf) ?? true;

@@ -5,10 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
@@ -49,9 +47,12 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <summary>
         /// Returns the index.hmtl file.
         /// </summary>
+        /// <param name="onlyImplemented"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<FileContent> GetIndexHtml(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileContent> GetIndexHtml(
+            bool onlyImplemented, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var strBase = "../..";
             var html = $@"<!-- HTML for static distribution bundle build -->
@@ -95,7 +96,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
     window.onload = function() {{
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({{
-        urls: { AsJson(await GetSwaggerUrls(cancellationToken)) },
+        urls: { AsJson(await GetSwaggerUrls(onlyImplemented, cancellationToken)) },
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
@@ -144,9 +145,14 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <param name="openApiSpecResolverAddress">The address of the openapi spec</param>
+        /// <param name="onlyImplemented"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<FileContent> GetOpenApiSpec(string assemblyName, string openApiSpecResolverAddress, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileContent> GetOpenApiSpec(
+            string assemblyName, 
+            string openApiSpecResolverAddress, 
+            bool onlyImplemented,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             //
             // search for the spec using existing bindings.
@@ -214,20 +220,24 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             //
             if(binder != null)
             {
-                var localOperations = binder.MethodBindings
+                var operations = binder.MethodBindings
                     .Where(o => o.Transports.OfType<IHttpTransport>().Any())
                     .Where(o => o.IsEnabled)
-                    .Where(o => o.IsLocal)
                     .ToDictionary(o => o.OperationId, o => o);
                 foreach(var op in openApiSpec.Operations)
                 {
-                    if(localOperations.TryGetValue(op.OperationId, out IMethodBinding binding))
+                    if (!operations.TryGetValue(op.OperationId, out IMethodBinding binding))
+                    {
+                        openApiSpec.RemoveOperation(op);
+                        continue;
+                    }
+                    var opAddr = binding.Transports.OfType<IHttpTransport>().FirstOrDefault()?.OperationAddress;
+                    if (binding.IsLocal)
                     {
                         if (binding.SecurityKey != null)
                         {
                             var definitionName = $"SolidRpcSecurity.{binding.SecurityKey.Value.Key}";
-                            var headerName = "solidrpcsecuritykey";
-                            op.AddApiKeyAuth(definitionName, headerName);
+                            op.AddApiKeyAuth(definitionName, binding.SecurityKey.Value.Key.ToLower());
                         }
                         var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
                         if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))
@@ -239,7 +249,14 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     }
                     else
                     {
-                        openApiSpec.RemoveOperation(op);
+                        if (onlyImplemented)
+                        {
+                            openApiSpec.RemoveOperation(op);
+                        }
+                        else
+                        {
+                            op.Description = $"This method is implemented @{opAddr}<br/>{op.Description}";
+                        }
                     }
                 }
             }
@@ -257,9 +274,12 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <summary>
         /// Returns the swagger urls.
         /// </summary>
+        /// <param name="onlyImplemented"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<SwaggerUrl>> GetSwaggerUrls(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<SwaggerUrl>> GetSwaggerUrls(
+            bool onlyImplemented,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var swaggerUrls = new List<SwaggerUrl>();
             foreach (var mb in MethodBinderStore.MethodBinders)
@@ -274,7 +294,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 swaggerUrls.Add(new SwaggerUrl()
                 {
                     Name = name,
-                    Url = await HttpInvoker.GetUriAsync(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, cancellationToken))
+                    Url = await HttpInvoker.GetUriAsync(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, onlyImplemented, cancellationToken))
                 });
             }
             return swaggerUrls

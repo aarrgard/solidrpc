@@ -62,6 +62,7 @@ namespace SolidRpc.Tests.RateLimit
         /// <param name="baseAddress"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
+            base.ConfigureClientServices(clientServices, baseAddress);
             var apiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
                 .SetBaseAddress(baseAddress)
@@ -71,7 +72,6 @@ namespace SolidRpc.Tests.RateLimit
                 conf.OpenApiSpec = apiSpec;
                 return true;
             });
-            base.ConfigureClientServices(clientServices, baseAddress);
         }
         /// <summary>
         /// 

@@ -90,51 +90,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost"
     },
-    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync"
-    },
-    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}"
-    },
-    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync"
-    },
-    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting"
-    },
-    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}"
-    },
     "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}": {
       "matchCondition": {
         "route": "/front/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}",
@@ -162,7 +117,7 @@
       },
       "responseOverrides": {
         "response.statusCode": "302",
-        "response.headers.Location": "http://localhost:7071/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
+        "response.headers.Location": "http://localhost:7071/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml?onlyImplemented=true"
       }
     },
     "front/{path}": {
