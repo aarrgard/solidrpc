@@ -118,9 +118,13 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <param name="config"></param>
         /// <param name="connectionName"></param>
         /// <param name="queueName"></param>
-        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, string connectionName = null, string queueName = null) where T : IInvocationHandler
+        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, string connectionName = null, string queueName = null) where T : IHandler
         {
-            string queueType = typeof(T).Assembly.GetName().Name.Split('.').Last();
+            string queueType = typeof(T).FullName.Split('.').Last();
+            if(queueType.EndsWith("Handler"))
+            {
+                queueType = queueType.Substring(0, queueType.Length - "Handler".Length);
+            }
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {

@@ -3,7 +3,6 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Types;
-using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,81 +13,22 @@ using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
-    internal abstract class ResultConverter
-    {
-        protected static Func<Task<TFrom>, Task<TTo>> CreateTaskConverter<TFrom, TTo>()
-        {
-            return async _ =>
-            {
-                var t = (TTo)(object)(await _);
-                return t;
-            };
-        }
-        public ResultConverter()
-        {
-        }
-        public Func<Task<object>, object> ConvertToTResult { get; protected set; }
-        public Func<object, Task<object>> ConvertToObjectTask { get; protected set; }
-
-    }
-    internal class ResultConverter<TResult> : ResultConverter
-    {
-        public ResultConverter() : base()
-        {
-            if(typeof(TResult).IsTaskType(out Type taskType))
-            {
-                if(taskType == null)
-                {
-                    ConvertToTResult = _ => _;
-                    ConvertToObjectTask = async _ => { await ((Task)_); return null; };
-                }
-                else
-                {
-                    ConvertToTResult = (Func<Task<object>, object>)typeof(ResultConverter)
-                        .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
-                        .Where(o => o.IsGenericMethod)
-                        .Where(o => o.Name == nameof(CreateTaskConverter))
-                        .Single().MakeGenericMethod(typeof(object), taskType)
-                        .Invoke(null, null);
-
-                    var x = (Func<TResult, Task<object>>)typeof(ResultConverter)
-                        .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
-                        .Where(o => o.IsGenericMethod)
-                        .Where(o => o.Name == nameof(CreateTaskConverter))
-                        .Single().MakeGenericMethod(taskType, typeof(object))
-                        .Invoke(null, null);
-                    ConvertToObjectTask = _ => x((TResult)_);
-                }
-            }
-            else
-            {
-                ConvertToTResult = _ => _.Result;
-                ConvertToObjectTask = _ => Task.FromResult<object>(_);
-            }
-        }
-    }
-
-
     public abstract class Invoker<T> : IInvoker<T> where T:class
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
-
-        private static ConcurrentDictionary<Type, ResultConverter> s_ResultConverters = new ConcurrentDictionary<Type, ResultConverter>();
-        private static readonly MethodInfo s_taskresultmethod = typeof(Invoker<T>).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-            .Where(o => o.IsGenericMethod)
-            .Where(o => o.Name == nameof(ExtractTaskResult))
-            .Single();
-
-        public Invoker(ILogger<Invoker<T>> logger, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider)
+        private static ConcurrentDictionary<Type, Func<SolidRpcHostInstance,MethodInfo,object[],object>> Invokers = new ConcurrentDictionary<Type, Func<SolidRpcHostInstance, MethodInfo, object[], object>>();
+        public Invoker(ILogger<Invoker<T>> logger, IHandler handler, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             ServiceProvider = serviceProvider;
+            Handler = handler;
         }
 
         protected ILogger Logger { get; }
         protected IMethodBinderStore MethodBinderStore { get; }
         protected IServiceProvider ServiceProvider { get; }
+        private IHandler Handler { get; }
 
         public IMethodBinding GetMethodBinding(MethodInfo mi)
         {
@@ -109,26 +49,55 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public Task InvokeAsync(Expression<Action<T>> action, SolidRpcHostInstance targetInstance)
         {
             var (mi, args) = GetMethodInfo(action);
-            var converter = s_ResultConverters.GetOrAdd(mi.ReturnType, CreateConverter);
-            return InvokeMethodAsync(converter.ConvertToObjectTask, targetInstance, mi, args);
+            return InvokeMethodAsync<object>(targetInstance, mi, args);
         }
 
         public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, SolidRpcHostInstance targetInstance)
         {
             var (mi, args) = GetMethodInfo(func);
-            var converter = s_ResultConverters.GetOrAdd(mi.ReturnType, CreateConverter);
-            return (TResult)converter.ConvertToTResult(InvokeMethodAsync(converter.ConvertToObjectTask, targetInstance, mi, args));
+            var res = Invokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>)(targetInstance, mi, args);
+            return (TResult)res;
+        }
+
+        private Func<SolidRpcHostInstance, MethodInfo, object[], object> CreateInvoker<TResult>(Type t)
+        {
+            if(t.IsGenericType)
+            {
+                if(t.GetGenericTypeDefinition() == typeof(Task<>))
+                {
+                    var taskType = t.GetGenericArguments()[0];
+                    var gmi = typeof(Invoker<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Where(o => o.Name == nameof(Narrow))
+                        .Where(o => o.IsGenericMethod)
+                        .Single();
+                    gmi = gmi.MakeGenericMethod(taskType);
+                    return (hi, mi, args) =>
+                    {
+                        var taskRes = InvokeAsync<TResult>(hi, mi, args);
+                        var res = gmi.Invoke(this, new object[] { taskRes });
+                        return res;
+                    };
+                }
+            }
+            return (hi, mi, args) =>
+            {
+                return InvokeAsync<TResult>(hi, mi, args).Result;
+            };
+        }
+        
+        private async Task<TResult> Narrow<TResult>(Task<Task<TResult>> result)
+        {
+            return await await result;
+        }
+
+        public Task<TResult> InvokeAsync<TResult>(SolidRpcHostInstance targetInstance, MethodInfo mi, IEnumerable<object> args)
+        {
+            return InvokeMethodAsync<TResult>(targetInstance, mi, args.ToArray());
         }
 
         public Task<object> InvokeAsync(SolidRpcHostInstance targetInstance, MethodInfo mi, IEnumerable<object> args)
         {
-            var converter = s_ResultConverters.GetOrAdd(mi.ReturnType, CreateConverter);
-            return InvokeMethodAsync(converter.ConvertToObjectTask, targetInstance, mi, args.ToArray());
-        }
-
-        private ResultConverter CreateConverter(Type arg)
-        {
-            return (ResultConverter)Activator.CreateInstance(typeof(ResultConverter<>).MakeGenericType(arg));
+            return InvokeMethodAsync(targetInstance, mi, args.ToArray());
         }
 
         protected static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
@@ -147,53 +116,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             throw new Exception("expression should be a method call.");
         }
 
-        protected abstract Task<object> InvokeMethodAsync(Func<object, Task<object>> resultConverter, SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args);
-
-        private async Task<object> ExtractNullResult(Task res)
+        protected virtual Task<TRes> InvokeMethodAsync<TRes>(SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
-            await res;
-            return null;
+            return Handler.InvokeAsync<TRes>(mi, args);
         }
 
-        private async Task<object> ExtractTaskResult<TRes>(object res)
+        protected virtual Task<object> InvokeMethodAsync(SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
-            return await (Task<TRes>)res;
+            return Handler.InvokeAsync<object>(mi, args);
         }
-
-        protected void AddSecurityKey(IMethodBinding methodBinding, SolidHttpRequest httpReq)
-        {
-            //
-            // Add security key header
-            //
-            var securityKey = methodBinding.SecurityKey;
-            if (securityKey != null)
-            {
-                var headers = httpReq.Headers.ToList();
-                headers.Add(new SolidHttpRequestDataString("text/plain", securityKey.Value.Key, securityKey.Value.Value));
-                httpReq.Headers = headers;
-            }
-        }
-
-        protected void AddTargetInstance(SolidRpcHostInstance targetInstance, SolidHttpRequest httpReq)
-        {
-            if(targetInstance == null)
-            {
-                return;
-            }
-
-            var newCookies = EmptyCookieList;
-            
-            // add the cookies if set
-            if (targetInstance.HttpCookies != null)
-            {
-                newCookies = targetInstance.HttpCookies.Select(o => new SolidHttpRequestDataString("text/plain", "Cookie", $"{o.Key}={o.Value}"));
-            }
-
-            // add the "x-solidrpchosttarget"
-            newCookies = newCookies.Union(new[] { new SolidHttpRequestDataString("text/plain", "X-SolidRpcTargetHost", targetInstance.HostId.ToString()) });
-
-            httpReq.Headers = httpReq.Headers.Union(newCookies).ToList();
-        }
-
     }
 }

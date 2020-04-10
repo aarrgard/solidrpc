@@ -533,6 +533,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var val = configuration[key];
                 if (val != null)
                 {
+                    if (!val.EndsWith("/")) val = $"{val}/";
                     var baseUrl = new Uri(val);
                     openApiProxyConfig.SetMethodAddressTransformer((sp, url, mi) => {
                         if(mi == null) return new Uri(baseUrl, url.AbsolutePath.Substring(1));
@@ -639,6 +640,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 return configurator?.Invoke(conf) ?? true;
             });
+
             return services;
         }
     }

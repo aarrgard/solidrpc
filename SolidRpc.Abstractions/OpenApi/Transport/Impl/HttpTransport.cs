@@ -10,6 +10,8 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
     /// </summary>
     public class HttpTransport : Transport, IHttpTransport
     {
+        private Uri _operationAddress;
+
         public HttpTransport(MethodAddressTransformer methodAddressTransformer, MethodHeadersTransformer methodHeadersTransformer)
         {
             MethodAddressTransformer = methodAddressTransformer;
@@ -27,7 +29,6 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public override void Configure(IMethodBinding methodBinding)
         {
             base.Configure(methodBinding);
-            Method = methodBinding.Method;
             Path = methodBinding.RelativePath;
 
             if(methodBinding.IsLocal)
@@ -40,7 +41,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
             }
             var operationAddress = new Uri(BaseAddress, Path);
             operationAddress = TransformAddress(methodBinding, operationAddress, methodBinding.MethodInfo);
-            OperationAddress = operationAddress;
+            _operationAddress = operationAddress;
         }
 
         private Uri TransformAddress(IMethodBinding methodBinding, Uri address, MethodInfo methodInfo)
@@ -61,9 +62,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
             return address;
         }
 
-        public Uri OperationAddress { get; private set; }
-
-        public string Method { get; private set; }
+        public override Uri OperationAddress => _operationAddress;
 
         public Uri BaseAddress { get; private set; }
 

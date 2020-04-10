@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using System;
 
 namespace SolidRpc.Abstractions.OpenApi.Transport
 {
@@ -7,6 +8,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
     /// </summary>
     public interface ITransport
     {
+        /// <summary>
+        /// The operation address
+        /// </summary>
+        Uri OperationAddress { get; }
+
         /// <summary>
         /// Configures the transport for supplied binding.
         /// </summary>

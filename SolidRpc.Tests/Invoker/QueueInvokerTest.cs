@@ -70,6 +70,13 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        private void ConfigureQueueTransport(ISolidRpcOpenApiConfig conf, bool addInboundHandler)
+        {
+            conf.SetQueueTransport<AzQueueHandler>();
+            conf.SetQueueTransportInboundHandler("generic");
+
+        }
+
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
@@ -78,8 +85,7 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetSecurityKey(SecKey);
-                conf.SetQueueTransport<QueueInvocationHandler>();
-                conf.SetQueueTransportInboundHandler("generic");
+                ConfigureQueueTransport(conf, true);
                 return true;
             });
 
@@ -91,7 +97,7 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcServices(conf =>
             {
                 //conf.SetSecurityKey(SecKey);
-                conf.SetQueueTransport<QueueInvocationHandler>();
+                ConfigureQueueTransport(conf, false);
                 return true;
             });
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
@@ -101,8 +107,8 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                //conf.SetSecurityKey(SecKey);
-                conf.SetQueueTransport<QueueInvocationHandler>();
+                conf.SetSecurityKey(SecKey);
+                ConfigureQueueTransport(conf, false);
                 return true;
             });
         }
@@ -112,7 +118,7 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Requires password")]
+        [Test, Ignore("Requires secrets")]
         public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())

@@ -593,6 +593,35 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IHandler">
+            <summary>
+            The invocation handler is responsible for doing
+            the actual invokation
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.GetTransport(System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport})">
+            <summary>
+            Returns the transport that the handler uses
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(System.Reflection.MethodInfo,System.Object[])">
+            <summary>
+            Invokes the supplied method
+            </summary>
+            <param name="mi"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[])">
+            <summary>
+            Sends the httpRequest representing the call.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodBinding"></param>
+            <param name="transport"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1">
             <summary>
             Uses the http stack to invoke the call
@@ -614,12 +643,6 @@
             <param name="func"></param>
             <param name="includeQueryString"></param>
             <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvocationHandler">
-            <summary>
-            The invocation handler is responsible for doing
-            the actual invokation
-            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker">
             <summary>
@@ -1024,11 +1047,6 @@
             The path relative to the base method.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.OperationAddress">
-            <summary>
-            The address where to send/receive data for the method.
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.MethodAddressTransformer">
             <summary>
             The method to transform the Uri. This delegate is invoked to determine
@@ -1042,11 +1060,6 @@
             </summary>
             <param name="methodAddressTransformer"></param>
             <returns></returns>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.MethodHeadersTransformer">
-            <summary>
-            The http headers to add to the invocations
-            </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetMethodHeadersTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
             <summary>
@@ -1129,6 +1142,11 @@
             The inbound handler
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.OperationAddress">
+            <summary>
+            The operation address should be the same as in open api spec.
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetInboundHandler(System.String)">
             <summary>
             Sets the inbound handler
@@ -1139,6 +1157,11 @@
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport">
             <summary>
             Base type for the transports
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.OperationAddress">
+            <summary>
+            Returns the operation address
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
@@ -1206,6 +1229,11 @@
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.ITransport">
             <summary>
             Base definitions for a transport
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.OperationAddress">
+            <summary>
+            The operation address
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.ITransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">

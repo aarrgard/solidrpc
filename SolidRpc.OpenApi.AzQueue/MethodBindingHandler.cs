@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -11,10 +12,10 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 [assembly: SolidRpcService(typeof(IMethodBindingHandler), typeof(MethodBindingHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AzQueue
@@ -96,7 +97,7 @@ namespace SolidRpc.OpenApi.AzQueue
         /// <returns></returns>
         private async Task SetupQueue(IMethodBinding binding, string connectionName, string queueName, bool startReceiver)
         {
-            var cloudQueue = CloudQueueStore.GetQueueClient(connectionName, queueName);
+            var cloudQueue = CloudQueueStore.GetCloudQueue(connectionName, queueName);
 
             if(Logger.IsEnabled(LogLevel.Trace))
             {
@@ -137,6 +138,13 @@ namespace SolidRpc.OpenApi.AzQueue
                             await cloudQueue.DeleteAsync(QueueRequestOptions, OperationContext, cancellationToken);
                         }
                         continue;
+                    }
+                }
+                catch (StorageException se)
+                {
+                    if(se.RequestInformation.ErrorCode == "QueueNotFound")
+                    {
+                        // continue - the the queue might become available.
                     }
                 }
                 catch (Exception e)

@@ -13,11 +13,11 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.V2;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -28,6 +28,8 @@ namespace SolidRpc.OpenApi.Binder.V2
 {
     public class MethodBindingV2 : IMethodBinding
     {
+    
+        private ConcurrentDictionary<Type, Func<object, Task>> s_TaskFactory = new ConcurrentDictionary<Type, Func<object, Task>>();
         public static ParameterObject GetParameterObject(OperationObject operationObject, ParameterInfo parameterInfo)
         {
             var parameters = operationObject.GetParameters();
@@ -414,6 +416,12 @@ namespace SolidRpc.OpenApi.Binder.V2
         }
         public object ExtractResponse(Type responseType, IHttpResponse response)
         {
+            if(responseType.IsTaskType(out Type taskType))
+            {
+                if (taskType == null) return Task.CompletedTask;
+                var res = ExtractResponse(taskType, response);
+                return s_TaskFactory.GetOrAdd(taskType, CreateTaskFactory)(res);
+            }
             var validResponses = new int[] { 200, 204, 302 };
             if (!validResponses.Contains(response.StatusCode))
             {
@@ -471,6 +479,15 @@ namespace SolidRpc.OpenApi.Binder.V2
                     }
             }
             throw new Exception("Cannot handle content type:" + response.MediaType);
+        }
+
+        private Func<object, Task> CreateTaskFactory(Type type)
+        {
+            var gmi = typeof(Task).GetMethods()
+                .Where(o => o.Name == nameof(Task.FromResult))
+                .Single();
+            gmi = gmi.MakeGenericMethod(type);
+            return _ => (Task)gmi.Invoke(null, new object[] { _ });
         }
 
         private string RemoveQuotes(string str)

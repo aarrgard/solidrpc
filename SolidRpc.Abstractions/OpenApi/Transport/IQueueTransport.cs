@@ -1,4 +1,6 @@
-﻿namespace SolidRpc.Abstractions.OpenApi.Transport
+﻿using System.Linq;
+
+namespace SolidRpc.Abstractions.OpenApi.Transport
 {
     /// <summary>
     /// Represents the settings for the queue transport

@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace SolidRpc.OpenApi.AzQueue
 {
@@ -13,6 +14,14 @@ namespace SolidRpc.OpenApi.AzQueue
         /// <param name="connectionString"></param>
         /// <param name="queueName"></param>
         /// <returns></returns>
-        CloudQueue GetQueueClient(string connectionName, string queueName);
+        CloudQueue GetCloudQueue(string connectionName, string queueName);
+
+        /// <summary>
+        /// Returns the cloud table
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <param name="queueName"></param>
+        /// <returns></returns>
+        CloudTable GetCloudTable(string connectionName);
     }
 }

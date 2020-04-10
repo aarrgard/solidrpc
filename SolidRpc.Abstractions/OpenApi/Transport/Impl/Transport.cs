@@ -8,8 +8,13 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
     /// <summary>
     /// Base type for the transports
     /// </summary>
-    public class Transport : ITransport
+    public abstract class Transport : ITransport
     {
+        /// <summary>
+        /// Returns the operation address
+        /// </summary>
+        public abstract Uri OperationAddress { get; }
+
         /// <summary>
         /// Method that can be overridden to configure a transport.
         /// </summary>

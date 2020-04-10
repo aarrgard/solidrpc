@@ -153,6 +153,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public string InboundHandler { get; }
 
         /// <summary>
+        /// The operation address should be the same as in open api spec.
+        /// </summary>
+        public override Uri OperationAddress => null;
+
+        /// <summary>
         /// Sets the inbound handler
         /// </summary>
         /// <param name="inboundHandler"></param>

@@ -30,7 +30,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
-                    conf.SetQueueTransport<QueueInvocationHandler>("AzureWebJobsStorage");
+                    conf.SetQueueTransport<AzQueueHandler>("AzureWebJobsStorage");
                     conf.SetQueueTransportInboundHandler("azfunctions");
                 }
 

@@ -18,11 +18,6 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         string Path { get; }
 
         /// <summary>
-        /// The address where to send/receive data for the method.
-        /// </summary>
-        Uri OperationAddress { get; }
-
-        /// <summary>
         /// The method to transform the Uri. This delegate is invoked to determine
         /// the base Uri for the service. Supplied uri is the one obtained from
         /// the openapi config.
@@ -35,11 +30,6 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         /// <param name="methodAddressTransformer"></param>
         /// <returns></returns>
         IHttpTransport SetMethodAddressTransformer(MethodAddressTransformer methodAddressTransformer);
-
-        /// <summary>
-        /// The http headers to add to the invocations
-        /// </summary>
-        MethodHeadersTransformer MethodHeadersTransformer { get; }
 
         /// <summary>
         /// 
