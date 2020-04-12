@@ -32,7 +32,6 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             IServiceProvider serviceProvider,
             IConfiguration configuration)
         {
-            HostId = Guid.NewGuid();
             Started = DateTimeOffset.Now;
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(configuration));
@@ -50,9 +49,8 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         protected ILogger Logger { get; }
         protected IServiceProvider ServiceProvider { get; }
         protected IConfiguration Configuration { get; }
-        protected Guid HostId { get; }
-        protected DateTimeOffset Started { get; }
         protected ISolidRpcApplication SolidRpcApplication { get; }
+        protected DateTimeOffset Started { get; }
 
         protected ConcurrentDictionary<Guid, Task> HostChecks { get; }
         protected IEnumerable<ISolidRpcHostStore> HostStores { get; }
@@ -67,7 +65,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
             if (Logger.IsEnabled(LogLevel.Information))
             {
-                Logger.LogInformation("Registering host " + HostId);
+                Logger.LogInformation("Registering host " + SolidRpcApplication.HostId);
             }
 
             //
@@ -134,7 +132,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <returns></returns>
         public Task<Guid> GetHostId(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Task.FromResult(HostId);
+            return Task.FromResult(SolidRpcApplication.HostId);
         }
 
         /// <summary>
@@ -146,7 +144,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         {
             return Task.FromResult(new SolidRpcHostInstance()
             {
-                HostId = HostId,
+                HostId = SolidRpcApplication.HostId,
                 Started = Started,
                 LastAlive = DateTimeOffset.Now,
                 HttpCookies = HttpCookies

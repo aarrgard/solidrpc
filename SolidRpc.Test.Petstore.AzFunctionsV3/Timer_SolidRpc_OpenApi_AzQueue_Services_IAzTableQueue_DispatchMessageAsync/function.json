@@ -1,0 +1,27 @@
+{
+  "generatedBy": "SolidRpc.OpenApi.AzFunctions-1.0.0.0",
+  "bindings": [
+    {
+      "name": "myTimer",
+      "direction": "in",
+      "type": "timerTrigger",
+      "schedule": "0 * * * * *"
+    },
+    {
+      "name": "serviceProvider",
+      "type": "inject"
+    },
+    {
+      "name": "serviceType",
+      "type": "constant",
+      "value": "SolidRpc.OpenApi.AzQueue.Services.IAzTableQueue"
+    },
+    {
+      "name": "methodName",
+      "type": "constant",
+      "value": "DispatchMessageAsync"
+    }
+  ],
+  "scriptFile": "../bin/SolidRpc.OpenApi.AzFunctionsV2Extension.dll",
+  "entryPoint": "SolidRpc.OpenApi.AzFunctionsV2.TimerFunction.Run"
+}

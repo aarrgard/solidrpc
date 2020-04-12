@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -17,18 +18,16 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
         private static ConcurrentDictionary<Type, Func<SolidRpcHostInstance,MethodInfo,object[],object>> Invokers = new ConcurrentDictionary<Type, Func<SolidRpcHostInstance, MethodInfo, object[], object>>();
-        public Invoker(ILogger<Invoker<T>> logger, IHandler handler, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider)
+        public Invoker(ILogger<Invoker<T>> logger, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             ServiceProvider = serviceProvider;
-            Handler = handler;
         }
 
         protected ILogger Logger { get; }
         protected IMethodBinderStore MethodBinderStore { get; }
         protected IServiceProvider ServiceProvider { get; }
-        private IHandler Handler { get; }
 
         public IMethodBinding GetMethodBinding(MethodInfo mi)
         {
@@ -118,12 +117,26 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         protected virtual Task<TRes> InvokeMethodAsync<TRes>(SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
-            return Handler.InvokeAsync<TRes>(mi, args);
+            return GetHandler(mi).InvokeAsync<TRes>(mi, args);
         }
 
         protected virtual Task<object> InvokeMethodAsync(SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
         {
-            return Handler.InvokeAsync<object>(mi, args);
+            return GetHandler(mi).InvokeAsync<object>(mi, args);
         }
+
+        private IHandler GetHandler(MethodInfo mi)
+        {
+            var binding = GetMethodBinding(mi);
+            var handlers = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>();
+            var handler = FilterHandlers(handlers, binding);
+            if(handler == null)
+            {
+                throw new Exception("Cannot find handler for method.");
+            }
+            return handler;
+        }
+
+        protected abstract IHandler FilterHandlers(IEnumerable<IHandler> handlers, IMethodBinding binding);
     }
 }

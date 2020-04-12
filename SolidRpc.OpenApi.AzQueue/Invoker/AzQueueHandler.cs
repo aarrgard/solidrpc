@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.Storage.Queue;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
@@ -11,7 +12,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(AzQueueHandler), typeof(AzQueueHandler))]
+[assembly: SolidRpcService(typeof(IHandler), typeof(AzQueueHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>

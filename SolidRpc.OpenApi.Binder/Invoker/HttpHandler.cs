@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
@@ -13,19 +15,19 @@ using System.Threading;
 using System.Threading.Tasks;
 
 [assembly: SolidRpcService(typeof(HttpHandler), typeof(HttpHandler))]
+[assembly: SolidRpcService(typeof(IHandler), typeof(HttpHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     public class HttpHandler : Handler
     {
-        public HttpHandler(ILogger<HttpHandler> logger, IServiceProvider serviceProvider, IHttpClientFactory httpClientFactory)
+        public HttpHandler(ILogger<HttpHandler> logger, IServiceProvider serviceProvider)
             :base(logger, serviceProvider)
         {
             Logger = logger;
-            HttpClientFactory = httpClientFactory;
         }
 
         public ILogger Logger { get; }
-        public IHttpClientFactory HttpClientFactory { get; }
+        public IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
         public override ITransport GetTransport(IEnumerable<ITransport> transports)
         {

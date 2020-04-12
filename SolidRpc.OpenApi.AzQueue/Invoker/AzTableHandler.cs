@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
@@ -13,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-[assembly: SolidRpcService(typeof(AzTableHandler), typeof(AzTableHandler))]
+[assembly: SolidRpcService(typeof(IHandler), typeof(AzTableHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>
@@ -38,7 +39,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, CancellationToken cancellationToken)
         {
-            var msg = new TableMessageEntry(transport.QueueName, message);
+            var msg = new TableMessageEntity(transport.QueueName, 5, message);
             var tc = CloudQueueStore.GetCloudTable(transport.ConnectionName);
             await tc.ExecuteAsync(TableOperation.Insert(msg), TableRequestOptions, OperationContext, cancellationToken);
             if (Logger.IsEnabled(LogLevel.Trace))

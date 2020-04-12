@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.WindowsAzure.Storage.Table;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -25,6 +26,7 @@ namespace SolidRpc.OpenApi.AzQueue
     /// </summary>
     public class MethodBindingHandler : IMethodBindingHandler
     {
+        public const string AzQueueTableType = "AzTable";
         public const string AzQueueQueueType = "AzQueue";
         public const string GenericInboundHandler = "generic";
 
@@ -51,8 +53,9 @@ namespace SolidRpc.OpenApi.AzQueue
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
 
-        private Microsoft.WindowsAzure.Storage.Queue.QueueRequestOptions QueueRequestOptions => new Microsoft.WindowsAzure.Storage.Queue.QueueRequestOptions();
-        private Microsoft.WindowsAzure.Storage.OperationContext OperationContext => new Microsoft.WindowsAzure.Storage.OperationContext();
+        private QueueRequestOptions QueueRequestOptions => new QueueRequestOptions();
+        private OperationContext OperationContext => new OperationContext();
+        private TableRequestOptions TableRequestOptions => new TableRequestOptions();
 
         /// <summary>
         /// Invoked when a binding has been created. If there is a Queue transport
@@ -68,6 +71,15 @@ namespace SolidRpc.OpenApi.AzQueue
                 {
                     Logger.LogTrace($"No queue transport configured for binding {binding.OperationId} - cannot configure queue");
                 }
+                return;
+            }
+            if (string.Equals(queueTransport.QueueType, AzQueueTableType, StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace($"Queue type({queueTransport.QueueType}) is a {AzQueueTableType} for binding {binding.OperationId} - setting up table.");
+                }
+                SolidRpcApplication.AddStartupTask(SetupTable(binding, queueTransport.ConnectionName, queueTransport.QueueName));
                 return;
             }
             if (!string.Equals(queueTransport.QueueType, AzQueueQueueType, StringComparison.InvariantCultureIgnoreCase))
@@ -87,6 +99,12 @@ namespace SolidRpc.OpenApi.AzQueue
                 }
             }
             SolidRpcApplication.AddStartupTask(SetupQueue(binding, queueTransport.ConnectionName, queueTransport.QueueName, startReceiver));
+        }
+
+        private async Task SetupTable(IMethodBinding binding, string connectionName, string queueName)
+        {
+            var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
+            await cloudTable.CreateIfNotExistsAsync(TableRequestOptions, OperationContext, SolidRpcApplication.ShutdownToken);
         }
 
         /// <summary>

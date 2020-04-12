@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,11 +16,14 @@ namespace SolidRpc.Abstractions.Services
     {
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private IList<Task> _startupTasks = new List<Task>();
+        private Guid _hostId = Guid.NewGuid();
 
         /// <summary>
         /// Returns the shutdown token
         /// </summary>
         public CancellationToken ShutdownToken => _cancellationTokenSource.Token;
+
+        public Guid HostId => _hostId;
 
         /// <summary>
         /// Adds a startup task

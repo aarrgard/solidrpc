@@ -6,6 +6,7 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
+using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using SolidRpc.Test.Petstore.AzFunctionsV3;
@@ -24,14 +25,15 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
 
+            services.AddAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
+
             services.AddSolidRpcBindings(typeof(ITestInterface).Assembly, typeof(TestImplementation).Assembly, conf =>
             {
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
 
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
-                    conf.SetQueueTransport<AzQueueHandler>("AzureWebJobsStorage");
-                    conf.SetQueueTransportInboundHandler("azfunctions");
+                    conf.SetQueueTransport<AzTableHandler>("AzureWebJobsStorage");
                 }
 
                 return ConfigureAzureFunction(conf);
@@ -44,6 +46,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
+            services.AddAzFunctionTimer<IAzTableQueue>(o => o.DispatchMessageAsync(CancellationToken.None), "0 * * * * *");
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {

@@ -4,6 +4,7 @@ using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -12,7 +13,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(LocalHandler), typeof(LocalHandler))]
+[assembly: SolidRpcService(typeof(IHandler), typeof(LocalHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     public class LocalHandler : Handler

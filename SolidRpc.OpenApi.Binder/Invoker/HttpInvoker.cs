@@ -7,6 +7,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -23,11 +24,15 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     {
         public HttpInvoker(
             ILogger<Invoker<T>> logger, 
-            HttpHandler handler, 
             IMethodBinderStore methodBinderStore, 
             IServiceProvider serviceProvider) 
-            : base(logger, handler, methodBinderStore, serviceProvider)
+            : base(logger, methodBinderStore, serviceProvider)
         {
+        }
+
+        protected override IHandler FilterHandlers(IEnumerable<IHandler> handlers, IMethodBinding binding)
+        {
+            return handlers.OfType<HttpHandler>().FirstOrDefault();
         }
 
         public Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true)

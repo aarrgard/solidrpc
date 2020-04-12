@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
+using System.Linq;
 
 [assembly: SolidRpcService(typeof(ILocalInvoker<>), typeof(LocalInvoker<>), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.Binder.Invoker
@@ -22,11 +18,16 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     {
         public LocalInvoker(
             ILogger<Invoker<T>> logger, 
-            LocalHandler handler,
             IMethodBinderStore methodBinderStore, 
             IServiceProvider serviceProvider) 
-            : base(logger, handler, methodBinderStore, serviceProvider)
+            : base(logger, methodBinderStore, serviceProvider)
         {
+        }
+
+
+        protected override IHandler FilterHandlers(IEnumerable<IHandler> handlers, IMethodBinding binding)
+        {
+            return handlers.OfType<LocalHandler>().FirstOrDefault();
         }
     }
 }

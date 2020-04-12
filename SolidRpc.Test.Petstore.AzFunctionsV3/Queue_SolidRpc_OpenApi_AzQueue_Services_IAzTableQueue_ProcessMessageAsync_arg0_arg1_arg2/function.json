@@ -5,7 +5,7 @@
       "name": "message",
       "direction": "in",
       "type": "queueTrigger",
-      "queueName": "solidrpc-test-petstore-azfunctionsv3-itestinterface-myfunc-arg",
+      "queueName": "s8c-o7i-a7e-s8s-iaztablequeue-processmessageasync-arg-arg-arg",
       "connection": "AzureWebJobsStorage"
     },
     {

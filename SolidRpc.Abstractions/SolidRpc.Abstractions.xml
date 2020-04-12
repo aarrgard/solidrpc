@@ -1456,6 +1456,11 @@
             Implements some basic features of the application
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.HostId">
+            <summary>
+            The host id
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.ShutdownToken">
             <summary>
             Returns a token that will be cancelled when the application shuts down.

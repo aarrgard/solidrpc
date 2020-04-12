@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.Services
@@ -8,6 +9,11 @@ namespace SolidRpc.Abstractions.Services
     /// </summary>
     public interface ISolidRpcApplication
     {
+        /// <summary>
+        /// The host id
+        /// </summary>
+        Guid HostId { get; }
+
         /// <summary>
         /// Returns a token that will be cancelled when the application shuts down.
         /// </summary>
