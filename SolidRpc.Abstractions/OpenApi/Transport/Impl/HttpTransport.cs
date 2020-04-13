@@ -13,6 +13,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         private Uri _operationAddress;
 
         public HttpTransport(MethodAddressTransformer methodAddressTransformer, MethodHeadersTransformer methodHeadersTransformer)
+            : base("Http")
         {
             MethodAddressTransformer = methodAddressTransformer;
             MethodHeadersTransformer = methodHeadersTransformer;

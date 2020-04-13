@@ -33,7 +33,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         private ICloudQueueStore CloudQueueStore { get; }
 
-        protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
         {
             var msg = new CloudQueueMessage(message);
             var qc = CloudQueueStore.GetCloudQueue(transport.ConnectionName, transport.QueueName);

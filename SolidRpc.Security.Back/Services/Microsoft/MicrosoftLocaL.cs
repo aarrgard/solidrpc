@@ -13,8 +13,8 @@ namespace SolidRpc.Security.Back.Services.Microsoft
     {
         public MicrosoftLocal(
             MicrosoftOptions microsoftOptions, 
-            IHttpInvoker<IMicrosoftLocal> httpInvokerLocal,
-            IHttpInvoker<IMicrosoftRemote> httpInvokerRemote)
+            IInvoker<IMicrosoftLocal> httpInvokerLocal,
+            IInvoker<IMicrosoftRemote> httpInvokerRemote)
         {
             MicrosoftOptions = microsoftOptions;
             HttpInvokerLocal = httpInvokerLocal;
@@ -22,8 +22,8 @@ namespace SolidRpc.Security.Back.Services.Microsoft
         }
         public override string ProviderName => "Microsoft";
         private MicrosoftOptions MicrosoftOptions { get; }
-        private IHttpInvoker<IMicrosoftLocal> HttpInvokerLocal { get; }
-        private IHttpInvoker<IMicrosoftRemote> HttpInvokerRemote { get; }
+        private IInvoker<IMicrosoftLocal> HttpInvokerLocal { get; }
+        private IInvoker<IMicrosoftRemote> HttpInvokerRemote { get; }
         public string ButtonHtml => $"<img src=\"{ProviderName}\" alt=\"{ProviderName}\"/>";
 
         public override async Task<LoginProvider> LoginProvider(CancellationToken cancellationToken = default(CancellationToken))

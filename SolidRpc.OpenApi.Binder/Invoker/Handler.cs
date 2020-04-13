@@ -33,16 +33,21 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         protected IServiceProvider ServiceProvider { get; }
         protected IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
 
-        public abstract ITransport GetTransport(IEnumerable<ITransport> transports);
+        public string TransportType => GetType().Name.Substring(0, GetType().Name.Length - "Handler".Length);
 
-        public virtual Task<TResp> InvokeAsync<TResp>(MethodInfo mi, object[] args)
+        public virtual Task<TResp> InvokeAsync<TResp>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
             var methodBinding = MethodBinderStore.GetMethodBinding(mi);
-            return InvokeAsync<TResp>(methodBinding, GetTransport(methodBinding.Transports), args);
+            var transport = methodBinding.Transports.FirstOrDefault(o => o.TransportType == TransportType);
+            if (transport == null) throw new Exception("Transport not configured for method."); 
+            return InvokeAsync<TResp>(methodBinding, transport, args, invocationOptions);
         }
 
-        public virtual async Task<TResp> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, object[] args)
+        public virtual async Task<TResp> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, object[] args, InvocationOptions invocationOptions)
         {
+            if (methodBinding == null) throw new ArgumentNullException(nameof(methodBinding));
+            if (transport == null) throw new ArgumentNullException(nameof(transport));
+
             var httpReq = new SolidHttpRequest();
             await methodBinding.BindArgumentsAsync(httpReq, args, transport.OperationAddress);
 
@@ -50,13 +55,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             //AddTargetInstance(methodBinding, httpReq);
 
             var cancellationToken = args.OfType<CancellationToken>().FirstOrDefault();
-            var httpResp = await InvokeAsync<TResp>(methodBinding, transport, httpReq, cancellationToken);
+            var httpResp = await InvokeAsync<TResp>(methodBinding, transport, httpReq, invocationOptions, cancellationToken);
 
             var resp = methodBinding.ExtractResponse<TResp>(httpResp);
             return resp;
         }
 
-        protected abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, CancellationToken cancellationToken);
+        protected abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
 
         protected void AddSecurityKey(IMethodBinding methodBinding, IHttpRequest httpReq)
         {

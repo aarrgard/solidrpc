@@ -9,6 +9,20 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
     public abstract class Transport : ITransport
     {
         /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="transportType"></param>
+        public Transport(string transportType)
+        {
+            TransportType = transportType ?? throw new ArgumentNullException(nameof(transportType));
+        }
+
+        /// <summary>
+        /// The transport type.
+        /// </summary>
+        public string TransportType { get; }
+
+        /// <summary>
         /// Returns the operation address
         /// </summary>
         public abstract Uri OperationAddress { get; }

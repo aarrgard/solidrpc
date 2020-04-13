@@ -11,15 +11,15 @@ namespace SolidRpc.Security.Back.Services.Facebook
 {
     public class FacebookLocal : LoginProviderBase, IFacebookLocal
     {
-        public FacebookLocal(FacebookOptions facebookOptions, IHttpInvoker<IFacebookLocal> httpInvoker)
+        public FacebookLocal(FacebookOptions facebookOptions, IInvoker<IFacebookLocal> invoker)
         {
             FacebookOptions = facebookOptions;
-            HttpInvoker = httpInvoker;
+            Invoker = invoker;
         }
 
         public FacebookOptions FacebookOptions { get; }
 
-        public IHttpInvoker<IFacebookLocal> HttpInvoker { get; }
+        public IInvoker<IFacebookLocal> Invoker { get; }
 
         public override string ProviderName => "Facebook";
 
@@ -30,7 +30,7 @@ namespace SolidRpc.Security.Back.Services.Facebook
             return new LoginProvider() {
                 Name = ProviderName,
                 Meta = new LoginProviderMeta[0],
-                Script = new[] { await HttpInvoker.GetUriAsync(o => o.LoginScript(cancellationToken)) },
+                Script = new[] { await Invoker.GetUriAsync(o => o.LoginScript(cancellationToken)) },
                 Status = "NotLoggedIn",
                 ButtonHtml = ButtonHtml
             };
@@ -48,8 +48,8 @@ namespace SolidRpc.Security.Back.Services.Facebook
 
         public async Task<WebContent> LoginScript(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var loggedInPostback = (await HttpInvoker.GetUriAsync(o => o.LoggedIn("{accessToken}", cancellationToken))).ToString();
-            var logoutPostback = (await HttpInvoker.GetUriAsync(o => o.LoggedOut("{accessToken}", cancellationToken))).ToString();
+            var loggedInPostback = (await Invoker.GetUriAsync(o => o.LoggedIn("{accessToken}", cancellationToken))).ToString();
+            var logoutPostback = (await Invoker.GetUriAsync(o => o.LoggedOut("{accessToken}", cancellationToken))).ToString();
             return await GetManifestResourceAsWebContent("FacebookLocal.LoginScript.js", new Dictionary<string, string>()
             {
                 { "{your-app-id}", FacebookOptions.AppId },

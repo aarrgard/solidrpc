@@ -26,12 +26,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public ILogger Logger { get; }
 
-        public override ITransport GetTransport(IEnumerable<ITransport> transports)
-        {
-            return null;
-        }
 
-        public override async Task<TRes> InvokeAsync<TRes>(MethodInfo mi, object[] args)
+        public override async Task<TRes> InvokeAsync<TRes>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
             var service = ServiceProvider.GetService(mi.DeclaringType);
             if (service == null)
@@ -65,7 +61,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             }
             return (TRes)proxy.Invoke(mi, args, invocationValues);
         }
-        protected override Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, CancellationToken cancellationToken)
+        protected override Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

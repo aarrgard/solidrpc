@@ -8,6 +8,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
@@ -22,14 +23,14 @@ namespace SolidRpc.OpenApi.AzQueue.Services
 {
     public class AzTableQueue : IAzTableQueue
     {
-        private static ConcurrentDictionary<string, SemaphoreSlim> Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+         private static ConcurrentDictionary<string, SemaphoreSlim> Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
         public AzTableQueue(
             ILogger<AzTableQueue> logger,
             IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
-            IQueueInvoker<IAzTableQueue> queueInvoker,
+            IInvoker<IAzTableQueue> invoker,
             IServiceProvider serviceProvider,
             IMethodInvoker methodInvoker,
             ISolidRpcApplication solidRpcApplication)
@@ -38,7 +39,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             MethodBinderStore = methodBinderStore;
             SerializerFactory = serializerFactory;
             CloudQueueStore = cloudQueueStore;
-            QueueInvoker = queueInvoker;
+            Invoker = invoker;
             ServiceProvider = serviceProvider;
             MethodInvoker = methodInvoker;
             SolidRpcApplication = solidRpcApplication;
@@ -48,7 +49,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private IMethodBinderStore MethodBinderStore { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ICloudQueueStore CloudQueueStore { get; }
-        private IQueueInvoker<IAzTableQueue> QueueInvoker { get; }
+        private IInvoker<IAzTableQueue> Invoker { get; }
         private IServiceProvider ServiceProvider { get; }
         private IMethodInvoker MethodInvoker { get; }
         public ISolidRpcApplication SolidRpcApplication { get; }
@@ -184,7 +185,10 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
 
             // message locked and ready - add queue message
-            await QueueInvoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken));
+            await Invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), new InvocationOptions()
+            {
+                TransportType = AzTableHandler.TransportType
+            });
 
             // try to dispatch another message
             return true;
@@ -314,12 +318,16 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
         }
 
-        public Task SendTestMessageAync(int messageCount = 1, CancellationToken cancellationToken = default)
+        public Task SendTestMessageAync(int messageCount = 1, int messagePriority = 5, CancellationToken cancellationToken = default)
         {
             var tasks = new List<Task>();
             for(int i = 0; i < messageCount; i++)
             {
-                tasks.Add(QueueInvoker.InvokeAsync(o => o.ProcessTestMessage(cancellationToken)));
+                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(cancellationToken), new InvocationOptions()
+                {
+                    TransportType = AzTableHandler.TransportType,
+                    Priority = messagePriority
+                })); ;
             }
             return Task.WhenAll(tasks);
         }

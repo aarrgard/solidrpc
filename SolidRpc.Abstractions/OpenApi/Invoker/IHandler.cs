@@ -1,6 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -12,18 +11,19 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// </summary>
     public interface IHandler
     {
-        /// <summary>
-        /// Returns the transport that the handler uses
-        /// </summary>
-        ITransport GetTransport(IEnumerable<ITransport> transports);
+        string TransportType { get; }
 
         /// <summary>
         /// Invokes the supplied method
         /// </summary>
         /// <param name="mi"></param>
         /// <param name="args"></param>
+        /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        Task<TRes> InvokeAsync<TRes>(MethodInfo mi, object[] args);
+        Task<TRes> InvokeAsync<TRes>(
+            MethodInfo mi, 
+            object[] args, 
+            InvocationOptions invocationOptions);
 
         /// <summary>
         /// Sends the httpRequest representing the call.
@@ -32,10 +32,12 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="methodBinding"></param>
         /// <param name="transport"></param>
         /// <param name="args"></param>
+        /// <param name="invocationOptions"></param>
         /// <returns></returns>
         Task<T> InvokeAsync<T>(
             IMethodBinding methodBinding, 
             ITransport transport, 
-            object[] args);
+            object[] args,
+            InvocationOptions invocationOptions);
     }
 }

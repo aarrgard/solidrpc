@@ -38,7 +38,7 @@ namespace SolidRpc.Tests.Security
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
-            var httpInvoker = sp.GetRequiredService<IHttpInvoker<IMicrosoftRemote>>();
+            var httpInvoker = sp.GetRequiredService<IInvoker<IMicrosoftRemote>>();
             var clientId = Guid.Parse("615993a8-66b3-40ce-a165-96a81edd3677");
             var response_type = new[] { "code" };
             var nounce = "234324";

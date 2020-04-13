@@ -46,9 +46,9 @@ namespace SolidRpc.OpenApi.AzFunctionsV1
                     args[i] = ResolveArgument(serviceProvider, parameters[i].ParameterType, cancellationToken);
                 }
 
-                var invokerType = typeof(ILocalInvoker<>).MakeGenericType(methodInfo.DeclaringType);
+                var invokerType = typeof(IInvoker<>).MakeGenericType(methodInfo.DeclaringType);
                 var localInvoker = (IInvoker)serviceProvider.GetService(invokerType);
-                var res = await localInvoker.InvokeAsync(null, methodInfo, args);
+                var res = await localInvoker.InvokeAsync(methodInfo, args, new InvocationOptions() { TransportType = "Local" });
                 var resTask = res as Task;
                 if (resTask != null)
                 {

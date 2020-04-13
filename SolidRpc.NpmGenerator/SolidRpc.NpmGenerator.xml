@@ -105,7 +105,7 @@
             The npm generator implementation.
             </summary>
         </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.NpmGenerator.Services.NpmGenerator},System.Net.Http.IHttpClientFactory,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.NpmGenerator.InternalServices.ICodeNamespaceGenerator,SolidRpc.NpmGenerator.InternalServices.ITypescriptGenerator,SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker{SolidRpc.NpmGenerator.Services.INpmGenerator},System.IServiceProvider)">
+        <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.NpmGenerator.Services.NpmGenerator},System.Net.Http.IHttpClientFactory,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.NpmGenerator.InternalServices.ICodeNamespaceGenerator,SolidRpc.NpmGenerator.InternalServices.ITypescriptGenerator,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.NpmGenerator.Services.INpmGenerator},System.IServiceProvider)">
             <summary>
             Constructs a new instance
             </summary>

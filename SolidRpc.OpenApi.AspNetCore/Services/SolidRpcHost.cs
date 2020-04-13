@@ -169,8 +169,8 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <returns></returns>
         public Task<SolidRpcHostInstance> CheckHost(SolidRpcHostInstance hostInstance, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var httpInvoker = ServiceProvider.GetRequiredService<IHttpInvoker<ISolidRpcHost>>();
-            return httpInvoker.InvokeAsync(o => o.GetHostInstance(cancellationToken), hostInstance);
+            var httpInvoker = ServiceProvider.GetRequiredService<IInvoker<ISolidRpcHost>>();
+            return httpInvoker.InvokeAsync(o => o.GetHostInstance(cancellationToken));
 
         }
     }

@@ -599,20 +599,16 @@
             the actual invokation
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.GetTransport(System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport})">
-            <summary>
-            Returns the transport that the handler uses
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(System.Reflection.MethodInfo,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Invokes the supplied method
             </summary>
             <param name="mi"></param>
             <param name="args"></param>
+            <param name="invocationOptions"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[])">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Sends the httpRequest representing the call.
             </summary>
@@ -620,28 +616,7 @@
             <param name="methodBinding"></param>
             <param name="transport"></param>
             <param name="args"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1">
-            <summary>
-            Uses the http stack to invoke the call
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1.GetUriAsync(System.Linq.Expressions.Expression{System.Action{`0}},System.Boolean)">
-            <summary>
-            Returns the uri where we invoke the specified method.
-            </summary>
-            <param name="action"></param>
-            <param name="includeQueryString"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker`1.GetUriAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean)">
-            <summary>
-            Returns the uri where we invoke the specified method.
-            </summary>
-            <param name="func"></param>
-            <param name="includeQueryString"></param>
+            <param name="invocationOptions"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker">
@@ -656,11 +631,11 @@
             <param name="methodInfo"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(SolidRpc.Abstractions.Types.SolidRpcHostInstance,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object},SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Invokes the specified method with supplied arguments.
             </summary>
-            <param name="targetInstance"></param>
+            <param name="invocationOptions"></param>
             <param name="methodInfo"></param>
             <param name="args"></param>
             <returns></returns>
@@ -685,38 +660,77 @@
             <param name="func"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}},SolidRpc.Abstractions.Types.SolidRpcHostInstance)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.GetUriAsync(System.Linq.Expressions.Expression{System.Action{`0}},System.Boolean)">
+            <summary>
+            Returns the uri where we invoke the specified method.
+            </summary>
+            <param name="action"></param>
+            <param name="includeQueryString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.GetUriAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Boolean)">
+            <summary>
+            Returns the uri where we invoke the specified method.
+            </summary>
+            <param name="func"></param>
+            <param name="includeQueryString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}},SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Invokes an action
             </summary>
             <param name="action"></param>
-            <param name="targetInstance"></param>
+            <param name="invocationOptions"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},SolidRpc.Abstractions.Types.SolidRpcHostInstance)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Executes a function
             </summary>
             <param name="func"></param>
-            <param name="targetInstance"></param>
+            <param name="invocationOptions"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.ILocalInvoker`1">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions">
             <summary>
-            Uses the configured queues to invoke a call
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IQueueInvoker">
-            <summary>
-            Represents a queue invoker
+            Contains additional invocation options.
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IQueueInvoker`1">
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MessagePriorityHigh">
             <summary>
-            Uses the configured queues to invoke a call
+            The high message prio
             </summary>
-            <typeparam name="T"></typeparam>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MessagePriorityNormal">
+            <summary>
+            The normal message prio
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MessagePriorityLow">
+            <summary>
+            The low message prio
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Http">
+            <summary>
+            The invocation options that uses the http protocol
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Local">
+            <summary>
+            The invocation options that uses the local implementation.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TransportType">
+            <summary>
+            The preferred transport type. Defaults to "Http"
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Priority">
+            <summary>
+            The invocation priority.
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation">
             <summary>
@@ -1159,6 +1173,17 @@
             Base type for the transports
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.#ctor(System.String)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="transportType"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.TransportType">
+            <summary>
+            The transport type.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.OperationAddress">
             <summary>
             Returns the operation address
@@ -1229,6 +1254,11 @@
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.ITransport">
             <summary>
             Base definitions for a transport
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.TransportType">
+            <summary>
+            The transport type. 
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.OperationAddress">
@@ -1458,7 +1488,7 @@
         </member>
         <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.HostId">
             <summary>
-            The host id
+            The host id - unique for each IoC container setup.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.ShutdownToken">

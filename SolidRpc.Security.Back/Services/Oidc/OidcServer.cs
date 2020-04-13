@@ -20,7 +20,7 @@ namespace SolidRpc.Security.Back.Services
     {
         public OidcServer(
             IServiceProvider serviceProvider, 
-            IHttpInvoker<IOidcServer> httpInvoker,
+            IInvoker<IOidcServer> httpInvoker,
             ISolidRpcContentHandler contentHandler,
             IAccessTokenFactory tokenFactory)
         {
@@ -31,7 +31,7 @@ namespace SolidRpc.Security.Back.Services
         }
 
         private IServiceProvider ServiceProvider { get; }
-        private IHttpInvoker<IOidcServer> HttpInvoker { get; }
+        private IInvoker<IOidcServer> HttpInvoker { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
         private IAccessTokenFactory TokenFactory { get; }
 

@@ -55,8 +55,8 @@ namespace SolidRpc.Tests.Invoker
             sc.AddSolidRpcSingletonServices();
             sc.AddTransient<ITestInterface, TestImplementation>();
             var sp = sc.BuildServiceProvider();
-            var invoker = sp.GetRequiredService<ILocalInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+            var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
+            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None), InvocationOptions.Local);
             Assert.AreEqual(4711, result);
         }
 
@@ -81,8 +81,8 @@ namespace SolidRpc.Tests.Invoker
             });
 
             var sp = sc.BuildServiceProvider();
-            var invoker = sp.GetRequiredService<ILocalInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+            var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
+            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None), InvocationOptions.Local);
             Assert.AreEqual(4711, result);
         }
 
@@ -120,8 +120,8 @@ namespace SolidRpc.Tests.Invoker
                 // this is the way we want it.
             }
 
-            var invoker = sp.GetRequiredService<ILocalInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None));
+            var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
+            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None), new InvocationOptions() { TransportType = "Local" });
             Assert.AreEqual(4711, result);
         }
     }

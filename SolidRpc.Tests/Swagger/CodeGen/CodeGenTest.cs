@@ -197,7 +197,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 Assert.AreEqual(1, res);
 
                 var url = await ctx.ClientServiceProvider
-                    .GetRequiredService<IHttpInvoker<TwoOpsOneMeth.Services.ITwoOpsOneMeth>>()
+                    .GetRequiredService<IInvoker<TwoOpsOneMeth.Services.ITwoOpsOneMeth>>()
                     .GetUriAsync(o => o.TwoOpsOneMeth(4711, CancellationToken.None));
                 var httpClientFact = ctx.ClientServiceProvider
                     .GetRequiredService<IHttpClientFactory>();

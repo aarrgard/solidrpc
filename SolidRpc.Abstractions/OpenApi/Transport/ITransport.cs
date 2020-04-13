@@ -9,6 +9,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
     public interface ITransport
     {
         /// <summary>
+        /// The transport type. 
+        /// </summary>
+        string TransportType { get; }
+
+        /// <summary>
         /// The operation address
         /// </summary>
         Uri OperationAddress { get; }

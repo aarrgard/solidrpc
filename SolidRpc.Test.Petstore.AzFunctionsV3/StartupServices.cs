@@ -50,11 +50,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {
-                return await sp.GetRequiredService<IHttpInvoker<ISolidRpcContentHandler>>().GetUriAsync(o => o.GetContent("A*", CancellationToken.None));
+                return await sp.GetRequiredService<IInvoker<ISolidRpcContentHandler>>().GetUriAsync(o => o.GetContent("A*", CancellationToken.None));
             });
             services.GetSolidRpcContentStore().AddMapping("/", async sp =>
             {
-                return await sp.GetRequiredService<IHttpInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
+                return await sp.GetRequiredService<IInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
             }, true);
         }
 

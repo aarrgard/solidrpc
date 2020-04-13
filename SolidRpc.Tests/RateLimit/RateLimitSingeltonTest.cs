@@ -91,13 +91,13 @@ namespace SolidRpc.Tests.RateLimit
             sc.AddSolidRpcRateLimit();
             var sp = sc.BuildServiceProvider();
 
-            var rlinvoker = sp.GetRequiredService<IHttpInvoker<ISolidRpcRateLimit>>();
+            var rlinvoker = sp.GetRequiredService<IInvoker<ISolidRpcRateLimit>>();
             var mb = rlinvoker.GetMethodBinding(o => o.GetRateLimitSettingsAsync(CancellationToken.None));
             var opAddr = mb.Transports.OfType<IHttpTransport>().First().OperationAddress;
             Assert.AreEqual("http://test.test/test/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync", opAddr.ToString());
             Assert.AreEqual("B", mb.SecurityKey.Value.Value);
 
-            var rhinvoker = sp.GetRequiredService<IHttpInvoker<ISolidRpcHost>>();
+            var rhinvoker = sp.GetRequiredService<IInvoker<ISolidRpcHost>>();
             mb = rhinvoker.GetMethodBinding(o => o.IsAlive(CancellationToken.None));
             opAddr = mb.Transports.OfType<IHttpTransport>().First().OperationAddress;
             Assert.AreEqual("https://localhost/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive", opAddr.ToString());

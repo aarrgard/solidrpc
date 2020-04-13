@@ -187,7 +187,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 Assert.AreEqual("GET", res.Method);
 
                 var uri = await ctx.ClientServiceProvider
-                    .GetRequiredService<IHttpInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
+                    .GetRequiredService<IInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
                     .GetUriAsync(o => o.TestInvokeRequest(null, CancellationToken.None));
 
                 var httpClientFact = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
@@ -217,7 +217,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 // Null request
                 //
                 var nullRequestUri = await ctx.ClientServiceProvider
-                    .GetRequiredService<IHttpInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
+                    .GetRequiredService<IInvoker<HttpRequestArgs.Services.IHttpRequestArgs>>()
                     .GetUriAsync(o => o.ReturnNullRequest(CancellationToken.None));
 
                 var nullResp = await httpClient.GetAsync(nullRequestUri);
@@ -638,7 +638,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<Redirect.Services.IRedirect>();
 
-                var location = await ctx.ClientServiceProvider.GetRequiredService<IHttpInvoker<Redirect.Services.IRedirect>>().GetUriAsync(o => o.Redirected());
+                var location = await ctx.ClientServiceProvider.GetRequiredService<IInvoker<Redirect.Services.IRedirect>>().GetUriAsync(o => o.Redirected());
                 
                 //moq.Setup(o => o.Redirect(It.Is<Redirect.Types.Redirect>(a => CompareStructs(a, CreateRedirect())))).Returns(() => CreateRedirect());
                 moq.Setup(o => o.Redirect(It.IsAny<Redirect.Types.Redirect>())).Returns(() => CreateRedirect(location.ToString()));

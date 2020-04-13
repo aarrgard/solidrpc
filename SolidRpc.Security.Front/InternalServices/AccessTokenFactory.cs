@@ -23,14 +23,14 @@ namespace SolidRpc.Security.Front.InternalServices
         /// </summary>
         /// <param name="keyStore"></param>
         public AccessTokenFactory(
-            IHttpInvoker<IOidcServer> httpInvoker,
+            IInvoker<IOidcServer> invoker,
             IOpenIDKeyStore keyStore)
         {
-            HttpInvoker = httpInvoker;
+            Invoker = invoker;
             KeyStore = keyStore;
         }
 
-        private IHttpInvoker<IOidcServer> HttpInvoker { get; }
+        private IInvoker<IOidcServer> Invoker { get; }
         private IOpenIDKeyStore KeyStore { get; }
 
         public async Task<IAccessToken> CreateAccessToken(ClaimsIdentity claimsIdentity, CancellationToken cancellationToken)
@@ -62,7 +62,7 @@ namespace SolidRpc.Security.Front.InternalServices
             }
             else
             {
-                var issuer = (await HttpInvoker.GetUriAsync(o => o.OAuth2Discovery(cancellationToken))).ToString();
+                var issuer = (await Invoker.GetUriAsync(o => o.OAuth2Discovery(cancellationToken))).ToString();
                 issuer = issuer.Substring(0, issuer.IndexOf('/', "https://".Length));
                 _issuer = issuer;
                 return issuer;

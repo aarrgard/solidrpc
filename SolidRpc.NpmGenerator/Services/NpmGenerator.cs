@@ -40,7 +40,7 @@ namespace SolidRpc.NpmGenerator.Services
             IMethodBinderStore methodBinderStore,
             ICodeNamespaceGenerator codeNamespaceGenerator,
             ITypescriptGenerator typescriptGenerator,
-            IHttpInvoker<INpmGenerator> httpInvoker,
+            IInvoker<INpmGenerator> invoker,
             IServiceProvider serviceProvider)
         {
             Logger = logger;
@@ -48,7 +48,7 @@ namespace SolidRpc.NpmGenerator.Services
             CodeNamespaceGenerator = codeNamespaceGenerator;
             TypescriptGenerator = typescriptGenerator;
             HttpClientFactory = httpClientFactory;
-            HttpInvoker = httpInvoker;
+            this.Invoker = invoker;
             ServiceProvider = serviceProvider;
         }
 
@@ -57,7 +57,7 @@ namespace SolidRpc.NpmGenerator.Services
         private ICodeNamespaceGenerator CodeNamespaceGenerator { get; }
         private ITypescriptGenerator TypescriptGenerator { get; }
         private IHttpClientFactory HttpClientFactory { get; }
-        private IHttpInvoker<INpmGenerator> HttpInvoker { get; }
+        private IInvoker<INpmGenerator> Invoker { get; }
         private IServiceProvider ServiceProvider { get; }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace SolidRpc.NpmGenerator.Services
             };
             if(!string.Equals(name,"solidrpc", StringComparison.InvariantCultureIgnoreCase))
             {
-                var solidRpcNpmPackage = await HttpInvoker.GetUriAsync(o => o.CreateNpm("SolidRpc", cancellationToken));
+                var solidRpcNpmPackage = await Invoker.GetUriAsync(o => o.CreateNpm("SolidRpc", cancellationToken));
                 deps["solidrpc"] = solidRpcNpmPackage.ToString();
             }
             return new NpmPackageFile()

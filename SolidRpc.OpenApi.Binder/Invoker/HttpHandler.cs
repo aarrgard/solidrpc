@@ -29,12 +29,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public ILogger Logger { get; }
         public IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
-        public override ITransport GetTransport(IEnumerable<ITransport> transports)
-        {
-            return transports.OfType<IHttpTransport>().FirstOrDefault();
-        }
-
-        protected override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, CancellationToken cancellationToken)
+        protected override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             var httpTransport = (IHttpTransport)transport;
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;

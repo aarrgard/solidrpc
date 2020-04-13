@@ -54,14 +54,14 @@
             The swagger config
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.OpenApi.SwaggerUI.SwaggerOptions,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.Abstractions.OpenApi.Invoker.IHttpInvoker{SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI})">
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.#ctor(SolidRpc.OpenApi.SwaggerUI.SwaggerOptions,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI})">
             <summary>
             Constructs a new instance
             </summary>
             <param name="swaggerOptions"></param>
             <param name="methodBinderStore"></param>
             <param name="contentHandler"></param>
-            <param name="httpInvoker"></param>
+            <param name="invoker"></param>
         </member>
         <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.SwaggerUI.GetIndexHtml(System.Boolean,System.Threading.CancellationToken)">
             <summary>

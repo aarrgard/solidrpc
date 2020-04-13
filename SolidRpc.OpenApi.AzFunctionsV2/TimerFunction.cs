@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.AzFunctions;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,9 +46,9 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
                     args[i] = ResolveArgument(serviceProvider, parameters[i].ParameterType, cancellationToken);
                 }
 
-                var invokerType = typeof(ILocalInvoker<>).MakeGenericType(methodInfo.DeclaringType);
+                var invokerType = typeof(Invoker<>).MakeGenericType(methodInfo.DeclaringType);
                 var localInvoker = (IInvoker)serviceProvider.GetService(invokerType);
-                var res = await localInvoker.InvokeAsync(null, methodInfo, args);
+                var res = await localInvoker.InvokeAsync(methodInfo, args, new InvocationOptions() { TransportType = "Local" });
                 var resTask = res as Task;
                 if (resTask != null)
                 {

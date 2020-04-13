@@ -62,17 +62,25 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             switch(type)
             {
                 case "T:":
-                    var className = GetClassName(name);
-                    member = ClassDocumentation[className] = new CodeDocClass(this, className);
+                    var tClassName = GetClassName(name);
+                    member = ClassDocumentation[tClassName] = new CodeDocClass(this, tClassName);
                     break;
                 case "M:":
+                    var mClassName = GetClassName(name);
                     var methodName = GetMethodName(name);
-                    var methodClass = ClassDocumentation[GetClassName(name)];
+                    if(!ClassDocumentation.TryGetValue(mClassName, out CodeDocClass methodClass))
+                    {
+                        ClassDocumentation[mClassName] = methodClass = new CodeDocClass(this, mClassName);
+                    }
                     member = methodClass.MethodDocumentation[methodName] = new CodeDocMethod(methodClass, methodName);
                     break;
                 case "P:":
+                    var pClassName = GetClassName(name);
                     var propertyName = GetPropertyName(name);
-                    var propertyClass = ClassDocumentation[GetClassName(name)];
+                    if (!ClassDocumentation.TryGetValue(pClassName, out CodeDocClass propertyClass))
+                    {
+                        ClassDocumentation[pClassName] = propertyClass = new CodeDocClass(this, pClassName);
+                    }
                     member = propertyClass.PropertyDocumentation[propertyName] = new CodeDocProperty(propertyClass, propertyName);
                     break;
                 case "E:":

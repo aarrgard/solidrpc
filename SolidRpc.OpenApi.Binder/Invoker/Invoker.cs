@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,12 +14,13 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
+[assembly: SolidRpcService(typeof(IInvoker<>), typeof(Invoker<>), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
-    public abstract class Invoker<T> : IInvoker<T> where T:class
+    public class Invoker<T> : IInvoker<T> where T:class
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
-        private static ConcurrentDictionary<Type, Func<SolidRpcHostInstance,MethodInfo,object[],object>> Invokers = new ConcurrentDictionary<Type, Func<SolidRpcHostInstance, MethodInfo, object[], object>>();
+        private static ConcurrentDictionary<Type, Func<MethodInfo,object[], InvocationOptions, object>> Invokers = new ConcurrentDictionary<Type, Func<MethodInfo, object[], InvocationOptions, object>>();
         public Invoker(ILogger<Invoker<T>> logger, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider)
         {
             Logger = logger;
@@ -45,20 +48,50 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var (mi, _) = GetMethodInfo(func);
             return GetMethodBinding(mi);
         }
-        public Task InvokeAsync(Expression<Action<T>> action, SolidRpcHostInstance targetInstance)
+
+        public Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true)
         {
             var (mi, args) = GetMethodInfo(action);
-            return InvokeMethodAsync<object>(targetInstance, mi, args);
+            return GetUriAsync(mi, args, includeQueryString);
         }
 
-        public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, SolidRpcHostInstance targetInstance)
+        public Task<Uri> GetUriAsync<TRes>(Expression<Func<T, TRes>> func, bool includeQueryString = true)
         {
             var (mi, args) = GetMethodInfo(func);
-            var res = Invokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>)(targetInstance, mi, args);
+            return GetUriAsync(mi, args, includeQueryString);
+        }
+
+        private async Task<Uri> GetUriAsync(MethodInfo mi, object[] args, bool includeQueryString)
+        {
+            var methodBinding = GetMethodBinding(mi);
+            if (methodBinding == null)
+            {
+                throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");
+            }
+            var operationAddress = methodBinding.Transports
+                .Where(o => o.TransportType == "Http")
+                .Select(o => o.OperationAddress)
+                .FirstOrDefault();
+
+            var req = new SolidHttpRequest();
+            await methodBinding.BindArgumentsAsync(req, args, operationAddress);
+            return req.CreateUri(includeQueryString);
+        }
+
+        public Task InvokeAsync(Expression<Action<T>> action, InvocationOptions invocationOptions)
+        {
+            var (mi, args) = GetMethodInfo(action);
+            return InvokeMethodAsync<object>(mi, args, invocationOptions);
+        }
+
+        public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, InvocationOptions invocationOptions)
+        {
+            var (mi, args) = GetMethodInfo(func);
+            var res = Invokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>)(mi, args, invocationOptions);
             return (TResult)res;
         }
 
-        private Func<SolidRpcHostInstance, MethodInfo, object[], object> CreateInvoker<TResult>(Type t)
+        private Func<MethodInfo, object[], InvocationOptions , object> CreateInvoker<TResult>(Type t)
         {
             if(t.IsGenericType)
             {
@@ -70,17 +103,17 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                         .Where(o => o.IsGenericMethod)
                         .Single();
                     gmi = gmi.MakeGenericMethod(taskType);
-                    return (hi, mi, args) =>
+                    return (mi, args, opts) =>
                     {
-                        var taskRes = InvokeAsync<TResult>(hi, mi, args);
+                        var taskRes = InvokeAsync<TResult>(mi, args, opts);
                         var res = gmi.Invoke(this, new object[] { taskRes });
                         return res;
                     };
                 }
             }
-            return (hi, mi, args) =>
+            return (mi, args, opts) =>
             {
-                return InvokeAsync<TResult>(hi, mi, args).Result;
+                return InvokeAsync<TResult>(mi, args, opts).Result;
             };
         }
         
@@ -89,14 +122,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return await await result;
         }
 
-        public Task<TResult> InvokeAsync<TResult>(SolidRpcHostInstance targetInstance, MethodInfo mi, IEnumerable<object> args)
+        public Task<TResult> InvokeAsync<TResult>(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
         {
-            return InvokeMethodAsync<TResult>(targetInstance, mi, args.ToArray());
+            return InvokeMethodAsync<TResult>(mi, args.ToArray(), invocationOptions);
         }
 
-        public Task<object> InvokeAsync(SolidRpcHostInstance targetInstance, MethodInfo mi, IEnumerable<object> args)
+        public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
         {
-            return InvokeMethodAsync(targetInstance, mi, args.ToArray());
+            return InvokeMethodAsync(mi, args.ToArray(), invocationOptions);
         }
 
         protected static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
@@ -115,28 +148,26 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             throw new Exception("expression should be a method call.");
         }
 
-        protected virtual Task<TRes> InvokeMethodAsync<TRes>(SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
+        protected virtual Task<TRes> InvokeMethodAsync<TRes>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            return GetHandler(mi).InvokeAsync<TRes>(mi, args);
+            invocationOptions = invocationOptions ?? InvocationOptions.Http;
+            return GetHandler(mi, invocationOptions).InvokeAsync<TRes>(mi, args, invocationOptions);
         }
 
-        protected virtual Task<object> InvokeMethodAsync(SolidRpcHostInstance targetInstance, MethodInfo mi, object[] args)
+        protected virtual Task<object> InvokeMethodAsync(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            return GetHandler(mi).InvokeAsync<object>(mi, args);
+            invocationOptions = invocationOptions ?? InvocationOptions.Http;
+            return GetHandler(mi, invocationOptions).InvokeAsync<object>(mi, args, invocationOptions);
         }
 
-        private IHandler GetHandler(MethodInfo mi)
+        private IHandler GetHandler(MethodInfo mi, InvocationOptions invocationOptions)
         {
-            var binding = GetMethodBinding(mi);
+            var transportType = invocationOptions.TransportType;
+
             var handlers = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>();
-            var handler = FilterHandlers(handlers, binding);
-            if(handler == null)
-            {
-                throw new Exception("Cannot find handler for method.");
-            }
+            var handler = handlers.FirstOrDefault(o => o.TransportType == transportType);
+            if (handler == null) throw new Exception($"Transport {transportType} not configured.");
             return handler;
         }
-
-        protected abstract IHandler FilterHandlers(IEnumerable<IHandler> handlers, IMethodBinding binding);
     }
 }

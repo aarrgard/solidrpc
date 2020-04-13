@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,11 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the specified method with supplied arguments.
         /// </summary>
-        /// <param name="targetInstance"></param>
+        /// <param name="invocationOptions"></param>
         /// <param name="methodInfo"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        Task<object> InvokeAsync(SolidRpcHostInstance targetInstance, MethodInfo methodInfo, IEnumerable<object> args);
+        Task<object> InvokeAsync(MethodInfo methodInfo, IEnumerable<object> args, InvocationOptions invocationOptions = null);
     }
 
     /// <summary>
@@ -51,19 +52,35 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         IMethodBinding GetMethodBinding<TResult>(Expression<Func<T, TResult>> func);
 
         /// <summary>
+        /// Returns the uri where we invoke the specified method.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="includeQueryString"></param>
+        /// <returns></returns>
+        Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true);
+
+        /// <summary>
+        /// Returns the uri where we invoke the specified method.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="includeQueryString"></param>
+        /// <returns></returns>
+        Task<Uri> GetUriAsync<TRes>(Expression<Func<T, TRes>> func, bool includeQueryString = true);
+
+        /// <summary>
         /// Invokes an action
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="targetInstance"></param>
+        /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        Task InvokeAsync(Expression<Action<T>> action, SolidRpcHostInstance targetInstance = null);
+        Task InvokeAsync(Expression<Action<T>> action, InvocationOptions invocationOptions = null);
 
         /// <summary>
         /// Executes a function
         /// </summary>
         /// <param name="func"></param>
-        /// <param name="targetInstance"></param>
+        /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, SolidRpcHostInstance targetInstance = null);
+        TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, InvocationOptions invocationOptions = null);
     }
 }

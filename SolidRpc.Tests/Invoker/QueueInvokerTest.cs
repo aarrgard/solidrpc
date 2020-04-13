@@ -125,7 +125,7 @@ namespace SolidRpc.Tests.Invoker
             {
                 await ctx.StartAsync();
 
-                var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ITestInterface>>();
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
                 //var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ISolidRpcHost>>();
 
                 int res = 0;

@@ -10,7 +10,7 @@ namespace SolidRpc.Abstractions.Services
     public interface ISolidRpcApplication
     {
         /// <summary>
-        /// The host id
+        /// The host id - unique for each IoC container setup.
         /// </summary>
         Guid HostId { get; }
 

@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity), mbConfigurator);
             services.GetSolidRpcContentStore().AddMapping(
                 "/.well-known/openid-configuration", 
-                (sp) => sp.GetRequiredService<IHttpInvoker<IOidcServer>>().GetUriAsync(o => o.OAuth2Discovery(CancellationToken.None)));
+                (sp) => sp.GetRequiredService<IInvoker<IOidcServer>>().GetUriAsync(o => o.OAuth2Discovery(CancellationToken.None)));
             var sc = new SolidRpcSecurityOptions();
             configurator?.Invoke(null, sc);
             if (sc.AddStaticContent)

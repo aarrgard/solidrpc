@@ -13,7 +13,7 @@ namespace SolidRpc.Security.Back.Services.Google
 {
     public class GoogleLocal : LoginProviderBase, IGoogleLocal
     {
-        public GoogleLocal(GoogleOptions googleOptions, IHttpInvoker<IGoogleLocal> httpInvoker)
+        public GoogleLocal(GoogleOptions googleOptions, IInvoker<IGoogleLocal> httpInvoker)
         {
             GoogleOptions = googleOptions;
             HttpInvoker = httpInvoker;
@@ -22,7 +22,7 @@ namespace SolidRpc.Security.Back.Services.Google
 
         public GoogleOptions GoogleOptions { get; }
 
-        public IHttpInvoker<IGoogleLocal> HttpInvoker { get; }
+        public IInvoker<IGoogleLocal> HttpInvoker { get; }
         public string ButtonHtml => $"<div class=\"g-signin2\" data-onsuccess=\"onSignIn\" data-theme=\"dark\"></div>";
 
         public override async Task<LoginProvider> LoginProvider(CancellationToken cancellationToken = default(CancellationToken))

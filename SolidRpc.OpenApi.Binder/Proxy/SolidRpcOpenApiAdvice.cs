@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using System.Linq;
 using SolidRpc.OpenApi.Binder.Invoker;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -69,7 +70,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            return HttpHandler.InvokeAsync<TAdvice>(MethodBinding, Transport, invocation.Arguments);
+            return HttpHandler.InvokeAsync<TAdvice>(MethodBinding, Transport, invocation.Arguments, InvocationOptions.Http);
         }
     }
 }

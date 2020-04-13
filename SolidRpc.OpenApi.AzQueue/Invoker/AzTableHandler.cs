@@ -22,6 +22,8 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
     /// </summary>
     public class AzTableHandler : QueueHandler
     {
+        public static readonly string TransportType = "AzTable";
+
         public AzTableHandler(
             ILogger<QueueHandler> logger, 
             IServiceProvider serviceProvider, 
@@ -37,9 +39,9 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
         private TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private OperationContext OperationContext => new OperationContext();
 
-        protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
-            var msg = new TableMessageEntity(transport.QueueName, 5, message);
+            var msg = new TableMessageEntity(transport.QueueName, invocationOptions.Priority, message);
             var tc = CloudQueueStore.GetCloudTable(transport.ConnectionName);
             await tc.ExecuteAsync(TableOperation.Insert(msg), TableRequestOptions, OperationContext, cancellationToken);
             if (Logger.IsEnabled(LogLevel.Trace))

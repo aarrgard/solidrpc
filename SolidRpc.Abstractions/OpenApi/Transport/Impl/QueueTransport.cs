@@ -78,6 +78,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <param name="queueType"></param>
         /// <param name="inboundHandler"></param>
         public QueueTransport(string queueName, string connectionString, string queueType, string inboundHandler)
+            : base("Queue")
         {
             QueueName = queueName;
             ConnectionName = connectionString;
