@@ -20,6 +20,8 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
     /// </summary>
     public class AzQueueHandler : QueueHandler
     {
+        public static readonly string TransportType = "AzQueue";
+
         public AzQueueHandler(
             ILogger<QueueHandler> logger, 
             IServiceProvider serviceProvider, 

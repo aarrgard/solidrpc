@@ -73,20 +73,20 @@ namespace SolidRpc.OpenApi.AzQueue
                 }
                 return;
             }
-            if (string.Equals(queueTransport.QueueType, AzQueueTableType, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(queueTransport.TransportType, AzQueueTableType, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Queue type({queueTransport.QueueType}) is a {AzQueueTableType} for binding {binding.OperationId} - setting up table.");
+                    Logger.LogTrace($"Queue type({queueTransport.TransportType}) is a {AzQueueTableType} for binding {binding.OperationId} - setting up table.");
                 }
                 SolidRpcApplication.AddStartupTask(SetupTable(binding, queueTransport.ConnectionName, queueTransport.QueueName));
                 return;
             }
-            if (!string.Equals(queueTransport.QueueType, AzQueueQueueType, StringComparison.InvariantCultureIgnoreCase))
+            if (!string.Equals(queueTransport.TransportType, AzQueueQueueType, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Queue type({queueTransport.QueueType}) is not a {AzQueueQueueType} for binding {binding.OperationId} - will not configure az queue");
+                    Logger.LogTrace($"Queue type({queueTransport.TransportType}) is not a {AzQueueQueueType} for binding {binding.OperationId} - will not configure az queue");
                 }
                 return;
             }

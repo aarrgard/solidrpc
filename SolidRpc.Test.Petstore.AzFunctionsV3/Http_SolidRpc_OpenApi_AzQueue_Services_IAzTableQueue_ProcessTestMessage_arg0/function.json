@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage"
+      "route": "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}"
     },
     {
       "name": "serviceProvider",

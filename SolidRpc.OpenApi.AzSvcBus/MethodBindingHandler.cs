@@ -68,11 +68,11 @@ namespace SolidRpc.OpenApi.AzSvcBus
                 }
                 return;
             }
-            if (!string.Equals(queueTransport.QueueType, SvcBusQueueType, StringComparison.InvariantCultureIgnoreCase))
+            if (!string.Equals(queueTransport.TransportType, SvcBusQueueType, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Queue type({queueTransport.QueueType}) is not a {SvcBusQueueType} for binding {binding.OperationId} - will not configure svcbus queue");
+                    Logger.LogTrace($"Queue type({queueTransport.TransportType}) is not a {SvcBusQueueType} for binding {binding.OperationId} - will not configure svcbus queue");
                 }
                 return;
             }

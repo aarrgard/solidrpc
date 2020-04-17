@@ -64,7 +64,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 .SelectMany(o => o.MethodBindings)
                 .SelectMany(o => o.Transports)
                 .OfType<IQueueTransport>()
-                .Where(o => o.QueueType == "AzTable")
+                .Where(o => o.TransportType == "AzTable")
                 .ToList();
         }
 
@@ -88,23 +88,93 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             try
             {
                 var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
-                while (await DispatchMessage(cloudTable, connectionName, queueName, scheduledScan, cancellationToken) && scheduledScan) ;
+                if (scheduledScan)
+                {
+                    await UpdateErrorMessagesAsync(cloudTable, queueName, cancellationToken);
+                    await UpdateTimedOutMessagesAsync(cloudTable, queueName, cancellationToken);
+                }
+
+                while (await DispatchMessageAsync(cloudTable, connectionName, queueName, scheduledScan, cancellationToken) && scheduledScan) ;
+
             } finally
             {
                 semaphore.Release();
             }
         }
 
-        private async Task<bool> DispatchMessage(CloudTable cloudTable, string connectionName, string queueName, bool scheduledScan, CancellationToken cancellationToken)
+        private async Task<IEnumerable<TableMessageEntity>> GetMessagesAsync(CloudTable cloudTable, string queueName, IEnumerable<string> statuses, CancellationToken cancellationToken)
         {
-            var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusSettings };
             var filter = $"(PartitionKey eq '{TableMessageEntity.CreatePartitionKey(queueName)}') and ({string.Join(" or ", statuses.Select(o => $"Status eq '{o}'"))})";
             var query = new TableQuery<TableMessageEntity>().Where(filter).Take(100);
             TableContinuationToken token = null;
-            var results = (IEnumerable<TableMessageEntity>)(await cloudTable.ExecuteQuerySegmentedAsync(query, token, TableRequestOptions, OperationContext, cancellationToken));
+            return (IEnumerable<TableMessageEntity>)(await cloudTable.ExecuteQuerySegmentedAsync(query, token, TableRequestOptions, OperationContext, cancellationToken));
+        }
+
+        private (IEnumerable<TableMessageEntity>, AzTableQueueSettings) GetSettings(IEnumerable<TableMessageEntity> results)
+        {
+            var settings = results.Where(o => o.IsSettings).Select(o => DeserializeSettings(o.Message)).FirstOrDefault();
+            return (results = results.Where(o => !o.IsSettings), settings);
+        }
+
+        private async Task UpdateErrorMessagesAsync(CloudTable cloudTable, string queueName, CancellationToken cancellationToken)
+        {
+            var statuses = new[] { TableMessageEntity.StatusError, TableMessageEntity.StatusSettings };
+            var results = await GetMessagesAsync(cloudTable, queueName, statuses, cancellationToken);
+            var (rows, settings) = GetSettings(results);
+            if (settings == null)
+            {
+                return;
+            }
+            var timedOutMessages = results
+                .Where(o => o.DispachedAt != null)
+                .Where(o => o.DispachedAt.Value.AddMinutes(Math.Pow(2, o.DispatchCount)) < DateTimeOffset.Now);
+            foreach (var row in timedOutMessages)
+            {
+                try
+                {
+                    row.Status = TableMessageEntity.StatusPending;
+                    row.DispachedAt = null;
+                    await cloudTable.ExecuteAsync(TableOperation.Replace(row), TableRequestOptions, OperationContext, cancellationToken);
+                }
+                catch (StorageException)
+                {
+                }
+            }
+        }
+
+        private async Task UpdateTimedOutMessagesAsync(CloudTable cloudTable, string queueName, CancellationToken cancellationToken)
+        {
+            var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusSettings };
+            var results = await GetMessagesAsync(cloudTable, queueName, statuses, cancellationToken);
+            var (rows, settings) = GetSettings(results);
+            if (settings == null)
+            {
+                return;
+            }
+            var timedOutMessages = results
+                .Where(o => o.DispachedAt != null)
+                .Where(o => o.DispachedAt.Value.Add(settings.Timeout) < DateTimeOffset.Now);
+            foreach (var row in timedOutMessages)
+            {
+                try
+                {
+                    row.Status = TableMessageEntity.StatusPending;
+                    row.DispachedAt = null;
+                    await cloudTable.ExecuteAsync(TableOperation.Replace(row), TableRequestOptions, OperationContext, cancellationToken);
+                }
+                catch (StorageException)
+                {
+                }
+            }
+        }
+
+        private async Task<bool> DispatchMessageAsync(CloudTable cloudTable, string connectionName, string queueName, bool scheduledScan, CancellationToken cancellationToken)
+        {
+            var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusSettings };
+            var results2 = await GetMessagesAsync(cloudTable, queueName, statuses, cancellationToken);
+            var (results, settings) = GetSettings(results2);
 
             // find the settings row
-            var settings = results.Where(o => o.IsSettings).Select(o => DeserializeSettings(o.Message)).FirstOrDefault();
             if (settings == null)
             {
                 settings = await UpdateSettings(new AzTableQueueSettings()
@@ -115,38 +185,8 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
 
             results = results.Where(o => !o.IsSettings);
-
-            // update messages that have timed out
-            if(scheduledScan)
-            {
-                await UpdateTimedOutMessages(cloudTable, settings, results, cancellationToken);
-            }
-
             // dispatch new messages
             return await DispatchMessageAsync(cloudTable, settings, connectionName, results, cancellationToken);
-        }
-
-        private async Task<bool> UpdateTimedOutMessages(CloudTable cloudTable, AzTableQueueSettings settings, IEnumerable<TableMessageEntity> results, CancellationToken cancellationToken)
-        {
-            var timedOutMessage = results
-                .Where(o => o.DispachedAt != null)
-                .Where(o => o.DispachedAt.Value.Add(settings.Timeout) < DateTimeOffset.Now)
-                .FirstOrDefault();
-            if(timedOutMessage == null)
-            {
-                return false;
-            }
-            try
-            {
-                timedOutMessage.DispachedAt = null;
-                timedOutMessage.Status = TableMessageEntity.StatusPending;
-                await cloudTable.ExecuteAsync(TableOperation.Replace(timedOutMessage), TableRequestOptions, OperationContext, cancellationToken);
-                return true;
-            }
-            catch (StorageException)
-            {
-                return false;
-            }
         }
 
         private async Task<bool> DispatchMessageAsync(CloudTable cloudTable, AzTableQueueSettings settings, string connectionName, IEnumerable<TableMessageEntity> results, CancellationToken cancellationToken)
@@ -187,7 +227,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             // message locked and ready - add queue message
             await Invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), new InvocationOptions()
             {
-                TransportType = AzTableHandler.TransportType
+                TransportType = AzQueueHandler.TransportType
             });
 
             // try to dispatch another message
@@ -196,6 +236,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
 
         private async Task<bool> ShouldDispatchMessage(CloudTable cloudTable, TableMessageEntity nextMessage, CancellationToken cancellationToken)
         {
+            nextMessage.DispatchCount = nextMessage.DispatchCount+1;
             nextMessage.Status = TableMessageEntity.StatusDispatched;
             nextMessage.DispachedAt = DateTimeOffset.Now;
             try
@@ -318,12 +359,12 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
         }
 
-        public Task SendTestMessageAync(int messageCount = 1, int messagePriority = 5, CancellationToken cancellationToken = default)
+        public Task SendTestMessageAync(int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
         {
             var tasks = new List<Task>();
             for(int i = 0; i < messageCount; i++)
             {
-                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(cancellationToken), new InvocationOptions()
+                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(raiseException, cancellationToken), new InvocationOptions()
                 {
                     TransportType = AzTableHandler.TransportType,
                     Priority = messagePriority
@@ -332,8 +373,9 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             return Task.WhenAll(tasks);
         }
 
-        public Task ProcessTestMessage(CancellationToken cancellationToken = default)
+        public Task ProcessTestMessage(bool raiseException, CancellationToken cancellationToken = default)
         {
+            if (raiseException) throw new Exception("Exception in test method.");
             return Task.CompletedTask;
         }
     }

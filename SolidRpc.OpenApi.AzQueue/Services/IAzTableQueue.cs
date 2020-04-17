@@ -48,13 +48,13 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task SendTestMessageAync(int messageCount = 1, int messagePriority = 5, CancellationToken cancellationToken = default(CancellationToken));
+        Task SendTestMessageAync(int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Sends a test message.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task ProcessTestMessage(CancellationToken cancellationToken = default(CancellationToken));
+        Task ProcessTestMessage(bool raiseException, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

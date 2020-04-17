@@ -75,14 +75,13 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// </summary>
         /// <param name="queueName"></param>
         /// <param name="connectionString"></param>
-        /// <param name="queueType"></param>
+        /// <param name="transportType"></param>
         /// <param name="inboundHandler"></param>
-        public QueueTransport(string queueName, string connectionString, string queueType, string inboundHandler)
-            : base("Queue")
+        public QueueTransport(string queueName, string connectionString, string transportType, string inboundHandler)
+            : base(transportType)
         {
             QueueName = queueName;
             ConnectionName = connectionString;
-            QueueType = queueType ?? throw new ArgumentNullException(nameof(queueType));
             InboundHandler = inboundHandler;
         }
 
@@ -94,11 +93,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         {
             if (string.IsNullOrEmpty(ConnectionName))
             {
-                ConnectionName = $"SolidRpc{QueueType}Connection";
+                ConnectionName = $"SolidRpc{TransportType}Connection";
             }
             if (string.IsNullOrEmpty(QueueName))
             {
-                QueueName = CreateSafeQueueName(QueueType, methodBinding.LocalPath);
+                QueueName = CreateSafeQueueName(TransportType, methodBinding.LocalPath);
             }
             base.Configure(methodBinding);
         }
@@ -115,7 +114,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetQueueName(string queueName)
         {
-            return new QueueTransport(queueName, ConnectionName, QueueType, InboundHandler);
+            return new QueueTransport(queueName, ConnectionName, TransportType, InboundHandler);
         }
 
         /// <summary>
@@ -130,22 +129,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetConnectionName(string connectionName)
         {
-            return new QueueTransport(QueueName, connectionName, QueueType, InboundHandler);
-        }
-
-        /// <summary>
-        /// The queue type
-        /// </summary>
-        public string QueueType { get; }
-
-        /// <summary>
-        /// Sets the queue type
-        /// </summary>
-        /// <param name="queueType"></param>
-        /// <returns></returns>
-        public IQueueTransport SetQueueType(string queueType)
-        {
-            return new QueueTransport(QueueName, ConnectionName, queueType, InboundHandler);
+            return new QueueTransport(QueueName, connectionName, TransportType, InboundHandler);
         }
 
         /// <summary>
@@ -165,7 +149,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetInboundHandler(string inboundHandler)
         {
-            return new QueueTransport(QueueName, ConnectionName, QueueType, inboundHandler);
+            return new QueueTransport(QueueName, ConnectionName, TransportType, inboundHandler);
         }
 
     }

@@ -108,7 +108,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
             public string QueueName { get; set; }
             public string Connection { get; set; }
-            public string QueueType { get; set; }
+            public string TransportType { get; set; }
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 var queueName = openApiConfig.QueueTransport.QueueName;
                 var connection = openApiConfig.QueueTransport.ConnectionName;
                 var inboundHandler = openApiConfig.QueueTransport.InboundHandler;
-                var queueType = openApiConfig.QueueTransport.QueueType;
+                var transportType = openApiConfig.QueueTransport.TransportType;
 
                 if(string.Equals(inboundHandler, "azfunctions", StringComparison.CurrentCultureIgnoreCase))
                 {
@@ -243,7 +243,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     {
                         QueueName = queueName,
                         Connection = connection,
-                        QueueType = queueType
+                        TransportType = transportType
                     });
                 }
             }
@@ -301,7 +301,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             foreach(var queueFunctionDef in queueFunctionDefs)
             {
                 var functionName = queueFunctionDef.FunctionName;
-                var queueType = queueFunctionDef.QueueType;
+                var queueType = queueFunctionDef.TransportType;
 
                 if (queueType.Equals("azsvcbus", StringComparison.InvariantCultureIgnoreCase))
                 {

@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         {
             var methodBinding = MethodBinderStore.GetMethodBinding(mi);
             var transport = methodBinding.Transports.FirstOrDefault(o => o.TransportType == TransportType);
-            if (transport == null) throw new Exception("Transport not configured for method."); 
+            if (transport == null) throw new Exception($"Transport({TransportType}) not configured for method {mi.DeclaringType.FullName}.{mi.Name}. Configured transports are {string.Join(",", methodBinding.Transports.Select(o => o.TransportType))}"); 
             return InvokeAsync<TResp>(methodBinding, transport, args, invocationOptions);
         }
 

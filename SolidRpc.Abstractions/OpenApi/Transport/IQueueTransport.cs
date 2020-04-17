@@ -32,18 +32,6 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         IQueueTransport SetConnectionName(string connectionName);
 
         /// <summary>
-        /// Specifies the queue type. AzSvcBus, AzQueue, Memory, etc.
-        /// </summary>
-        string QueueType { get; }
-
-        /// <summary>
-        /// Sets the inbound handler.
-        /// </summary>
-        /// <param name="queueType"></param>
-        /// <returns></returns>
-        IQueueTransport SetQueueType(string queueType);
-
-        /// <summary>
         /// Specifies the inbound message handler. If this string is empty
         /// then no message handler wiil be configured for the client. 
         /// "azfunction" - means that the azure functions should pickup messages

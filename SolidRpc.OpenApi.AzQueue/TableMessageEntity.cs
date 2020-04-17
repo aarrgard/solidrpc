@@ -56,6 +56,11 @@ namespace SolidRpc.OpenApi.AzQueue
         public string Status { get; set; }
 
         /// <summary>
+        /// The number of times this message has been dequeued.
+        /// </summary>
+        public int DispatchCount { get; set; }
+
+        /// <summary>
         /// The time when the message was dispatched.
         /// </summary>
         public DateTimeOffset? DispachedAt { get; set; }

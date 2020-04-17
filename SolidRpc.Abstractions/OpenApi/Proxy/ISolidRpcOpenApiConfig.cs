@@ -130,10 +130,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             {
                 queueTransport = new QueueTransport(null, null, queueType, null);
             }
-            else
-            {
-                queueTransport = queueTransport.SetQueueType(queueType);
-            }
             if (!string.IsNullOrEmpty(connectionName))
             {
                 queueTransport = queueTransport.SetConnectionName(connectionName);
