@@ -236,7 +236,47 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 };
             }
 
-            throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
+            return SkipNode;
+            //throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
+        }
+
+        private void SkipNode(JsonReader r, object o, JsonSerializer s)
+        {
+            switch(r.TokenType)
+            {
+                case JsonToken.StartObject:
+                    SkipNodeObject(r, o, s);
+                    break;
+                case JsonToken.StartArray:
+                    SkipNodeArray(r, o, s);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SkipNodeObject(JsonReader r, object o, JsonSerializer s)
+        {
+            if (r.TokenType != JsonToken.StartObject) throw new Exception("Not a start of object");
+            if (!r.Read()) throw new Exception("Failed to read");
+            while (r.TokenType != JsonToken.EndObject)
+            {
+                if (r.TokenType != JsonToken.PropertyName) throw new Exception("Not a property name:" + r.TokenType);
+                if (!r.Read()) throw new Exception("Failed to read");
+                SkipNode(r, o, s);
+                if (!r.Read()) throw new Exception("Failed to read");
+            }
+        }
+
+        private void SkipNodeArray(JsonReader r, object o, JsonSerializer s)
+        {
+            if (r.TokenType != JsonToken.StartArray) throw new Exception("Not a start of object");
+            if (!r.Read()) throw new Exception("Failed to read");
+            while (r.TokenType != JsonToken.EndArray)
+            {
+                SkipNode(r, o, s);
+                if (!r.Read()) throw new Exception("Failed to read");
+            }
         }
 
         private void ReadDictionaryData<Tp>(string propertyName, JsonReader r, object o, JsonSerializer s, Action<object, object> setParent) 

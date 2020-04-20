@@ -1,10 +1,4 @@
 ﻿using NUnit.Framework;
-using SolidRpc.Wire;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Linq;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Serialization;
@@ -100,6 +94,29 @@ namespace SolidRpc.Tests.Serialization
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
             TestSerializeDeserialize(serFact, new StringValues(new[] { "1", "2" }), str => Assert.AreEqual("[\"1\",\"2\"]", str));
+        }
+
+        /// <summary>
+        /// Tests deserializing structure with additional properties
+        /// </summary>
+        [Test]
+        public void TestAdditionalProperties()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            ComplexType ct;
+            serFact.DeserializeFromString("{\"MyData\":\"test\", \"PropertyWithMissingDeclaration\": \"test\"}", out ct);
+            Assert.AreEqual("test", ct.MyData);
+
+            serFact.DeserializeFromString("{\"MyData\":\"test\", \"PropertyWithMissingDeclaration\": {\"scoped\": null}}", out ct);
+            Assert.AreEqual("test", ct.MyData);
+
+            serFact.DeserializeFromString("{\"PropertyWithMissingDeclaration\": {\"scoped\": null}, \"MyData\":\"test\"}", out ct);
+            Assert.AreEqual("test", ct.MyData);
+
+            serFact.DeserializeFromString("{\"PropertyWithMissingDeclaration\": [\"scoped\", null], \"MyData\":\"test\"}", out ct);
+            Assert.AreEqual("test", ct.MyData);
         }
 
         /// <summary>
