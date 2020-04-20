@@ -113,11 +113,21 @@ namespace SolidRpc.Tests.Serialization
 
             var dtOffsetNow = DateTimeOffset.Now;
             TestSerializeDeserialize(serFact, DateTimeOffset.MinValue, str => Assert.AreEqual("\"0001-01-01T00:00:00+00:00\"", str));
-            TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = dtOffsetNow }, str => Assert.AreEqual($"{{\"DtOffset\":\"{dtOffsetNow.ToString($"yyyy-MM-ddTHH:mm:ss.fffffffzzz")}\"}}", str));
+            TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = dtOffsetNow }, str => Assert.AreEqual($"{{\"DtOffset\":\"{RemoveZeroes(dtOffsetNow.ToString($"yyyy-MM-ddTHH:mm:ss.fffffffzzz"))}\"}}", str));
             TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = DateTimeOffset.MinValue }, str => Assert.AreEqual("{\"DtOffset\":\"0001-01-01T00:00:00+00:00\"}", str));
 
             ComplexType ct;
             serFact.DeserializeFromString("{\"DtOffset\":\"0001-01-01T00:00:00\"}", out ct);
+        }
+
+        private string RemoveZeroes(string str)
+        {
+            var newStr = str.Replace("0+", "+");
+            if(newStr != str)
+            {
+                return RemoveZeroes(newStr);
+            }
+            return newStr;
         }
 
         /// <summary>
