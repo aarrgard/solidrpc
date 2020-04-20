@@ -121,7 +121,7 @@ namespace SolidRpc.Tests.Invoker
             }
 
             var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None), new InvocationOptions() { TransportType = "Local" });
+            var result = await invoker.InvokeAsync(o => o.DoXAsync(CancellationToken.None), InvocationOptions.Local);
             Assert.AreEqual(4711, result);
         }
     }

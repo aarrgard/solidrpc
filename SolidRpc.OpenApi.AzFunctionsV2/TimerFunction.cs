@@ -48,7 +48,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
 
                 var invokerType = typeof(IInvoker<>).MakeGenericType(methodInfo.DeclaringType);
                 var localInvoker = (IInvoker)serviceProvider.GetService(invokerType);
-                var res = await localInvoker.InvokeAsync(methodInfo, args, new InvocationOptions() { TransportType = "Local" });
+                var res = await localInvoker.InvokeAsync(methodInfo, args, InvocationOptions.Local);
                 var resTask = res as Task;
                 if (resTask != null)
                 {

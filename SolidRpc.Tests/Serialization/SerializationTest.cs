@@ -11,6 +11,7 @@ using SolidRpc.Abstractions.Serialization;
 using System.IO;
 using SolidRpc.Abstractions.Types;
 using Microsoft.Extensions.Primitives;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -21,8 +22,14 @@ namespace SolidRpc.Tests.Serialization
     {
         private class ComplexType
         {
+            [DataMember(Name= "MyData", EmitDefaultValue = false)]
             public string MyData { get; set; }
+
+            [DataMember(Name = "MyStream", EmitDefaultValue = false)]
             public Stream MyStream { get; set; }
+
+            [DataMember(Name = "DtOffset", EmitDefaultValue = false)]
+            public DateTimeOffset? DtOffset { get; set; }
             public override bool Equals(object obj)
             {
                 if(obj is ComplexType other)
@@ -99,12 +106,30 @@ namespace SolidRpc.Tests.Serialization
         /// Tests the type store
         /// </summary>
         [Test]
+        public void TestDateTimeOffset()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            var dtOffsetNow = DateTimeOffset.Now;
+            TestSerializeDeserialize(serFact, DateTimeOffset.MinValue, str => Assert.AreEqual("\"0001-01-01T00:00:00+00:00\"", str));
+            TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = dtOffsetNow }, str => Assert.AreEqual($"{{\"DtOffset\":\"{dtOffsetNow.ToString($"yyyy-MM-ddTHH:mm:ss.fffffffzzz")}\"}}", str));
+            TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = DateTimeOffset.MinValue }, str => Assert.AreEqual("{\"DtOffset\":\"0001-01-01T00:00:00+00:00\"}", str));
+
+            ComplexType ct;
+            serFact.DeserializeFromString("{\"DtOffset\":\"0001-01-01T00:00:00\"}", out ct);
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
         public void TestComplexType()
         {
             var sp = GetServiceProvider();
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
-            TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\",\"MyStream\":null}", str));
+            TestSerializeDeserialize(serFact, new ComplexType() { MyData = "test" }, str => Assert.AreEqual("{\"MyData\":\"test\"}", str));
         }
 
         /// <summary>

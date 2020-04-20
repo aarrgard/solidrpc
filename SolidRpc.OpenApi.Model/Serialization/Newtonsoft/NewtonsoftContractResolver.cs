@@ -40,6 +40,23 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 
         private JsonContract CreateContractInternal(Type type)
         {
+            if(type.IsNullableType(out Type nullableType))
+            {
+                var valueContract = CreateContractInternal(nullableType);
+                var valueConverter = valueContract.Converter ?? valueContract.InternalConverter;
+                if(valueConverter != null)
+                {
+                    var contract = new JsonObjectContract(type);
+                    contract.Converter = (JsonConverter)Activator.CreateInstance(typeof(NullableConverter<>).MakeGenericType(nullableType), valueConverter);
+                    return contract;
+                }
+            }
+            if (typeof(DateTimeOffset).IsAssignableFrom(type))
+            {
+                var contract = new JsonObjectContract(type);
+                contract.Converter = new DateTimeOffsetConverter();
+                return contract;
+            }
             if (typeof(Stream).IsAssignableFrom(type))
             {
                 var contract = new JsonObjectContract(type);

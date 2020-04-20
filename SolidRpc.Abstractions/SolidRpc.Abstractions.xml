@@ -722,6 +722,23 @@
             The invocation options that uses the local implementation.
             </summary>
         </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.AzQueue">
+            <summary>
+            The invocation options that uses the azure queue.
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.AzTable">
+            <summary>
+            The invocation options that uses the azure table.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.String,System.Int32)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="transportType"></param>
+            <param name="priority"></param>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TransportType">
             <summary>
             The preferred transport type. Defaults to "Http"
@@ -731,6 +748,13 @@
             <summary>
             The invocation priority.
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetPriority(System.Int32)">
+            <summary>
+            Returns a copy of this instance with another priority.
+            </summary>
+            <param name="priority"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation">
             <summary>

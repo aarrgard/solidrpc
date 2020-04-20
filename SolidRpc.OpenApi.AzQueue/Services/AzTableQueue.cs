@@ -225,10 +225,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
 
             // message locked and ready - add queue message
-            await Invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), new InvocationOptions()
-            {
-                TransportType = AzQueueHandler.TransportType
-            });
+            await Invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), InvocationOptions.AzQueue);
 
             // try to dispatch another message
             return true;
@@ -364,11 +361,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             var tasks = new List<Task>();
             for(int i = 0; i < messageCount; i++)
             {
-                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(raiseException, cancellationToken), new InvocationOptions()
-                {
-                    TransportType = AzTableHandler.TransportType,
-                    Priority = messagePriority
-                })); ;
+                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(raiseException, cancellationToken), InvocationOptions.AzTable.SetPriority(messagePriority)));
             }
             return Task.WhenAll(tasks);
         }
