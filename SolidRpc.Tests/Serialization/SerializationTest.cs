@@ -24,6 +24,10 @@ namespace SolidRpc.Tests.Serialization
 
             [DataMember(Name = "DtOffset", EmitDefaultValue = false)]
             public DateTimeOffset? DtOffset { get; set; }
+
+            [DataMember(Name = "NullableInt", EmitDefaultValue = false)]
+            public int? NullableInt { get; set; }
+
             public override bool Equals(object obj)
             {
                 if(obj is ComplexType other)
@@ -135,6 +139,30 @@ namespace SolidRpc.Tests.Serialization
 
             ComplexType ct;
             serFact.DeserializeFromString("{\"DtOffset\":\"0001-01-01T00:00:00\"}", out ct);
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestNullableTypes()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            int? ni;
+            serFact.DeserializeFromString("5", out ni);
+            Assert.AreEqual(5, ni.Value);
+
+            decimal? di;
+            serFact.DeserializeFromString("5.67", out di);
+            Assert.AreEqual(5.67, di.Value);
+
+            ComplexType ct;
+            serFact.DeserializeFromString("{\"NullableInt\": null}", out ct);
+            Assert.IsNull(ct.NullableInt);
+            serFact.DeserializeFromString("{\"NullableInt\": 5}", out ct);
+            Assert.AreEqual(5, ct.NullableInt.Value);
         }
 
         private string RemoveZeroes(string str)
