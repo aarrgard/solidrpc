@@ -43,7 +43,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             if(type.IsNullableType(out Type nullableType))
             {
                 var valueContract = CreateContractInternal(nullableType);
-                var valueConverter = valueContract.Converter ?? valueContract.InternalConverter;
+                var valueConverter = valueContract.Converter;
                 if(valueConverter != null)
                 {
                     var contract = new JsonObjectContract(type);
