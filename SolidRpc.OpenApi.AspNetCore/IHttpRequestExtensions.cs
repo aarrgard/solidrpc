@@ -30,7 +30,15 @@ namespace SolidRpc.OpenApi.Binder.Http
             // https://github.com/aspnet/Mvc/issues/6388 - its a wont - fix 2017...
             //
             var rawTarget = ((IHttpRequestFeature)source.HttpContext.Features[typeof(IHttpRequestFeature)]).RawTarget;
-            target.Path = rawTarget;
+            var questionIdx = rawTarget.IndexOf('?');
+            if(questionIdx > -1)
+            {
+                target.Path = rawTarget.Substring(0,questionIdx);
+            }
+            else
+            {
+                target.Path = rawTarget;
+            }
             //target.Path = $"{source.PathBase}{source.Path}";
 
 

@@ -49,7 +49,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, false);
+                CreateSpec(subDir.Name, true);
             }
         }
 
@@ -620,6 +620,28 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var stringCheck2 = "one+one";
                 moq.Setup(o => o.ProxyString(It.Is<string>(a => a == stringCheck2))).Returns(() => stringCheck2);
                 Assert.AreEqual(stringCheck2, proxy.ProxyString(stringCheck2));
+            });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestUrlAndQueryArgs()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestUrlAndQueryArgs).Substring(4));
+
+                var moq = new Mock<TestUrlAndQueryArgs.Services.IUrlAndQueryArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<TestUrlAndQueryArgs.Services.IUrlAndQueryArgs>();
+
+                var stringCheck1 = "one/one";
+                var stringCheck2 = "one+one";
+                moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.CompletedTask);
+                await proxy.DoSometingAsync(stringCheck1, stringCheck2);
             });
         }
 

@@ -1,0 +1,50 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UrlAndQueryArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/UrlAndQueryArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGen/TestUrlAndQueryArgs/Services/IUrlAndQueryArgs/DoSometingAsync/{urlArg}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services.IUrlAndQueryArgs"
+        ],
+        "description": "Consumes one complex type an a simple string...",
+        "operationId": "DoSometingAsync",
+        "parameters": [
+          {
+            "name": "urlArg",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "queryArg",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services.IUrlAndQueryArgs",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}

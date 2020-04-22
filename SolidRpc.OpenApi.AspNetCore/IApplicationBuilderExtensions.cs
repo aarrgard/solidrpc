@@ -284,7 +284,15 @@ namespace Microsoft.AspNetCore.Builder
                 return null;
             }
 
-            return "/" + HttpUtility.UrlDecode(segments.Current);
+            // raw url might contain query parameters
+            var currentSegment = segments.Current;
+            var queryStart = currentSegment.IndexOf('?');
+            if (queryStart > -1)
+            {
+                currentSegment = currentSegment.Substring(0, queryStart);
+            }
+
+            return "/" + HttpUtility.UrlDecode(currentSegment);
         }
 
         private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, ISolidRpcContentHandler contentHandler, HttpContext ctx)
