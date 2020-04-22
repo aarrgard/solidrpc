@@ -353,6 +353,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 return (ICSharpType)member;
             }
+            if(fullName.EndsWith("[]"))
+            {
+                return GetClass(fullName);
+            }
             var (genType, genArgs) = ReadType(fullName);
             if (genArgs != null) genType = $"{genType}`{genArgs.Count}";
             if (Types.TryGetValue(genType, out member))

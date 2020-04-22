@@ -191,7 +191,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
             var propertyType = CSharpRepository.GetType(propertyTypeName);
             if (propertyType == null)
             {
-                throw new Exception("Failed to find the type for " + propertyTypeName);
+                throw new Exception("Failed to find the property type " + propertyTypeName);
             }
             var propertyName = pds.Identifier.ToString();
 
@@ -210,7 +210,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
             var returnType = CSharpRepository.GetType(returnTypeName);
             if (returnType == null)
             {
-                throw new Exception("Failed to find the type for " + returnTypeName);
+                throw new Exception("Failed to find method return type " + returnTypeName);
             }
 
             var methodName = mds.Identifier.ToString();
@@ -222,7 +222,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 var parameterType = CSharpRepository.GetType(parameterTypeName);
                 if (parameterType == null)
                 {
-                    throw new Exception("Failed to find the type for " + parameterTypeName);
+                    throw new Exception("Failed to find the parameter type " + parameterTypeName);
                 }
 
                 var parameterName = o.Identifier.ToString();
@@ -261,7 +261,11 @@ namespace SolidRpc.OpenApi.Generator.Impl
             {
                 typeName = $"System.Nullable<{typeName.Substring(0, typeName.Length-1)}>";
             }
-
+            // handle arrays
+            if(typeName.EndsWith("[]"))
+            {
+                return GetFullName(member, typeName.Substring(0, typeName.Length - 2)) + "[]";
+            }
             // handle generic types
             var (genType, genArgs) = Model.CSharp.Impl.CSharpRepository.ReadType(typeName);
             if (genArgs != null)
@@ -292,10 +296,23 @@ namespace SolidRpc.OpenApi.Generator.Impl
             // use the "usings"
             foreach (var u in usings)
             {
-                type = CSharpRepository.GetType(MergeNames(u, ".", typeName));
-                if (type != null)
+                var alias = u.Value;
+                if(typeName.StartsWith(alias))
                 {
-                    return type.FullName;
+                    string fullName;
+                    if(string.IsNullOrEmpty(alias))
+                    {
+                        fullName = MergeNames(u.Key, ".", typeName);
+                    }
+                    else
+                    {
+                        fullName = MergeNames(u.Key, ".", typeName.Substring(alias.Length+1));
+                    }
+                    type = CSharpRepository.GetType(fullName);
+                    if (type != null)
+                    {
+                        return type.FullName;
+                    }
                 }
             }
             type = CSharpRepository.GetType(typeName);
@@ -306,11 +323,11 @@ namespace SolidRpc.OpenApi.Generator.Impl
             throw new Exception($"Cannot find type {typeName}");
         }
 
-        private (HashSet<string>, string) GetPrefixes(SyntaxNode member)
+        private (IDictionary<string, string>, string) GetPrefixes(SyntaxNode member)
         {
             if (member == null)
             {
-                return (new HashSet<string>(), "");
+                return (new Dictionary<string, string>(), "");
             }
             var (usings, ns) = GetPrefixes(member.Parent);
             if (member is ClassDeclarationSyntax cds)
@@ -323,7 +340,19 @@ namespace SolidRpc.OpenApi.Generator.Impl
             }
             foreach (var u in member.ChildNodes().OfType<UsingDirectiveSyntax>())
             {
-                usings.Add(u.Name.ToString());
+                var key = u.Name.ToString();
+                var alias = u.Alias?.Name?.ToString() ?? "";
+                if(usings.TryGetValue(key, out string oldAlias))
+                {
+                    if(!string.IsNullOrEmpty(oldAlias))
+                    {
+                        usings[key] = alias;
+                    }
+                }
+                else
+                {
+                    usings[key] = alias;
+                }
             }
             return (usings, ns);
         }
