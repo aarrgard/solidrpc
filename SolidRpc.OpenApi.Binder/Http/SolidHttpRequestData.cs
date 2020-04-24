@@ -328,9 +328,17 @@ namespace SolidRpc.OpenApi.Binder.Http
 
                     data.SetFilename(StripQuotes(section.Headers.ContentDisposition?.FileName));
 
-                    if(section.Headers.TryGetValues("X-ETag", out IEnumerable<string> etag))
+                    if (section.Headers.TryGetValues("X-ETag", out IEnumerable<string> etag))
                     {
                         data.SetETag(StripQuotes(string.Join("", etag)));
+                    }
+
+                    if (section.Headers.TryGetValues("X-LastModified", out IEnumerable<string> lastModified))
+                    {
+                        if(DateTimeOffset.TryParseExact(string.Join("", lastModified), "r", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset dto))
+                        {
+                            data.SetLastModified(dto.ToLocalTime());
+                        }
                     }
 
                     bodyData.Add(data);
@@ -519,6 +527,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The ETag
         /// </summary>
         public string ETag { get; protected set; }
+
+        /// <summary>
+        /// The last modified time of the data
+        /// </summary>
+        public DateTimeOffset? LastModified { get; protected set; }
 
         /// <summary>
         /// The content type

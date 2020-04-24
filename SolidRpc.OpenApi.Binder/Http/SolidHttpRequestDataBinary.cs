@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -92,6 +93,15 @@ namespace SolidRpc.OpenApi.Binder.Http
         public void SetETag(string eTag)
         {
             ETag = eTag;
+        }
+
+        /// <summary>
+        /// Sets the last modified date
+        /// </summary>
+        /// <param name="v"></param>
+        public void SetLastModified(DateTimeOffset? lastModified)
+        {
+            LastModified = lastModified;
         }
 
         /// <summary>

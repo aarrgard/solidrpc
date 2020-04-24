@@ -28,10 +28,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.MediaType = source.Content.Headers?.ContentType?.MediaType;
                 target.CharSet = RemoveQuotes(source.Content.Headers?.ContentType?.CharSet);
                 target.Filename = source.Content.Headers?.ContentDisposition?.FileName;
-                if (source.Headers.Date.HasValue)
-                {
-                    target.LastModified = source.Headers.Date.Value.DateTime;
-                }
+                target.LastModified = source.Content.Headers?.LastModified;
                 if (source.Headers.ETag != null)
                 {
                     target.ETag = source.Headers.ETag.Tag;

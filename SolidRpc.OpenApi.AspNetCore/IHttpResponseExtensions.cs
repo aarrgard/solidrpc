@@ -39,6 +39,11 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 target.ETag = etag;
             }
+            if (source.Headers.TryGetValue("LastModified", out StringValues lastModified))
+            {
+                throw new System.Exception("!!!");
+                //target.LastModified = etag;
+            }
         }
         /// <summary>
         /// 
@@ -57,6 +62,10 @@ namespace SolidRpc.OpenApi.Binder.Http
             if (!string.IsNullOrEmpty(source.ETag))
             {
                 target.Headers.Add("ETag", AddQuotesIfMissing(source.ETag));
+            }
+            if (source.LastModified != null)
+            {
+                target.Headers.Add("Last-Modified", source.LastModified.Value.UtcDateTime.ToString("r"));
             }
             if (!string.IsNullOrEmpty(source.MediaType))
             {

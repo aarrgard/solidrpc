@@ -489,6 +489,11 @@
             The etag - stored in the ETag header
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.LastModified">
+            <summary>
+            The last modified date
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Filename">
             <summary>
             File filename - usually stored in the Content-Disposition header.

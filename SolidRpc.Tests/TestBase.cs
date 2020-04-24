@@ -176,7 +176,9 @@ namespace SolidRpc.Tests
             }
             if (typeof(DateTimeOffset).IsAssignableFrom(t))
             {
-                Assert.AreEqual(o1, o2);
+                var dto1 = (DateTimeOffset)o1;
+                var dto2 = (DateTimeOffset)o2;
+                Assert.AreEqual(dto1.ToUniversalTime().Ticks, dto2.ToUniversalTime().Ticks);
                 return true;
             }
             if (typeof(string).IsAssignableFrom(t))

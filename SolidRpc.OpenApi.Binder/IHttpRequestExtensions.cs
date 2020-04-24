@@ -237,9 +237,13 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                     {
                         part.Headers.ContentType.CharSet = binary.Encoding.HeaderName;
                     }
-                    if(!string.IsNullOrEmpty(d.ETag))
+                    if (!string.IsNullOrEmpty(d.ETag))
                     {
                         part.Headers.Add("X-ETag", d.ETag);
+                    }
+                    if (d.LastModified != null)
+                    {
+                        part.Headers.Add("X-LastModified", d.LastModified.Value.ToUniversalTime().ToString("r"));
                     }
                     if (string.IsNullOrEmpty(binary.Filename))
                     {

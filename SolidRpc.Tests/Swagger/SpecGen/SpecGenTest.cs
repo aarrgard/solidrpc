@@ -7,6 +7,7 @@ using SolidRpc.OpenApi.DotNetTool;
 using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -49,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -593,8 +594,42 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             return new ETagArg.Types.FileType()
             {
-                Content = new MemoryStream(new byte[] { 1,2,3,4,5}),
+                Content = new MemoryStream(new byte[] { 1, 2, 3, 4, 5 }),
                 ETag = "ETag"
+            };
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestLastModifiedArg()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestLastModifiedArg).Substring(4));
+
+
+                var moq = new Mock<LastModifiedArg.Services.ILastModifiedArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<LastModifiedArg.Services.ILastModifiedArg>();
+                var lastModified = DateTimeOffset.ParseExact("2020-04-24 21:13:44", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                moq.Setup(o => o.GetLastModifiedStruct(It.Is<LastModifiedArg.Types.FileType>(a => a.LastModified == lastModified))).Returns(() =>
+                {
+                    return CreateTestLastModifiedArgFileStruct(lastModified);
+                });
+                var res = proxy.GetLastModifiedStruct(CreateTestLastModifiedArgFileStruct(lastModified));
+                CompareStructs(CreateTestLastModifiedArgFileStruct(lastModified), res);
+            });
+        }
+
+        private LastModifiedArg.Types.FileType CreateTestLastModifiedArgFileStruct(DateTimeOffset lastModified)
+        {
+            return new LastModifiedArg.Types.FileType()
+            {
+                Content = new MemoryStream(new byte[] { 1,2,3,4,5}),
+                LastModified = lastModified
             };
         }
 

@@ -93,6 +93,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     template.SetCharSet(data, valData.Encoding?.HeaderName);
                     template.SetFileName(data, valData.Filename);
                     template.SetETag(data, valData.ETag);
+                    template.SetLastModified(data, valData.LastModified);
                     return data;
                 };
             }
@@ -167,6 +168,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                         latest.SetCharSet(template.GetCharSet(value));
                         latest.SetFilename(template.GetFileName(value));
                         latest.SetETag(template.GetETag(value));
+                        latest.SetLastModified(template.GetLastModified(value));
                     }
                     break; ;
             }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace SolidRpc.Abstractions.OpenApi.Http
@@ -22,6 +23,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// The etag - stored in the ETag header
         /// </summary>
         string ETag { get; }
+
+        /// <summary>
+        /// The last modified date
+        /// </summary>
+        DateTimeOffset? LastModified { get; }
 
         /// <summary>
         /// File filename - usually stored in the Content-Disposition header.
