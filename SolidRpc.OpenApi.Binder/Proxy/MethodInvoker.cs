@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
@@ -123,6 +126,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         public Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
+            IHandler invocationSource,
             IHttpRequest request, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -136,13 +140,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     StatusCode = 404
                 });
             }
-            return InvokeAsync(serviceProvider, request, methodInfo, cancellationToken);
+            return InvokeAsync(serviceProvider, invocationSource, request, methodInfo, cancellationToken);
         }
 
         public async Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
+            IHandler invocationSource,
             IHttpRequest request, 
-            IMethodBinding methodInfo, 
+            IMethodBinding methodBinding, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if(Logger.IsEnabled(LogLevel.Information))
@@ -151,17 +156,32 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
 
             //
+            // check if we should just forward the calls
+            //
+            var transport = methodBinding.Transports.Single(o => o.TransportType == invocationSource.TransportType);
+            if (transport.InvocationStrategy == InvocationStrategy.Forward)
+            {
+                var invokeTransport = methodBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+                Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");
+                var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
+                var invokeHandler = handlers.First(o => o.TransportType == invokeTransport.TransportType);
+                var invocationOptions = new InvocationOptions(invokeHandler.TransportType, InvocationOptions.MessagePriorityNormal);
+                return await invokeHandler.InvokeAsync<object>(methodBinding, invokeTransport, request, invocationOptions, cancellationToken);
+            }
+
+
+            //
             // Locate service
             //
-            var svc = serviceProvider.GetService(methodInfo.MethodInfo.DeclaringType);
+            var svc = serviceProvider.GetService(methodBinding.MethodInfo.DeclaringType);
             if (svc == null)
             {
-                throw new Exception($"Failed to resolve service for type {methodInfo.MethodInfo.DeclaringType}");
+                throw new Exception($"Failed to resolve service for type {methodBinding.MethodInfo.DeclaringType}");
             }
             var proxy = (ISolidProxy)svc;
             if (proxy == null)
             {
-                throw new Exception($"Service for {methodInfo.MethodInfo.DeclaringType} is not a solid proxy.");
+                throw new Exception($"Service for {methodBinding.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
             var resp = new SolidHttpResponse();
@@ -171,7 +191,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             object[] args;
             try
             {
-                args = await methodInfo.ExtractArgumentsAsync(request);
+                args = await methodBinding.ExtractArgumentsAsync(request);
             }
             catch(Exception e)
             {
@@ -199,14 +219,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // Invoke
                 //
-                var res = await proxy.InvokeAsync(methodInfo.MethodInfo, args, invocationValues);
+                var res = await proxy.InvokeAsync(methodBinding.MethodInfo, args, invocationValues);
 
                 //
                 // return response
                 //
                 // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
                 //
-                var resType = methodInfo.MethodInfo.ReturnType;
+                var resType = methodBinding.MethodInfo.ReturnType;
                 if (resType.IsTaskType(out Type taskType))
                 {
                     resType = taskType ?? resType;
@@ -214,13 +234,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // bind the response
                 //
-                await methodInfo.BindResponseAsync(resp, res, resType);
+                await methodBinding.BindResponseAsync(resp, res, resType);
             }
             catch (Exception ex)
             {
                 // handle exception
                 Logger.LogError(ex, "Service returned an exception - sending to client");
-                await methodInfo.BindResponseAsync(resp, ex, methodInfo.MethodInfo.ReturnType);
+                await methodBinding.BindResponseAsync(resp, ex, methodBinding.MethodInfo.ReturnType);
             }
             return resp;
 

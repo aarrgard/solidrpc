@@ -8,8 +8,6 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +27,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public ILogger Logger { get; }
         public IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
-        protected override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             var httpTransport = (IHttpTransport)transport;
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;

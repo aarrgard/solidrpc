@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 [assembly: SolidRpcService(typeof(IHandler), typeof(AzTableHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(AzTableHandler), typeof(AzTableHandler), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>

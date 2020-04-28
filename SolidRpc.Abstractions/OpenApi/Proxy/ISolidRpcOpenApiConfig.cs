@@ -37,6 +37,12 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// The configured http transport
         /// </summary>
         IQueueTransport QueueTransport { get; set; }
+
+        /// <summary>
+        /// If this configuration is set only calls to this transport will cause an invocation
+        /// on the underlying implementation. All other transports will forward calls to this one.
+        /// </summary>
+        string InvokerTransport { get; set; }
     }
 
     /// <summary>
@@ -75,7 +81,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             }
             if(!transportFound)
             {
-                config.HttpTransport = new HttpTransport(null, null);
+                config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, null, null);
                 yield return config.HttpTransport;
             }
         }
@@ -84,12 +90,13 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// Activates the http transport
         /// </summary>
         /// <param name="config"></param>
-        public static void SetHttpTransport(this ISolidRpcOpenApiConfig config)
+        /// <param name="invocationStrategy"></param>
+        public static void SetHttpTransport(this ISolidRpcOpenApiConfig config, InvocationStrategy invocationStrategy = InvocationStrategy.Invoke)
         {
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(null, null);
+                httpTransport = new HttpTransport(invocationStrategy, null, null);
             }
             config.HttpTransport = httpTransport;
         }
@@ -103,7 +110,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(methodAddressTransformer, null);
+                httpTransport = new HttpTransport(InvocationStrategy.Invoke, methodAddressTransformer, null);
             }
             else
             {
@@ -116,9 +123,10 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// Sets the queue transport type
         /// </summary>
         /// <param name="config"></param>
+        /// <param name="invocationStrategy"></param>
         /// <param name="connectionName"></param>
         /// <param name="queueName"></param>
-        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, string connectionName = null, string queueName = null) where T : IHandler
+        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, InvocationStrategy invocationStrategy = InvocationStrategy.Invoke, string connectionName = null, string queueName = null) where T : IHandler
         {
             string queueType = typeof(T).FullName.Split('.').Last();
             if(queueType.EndsWith("Handler"))
@@ -128,7 +136,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(null, null, queueType, null);
+                queueTransport = new QueueTransport(invocationStrategy, null, null, queueType, null);
             }
             if (!string.IsNullOrEmpty(connectionName))
             {
@@ -151,7 +159,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(null, connectionName, null, null);
+                queueTransport = new QueueTransport(InvocationStrategy.Invoke, null, connectionName, null, null);
             }
             else
             {
@@ -170,7 +178,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(null, null, null, inboundHandler);
+                queueTransport = new QueueTransport(InvocationStrategy.Invoke, null, null, null, inboundHandler);
             }
             else
             {

@@ -29,7 +29,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public ISerializerFactory SerializerFactory { get; }
         public ISolidRpcApplication SolidRpcApplication { get; }
 
-        protected override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             var httpReqData = new HttpRequest();
             await httpReq.CopyToAsync(httpReqData);

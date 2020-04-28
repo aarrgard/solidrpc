@@ -61,7 +61,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return resp;
         }
 
-        protected abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
+        public abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
 
         protected void AddSecurityKey(IMethodBinding methodBinding, IHttpRequest httpReq)
         {

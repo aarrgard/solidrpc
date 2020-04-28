@@ -552,6 +552,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         }
 
         public IEnumerable<ITransport> Transports { get; }
+
         private ISerializerFactory SerializerFactory { get; }
 
         public string LocalPath => OperationObject.GetAbsolutePath();

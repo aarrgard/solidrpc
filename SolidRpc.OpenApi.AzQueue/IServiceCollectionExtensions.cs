@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
 using System;
@@ -22,14 +23,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (conf.Methods.First().Name == nameof(IAzTableQueue.ProcessMessageAsync))
                 {
                     conf.SetHttpTransport();
-                    conf.SetQueueTransport<AzQueueHandler>(connectionName);
+                    conf.SetQueueTransport<AzQueueHandler>(InvocationStrategy.Invoke, connectionName);
                     conf.SetQueueTransportInboundHandler(inboundHandler);
                 }
                 
                 if (conf.Methods.First().Name == nameof(IAzTableQueue.ProcessTestMessage))
                 {
-                    conf.SetHttpTransport();
-                    conf.SetQueueTransport<AzTableHandler>(connectionName);
+                    conf.SetHttpTransport(InvocationStrategy.Forward);
+                    conf.SetQueueTransport<AzTableHandler>(InvocationStrategy.Invoke, connectionName);
                 }
 
                 return configurator?.Invoke(conf) ?? true;

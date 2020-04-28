@@ -579,20 +579,22 @@
             The store that contains all the bindings
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.CancellationToken)">
             <summary>
             Invokes the supplied request.
             </summary>
             <param name="serviceProvider"></param>
+            <param name="invocationSource"></param>
             <param name="request"></param>
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Threading.CancellationToken)">
             <summary>
             Invokes the supplied request.
             </summary>
             <param name="serviceProvider"></param>
+            <param name="invocationSource"></param>
             <param name="request"></param>
             <param name="methodInfo"></param>
             <param name="cancellation"></param>
@@ -603,6 +605,23 @@
             The invocation handler is responsible for doing
             the actual invokation
             </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.TransportType">
+            <summary>
+            The transport type that this handler uses.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,System.Threading.CancellationToken)">
+            <summary>
+            Invokes the method
+            </summary>
+            <typeparam name="TResp"></typeparam>
+            <param name="methodBinding"></param>
+            <param name="transport"></param>
+            <param name="httpReq"></param>
+            <param name="invocationOptions"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(System.Reflection.MethodInfo,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
@@ -723,6 +742,11 @@
             </summary>
         </member>
         <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Local">
+            <summary>
+            The invocation options that uses the local implementation.
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MemoryQueue">
             <summary>
             The invocation options that uses the local implementation.
             </summary>
@@ -994,6 +1018,12 @@
             The configured http transport
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.InvokerTransport">
+            <summary>
+            If this configuration is set only calls to this transport will cause an invocation
+            on the underlying implementation. All other transports will forward calls to this one.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions">
             <summary>
             Extension methods to manipulate the settings
@@ -1012,11 +1042,12 @@
             </summary>
             <param name="config"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetHttpTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetHttpTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
             <summary>
             Activates the http transport
             </summary>
             <param name="config"></param>
+            <param name="invocationStrategy"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
             <summary>
@@ -1025,11 +1056,12 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.String,System.String)">
             <summary>
             Sets the queue transport type
             </summary>
             <param name="config"></param>
+            <param name="invocationStrategy"></param>
             <param name="connectionName"></param>
             <param name="queueName"></param>
         </member>
@@ -1116,6 +1148,52 @@
             Contains the settings for the http transport.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.MethodAddressTransformer">
+            <summary>
+            The address transformer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.MethodHeadersTransformer">
+            <summary>
+            The header transformer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.OperationAddress">
+            <summary>
+            Returns the operation address
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.BaseAddress">
+            <summary>
+            Returns the base address
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.Path">
+            <summary>
+            Returns the path.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.SetMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
+            <summary>
+            Sets the address transformer
+            </summary>
+            <param name="methodAddressTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.SetMethodHeadersTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
+            <summary>
+            Sets the method headers transformer
+            </summary>
+            <param name="methodHeadersTransformer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.SetInvocationStrategy(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
+            <summary>
+            Sets the invocation strategy
+            </summary>
+            <param name="invocationStrategy"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport">
             <summary>
             Contains the settings for the queue transport.
@@ -1129,10 +1207,11 @@
             <param name="queueName"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(System.String,System.String,System.String,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.String,System.String,System.String,System.String)">
             <summary>
             Represents a queue transport
             </summary>
+            <param name="invocationStrategy"></param>
             <param name="queueName"></param>
             <param name="connectionString"></param>
             <param name="transportType"></param>
@@ -1149,24 +1228,10 @@
             The queue name
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetQueueName(System.String)">
-            <summary>
-            Sets the queue name
-            </summary>
-            <param name="queueName"></param>
-            <returns></returns>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.ConnectionName">
             <summary>
             The connection name
             </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetConnectionName(System.String)">
-            <summary>
-            Sets the connection name
-            </summary>
-            <param name="connectionName"></param>
-            <returns></returns>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.InboundHandler">
             <summary>
@@ -1178,6 +1243,20 @@
             The operation address should be the same as in open api spec.
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetConnectionName(System.String)">
+            <summary>
+            Sets the connection name
+            </summary>
+            <param name="connectionName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetQueueName(System.String)">
+            <summary>
+            Sets the queue name
+            </summary>
+            <param name="queueName"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetInboundHandler(System.String)">
             <summary>
             Sets the inbound handler
@@ -1185,16 +1264,24 @@
             <param name="inboundHandler"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.SetInvocationStrategy(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
+            <summary>
+            Sets the invocation strategy
+            </summary>
+            <param name="invocationStrategy"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport">
             <summary>
             Base type for the transports
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.#ctor(System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.#ctor(System.String,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
             <summary>
             Constructs a new instance
             </summary>
             <param name="transportType"></param>
+            <param name="invocationStrategy"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.TransportType">
             <summary>
@@ -1206,11 +1293,31 @@
             Returns the operation address
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.InvocationStrategy">
+            <summary>
+            Returns the invocation strategy
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
             <summary>
             Method that can be overridden to configure a transport.
             </summary>
             <param name="methodBinding"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy">
+            <summary>
+            The invocation strategy
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy.Invoke">
+            <summary>
+            Invokes methods on the registered proxy
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy.Forward">
+            <summary>
+            Forwards call the the transport that does the invocation.
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport">
             <summary>
@@ -1269,6 +1376,12 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.OperationAddress">
             <summary>
             The operation address
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.InvocationStrategy">
+            <summary>
+            The invocation strategy to use when handling calls
+            on this transport.
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.ITransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">

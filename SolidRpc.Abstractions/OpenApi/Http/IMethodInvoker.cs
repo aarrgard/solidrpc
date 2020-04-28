@@ -1,8 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,19 +20,30 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// Invokes the supplied request.
         /// </summary>
         /// <param name="serviceProvider"></param>
+        /// <param name="invocationSource"></param>
         /// <param name="request"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IHttpRequest request, CancellationToken cancellation = default(CancellationToken));
+        Task<IHttpResponse> InvokeAsync(
+            IServiceProvider serviceProvider,
+            IHandler invocationSource, 
+            IHttpRequest request, 
+            CancellationToken cancellation = default(CancellationToken));
 
         /// <summary>
         /// Invokes the supplied request.
         /// </summary>
         /// <param name="serviceProvider"></param>
+        /// <param name="invocationSource"></param>
         /// <param name="request"></param>
         /// <param name="methodInfo"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IHttpRequest request, IMethodBinding methodInfo, CancellationToken cancellation = default(CancellationToken));
+        Task<IHttpResponse> InvokeAsync(
+            IServiceProvider serviceProvider,
+            IHandler invocationSource, 
+            IHttpRequest request, 
+            IMethodBinding methodInfo, 
+            CancellationToken cancellation = default(CancellationToken));
     }
 }

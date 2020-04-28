@@ -150,19 +150,22 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         protected virtual Task<TRes> InvokeMethodAsync<TRes>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            invocationOptions = invocationOptions ?? InvocationOptions.Http;
-            return GetHandler(mi, invocationOptions).InvokeAsync<TRes>(mi, args, invocationOptions);
+            return GetHandler(mi, ref invocationOptions).InvokeAsync<TRes>(mi, args, invocationOptions);
         }
 
         protected virtual Task<object> InvokeMethodAsync(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            invocationOptions = invocationOptions ?? InvocationOptions.Http;
-            return GetHandler(mi, invocationOptions).InvokeAsync<object>(mi, args, invocationOptions);
+            return GetHandler(mi, ref invocationOptions).InvokeAsync<object>(mi, args, invocationOptions);
         }
 
-        private IHandler GetHandler(MethodInfo mi, InvocationOptions invocationOptions)
+        private IHandler GetHandler(MethodInfo mi, ref InvocationOptions invocationOptions)
         {
-            var transportType = invocationOptions.TransportType;
+            var transportType = invocationOptions?.TransportType;
+            if(transportType == null)
+            {
+                transportType = GetMethodBinding(mi).Transports.First().TransportType;
+                invocationOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
+            }
 
             var handlers = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>();
             var handler = handlers.FirstOrDefault(o => o.TransportType == transportType);

@@ -2,6 +2,7 @@
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
@@ -33,7 +34,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
-                    conf.SetQueueTransport<AzTableHandler>("AzureWebJobsStorage");
+                    conf.SetQueueTransport<AzTableHandler>(InvocationStrategy.Invoke, "AzureWebJobsStorage");
                 }
 
                 return ConfigureAzureFunction(conf);

@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.Abstractions.Services;
-using SolidRpc.OpenApi.AzQueue.Invoker;
+using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,10 +16,12 @@ namespace SolidRpc.Tests.Invoker
     /// </summary>
     public class QueueInvokerTest : WebHostTest
     {
+        private static int _doYInvocations = 0;
+
         public QueueInvokerTest()
         {
-            //SecKey = Guid.NewGuid();
-            SecKey = Guid.Parse("53ca29a5-1b3c-40eb-ba85-23734fbaefd0");
+            SecKey = Guid.NewGuid();
+            //SecKey = Guid.Parse("53ca29a5-1b3c-40eb-ba85-23734fbaefd0");
         }
 
         /// <summary>
@@ -66,15 +68,17 @@ namespace SolidRpc.Tests.Invoker
             public Task<int> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 Logger.LogTrace("DoYAsync");
+                _doYInvocations++;
                 return Task.FromResult(myStruct.Value);
             }
         }
 
         private void ConfigureQueueTransport(ISolidRpcOpenApiConfig conf, bool addInboundHandler)
         {
-            conf.SetQueueTransport<AzQueueHandler>();
+            conf.SetHttpTransport(InvocationStrategy.Forward);
+            conf.SetQueueTransport<MemoryQueueHandler>();
             conf.SetQueueTransportInboundHandler("generic");
-
+            conf.InvokerTransport = conf.QueueTransport.TransportType;
         }
 
         public override void ConfigureServerServices(IServiceCollection services)
@@ -118,7 +122,7 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Requires secrets")]
+        [Test]
         public async Task TestQueueInvokerSimpleInvocation()
         {
             using (var ctx = CreateKestrelHostContext())
@@ -126,17 +130,21 @@ namespace SolidRpc.Tests.Invoker
                 await ctx.StartAsync();
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
-                //var invoker = ctx.ClientServiceProvider.GetRequiredService<IQueueInvoker<ISolidRpcHost>>();
 
                 int res = 0;
-                for(int i = 0; i < 1; i++)
+                int count = 3;
+                for (int i = 0; i < count; i++)
                 {
-                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None)); ;
-                    //await invoker.InvokeAsync(o => o.IsAlive(CancellationToken.None));
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), InvocationOptions.MemoryQueue);
                 }
-
-                await Task.Delay(10000);
-                Assert.AreEqual(4711, res);
+                Assert.AreEqual(count, _doYInvocations);
+                for (int i = 0; i < count; i++)
+                {
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), InvocationOptions.Http);
+                }
+                Assert.AreEqual(count*2, _doYInvocations);
+                //await Task.Delay(10000);
+                //Assert.AreEqual(4711, res);
             }
         }
     }

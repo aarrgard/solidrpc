@@ -73,12 +73,13 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <summary>
         /// Represents a queue transport
         /// </summary>
+        /// <param name="invocationStrategy"></param>
         /// <param name="queueName"></param>
         /// <param name="connectionString"></param>
         /// <param name="transportType"></param>
         /// <param name="inboundHandler"></param>
-        public QueueTransport(string queueName, string connectionString, string transportType, string inboundHandler)
-            : base(transportType)
+        public QueueTransport(InvocationStrategy invocationStrategy, string queueName, string connectionString, string transportType, string inboundHandler)
+            : base(transportType, invocationStrategy)
         {
             QueueName = queueName;
             ConnectionName = connectionString;
@@ -108,29 +109,9 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public string QueueName { get; private set; }
 
         /// <summary>
-        /// Sets the queue name
-        /// </summary>
-        /// <param name="queueName"></param>
-        /// <returns></returns>
-        public IQueueTransport SetQueueName(string queueName)
-        {
-            return new QueueTransport(queueName, ConnectionName, TransportType, InboundHandler);
-        }
-
-        /// <summary>
         /// The connection name
         /// </summary>
         public string ConnectionName { get; private set; }
-
-        /// <summary>
-        /// Sets the connection name
-        /// </summary>
-        /// <param name="connectionName"></param>
-        /// <returns></returns>
-        public IQueueTransport SetConnectionName(string connectionName)
-        {
-            return new QueueTransport(QueueName, connectionName, TransportType, InboundHandler);
-        }
 
         /// <summary>
         /// The inbound handler
@@ -143,13 +124,43 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public override Uri OperationAddress => null;
 
         /// <summary>
+        /// Sets the connection name
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <returns></returns>
+        public IQueueTransport SetConnectionName(string connectionName)
+        {
+            return new QueueTransport(InvocationStrategy, QueueName, connectionName, TransportType, InboundHandler);
+        }
+
+        /// <summary>
+        /// Sets the queue name
+        /// </summary>
+        /// <param name="queueName"></param>
+        /// <returns></returns>
+        public IQueueTransport SetQueueName(string queueName)
+        {
+            return new QueueTransport(InvocationStrategy, queueName, ConnectionName, TransportType, InboundHandler);
+        }
+
+        /// <summary>
         /// Sets the inbound handler
         /// </summary>
         /// <param name="inboundHandler"></param>
         /// <returns></returns>
         public IQueueTransport SetInboundHandler(string inboundHandler)
         {
-            return new QueueTransport(QueueName, ConnectionName, TransportType, inboundHandler);
+            return new QueueTransport(InvocationStrategy, QueueName, ConnectionName, TransportType, inboundHandler);
+        }
+
+        /// <summary>
+        /// Sets the invocation strategy
+        /// </summary>
+        /// <param name="invocationStrategy"></param>
+        /// <returns></returns>
+        public QueueTransport SetInvocationStrategy(InvocationStrategy invocationStrategy)
+        {
+            return new QueueTransport(invocationStrategy, QueueName, ConnectionName, TransportType, InboundHandler);
         }
 
     }

@@ -7,6 +7,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -363,8 +364,9 @@ namespace Microsoft.AspNetCore.Builder
                 var request = new SolidRpc.OpenApi.Binder.Http.SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);
 
+                var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
-                var response = await methodInvoker.InvokeAsync(context.RequestServices, request, methodBinding, context.RequestAborted);
+                var response = await methodInvoker.InvokeAsync(context.RequestServices, httpHandler, request, methodBinding, context.RequestAborted);
 
                 // send data back
                 AddAllowedCorsHeaders(context);

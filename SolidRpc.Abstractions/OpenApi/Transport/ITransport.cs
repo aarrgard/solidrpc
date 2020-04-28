@@ -19,6 +19,12 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         Uri OperationAddress { get; }
 
         /// <summary>
+        /// The invocation strategy to use when handling calls
+        /// on this transport.
+        /// </summary>
+        InvocationStrategy InvocationStrategy { get; }
+
+        /// <summary>
         /// Configures the transport for supplied binding.
         /// </summary>
         /// <param name="methodBinding"></param>

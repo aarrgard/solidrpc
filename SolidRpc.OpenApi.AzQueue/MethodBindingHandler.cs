@@ -11,7 +11,9 @@ using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Linq;
 using System.Threading;
@@ -35,6 +37,7 @@ namespace SolidRpc.OpenApi.AzQueue
             ICloudQueueStore cloudQueueStore,
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
+            AzQueueHandler queueHandler,
             IMethodInvoker methodInvoker,
             IServiceScopeFactory serviceScopeFactory)
         {
@@ -42,6 +45,7 @@ namespace SolidRpc.OpenApi.AzQueue
             CloudQueueStore = cloudQueueStore;
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
+            QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             ServiceScopeFactory = serviceScopeFactory;
         }
@@ -50,6 +54,7 @@ namespace SolidRpc.OpenApi.AzQueue
         public ICloudQueueStore CloudQueueStore { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
+        private AzQueueHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
 
@@ -194,7 +199,7 @@ namespace SolidRpc.OpenApi.AzQueue
 
                 using (var scope = ServiceScopeFactory.CreateScope())
                 {
-                    var resp = await MethodInvoker.InvokeAsync(scope.ServiceProvider, request, cancellationToken);
+                    var resp = await MethodInvoker.InvokeAsync(scope.ServiceProvider, QueueHandler, request, cancellationToken);
                     if(resp.StatusCode >= 200 && resp.StatusCode < 300)
                     {
                         // ok

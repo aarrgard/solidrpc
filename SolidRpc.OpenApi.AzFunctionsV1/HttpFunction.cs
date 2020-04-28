@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -35,8 +36,9 @@ namespace SolidRpc.OpenApi.AzFunctionsV1
                 await solidReq.CopyFromAsync(req, funcHandler.GetPrefixMappings());
 
                 // invoke the method
+                var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();
                 var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-                var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
+                var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
 
                 log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
 

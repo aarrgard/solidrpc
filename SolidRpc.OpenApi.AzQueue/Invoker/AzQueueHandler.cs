@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 [assembly: SolidRpcService(typeof(IHandler), typeof(AzQueueHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(AzQueueHandler), typeof(AzQueueHandler), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>

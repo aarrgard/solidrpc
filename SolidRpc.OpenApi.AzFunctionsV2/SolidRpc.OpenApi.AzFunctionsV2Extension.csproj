@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctions\SolidRpc.OpenApi.AzFunctions.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj" />
   </ItemGroup>
 
 </Project>

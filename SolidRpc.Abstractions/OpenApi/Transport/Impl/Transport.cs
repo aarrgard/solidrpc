@@ -12,9 +12,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// Constructs a new instance
         /// </summary>
         /// <param name="transportType"></param>
-        public Transport(string transportType)
+        /// <param name="invocationStrategy"></param>
+        public Transport(string transportType, InvocationStrategy invocationStrategy)
         {
             TransportType = transportType ?? throw new ArgumentNullException(nameof(transportType));
+            InvocationStrategy = invocationStrategy;
         }
 
         /// <summary>
@@ -26,6 +28,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// Returns the operation address
         /// </summary>
         public abstract Uri OperationAddress { get; }
+
+        /// <summary>
+        /// Returns the invocation strategy
+        /// </summary>
+        public InvocationStrategy InvocationStrategy { get; }
 
         /// <summary>
         /// Method that can be overridden to configure a transport.

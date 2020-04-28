@@ -4,22 +4,18 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moq;
 using NUnit.Framework;
-using SolidProxy.Core.IoC;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.OpenApi.Binder;
+using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.Binder.Proxy;
-using SolidRpc.Tests.Swagger.CodeGen.ArrayParam.Services;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -182,8 +178,11 @@ namespace SolidRpc.Tests
                     {
                         services.AddHttpClient(binder.OpenApiSpec.Title).ConfigurePrimaryHttpMessageHandler(sp =>
                         {
-                            return new SolidRpcHttpMessageHandler(_serverServiceProvider, _serverServiceProvider.GetRequiredService<IMethodInvoker>());
-                        });
+                            return new SolidRpcHttpMessageHandler(
+                                _serverServiceProvider,
+                                _serverServiceProvider.GetRequiredService<HttpHandler>(),
+                        _serverServiceProvider.GetRequiredService<IMethodInvoker>());
+                    });
                     });
                 base.ConfigureClientServices(services);
             }

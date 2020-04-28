@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -17,14 +18,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// Constructs a new instance.
         /// </summary>
         /// <param name="methodInvoker">The method invoker.</param>
-        public SolidRpcHttpMessageHandler(IServiceProvider serviceProvider, IMethodInvoker methodInvoker)
+        public SolidRpcHttpMessageHandler(IServiceProvider serviceProvider, HttpHandler httpHandler, IMethodInvoker methodInvoker)
         {
             ServiceProvider = serviceProvider;
+            HttpHandler = httpHandler;
             MethodInvoker = methodInvoker;
             AllowAutoRedirect = false;
         }
 
         private IServiceProvider ServiceProvider { get; }
+        private HttpHandler HttpHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         {
             var req = new SolidHttpRequest();
             await req.CopyFromAsync(request);
-            var resp = await MethodInvoker.InvokeAsync(ServiceProvider, req, cancellationToken);
+            var resp = await MethodInvoker.InvokeAsync(ServiceProvider, HttpHandler, req, cancellationToken);
             var response = new HttpResponseMessage();
             await resp.CopyToAsync(response, request);
             return response;

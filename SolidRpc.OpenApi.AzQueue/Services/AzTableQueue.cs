@@ -11,6 +11,7 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Types;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             ICloudQueueStore cloudQueueStore,
             IInvoker<IAzTableQueue> invoker,
             IServiceProvider serviceProvider,
+            AzTableHandler queueHandler,
             IMethodInvoker methodInvoker,
             ISolidRpcApplication solidRpcApplication)
         {
@@ -41,6 +43,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             CloudQueueStore = cloudQueueStore;
             Invoker = invoker;
             ServiceProvider = serviceProvider;
+            QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             SolidRpcApplication = solidRpcApplication;
         }
@@ -51,6 +54,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private ICloudQueueStore CloudQueueStore { get; }
         private IInvoker<IAzTableQueue> Invoker { get; }
         private IServiceProvider ServiceProvider { get; }
+        private AzTableHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         public ISolidRpcApplication SolidRpcApplication { get; }
 
@@ -282,7 +286,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             var request = new SolidHttpRequest();
             await request.CopyFromAsync(httpRequest);
 
-            var resp = await MethodInvoker.InvokeAsync(ServiceProvider, request);
+            var resp = await MethodInvoker.InvokeAsync(ServiceProvider, QueueHandler, request);
             if(resp.StatusCode >= 200 && resp.StatusCode < 300)
             {
                 // row processed ok - delete it

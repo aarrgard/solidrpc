@@ -5,7 +5,9 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzFunctions;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,8 +46,9 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
                 await solidReq.CopyFromAsync(httpReq);
 
                 // invoke the method
+                var httpHandler = serviceProvider.GetRequiredService<AzQueueHandler>();
                 var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-                var res = await methodInvoker.InvokeAsync(serviceProvider, solidReq, cancellationToken);
+                var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
 
                 if (res.StatusCode >= 200 && res.StatusCode < 300)
                 {

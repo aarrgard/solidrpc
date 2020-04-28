@@ -34,6 +34,12 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         public static readonly InvocationOptions Local = new InvocationOptions("Local", MessagePriorityNormal);
 
         /// <summary>
+        /// The invocation options that uses the local implementation.
+        /// </summary>
+
+        public static readonly InvocationOptions MemoryQueue = new InvocationOptions("MemoryQueue", MessagePriorityNormal);
+
+        /// <summary>
         /// The invocation options that uses the azure queue.
         /// </summary>
 
