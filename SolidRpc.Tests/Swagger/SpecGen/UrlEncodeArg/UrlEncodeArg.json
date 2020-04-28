@@ -10,23 +10,28 @@
     "https"
   ],
   "paths": {
-    "/Services/IUrlEncodeArg/ProxyString/{s}": {
+    "/Services/IUrlEncodeArg/ProxyStrings/{s1}/{s2}": {
       "get": {
         "tags": [
           "IUrlEncodeArg"
         ],
         "description": "Proxies the string",
-        "operationId": "ProxyString",
+        "operationId": "ProxyStrings",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "s",
+            "name": "s1",
             "in": "path",
             "required": true,
-            "type": "string",
-            "description": ""
+            "type": "string"
+          },
+          {
+            "name": "s2",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

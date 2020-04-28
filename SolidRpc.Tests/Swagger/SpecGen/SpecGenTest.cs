@@ -649,12 +649,24 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlEncodeArg.Services.IUrlEncodeArg>();
 
                 var stringCheck1 = "one/one";
-                moq.Setup(o => o.ProxyString(It.Is<string>(a => a == stringCheck1))).Returns(() => stringCheck1);
-                Assert.AreEqual(stringCheck1, proxy.ProxyString(stringCheck1));
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck1))).Returns(() => stringCheck1);
+                Assert.AreEqual(stringCheck1, proxy.ProxyStrings(stringCheck1, stringCheck1));
 
                 var stringCheck2 = "one+one";
-                moq.Setup(o => o.ProxyString(It.Is<string>(a => a == stringCheck2))).Returns(() => stringCheck2);
-                Assert.AreEqual(stringCheck2, proxy.ProxyString(stringCheck2));
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck2), It.Is<string>(a => a == stringCheck2))).Returns(() => stringCheck2);
+                Assert.AreEqual(stringCheck2, proxy.ProxyStrings(stringCheck2, stringCheck2));
+
+                var stringCheck3 = "one()";
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck3), It.Is<string>(a => a == stringCheck3))).Returns(() => stringCheck3);
+                Assert.AreEqual(stringCheck3, proxy.ProxyStrings(stringCheck3, stringCheck3));
+
+                var stringCheck4 = "one[]";
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck4), It.Is<string>(a => a == stringCheck4))).Returns(() => stringCheck4);
+                Assert.AreEqual(stringCheck4, proxy.ProxyStrings(stringCheck4, stringCheck4));
+
+                var stringCheck5 = "one{}";
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck5), It.Is<string>(a => a == stringCheck5))).Returns(() => stringCheck5);
+                Assert.AreEqual(stringCheck5, proxy.ProxyStrings(stringCheck5, stringCheck5));
             });
         }
 

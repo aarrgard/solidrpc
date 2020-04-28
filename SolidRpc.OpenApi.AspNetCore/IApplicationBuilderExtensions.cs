@@ -260,6 +260,12 @@ namespace Microsoft.AspNetCore.Builder
         {
             var rawPathDecoded = HttpUtility.UrlDecode(rawPath);
 
+            //
+            // for some reason the [] are not decoded?? - perhaps more will show up...
+            //
+            pathBase = pathBase.Replace("%5B", "[").Replace("%5D", "]");
+            pathBase = pathBase.Replace("%7B", "{").Replace("%7D", "}");
+
             if (!rawPathDecoded.StartsWith(pathBase))
             {
                 throw new Exception("raw path does not start with path base!");
