@@ -59,7 +59,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 };
 
             }
-            return (TRes)proxy.Invoke(mi, args, invocationValues);
+            return (TRes)proxy.Invoke(this, mi, args, invocationValues);
         }
         public override Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {

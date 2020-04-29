@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build046" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc008" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctionsV1\SolidRpc.OpenApi.AzFunctionsV1Extension.csproj" />

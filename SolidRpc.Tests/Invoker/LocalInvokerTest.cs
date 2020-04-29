@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidProxy.Core.Proxy;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Types;
@@ -110,9 +111,13 @@ namespace SolidRpc.Tests.Invoker
             var sp = sc.BuildServiceProvider();
 
             // we should not be able to invoke the service directly
+            var proxy = sp.GetRequiredService<ITestInterface>();
+            await proxy.DoXAsync();
+
             try
             {
-                await sp.GetRequiredService<ITestInterface>().DoXAsync();
+                // This shold not work
+                await ((ISolidProxy)proxy).InvokeAsync(this, typeof(ITestInterface).GetMethod(nameof(ITestInterface.DoXAsync)), null, null);
                 Assert.Fail();
             } 
             catch(UnauthorizedException e)

@@ -493,6 +493,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 var value = secKey.Value.Value;
                 mc.AddPreInvocationCallback(i =>
                 {
+                    // calls invoked directly from a proxy are allowed
+                    if(i.Caller is ISolidProxy)
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    //
+                    // check the security key if specified
+                    //
                     var callKey = i.GetValue<StringValues>(key);
                     if(!value.Equals(callKey.ToString()))
                     {

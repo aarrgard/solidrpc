@@ -219,7 +219,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // Invoke
                 //
-                var res = await proxy.InvokeAsync(methodBinding.MethodInfo, args, invocationValues);
+                var res = await proxy.InvokeAsync(invocationSource, methodBinding.MethodInfo, args, invocationValues);
 
                 //
                 // return response
