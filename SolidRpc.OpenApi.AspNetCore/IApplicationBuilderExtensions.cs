@@ -10,7 +10,9 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -263,8 +265,7 @@ namespace Microsoft.AspNetCore.Builder
             //
             // for some reason the [] are not decoded?? - perhaps more will show up...
             //
-            pathBase = pathBase.Replace("%5B", "[").Replace("%5D", "]");
-            pathBase = pathBase.Replace("%7B", "{").Replace("%7D", "}");
+            pathBase = DecodeHex(pathBase);
 
             if (!rawPathDecoded.StartsWith(pathBase))
             {
@@ -278,7 +279,7 @@ namespace Microsoft.AspNetCore.Builder
             while (pathBase.Length > 0)
             {
                 if (!segments.MoveNext()) throw new Exception("Cannot move to next segment!");
-                var urlDecdedSegment = "/" + HttpUtility.UrlDecode(segments.Current);
+                var urlDecdedSegment = "/" + DecodeHex(segments.Current);
                 if (!pathBase.StartsWith(urlDecdedSegment))
                 {
                     throw new Exception("Something is rotten in the state of denmark!");
@@ -300,6 +301,40 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             return "/" + HttpUtility.UrlDecode(currentSegment);
+        }
+
+        private static string DecodeHex(string str)
+        {
+            var sb = new StringBuilder();
+            int escapeSequence = 0;
+            for(int i = 0; i < str.Length; i++)
+            {
+                switch (str[i])
+                {
+                    case '%':
+                        escapeSequence ++;
+                        sb.Append(str[i]);
+                        break;
+                    default:
+                        if (escapeSequence > 0)
+                        {
+                            escapeSequence++;
+                        }
+                        sb.Append(str[i]);
+                        if (escapeSequence == 3)
+                        {
+                            var hex = $"{sb[sb.Length - 2]}{sb[sb.Length - 1]}";
+                            if(int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int nbr))
+                            {
+                                sb.Length = sb.Length - 3;
+                                sb.Append((char)nbr);
+                            }
+                            escapeSequence = 0;
+                        }
+                        break;
+                }
+            }
+            return sb.ToString();
         }
 
         private static async Task HandleInvocation(IEnumerable<string> allowedCorsOrigins, ISolidRpcContentHandler contentHandler, HttpContext ctx)
