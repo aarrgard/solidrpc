@@ -21,7 +21,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
         public static string GetTypeName(Type type)
         {
             return s_type2string.GetOrAdd(type, GetTypeNameInternal);
-       }
+        }
 
         private static string GetTypeNameInternal(Type type)
         {
@@ -49,6 +49,10 @@ namespace SolidRpc.OpenApi.Model.Serialization
 
         private static Type GetTypeInternal(string typeName)
         {
+            if(typeName.EndsWith("[]"))
+            {
+                return GetTypeInternal(typeName.Substring(0,typeName.Length-2)).MakeArrayType();
+            }
             var (genType, genArgs, rest) = ReadType(typeName);
             if (genArgs != null) genType = $"{genType}`{genArgs.Count}";
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
@@ -69,7 +73,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
                 {
                 }
             }
-            throw new Exception("Cannot fínd type:"+typeName);
+            throw new Exception("Cannot find type:"+typeName);
         }
 
         private static (string, IList<Type>, string) ReadType(string fullName)

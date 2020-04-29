@@ -72,7 +72,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc008" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-build046" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
@@ -90,7 +90,6 @@
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Vitec.Impl\SolidRpc.Test.Vitec.Impl.csproj" />
-    <ProjectReference Include="..\SolidRpc.Wire\SolidRpc.Wire.csproj" />
   </ItemGroup>
 
   <ItemGroup>
