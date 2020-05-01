@@ -151,7 +151,7 @@
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync",
         "methods": [
-          "GET"
+          "POST"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync"
@@ -169,7 +169,7 @@
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}",
         "methods": [
-          "GET"
+          "POST"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}"

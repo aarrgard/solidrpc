@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using SolidRpc.Abstractions;
@@ -12,9 +13,10 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue;
 using SolidRpc.OpenApi.AzQueue.Invoker;
+using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Binder.Invoker;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,8 +30,6 @@ namespace SolidRpc.OpenApi.AzQueue
     /// </summary>
     public class MethodBindingHandler : IMethodBindingHandler
     {
-        public const string AzQueueTableType = "AzTable";
-        public const string AzQueueQueueType = "AzQueue";
         public const string GenericInboundHandler = "generic";
 
         public MethodBindingHandler(
@@ -38,6 +38,7 @@ namespace SolidRpc.OpenApi.AzQueue
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
             AzQueueHandler queueHandler,
+            IServiceProvider serviceProvider,
             IMethodInvoker methodInvoker,
             IServiceScopeFactory serviceScopeFactory)
         {
@@ -46,8 +47,10 @@ namespace SolidRpc.OpenApi.AzQueue
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
             QueueHandler = queueHandler;
+            ServiceProvider = serviceProvider;
             MethodInvoker = methodInvoker;
             ServiceScopeFactory = serviceScopeFactory;
+            FlushQueuesTasks = new List<Func<CancellationToken, Task>>();
         }
 
         private ILogger Logger { get; }
@@ -55,12 +58,16 @@ namespace SolidRpc.OpenApi.AzQueue
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private AzQueueHandler QueueHandler { get; }
+        private IServiceProvider ServiceProvider { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
 
+        private BlobRequestOptions BlobRequestOptions => new BlobRequestOptions();
         private QueueRequestOptions QueueRequestOptions => new QueueRequestOptions();
         private OperationContext OperationContext => new OperationContext();
         private TableRequestOptions TableRequestOptions => new TableRequestOptions();
+
+        private ICollection<Func<CancellationToken, Task>> FlushQueuesTasks { get; }
 
         /// <summary>
         /// Invoked when a binding has been created. If there is a Queue transport
@@ -69,41 +76,35 @@ namespace SolidRpc.OpenApi.AzQueue
         /// <param name="binding"></param>
         public void BindingCreated(IMethodBinding binding)
         {
-            var queueTransport = binding.Transports.OfType<IQueueTransport>().FirstOrDefault();
-            if (queueTransport == null)
-            {
-                if (Logger.IsEnabled(LogLevel.Trace))
+
+            //
+            // start all the queues
+            //
+            binding.Transports.OfType<IQueueTransport>()
+                .Where(o => string.Equals(o.TransportType, AzTableHandler.TransportType, StringComparison.InvariantCultureIgnoreCase))
+                .ToList().ForEach(qt =>
                 {
-                    Logger.LogTrace($"No queue transport configured for binding {binding.OperationId} - cannot configure queue");
-                }
-                return;
-            }
-            if (string.Equals(queueTransport.TransportType, AzQueueTableType, StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (Logger.IsEnabled(LogLevel.Trace))
+                    if (Logger.IsEnabled(LogLevel.Trace))
+                    {
+                        Logger.LogTrace($"Setting up AzTable binding for {binding.OperationId}.");
+                    }
+                    FlushQueuesTasks.Add((ct) => FlushTableTransport(binding, qt, ct));
+                    SolidRpcApplication.AddStartupTask(SetupTable(binding, qt.ConnectionName, qt.QueueName));
+                });
+
+            binding.Transports.OfType<IQueueTransport>()
+                .Where(o => string.Equals(o.TransportType, AzQueueHandler.TransportType, StringComparison.InvariantCultureIgnoreCase))
+                .ToList().ForEach(qt =>
                 {
-                    Logger.LogTrace($"Queue type({queueTransport.TransportType}) is a {AzQueueTableType} for binding {binding.OperationId} - setting up table.");
-                }
-                SolidRpcApplication.AddStartupTask(SetupTable(binding, queueTransport.ConnectionName, queueTransport.QueueName));
-                return;
-            }
-            if (!string.Equals(queueTransport.TransportType, AzQueueQueueType, StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (Logger.IsEnabled(LogLevel.Trace))
-                {
-                    Logger.LogTrace($"Queue type({queueTransport.TransportType}) is not a {AzQueueQueueType} for binding {binding.OperationId} - will not configure az queue");
-                }
-                return;
-            }
-            bool startReceiver = string.Equals(queueTransport.InboundHandler, GenericInboundHandler, StringComparison.InvariantCultureIgnoreCase);
-            if (!startReceiver)
-            {
-                if (Logger.IsEnabled(LogLevel.Trace))
-                {
-                    Logger.LogTrace($"Inbound handler not {GenericInboundHandler}({queueTransport.InboundHandler}) {binding.OperationId} - will not startup generic receiver");
-                }
-            }
-            SolidRpcApplication.AddStartupTask(SetupQueue(binding, queueTransport.ConnectionName, queueTransport.QueueName, startReceiver));
+                    if (Logger.IsEnabled(LogLevel.Trace))
+                    {
+                        Logger.LogTrace($"Setting up AzQueue binding for {binding.OperationId}.");
+                    }
+                    FlushQueuesTasks.Add((ct) => FlushQueueTransport(binding, qt, ct));
+
+                    bool startReceiver = string.Equals(qt.InboundHandler, GenericInboundHandler, StringComparison.InvariantCultureIgnoreCase);
+                    SolidRpcApplication.AddStartupTask(SetupQueue(binding, qt.ConnectionName, qt.QueueName, startReceiver));
+                });
         }
 
         private async Task SetupTable(IMethodBinding binding, string connectionName, string queueName)
@@ -122,19 +123,24 @@ namespace SolidRpc.OpenApi.AzQueue
         {
             var cloudQueue = CloudQueueStore.GetCloudQueue(connectionName, queueName);
 
-            if(Logger.IsEnabled(LogLevel.Trace))
+            if (Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Ensuring that the queue {cloudQueue.Name} exists.");
             }
             await cloudQueue.CreateIfNotExistsAsync(QueueRequestOptions, OperationContext, SolidRpcApplication.ShutdownToken);
+            await CloudQueueStore.GetCloudBlobContainer(connectionName).CreateIfNotExistsAsync(BlobContainerPublicAccessType.Container, BlobRequestOptions, OperationContext, SolidRpcApplication.ShutdownToken);
 
             if (startReceiver)
             {
-                StartMessagePump(cloudQueue);
+                if (Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace($"Starting generic inbound handler for operation {binding.OperationId}.");
+                }
+                StartMessagePump(connectionName, cloudQueue);
             }
         }
 
-        private async Task StartMessagePump(CloudQueue cloudQueue)
+        private async Task StartMessagePump(string connectionName, CloudQueue cloudQueue)
         {
             int emptyQueueCount = 0;
             var cancellationToken = SolidRpcApplication.ShutdownToken;
@@ -156,9 +162,10 @@ namespace SolidRpc.OpenApi.AzQueue
                     if (msg != null)
                     {
                         emptyQueueCount = 0;
-                        if (await ProcessMessage(msg, cancellationToken))
+                        if (await ProcessMessage(connectionName, msg, cancellationToken))
                         {
-                            await cloudQueue.DeleteAsync(QueueRequestOptions, OperationContext, cancellationToken);
+                            await CloudQueueStore.DeleteLargeMessageAsync(connectionName, msg.AsString, cancellationToken);
+                            await cloudQueue.DeleteMessageAsync(msg.Id, msg.PopReceipt, QueueRequestOptions, OperationContext, cancellationToken);
                         }
                         continue;
                     }
@@ -182,7 +189,7 @@ namespace SolidRpc.OpenApi.AzQueue
             }
         }
 
-        private async Task<bool> ProcessMessage(CloudQueueMessage msg, CancellationToken cancellationToken)
+        private async Task<bool> ProcessMessage(string connectionName, CloudQueueMessage msg, CancellationToken cancellationToken)
         {
             try
             {
@@ -191,8 +198,10 @@ namespace SolidRpc.OpenApi.AzQueue
                     Logger.LogInformation("Started processing message:" + msg.Id);
                 }
 
+                var strMsg = await CloudQueueStore.RetreiveLargeMessageAsync(connectionName, msg.AsString, cancellationToken);
+
                 HttpRequest httpRequest;
-                SerializerFactory.DeserializeFromString(msg.AsString, out httpRequest);
+                SerializerFactory.DeserializeFromString(strMsg, out httpRequest);
 
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(httpRequest);
@@ -220,6 +229,61 @@ namespace SolidRpc.OpenApi.AzQueue
             finally
             {
                 Logger.LogInformation("Completed processing message:" + msg.Id);
+            }
+        }
+
+        public Task FlushQueuesAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.WhenAll(FlushQueuesTasks.Select(o => o(cancellationToken)));
+        }
+
+        private async Task FlushTableTransport(IMethodBinding binding, IQueueTransport qt, CancellationToken cancellationToken)
+        {
+            await ServiceProvider.GetRequiredService<IAzTableQueue>().DispatchMessageAsync(cancellationToken);
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                // find all the rows for the binding
+                var ct = CloudQueueStore.GetCloudTable(qt.ConnectionName);
+                var messages = await Services.AzTableQueue.GetMessagesAsync(ct, qt.QueueName, new[] { TableMessageEntity.StatusPending, TableMessageEntity.StatusDispatched }, cancellationToken);
+                if(messages.Count() == 0)
+                {
+                    return;
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        private async Task FlushQueueTransport(IMethodBinding binding, IQueueTransport qt, CancellationToken cancellationToken)
+        {
+            var cq = CloudQueueStore.GetCloudQueue(qt.ConnectionName, qt.QueueName);
+            try
+            {
+                while(!cancellationToken.IsCancellationRequested)
+                {
+                    await cq.FetchAttributesAsync();
+                    if (cq.ApproximateMessageCount == 0)
+                    {
+                        if(Logger.IsEnabled(LogLevel.Trace))
+                        {
+                            Logger.LogTrace($"AzQueue {qt.QueueName} is empty");
+                        }
+                        return;
+                    }
+                    await Task.Delay(500);
+                }
+            }
+            catch (StorageException se)
+            {
+                if(se.RequestInformation.ErrorCode == "QueueNotFound")
+                {
+                    if (Logger.IsEnabled(LogLevel.Trace))
+                    {
+                        Logger.LogTrace($"AzQueue {qt.QueueName} not found - empty");
+                    }
+                    return;
+                }
+                throw;
             }
         }
     }

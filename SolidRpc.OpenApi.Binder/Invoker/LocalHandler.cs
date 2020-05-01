@@ -26,7 +26,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public ILogger Logger { get; }
 
-
         public override async Task<TRes> InvokeAsync<TRes>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
             var service = ServiceProvider.GetService(mi.DeclaringType);

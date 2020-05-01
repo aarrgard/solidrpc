@@ -152,5 +152,10 @@ namespace SolidRpc.OpenApi.AzSvcBus
                 Logger.LogInformation("Completed processing message:" + msg.MessageId);
             }
         }
+
+        public Task FlushQueuesAsync(CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

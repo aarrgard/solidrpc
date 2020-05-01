@@ -1,11 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,7 +37,7 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
-            public int Value { get; set; }
+            public string Value { get; set; }
         }
 
         /// <summary>
@@ -46,7 +51,7 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
+            Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -65,7 +70,7 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
+            public Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 Logger.LogTrace("DoYAsync");
                 _doYInvocations++;
@@ -77,8 +82,10 @@ namespace SolidRpc.Tests.Invoker
         {
             conf.SetHttpTransport(InvocationStrategy.Forward);
             conf.SetQueueTransport<MemoryQueueHandler>();
-            conf.SetQueueTransportInboundHandler("generic");
-            conf.InvokerTransport = conf.QueueTransport.TransportType;
+            if(addInboundHandler)
+            {
+                conf.SetQueueTransportInboundHandler("generic");
+            }
         }
 
         public override void ConfigureServerServices(IServiceCollection services)
@@ -92,7 +99,7 @@ namespace SolidRpc.Tests.Invoker
                 ConfigureQueueTransport(conf, true);
                 return true;
             });
-
+            //services.AddAzTableQueue("SolidRpcAzTableConnection", "generic");
         }
 
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
@@ -131,20 +138,34 @@ namespace SolidRpc.Tests.Invoker
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
 
-                int res = 0;
-                int count = 3;
+                var sb = new StringBuilder();
+                for(int i = 0; i <  1 *1024 * 1024; i++)
+                {
+                    sb.Append((char)('a'+(i%25)));
+                }
+                var value = sb.ToString();
+                string res = null;
+                int count = 2;
                 for (int i = 0; i < count; i++)
                 {
-                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), InvocationOptions.MemoryQueue);
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = value }, CancellationToken.None));
                 }
+
+                // wait for the handler queues to complete
+                var tasks = ctx.ServerServiceProvider.GetRequiredService<IEnumerable<IMethodBindingHandler>>().Select(o => o.FlushQueuesAsync());
+                await Task.WhenAll(tasks);
+
                 Assert.AreEqual(count, _doYInvocations);
                 for (int i = 0; i < count; i++)
                 {
-                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), InvocationOptions.Http);
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = value }, CancellationToken.None), InvocationOptions.Http);
                 }
-                Assert.AreEqual(count*2, _doYInvocations);
-                //await Task.Delay(10000);
-                //Assert.AreEqual(4711, res);
+
+                // wait for the handler queues to complete
+                tasks = ctx.ServerServiceProvider.GetRequiredService<IEnumerable<IMethodBindingHandler>>().Select(o => o.FlushQueuesAsync());
+                await Task.WhenAll(tasks);
+
+                Assert.AreEqual(count * 2, _doYInvocations);
             }
         }
     }

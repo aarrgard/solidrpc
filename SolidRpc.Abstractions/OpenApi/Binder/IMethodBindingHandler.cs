@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Binder
 {
@@ -14,5 +16,12 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// </summary>
         /// <param name="binding"></param>
         void BindingCreated(IMethodBinding binding);
+
+        /// <summary>
+        /// Flushes the queues.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task FlushQueuesAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

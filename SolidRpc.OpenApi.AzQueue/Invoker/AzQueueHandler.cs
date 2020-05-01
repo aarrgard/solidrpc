@@ -21,7 +21,10 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
     /// </summary>
     public class AzQueueHandler : QueueHandler
     {
-        public static readonly string TransportType = "AzQueue";
+        /// <summary>
+        /// The transport type
+        /// </summary>
+        public static readonly new string TransportType = GetTransportType(typeof(AzQueueHandler));
 
         public AzQueueHandler(
             ILogger<QueueHandler> logger, 
@@ -38,6 +41,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
         {
+            message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message);
             var msg = new CloudQueueMessage(message);
             var qc = CloudQueueStore.GetCloudQueue(transport.ConnectionName, transport.QueueName);
             await qc.AddMessageAsync(msg);

@@ -5,9 +5,9 @@
       "name": "req",
       "direction": "in",
       "type": "httpTrigger",
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "methods": [
-        "get"
+        "post"
       ],
       "route": "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}"
     },

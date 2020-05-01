@@ -33,7 +33,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             ITransport transport, 
             IHttpRequest httpReq, 
             InvocationOptions invocationOptions, 
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken = default(CancellationToken));
 
 
         /// <summary>

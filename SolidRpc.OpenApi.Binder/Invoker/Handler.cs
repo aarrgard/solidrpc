@@ -23,6 +23,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
         private static ConcurrentDictionary<Type, Func<object, object>> Invokers = new ConcurrentDictionary<Type, Func<object, object>>();
+        protected static string GetTransportType(Type type)
+        {
+            return type.Name.Substring(0, type.Name.Length - "Handler".Length);
+        }
+
         public Handler(ILogger<Handler> logger, IServiceProvider serviceProvider)
         {
             Logger = logger;
@@ -33,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         protected IServiceProvider ServiceProvider { get; }
         protected IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
 
-        public string TransportType => GetType().Name.Substring(0, GetType().Name.Length - "Handler".Length);
+        public string TransportType => GetTransportType(GetType());
 
         public virtual Task<TResp> InvokeAsync<TResp>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
@@ -60,8 +65,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var resp = methodBinding.ExtractResponse<TResp>(httpResp);
             return resp;
         }
-
-        public abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
 
         protected void AddSecurityKey(IMethodBinding methodBinding, IHttpRequest httpReq)
         {
@@ -98,5 +101,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             httpReq.Headers = httpReq.Headers.Union(newCookies).ToList();
         }
 
+        public abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
     }
 }

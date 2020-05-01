@@ -37,12 +37,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// The configured http transport
         /// </summary>
         IQueueTransport QueueTransport { get; set; }
-
-        /// <summary>
-        /// If this configuration is set only calls to this transport will cause an invocation
-        /// on the underlying implementation. All other transports will forward calls to this one.
-        /// </summary>
-        string InvokerTransport { get; set; }
     }
 
     /// <summary>
@@ -91,12 +85,16 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// </summary>
         /// <param name="config"></param>
         /// <param name="invocationStrategy"></param>
-        public static void SetHttpTransport(this ISolidRpcOpenApiConfig config, InvocationStrategy invocationStrategy = InvocationStrategy.Invoke)
+        public static void SetHttpTransport(this ISolidRpcOpenApiConfig config, InvocationStrategy? invocationStrategy = null)
         {
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(invocationStrategy, null, null);
+                httpTransport = new HttpTransport(invocationStrategy ?? InvocationStrategy.Invoke, null, null);
+            }
+            else if(invocationStrategy != null)
+            {
+                httpTransport = httpTransport.SetInvocationStrategy(invocationStrategy.Value);
             }
             config.HttpTransport = httpTransport;
         }
@@ -126,7 +124,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <param name="invocationStrategy"></param>
         /// <param name="connectionName"></param>
         /// <param name="queueName"></param>
-        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, InvocationStrategy invocationStrategy = InvocationStrategy.Invoke, string connectionName = null, string queueName = null) where T : IHandler
+        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, InvocationStrategy? invocationStrategy = null, string connectionName = null, string queueName = null) where T : IHandler
         {
             string queueType = typeof(T).FullName.Split('.').Last();
             if(queueType.EndsWith("Handler"))
@@ -136,7 +134,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(invocationStrategy, null, null, queueType, null);
+                queueTransport = new QueueTransport(invocationStrategy ?? InvocationStrategy.Invoke, null, null, queueType, null);
             }
             if (!string.IsNullOrEmpty(connectionName))
             {

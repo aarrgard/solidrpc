@@ -12,13 +12,23 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
     {
         private Uri _operationAddress;
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="invocationStrategy"></param>
+        /// <param name="methodAddressTransformer"></param>
+        /// <param name="methodHeadersTransformer"></param>
         public HttpTransport(InvocationStrategy invocationStrategy, MethodAddressTransformer methodAddressTransformer, MethodHeadersTransformer methodHeadersTransformer)
             : base("Http", invocationStrategy)
         {
             MethodAddressTransformer = methodAddressTransformer;
             MethodHeadersTransformer = methodHeadersTransformer;
         }
- 
+    
+        /// <summary>
+        /// Configures the transport
+        /// </summary>
+        /// <param name="methodBinding"></param>
         public override void Configure(IMethodBinding methodBinding)
         {
             base.Configure(methodBinding);

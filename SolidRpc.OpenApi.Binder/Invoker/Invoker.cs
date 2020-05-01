@@ -163,7 +163,9 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var transportType = invocationOptions?.TransportType;
             if(transportType == null)
             {
-                transportType = GetMethodBinding(mi).Transports.First().TransportType;
+                transportType = GetMethodBinding(mi).Transports
+                    .OrderBy(o => o.InvocationStrategy)
+                    .First().TransportType;
                 invocationOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
             }
 

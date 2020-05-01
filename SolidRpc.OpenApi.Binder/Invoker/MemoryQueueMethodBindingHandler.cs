@@ -97,7 +97,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         {
             try
             {
-                Logger.LogInformation("Started processing message:" + msg);
+                Logger.LogInformation("Started processing message..");
 
                 HttpRequest httpRequest;
                 SerializerFactory.DeserializeFromString(msg, out httpRequest);
@@ -112,8 +112,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             } 
             finally
             {
-                Logger.LogInformation("Completed processing message:" + msg);
+                Logger.LogInformation("...Completed processing message");
             }
+        }
+
+        public Task FlushQueuesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.CompletedTask;
         }
     }
 }

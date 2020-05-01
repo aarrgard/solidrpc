@@ -15,6 +15,7 @@ using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,19 @@ namespace SolidRpc.OpenApi.AzQueue.Services
 {
     public class AzTableQueue : IAzTableQueue
     {
-         private static ConcurrentDictionary<string, SemaphoreSlim> Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+
+        private static TableRequestOptions TableRequestOptions => new TableRequestOptions();
+        private static OperationContext OperationContext => new OperationContext();
+
+        public static async Task<IEnumerable<TableMessageEntity>> GetMessagesAsync(CloudTable cloudTable, string queueName, IEnumerable<string> statuses, CancellationToken cancellationToken)
+        {
+            var filter = $"(PartitionKey eq '{TableMessageEntity.CreatePartitionKey(queueName)}') and ({string.Join(" or ", statuses.Select(o => $"Status eq '{o}'"))})";
+            var query = new TableQuery<TableMessageEntity>().Where(filter).Take(100);
+            TableContinuationToken token = null;
+            return (IEnumerable<TableMessageEntity>)(await cloudTable.ExecuteQuerySegmentedAsync(query, token, TableRequestOptions, OperationContext, cancellationToken));
+        }
+
+        private static ConcurrentDictionary<string, SemaphoreSlim> Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
         public AzTableQueue(
             ILogger<AzTableQueue> logger,
@@ -57,9 +70,6 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private AzTableHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         public ISolidRpcApplication SolidRpcApplication { get; }
-
-        private TableRequestOptions TableRequestOptions => new TableRequestOptions();
-        private OperationContext OperationContext => new OperationContext();
 
         private IEnumerable<IQueueTransport> GetTableTransports()
         {
@@ -104,14 +114,6 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             {
                 semaphore.Release();
             }
-        }
-
-        private async Task<IEnumerable<TableMessageEntity>> GetMessagesAsync(CloudTable cloudTable, string queueName, IEnumerable<string> statuses, CancellationToken cancellationToken)
-        {
-            var filter = $"(PartitionKey eq '{TableMessageEntity.CreatePartitionKey(queueName)}') and ({string.Join(" or ", statuses.Select(o => $"Status eq '{o}'"))})";
-            var query = new TableQuery<TableMessageEntity>().Where(filter).Take(100);
-            TableContinuationToken token = null;
-            return (IEnumerable<TableMessageEntity>)(await cloudTable.ExecuteQuerySegmentedAsync(query, token, TableRequestOptions, OperationContext, cancellationToken));
         }
 
         private (IEnumerable<TableMessageEntity>, AzTableQueueSettings) GetSettings(IEnumerable<TableMessageEntity> results)
@@ -280,8 +282,10 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 return;
             }
 
+            var message = await CloudQueueStore.RetreiveLargeMessageAsync(connectionName, row.Message, cancellationToken);
+
             HttpRequest httpRequest;
-            SerializerFactory.DeserializeFromString(row.Message, out httpRequest);
+            SerializerFactory.DeserializeFromString(message, out httpRequest);
 
             var request = new SolidHttpRequest();
             await request.CopyFromAsync(httpRequest);
@@ -290,6 +294,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             if(resp.StatusCode >= 200 && resp.StatusCode < 300)
             {
                 // row processed ok - delete it
+                await CloudQueueStore.DeleteLargeMessageAsync(connectionName, row.Message, cancellationToken);
                 await cloudTable.ExecuteAsync(TableOperation.Delete(row), TableRequestOptions, OperationContext, cancellationToken);
             }
             else
@@ -360,18 +365,22 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
         }
 
-        public Task SendTestMessageAync(int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
+        public async Task SendTestMessageAync(Stream payload, int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
         {
+            var ms = new MemoryStream();
+            await payload.CopyToAsync(ms);
+
             var tasks = new List<Task>();
             for(int i = 0; i < messageCount; i++)
             {
-                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(raiseException, cancellationToken), InvocationOptions.AzTable.SetPriority(messagePriority)));
+                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(new MemoryStream(ms.ToArray()), raiseException, cancellationToken), InvocationOptions.AzTable.SetPriority(messagePriority)));
             }
-            return Task.WhenAll(tasks);
+            await Task.WhenAll(tasks);
         }
 
-        public Task ProcessTestMessage(bool raiseException, CancellationToken cancellationToken = default)
+        public Task ProcessTestMessage(Stream payload, bool raiseException, CancellationToken cancellationToken = default)
         {
+            while (payload.ReadByte() > 0);
             if (raiseException) throw new Exception("Exception in test method.");
             return Task.CompletedTask;
         }

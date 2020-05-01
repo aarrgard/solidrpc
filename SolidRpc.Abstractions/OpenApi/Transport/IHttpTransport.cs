@@ -37,5 +37,12 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         /// <param name="methodHeadersTransformer"></param>
         /// <returns></returns>
         IHttpTransport SetMethodHeadersTransformer(MethodHeadersTransformer methodHeadersTransformer);
+        
+        /// <summary>
+        /// Sets the invocation strategy
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        IHttpTransport SetInvocationStrategy(InvocationStrategy value);
     }
 }

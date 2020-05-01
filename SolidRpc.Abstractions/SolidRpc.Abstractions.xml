@@ -407,6 +407,13 @@
             </summary>
             <param name="binding"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBindingHandler.FlushQueuesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Flushes the queues.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
             <summary>
             Interface that we use to access the data in the Http request
@@ -1018,12 +1025,6 @@
             The configured http transport
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.InvokerTransport">
-            <summary>
-            If this configuration is set only calls to this transport will cause an invocation
-            on the underlying implementation. All other transports will forward calls to this one.
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions">
             <summary>
             Extension methods to manipulate the settings
@@ -1042,7 +1043,7 @@
             </summary>
             <param name="config"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetHttpTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetHttpTransport(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Nullable{SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy})">
             <summary>
             Activates the http transport
             </summary>
@@ -1056,7 +1057,7 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.String,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Nullable{SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy},System.String,System.String)">
             <summary>
             Sets the queue transport type
             </summary>
@@ -1143,10 +1144,31 @@
             <param name="methodHeadersTransformer"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetInvocationStrategy(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
+            <summary>
+            Sets the invocation strategy
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport">
             <summary>
             Contains the settings for the http transport.
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer,SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="invocationStrategy"></param>
+            <param name="methodAddressTransformer"></param>
+            <param name="methodHeadersTransformer"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
+            <summary>
+            Configures the transport
+            </summary>
+            <param name="methodBinding"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.MethodAddressTransformer">
             <summary>
