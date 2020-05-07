@@ -83,6 +83,22 @@ namespace SolidRpc.OpenApi.Model.V2
         }
 
         /// <summary>
+        /// Returns true if all the operations are null
+        /// </summary>
+        public bool IsEmpty { 
+            get
+            {
+                return Head == null &&
+                    Options == null &&
+                    Get == null &&
+                    Put == null &&
+                    Delete == null &&
+                    Post == null &&
+                    Patch == null;
+            }
+        }
+
+        /// <summary>
         /// Returns the parameters. Empty array if null.
         /// </summary>
         /// <returns></returns>

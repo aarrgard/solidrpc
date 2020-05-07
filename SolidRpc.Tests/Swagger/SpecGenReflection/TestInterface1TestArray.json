@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Some more testing",
-        "operationId": "TestArray",
+        "operationId": "TestArray#1",
         "consumes": [
           "application/json"
         ],

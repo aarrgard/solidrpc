@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Some more testing",
-        "operationId": "TestArray",
+        "operationId": "TestArray#1",
         "consumes": [
           "application/json"
         ],
@@ -97,7 +97,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Nullable parameters should be optional",
-        "operationId": "TestFileTypeWithAdditionalData",
+        "operationId": "TestFileTypeWithAdditionalData#1",
         "consumes": [
           "multipart/form-data"
         ],
@@ -266,7 +266,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a set of string values",
-        "operationId": "TestStringValues",
+        "operationId": "TestStringValues#1",
         "produces": [
           "application/json"
         ],
@@ -314,7 +314,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Some more testing",
-        "operationId": "TestStuff2",
+        "operationId": "TestStuff2#5",
         "produces": [
           "application/json"
         ],
@@ -371,7 +371,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a TimeSpan argument",
-        "operationId": "TestTimeSpan",
+        "operationId": "TestTimeSpan#1",
         "produces": [
           "application/json"
         ],

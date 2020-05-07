@@ -220,10 +220,11 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             //
             if(binder != null)
             {
-                var operations = binder.MethodBindings
-                    .Where(o => o.Transports.OfType<IHttpTransport>().Any())
-                    .Where(o => o.IsEnabled)
-                    .ToDictionary(o => o.OperationId, o => o);
+                var allOperations = binder.MethodBindings;
+                var httpOperations = allOperations.Where(o => o.Transports.OfType<IHttpTransport>().Any());
+                var enabledOperations = httpOperations.Where(o => o.IsEnabled);
+                var operations = enabledOperations.ToDictionary(o => o.OperationId, o => o);
+
                 foreach(var op in openApiSpec.Operations)
                 {
                     if (!operations.TryGetValue(op.OperationId, out IMethodBinding binding))

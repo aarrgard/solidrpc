@@ -442,6 +442,11 @@ namespace SolidRpc.OpenApi.Model.V2
                 {
                     path.Post = null;
                 }
+
+                if(path.IsEmpty)
+                {
+                    Paths.Remove(path.Path);
+                }
             }
         }
     }

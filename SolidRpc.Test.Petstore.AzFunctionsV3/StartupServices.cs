@@ -34,6 +34,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
+                    conf.SetHttpTransport(InvocationStrategy.Forward);
                     conf.SetQueueTransport<AzTableHandler>(InvocationStrategy.Invoke, "AzureWebJobsStorage");
                 }
 
