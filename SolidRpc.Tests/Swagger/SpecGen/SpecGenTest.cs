@@ -50,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, false);
+                CreateSpec(subDir.Name, true);
             }
         }
 
@@ -730,6 +730,29 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             {
                 Location = location
             };
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestSameMethodNameNbrArgs()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestSameMethodNameNbrArgs).Substring(4));
+
+                var moq = new Mock<SameMethodNameNbrArgs.Services.ISameMethodNameNbrArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<SameMethodNameNbrArgs.Services.ISameMethodNameNbrArgs>();
+
+                moq.Setup(o => o.ConsumeString(It.IsAny<string>()));
+                proxy.ConsumeString("s1");
+
+                moq.Setup(o => o.ConsumeString(It.IsAny<string>(), It.IsAny<string>()));
+                proxy.ConsumeString("s1", "s2");
+            });
         }
     }
 }

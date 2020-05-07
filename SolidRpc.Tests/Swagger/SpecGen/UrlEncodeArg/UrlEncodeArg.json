@@ -16,7 +16,7 @@
           "IUrlEncodeArg"
         ],
         "description": "Proxies the string",
-        "operationId": "ProxyStrings",
+        "operationId": "ProxyStrings#2",
         "produces": [
           "application/json"
         ],

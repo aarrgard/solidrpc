@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             private IDictionary<string, PathSegment> SubSegments { get; }
 
-            public IMethodBinding MethodInfo { get; set; }
+            public IEnumerable<IMethodBinding> MethodBindings { get; set; }
 
             public void AddPath(IMethodBinding methodBinding)
             {
@@ -57,14 +57,15 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     }
                     work = subSegment;
                 }
-                work.MethodInfo = methodBinding;
+                work.MethodBindings = (work.MethodBindings == null) ?
+                    new[] { methodBinding } : work.MethodBindings.Union(new[] { methodBinding }).ToArray();
             }
 
-            public IMethodBinding GetMethodBinding(IEnumerator<string> segments)
+            public IEnumerable<IMethodBinding> GetMethodBindings(IEnumerator<string> segments)
             {
                 if (!segments.MoveNext())
                 {
-                    return MethodInfo;
+                    return MethodBindings;
                 }
                 if (!SubSegments.TryGetValue(segments.Current, out PathSegment subSegment))
                 {
@@ -73,7 +74,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",", SubSegments.Keys)}");
                     }
                 }
-                return subSegment.GetMethodBinding(segments);
+                return subSegment.GetMethodBindings(segments);
             }
         }
 
@@ -104,9 +105,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             lock(_mutex)
             {
                 rootSegment = new PathSegment();
-                MethodBinderStore.MethodBinders
+                var methodBindings = MethodBinderStore.MethodBinders
                     .SelectMany(o => o.MethodBindings)
-                    .ToList().ForEach(methodBinding =>
+                    .ToList();
+                methodBindings.ForEach(methodBinding =>
                 {
                     rootSegment.AddPath(methodBinding);
                     var mi = methodBinding.MethodInfo;
@@ -131,8 +133,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var pathKey = $"{request.Method}{request.Path}";
-            var methodInfo = RootSegment.GetMethodBinding(pathKey.Split('/').AsEnumerable().GetEnumerator());
-            if(methodInfo == null)
+            var methodBindings = RootSegment.GetMethodBindings(pathKey.Split('/').AsEnumerable().GetEnumerator());
+            if(methodBindings == null)
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);
                 return Task.FromResult<IHttpResponse>(new SolidHttpResponse()
@@ -140,14 +142,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     StatusCode = 404
                 });
             }
-            return InvokeAsync(serviceProvider, invocationSource, request, methodInfo, cancellationToken);
+            return InvokeAsync(serviceProvider, invocationSource, request, methodBindings, cancellationToken);
         }
 
         public async Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
             IHandler invocationSource,
-            IHttpRequest request, 
-            IMethodBinding methodBinding, 
+            IHttpRequest request,
+            IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if(Logger.IsEnabled(LogLevel.Information))
@@ -155,33 +157,39 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
             }
 
+            if(!methodBindings?.Any() ?? true)
+            {
+                throw new ArgumentException("No method bindings supplied");
+            }
+            var selectedBinding = methodBindings.First();
+
             //
             // check if we should just forward the calls
             //
-            var transport = methodBinding.Transports.Single(o => o.TransportType == invocationSource.TransportType);
+            var transport = selectedBinding.Transports.Single(o => o.TransportType == invocationSource.TransportType);
             if (transport.InvocationStrategy == InvocationStrategy.Forward)
             {
-                var invokeTransport = methodBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+                var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
                 Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");
                 var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
                 var invokeHandler = handlers.First(o => o.TransportType == invokeTransport.TransportType);
                 var invocationOptions = new InvocationOptions(invokeHandler.TransportType, InvocationOptions.MessagePriorityNormal);
-                return await invokeHandler.InvokeAsync<object>(methodBinding, invokeTransport, request, invocationOptions, cancellationToken);
+                return await invokeHandler.InvokeAsync<object>(selectedBinding, invokeTransport, request, invocationOptions, cancellationToken);
             }
 
 
             //
             // Locate service
             //
-            var svc = serviceProvider.GetService(methodBinding.MethodInfo.DeclaringType);
+            var svc = serviceProvider.GetService(selectedBinding.MethodInfo.DeclaringType);
             if (svc == null)
             {
-                throw new Exception($"Failed to resolve service for type {methodBinding.MethodInfo.DeclaringType}");
+                throw new Exception($"Failed to resolve service for type {selectedBinding.MethodInfo.DeclaringType}");
             }
             var proxy = (ISolidProxy)svc;
             if (proxy == null)
             {
-                throw new Exception($"Service for {methodBinding.MethodInfo.DeclaringType} is not a solid proxy.");
+                throw new Exception($"Service for {selectedBinding.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
             var resp = new SolidHttpResponse();
@@ -191,7 +199,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             object[] args;
             try
             {
-                args = await methodBinding.ExtractArgumentsAsync(request);
+                args = await selectedBinding.ExtractArgumentsAsync(request);
             }
             catch(Exception e)
             {
@@ -219,14 +227,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // Invoke
                 //
-                var res = await proxy.InvokeAsync(invocationSource, methodBinding.MethodInfo, args, invocationValues);
+                var res = await proxy.InvokeAsync(invocationSource, selectedBinding.MethodInfo, args, invocationValues);
 
                 //
                 // return response
                 //
                 // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
                 //
-                var resType = methodBinding.MethodInfo.ReturnType;
+                var resType = selectedBinding.MethodInfo.ReturnType;
                 if (resType.IsTaskType(out Type taskType))
                 {
                     resType = taskType ?? resType;
@@ -234,13 +242,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // bind the response
                 //
-                await methodBinding.BindResponseAsync(resp, res, resType);
+                await selectedBinding.BindResponseAsync(resp, res, resType);
             }
             catch (Exception ex)
             {
                 // handle exception
                 Logger.LogError(ex, "Service returned an exception - sending to client");
-                await methodBinding.BindResponseAsync(resp, ex, methodBinding.MethodInfo.ReturnType);
+                await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
             }
             return resp;
 

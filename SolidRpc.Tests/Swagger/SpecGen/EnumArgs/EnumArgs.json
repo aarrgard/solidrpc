@@ -16,7 +16,7 @@
           "IEnumArgs"
         ],
         "description": "Consumes an enum.",
-        "operationId": "GetEnumTypeAsync",
+        "operationId": "GetEnumTypeAsync#1",
         "produces": [
           "application/json"
         ],

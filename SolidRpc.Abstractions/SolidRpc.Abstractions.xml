@@ -596,14 +596,14 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding},System.Threading.CancellationToken)">
             <summary>
             Invokes the supplied request.
             </summary>
             <param name="serviceProvider"></param>
             <param name="invocationSource"></param>
             <param name="request"></param>
-            <param name="methodInfo"></param>
+            <param name="methodBindings"></param>
             <param name="cancellation"></param>
             <returns></returns>
         </member>

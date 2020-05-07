@@ -656,6 +656,11 @@ namespace SolidRpc.OpenApi.Binder.V2
                 return Task.CompletedTask;
             }
 
+            if(objType == typeof(void))
+            {
+                return Task.CompletedTask;
+            }
+
             //
             // map return types
             //

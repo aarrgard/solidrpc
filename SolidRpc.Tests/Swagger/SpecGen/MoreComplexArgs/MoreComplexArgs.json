@@ -16,7 +16,7 @@
           "IMoreComplexArgs"
         ],
         "description": "Consumes two complex types an a simple string...",
-        "operationId": "GetComplexType",
+        "operationId": "GetComplexType#2",
         "consumes": [
           "multipart/form-data"
         ],

@@ -407,7 +407,7 @@ namespace Microsoft.AspNetCore.Builder
 
                 var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
-                var response = await methodInvoker.InvokeAsync(context.RequestServices, httpHandler, request, methodBinding, context.RequestAborted);
+                var response = await methodInvoker.InvokeAsync(context.RequestServices, httpHandler, request, new[] { methodBinding }, context.RequestAborted);
 
                 // send data back
                 AddAllowedCorsHeaders(context);

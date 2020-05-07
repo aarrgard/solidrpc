@@ -1,0 +1,73 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SameMethodNameNbrArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/SameMethodNameNbrArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/ISameMethodNameNbrArgs/ConsumeString/{s1}": {
+      "get": {
+        "tags": [
+          "ISameMethodNameNbrArgs"
+        ],
+        "description": "consumes one string",
+        "operationId": "ConsumeString#1",
+        "parameters": [
+          {
+            "name": "s1",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/ISameMethodNameNbrArgs/ConsumeString/{s1}/{s2}": {
+      "get": {
+        "tags": [
+          "ISameMethodNameNbrArgs"
+        ],
+        "description": "consumes two strings",
+        "operationId": "ConsumeString#2",
+        "parameters": [
+          {
+            "name": "s1",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "s2",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ISameMethodNameNbrArgs",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}

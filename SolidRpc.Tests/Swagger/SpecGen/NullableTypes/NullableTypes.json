@@ -50,7 +50,7 @@
           "INullableTypes"
         ],
         "description": "Consumes one nullable int and returns it.",
-        "operationId": "GetNullableType",
+        "operationId": "GetNullableType#1",
         "produces": [
           "application/json"
         ],

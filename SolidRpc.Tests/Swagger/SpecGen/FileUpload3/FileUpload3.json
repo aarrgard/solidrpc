@@ -16,7 +16,7 @@
           "IFileUpload"
         ],
         "description": "Uploads a file. This method will get a \"file\" parameter.",
-        "operationId": "UploadFile",
+        "operationId": "UploadFile#1",
         "consumes": [
           "multipart/form-data"
         ],

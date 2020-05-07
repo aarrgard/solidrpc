@@ -55,12 +55,19 @@ namespace SolidRpc.OpenApi.Binder.V2
             prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.OperationId, mi.Name)).ToList();
             binderStatus.Append($"->method({mi.Name})->#{prospects.Count}");
 
-            // find all parameters 
+            // find all parameters for clr method
             foreach(var param in mi.GetParameters())
             {
                 prospects = prospects.Where(o => FindParameter(o.GetParameters(), param)).ToList();
                 binderStatus.Append($"->param({param.Name})->#{prospects.Count}");
             }
+
+            // all the open api parameters must match a method argument
+            prospects = prospects.Where(o =>
+            {
+                return o.GetParameters().All(p => FindParameter(p, mi.GetParameters())); ;
+            }).ToList();
+            binderStatus.Append($"->prospectargs->#{prospects.Count}");
 
             prospects = prospects.Where(o => {
                 ResponseObject resp;
@@ -83,6 +90,11 @@ namespace SolidRpc.OpenApi.Binder.V2
                 methodDoc,
                 transports,
                 securityKey)).ToList();
+        }
+
+        private bool FindParameter(ParameterObject p, ParameterInfo[] parameterInfos)
+        {
+            return parameterInfos.Any(o => MethodBindingV2.NameMatches(o.Name, p.Name));
         }
 
         private bool FindParameter(IEnumerable<ParameterObject> parameters, ParameterInfo parameter)

@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,14 +37,14 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="serviceProvider"></param>
         /// <param name="invocationSource"></param>
         /// <param name="request"></param>
-        /// <param name="methodInfo"></param>
+        /// <param name="methodBindings"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
         Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
             IHandler invocationSource, 
             IHttpRequest request, 
-            IMethodBinding methodInfo, 
+            IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellation = default(CancellationToken));
     }
 }

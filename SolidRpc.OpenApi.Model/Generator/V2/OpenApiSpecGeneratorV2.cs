@@ -263,6 +263,13 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 if (pathItem.Delete == null) pathItem.Delete = CloneOperation(operationObject, "Delete");
             }
 
+            // let the operation id reflect the number of path arguments there are
+            var pathArgs = operationObject.GetParameters().Where(o => o.In == "path");
+            if(pathArgs.Any())
+            {
+                operationObject.OperationId = $"{operationObject.OperationId}#{pathArgs.Count()}";
+            }
+
             return operationObject;
         }
 

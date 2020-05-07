@@ -9,7 +9,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
 {
     public interface ITestInterface 
     {
-        Task<string> MyFunc(string arg);
+        Task<string> MyFunc(string arg1);
+        Task<string> MyFunc(string arg1, string arg2);
         Task<FileContent> UploadFile(string container, FileContent fileContent);
     }
 
@@ -17,6 +18,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
 
     {
         public Task<string> MyFunc(string arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> MyFunc(string arg1, string arg2)
         {
             throw new NotImplementedException();
         }
