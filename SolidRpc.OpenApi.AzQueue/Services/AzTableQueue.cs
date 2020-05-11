@@ -11,7 +11,6 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Types;
 using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -29,12 +28,19 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private static TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private static OperationContext OperationContext => new OperationContext();
 
-        public static async Task<IEnumerable<TableMessageEntity>> GetMessagesAsync(CloudTable cloudTable, string queueName, IEnumerable<string> statuses, CancellationToken cancellationToken)
+        public static async Task<IEnumerable<TableMessageEntity>> GetMessagesAsync(CloudTable cloudTable, string queueName, IEnumerable<string> statuses, int takeCount, CancellationToken cancellationToken)
         {
             var filter = $"(PartitionKey eq '{TableMessageEntity.CreatePartitionKey(queueName)}') and ({string.Join(" or ", statuses.Select(o => $"Status eq '{o}'"))})";
-            var query = new TableQuery<TableMessageEntity>().Where(filter).Take(100);
+            var query = new TableQuery<TableMessageEntity>().Where(filter).Take(takeCount);
             TableContinuationToken token = null;
-            return (IEnumerable<TableMessageEntity>)(await cloudTable.ExecuteQuerySegmentedAsync(query, token, TableRequestOptions, OperationContext, cancellationToken));
+            var lst = new List<TableMessageEntity>();
+            do
+            {
+                var res = await cloudTable.ExecuteQuerySegmentedAsync(query, token, TableRequestOptions, OperationContext, cancellationToken);
+                lst.AddRange(res.Results);
+                token = res.ContinuationToken;
+            } while (token != null && lst.Count < takeCount);
+            return lst;
         }
 
         private static ConcurrentDictionary<string, SemaphoreSlim> Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
@@ -125,7 +131,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private async Task UpdateErrorMessagesAsync(CloudTable cloudTable, string queueName, CancellationToken cancellationToken)
         {
             var statuses = new[] { TableMessageEntity.StatusError, TableMessageEntity.StatusSettings };
-            var results = await GetMessagesAsync(cloudTable, queueName, statuses, cancellationToken);
+            var results = await GetMessagesAsync(cloudTable, queueName, statuses, 1000, cancellationToken);
             var (rows, settings) = GetSettings(results);
             if (settings == null)
             {
@@ -151,7 +157,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private async Task UpdateTimedOutMessagesAsync(CloudTable cloudTable, string queueName, CancellationToken cancellationToken)
         {
             var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusSettings };
-            var results = await GetMessagesAsync(cloudTable, queueName, statuses, cancellationToken);
+            var results = await GetMessagesAsync(cloudTable, queueName, statuses, 1000, cancellationToken);
             var (rows, settings) = GetSettings(results);
             if (settings == null)
             {
@@ -177,7 +183,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private async Task<bool> DispatchMessageAsync(CloudTable cloudTable, string connectionName, string queueName, bool scheduledScan, CancellationToken cancellationToken)
         {
             var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusSettings };
-            var results2 = await GetMessagesAsync(cloudTable, queueName, statuses, cancellationToken);
+            var results2 = await GetMessagesAsync(cloudTable, queueName, statuses, 30, cancellationToken);
             var (results, settings) = GetSettings(results2);
 
             // find the settings row
@@ -383,6 +389,28 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             while (payload.ReadByte() > 0);
             if (raiseException) throw new Exception("Exception in test method.");
             return Task.CompletedTask;
+        }
+
+        public Task FlagErrorMessagesAsPending(CancellationToken cancellationToken = default)
+        {
+            // find all the table queues
+            var tasks = GetTableTransports()
+                .Select(o => new { o.ConnectionName, o.QueueName })
+                .Distinct()
+                .Select(o => FlagErrorMessagesAsPending(o.ConnectionName, o.QueueName, cancellationToken));
+
+            return Task.WhenAll(tasks);
+        }
+
+        private async Task FlagErrorMessagesAsPending(string connectionName, string queueName, CancellationToken cancellationToken)
+        {
+            var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
+            var messages = await GetMessagesAsync(cloudTable, queueName, new[] { TableMessageEntity.StatusError }, int.MaxValue, cancellationToken);
+            foreach(var message in messages)
+            {
+                message.Status = TableMessageEntity.StatusPending;
+                await cloudTable.ExecuteAsync(TableOperation.Replace(message), TableRequestOptions, OperationContext, cancellationToken);
+            }
         }
     }
 }

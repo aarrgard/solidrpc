@@ -45,6 +45,13 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         Task ProcessMessageAsync(string connectionName, string partitionKey, string rowKey, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Flaggs all the messages that are in error state to pending
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task FlagErrorMessagesAsPending(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Sends a test message.
         /// </summary>
         /// <param name="cancellationToken"></param>

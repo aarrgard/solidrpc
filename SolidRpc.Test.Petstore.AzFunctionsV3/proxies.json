@@ -192,6 +192,15 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}/{arg1}"
     },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",
