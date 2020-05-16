@@ -60,7 +60,9 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             //AddTargetInstance(methodBinding, httpReq);
 
             var cancellationToken = args.OfType<CancellationToken>().FirstOrDefault();
+            await invocationOptions.PreInvokeCallback(httpReq);
             var httpResp = await InvokeAsync<TResp>(methodBinding, transport, httpReq, invocationOptions, cancellationToken);
+            await invocationOptions.PostInvokeCallback(httpResp);
 
             var resp = methodBinding.ExtractResponse<TResp>(httpResp);
             return resp;

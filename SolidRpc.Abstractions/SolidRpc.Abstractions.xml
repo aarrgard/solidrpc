@@ -728,6 +728,20 @@
             Contains additional invocation options.
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.DefaultPreInvokeCallback(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
+            <summary>
+            The defaullt pre invoke callback(Does nothing)
+            </summary>
+            <param name="httpReq"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.DefaultPostInvokeCallback(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
+            <summary>
+            The defaullt post invoke callback(Does nothing)
+            </summary>
+            <param name="httpReq"></param>
+            <returns></returns>
+        </member>
         <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MessagePriorityHigh">
             <summary>
             The high message prio
@@ -775,6 +789,15 @@
             <param name="transportType"></param>
             <param name="priority"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.String,System.Int32,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="transportType"></param>
+            <param name="priority"></param>
+            <param name="preInvokeCallback"></param>
+            <param name="postInvokeCallback"></param>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TransportType">
             <summary>
             The preferred transport type. Defaults to "Http"
@@ -785,11 +808,35 @@
             The invocation priority.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.PreInvokeCallback">
+            <summary>
+            The pre invoke callback
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.PostInvokeCallback">
+            <summary>
+            The post invoke callback
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetPriority(System.Int32)">
             <summary>
             Returns a copy of this instance with another priority.
             </summary>
             <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.AddPreInvokeCallback(System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task})">
+            <summary>
+            Adds a pre invokation callback
+            </summary>
+            <param name="callback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.AddPostInvokeCallback(System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+            <summary>
+            Adds a pre invokation callback
+            </summary>
+            <param name="callback"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation">

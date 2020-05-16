@@ -44,6 +44,10 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
             }
             var operationAddress = new Uri(BaseAddress, Path);
             operationAddress = TransformAddress(methodBinding, operationAddress, methodBinding.MethodInfo);
+            if (_operationAddress != null && _operationAddress != operationAddress)
+            {
+                throw new Exception("Operation address has already been configured.");
+            }
             _operationAddress = operationAddress;
         }
 

@@ -14,9 +14,9 @@ namespace SolidRpc.Tests.Invoker
     /// <summary>
     /// Tests the invokers
     /// </summary>
-    public class HttpInvokerTest : WebHostTest
+    public class HttpInvokerTest1 : WebHostTest
     {
-        public HttpInvokerTest()
+        public HttpInvokerTest1()
         {
             SecKey = Guid.NewGuid();
         }
@@ -116,6 +116,5 @@ namespace SolidRpc.Tests.Invoker
                 Assert.AreEqual(4711, res);
             }
         }
-
     }
 }

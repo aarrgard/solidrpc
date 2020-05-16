@@ -29,7 +29,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
-            var httpTransport = (IHttpTransport)transport;
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
             if (Logger.IsEnabled(LogLevel.Trace))
             {
