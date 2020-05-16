@@ -648,6 +648,15 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlEncodeArg.Services.IUrlEncodeArg>();
 
+                var stringCheckEmpty = "";
+                var stringCheckFixed = "test";
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheckEmpty), It.Is<string>(a => a == stringCheckFixed))).Returns(() => stringCheckFixed);
+                Assert.AreEqual(stringCheckFixed, proxy.ProxyStrings(stringCheckEmpty, stringCheckFixed));
+
+                var stringCheck0 = "";
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck0), It.Is<string>(a => a == stringCheck0))).Returns(() => stringCheck0);
+                Assert.AreEqual(stringCheck0, proxy.ProxyStrings(stringCheck0, stringCheck0));
+
                 var stringCheck1 = "one/one";
                 moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck1))).Returns(() => stringCheck1);
                 Assert.AreEqual(stringCheck1, proxy.ProxyStrings(stringCheck1, stringCheck1));
@@ -698,6 +707,32 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.CompletedTask);
                 await proxy.DoSometingAsync(stringCheck1, stringCheck2);
             });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestDateTimeArg()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestDateTimeArg).Substring(4));
+
+                var moq = new Mock<DateTimeArg.Services.IDateTimeArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<DateTimeArg.Services.IDateTimeArg>();
+
+                var dt = DateTimeOffset.Now;
+                moq.Setup(o => o.ProxyDateTimeOffset(It.Is<DateTimeOffset>(a => CheckDate(dt, a)))).Returns(() => dt);
+                var res = proxy.ProxyDateTimeOffset(dt);
+            });
+        }
+
+        private bool CheckDate(DateTimeOffset wanted, DateTimeOffset sent)
+        {
+            return wanted.ToString() == sent.ToString();
         }
 
         /// <summary>
