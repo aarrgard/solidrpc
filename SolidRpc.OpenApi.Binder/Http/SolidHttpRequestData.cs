@@ -260,9 +260,13 @@ namespace SolidRpc.OpenApi.Binder.Http
                             };
                         case SystemDateTimeOffset:
                             return (_) => {
-                                if (DateTimeOffset.TryParseExact(_?.GetStringValue(), "yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset parsed))
+                                if (DateTimeOffset.TryParseExact(_?.GetStringValue(), "yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset parsed1))
                                 {
-                                    return parsed;
+                                    return parsed1;
+                                }
+                                else if (DateTime.TryParse(_?.GetStringValue(), out DateTime parsed2))
+                                {
+                                    return ((DateTimeOffset)parsed2);
                                 }
                                 else
                                 {

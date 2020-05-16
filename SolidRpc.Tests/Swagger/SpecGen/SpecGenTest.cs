@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SolidRpc.Tests.Swagger.SpecGen
 {
@@ -727,6 +728,37 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var dt = DateTimeOffset.Now;
                 moq.Setup(o => o.ProxyDateTimeOffset(It.Is<DateTimeOffset>(a => CheckDate(dt, a)))).Returns(() => dt);
                 var res = proxy.ProxyDateTimeOffset(dt);
+
+                // check other formats
+                if(ctx is TestHostContextKestrel)
+                {
+                    var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<DateTimeArg.Services.IDateTimeArg>>();
+                    var path = await invoker.GetUriAsync(o => o.ProxyDateTimeOffset(DateTimeOffset.MinValue));
+                    var searchPattern = HttpUtility.UrlEncode(DateTimeOffset.MinValue.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture));
+
+                    var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
+                    var httpClient = clientFactory.CreateClient();
+
+                    dt = DateTimeOffset.MinValue;
+                    moq.Setup(o => o.ProxyDateTimeOffset(It.Is<DateTimeOffset>(a => CheckDate(dt, a)))).Returns(() => dt);
+                    var strRes = await httpClient.GetStringAsync(path);
+                    Assert.AreEqual("\"0001-01-01T00:00:00+00:00\"", strRes);
+
+                    var strDate = "2020-05-04";
+                    dt = DateTimeOffset.ParseExact(strDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                    moq.Setup(o => o.ProxyDateTimeOffset(It.Is<DateTimeOffset>(a => CheckDate(dt, a)))).Returns(() => dt);
+                    var newPath = path.ToString().Replace(searchPattern, strDate);
+                    strRes = await httpClient.GetStringAsync(newPath);
+                    Assert.AreEqual($"\"{dt.ToString("yyyy-MM-ddTHH:mm:sszzz")}\"", strRes);
+
+                    strDate = "2020-05-04T12:12";
+                    dt = DateTimeOffset.ParseExact(strDate, "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                    moq.Setup(o => o.ProxyDateTimeOffset(It.Is<DateTimeOffset>(a => CheckDate(dt, a)))).Returns(() => dt);
+                    newPath = path.ToString().Replace(searchPattern, strDate);
+                    strRes = await httpClient.GetStringAsync(newPath);
+                    Assert.AreEqual($"\"{dt.ToString("yyyy-MM-ddTHH:mm:sszzz")}\"", strRes);
+
+                }
             });
         }
 
