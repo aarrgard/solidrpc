@@ -29,6 +29,13 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         KeyValuePair<string, string>? SecurityKey { get; set; }
 
         /// <summary>
+        /// The proxy transport type. If not explicitly configured the "Http" transport
+        /// will be used for remote implementations and the "Local" transport for proxes that 
+        /// are registerd in the IoC container.
+        /// </summary>
+        string ProxyTransportType { get; set; }
+
+        /// <summary>
         /// The configured http transport
         /// </summary>
         IHttpTransport HttpTransport { get; set; }

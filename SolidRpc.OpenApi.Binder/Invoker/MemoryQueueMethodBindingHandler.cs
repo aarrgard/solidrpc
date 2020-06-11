@@ -23,7 +23,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// <summary>
     /// Handles the queue transports
     /// </summary>
-    public class MemoryQueueMethodBindingHandler : IMethodBindingHandler
+    public class MemoryQueueMethodBindingHandler : IMethodBindingHandler, IDisposable
     {
         public const string GenericInboundHandler = "generic";
 
@@ -54,6 +54,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             ServiceScopeFactory = serviceScopeFactory;
+            RegisteredQueues = new HashSet<string>();
         }
 
 
@@ -64,6 +65,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         private MemoryQueueHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
+        private HashSet<string> RegisteredQueues { get; }
 
         /// <summary>
         /// Invoked when a binding has been created. If there is a Queue transport
@@ -90,6 +92,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 }
                 return;
             }
+            RegisteredQueues.Add(queueTransport.QueueName);
             s_Handlers.Add(queueTransport.QueueName, msg => MessageHandler(msg, SolidRpcApplication.ShutdownToken));
         }
 
@@ -119,6 +122,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public Task FlushQueuesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            RegisteredQueues.ToList().ForEach(o =>
+            {
+                s_Handlers.Remove(o);
+            });
         }
     }
 }

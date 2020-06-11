@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
@@ -72,6 +73,11 @@ namespace SolidRpc.Tests.Invoker
             /// <returns></returns>
             public Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
+                var caller = SolidProxyInvocationImplAdvice.CurrentInvocation.Caller;
+                if(false == caller is QueueHandler)
+                {
+                    throw new Exception("Caller is not a queue handler.");
+                }
                 Logger.LogTrace("DoYAsync");
                 _doYInvocations++;
                 return Task.FromResult(myStruct.Value);
@@ -80,9 +86,10 @@ namespace SolidRpc.Tests.Invoker
 
         private void ConfigureQueueTransport(ISolidRpcOpenApiConfig conf, bool addInboundHandler)
         {
+            conf.ProxyTransportType = "MemoryQueue";
             conf.SetHttpTransport(InvocationStrategy.Forward);
             conf.SetQueueTransport<MemoryQueueHandler>();
-            if(addInboundHandler)
+            if (addInboundHandler)
             {
                 conf.SetQueueTransportInboundHandler("generic");
             }
@@ -132,6 +139,7 @@ namespace SolidRpc.Tests.Invoker
         [Test]
         public async Task TestQueueInvokerSimpleInvocation()
         {
+            _doYInvocations = 0;
             using (var ctx = CreateKestrelHostContext())
             {
                 await ctx.StartAsync();
@@ -139,9 +147,9 @@ namespace SolidRpc.Tests.Invoker
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
 
                 var sb = new StringBuilder();
-                for(int i = 0; i <  1 *1024 * 1024; i++)
+                for (int i = 0; i < 1 * 1024 * 1024; i++)
                 {
-                    sb.Append((char)('a'+(i%25)));
+                    sb.Append((char)('a' + (i % 25)));
                 }
                 var value = sb.ToString();
                 string res = null;
@@ -166,6 +174,25 @@ namespace SolidRpc.Tests.Invoker
                 await Task.WhenAll(tasks);
 
                 Assert.AreEqual(count * 2, _doYInvocations);
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestQueueProxyInvocation()
+        {
+            _doYInvocations = 0;
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+
+                await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
+                
+                Assert.AreEqual(1, _doYInvocations);
             }
         }
     }

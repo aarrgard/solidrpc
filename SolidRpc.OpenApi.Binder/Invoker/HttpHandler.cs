@@ -16,8 +16,16 @@ using System.Threading.Tasks;
 [assembly: SolidRpcService(typeof(IHandler), typeof(HttpHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
+    /// <summary>
+    /// Represents the HttpHandler
+    /// </summary>
     public class HttpHandler : Handler
     {
+        /// <summary>
+        /// Returns the "Http" transport type
+        /// </summary>
+        public static new string TransportType => GetTransportType(typeof(HttpHandler));
+            
         public HttpHandler(ILogger<HttpHandler> logger, IServiceProvider serviceProvider)
             :base(logger, serviceProvider)
         {

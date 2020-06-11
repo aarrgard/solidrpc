@@ -1062,6 +1062,13 @@
             the invocation is authorized.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.ProxyTransportType">
+            <summary>
+            The proxy transport type. If not explicitly configured the "Http" transport
+            will be used for remote implementations and the "Local" transport for proxes that 
+            are registerd in the IoC container.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.HttpTransport">
             <summary>
             The configured http transport

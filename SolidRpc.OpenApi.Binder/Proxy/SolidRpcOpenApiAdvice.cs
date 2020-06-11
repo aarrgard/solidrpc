@@ -38,12 +38,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private ILogger Logger { get; }
         private IServiceProvider ServiceProvider { get; }
         private IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
-        private HttpHandler HttpHandler => ServiceProvider.GetRequiredService<HttpHandler>();
+        private IHandler Handler { get; set; }
         private IMethodBinding MethodBinding { get; set; }
-        private IHttpTransport Transport { get; set; }
+        private ITransport Transport { get; set; }
 
         /// <summary>
-        /// Confugures the proxy
+        /// Confiugures the proxy
         /// </summary>
         /// <param name="config"></param>
         public bool Configure(ISolidRpcOpenApiConfig config)
@@ -58,7 +58,25 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 config.GetTransports(),
                 config.SecurityKey
             ).First();
-            Transport = MethodBinding.Transports.OfType<IHttpTransport>().FirstOrDefault();
+
+            //
+            // Get configured transport
+            //
+            var proxyTransportType = config.ProxyTransportType ?? HttpHandler.TransportType;
+            Transport = MethodBinding.Transports.FirstOrDefault(o => o.TransportType == proxyTransportType);
+            if (Transport == null)
+            {
+                throw new Exception($"Cannot find the transport for {proxyTransportType} transport in configured method.");
+            }
+            //
+            // get the transport handler
+            //
+            Handler = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>().Where(o => o.TransportType == proxyTransportType).FirstOrDefault();
+            if(Handler == null)
+            {
+                throw new Exception($"Cannot find the handler for {proxyTransportType} transport.");
+            }
+
             return true;
         }
 
@@ -70,7 +88,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            return HttpHandler.InvokeAsync<TAdvice>(MethodBinding, Transport, invocation.Arguments, InvocationOptions.Http);
+            return Handler.InvokeAsync<TAdvice>(MethodBinding, Transport, invocation.Arguments, InvocationOptions.Http);
         }
     }
 }
