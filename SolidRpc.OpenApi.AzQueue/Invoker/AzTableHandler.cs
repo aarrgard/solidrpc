@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using SolidRpc.Abstractions;
@@ -34,16 +35,14 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             IServiceProvider serviceProvider, 
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
-            ISolidRpcApplication solidRpcApplication,
-            IAzTableQueue azTableQueue) 
+            ISolidRpcApplication solidRpcApplication) 
             : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
         {
             CloudQueueStore = cloudQueueStore;
-            AzTableQueue = azTableQueue;
         }
 
         private ICloudQueueStore CloudQueueStore { get; }
-        private IAzTableQueue AzTableQueue { get; }
+        private IAzTableQueue AzTableQueue => ServiceProvider.GetRequiredService<IAzTableQueue>();
         private TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private OperationContext OperationContext => new OperationContext();
 

@@ -125,6 +125,8 @@
             Returns the configuration builder
             </summary>
             <param name="services"></param>
+            <param name="ctor"></param>
+            <param name="createSource"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.BuildConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder})">
@@ -132,6 +134,7 @@
             Returns the configuration builder
             </summary>
             <param name="services"></param>
+            <param name="ctor"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimit(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
@@ -1482,6 +1485,21 @@
             <param name="serviceProvider"></param>
             <param name="headers"></param>
             <param name="methodInfo">The method to transform the headers for</param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.SecurityKeyExtensions">
+            <summary>
+            Contains extensions for the security keys.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.SecurityKeyExtensions.CheckSecurityKeyAsync(System.Object,System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Func{System.String,System.String},System.Threading.CancellationToken)">
+            <summary>
+            Checks the security key for the invocation.
+            </summary>
+            <param name="caller"></param>
+            <param name="secKey"></param>
+            <param name="keyFetcher"></param>
+            <param name="cancellatinToken"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">

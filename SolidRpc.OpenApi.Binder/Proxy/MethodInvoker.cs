@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -169,8 +170,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var transport = selectedBinding.Transports.Single(o => o.TransportType == invocationSource.TransportType);
             if (transport.InvocationStrategy == InvocationStrategy.Forward)
             {
+                //
+                // The security is checked when the method is invoked. Since we do not 
+                // want to fill up the call queues with unauthorized calls we check the keys here.
+                //
+                await SecurityKeyExtensions.CheckSecurityKeyAsync(invocationSource, selectedBinding.SecurityKey, k => request.Headers.Where(o => o.Name == k).Select(o => o.GetStringValue()).FirstOrDefault());
+
                 var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
-                Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");
+                if(Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");                }
                 var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
                 var invokeHandler = handlers.First(o => o.TransportType == invokeTransport.TransportType);
                 var invocationOptions = new InvocationOptions(invokeHandler.TransportType, InvocationOptions.MessagePriorityNormal);

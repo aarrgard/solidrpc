@@ -29,10 +29,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public HttpHandler(ILogger<HttpHandler> logger, IServiceProvider serviceProvider)
             :base(logger, serviceProvider)
         {
-            Logger = logger;
         }
 
-        public ILogger Logger { get; }
         public IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
         public override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)

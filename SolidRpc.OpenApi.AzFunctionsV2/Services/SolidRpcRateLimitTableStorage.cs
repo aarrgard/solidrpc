@@ -18,10 +18,19 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 [assembly: SolidRpcService(typeof(ISolidRpcRateLimit), typeof(SolidRpcRateLimitTableStorage), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
 {
+    /// <summary>
+    /// The rate limit service using the table storage
+    /// </summary>
     public class SolidRpcRateLimitTableStorage : ISolidRpcRateLimit
     {
         private CloudTable _cloudTable;
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="configuration"></param>
+        /// <param name="serializerFactory"></param>
         public SolidRpcRateLimitTableStorage(ILogger<SolidRpcRateLimitTableStorage> logger, IConfiguration configuration, ISerializerFactory serializerFactory)
         {
             Logger = logger;
@@ -54,17 +63,38 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             await cloudTable.CreateIfNotExistsAsync();
             return _cloudTable = cloudTable;
         }
-
+        /// <summary>
+        /// Returns the singleton token
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<RateLimitToken> GetSingeltonTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetRateLimitTokenAsync(resourceName, timeout, true, cancellationToken);
         }
 
+        /// <summary>
+        /// Returns the rate limit token
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             return GetRateLimitTokenAsync(resourceName, timeout, false, cancellationToken);
         }
 
+        /// <summary>
+        /// Returns the rate limit token
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        /// <param name="singelton"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, bool singelton, CancellationToken cancellationToken = default(CancellationToken))
         {
             var timedOut = DateTime.Now.Add(timeout);
@@ -203,6 +233,12 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             return nbrAhead;
         }
 
+        /// <summary>
+        /// REturns the rate limit token
+        /// </summary>
+        /// <param name="rateLimitToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task ReturnRateLimitTokenAsync(RateLimitToken rateLimitToken, CancellationToken cancellationToken = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(cancellationToken);
@@ -222,6 +258,11 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             }
         }
 
+        /// <summary>
+        /// Returns the rate limit settings
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<RateLimitSetting>> GetRateLimitSettingsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(cancellationToken);
@@ -240,6 +281,12 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             return retVal;
         }
 
+        /// <summary>
+        /// Updates the rate limit settings
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task UpdateRateLimitSetting(RateLimitSetting setting, CancellationToken cancellationToken = default(CancellationToken))
         {
             var cloudTable = await GetCloudTableAsync(cancellationToken);

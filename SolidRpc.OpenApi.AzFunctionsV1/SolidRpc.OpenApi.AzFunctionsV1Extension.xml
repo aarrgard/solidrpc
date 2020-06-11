@@ -271,6 +271,23 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctionsV2Extension.Services.SolidRpcHostAzFunctionsV1">
+            <summary>
+            Represents a rpc host in the azure functions environment
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctionsV2Extension.Services.SolidRpcHostAzFunctionsV1.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},System.IServiceProvider,Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+            <summary>
+            Constructs a new instance.
+            </summary>
+            <param name="logger"></param>
+            <param name="serviceProvider"></param>
+            <param name="configuration"></param>
+            <param name="methodBinderStore"></param>
+            <param name="configurationStore"></param>
+            <param name="contentHandler"></param>
+            <param name="functionHandler"></param>
+        </member>
         <member name="T:SolidRpc.Test.Petstore.AzFunctions.TraceWriterLoggerProvider">
             <summary>
             Implements logic so that the trace writer output is redirected to the logger.

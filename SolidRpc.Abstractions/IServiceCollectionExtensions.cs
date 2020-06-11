@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -489,25 +490,9 @@ namespace Microsoft.Extensions.DependencyInjection
             var secKey = openApiProxyConfig.SecurityKey;
             if (secKey != null)
             {
-                var key = secKey.Value.Key.ToLower();
-                var value = secKey.Value.Value;
                 mc.AddPreInvocationCallback(i =>
                 {
-                    // calls invoked directly from a proxy are allowed
-                    if(i.Caller is ISolidProxy)
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    //
-                    // check the security key if specified
-                    //
-                    var callKey = i.GetValue<StringValues>(key);
-                    if(!value.Equals(callKey.ToString()))
-                    {
-                        throw new UnauthorizedException("SolidRpcSecurityKey differs");
-                    }
-                    return Task.CompletedTask;
+                    return SecurityKeyExtensions.CheckSecurityKeyAsync(i.Caller, openApiProxyConfig.SecurityKey, k => i.GetValue<StringValues>(k));
                 });
             }
 
@@ -572,6 +557,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Returns the configuration builder
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="ctor"></param>
+        /// <param name="createSource"></param>
         /// <returns></returns>
         public static IConfigurationBuilder GetConfigurationBuilder(this IServiceCollection services, Func<IConfigurationBuilder> ctor, Func<IConfiguration, IConfigurationSource> createSource)
         {
@@ -606,6 +593,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Returns the configuration builder
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="ctor"></param>
         /// <returns></returns>
         public static IConfiguration BuildConfiguration(this IServiceCollection services, Func<IConfigurationBuilder> ctor)
         {
@@ -652,5 +640,5 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
-    }
+     }
 }

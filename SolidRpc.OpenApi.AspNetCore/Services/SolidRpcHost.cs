@@ -46,14 +46,44 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             RegisterHost();
         }
 
+        /// <summary>
+        /// The logger
+        /// </summary>
         protected ILogger Logger { get; }
+
+        /// <summary>
+        /// The service provider
+        /// </summary>
         protected IServiceProvider ServiceProvider { get; }
+
+        /// <summary>
+        /// The configuration
+        /// </summary>
         protected IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// The application
+        /// </summary>
         protected ISolidRpcApplication SolidRpcApplication { get; }
+
+        /// <summary>
+        /// The start time
+        /// </summary>
         protected DateTimeOffset Started { get; }
 
+        /// <summary>
+        /// Checks the hosts
+        /// </summary>
         protected ConcurrentDictionary<Guid, Task> HostChecks { get; }
+
+        /// <summary>
+        /// The host stores
+        /// </summary>
         protected IEnumerable<ISolidRpcHostStore> HostStores { get; }
+
+        /// <summary>
+        /// The cookies
+        /// </summary>
         protected IDictionary<string, string> HttpCookies { get; set; }
 
         private async Task RegisterHost()
@@ -95,6 +125,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             }
         }
 
+        /// <summary>
+        /// Syncronizes the hosts
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<SolidRpcHostInstance>> SyncHostsFromStore(CancellationToken cancellationToken = default(CancellationToken))
         {
             //

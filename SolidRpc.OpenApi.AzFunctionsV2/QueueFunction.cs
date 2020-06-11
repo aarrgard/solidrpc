@@ -23,6 +23,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2
         /// Runs the trigger logic.
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="id"></param>
         /// <param name="log"></param>
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
