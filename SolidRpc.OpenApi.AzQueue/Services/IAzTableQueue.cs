@@ -32,7 +32,14 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         /// </summary>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task DispatchMessageAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task DoScheduledScanAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Dispatches messages to the queue. If there are any messages pending.
+        /// </summary>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        Task DispatchMessageAsync(string connectionName, string queueName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Processes the specified message.

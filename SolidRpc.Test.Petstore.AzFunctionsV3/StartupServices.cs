@@ -48,7 +48,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddVitec(ConfigureAzureFunction);
             //services.AddSolidRpcSecurityBackend();
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
-            services.AddAzFunctionTimer<IAzTableQueue>(o => o.DispatchMessageAsync(CancellationToken.None), "0 * * * * *");
+            services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {

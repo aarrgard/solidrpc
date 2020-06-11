@@ -239,7 +239,7 @@ namespace SolidRpc.OpenApi.AzQueue
 
         private async Task FlushTableTransport(IMethodBinding binding, IQueueTransport qt, CancellationToken cancellationToken)
         {
-            await ServiceProvider.GetRequiredService<IAzTableQueue>().DispatchMessageAsync(cancellationToken);
+            await ServiceProvider.GetRequiredService<IAzTableQueue>().DoScheduledScanAsync(cancellationToken);
 
             while (!cancellationToken.IsCancellationRequested)
             {

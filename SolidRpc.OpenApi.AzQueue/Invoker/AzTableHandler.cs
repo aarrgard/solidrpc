@@ -8,6 +8,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzQueue.Invoker;
+using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
@@ -33,13 +34,16 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             IServiceProvider serviceProvider, 
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
-            ISolidRpcApplication solidRpcApplication) 
+            ISolidRpcApplication solidRpcApplication,
+            IAzTableQueue azTableQueue) 
             : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
         {
             CloudQueueStore = cloudQueueStore;
+            AzTableQueue = azTableQueue;
         }
 
         private ICloudQueueStore CloudQueueStore { get; }
+        private IAzTableQueue AzTableQueue { get; }
         private TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private OperationContext OperationContext => new OperationContext();
 
@@ -53,6 +57,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             {
                 Logger.LogTrace($"Sent message {msg.RowKey}");
             }
+            AzTableQueue.DispatchMessageAsync(transport.ConnectionName, transport.QueueName);               
         }
     }
 }

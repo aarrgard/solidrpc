@@ -5,11 +5,11 @@
       "name": "req",
       "direction": "in",
       "type": "httpTrigger",
-      "authLevel": "anonymous",
+      "authLevel": "function",
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync"
+      "route": "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}"
     },
     {
       "name": "serviceProvider",

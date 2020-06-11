@@ -138,15 +138,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateSettings"
     },
-    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync"
-    },
     "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync": {
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync",
@@ -200,6 +191,24 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync"
     },
     "front/{path}": {
       "matchCondition": {

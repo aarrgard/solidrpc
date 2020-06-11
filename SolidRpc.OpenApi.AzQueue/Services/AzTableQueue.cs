@@ -24,6 +24,63 @@ namespace SolidRpc.OpenApi.AzQueue.Services
 {
     public class AzTableQueue : IAzTableQueue
     {
+        private class RunningDispatch
+        {
+            public RunningDispatch(AzTableQueue azTableQueue, string key, string connectionName, string queueName)
+            {
+                AzTableQueue = azTableQueue;
+                Key = key;
+                ConnectionName = connectionName;
+                QueueName = queueName;
+                CancellationToken = CancellationToken.None;
+                Task = DispatchMessageAsync();
+            }
+            public Task Task { get; }
+            private AzTableQueue AzTableQueue { get; }
+            private string Key { get; }
+            private string ConnectionName { get; }
+            private string QueueName { get; }
+            private CancellationToken CancellationToken { get; }
+            public bool ScheduledScan { get; set; }
+
+            private async Task DispatchMessageAsync()
+            {
+                await Task.Yield(); // make sure that we add the task to the dictionary
+                var semaphore = AzTableQueue.Semaphores.GetOrAdd(Key, _ => new SemaphoreSlim(1));
+                
+                //
+                // Wait for previous task to complete
+                //
+                await semaphore.WaitAsync(CancellationToken);
+
+                //
+                // remove this instance from the pending dispatch set.
+                //
+                lock (AzTableQueue.PendingDispatches)
+                {
+                    var removed = AzTableQueue.PendingDispatches.Remove(new KeyValuePair<string, RunningDispatch>(Key, this));
+                    if (!removed)
+                    {
+                        throw new Exception("Could not remove this instance.");
+                    }
+                }
+                try
+                {
+                    var cloudTable = AzTableQueue.CloudQueueStore.GetCloudTable(ConnectionName);
+                    if (ScheduledScan)
+                    {
+                        await AzTableQueue.UpdateErrorMessagesAsync(cloudTable, QueueName, CancellationToken);
+                        await AzTableQueue.UpdateTimedOutMessagesAsync(cloudTable, QueueName, CancellationToken);
+                    }
+
+                    while (await AzTableQueue.DispatchMessageAsync(cloudTable, ConnectionName, QueueName, CancellationToken));
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }
+        }
 
         private static TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private static OperationContext OperationContext => new OperationContext();
@@ -42,8 +99,6 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             } while (token != null && lst.Count < takeCount);
             return lst;
         }
-
-        private static ConcurrentDictionary<string, SemaphoreSlim> Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
         public AzTableQueue(
             ILogger<AzTableQueue> logger,
@@ -65,6 +120,8 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             SolidRpcApplication = solidRpcApplication;
+            Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+            PendingDispatches = new ConcurrentDictionary<string, RunningDispatch>();
         }
 
         private ILogger Logger { get; }
@@ -77,6 +134,9 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private IMethodInvoker MethodInvoker { get; }
         public ISolidRpcApplication SolidRpcApplication { get; }
 
+        private ConcurrentDictionary<string, SemaphoreSlim> Semaphores { get; }
+        private IDictionary<string, RunningDispatch> PendingDispatches { get; }
+
         private IEnumerable<IQueueTransport> GetTableTransports()
         {
             // find all the table queues
@@ -88,7 +148,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 .ToList();
         }
 
-        public Task DispatchMessageAsync(CancellationToken cancellationToken = default)
+        public Task DoScheduledScanAsync(CancellationToken cancellationToken = default)
         {
             // find all the table queues
             var tableTranports = GetTableTransports()
@@ -96,30 +156,35 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 .Distinct()
                 .ToList();
 
-            var tasks = tableTranports.Select(o => DispatchMessage(o.ConnectionName, o.QueueName, true, cancellationToken));
+            var tasks = tableTranports.Select(o => DispatchMessageAsync(o.ConnectionName, o.QueueName, true, cancellationToken));
             return Task.WhenAll(tasks);
         }
 
-        private async Task DispatchMessage(string connectionName, string queueName, bool scheduledScan, CancellationToken cancellationToken)
+        public Task DispatchMessageAsync(string connectionName, string queueName, CancellationToken cancellationToken)
         {
-            var semaphore = Semaphores.GetOrAdd($"{connectionName}:{queueName}", _ => new SemaphoreSlim(1));
+            return DispatchMessageAsync(connectionName, queueName, false, cancellationToken);
+        }
 
-            await semaphore.WaitAsync(cancellationToken);
-            try
+        private Task DispatchMessageAsync(string connectionName, string queueName, bool scheduledScan, CancellationToken cancellationToken)
+        {
+            //
+            // Get/create pending dispatch
+            //
+            var key = $"{connectionName}:{queueName}";
+            RunningDispatch runningDispatch;
+            lock (PendingDispatches)
             {
-                var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
-                if (scheduledScan)
+                if(!PendingDispatches.TryGetValue(key, out runningDispatch))
                 {
-                    await UpdateErrorMessagesAsync(cloudTable, queueName, cancellationToken);
-                    await UpdateTimedOutMessagesAsync(cloudTable, queueName, cancellationToken);
+                    PendingDispatches[key] = runningDispatch = new RunningDispatch(this, key, connectionName, queueName);
                 }
-
-                while (await DispatchMessageAsync(cloudTable, connectionName, queueName, scheduledScan, cancellationToken) && scheduledScan) ;
-
-            } finally
-            {
-                semaphore.Release();
+                if(scheduledScan)
+                {
+                    runningDispatch.ScheduledScan = true;
+                }
             }
+
+            return runningDispatch.Task;
         }
 
         private (IEnumerable<TableMessageEntity>, AzTableQueueSettings) GetSettings(IEnumerable<TableMessageEntity> results)
@@ -180,7 +245,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
         }
 
-        private async Task<bool> DispatchMessageAsync(CloudTable cloudTable, string connectionName, string queueName, bool scheduledScan, CancellationToken cancellationToken)
+        private async Task<bool> DispatchMessageAsync(CloudTable cloudTable, string connectionName, string queueName, CancellationToken cancellationToken)
         {
             var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusSettings };
             var results2 = await GetMessagesAsync(cloudTable, queueName, statuses, 30, cancellationToken);
@@ -310,7 +375,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 await cloudTable.ExecuteAsync(TableOperation.Replace(row), TableRequestOptions, OperationContext, cancellationToken);
             }
 
-            await DispatchMessage(connectionName, row.QueueName, false, cancellationToken);
+            await DispatchMessageAsync(connectionName, row.QueueName, false, cancellationToken);
         }
 
         public async Task<IEnumerable<AzTableQueueSettings>> GetSettingsAsync(CancellationToken cancellationToken = default)

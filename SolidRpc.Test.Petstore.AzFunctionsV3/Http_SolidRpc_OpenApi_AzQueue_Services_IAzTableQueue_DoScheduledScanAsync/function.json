@@ -9,7 +9,7 @@
       "methods": [
         "get"
       ],
-      "route": "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}"
+      "route": "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync"
     },
     {
       "name": "serviceProvider",
