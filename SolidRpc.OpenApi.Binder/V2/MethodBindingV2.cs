@@ -469,7 +469,14 @@ namespace SolidRpc.OpenApi.Binder.V2
             switch (response.MediaType?.ToLower())
             {
                 case null:
-                    return null;
+                    if(responseType.IsValueType)
+                    {
+                        return Activator.CreateInstance(responseType);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 case "text/javascript":
                 case "application/json":
                     using (var s = response.ResponseStream)

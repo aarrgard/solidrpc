@@ -16,6 +16,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 {
    public class MemoryQueueHandler : QueueHandler
     {
+        /// <summary>
+        /// Returns the "MemoryQueue" transport type
+        /// </summary>
+        public static new string TransportType => GetTransportType(typeof(MemoryQueueHandler));
+
         public MemoryQueueHandler(
             ILogger<QueueHandler> logger, 
             IServiceProvider serviceProvider, 

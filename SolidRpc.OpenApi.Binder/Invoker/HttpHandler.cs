@@ -25,7 +25,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         /// Returns the "Http" transport type
         /// </summary>
         public static new string TransportType => GetTransportType(typeof(HttpHandler));
-            
+ 
         public HttpHandler(ILogger<HttpHandler> logger, IServiceProvider serviceProvider)
             :base(logger, serviceProvider)
         {

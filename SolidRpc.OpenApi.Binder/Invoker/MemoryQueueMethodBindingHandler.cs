@@ -62,7 +62,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public IConfiguration Configuration { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
-        private MemoryQueueHandler QueueHandler { get; }
+        private QueueHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
         private HashSet<string> RegisteredQueues { get; }

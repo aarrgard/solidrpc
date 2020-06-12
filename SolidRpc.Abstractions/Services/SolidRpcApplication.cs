@@ -12,7 +12,7 @@ namespace SolidRpc.Abstractions.Services
     /// <summary>
     /// Implements the solid application logic
     /// </summary>
-    public class SolidRpcApplication : ISolidRpcApplication
+    public class SolidRpcApplication : ISolidRpcApplication, IDisposable
     {
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private IList<Task> _startupTasks = new List<Task>();
@@ -35,6 +35,11 @@ namespace SolidRpc.Abstractions.Services
             {
                 _startupTasks.Add(startupTask);
             }
+        }
+
+        public void Dispose()
+        {
+            StopApplication();
         }
 
         public void StopApplication()

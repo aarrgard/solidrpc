@@ -105,6 +105,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             lock(_mutex)
             {
+                Logger.LogInformation($"Creating new root segments...");
                 rootSegment = new PathSegment();
                 var methodBindings = MethodBinderStore.MethodBinders
                     .SelectMany(o => o.MethodBindings)
@@ -121,7 +122,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         MethodInfo2Binding[mi] = methodBinding;
                     }
                 });
-
+                Logger.LogInformation($"...root segments created");
             }
             _rootSegment = rootSegment;
             return rootSegment;

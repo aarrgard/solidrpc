@@ -16,8 +16,16 @@ using System.Threading.Tasks;
 [assembly: SolidRpcService(typeof(IHandler), typeof(LocalHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
+    /// <summary>
+    /// Invokes methods on the local implementation.
+    /// </summary>
     public class LocalHandler : Handler
     {
+        /// <summary>
+        /// Returns the "Local" transport type
+        /// </summary>
+        public static new string TransportType => GetTransportType(typeof(LocalHandler));
+
         public LocalHandler(ILogger<LocalHandler> logger, IServiceProvider serviceProvider)
             :base(logger, serviceProvider)
         {

@@ -187,6 +187,10 @@ namespace SolidRpc.OpenApi.AzQueue
                 await Task.Delay((int)(delay * 1000));
                 emptyQueueCount++;
             }
+            if (Logger.IsEnabled(LogLevel.Trace))
+            {
+                Logger.LogTrace($"Shutting down message pump for queue {cloudQueue.Name}");
+            }
         }
 
         private async Task<bool> ProcessMessage(string connectionName, CloudQueueMessage msg, CancellationToken cancellationToken)
