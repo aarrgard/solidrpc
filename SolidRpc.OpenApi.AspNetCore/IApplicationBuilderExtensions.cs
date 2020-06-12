@@ -106,36 +106,35 @@ namespace Microsoft.AspNetCore.Builder
             //
             // Extract all paths and map them accordingly.
             //
-            bindingStore.MethodBinders
-                .SelectMany(o => o.MethodBindings)
-                .Where(o => o.IsLocal)
-                .Where(o => o.IsEnabled)
-                .ToList()
-                .ForEach(o =>
+            foreach(var o in bindingStore.MethodBinders.SelectMany(o => o.MethodBindings))
+            {
+                if (!o.IsEnabled)
                 {
-                    var httpTransport = o.Transports.OfType<IHttpTransport>().FirstOrDefault();
-                    if(httpTransport == null)
-                    {
-                        applicationBuilder.ApplicationServices.LogInformation<IApplicationBuilder>($"No http transport configured for binding {o.OperationId} - will not map path.");
-                        return;
-                    } 
-                    var path = $"{o.Method}{httpTransport.OperationAddress.LocalPath}";
-                    if(!dict.TryGetValue(path, out PathHandler binding))
-                    {
-                        dict[path] = binding = new PathHandler(allowedCorsOrigins);
-                    }
-                    binding.MethodBinding = o;
-                    binding.HttpTransport = httpTransport;
+                    continue;
+                }
+                var httpTransport = o.Transports.OfType<IHttpTransport>().FirstOrDefault();
+                if(httpTransport == null)
+                {
+                    applicationBuilder.ApplicationServices.LogInformation<IApplicationBuilder>($"No http transport configured for binding {o.OperationId} - will not map path.");
+                    continue;
+                } 
+                var path = $"{o.Method}{httpTransport.OperationAddress.LocalPath}";
+                if(!dict.TryGetValue(path, out PathHandler binding))
+                {
+                    dict[path] = binding = new PathHandler(allowedCorsOrigins);
+                }
+                binding.MethodBinding = o;
+                binding.HttpTransport = httpTransport;
 
-                    //register an "options" handler
-                    path = $"OPTIONS{httpTransport.OperationAddress.LocalPath}";
-                    if (!dict.TryGetValue(path, out binding))
-                    {
-                        dict[path] = binding = new PathHandler(allowedCorsOrigins);
-                    }
-                    binding.MethodBinding = o;
-                    binding.HttpTransport = httpTransport;
-                });
+                //register an "options" handler
+                path = $"OPTIONS{httpTransport.OperationAddress.LocalPath}";
+                if (!dict.TryGetValue(path, out binding))
+                {
+                    dict[path] = binding = new PathHandler(allowedCorsOrigins);
+                }
+                binding.MethodBinding = o;
+                binding.HttpTransport = httpTransport;
+            }
 
             //
             // start mapping paths

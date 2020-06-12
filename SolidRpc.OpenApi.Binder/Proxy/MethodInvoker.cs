@@ -168,14 +168,19 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // check if we should just forward the calls
             //
-            var transport = selectedBinding.Transports.Single(o => o.TransportType == invocationSource.TransportType);
+            var transport = selectedBinding.Transports.SingleOrDefault(o => o.TransportType == invocationSource.TransportType);
+            if(transport == null)
+            {
+                throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",",selectedBinding.Transports.Select(o => o.TransportType))}).");
+            }
+            
             if (transport.InvocationStrategy == InvocationStrategy.Forward)
             {
                 //
                 // The security is checked when the method is invoked. Since we do not 
                 // want to fill up the call queues with unauthorized calls we check the keys here.
                 //
-                await SecurityKeyExtensions.CheckSecurityKeyAsync(invocationSource, selectedBinding.SecurityKey, k => request.Headers.Where(o => o.Name == k).Select(o => o.GetStringValue()).FirstOrDefault());
+                await SecurityKeyExtensions.CheckSecurityKeyAsync(invocationSource, selectedBinding.SecurityKey, k => request.Headers.Where(o => string.Equals(o.Name,k,StringComparison.InvariantCultureIgnoreCase)).Select(o => o.GetStringValue()).FirstOrDefault());
 
                 var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
                 if(Logger.IsEnabled(LogLevel.Trace))

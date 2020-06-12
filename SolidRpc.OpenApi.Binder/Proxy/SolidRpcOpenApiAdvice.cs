@@ -40,8 +40,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
         private bool HasImplementation { get; set; }
         private IMethodBinding MethodBinding { get; set; }
-        private IHandler Handler { get; set; }
-        private ITransport Transport { get; set; }
+        private IHandler ProxyHandler { get; set; }
+        private ITransport ProxyTransport { get; set; }
+        private IHandler InvokerHandler { get; set; }
+        private ITransport InvokerTransport { get; set; }
 
         /// <summary>
         /// Confiugures the proxy
@@ -50,6 +52,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public bool Configure(ISolidRpcOpenApiConfig config)
         {
             HasImplementation = config.InvocationConfiguration.HasImplementation;
+
             //
             // Determine transport type. If not explititly set use Http
             // if not implementation exists.
@@ -82,18 +85,29 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             ).First();
 
             //
-            // Get configured transport
+            // Get proxy transport + handler
             //
-            Transport = MethodBinding.Transports.FirstOrDefault(o => o.TransportType == proxyTransportType);
-            if (Transport == null)
+            ProxyTransport = MethodBinding.Transports.FirstOrDefault(o => o.TransportType == proxyTransportType);
+            if (ProxyTransport == null)
             {
                 throw new Exception($"Cannot find the transport for {proxyTransportType} transport in configured method.");
             }
+            ProxyHandler = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>().Where(o => o.TransportType == ProxyTransport.TransportType).FirstOrDefault();
+            if(ProxyHandler == null)
+            {
+                throw new Exception($"Cannot find the handler for {proxyTransportType} transport.");
+            }
+
             //
-            // get the transport handler
+            // Get invoker transport + handler
             //
-            Handler = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>().Where(o => o.TransportType == proxyTransportType).FirstOrDefault();
-            if(Handler == null)
+            InvokerTransport = MethodBinding.Transports.FirstOrDefault(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+            if (InvokerTransport == null)
+            {
+                throw new Exception($"No invocation transport configured");
+            }
+            InvokerHandler = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>().Where(o => o.TransportType == InvokerTransport.TransportType).FirstOrDefault();
+            if (InvokerHandler == null)
             {
                 throw new Exception($"Cannot find the handler for {proxyTransportType} transport.");
             }
@@ -109,9 +123,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            if(invocation.Caller is ISolidProxy || !HasImplementation)
+            if(invocation.Caller is ISolidProxy)
             {
-                return Handler.InvokeAsync<TAdvice>(MethodBinding, Transport, invocation.Arguments, InvocationOptions.Http);
+                return ProxyHandler.InvokeAsync<TAdvice>(MethodBinding, ProxyTransport, invocation.Arguments, InvocationOptions.Http);
             }
             else if(HasImplementation)
             {
@@ -119,7 +133,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             else
             {
-                throw new Exception("Cannot handle call.");
+                return InvokerHandler.InvokeAsync<TAdvice>(MethodBinding, InvokerTransport, invocation.Arguments, InvocationOptions.Http);
             }
         }
     }

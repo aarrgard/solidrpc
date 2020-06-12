@@ -79,7 +79,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"No queue transport({QueueHandler.TransportType}) configured for binding {binding.OperationId} - cannot configure queue");
+                    Logger.LogTrace($"No queue transport({QueueHandler.TransportType}) configured for binding {binding.OperationId} - will not setup queue");
                 }
                 return;
             }
