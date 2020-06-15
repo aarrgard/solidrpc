@@ -12,7 +12,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services
         /// </summary>
         /// <param name="urlArg"></param>
         /// <param name="queryArg"></param>
-        /// <param name="ct">The complex type</param>
         /// <returns></returns>
         Task DoSometingAsync(string urlArg, string queryArg = "");
     }

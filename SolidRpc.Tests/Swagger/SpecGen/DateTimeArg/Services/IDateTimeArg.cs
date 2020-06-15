@@ -10,7 +10,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen.DateTimeArg.Services
         /// <summary>
         /// Proxies the date time
         /// </summary>
-        /// <param name="s"></param>
+        /// <param name="dt"></param>
         /// <returns></returns>
         DateTimeOffset ProxyDateTimeOffset(DateTimeOffset dt);
     }

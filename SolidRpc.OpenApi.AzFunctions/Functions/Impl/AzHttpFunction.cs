@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -102,6 +103,24 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
             route = sbRoute.ToString();
             return args;
+        }
+
+        protected override string WriteFunctionClass()
+        {
+            return $@"
+    public class {Name}
+    {{
+        [FunctionName(""{Name}"")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.{Char.ToUpper(AuthLevel[0]) + AuthLevel.Substring(1)}, {string.Join(", ", Methods.Select(o => $"\"{o}\""))}, Route = ""{Route}"")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {{
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }}
+    }}
+";
         }
 
         /// <summary>

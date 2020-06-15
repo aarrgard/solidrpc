@@ -17,7 +17,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// <summary>
     /// The function handler
     /// </summary>
-    /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
         private static Task s_restartJob = Task.CompletedTask;
@@ -34,6 +33,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             BaseDir = baseDir;
             FunctionAssembly = functionAssembly;
             TriggerHandlers = new ConcurrentDictionary<string, Type>();
+            FunctionCode = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -65,7 +65,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 return devDir;
             }
         }
-        public IEnumerable<DirectoryInfo> BaseDirs => (new [] { BaseDir, DevDir }).Where(o => o != null);
+
+        /// <summary>
+        /// The code for each function
+        /// </summary>
+        public IDictionary<string, string> FunctionCode { get; }
+
+        /// <summary>
+        /// The base directories
+        /// </summary>
+        public IEnumerable<DirectoryInfo> BaseDirs => (new [] { BaseDir }).Where(o => o != null);
 
         /// <summary>
         /// The function assembly

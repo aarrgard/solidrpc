@@ -35,6 +35,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             };
         }
 
+        protected override string WriteFunctionClass()
+        {
+            return $@"/// SvcBusFunction";
+        }
 
         /// <summary>
         /// Constructs a new svc bus function.

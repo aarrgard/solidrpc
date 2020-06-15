@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -166,7 +167,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 .ToList();
 
             var startTime = DateTime.Now;
-            var modified = await WriteHttpFunctionsAsync(functionDefs,cancellationToken);
+            var modified = await WriteAzFunctionsAsync(functionDefs,cancellationToken);
 
             //
             // get the static routes
@@ -250,7 +251,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             return functions;
         }
 
-        private async Task<bool> WriteHttpFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
+        private async Task<bool> WriteAzFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
         {
             var functionTypes = new Type[]
             {
@@ -325,7 +326,32 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             await Task.WhenAll(tasks);
 
             // write all touched functions
-            touchedFunctions.ForEach(o => modified = o.Save() || modified);
+            var solidRpcFunctionsCs = new StringBuilder();
+            touchedFunctions.ForEach(o =>
+            {
+                modified = o.Save() || modified;
+            });
+
+            if(FunctionHandler.DevDir != null)
+            {
+                var f = new FileInfo(Path.Combine(FunctionHandler.DevDir.FullName, "SolidRpcFunctions.cs"));
+                using (var fs = f.CreateText())
+                {
+                    fs.WriteLine($@"
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
+using SolidRpc.OpenApi.AzFunctions.Bindings;
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+namespace SolidRpc.OpenApi.AzFunctions
+{{
+{string.Join(Environment.NewLine, FunctionHandler.FunctionCode.Values)}
+}}");
+                }
+            }
 
             return modified;
         }

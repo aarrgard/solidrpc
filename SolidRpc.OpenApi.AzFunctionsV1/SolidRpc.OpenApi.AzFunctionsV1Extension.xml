@@ -239,12 +239,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctionsV1.HttpFunction">
+        <member name="T:SolidRpc.OpenApi.AzFunctions.HttpFunction">
             <summary>
             Handles timer triggers
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctionsV1.HttpFunction.Run(System.Net.Http.HttpRequestMessage,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.HttpFunction.Run(System.Net.Http.HttpRequestMessage,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Threading.CancellationToken)">
             <summary>
             Runs the trigger logic.
             </summary>
@@ -254,12 +254,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctionsV1.TimerFunction">
+        <member name="T:SolidRpc.OpenApi.AzFunctions.TimerFunction">
             <summary>
             Handles timer triggers
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctionsV1.TimerFunction.Run(Microsoft.Azure.WebJobs.TimerInfo,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Type,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.TimerFunction.Run(Microsoft.Azure.WebJobs.TimerInfo,Microsoft.Azure.WebJobs.Host.TraceWriter,System.IServiceProvider,System.Type,System.String,System.Threading.CancellationToken)">
             <summary>
             Runs the trigger logic.
             </summary>

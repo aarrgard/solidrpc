@@ -47,6 +47,26 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             };
         }
 
+        protected override string WriteFunctionClass()
+        {
+            return $@"
+    public class {Name}
+    {{
+        [FunctionName(""{Name}"")]
+        public static Task Run(
+            [TimerTrigger(""{Schedule}"", RunOnStartup = {RunOnStartup.ToString().ToLower()})] TimerInfo timerInfo,
+            [Inject] IServiceProvider serviceProvider,
+            [Constant(""{ServiceType}"")] Type serviceType,
+            [Constant(""{MethodName}"")] string methodName,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {{
+            return TimerFunction.Run(timerInfo, log, serviceProvider, serviceType, methodName, cancellationToken);
+        }}
+    }}
+";
+        }
+
 
         /// <summary>
         /// Constructs a new timer function.

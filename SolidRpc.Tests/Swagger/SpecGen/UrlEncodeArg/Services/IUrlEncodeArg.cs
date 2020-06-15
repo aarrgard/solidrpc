@@ -13,7 +13,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen.UrlEncodeArg.Services
         /// <summary>
         /// Proxies the string
         /// </summary>
-        /// <param name="s"></param>
+        /// <param name="s1"></param>
+        /// <param name="s2"></param>
         /// <returns></returns>
         string ProxyStrings(string s1, string s2);
     }

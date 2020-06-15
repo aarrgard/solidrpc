@@ -81,6 +81,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// The location of the functions app
         /// </summary>
         IEnumerable<DirectoryInfo> BaseDirs { get; }
+        
+        /// <summary>
+        /// The dev directory
+        /// </summary>
+        DirectoryInfo DevDir { get; }
+
+        /// <summary>
+        /// The function code for each saved function.
+        /// </summary>
+        IDictionary<string, string> FunctionCode { get; }
 
         /// <summary>
         /// Creates a vaid route from supplied route. V1 &amp; V2 handles initial

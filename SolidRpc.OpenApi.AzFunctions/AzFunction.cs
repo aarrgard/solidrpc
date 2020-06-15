@@ -16,7 +16,6 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <summary>
         /// Performs the invocation.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="del"></param>
         /// <returns></returns>
         public static async Task DoRun(Func<Task> del)

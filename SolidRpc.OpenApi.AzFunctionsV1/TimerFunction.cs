@@ -8,7 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AzFunctionsV1
+namespace SolidRpc.OpenApi.AzFunctions
 {
     /// <summary>
     /// Handles timer triggers

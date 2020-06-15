@@ -35,6 +35,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             };
         }
 
+        protected override string WriteFunctionClass()
+        {
+            return $@"
+
+    public class {Name}
+    {{
+        [FunctionName(""{Name}"")]
+        public static Task Run(
+            [QueueTrigger(""{QueueName}"", Connection = ""{Connection}"")] string message,
+            string id,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {{
+            return QueueFunction.Run(message, id, log, serviceProvider, cancellationToken);
+        }}
+    }}
+";
+        }
 
         /// <summary>
         /// Constructs a new quue function.

@@ -18,7 +18,6 @@
             <summary>
             Performs the invocation.
             </summary>
-            <typeparam name="T"></typeparam>
             <param name="del"></param>
             <returns></returns>
         </member>
@@ -150,6 +149,16 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.BaseDirs">
             <summary>
             The location of the functions app
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.DevDir">
+            <summary>
+            The dev directory
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.FunctionCode">
+            <summary>
+            The function code for each saved function.
             </summary>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateRoute(System.String)">
@@ -303,12 +312,22 @@
             Saves the run.csx and function.json files
             </summary>
         </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.WriteFunctionClass">
+            <summary>
+            Writes the function class
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Save(System.IO.FileInfo)">
             <summary>
             Saves the run.csx and function.json files
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler" -->
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler">
+            <summary>
+            The function handler
+            </summary>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.#ctor(System.IO.DirectoryInfo,System.Reflection.Assembly)">
             <summary>
             Constructs a new instance.
@@ -324,6 +343,16 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.DevDir">
             <summary>
             Returns the dev dir if it exists
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.FunctionCode">
+            <summary>
+            The code for each function
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.BaseDirs">
+            <summary>
+            The base directories
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.FunctionAssembly">
@@ -655,6 +684,11 @@
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.RunOnStartup">
             <summary>
             Should the trigger run on startup.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.UseMonitor">
+            <summary>
+            Should the trigger be monitored
             </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Model.Binding.QueueName">

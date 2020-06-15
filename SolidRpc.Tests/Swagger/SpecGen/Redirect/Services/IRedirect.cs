@@ -13,7 +13,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen.Redirect.Services
         /// <summary>
         /// Redirects
         /// </summary>
-        /// <param name="s"></param>
         /// <returns></returns>
         Types.Redirect Redirect(Types.Redirect r);
 

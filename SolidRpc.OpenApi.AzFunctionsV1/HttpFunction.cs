@@ -1,7 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
@@ -10,7 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.AzFunctionsV1
+namespace SolidRpc.OpenApi.AzFunctions
 {
     /// <summary>
     /// Handles timer triggers

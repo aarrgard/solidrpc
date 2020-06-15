@@ -59,6 +59,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Model
         /// </summary>
         [DataMember(Name = "runOnStartup", EmitDefaultValue = false)]
         public bool RunOnStartup { get; set; }
+        /// <summary>
+        /// Should the trigger be monitored
+        /// </summary>
+        [DataMember(Name = "useMonitor", EmitDefaultValue = false)]
+        public bool UseMonitor { get; set; }
         #endregion
         #region QueueTrigger
         /// <summary>
