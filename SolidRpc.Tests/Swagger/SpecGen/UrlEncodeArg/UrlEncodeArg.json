@@ -25,13 +25,15 @@
             "name": "s1",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": ""
           },
           {
             "name": "s2",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": ""
           }
         ],
         "responses": {

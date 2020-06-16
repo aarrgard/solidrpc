@@ -26,7 +26,8 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": ""
           }
         ],
         "responses": {
