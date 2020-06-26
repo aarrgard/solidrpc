@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <Description>Generates code from a swagger specification.</Description>
     <PackageId>SolidRpc.OpenApi.DotNetTool</PackageId>
     <AssemblyName>dotnet-solidrpc-openapigen</AssemblyName>
@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="SolidRpc.OpenApi.Generator" Version="1.0.0-rc029" />
+    <PackageReference Include="SolidRpc.OpenApi.Generator" Version="1.0.0-rc035" />
   </ItemGroup>
 
   <ItemGroup>
