@@ -26,7 +26,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
 
-            services.AddAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
+            services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
 
             services.AddSolidRpcBindings(typeof(ITestInterface).Assembly, typeof(TestImplementation).Assembly, conf =>
             {

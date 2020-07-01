@@ -17,6 +17,7 @@ namespace SolidRpc.Test.PetstoreWeb
             services.AddHttpClient();
             //services.AddSolidRpcServices(o => true);
             services.AddSolidRpcRateLimitMemory();
+            services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "generic");
             services.AddSolidRpcSwaggerUI();
             //services.AddSolidRpcNpmGenerator();
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>

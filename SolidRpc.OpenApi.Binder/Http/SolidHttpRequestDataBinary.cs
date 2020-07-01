@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Http
 {
@@ -109,7 +110,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        public void SetBinaryData(string name, Stream value)
+        public async Task SetBinaryData(string name, Stream value)
         {
             if(value == null)
             {
@@ -118,7 +119,7 @@ namespace SolidRpc.OpenApi.Binder.Http
             }
             Name = name;
             var ms = new MemoryStream();
-            value.CopyTo(ms);
+            await value.CopyToAsync(ms);
             BinaryData = ms.ToArray();
         }
     }

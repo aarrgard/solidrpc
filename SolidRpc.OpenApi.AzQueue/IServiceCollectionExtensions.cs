@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddAzTableQueue(this IServiceCollection services, string connectionName, string inboundHandler, Func<ISolidRpcOpenApiConfig, bool> configurator = null)
+        public static IServiceCollection AddSolidRpcAzTableQueue(this IServiceCollection services, string connectionName, string inboundHandler, Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             services.AddSolidRpcBindings(typeof(IAzTableQueue), typeof(AzTableQueue), conf =>
             {

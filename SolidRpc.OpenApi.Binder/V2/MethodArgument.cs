@@ -140,7 +140,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             return new[] { MapScope(ParameterObject.In), ParameterObject.Name };
         }
 
-        private IEnumerable<IHttpRequestData> SetFileData(string name, IEnumerable<IHttpRequestData> formData, object value)
+        private async Task<IEnumerable<IHttpRequestData>> SetFileData(string name, IEnumerable<IHttpRequestData> formData, object value)
         {
             var latest = GetLatestBinaryData(formData);
             switch (name.ToLower())
@@ -154,16 +154,16 @@ namespace SolidRpc.OpenApi.Binder.V2
                 default:
                     if(value is Stream stream)
                     {
-                        latest.SetBinaryData(name, stream);
+                        await latest.SetBinaryData(name, stream);
                     }
                     else if(value is byte[] bytes)
                     {
-                        latest.SetBinaryData(name, new MemoryStream(bytes));
+                        await latest.SetBinaryData(name, new MemoryStream(bytes));
                     }
                     else
                     {
                         var template = FileContentTemplate.GetTemplate(value.GetType());
-                        latest.SetBinaryData(name, template.GetContent(value));
+                        await latest.SetBinaryData(name, template.GetContent(value));
                         latest.SetContentType(template.GetContentType(value));
                         latest.SetCharSet(template.GetCharSet(value));
                         latest.SetFilename(template.GetFileName(value));
@@ -225,41 +225,40 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public IEnumerable<string> ArgumentPath { get; }
 
-        public Func<IEnumerable<IHttpRequestData>, object, IEnumerable<IHttpRequestData>> HttpRequestDataBinder { get; }
+        public Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> HttpRequestDataBinder { get; }
         public Func<IEnumerable<IHttpRequestData>, object> HttpRequestDataExtractor { get; }
 
-        public Task BindArgumentAsync(IHttpRequest request, object val)
+        public async Task BindArgumentAsync(IHttpRequest request, object val)
         {
             // check if required - if not and default value - dont bind
             if(!ParameterObject.Required)
             {
                 if (val == null)
                 {
-                    return Task.CompletedTask;
+                    return;
                 }
                 if (ParameterInfo.ParameterType.IsValueType && val == Activator.CreateInstance(ParameterInfo.ParameterType))
                 {
-                    return Task.CompletedTask;
+                    return;
                 }
             }
 
             // bind the argument
-            BindPath(typeof(IHttpRequest), request, ArgumentPath.GetEnumerator(), val);
-            return Task.CompletedTask;
+            await BindPath(typeof(IHttpRequest), request, ArgumentPath.GetEnumerator(), val);
         }
 
-        private object BindPath(Type type, object existingValue, IEnumerator<string> pathEnumerator, object value)
+        private async Task<object> BindPath(Type type, object existingValue, IEnumerator<string> pathEnumerator, object value)
         {
             if (typeof(IEnumerable<IHttpRequestData>).IsAssignableFrom(type))
             {
                 var lst = ((IEnumerable<IHttpRequestData>)existingValue).ToList();
-                var requestData = HttpRequestDataBinder(lst, value);
+                var requestData = await HttpRequestDataBinder(lst, value);
                 lst.AddRange(requestData.Where(o => !lst.Contains(o)));
                 return lst;
             }
             if (typeof(IHttpRequestData).IsAssignableFrom(type))
             {
-                return HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value).Single();
+                return (await HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value)).Single();
             }
 
             // if we have reach end of path - return value
@@ -275,7 +274,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (typeof(string).IsAssignableFrom(type))
             {
                 var str = (string) existingValue;
-                var requestData = HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value);
+                var requestData = await HttpRequestDataBinder(SolidHttpRequestData.EmptyArray, value);
                 var strVals = requestData.Select(o => o.GetStringValue());
                 str = str.Replace($"{{{pathElement}}}", string.Join("", strVals));
                 return str;
@@ -290,7 +289,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 throw new Exception($"Cannot find path {pathElement} in {existingValue.GetType().FullName}");
             }
             var propValue = prop.GetValue(existingValue);
-            var newValue = BindPath(prop.PropertyType, propValue, pathEnumerator, value);
+            var newValue = await BindPath(prop.PropertyType, propValue, pathEnumerator, value);
             if(!ReferenceEquals(newValue, propValue))
             {
                 prop.SetValue(existingValue, newValue);

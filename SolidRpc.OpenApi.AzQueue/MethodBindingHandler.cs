@@ -249,7 +249,7 @@ namespace SolidRpc.OpenApi.AzQueue
             {
                 // find all the rows for the binding
                 var ct = CloudQueueStore.GetCloudTable(qt.ConnectionName);
-                var messages = await Services.AzTableQueue.GetMessagesAsync(ct, qt.QueueName, new[] { TableMessageEntity.StatusPending, TableMessageEntity.StatusDispatched }, 1, cancellationToken);
+                var messages = await AzTableHandler.GetMessagesAsync(ct, qt.QueueName, new[] { TableMessageEntity.StatusPending, TableMessageEntity.StatusDispatched }, 1, cancellationToken);
                 if(messages.Count() == 0)
                 {
                     return;
