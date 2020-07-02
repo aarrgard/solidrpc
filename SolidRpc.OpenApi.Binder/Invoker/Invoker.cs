@@ -21,16 +21,19 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
         private static ConcurrentDictionary<Type, Func<MethodInfo,object[], InvocationOptions, object>> Invokers = new ConcurrentDictionary<Type, Func<MethodInfo, object[], InvocationOptions, object>>();
-        public Invoker(ILogger<Invoker<T>> logger, IMethodBinderStore methodBinderStore, IServiceProvider serviceProvider)
+        public Invoker(
+            ILogger<Invoker<T>> logger, 
+            IMethodBinderStore methodBinderStore,
+            IEnumerable<IHandler> handlers)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
-            ServiceProvider = serviceProvider;
+            Handlers = handlers;
         }
 
         protected ILogger Logger { get; }
         protected IMethodBinderStore MethodBinderStore { get; }
-        protected IServiceProvider ServiceProvider { get; }
+        protected IEnumerable<IHandler> Handlers { get; }
 
         public IMethodBinding GetMethodBinding(MethodInfo mi)
         {
@@ -169,8 +172,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 invocationOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
             }
 
-            var handlers = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>();
-            var handler = handlers.FirstOrDefault(o => o.TransportType == transportType);
+            var handler = Handlers.FirstOrDefault(o => o.TransportType == transportType);
             if (handler == null) throw new Exception($"Transport {transportType} not configured.");
             return handler;
         }

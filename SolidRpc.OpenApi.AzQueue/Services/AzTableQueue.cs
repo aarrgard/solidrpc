@@ -13,13 +13,11 @@ using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace SolidRpc.OpenApi.AzQueue.Services
 {
@@ -30,50 +28,37 @@ namespace SolidRpc.OpenApi.AzQueue.Services
 
         public AzTableQueue(
             ILogger<AzTableQueue> logger,
-            IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
             IServiceProvider serviceProvider,
             AzTableHandler queueHandler,
             IMethodInvoker methodInvoker,
+            IInvoker<IAzTableQueue> invoker,
             ISolidRpcApplication solidRpcApplication)
         {
             Logger = logger;
-            MethodBinderStore = methodBinderStore;
             SerializerFactory = serializerFactory;
             CloudQueueStore = cloudQueueStore;
             ServiceProvider = serviceProvider;
             QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
+            Invoker = invoker;
             SolidRpcApplication = solidRpcApplication;
         }
 
         private ILogger Logger { get; }
-        private IMethodBinderStore MethodBinderStore { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ICloudQueueStore CloudQueueStore { get; }
         private IServiceProvider ServiceProvider { get; }
         private AzTableHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
+        private IInvoker<IAzTableQueue> Invoker { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
-        
-        private IInvoker<IAzTableQueue> Invoker => ServiceProvider.GetRequiredService<IInvoker<IAzTableQueue>>();
-
-        private IEnumerable<IQueueTransport> GetTableTransports()
-        {
-            // find all the table queues
-            return MethodBinderStore.MethodBinders
-                .SelectMany(o => o.MethodBindings)
-                .SelectMany(o => o.Transports)
-                .OfType<IQueueTransport>()
-                .Where(o => o.TransportType == "AzTable")
-                .ToList();
-        }
 
         public Task DoScheduledScanAsync(CancellationToken cancellationToken = default)
         {
             // find all the table queues
-            var tableTranports = GetTableTransports()
+            var tableTranports = QueueHandler.GetTableTransports()
                 .Select(o => new { o.ConnectionName, o.QueueName })
                 .Distinct()
                 .ToList();
@@ -120,12 +105,12 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 await cloudTable.ExecuteAsync(TableOperation.Replace(row), TableRequestOptions, OperationContext, cancellationToken);
             }
 
-            await QueueHandler.DispatchMessageAsync(connectionName, row.QueueName, false, cancellationToken);
+            QueueHandler.DispatchMessageAsync(connectionName, row.QueueName, false, cancellationToken);
         }
 
         public async Task<IEnumerable<AzTableQueueSettings>> GetSettingsAsync(CancellationToken cancellationToken = default)
         {
-            var tasks = GetTableTransports().Select(o => GetSettingsAsync(o.ConnectionName, o.QueueName, cancellationToken));
+            var tasks = QueueHandler.GetTableTransports().Select(o => GetSettingsAsync(o.ConnectionName, o.QueueName, cancellationToken));
             return await Task.WhenAll(tasks);
         }
 
@@ -149,22 +134,9 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
         }
 
-        public async Task<AzTableQueueSettings> UpdateSettings(AzTableQueueSettings settings, CancellationToken cancellationToken = default)
+        public Task<AzTableQueueSettings> UpdateSettings(AzTableQueueSettings settings, CancellationToken cancellationToken = default)
         {
-            var transport = GetTableTransports().FirstOrDefault(o => o.QueueName == settings.QueueName);
-            if (transport == null) throw new ArgumentException("Cannot find transport for queue name.");
-            var cloudTable = CloudQueueStore.GetCloudTable(transport.ConnectionName);
-            var settingRow = new TableMessageEntity(settings.QueueName);
-            settingRow.Message = QueueHandler.SerializeSettings(settings);
-            try
-            {
-                await cloudTable.ExecuteAsync(TableOperation.InsertOrReplace(settingRow), TableRequestOptions, OperationContext, cancellationToken);
-                return settings;
-            }
-            catch(StorageException se)
-            {
-                throw;
-            }
+            return QueueHandler.UpdateSettings(settings, cancellationToken);
         }
 
         public async Task SendTestMessageAync(Stream payload, int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
@@ -190,7 +162,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         public Task FlagErrorMessagesAsPending(CancellationToken cancellationToken = default)
         {
             // find all the table queues
-            var tasks = GetTableTransports()
+            var tasks = QueueHandler.GetTableTransports()
                 .Select(o => new { o.ConnectionName, o.QueueName })
                 .Distinct()
                 .Select(o => QueueHandler.FlagErrorMessagesAsPending(o.ConnectionName, o.QueueName, cancellationToken));

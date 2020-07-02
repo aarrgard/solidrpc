@@ -136,14 +136,39 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             CloudQueueStore = cloudQueueStore;
             Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
             PendingDispatches = new ConcurrentDictionary<string, RunningDispatch>();
-
-            var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            Invoker = scope.ServiceProvider.GetRequiredService<IInvoker<IAzTableQueue>>();
         }
         private ConcurrentDictionary<string, SemaphoreSlim> Semaphores { get; }
         private IDictionary<string, RunningDispatch> PendingDispatches { get; }
-        private IInvoker<IAzTableQueue> Invoker { get; }
         private ICloudQueueStore CloudQueueStore { get; }
+
+        public IEnumerable<IQueueTransport> GetTableTransports()
+        {
+            // find all the table queues
+            return MethodBinderStore.MethodBinders
+                .SelectMany(o => o.MethodBindings)
+                .SelectMany(o => o.Transports)
+                .OfType<IQueueTransport>()
+                .Where(o => o.TransportType == "AzTable")
+                .ToList();
+        }
+
+        public async Task<AzTableQueueSettings> UpdateSettings(AzTableQueueSettings settings, CancellationToken cancellationToken = default)
+        {
+            var transport = GetTableTransports().FirstOrDefault(o => o.QueueName == settings.QueueName);
+            if (transport == null) throw new ArgumentException("Cannot find transport for queue name.");
+            var cloudTable = CloudQueueStore.GetCloudTable(transport.ConnectionName);
+            var settingRow = new TableMessageEntity(settings.QueueName);
+            settingRow.Message = SerializeSettings(settings);
+            try
+            {
+                await cloudTable.ExecuteAsync(TableOperation.InsertOrReplace(settingRow), TableRequestOptions, OperationContext, cancellationToken);
+                return settings;
+            }
+            catch (StorageException se)
+            {
+                throw;
+            }
+        }
 
         protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
@@ -249,12 +274,11 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             // find the settings row
             if (settings == null)
             {
-                throw new NotImplementedException();
-                //settings = await UpdateSettings(new AzTableQueueSettings()
-                //{
-                //    QueueName = queueName,
-                //    MaxConcurrentCalls = 1
-                //});
+                settings = await UpdateSettings(new AzTableQueueSettings()
+                {
+                    QueueName = queueName,
+                    MaxConcurrentCalls = 1
+                }, cancellationToken);
             }
 
             results = results.Where(o => !o.IsSettings);
@@ -298,7 +322,11 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
 
             // message locked and ready - add queue message
-            await Invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), InvocationOptions.AzQueue);
+            using (var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var invoker = scope.ServiceProvider.GetRequiredService<IInvoker<IAzTableQueue>>();
+                await invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), InvocationOptions.AzQueue);
+            }
 
             // try to dispatch another message
             return true;
