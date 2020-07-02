@@ -42,22 +42,25 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="callerType"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
             public Task<int> DoXAsync(string callerType, CancellationToken cancellation = default(CancellationToken))
             {
-                Assert.AreEqual(callerType, SolidProxyInvocationImplAdvice.CurrentInvocation.Caller.GetType().Name);
+                Assert.AreEqual(callerType, SolidProxyInvocationImplAdvice.CurrentInvocation?.Caller?.GetType()?.Name);
                 return Task.FromResult(4711);
             }
         }
 
         /// <summary>
-        /// Tests the type store
+        /// Tests the local invoker
         /// </summary>
         [Test]
         public async Task TestLocalInvokerInternalService()
         {
+            var sb = new ConfigurationBuilder();
             var sc = new ServiceCollection();
+            sc.AddSingleton<IConfiguration>(sb.Build());
             sc.AddLogging(ConfigureLogging);
             sc.AddSolidRpcSingletonServices();
             sc.AddTransient<ITestInterface, TestImplementation>();
@@ -68,7 +71,7 @@ namespace SolidRpc.Tests.Invoker
         }
 
         /// <summary>
-        /// Tests the type store
+        /// Tests the local invoker
         /// </summary>
         [Test]
         public async Task TestLocalInvokerExternalService()
