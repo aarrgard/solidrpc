@@ -2,10 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Test.Vitec.Impl;
-using SolidRpc.Test.Vitec.Services;
+using SolidRpc.OpenApi.AzQueue.Services;
 using System;
 using System.Threading.Tasks;
+using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.OpenApi.AzQueue.Invoker;
+using SolidRpc.Abstractions.Serialization;
+using SolidRpc.Abstractions.Types;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SolidRpc.Tests
 {
@@ -14,8 +19,45 @@ namespace SolidRpc.Tests
     /// </summary>
     public class VitecTest : TestBase
     {
+        public class JsonInfo
+        {
+            /// <summary>
+            /// The container
+            /// </summary>
+            public string Container { get; set; }
 
-        //public (HttpClient, CookieContainer) CreateHttpClient()
+            /// <summary>
+            /// The data type
+            /// </summary>
+            public string DataType { get; set; }
+
+            /// <summary>
+            /// The id
+            /// </summary>
+            public string Id { get; set; }
+
+            /// <summary>
+            /// The ETag
+            /// </summary>
+            public string ETag { get; set; }
+        }
+        public class JsonBlob : JsonInfo
+        {
+            /// <summary>
+            /// The md5 hash of the content
+            /// </summary>
+            public string MD5Base64 { get; set; }
+
+            /// <summary>
+            /// The time when the blob was created
+            /// </summary>
+            public DateTimeOffset VersionTimestamp { get; set; }
+
+            /// <summary>
+            /// The json.
+            /// </summary>
+            public string Json { get; set; }
+        }       //public (HttpClient, CookieContainer) CreateHttpClient()
         //{
         //    var affin = "6516714284e2943ad8567792ce493a6239a7682752e69301a9c2147e7cb0a161";
         //    var cookieContainer = new CookieContainer();
@@ -37,7 +79,7 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Requires password")]
+        [Test, Ignore("Live")]
         public async Task TestStartProject()
         {
             //var (httpClient,cookieContainer) = CreateHttpClient();
@@ -82,19 +124,124 @@ namespace SolidRpc.Tests
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
 
-            sc.AddVitecBackendServiceProvider();
+            sc.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "none", config =>
+            {
+                config.SetQueueTransport<AzTableHandler>(Abstractions.OpenApi.Transport.InvocationStrategy.Invoke, "AzureWebJobsStorage", "rdbms");
+                return true;
+            });
+            //sc.AddVitecBackendServiceProvider();
 
             var sp = sc.BuildServiceProvider();
-            var estateService = sp
-                .GetRequiredService<IVitecBackendServiceProvider>()
-                .GetRequiredService<IEstate>();
+            var tq = sp.GetRequiredService<IAzTableQueue>();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+            var msgs = await tq.ListMessagesAsync();
+            foreach(var msg in msgs)
+            {
+                try
+                {
+                    if (msg.Status != "Error") continue;
+                    HttpRequest httpRequest;
+                    serFact.DeserializeFromString(msg.Message, out httpRequest);
+
+                    JsonBlob jsonBlob;
+                    serFact.DeserializeFromStream(httpRequest.Body, out jsonBlob);
+
+                    if (jsonBlob.Id != null)
+                    {
+                        continue;
+                    }
+                    if (jsonBlob.Json == null)
+                    {
+                        continue;
+                    }
+                    jsonBlob.Id = ExtractIdFromJson(jsonBlob.DataType, jsonBlob.Json);
+
+                    var ms = new MemoryStream();
+                    serFact.SerializeToStream(ms, jsonBlob);
+                    httpRequest.Body = new MemoryStream(ms.ToArray());
+
+                    string s;
+                    serFact.SerializeToString(out s, httpRequest);
+
+                    msg.Message = s;
+                    msg.Status = "Pending";
+
+                    await tq.UpdateMessageAsync(msg);
+                } 
+                catch(Exception e)
+                {
+                    // continue;
+                }
+            }
+
+            //var estateService = sp
+            //    .GetRequiredService<IVitecBackendServiceProvider>()
+            //    .GetRequiredService<IEstate>();
             //var house = await estateService.EstateGetHousingCooperative("OBJ20965_1767989848");
 
-            var statuses = await estateService.EstateGetStatuses();
+            //var statuses = await estateService.EstateGetStatuses();
             //var lst = await estateService.EstateGetEstateList(new Test.Vitec.Types.Criteria.Estate.EstateCriteria()
             //{
             //    Statuses = statuses.Where(o => o.Id == "3").ToList()
             //});
+        }
+
+        private string ExtractIdFromJson(string dataType, string json)
+        {
+            if(string.IsNullOrEmpty(json))
+            {
+                throw new Exception("Cannot extract id for type:" + dataType + ":" + json);
+            }
+            Regex re;
+            switch(dataType)
+            {
+                case "EO.Vitec.Types.Contact.Models.Person":
+                    re = new Regex("\"contactId\":\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Contact.Models.Estate":
+                    re = new Regex("\"contactId\":\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Contact.Models.Company":
+                    re = new Regex("\"contactId\":\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Bid.Models.Bid":
+                    re = new Regex("\"id\":\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Estate.Models.Farm":
+                    re = new Regex("\"estateId\":\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Estate.Models.House":
+                    re = new Regex("\"estateId\":\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Estate.Models.HousingCooperative":
+                    re = new Regex("\"estateId\":\\s*\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Estate.Models.Plot":
+                    re = new Regex("\"estateId\":\\s*\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.ImageInfo":
+                    re = new Regex("\"Id\":\\s*\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Meeting.Models.Meeting":
+                    re = new Regex("\"id\":\\s*\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.Office.Models.Office":
+                    re = new Regex("\"officeId\":\\s*\"([^\"]+)\"");
+                    break;
+                case "EO.Vitec.Types.User.Models.User":
+                    re = new Regex("\"userId\":\\s*\"([^\"]+)\"");
+                    break;
+                default:
+                    throw new Exception("Cannot extract id for type:" + dataType + ":" + json);
+            }
+
+            var match = re.Match(json);
+            if(!match.Success)
+            {
+                throw new Exception("Cannot extract id for type:" + dataType + ":" + json);
+            }
+            var id = match.Groups[1].Value;
+            return id;
         }
 
         private object CreateClient()

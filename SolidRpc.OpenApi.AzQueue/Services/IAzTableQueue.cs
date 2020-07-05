@@ -58,6 +58,21 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         Task FlagErrorMessagesAsPending(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Lists all the messages in the table queue.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<AzTableMessage>> ListMessagesAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Updates the supplied message.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task UpdateMessageAsync(AzTableMessage msg, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Sends a test message.
         /// </summary>
         /// <param name="cancellationToken"></param>

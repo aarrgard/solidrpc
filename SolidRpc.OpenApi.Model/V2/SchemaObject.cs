@@ -56,6 +56,12 @@ namespace SolidRpc.OpenApi.Model.V2
                 itemBase.Type = "string";
                 return;
             }
+            else if (type == typeof(byte))
+            {
+                itemBase.Type = "integer";
+                itemBase.Format = "byte";
+                return;
+            }
             else if (type == typeof(short))
             {
                 itemBase.Type = "integer";

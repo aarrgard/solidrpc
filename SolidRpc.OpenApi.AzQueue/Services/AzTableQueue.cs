@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
-using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -16,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -168,6 +166,55 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 .Select(o => QueueHandler.FlagErrorMessagesAsPending(o.ConnectionName, o.QueueName, cancellationToken));
 
             return Task.WhenAll(tasks);
+        }
+
+        public async Task<IEnumerable<AzTableMessage>> ListMessagesAsync(CancellationToken cancellationToken = default)
+        {
+            var tasks = QueueHandler.GetTableTransports()
+                .Select(o => new { o.ConnectionName, o.QueueName })
+                .Distinct()
+                .Select(o => ListMessagesAsync(o.ConnectionName, o.QueueName, cancellationToken));
+            return (await Task.WhenAll(tasks)).SelectMany(o => o);
+        }
+
+        private async Task<IEnumerable<AzTableMessage>> ListMessagesAsync(string connectionName, string queueName, CancellationToken cancellationToken)
+        {
+            var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
+            var messages = await AzTableHandler.GetMessagesAsync(cloudTable, queueName, TableMessageEntity.AllStatuses, int.MaxValue, cancellationToken);
+
+            var azMessages = messages.Select(o => new AzTableMessage()
+            {
+                ConnectionName = connectionName,
+                PartitionKey = o.PartitionKey,
+                RowKey = o.RowKey,
+                Status = o.Status,
+                Message = o.Message
+            }).ToArray();
+
+            await Task.WhenAll(azMessages.Select(o => SetLargeMessage(connectionName, o, cancellationToken)));
+
+            return azMessages;
+        }
+
+        private async Task SetLargeMessage(string connectionName, AzTableMessage msg, CancellationToken cancellationToken)
+        {
+            msg.Message = await CloudQueueStore.RetreiveLargeMessageAsync(connectionName, msg.Message, cancellationToken);
+
+        }
+
+        public async Task UpdateMessageAsync(AzTableMessage msg, CancellationToken cancellationToken = default)
+        {
+            var cloudTable = CloudQueueStore.GetCloudTable(msg.ConnectionName);
+            var res = await cloudTable.ExecuteAsync(TableOperation.Retrieve<TableMessageEntity>(msg.PartitionKey, msg.RowKey), TableRequestOptions, OperationContext, cancellationToken);
+            var row = (TableMessageEntity)res.Result;
+            if (row == null) throw new Exception("Cannot find row.");
+            row.Message = msg.Message;
+            row.Status = msg.Status;
+
+            var oldMsg = row.Message;
+            row.Message = await CloudQueueStore.StoreLargeMessageAsync(msg.ConnectionName, row.Message, cancellationToken);
+            await cloudTable.ExecuteAsync(TableOperation.Merge(row), TableRequestOptions, OperationContext, cancellationToken);
+            await CloudQueueStore.DeleteLargeMessageAsync(msg.ConnectionName, oldMsg, cancellationToken);
         }
     }
 }

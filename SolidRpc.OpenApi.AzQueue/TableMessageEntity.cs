@@ -17,6 +17,10 @@ namespace SolidRpc.OpenApi.AzQueue
         public const string StatusProcessed = "Processed";
         public const string StatusError = "Error";
         public const string SettingsRowKey = "0-settings";
+        public static readonly string[] AllStatuses =
+        {
+            StatusSettings, StatusPending, StatusDispatched, StatusProcessed, StatusError
+        };
 
         public TableMessageEntity() { }
 

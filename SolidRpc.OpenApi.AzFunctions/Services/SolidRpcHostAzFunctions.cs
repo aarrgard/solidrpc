@@ -348,7 +348,7 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace SolidRpc.OpenApi.AzFunctions
 {{
-{string.Join(Environment.NewLine, FunctionHandler.FunctionCode.Values)}
+{string.Join(Environment.NewLine, FunctionHandler.FunctionCode.OrderBy(o => o.Key).Select(o => o.Value))}
 }}");
                 }
             }
