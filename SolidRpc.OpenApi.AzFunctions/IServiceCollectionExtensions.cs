@@ -42,10 +42,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
 
                 var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
-                var triggerAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                var triggerAssemblies = AppDomain.CurrentDomain.GetAssemblies()
                     .Where(o => o != typeof(StartupSolidRpcServices).Assembly)
                     .Where(o => o.GetName().Name.StartsWith(assemblyNamePrefix))
-                    .Single();
+                    .ToList();
+
+                var triggerAssembly = triggerAssemblies.Single();
  
                 funcHandler = new AzFunctionHandler(baseDir, triggerAssembly);
                 services.AddSingleton(funcHandler);

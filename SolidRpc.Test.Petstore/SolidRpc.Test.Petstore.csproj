@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build009" />
+    <DotNetCliToolReference Include="SolidRpc.OpenApi.DotNetTool" Version="1.0.0-rc036" />
   </ItemGroup>
 
   <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">

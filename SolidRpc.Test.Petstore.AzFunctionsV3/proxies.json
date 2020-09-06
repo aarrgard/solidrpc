@@ -210,6 +210,24 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync"
     },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ListMessagesAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ListMessagesAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ListMessagesAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",
