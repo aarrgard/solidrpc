@@ -59,6 +59,35 @@
             <param name="rootNamespace"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.NpmGenerator.Services.INodeService">
+            <summary>
+            The npm generator
+            </summary>
+        </member>
+        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.ExecuteJSAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Runs the supplied javascript.
+            </summary>
+            <param name="js"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.GetNodeVersionAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns the node version
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.DownloadPackageAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Downloads the specified package so that it is available to the executed scripts.
+            </summary>
+            <param name="package"></param>
+            <param name="version"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.NpmGenerator.Services.INpmGenerator">
             <summary>
             The npm generator
@@ -99,6 +128,17 @@
             </summary>
             <param name="assemblyName">The name of the assembly to create an npm package for.</param>
             <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.NpmGenerator.Services.NodeService">
+            <summary>
+            Implements the node service. Executables are fetched from https://nodejs.org/es/blog/release/v8.17.0/.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.NpmGenerator.Services.NodeService.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.NpmGenerator.Services.NodeService})">
+            <summary>
+            Constructs the instance
+            </summary>
+            <param name="logger"></param>
         </member>
         <member name="T:SolidRpc.NpmGenerator.Services.NpmGenerator">
             <summary>
@@ -347,6 +387,26 @@
         <member name="P:SolidRpc.NpmGenerator.Types.FileContent.FileName">
             <summary>
             The file name
+            </summary>
+        </member>
+        <member name="T:SolidRpc.NpmGenerator.Types.NodeExecution">
+            <summary>
+            Represents the result from a node execution.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.NpmGenerator.Types.NodeExecution.ExitCode">
+            <summary>
+            The exit code. Null means that the process is still running.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.NpmGenerator.Types.NodeExecution.Out">
+            <summary>
+            The result from the std.out.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.NpmGenerator.Types.NodeExecution.Err">
+            <summary>
+            The result from the std.err.
             </summary>
         </member>
         <member name="T:SolidRpc.NpmGenerator.Types.NpmPackage">

@@ -22,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Arch\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
     <EmbeddedResource Include="$(AssemblyName).xml" />
     <EmbeddedResource Include="$(AssemblyName).json" />
     <EmbeddedResource Include="NpmGenerator.NpmScript.js" />
@@ -37,5 +43,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
   </ItemGroup>
+
 
 </Project>

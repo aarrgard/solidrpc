@@ -33,17 +33,25 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             services.AddNodeServices();
             services.AddHttpClient();
-            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator));
+            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator), typeof(INodeService));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();
 
             services.AddSolidRpcBindings(
-                typeof(INpmGenerator), 
-                typeof(NpmGenerator), 
+                typeof(INpmGenerator),
+                typeof(NpmGenerator),
                 (c) =>
                 {
                     c.OpenApiSpec = strOpenApiSpec;
-                    return configurator?.Invoke(c) ?? false;
+                    return configurator?.Invoke(c) ?? true;
                 });
+            services.AddSolidRpcBindings(
+                  typeof(INodeService),
+                  typeof(NodeService),
+                  (c) =>
+                  {
+                      c.OpenApiSpec = strOpenApiSpec;
+                      return configurator?.Invoke(c) ?? true;
+                  });
             return services;
         }
     }
