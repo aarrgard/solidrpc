@@ -12,14 +12,17 @@ namespace SolidRpc.Test.PetstoreWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(o => o.SetMinimumLevel(LogLevel.Trace));
+            services.AddLogging(o => {
+                o.SetMinimumLevel(LogLevel.Trace);
+                o.AddConsole();
+            });
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             services.AddHttpClient();
             //services.AddSolidRpcServices(o => true);
             services.AddSolidRpcRateLimitMemory();
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "generic");
             services.AddSolidRpcSwaggerUI();
-            //services.AddSolidRpcNpmGenerator();
+            services.AddSolidRpcNpmGenerator();
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>
             //{
             //    //conf.Authority = "https://login.microsoftonline.com/common/v2.0";

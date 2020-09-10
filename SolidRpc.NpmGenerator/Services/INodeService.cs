@@ -13,6 +13,14 @@ namespace SolidRpc.NpmGenerator.Services {
         /// <param name="js"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        Task<NodeExecution> ExecuteJSInDebugger(string js, CancellationToken cancellationToken = default(CancellationToken));
+        
+        /// <summary>
+        /// Runs the supplied javascript.
+        /// </summary>
+        /// <param name="js"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<NodeExecution> ExecuteJSAsync(string js, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
