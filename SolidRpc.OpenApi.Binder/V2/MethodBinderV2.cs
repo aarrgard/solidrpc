@@ -39,8 +39,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         protected override IEnumerable<IMethodBinding> DoCreateMethodBinding(
             MethodInfo mi,
-            IEnumerable<ITransport> transports,
-            KeyValuePair<string, string>? securityKey)
+            IEnumerable<ITransport> transports)
         {
             if (mi == null) throw new ArgumentNullException(nameof(mi));
             if (mi.DeclaringType.Assembly != Assembly)
@@ -88,8 +87,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 op,
                 mi,
                 methodDoc,
-                transports,
-                securityKey)).ToList();
+                transports)).ToList();
         }
 
         private bool FindParameter(ParameterObject p, ParameterInfo[] parameterInfos)

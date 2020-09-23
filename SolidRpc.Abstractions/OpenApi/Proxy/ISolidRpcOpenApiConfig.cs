@@ -21,14 +21,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         string OpenApiSpec { get; set; }
 
         /// <summary>
-        /// If this key is set it needs to be specified in the invocation
-        /// properties in order for the invocation to be authorized on the server side.
-        /// If the key is present on the client side it is added to call so that
-        /// the invocation is authorized.
-        /// </summary>
-        KeyValuePair<string, string>? SecurityKey { get; set; }
-
-        /// <summary>
         /// The proxy transport type. If not explicitly configured the "Http" transport
         /// will be used for remote implementations and the "Local" transport for proxes that 
         /// are registerd in the IoC container.
@@ -51,16 +43,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
     /// </summary>
     public static class ISolidRpcOpenApiConfigExtensions
     {
-        /// <summary>
-        /// Sets the SolidRpcSecurityKey key.
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="secKey"></param>
-        public static void SetSecurityKey(this ISolidRpcOpenApiConfig config, Guid secKey)
-        {
-            config.SecurityKey = new KeyValuePair<string, string>("solidrpcsecuritykey", secKey.ToString());
-        }
-
         /// <summary>
         /// Sets the method address transformer on the transports
         /// </summary>

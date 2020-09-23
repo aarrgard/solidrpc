@@ -30,13 +30,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <param name="openApiSpec">The openapi spec to use. If null we search the assembly.</param>
         /// <param name="methodInfo">The method to creata a binding for</param>
         /// <param name="transports"></param>
-        /// <param name="securityKey"></param>
         /// <returns></returns>
         IEnumerable<IMethodBinding> CreateMethodBindings(
             string openApiSpec, 
             MethodInfo methodInfo,
-            IEnumerable<ITransport> transports = null,
-            KeyValuePair<string, string>? securityKey = null);
+            IEnumerable<ITransport> transports = null);
 
         /// <summary>
         /// Returns the method info for the matching expressiong.

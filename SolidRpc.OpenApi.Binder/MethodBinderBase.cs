@@ -55,18 +55,16 @@ namespace SolidRpc.OpenApi.Binder
 
         public IEnumerable<IMethodBinding> CreateMethodBindings(
             MethodInfo methodInfo,
-            IEnumerable<ITransport> transports,
-            KeyValuePair<string, string>? securityKey)
+            IEnumerable<ITransport> transports)
         {
-            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBindings(_, transports, securityKey));
+            return CachedBindings.GetOrAdd(methodInfo, _ => CreateBindings(_, transports));
         }
 
         private IEnumerable<IMethodBinding> CreateBindings(
             MethodInfo mi,
-            IEnumerable<ITransport> transports,
-            KeyValuePair<string, string>? securityKey)
+            IEnumerable<ITransport> transports)
         {
-            var methodBindings = DoCreateMethodBinding(mi, transports, securityKey);
+            var methodBindings = DoCreateMethodBinding(mi, transports);
 
             // sort em according to the preferred method
             methodBindings = methodBindings.OrderBy(o => GetMethodIdx(o.Method));
@@ -98,8 +96,7 @@ namespace SolidRpc.OpenApi.Binder
 
         protected abstract IEnumerable<IMethodBinding> DoCreateMethodBinding(
             MethodInfo mi,
-            IEnumerable<ITransport> transports,
-            KeyValuePair<string, string>? securityKey);
+            IEnumerable<ITransport> transports);
     }
 }
 

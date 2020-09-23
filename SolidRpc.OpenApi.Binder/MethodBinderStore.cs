@@ -6,7 +6,6 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder;
-using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.V2;
 using System;
@@ -17,7 +16,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 [assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodBinderStore), typeof(MethodBinderStore))]
 namespace SolidRpc.OpenApi.Binder
@@ -170,13 +168,12 @@ namespace SolidRpc.OpenApi.Binder
         public IEnumerable<IMethodBinding> CreateMethodBindings(
             string openApiSpec,
             MethodInfo methodInfo,
-            IEnumerable<ITransport> transports = null,
-            KeyValuePair<string, string>? securityKey = null)
+            IEnumerable<ITransport> transports = null)
         {
             if (transports == null) transports = new ITransport[0];
             var parsedSpec = GetOpenApiSpec(openApiSpec, methodInfo);
             var methodBinder = GetMethodBinder(parsedSpec, methodInfo.DeclaringType.Assembly);
-            return methodBinder.CreateMethodBindings(methodInfo, transports, securityKey);
+            return methodBinder.CreateMethodBindings(methodInfo, transports);
         }
 
         private (MethodInfo, object[]) GetMethodInfoAndArguments(LambdaExpression expression)
@@ -226,8 +223,7 @@ namespace SolidRpc.OpenApi.Binder
             var openApiSpec = GetOpenApiSpec(config, method);
             var methodBinder = GetMethodBinder(openApiSpec, assembly);
 
-            var securityKey = apiConfig.SecurityKey;
-            return methodBinder.CreateMethodBindings(method, apiConfig.GetTransports(), securityKey);
+            return methodBinder.CreateMethodBindings(method, apiConfig.GetTransports());
         }
     }
 }

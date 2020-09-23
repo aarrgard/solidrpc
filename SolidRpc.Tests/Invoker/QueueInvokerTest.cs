@@ -6,7 +6,6 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
@@ -102,7 +101,7 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.SetSecurityKey(SecKey);
+                conf.GetAdviceConfig<ISecurityKeyConfig>().SetSecurityKey(SecKey);
                 ConfigureQueueTransport(conf, true);
                 return true;
             });
@@ -125,7 +124,7 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.SetSecurityKey(SecKey);
+                conf.GetAdviceConfig<ISecurityKeyConfig>().SetSecurityKey(SecKey);
                 ConfigureQueueTransport(conf, false);
                 return true;
             });

@@ -27,6 +27,10 @@
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="www\" />
+  </ItemGroup>
+
   <!--<ItemGroup>
     <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build035" />
   </ItemGroup>

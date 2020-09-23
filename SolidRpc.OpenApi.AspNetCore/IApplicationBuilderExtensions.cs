@@ -177,13 +177,7 @@ namespace Microsoft.AspNetCore.Builder
             if (paths.TryGetValue(pathPrefix, out PathHandler pathHandler))
             {
                 // emit to log
-                var secKeyOutput = "";
-                var secKey = pathHandler.MethodBinding?.SecurityKey;
-                if (secKey != null)
-                {
-                    secKeyOutput = $", use {secKey.Value.Key}:{secKey.Value.Value} to access resources";
-                }
-                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}{secKeyOutput}");
+                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}");
                 
                 // bind path
                 if(pathHandler.MethodBinding != null)
@@ -401,7 +395,7 @@ namespace Microsoft.AspNetCore.Builder
 
 
                 // extract information from http context.
-                var request = new SolidRpc.OpenApi.Binder.Http.SolidHttpRequest();
+                var request = new SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);
 
                 var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();

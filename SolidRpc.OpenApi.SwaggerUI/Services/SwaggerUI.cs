@@ -61,7 +61,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
   <head>
     <meta charset=""UTF-8"">
     <title>Swagger UI</title>
-    <link rel=""stylesheet"" type=""text/css"" href=""../../swagger-ui.css"" >
+    <link rel=""stylesheet"" type=""text/css"" href=""{strBase}/swagger-ui.css"" >
     <link rel=""icon"" type=""image/png"" href=""{strBase}/favicon-32x32.png"" sizes=""32x32"" />
     <link rel=""icon"" type=""image/png"" href=""{strBase}/favicon-16x16.png"" sizes=""16x16"" />
     <style>
@@ -90,8 +90,8 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
   <body>
     <div id=""swagger-ui""></div>
 
-    <script src=""{strBase}/swagger-ui-bundle.js""> </script>
-    <script src=""{strBase}/swagger-ui-standalone-preset.js""> </script>
+    <script src=""{strBase}/swagger-ui-bundle.js"" charset=""UTF-8""> </script>
+    <script src=""{strBase}/swagger-ui-standalone-preset.js"" charset=""UTF-8""> </script>
     <script>
     window.onload = function() {{
       // Begin Swagger UI call region
@@ -232,13 +232,13 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                         openApiSpec.RemoveOperation(op);
                         continue;
                     }
-                    var opAddr = binding.Transports.OfType<IHttpTransport>().FirstOrDefault()?.OperationAddress;
                     if (binding.IsLocal)
                     {
-                        if (binding.SecurityKey != null)
+                        var securityKey = binding.GetSolidProxyConfig<ISecurityKeyConfig>()?.SecurityKey;
+                        if (securityKey != null)
                         {
-                            var definitionName = $"SolidRpcSecurity.{binding.SecurityKey.Value.Key}";
-                            op.AddApiKeyAuth(definitionName, binding.SecurityKey.Value.Key.ToLower());
+                            var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
+                            op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
                         }
                         var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
                         if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))
@@ -256,6 +256,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                         }
                         else
                         {
+                            var opAddr = binding.Transports.OfType<IHttpTransport>().FirstOrDefault()?.OperationAddress;
                             op.Description = $"This method is implemented @{opAddr}<br/>{op.Description}";
                         }
                     }

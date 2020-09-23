@@ -47,11 +47,6 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         IEnumerable<ITransport> Transports { get; }
 
         /// <summary>
-        /// Returns the security key needed for this invocation.
-        /// </summary>
-        KeyValuePair<string, string>? SecurityKey { get; }
-
-        /// <summary>
         /// Returns the operation id for this method.
         /// </summary>
         string OperationId { get; }

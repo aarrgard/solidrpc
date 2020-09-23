@@ -23,6 +23,9 @@ namespace SolidRpc.Abstractions.Services
         /// </summary>
         public CancellationToken ShutdownToken => _cancellationTokenSource.Token;
 
+        /// <summary>
+        /// The host id
+        /// </summary>
         public Guid HostId => _hostId;
 
         /// <summary>
@@ -37,11 +40,17 @@ namespace SolidRpc.Abstractions.Services
             }
         }
 
+        /// <summary>
+        /// Dispses the application
+        /// </summary>
         public void Dispose()
         {
             StopApplication();
         }
 
+        /// <summary>
+        /// Stops the application
+        /// </summary>
         public void StopApplication()
         {
             _cancellationTokenSource.Cancel();

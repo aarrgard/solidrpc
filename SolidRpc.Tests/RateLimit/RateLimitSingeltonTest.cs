@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Services.RateLimit;
@@ -71,7 +72,7 @@ namespace SolidRpc.Tests.RateLimit
         /// Tests the web host
         /// </summary>
         [Test]
-        public async Task TestRateLimitConfig()
+        public void TestRateLimitConfig()
         {
             var sc = new ServiceCollection();
             var cb = sc.GetConfigurationBuilder(() => new ConfigurationBuilder(), conf => new ChainedConfigurationSource() { Configuration = conf });
@@ -95,13 +96,13 @@ namespace SolidRpc.Tests.RateLimit
             var mb = rlinvoker.GetMethodBinding(o => o.GetRateLimitSettingsAsync(CancellationToken.None));
             var opAddr = mb.Transports.OfType<IHttpTransport>().First().OperationAddress;
             Assert.AreEqual("http://test.test/test/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync", opAddr.ToString());
-            Assert.AreEqual("B", mb.SecurityKey.Value.Value);
+            Assert.AreEqual("B", mb.GetSolidProxyConfig<ISecurityKeyConfig>().SecurityKey.Value.Value);
 
             var rhinvoker = sp.GetRequiredService<IInvoker<ISolidRpcHost>>();
             mb = rhinvoker.GetMethodBinding(o => o.IsAlive(CancellationToken.None));
             opAddr = mb.Transports.OfType<IHttpTransport>().First().OperationAddress;
             Assert.AreEqual("https://localhost/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive", opAddr.ToString());
-            Assert.AreEqual("A", mb.SecurityKey.Value.Value);
+            Assert.AreEqual("A", mb.GetSolidProxyConfig<ISecurityKeyConfig>().SecurityKey.Value.Value);
 
         }
     }

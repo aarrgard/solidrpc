@@ -73,18 +73,40 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             return Parent.GetParent<T>();
         }
 
+        /// <summary>
+        /// Returns the namespace that this member belongs to
+        /// </summary>
         public ICSharpNamespace Namespace => GetParent<ICSharpNamespace>();
 
+        /// <summary>
+        /// Returns the protected members
+        /// </summary>
         protected IList<ICSharpMember> ProtectedMembers { get; }
 
+        /// <summary>
+        /// Returns all the members
+        /// </summary>
         public IEnumerable<ICSharpMember> Members => ProtectedMembers;
 
+        /// <summary>
+        /// The name
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The full name
+        /// </summary>
         public string FullName { get; }
 
+        /// <summary>
+        /// The comment
+        /// </summary>
         public ICSharpComment Comment { get; protected set; }
 
+        /// <summary>
+        /// Parses supplied comment
+        /// </summary>
+        /// <param name="comment"></param>
         public void ParseComment(string comment)
         {
             var sb = new StringBuilder();
@@ -190,19 +212,37 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             PopulateParameters(dict, tagContent.Substring(q2+1));
         }
 
+        /// <summary>
+        /// Sets a comment parameter
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <param name="comment"></param>
         protected virtual void SetCommentParameter(string parameterName, string comment)
         {
         }
 
+        /// <summary>
+        /// Adds a member
+        /// </summary>
+        /// <param name="member"></param>
         public virtual void AddMember(ICSharpMember member)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// Returns the methods
+        /// </summary>
         public IEnumerable<ICSharpMethod> Methods => Members.OfType<ICSharpMethod>();
 
+        /// <summary>
+        /// Returns the properties
+        /// </summary>
         public IEnumerable<ICSharpProperty> Properties => Members.OfType<ICSharpProperty>();
 
+        /// <summary>
+        /// Returns the member of the enumerable type(if this is an enumerable type)
+        /// </summary>
         public ICSharpType EnumerableType
         {
             get
@@ -223,6 +263,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 
             }
         }
+
+        /// <summary>
+        /// Returns the type as a task type(if this is a task type).
+        /// </summary>
         public ICSharpType TaskType
         {
             get
@@ -238,6 +282,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
             }
         }
+
+        /// <summary>
+        /// Returns the nullable type(if this is a nullable type)
+        /// </summary>
         public ICSharpType NullableType
         {
             get

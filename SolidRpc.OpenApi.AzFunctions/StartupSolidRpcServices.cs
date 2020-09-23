@@ -65,7 +65,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         protected virtual bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
-            if (c.SecurityKey == null)
+            if (c.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey == null)
             {
                 azConfig.HttpAuthLevel = "function";
             }

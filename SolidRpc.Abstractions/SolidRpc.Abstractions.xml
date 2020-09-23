@@ -239,13 +239,12 @@
             Returns all the mapped methods
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBindings(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinder.CreateMethodBindings(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport})">
             <summary>
             Returns the method info from supplied specification.
             </summary>
             <param name="methodInfo"></param>
             <param name="transports"></param>
-            <param name="securityKey"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore">
@@ -265,14 +264,13 @@
             Returns all the method binders.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBindings(System.String,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport},System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.CreateMethodBindings(System.String,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Transport.ITransport})">
             <summary>
             Returns the method info for supplied open api spec and reflected method
             </summary>
             <param name="openApiSpec">The openapi spec to use. If null we search the assembly.</param>
             <param name="methodInfo">The method to creata a binding for</param>
             <param name="transports"></param>
-            <param name="securityKey"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore.GetMethodBinding``1(System.Linq.Expressions.Expression{System.Action{``0}})">
@@ -326,11 +324,6 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.Transports">
             <summary>
             Returns the configured transports
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.SecurityKey">
-            <summary>
-            Returns the security key needed for this invocation.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.OperationId">
@@ -1011,6 +1004,31 @@
             <param name="basePath"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig">
+            <summary>
+            Configures a security key.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig.SecurityKey">
+            <summary>
+            If this key is set it needs to be specified in the invocation
+            properties in order for the invocation to be authorized on the server side.
+            If the key is present on the client side it is added to call so that
+            the invocation is authorized.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfigExtensions">
+            <summary>
+            Extension methods to manipulate the settings
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig,System.Guid)">
+            <summary>
+            Sets the SolidRpcSecurityKey key.
+            </summary>
+            <param name="config"></param>
+            <param name="secKey"></param>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig">
             <summary>
             Interface used to determine how the azure function
@@ -1057,14 +1075,6 @@
             the method name or assembly name where the method is defined will be used.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.SecurityKey">
-            <summary>
-            If this key is set it needs to be specified in the invocation
-            properties in order for the invocation to be authorized on the server side.
-            If the key is present on the client side it is added to call so that
-            the invocation is authorized.
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.ProxyTransportType">
             <summary>
             The proxy transport type. If not explicitly configured the "Http" transport
@@ -1086,13 +1096,6 @@
             <summary>
             Extension methods to manipulate the settings
             </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Guid)">
-            <summary>
-            Sets the SolidRpcSecurityKey key.
-            </summary>
-            <param name="config"></param>
-            <param name="secKey"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.GetTransports(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>
@@ -1485,21 +1488,6 @@
             <param name="serviceProvider"></param>
             <param name="headers"></param>
             <param name="methodInfo">The method to transform the headers for</param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.SecurityKeyExtensions">
-            <summary>
-            Contains extensions for the security keys.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.SecurityKeyExtensions.CheckSecurityKeyAsync(System.Object,System.Nullable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Func{System.String,System.String},System.Threading.CancellationToken)">
-            <summary>
-            Checks the security key for the invocation.
-            </summary>
-            <param name="caller"></param>
-            <param name="secKey"></param>
-            <param name="keyFetcher"></param>
-            <param name="cancellatinToken"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">
@@ -1925,11 +1913,26 @@
             Returns the shutdown token
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Services.SolidRpcApplication.HostId">
+            <summary>
+            The host id
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
             <summary>
             Adds a startup task
             </summary>
             <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.Dispose">
+            <summary>
+            Dispses the application
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.StopApplication">
+            <summary>
+            Stops the application
+            </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.WaitForStartupTasks">
             <summary>
@@ -2458,6 +2461,16 @@
         <member name="P:SolidRpc.Abstractions.TypeTemplate.TemplatedType">
             <summary>
             The templated type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.TypeTemplate.Templated2TemplateType">
+            <summary>
+            Sets the properties on one object
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.TypeTemplate.Template2TemplatedType">
+            <summary>
+            Sets the properties on another object
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.TypeTemplate`1">

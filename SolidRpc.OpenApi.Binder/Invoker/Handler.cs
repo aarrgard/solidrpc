@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
@@ -73,7 +74,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             //
             // Add security key header
             //
-            var securityKey = methodBinding.SecurityKey;
+            var securityKey = methodBinding.GetSolidProxyConfig<ISecurityKeyConfig>()?.SecurityKey;
             if (securityKey != null)
             {
                 var headers = httpReq.Headers.ToList();

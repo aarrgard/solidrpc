@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.OpenApi.Binder.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using SolidRpc.Abstractions.OpenApi.Transport;
@@ -80,8 +77,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             MethodBinding = MethodBinderStore.CreateMethodBindings(
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
-                config.GetTransports(),
-                config.SecurityKey
+                config.GetTransports()
             ).First();
 
             //

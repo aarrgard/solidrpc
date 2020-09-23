@@ -153,8 +153,16 @@ namespace SolidRpc.Abstractions
         /// The templated type
         /// </summary>
         public Type TemplatedType { get; }
-        public ICollection<Action<object, object>> Templated2TemplateType { get; }
-        public ICollection<Action<object, object>> Template2TemplatedType { get; }
+
+        /// <summary>
+        /// Sets the properties on one object
+        /// </summary>
+        protected ICollection<Action<object, object>> Templated2TemplateType { get; }
+
+        /// <summary>
+        /// Sets the properties on another object
+        /// </summary>
+        protected ICollection<Action<object, object>> Template2TemplatedType { get; }
     }
 
     /// <summary>

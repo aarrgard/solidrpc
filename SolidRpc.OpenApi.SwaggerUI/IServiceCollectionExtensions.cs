@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), (c) =>
             {
                 c.OpenApiSpec = strOpenApiSpec;
-                c.SecurityKey = null; // do not apply the security key on the swagger resources.
+                c.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = null; // do not apply the security key on the swagger resources.
                 return apiConfigurator?.Invoke(c) ?? true;
             }); 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", typeof(ISwaggerUI).Assembly);

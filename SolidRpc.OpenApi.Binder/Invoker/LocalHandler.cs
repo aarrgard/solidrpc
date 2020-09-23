@@ -5,6 +5,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -51,9 +52,9 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 return (TRes)mi.Invoke(service, args);
             }
 
-            // set securiity key if needed.
+            // set security key if needed.
             IDictionary<string, object> invocationValues = null;
-            var securityKey = methodBinding.SecurityKey;
+            var securityKey = methodBinding.GetSolidProxyConfig<ISecurityKeyConfig>()?.SecurityKey;
             if (securityKey != null)
             {
                 invocationValues = new Dictionary<string, object>()

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Builder;
 using SolidProxy.Core.Proxy;
 using SolidProxy.MicrosoftDI;
@@ -32,7 +31,7 @@ namespace SolidRpc.Test.Vitec.Impl
             sc.AddSolidRpcBindings(VitecAssembly);
             sc.GetSolidConfigurationBuilder()
                 .ConfigureInterfaceAssembly(VitecAssembly)
-                .ConfigureAdvice<ISolidRpcOpenApiConfig>()
+                .ConfigureAdvice<ISecurityKeyConfig>()
                 .SecurityKey = new KeyValuePair<string, string>("Authorization", conf["VitecConnectAuthorization"]);
 
 

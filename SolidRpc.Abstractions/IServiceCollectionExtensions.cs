@@ -6,13 +6,10 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Services.RateLimit;
-using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -106,7 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     var method = c.Methods.Single();
                     if(method.DeclaringType == typeof(ISolidRpcContentHandler))
                     {
-                        c.SecurityKey = null;
+                        c.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = null;
                     }
                     return configurator?.Invoke(c) ?? false;
                 });
@@ -482,20 +479,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 openApiProxyConfig.Enabled = enabled;
             }
 
-            //
-            // make sure that we apply security.
-            // we cannot do this in the "SetSecurityKey" section since the
-            // custom configurator may change/remove the key.(ISolidRpcContentHandler)
-            //
-            var secKey = openApiProxyConfig.SecurityKey;
-            if (secKey != null)
-            {
-                mc.AddPreInvocationCallback(i =>
-                {
-                    return SecurityKeyExtensions.CheckSecurityKeyAsync(i.Caller, openApiProxyConfig.SecurityKey, k => i.GetValue<StringValues>(k));
-                });
-            }
-
             return openApiProxyConfig;
         }
 
@@ -510,7 +493,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var val = configuration[key];
                 if (val != null)
                 {
-                    openApiProxyConfig.SecurityKey = new KeyValuePair<string, string>(sKey, val);
+                    openApiProxyConfig.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = new KeyValuePair<string, string>(sKey, val);
                     return;
                 }
             }

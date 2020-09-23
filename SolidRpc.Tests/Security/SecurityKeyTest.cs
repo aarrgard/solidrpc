@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
@@ -83,7 +83,7 @@ namespace SolidRpc.Tests.Security
                 conf.OpenApiSpec = apiSpec;
                 if(conf.Methods.First().Name == nameof(ITestInterface.MethodWithClientKeySpecified))
                 {
-                    conf.SecurityKey = SecurityKey;
+                    conf.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = SecurityKey;
                 }
                 return true;
             });
@@ -101,7 +101,7 @@ namespace SolidRpc.Tests.Security
             services.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>
             {
                 conf.OpenApiSpec = apiSpec;
-                conf.SecurityKey = SecurityKey;
+                conf.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = SecurityKey;
                 return true;
             });
         }

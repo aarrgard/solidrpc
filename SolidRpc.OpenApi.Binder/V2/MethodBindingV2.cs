@@ -155,19 +155,15 @@ namespace SolidRpc.OpenApi.Binder.V2
             OperationObject operationObject, 
             MethodInfo methodInfo, 
             ICodeDocMethod codeDocMethod,
-            IEnumerable<ITransport> transports,
-            KeyValuePair<string, string>? securityKey)
+            IEnumerable<ITransport> transports)
         {
             MethodBinder = methodBinder ?? throw new ArgumentNullException(nameof(methodBinder));
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
-            SecurityKey = securityKey;
             Transports = transports;
             SerializerFactory = MethodBinder.ServiceProvider.GetRequiredService<ISerializerFactory>();
         }
-
-        public KeyValuePair<string, string>? SecurityKey { get; }
 
         private Action CreateExceptionThrower(Type exceptionType)
         {

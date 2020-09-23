@@ -6,6 +6,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
@@ -180,12 +181,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 // The security is checked when the method is invoked. Since we do not 
                 // want to fill up the call queues with unauthorized calls we check the keys here.
                 //
-                await SecurityKeyExtensions.CheckSecurityKeyAsync(invocationSource, selectedBinding.SecurityKey, k => request.Headers.Where(o => string.Equals(o.Name,k,StringComparison.InvariantCultureIgnoreCase)).Select(o => o.GetStringValue()).FirstOrDefault());
+                var securityKey = selectedBinding.GetSolidProxyConfig<ISecurityKeyConfig>().SecurityKey;
+                await SecurityKeyAdvice.CheckSecurityKeyAsync(invocationSource, securityKey, k => request.Headers.Where(o => string.Equals(o.Name,k,StringComparison.InvariantCultureIgnoreCase)).Select(o => o.GetStringValue()).FirstOrDefault());
 
                 var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
                 if(Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");                }
+                    Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");                
+                }
                 var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
                 var invokeHandler = handlers.First(o => o.TransportType == invokeTransport.TransportType);
                 var invocationOptions = new InvocationOptions(invokeHandler.TransportType, InvocationOptions.MessagePriorityNormal);

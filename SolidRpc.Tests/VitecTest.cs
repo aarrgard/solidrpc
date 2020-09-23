@@ -57,24 +57,7 @@ namespace SolidRpc.Tests
             /// The json.
             /// </summary>
             public string Json { get; set; }
-        }       //public (HttpClient, CookieContainer) CreateHttpClient()
-        //{
-        //    var affin = "6516714284e2943ad8567792ce493a6239a7682752e69301a9c2147e7cb0a161";
-        //    var cookieContainer = new CookieContainer();
-        //    cookieContainer.Add(new Cookie("ARRAffinity", affin) { 
-        //        Domain = "eo-prd-ratelimit-func.azurewebsites.net",
-        //        Path = "/",
-        //        HttpOnly = true
-        //    });
-        //    var httpClient = new HttpClient(new HttpClientHandler()
-        //    {
-        //        CookieContainer = cookieContainer,
-        //        UseCookies = true
-        //    });
-        //    httpClient.DefaultRequestHeaders.Add("SolidRpcSecurityKey".ToLower(), "3a8f9eec-32b5-4c1d-ba16-8e8fa84ec92d");
-        //    //httpClient.DefaultRequestHeaders.Add("Cookie", $"ARRAffinity={affin}");
-        //    return (httpClient, cookieContainer);
-        //}
+        } 
 
         /// <summary>
         /// Tests the type store
