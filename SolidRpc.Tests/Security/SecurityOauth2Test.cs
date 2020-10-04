@@ -8,6 +8,8 @@ using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using SolidRpc.OpenApi.OAuth2.InternalServices;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 
 namespace SolidRpc.Tests.Security
 {
@@ -16,6 +18,19 @@ namespace SolidRpc.Tests.Security
     /// </summary>
     public class SecurityOauth2Test : WebHostTest
     {
+        public interface IOAuthProtectedService
+        {
+            Task<string> InvokeAsync(string arg);
+        }
+
+        public class OAuthProtectedService : IOAuthProtectedService
+        {
+            public Task<string> InvokeAsync(string arg)
+            {
+                return Task.FromResult(arg);
+            }
+        }
+
         /// <summary>
         /// Configures the client services
         /// </summary>
@@ -24,25 +39,49 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             clientServices.AddHttpClient();
+            clientServices.AddSolidRpcOAuth2();
+            clientServices.AddSolidRpcBindings(typeof(IOAuthProtectedService), null, o =>
+            {
+
+                o.OpenApiSpec = clientServices.GetSolidRpcOpenApiParser().CreateSpecification(o.Methods.ToArray())
+                    .SetBaseAddress(baseAddress)
+                    .WriteAsJsonString();
+
+                var oauth2Config = o.GetAdviceConfig<ISecurityOAuth2Config>();
+                oauth2Config.OAuth2Authority = baseAddress;
+                oauth2Config.OAuth2ClientId = "clientid";
+                oauth2Config.OAuth2ClientSecret = "secret";
+                oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
+
+                return true;
+            });
             base.ConfigureClientServices(clientServices, baseAddress);
         }
         /// <summary>
         /// Configures the server services
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="serverServices"></param>
         /// <returns></returns>
-        public override void ConfigureServerServices(IServiceCollection services)
+        public override void ConfigureServerServices(IServiceCollection serverServices)
         {
-            base.ConfigureServerServices(services);
-            services.AddSolidRpcSecurityFrontend();
-            services.AddSolidRpcSecurityBackend();
+            base.ConfigureServerServices(serverServices);
+            serverServices.AddSolidRpcOAuth2();
+            serverServices.AddSolidRpcSecurityFrontend();
+            serverServices.AddSolidRpcSecurityBackend();
+            serverServices.AddSolidRpcBindings(typeof(IOAuthProtectedService), typeof(OAuthProtectedService), o =>
+            {
+
+                o.OpenApiSpec = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(o.Methods.ToArray()).WriteAsJsonString();
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = new Uri("http://localhost:5000/");
+                return true;
+            });
         }
 
         /// <summary>
         /// Tests the web host
         /// </summary>
         [Test]
-        public async Task TestOauthDiscovery()
+        public async Task TestOauthDiscoveryUsingHttpClient()
         {
             using (var ctx = CreateKestrelHostContext())
             {
@@ -56,6 +95,26 @@ namespace SolidRpc.Tests.Security
                 var issuer = ctx.BaseAddress.ToString();
                 Assert.AreEqual(issuer.Substring(0, issuer.Length - 1), res.Issuer);
                 Assert.AreEqual(1, res.KeySet.Keys.Count);
+            }
+        }
+
+        /// <summary>
+        /// Tests the web host
+        /// </summary>
+        [Test]
+        public async Task TestOauthDiscoveryUsingAuthFactory()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var authFactory = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>();
+                var authority = authFactory.GetAuthority(ctx.BaseAddress);
+                var doc = await authority.GetDiscoveryDocumentAsync();
+                var keys = await authority.GetSigningKeysAsync();
+
+                Assert.AreEqual(ctx.BaseAddress, doc.Issuer);
+                Assert.AreEqual(1, keys.Count());
             }
         }
 
@@ -213,6 +272,22 @@ namespace SolidRpc.Tests.Security
                 });
 
                 ValidateAccessToken(res, response);
+            }
+        }
+
+        /// <summary>
+        /// Tests the web host
+        /// </summary>
+        [Test, Ignore("Fix binding of host")]
+        public async Task TestOauthProtectedResource()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+                var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuthProtectedService>();
+
+                var res = await protectedService.InvokeAsync("test");
+                Assert.AreEqual("test", res);
             }
         }
 

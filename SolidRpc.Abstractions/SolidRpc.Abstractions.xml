@@ -6,7 +6,7 @@
     <members>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>
-            Extension methods fro the http request
+            Extension methods for the solidrpc logic
             </summary>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``2(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -1029,6 +1029,31 @@
             <param name="config"></param>
             <param name="secKey"></param>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config">
+            <summary>
+            Configures the OAuth2 security
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuth2Authority">
+            <summary>
+            The authority uri. Add .well-known/openid-configuration to fetch the config. 
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuth2ClientId">
+            <summary>
+            The client id.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuth2ClientSecret">
+            <summary>
+            The client secret - will be used to authenticate the client if client credentials are used
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuthProxyInvocationPrincipal">
+            <summary>
+            Which authorization should be used when invoking proxies.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig">
             <summary>
             Interface used to determine how the azure function
@@ -1166,6 +1191,31 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig.Timeout">
             <summary>
             The amount of time to wait for the resource to become available.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.OAuthProxyInvocationPrincipal">
+            <summary>
+            The principal to select when invoking methods
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Proxy.OAuthProxyInvocationPrincipal.None">
+            <summary>
+            Do not pass along the authorization header
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Proxy.OAuthProxyInvocationPrincipal.Client">
+            <summary>
+            Use the client jwt token when invoking proxies
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Proxy.OAuthProxyInvocationPrincipal.Proxy">
+            <summary>
+            Proxy the frontend user.
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Proxy.OAuthProxyInvocationPrincipal.Delegate">
+            <summary>
+            Delegate the frontend user to the backend call.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport">
@@ -1713,6 +1763,16 @@
             Stops this application
             </summary>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcAuthorization">
+            <summary>
+            Implements the logic for authorization
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcAuthorization.CurrentPrincipal">
+            <summary>
+            Gets / sets the current principal
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -1939,6 +1999,16 @@
             Invoked to wait for all the startup tasks to complete.
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.SolidRpcAuthorization">
+            <summary>
+            Implements the solid authorization logic
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.CurrentPrincipal">
+            <summary>
+            The current principal
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcConstants">
             <summary>
@@ -2340,6 +2410,231 @@
         <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor(System.String)">
             <summary>
             Constructs a new exception
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery">
+            <summary>
+            Represents a deiscovery document.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.Issuer">
+            <summary>
+            REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.AuthorizationEndpoint">
+            <summary>
+            REQUIRED. URL of the OP&#39;s OAuth 2.0 Authorization Endpoint [OpenID.Core].
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.TokenEndpoint">
+            <summary>
+            URL of the OP&#39;s OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.UserinfoEndpoint">
+            <summary>
+            RECOMMENDED. URL of the OP&#39;s UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.RevocationEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.DeviceAuthorizationEndpoint">
+            <summary>
+            OPTIONAL. URL of the authorization server&#39;s device authorization endpoint defined in Section 3.1.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.JwksUri">
+            <summary>
+            REQUIRED. URL of the OP&#39;s JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server&#39;s encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key&#39;s intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ScopesSupported">
+            <summary>
+            RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.GrantTypesSupported">
+            <summary>
+            OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is [&quot;authorization_code&quot;, &quot;implicit&quot;]&quot;
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ResponseModesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.SubjectTypesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.IdTokenSigningAlgValuesSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.EndSessionEndpoint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ResponseTypesSupported">
+            <summary>
+            REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ClaimsSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.TokenEndpointAuthMethodsSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.CodeChallengeMethodsSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.RequestUriParameterSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.HttpLogoutSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.FrontchannelLogoutSupported">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.RbacUrl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.MsgraphHost">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.CloudGraphHostName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.CloudInstanceName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.TenantRegionScope">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey">
+            <summary>
+            Represents a key
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.Alg">
+            <summary>
+            (Algorithm) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.Kty">
+            <summary>
+            (Key Type) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.Use">
+            <summary>
+            (Public Key Use) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.Kid">
+            <summary>
+            (Key ID) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.X5u">
+            <summary>
+            (X.509 URL) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.X5t">
+            <summary>
+            (X.509 Certificate SHA-1 Thumbprint) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.X5c">
+            <summary>
+            (X.509 Certificate Chain) Parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.N">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.E">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.Issuer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.OAuth2.OpenIDKeys">
+            <summary>
+            Represents a set of keys
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKeys.Keys">
+            <summary>
+            The keys
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.OAuth2.TokenResponse">
+            <summary>
+            The response from a token request
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.TokenResponse.AccessToken">
+            <summary>
+            REQUIRED.  The access token issued by the authorization server.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.TokenResponse.TokenType">
+            <summary>
+            REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.TokenResponse.ExpiresIn">
+            <summary>
+            RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value &#39;3600&#39; denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.TokenResponse.RefreshToken">
+            <summary>
+            OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.TokenResponse.Scope">
+            <summary>
+            OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.RateLimitExceededException">

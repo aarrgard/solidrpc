@@ -451,6 +451,12 @@
             <param name="subDir"></param>
             <param name="functionJson"></param>
         </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.WriteFunctionClass">
+            <summary>
+            Writes the function class
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.TriggerType">
             <summary>
             The trigger type.
@@ -475,6 +481,12 @@
             <summary>
             Represents a timer function
             </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.WriteFunctionClass">
+            <summary>
+            Writes the function class
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
             <summary>
@@ -511,6 +523,12 @@
             Represents a timer function
             </summary>
         </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.WriteFunctionClass">
+            <summary>
+            Writes the function class
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
             <summary>
             Constructs a new svc bus function.
@@ -545,6 +563,12 @@
             <summary>
             Represents a timer function
             </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.WriteFunctionClass">
+            <summary>
+            Writes the function class
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String)">
             <summary>

@@ -10,6 +10,9 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using System.Linq;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.Binder.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -121,7 +124,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         {
             if(invocation.Caller is ISolidProxy)
             {
-                return ProxyHandler.InvokeAsync<TAdvice>(MethodBinding, ProxyTransport, invocation.Arguments, InvocationOptions.Http);
+                return ProxyHandler.InvokeAsync<TAdvice>(MethodBinding, ProxyTransport, invocation.Arguments, CreateInvocationOptions(invocation));
             }
             else if(HasImplementation)
             {
@@ -129,8 +132,26 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             else
             {
-                return InvokerHandler.InvokeAsync<TAdvice>(MethodBinding, InvokerTransport, invocation.Arguments, InvocationOptions.Http);
+                return InvokerHandler.InvokeAsync<TAdvice>(MethodBinding, InvokerTransport, invocation.Arguments, CreateInvocationOptions(invocation));
             }
+        }
+
+        private InvocationOptions CreateInvocationOptions(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        {
+            var invocOpts = InvocationOptions.Http;
+            var httpHeaders = invocation.Keys.Where(o => o.StartsWith("http_", StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (httpHeaders.Any())
+            {
+                invocOpts = invocOpts.AddPreInvokeCallback(req =>
+                {
+                    var data = httpHeaders
+                        .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(5), Value = o2} ))
+                        .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value)).ToList();
+                    req.Headers = req.Headers.Union(data).ToList();
+                    return Task.CompletedTask;
+                });
+            }
+            return invocOpts;
         }
     }
 }

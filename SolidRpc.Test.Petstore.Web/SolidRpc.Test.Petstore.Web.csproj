@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc008" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc009" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="4.0.1" />
   </ItemGroup>
     

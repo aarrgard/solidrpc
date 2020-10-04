@@ -27,7 +27,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
             throw new NotImplementedException();
         }
 
-        public async Task<FileContent> UploadFile(string container, FileContent fileContent)
+        public Task<FileContent> UploadFile(string container, FileContent fileContent)
         {
             string strContent;
             using (var sr = new StreamReader(fileContent.Content))
@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
             fileContent.ETag = $"{Convert.ToBase64String(new byte[] { 1, 2, 3, 4, 5 })}";
             fileContent.Content = new MemoryStream(Encoding.UTF8.GetBytes(strContent));
             fileContent.CharSet = Encoding.UTF8.HeaderName;
-            return fileContent;
+            return Task.FromResult(fileContent);
         }
     }
 }

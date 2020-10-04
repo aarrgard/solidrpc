@@ -26,18 +26,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             Func<string, string> keyFetcher,
             CancellationToken cancellatinToken = default(CancellationToken))
         {
+            // no security key - let through
             if (secKey == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            // calls invoked directly from a proxy are allowed
+            if (caller is ISolidProxy)
             {
                 return Task.CompletedTask;
             }
 
             var key = secKey.Value.Key.ToLower();
             var value = secKey.Value.Value;
-            // calls invoked directly from a proxy are allowed
-            if (caller is ISolidProxy)
-            {
-                return Task.CompletedTask;
-            }
 
             //
             // check the security key if specified
@@ -60,6 +62,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SecurityKeyAdvice<TObject, TMethod, TAdvice> : SecurityKeyAdvice, ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
+        /// <summary>
+        /// The security advice should run befor the invocations
+        /// </summary>
+        public static IEnumerable<Type> BeforeAdvices = new Type[] {
+            typeof(SolidRpcOpenApiAdvice<,,>),
+        };
+
         /// <summary>
         /// Constucts a new instance
         /// </summary>
@@ -94,7 +103,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            await CheckSecurityKeyAsync(invocation.Caller, SecurityKey, k => invocation.GetValue<StringValues>(k));
+            await CheckSecurityKeyAsync(invocation.Caller, SecurityKey, k => invocation.GetValue<StringValues>($"http_{k}"));
             return await next();
         }
     }

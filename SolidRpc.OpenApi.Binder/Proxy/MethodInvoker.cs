@@ -226,10 +226,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 return resp;
             }
 
+            //
+            // set invocation valies from headers
+            //
             var invocationValues = new Dictionary<string, object>();
             foreach(var qv in request.Headers)
             {
-                var headerName = qv.Name.ToLower();
+                var headerName = $"http_{qv.Name}".ToLower();
                 if(invocationValues.TryGetValue(headerName, out object value))
                 {
                     invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());

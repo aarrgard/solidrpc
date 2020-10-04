@@ -47,6 +47,10 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             };
         }
 
+        /// <summary>
+        /// Writes the function class
+        /// </summary>
+        /// <returns></returns>
         protected override string WriteFunctionClass()
         {
             return $@"

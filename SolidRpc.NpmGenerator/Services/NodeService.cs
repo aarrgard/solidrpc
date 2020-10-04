@@ -159,7 +159,13 @@ namespace SolidRpc.NpmGenerator.Services
                             stdErr.Append(data.Data);
                         }
                     };
-                    process.Start();
+                    Logger.LogInformation($"Starting new node process({process.StartInfo.FileName}@{process.StartInfo.WorkingDirectory})...");
+                    if(!process.Start())
+                    {
+                        Logger.LogInformation("...failed to start new node process");
+                        exitCode = -1;
+                    }
+
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
 
@@ -180,6 +186,7 @@ namespace SolidRpc.NpmGenerator.Services
                 {
                     if(exitCode == null)
                     {
+                        Logger.LogInformation($"Killing node process since no exit code returned.");
                         process.Kill();
                     }
                     process.Close();
