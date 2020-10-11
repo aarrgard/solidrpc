@@ -20,20 +20,22 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     public class Invoker<T> : IInvoker<T> where T:class
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
-        private static ConcurrentDictionary<Type, Func<MethodInfo,object[], InvocationOptions, object>> Invokers = new ConcurrentDictionary<Type, Func<MethodInfo, object[], InvocationOptions, object>>();
         public Invoker(
             ILogger<Invoker<T>> logger, 
+            Invokers invokers,
             IMethodBinderStore methodBinderStore,
             IEnumerable<IHandler> handlers)
         {
             Logger = logger;
+            Invokers = invokers;
             MethodBinderStore = methodBinderStore;
             Handlers = handlers;
         }
 
-        protected ILogger Logger { get; }
-        protected IMethodBinderStore MethodBinderStore { get; }
-        protected IEnumerable<IHandler> Handlers { get; }
+        private ILogger Logger { get; }
+        private Invokers Invokers { get; }
+        private IMethodBinderStore MethodBinderStore { get; }
+        private IEnumerable<IHandler> Handlers { get; }
 
         public IMethodBinding GetMethodBinding(MethodInfo mi)
         {
@@ -90,7 +92,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, InvocationOptions invocationOptions)
         {
             var (mi, args) = GetMethodInfo(func);
-            var res = Invokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>)(mi, args, invocationOptions);
+            var res = Invokers.CachedInvokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>)(mi, args, invocationOptions);
             return (TResult)res;
         }
 

@@ -66,7 +66,7 @@ namespace SolidRpc.Tests.Invoker
             sc.AddTransient<ITestInterface, TestImplementation>();
             var sp = sc.BuildServiceProvider();
             var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync("LocalHandler", CancellationToken.None), InvocationOptions.Local);
+            var result = await invoker.InvokeAsync(o => o.DoXAsync(null, CancellationToken.None), InvocationOptions.Local);
             Assert.AreEqual(4711, result);
         }
 

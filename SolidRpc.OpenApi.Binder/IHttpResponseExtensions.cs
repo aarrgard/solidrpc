@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -29,10 +32,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.CharSet = RemoveQuotes(source.Content.Headers?.ContentType?.CharSet);
                 target.Filename = source.Content.Headers?.ContentDisposition?.FileName;
                 target.LastModified = source.Content.Headers?.LastModified;
-                if (source.Headers.ETag != null)
+                //if(source.Headers.ETag != null) // this will only be set if etag i within quotes - azure functions seems to remove them 
+                if(source.Headers.TryGetValues("ETag", out IEnumerable<string> etags))
                 {
-                    target.ETag = source.Headers.ETag.Tag;
-                    target.ETag = target.ETag.Substring(1, target.ETag.Length - 2);
+                    target.ETag = RemoveQuotes(string.Join(" ", etags));
                 }
                 var ms = new MemoryStream();
                 await source.Content.CopyToAsync(ms);

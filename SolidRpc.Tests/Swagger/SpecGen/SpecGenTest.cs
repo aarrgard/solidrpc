@@ -588,6 +588,13 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 });
                 var res = proxy.GetEtagStruct(CreateFileStruct());
                 CompareStructs(CreateFileStruct(), res);
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ETagArg.Services.IETagArg>>();
+                res = invoker.InvokeAsync(o => o.GetEtagStruct(CreateFileStruct()), InvocationOptions.Http.AddPostInvokeCallback(resp =>
+                {
+                    return Task.CompletedTask;
+                }));
+                CompareStructs(CreateFileStruct(), res);
             });
         }
 

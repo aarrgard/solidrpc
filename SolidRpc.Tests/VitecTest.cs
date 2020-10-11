@@ -11,6 +11,9 @@ using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.Abstractions.OpenApi.Http;
 
 namespace SolidRpc.Tests
 {
@@ -115,6 +118,18 @@ namespace SolidRpc.Tests
             //sc.AddVitecBackendServiceProvider();
 
             var sp = sc.BuildServiceProvider();
+
+
+            var cf = sp.GetRequiredService<IHttpClientFactory>();
+            var client = cf.CreateClient();
+            client.DefaultRequestHeaders.Add("securitykey", "4327a198-49e6-473b-a028-fc03a7b0bc83");
+            var resp = await client.GetAsync("https://eo-prd-vitec-func.azurewebsites.net/front/EO/Vitec/Services/IImage/GetImageAsync/MED2CEF19EC02964E1886DD11172DAC9CAA/true");
+
+            var etag = resp.Headers.GetValues("ETag");
+            var r2 = new SolidHttpResponse();
+            await r2.CopyFromAsync(resp);
+
+
             var tq = sp.GetRequiredService<IAzTableQueue>();
             var serFact = sp.GetRequiredService<ISerializerFactory>();
             var msgs = await tq.ListMessagesAsync();

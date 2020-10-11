@@ -52,18 +52,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 return (TRes)mi.Invoke(service, args);
             }
 
-            // set security key if needed.
-            IDictionary<string, object> invocationValues = null;
-            var securityKey = methodBinding.GetSolidProxyConfig<ISecurityKeyConfig>()?.SecurityKey;
-            if (securityKey != null)
-            {
-                invocationValues = new Dictionary<string, object>()
-                {
-                    { securityKey.Value.Key.ToLower(), new StringValues(securityKey.Value.Value) }
-                };
-
-            }
-            return (TRes)proxy.Invoke(this, mi, args, invocationValues);
+            return (TRes)proxy.Invoke(this, mi, args);
         }
         public override Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {

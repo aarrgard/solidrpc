@@ -7,6 +7,7 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Primitives;
+using SolidRpc.OpenApi.Binder.Invoker;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -34,6 +35,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             // calls invoked directly from a proxy are allowed
             if (caller is ISolidProxy)
+            {
+                return Task.CompletedTask;
+            }
+            if (caller is LocalHandler)
             {
                 return Task.CompletedTask;
             }
