@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Primitives;
 using SolidRpc.OpenApi.Binder.Invoker;
+using System.ComponentModel;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -97,8 +99,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public bool Configure(ISecurityKeyConfig config)
         {
             SecurityKey = config.SecurityKey;
+            RemoteCall = !config.InvocationConfiguration.HasImplementation;
             return SecurityKey != null;
         }
+
+        private bool RemoteCall { get; set; }
 
         /// <summary>
         /// Handles  the invocation
@@ -108,7 +113,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            await CheckSecurityKeyAsync(invocation.Caller, SecurityKey, k => invocation.GetValue<StringValues>($"http_{k}"));
+            if(RemoteCall)
+            {
+                // Add the security key
+                invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
+            }
+            else
+            {
+                // Check the security key
+                await CheckSecurityKeyAsync(invocation.Caller, SecurityKey, k => invocation.GetValue<StringValues>($"http_{k}"));
+            }
             return await next();
         }
     }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
@@ -41,12 +41,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public string TransportType => GetTransportType(GetType());
 
-        public virtual Task<TResp> InvokeAsync<TResp>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
+        public virtual Task<object> InvokeAsync<TObj>(IServiceProvider serviceProvider, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            var methodBinding = MethodBinderStore.GetMethodBinding(mi);
-            var transport = methodBinding.Transports.FirstOrDefault(o => o.TransportType == TransportType);
-            if (transport == null) throw new Exception($"Transport({TransportType}) not configured for method {mi.DeclaringType.FullName}.{mi.Name}. Configured transports are {string.Join(",", methodBinding.Transports.Select(o => o.TransportType))}"); 
-            return InvokeAsync<TResp>(methodBinding, transport, args, invocationOptions);
+            var proxy = (ISolidProxy)ServiceProvider.GetRequiredService<TObj>();
+            return proxy.InvokeAsync(this, mi, args, new Dictionary<string, object>
+            {
+                { typeof(IHandler).FullName, this },
+                { typeof(InvocationOptions).FullName, invocationOptions }
+            });
         }
 
         public virtual async Task<TResp> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, object[] args, InvocationOptions invocationOptions)
@@ -56,8 +58,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             var httpReq = new SolidHttpRequest();
             await methodBinding.BindArgumentsAsync(httpReq, args, transport.OperationAddress);
-
-            AddSecurityKey(methodBinding, httpReq);
             //AddTargetInstance(methodBinding, httpReq);
 
             var cancellationToken = args.OfType<CancellationToken>().FirstOrDefault();
@@ -67,20 +67,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             var resp = methodBinding.ExtractResponse<TResp>(httpResp);
             return resp;
-        }
-
-        protected void AddSecurityKey(IMethodBinding methodBinding, IHttpRequest httpReq)
-        {
-            //
-            // Add security key header
-            //
-            var securityKey = methodBinding.GetSolidProxyConfig<ISecurityKeyConfig>()?.SecurityKey;
-            if (securityKey != null)
-            {
-                var headers = httpReq.Headers.ToList();
-                headers.Add(new SolidHttpRequestDataString("text/plain", securityKey.Value.Key, securityKey.Value.Value));
-                httpReq.Headers = headers;
-            }
         }
 
         protected void AddTargetInstance(SolidRpcHostInstance targetInstance, IHttpRequest httpReq)

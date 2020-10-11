@@ -31,9 +31,9 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             :base(logger, serviceProvider)
         {
         }
-        public override async Task<TRes> InvokeAsync<TRes>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
+        public override Task<object> InvokeAsync<TObj>(IServiceProvider serviceProvider, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            var service = ServiceProvider.GetService(mi.DeclaringType);
+            var service = serviceProvider.GetService(mi.DeclaringType);
             if (service == null)
             {
                 throw new Exception("Cannot find service:" + mi.DeclaringType.FullName);
@@ -42,18 +42,30 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             if (proxy == null)
             {
                 // the service is not proxied - invoke directly
-                return (TRes)mi.Invoke(service, args);
+                return HandleResponse(mi.Invoke(service, args));
             }
 
             var methodBinding = MethodBinderStore.GetMethodBinding(mi);
             if (methodBinding == null)
             {
                 // service does not have a openapi specification - invoke directly
-                return (TRes)mi.Invoke(service, args);
+                return HandleResponse(mi.Invoke(service, args));
             }
 
-            return (TRes)proxy.Invoke(this, mi, args);
+            return HandleResponse(proxy.Invoke(this, mi, args));
         }
+
+        private async Task<object> HandleResponse(object res)
+        {
+            if(res is Task)
+            {
+                await ((Task)res);
+                var awaitedRes = res.GetType().GetProperty("Result").GetValue(res);
+                return awaitedRes;
+            }
+            return res;
+        }
+
         public override Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();

@@ -626,10 +626,11 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(System.Reflection.MethodInfo,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IHandler.InvokeAsync``1(System.IServiceProvider,System.Reflection.MethodInfo,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Invokes the supplied method
             </summary>
+            <param name="serviceProvider"></param>
             <param name="mi"></param>
             <param name="args"></param>
             <param name="invocationOptions"></param>

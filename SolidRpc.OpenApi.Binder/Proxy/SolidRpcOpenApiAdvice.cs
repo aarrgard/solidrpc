@@ -122,36 +122,46 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            if(invocation.Caller is ISolidProxy)
+            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName);
+            if(handler == null)
             {
-                return ProxyHandler.InvokeAsync<TAdvice>(MethodBinding, ProxyTransport, invocation.Arguments, CreateInvocationOptions(invocation));
+                if (invocation.Caller is ISolidProxy)
+                {
+                    handler = ProxyHandler;
+                }
+                else if (HasImplementation)
+                {
+                    return next();
+                }
+                else
+                {
+                    handler = InvokerHandler;
+                }
             }
-            else if(HasImplementation)
-            {
-                return next();
-            }
-            else
-            {
-                return InvokerHandler.InvokeAsync<TAdvice>(MethodBinding, InvokerTransport, invocation.Arguments, CreateInvocationOptions(invocation));
-            }
+            return InvokeAsync(handler, MethodBinding, ProxyTransport, invocation);
         }
 
-        private InvocationOptions CreateInvocationOptions(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        private Task<T> InvokeAsync<T>(IHandler proxyHandler, IMethodBinding methodBinding, ITransport transport, ISolidProxyInvocation<TObject, TMethod, T> invocation)
         {
-            var invocOpts = InvocationOptions.Http;
+            var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName);
+            if(invocationOptions == null)
+            {
+                invocationOptions = new InvocationOptions(proxyHandler.TransportType, InvocationOptions.MessagePriorityNormal);
+            }
             var httpHeaders = invocation.Keys.Where(o => o.StartsWith("http_", StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (httpHeaders.Any())
             {
-                invocOpts = invocOpts.AddPreInvokeCallback(req =>
+                invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
                 {
                     var data = httpHeaders
-                        .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(5), Value = o2} ))
+                        .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(5), Value = o2 }))
                         .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value)).ToList();
                     req.Headers = req.Headers.Union(data).ToList();
                     return Task.CompletedTask;
                 });
             }
-            return invocOpts;
+
+            return proxyHandler.InvokeAsync<T>(methodBinding, transport, invocation.Arguments, invocationOptions);
         }
     }
 }

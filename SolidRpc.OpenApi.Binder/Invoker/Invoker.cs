@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -7,14 +8,13 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(IInvoker<>), typeof(Invoker<>), SolidRpcServiceLifetime.Scoped)]
+[assembly: SolidRpcService(typeof(IInvoker<>), typeof(Invoker<>), SolidRpcServiceLifetime.Transient)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     public class Invoker<T> : IInvoker<T> where T:class
@@ -23,23 +23,17 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public Invoker(
             ILogger<Invoker<T>> logger, 
             Invokers invokers,
-            IMethodBinderStore methodBinderStore,
-            IEnumerable<IHandler> handlers)
+            IServiceProvider serviceProvider)
         {
-            Logger = logger;
             Invokers = invokers;
-            MethodBinderStore = methodBinderStore;
-            Handlers = handlers;
+            ServiceProvider = serviceProvider;
         }
-
-        private ILogger Logger { get; }
         private Invokers Invokers { get; }
-        private IMethodBinderStore MethodBinderStore { get; }
-        private IEnumerable<IHandler> Handlers { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public IMethodBinding GetMethodBinding(MethodInfo mi)
         {
-            return MethodBinderStore.GetMethodBinding(mi);
+            return Invokers.MethodBinderStore.GetMethodBinding(mi);
         }
 
         public IMethodBinding GetMethodBinding(Expression<Action<T>> action)
@@ -86,7 +80,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public Task InvokeAsync(Expression<Action<T>> action, InvocationOptions invocationOptions)
         {
             var (mi, args) = GetMethodInfo(action);
-            return InvokeMethodAsync<object>(mi, args, invocationOptions);
+            return InvokeAsync(mi, args, invocationOptions);
         }
 
         public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, InvocationOptions invocationOptions)
@@ -96,45 +90,9 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return (TResult)res;
         }
 
-        private Func<MethodInfo, object[], InvocationOptions , object> CreateInvoker<TResult>(Type t)
+        private async Task<TResult> Narrow<TResult>(Task<object> result)
         {
-            if(t.IsGenericType)
-            {
-                if(t.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    var taskType = t.GetGenericArguments()[0];
-                    var gmi = typeof(Invoker<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Where(o => o.Name == nameof(Narrow))
-                        .Where(o => o.IsGenericMethod)
-                        .Single();
-                    gmi = gmi.MakeGenericMethod(taskType);
-                    return (mi, args, opts) =>
-                    {
-                        var taskRes = InvokeAsync<TResult>(mi, args, opts);
-                        var res = gmi.Invoke(this, new object[] { taskRes });
-                        return res;
-                    };
-                }
-            }
-            return (mi, args, opts) =>
-            {
-                return InvokeAsync<TResult>(mi, args, opts).Result;
-            };
-        }
-        
-        private async Task<TResult> Narrow<TResult>(Task<Task<TResult>> result)
-        {
-            return await await result;
-        }
-
-        public Task<TResult> InvokeAsync<TResult>(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
-        {
-            return InvokeMethodAsync<TResult>(mi, args.ToArray(), invocationOptions);
-        }
-
-        public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
-        {
-            return InvokeMethodAsync(mi, args.ToArray(), invocationOptions);
+            return (TResult)(await result);
         }
 
         protected static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
@@ -153,20 +111,47 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             throw new Exception("expression should be a method call.");
         }
 
-        protected virtual Task<TRes> InvokeMethodAsync<TRes>(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
+        public Func<MethodInfo, object[], InvocationOptions, object> CreateInvoker<TResult>(Type t)
         {
-            return GetHandler(mi, ref invocationOptions).InvokeAsync<TRes>(mi, args, invocationOptions);
+            if (t.IsGenericType)
+            {
+                if (t.GetGenericTypeDefinition() == typeof(Task<>))
+                {
+                    var taskType = t.GetGenericArguments()[0];
+                    var gmi = typeof(Invoker<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Where(o => o.Name == nameof(Narrow))
+                        .Where(o => o.IsGenericMethod)
+                        .Single();
+                    gmi = gmi.MakeGenericMethod(taskType);
+                    return (mi, args, opts) =>
+                    {
+                        var taskRes = InvokeMethodAsync(mi, args, opts);
+                        var res = gmi.Invoke(this, new object[] { taskRes });
+                        return res;
+                    };
+                }
+            }
+            return (mi, args, opts) =>
+            {
+                return InvokeMethodAsync(mi, args, opts).Result;
+            };
+        }
+
+        public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
+        {
+            return InvokeMethodAsync(mi, args.ToArray(), invocationOptions);
         }
 
         protected virtual Task<object> InvokeMethodAsync(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            return GetHandler(mi, ref invocationOptions).InvokeAsync<object>(mi, args, invocationOptions);
+            var handler = GetHandler(mi, ref invocationOptions);
+            return handler.InvokeAsync<T>(ServiceProvider, mi, args, invocationOptions);
         }
 
         private IHandler GetHandler(MethodInfo mi, ref InvocationOptions invocationOptions)
         {
             var transportType = invocationOptions?.TransportType;
-            if(transportType == null)
+            if (transportType == null)
             {
                 transportType = GetMethodBinding(mi).Transports
                     .OrderBy(o => o.InvocationStrategy)
@@ -174,7 +159,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 invocationOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
             }
 
-            var handler = Handlers.FirstOrDefault(o => o.TransportType == transportType);
+            var handler = Invokers.Handlers.FirstOrDefault(o => o.TransportType == transportType);
             if (handler == null) throw new Exception($"Transport {transportType} not configured.");
             return handler;
         }

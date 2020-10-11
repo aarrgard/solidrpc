@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,13 +40,15 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the supplied method
         /// </summary>
+        /// <param name="serviceProvider"></param>
         /// <param name="mi"></param>
         /// <param name="args"></param>
         /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        Task<TRes> InvokeAsync<TRes>(
-            MethodInfo mi, 
-            object[] args, 
+        Task<object> InvokeAsync<TObj>(
+            IServiceProvider serviceProvider,
+            MethodInfo mi,
+            object[] args,
             InvocationOptions invocationOptions);
 
         /// <summary>

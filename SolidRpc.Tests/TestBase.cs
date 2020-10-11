@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using SolidRpc.Abstractions.OpenApi.Model;
-using SolidRpc.OpenApi.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
