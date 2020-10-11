@@ -119,7 +119,7 @@ namespace SolidRpc.Tests.Invoker
                 conf.ProxyTransportType = MemoryQueueHandler.TransportType;
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetHttpTransport(InvocationStrategy.Invoke);
-                conf.SetQueueTransport<MemoryQueueHandler>(InvocationStrategy.Invoke);
+                conf.SetQueueTransport<MemoryQueueHandler>(InvocationStrategy.Forward);
                 conf.SetQueueTransportInboundHandler("generic");
                 return true;
             });

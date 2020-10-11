@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Types;
 using System;
@@ -12,14 +13,14 @@ namespace SolidRpc.Tests.Security
     /// <summary>
     /// Tests security functionality.
     /// </summary>
-    public class SecurityKeyTest : WebHostTest
+    public class SecurityKeyAuthHeaderTest : WebHostTest
     {
         /// <summary>
         /// 
         /// </summary>
-        public SecurityKeyTest()
+        public SecurityKeyAuthHeaderTest()
         {
-            SecurityKey = new KeyValuePair<string, string>(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            SecurityKey = new KeyValuePair<string, string>("Authorization", Guid.NewGuid().ToString());
         }
         /// <summary>
         /// 
@@ -101,7 +102,8 @@ namespace SolidRpc.Tests.Security
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
                 conf.OpenApiSpec = apiSpec;
-                conf.SetSecurityKey(SecurityKey);
+                conf.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = SecurityKey;
+                conf.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
                 return true;
             });
         }
@@ -116,11 +118,14 @@ namespace SolidRpc.Tests.Security
             {
                 await ctx.StartAsync();
 
-                var testInterface = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
-                await testInterface.MethodWithClientKeySpecified();
+                var testInterface = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                await testInterface.InvokeAsync(o => o.MethodWithClientKeySpecified(), InvocationOptions.Http.AddPreInvokeCallback(req => {
+                    Assert.AreEqual($"Bearer {SecurityKey.Value}", req.Headers.Single(o => o.Name == "Authorization").GetStringValue());
+                    return Task.CompletedTask;
+                }));
                 try
                 {
-                    await testInterface.MethodWithoutClientKeySpecified();
+                    await testInterface.InvokeAsync(o => o.MethodWithoutClientKeySpecified());
                     Assert.Fail("Should be 401");
                 }
                 catch(UnauthorizedException)

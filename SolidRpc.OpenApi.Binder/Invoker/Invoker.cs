@@ -113,23 +113,23 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public Func<MethodInfo, object[], InvocationOptions, object> CreateInvoker<TResult>(Type t)
         {
-            if (t.IsGenericType)
+            if (t.IsTaskType(out Type taskType))
             {
-                if (t.GetGenericTypeDefinition() == typeof(Task<>))
+                if(taskType == null)
                 {
-                    var taskType = t.GetGenericArguments()[0];
-                    var gmi = typeof(Invoker<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Where(o => o.Name == nameof(Narrow))
-                        .Where(o => o.IsGenericMethod)
-                        .Single();
-                    gmi = gmi.MakeGenericMethod(taskType);
-                    return (mi, args, opts) =>
-                    {
-                        var taskRes = InvokeMethodAsync(mi, args, opts);
-                        var res = gmi.Invoke(this, new object[] { taskRes });
-                        return res;
-                    };
+                    taskType = typeof(object);
                 }
+                var gmi = typeof(Invoker<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Where(o => o.Name == nameof(Narrow))
+                    .Where(o => o.IsGenericMethod)
+                    .Single();
+                gmi = gmi.MakeGenericMethod(taskType);
+                return (mi, args, opts) =>
+                {
+                    var taskRes = InvokeMethodAsync(mi, args, opts);
+                    var res = gmi.Invoke(this, new object[] { taskRes });
+                    return res;
+                };
             }
             return (mi, args, opts) =>
             {

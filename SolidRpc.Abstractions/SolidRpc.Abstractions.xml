@@ -1018,18 +1018,6 @@
             the invocation is authorized.
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfigExtensions">
-            <summary>
-            Extension methods to manipulate the settings
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig,System.Guid)">
-            <summary>
-            Sets the SolidRpcSecurityKey key.
-            </summary>
-            <param name="config"></param>
-            <param name="secKey"></param>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config">
             <summary>
             Configures the OAuth2 security
@@ -1053,6 +1041,12 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuthProxyInvocationPrincipal">
             <summary>
             Which authorization should be used when invoking proxies.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityPathClaimConfig">
+            <summary>
+            Configures the required security claim neede to
+            invoke the operation.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig">
@@ -1178,6 +1172,28 @@
             <param name="config"></param>
             <param name="resourceName"></param>
             <param name="timeout"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String,System.String)">
+            <summary>
+            Sets the securitykry
+            </summary>
+            <param name="config"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
+            <summary>
+            Sets the securitykry
+            </summary>
+            <param name="config"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetSecurityKey(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Collections.Generic.KeyValuePair{System.String,System.String})">
+            <summary>
+            Sets the securitykey
+            </summary>
+            <param name="config"></param>
+            <param name="securityKey"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig">
             <summary>

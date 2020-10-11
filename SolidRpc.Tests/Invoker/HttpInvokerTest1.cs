@@ -72,7 +72,7 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
+                conf.SetSecurityKey(SecKey.ToString(), SecKey.ToString());
                 return true;
             });
 
@@ -87,7 +87,7 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = new KeyValuePair<string, string>(SecKey.ToString(), SecKey.ToString());
+                conf.SetSecurityKey(SecKey.ToString(), SecKey.ToString());
                 return true;
             });
 

@@ -8,12 +8,14 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -155,7 +157,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if(Logger.IsEnabled(LogLevel.Information))
+            if (Logger.IsEnabled(LogLevel.Information))
             {
                 Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
             }
@@ -178,23 +180,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             if (transport.InvocationStrategy == InvocationStrategy.Forward)
             {
                 //
-                // The security is checked when the method is invoked. Since we do not 
-                // want to fill up the call queues with unauthorized calls we check the keys here.
+                // switch invocation source
                 //
-                var securityKey = selectedBinding.GetSolidProxyConfig<ISecurityKeyConfig>().SecurityKey;
-                await SecurityKeyAdvice.CheckSecurityKeyAsync(invocationSource, securityKey, k => request.Headers.Where(o => string.Equals(o.Name,k,StringComparison.InvariantCultureIgnoreCase)).Select(o => o.GetStringValue()).FirstOrDefault());
-
                 var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
                 if(Logger.IsEnabled(LogLevel.Trace))
                 {
                     Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");                
                 }
                 var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
-                var invokeHandler = handlers.First(o => o.TransportType == invokeTransport.TransportType);
-                var invocationOptions = new InvocationOptions(invokeHandler.TransportType, InvocationOptions.MessagePriorityNormal);
-                return await invokeHandler.InvokeAsync<object>(selectedBinding, invokeTransport, request, invocationOptions, cancellationToken);
+                invocationSource = handlers.First(o => o.TransportType == invokeTransport.TransportType);
             }
-
 
             //
             // Locate service
@@ -226,11 +221,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 return resp;
             }
 
-            //
-            // set invocation valies from headers
-            //
+            // add invocation values
             var invocationValues = new Dictionary<string, object>();
-            foreach(var qv in request.Headers)
+            invocationValues[typeof(IHandler).FullName] = invocationSource;
+            invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invocationSource.TransportType, InvocationOptions.MessagePriorityNormal);
+            invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
+
+            //
+            // sett http headers
+            //
+            foreach (var qv in request.Headers)
             {
                 var headerName = $"http_{qv.Name}".ToLower();
                 if(invocationValues.TryGetValue(headerName, out object value))

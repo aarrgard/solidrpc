@@ -191,5 +191,37 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             rateLimitConfig.ResourceName = resourceName;
             rateLimitConfig.Timeout = timeout;
         }
+
+        /// <summary>
+        /// Sets the securitykry
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public static void SetSecurityKey(this ISolidRpcOpenApiConfig config, string name, string value)
+        {
+            config.SetSecurityKey(new KeyValuePair<string, string>(name, value));
+        }
+
+        /// <summary>
+        /// Sets the securitykry
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="value"></param>
+        public static void SetSecurityKey(this ISolidRpcOpenApiConfig config, string value)
+        {
+            config.SetSecurityKey(new KeyValuePair<string, string>("SecurityKey", value));
+        }
+
+        /// <summary>
+        /// Sets the securitykey
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="securityKey"></param>
+        public static void SetSecurityKey(this ISolidRpcOpenApiConfig config, KeyValuePair<string, string> securityKey)
+        {
+            config.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = securityKey;
+            config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
+        }
     }
 }

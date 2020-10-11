@@ -122,21 +122,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName);
-            if(handler == null)
+            IHandler handler;
+            if (invocation.Caller is ISolidProxy)
             {
-                if (invocation.Caller is ISolidProxy)
-                {
-                    handler = ProxyHandler;
-                }
-                else if (HasImplementation)
-                {
-                    return next();
-                }
-                else
-                {
-                    handler = InvokerHandler;
-                }
+                handler = ProxyHandler;
+            }
+            else if (HasImplementation)
+            {
+                return next();
+            }
+            else
+            {
+                handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? InvokerHandler;
             }
             return InvokeAsync(handler, MethodBinding, ProxyTransport, invocation);
         }

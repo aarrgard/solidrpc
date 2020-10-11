@@ -1,5 +1,4 @@
 ﻿using SolidProxy.Core.Configuration;
-using System;
 using System.Collections.Generic;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
@@ -16,21 +15,5 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// the invocation is authorized.
         /// </summary>
         KeyValuePair<string, string>? SecurityKey { get; set; }
-    }
-
-    /// <summary>
-    /// Extension methods to manipulate the settings
-    /// </summary>
-    public static class ISecurityKeyConfigExtensions
-    {
-        /// <summary>
-        /// Sets the SolidRpcSecurityKey key.
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="secKey"></param>
-        public static void SetSecurityKey(this ISecurityKeyConfig config, Guid secKey)
-        {
-            config.SecurityKey = new KeyValuePair<string, string>("solidrpcsecuritykey", secKey.ToString());
-        }
     }
 }

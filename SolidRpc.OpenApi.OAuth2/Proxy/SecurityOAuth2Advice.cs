@@ -7,7 +7,6 @@ using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
@@ -21,7 +20,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// The security advice should run befor the invocations
         /// </summary>
         public static IEnumerable<Type> BeforeAdvices = new Type[] {
-            typeof(SolidRpcOpenApiAdvice<,,>),
+            typeof(SecurityPathClaimAdvice<,,>),
         };
 
         /// <summary>

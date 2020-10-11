@@ -101,7 +101,7 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.GetAdviceConfig<ISecurityKeyConfig>().SetSecurityKey(SecKey);
+                conf.SetSecurityKey(SecKey.ToString());
                 ConfigureQueueTransport(conf, true);
                 return true;
             });
@@ -124,7 +124,7 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.GetAdviceConfig<ISecurityKeyConfig>().SetSecurityKey(SecKey);
+                conf.SetSecurityKey(SecKey.ToString());
                 ConfigureQueueTransport(conf, false);
                 return true;
             });

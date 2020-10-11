@@ -8,72 +8,23 @@ using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Primitives;
 using SolidRpc.OpenApi.Binder.Invoker;
-using System.ComponentModel;
-using System.Runtime.InteropServices.ComTypes;
+using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.Services;
+using System.Security.Principal;
+using System.Security.Claims;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
-    public class SecurityKeyAdvice
-    {
-        /// <summary>
-        /// Checks the security key for the invocation.
-        /// </summary>
-        /// <param name="caller"></param>
-        /// <param name="secKey"></param>
-        /// <param name="keyFetcher"></param>
-        /// <param name="cancellatinToken"></param>
-        /// <returns></returns>
-        public static Task CheckSecurityKeyAsync(
-            object caller,
-            KeyValuePair<string, string>? secKey,
-            Func<string, string> keyFetcher,
-            CancellationToken cancellatinToken = default(CancellationToken))
-        {
-            // no security key - let through
-            if (secKey == null)
-            {
-                return Task.CompletedTask;
-            }
-
-            // calls invoked directly from a proxy are allowed
-            if (caller is ISolidProxy)
-            {
-                return Task.CompletedTask;
-            }
-            if (caller is LocalHandler)
-            {
-                return Task.CompletedTask;
-            }
-
-            var key = secKey.Value.Key.ToLower();
-            var value = secKey.Value.Value;
-
-            //
-            // check the security key if specified
-            //
-            var callKey = keyFetcher(key);
-            if (string.IsNullOrEmpty(callKey))
-            {
-                throw new UnauthorizedException($"No '{key}' specified");
-            }
-            if (!value.Equals(callKey.ToString()))
-            {
-                throw new UnauthorizedException("SolidRpcSecurityKey differs");
-            }
-            return Task.CompletedTask;
-
-        }
-    }
     /// <summary>
     /// Configures the bindings for the rpc proxy.
     /// </summary>
-    public class SecurityKeyAdvice<TObject, TMethod, TAdvice> : SecurityKeyAdvice, ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
+    public class SecurityKeyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
         /// <summary>
         /// The security advice should run befor the invocations
         /// </summary>
         public static IEnumerable<Type> BeforeAdvices = new Type[] {
-            typeof(SolidRpcOpenApiAdvice<,,>),
+            typeof(SecurityPathClaimAdvice<,,>)
         };
 
         /// <summary>
@@ -84,7 +35,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="methodBinderStore"></param>
         /// <param name="serviceProvider"></param>
         public SecurityKeyAdvice(
-            ILogger<SolidRpcRateLimitAdvice<TObject, TMethod, TAdvice>> logger)
+            ILogger<SecurityKeyAdvice<TObject, TMethod, TAdvice>> logger)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -116,12 +67,31 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             if(RemoteCall)
             {
                 // Add the security key
-                invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
+                if(string.Equals(SecurityKey.Value.Key, "authorization", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues($"Bearer {SecurityKey.Value.Value}"));
+                }
+                else
+                {
+                    invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
+                }
             }
             else
             {
                 // Check the security key
-                await CheckSecurityKeyAsync(invocation.Caller, SecurityKey, k => invocation.GetValue<StringValues>($"http_{k}"));
+                var val = invocation.GetValue<StringValues>($"http_{SecurityKey.Value.Key}".ToLowerInvariant()).ToString();
+                if(val != null)
+                {
+                    if (val.StartsWith("Bearer ", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        val = val.Substring("Bearer ".Length);
+                    }
+                    if (val.Equals(SecurityKey.Value.Value))
+                    {
+                        var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
+                        auth.CurrentPrincipal = SecurityPathClaimAdvice.AdminPrincipal;
+                    }
+                }
             }
             return await next();
         }

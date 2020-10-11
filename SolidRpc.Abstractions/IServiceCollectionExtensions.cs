@@ -492,7 +492,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var val = configuration[key];
                 if (val != null)
                 {
-                    openApiProxyConfig.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = new KeyValuePair<string, string>(sKey, val);
+                    openApiProxyConfig.SetSecurityKey(sKey, val);
                     return;
                 }
             }
