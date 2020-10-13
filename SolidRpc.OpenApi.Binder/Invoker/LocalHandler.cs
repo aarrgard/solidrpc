@@ -60,7 +60,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             if(res is Task)
             {
                 await ((Task)res);
-                var awaitedRes = res.GetType().GetProperty("Result").GetValue(res);
+                var awaitedRes = res.GetType().GetProperty("Result")?.GetValue(res);
                 return awaitedRes;
             }
             return res;

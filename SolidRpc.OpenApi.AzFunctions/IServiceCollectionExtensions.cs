@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        private static object s_mutex = new object();
         /// <summary>
         /// 
         /// </summary>
@@ -22,37 +23,46 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IAzFunctionHandler GetAzFunctionHandler(this IServiceCollection services)
         {
-            var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(AzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
-            if(funcHandler == null)
+            lock(s_mutex)
             {
-                DirectoryInfo baseDir;
-                var assemblyLocation = new FileInfo(typeof(AzFunctionHandler).Assembly.Location);
-                if (!assemblyLocation.Exists)
+                var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(AzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
+                if(funcHandler == null)
                 {
-                    throw new Exception("Cannot find location of assebly.");
-                }
-                if (assemblyLocation.Directory.Name != "bin")
-                {
-                    //throw new Exception($"Assemblies are not placed in the bin folder({assemblyLocation.Directory.Name}/{assemblyLocation.Directory.FullName}).");
-                    baseDir = new DirectoryInfo("d:\\home\\site\\wwwroot");
-                }
-                else
-                {
-                    baseDir = assemblyLocation.Directory.Parent;
-                }
+                    DirectoryInfo baseDir;
+                    var assemblyLocation = new FileInfo(typeof(AzFunctionHandler).Assembly.Location);
+                    if (!assemblyLocation.Exists)
+                    {
+                        throw new Exception("Cannot find location of assebly.");
+                    }
+                    if (assemblyLocation.Directory.Name != "bin")
+                    {
+                        //throw new Exception($"Assemblies are not placed in the bin folder({assemblyLocation.Directory.Name}/{assemblyLocation.Directory.FullName}).");
+                        baseDir = new DirectoryInfo("d:\\home\\site\\wwwroot");
+                    }
+                    else
+                    {
+                        baseDir = assemblyLocation.Directory.Parent;
+                    }
 
-                var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
-                var triggerAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(o => o != typeof(StartupSolidRpcServices).Assembly)
-                    .Where(o => o.GetName().Name.StartsWith(assemblyNamePrefix))
-                    .ToList();
+                    var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
+                    var triggerAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(o => o != typeof(StartupSolidRpcServices).Assembly)
+                        .Where(o => o.GetName().Name.StartsWith(assemblyNamePrefix))
+                        .ToList();
 
-                var triggerAssembly = triggerAssemblies.Single();
+                    var numTriggerAssemblies = triggerAssemblies.Count();
+                    if (numTriggerAssemblies != 1)
+                    {
+                        throw new Exception($"Did not find one trigger assembly({numTriggerAssemblies})");
+                    }
+
+                    var triggerAssembly = triggerAssemblies.Single();
  
-                funcHandler = new AzFunctionHandler(baseDir, triggerAssembly);
-                services.AddSingleton(funcHandler);
+                    funcHandler = new AzFunctionHandler(baseDir, triggerAssembly);
+                    services.AddSingleton(funcHandler);
+                }
+                return funcHandler;
             }
-            return funcHandler;
         }
 
         /// <summary>
