@@ -26,6 +26,11 @@ namespace SolidRpc.Abstractions.Types
         public DateTimeOffset LastAlive { get; set; }
 
         /// <summary>
+        /// The base address of this host
+        /// </summary>
+        public Uri BaseAddress { get; set; }
+
+        /// <summary>
         /// The cookie to set in order to reach this host
         /// </summary>
         public IDictionary<string, string> HttpCookies { get; set; }

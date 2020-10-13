@@ -120,12 +120,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.TriggerRestart">
-            <summary>
-            Triggers a restart by writing some additional data to 
-            the end of a config file
-            </summary>
-        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Puts all the functions in the proxies file.
@@ -318,11 +312,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Save(System.IO.FileInfo)">
-            <summary>
-            Saves the run.csx and function.json files
-            </summary>
-        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler">
             <summary>
             The function handler
@@ -413,11 +402,6 @@
             <typeparam name="T"></typeparam>
             <param name="functionName"></param>
             <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.TriggerRestart">
-            <summary>
-            triggers a restart of the application
-            </summary>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>

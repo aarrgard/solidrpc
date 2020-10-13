@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             lock(s_mutex)
             {
-                var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(AzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
+                var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(IAzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
                 if(funcHandler == null)
                 {
                     DirectoryInfo baseDir;
@@ -46,17 +46,19 @@ namespace Microsoft.Extensions.DependencyInjection
 
                     var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
                     var triggerAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                        .Where(o => o != typeof(StartupSolidRpcServices).Assembly)
+                        .Where(o => o.GetName().Name != typeof(StartupSolidRpcServices).Assembly.GetName().Name)
                         .Where(o => o.GetName().Name.StartsWith(assemblyNamePrefix))
+                        .Where(o => o.GetTypes().Any(t => t.Name.EndsWith("Function")))
+                        .Select(o => o.GetName().Name)
+                        .Distinct()
                         .ToList();
 
-                    var numTriggerAssemblies = triggerAssemblies.Count();
-                    if (numTriggerAssemblies != 1)
+                    if (triggerAssemblies.Count() != 1)
                     {
-                        throw new Exception($"Did not find one trigger assembly({numTriggerAssemblies})");
+                        throw new Exception($"Did not find one trigger assembly({triggerAssemblies.Count()}:{string.Join(",", triggerAssemblies)})");
                     }
 
-                    var triggerAssembly = triggerAssemblies.Single();
+                    var triggerAssembly = Assembly.Load(new AssemblyName(triggerAssemblies.First()));
  
                     funcHandler = new AzFunctionHandler(baseDir, triggerAssembly);
                     services.AddSingleton(funcHandler);

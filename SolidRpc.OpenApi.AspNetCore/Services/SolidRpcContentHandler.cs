@@ -64,7 +64,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         }
 
         /// <summary>
-        /// Returns the path mappings
+        /// Returns the path mappings that we add to the proxy
         /// </summary>
         public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken)
         {
@@ -96,7 +96,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             return StaticFiles.GetOrAdd(path, GetStaticContentInternal).Invoke(path, cancellationToken);
         }
 
-        private IEnumerable<string> GetPathPrefixes(SolidRpcContentStore.StaticContent c)
+        private IEnumerable<string> GetPathPrefixes(StaticContent c)
         {
 
             if(!string.IsNullOrEmpty(c.PathPrefix))
@@ -131,7 +131,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                         Content = new MemoryStream(ms.ToArray()),
                         CharSet = resp.Content?.Headers?.ContentType?.CharSet,
                         ContentType = resp.Content?.Headers?.ContentType?.MediaType,
-                        Location = resp.Headers?.Location?.ToString()
+                        Location = resp.Headers?.Location?.ToString(),
+                        ETag = resp.Headers?.ETag?.Tag,
+                        LastModified = resp.Content?.Headers?.LastModified
                     };
                 };
             }

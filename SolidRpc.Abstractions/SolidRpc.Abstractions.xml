@@ -150,7 +150,12 @@
             Interface that can be implemented to resolve the base uri.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.TransformUriAsync(System.Uri,System.Reflection.MethodInfo)">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.BaseAddress">
+            <summary>
+            Returns the base address for this server
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.TransformUri(System.Uri,System.Reflection.MethodInfo)">
             <summary>
             Returns the uri for supplied method. If no method is supplied
             the base address for the open api spec is determined.
@@ -1194,6 +1199,12 @@
             </summary>
             <param name="config"></param>
             <param name="securityKey"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.DisableSecurity(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the securitykey
+            </summary>
+            <param name="config"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig">
             <summary>
@@ -2731,6 +2742,11 @@
             <summary>
             The last time this host was alive. This field is set(and returned) when a client
             invokes the ISolidRpcHost.GetHostInstance.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.BaseAddress">
+            <summary>
+            The base address of this host
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.HttpCookies">

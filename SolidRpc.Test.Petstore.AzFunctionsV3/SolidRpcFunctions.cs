@@ -348,6 +348,22 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId
+    {
+        [FunctionName("Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId")]
+        public static Task Run(
+            [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
+            [Inject] IServiceProvider serviceProvider,
+            [Constant("SolidRpc.Abstractions.Services.ISolidRpcHost")] Type serviceType,
+            [Constant("GetHostId")] string methodName,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return TimerFunction.Run(timerInfo, log, serviceProvider, serviceType, methodName, cancellationToken);
+        }
+    }
+
+
     public class Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync
     {
         [FunctionName("Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync")]

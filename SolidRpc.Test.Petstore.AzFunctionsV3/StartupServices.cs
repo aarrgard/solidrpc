@@ -65,7 +65,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //
             // enable anonyous access to the swagger methods and static content.
             //
-            var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
 
             //c.GetAdviceConfig<ISolidRpcRateLimitConfig>().ResourceName = c.Methods.First().DeclaringType.Assembly.GetName().Name;
 
@@ -75,12 +74,12 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
-                azConfig.HttpAuthLevel = "anonymous";
+                c.DisableSecurity();
                 return true;
             }
             if (c.Methods.First().DeclaringType == typeof(ISolidRpcContentHandler))
             {
-                azConfig.HttpAuthLevel = "anonymous";
+                c.DisableSecurity();
                 return true;
             }
 

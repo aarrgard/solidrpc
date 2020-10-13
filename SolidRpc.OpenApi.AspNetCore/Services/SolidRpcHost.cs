@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -177,12 +178,14 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <returns></returns>
         public Task<SolidRpcHostInstance> GetHostInstance(CancellationToken cancellationToken = default(CancellationToken))
         {
+            var addressTransformer = ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
             return Task.FromResult(new SolidRpcHostInstance()
             {
                 HostId = SolidRpcApplication.HostId,
                 Started = Started,
                 LastAlive = DateTimeOffset.Now,
-                HttpCookies = HttpCookies
+                HttpCookies = HttpCookies,
+                BaseAddress = addressTransformer.BaseAddress
             });
         }
 

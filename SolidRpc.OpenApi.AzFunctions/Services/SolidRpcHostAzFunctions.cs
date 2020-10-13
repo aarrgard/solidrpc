@@ -167,8 +167,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 .ToList();
 
             var startTime = DateTime.Now;
-            var modified = await WriteAzFunctionsAsync(functionDefs,cancellationToken);
+            await WriteAzFunctionsAsync(functionDefs,cancellationToken);
 
+            var hostAddress = (await GetHostInstance(cancellationToken))?.BaseAddress;
             //
             // get the static routes
             //
@@ -179,21 +180,19 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 Name = o.Name.Replace("*", "{arg}"),
                 Value = o.Value.Replace("*", "{arg}")
             }));
+            staticRoutes = staticRoutes.Select(o => new NameValuePair() { Name = o.Name, Value = o.Value.Replace($"/{hostAddress.Authority}/", "/%WEBSITE_HOSTNAME%/") }).ToList();
 
             //
             // get the redirects
             //
             var redirects = (await ContentHandler.GetPathMappingsAsync(true, cancellationToken)).ToList();
+            redirects = redirects.Select(o => new NameValuePair() { Name = o.Name, Value = o.Value.Replace($"/{hostAddress.Authority}/", "/%WEBSITE_HOSTNAME%/") }).ToList();
 
             FunctionHandler.SyncProxiesFile(
                 staticRoutes.ToDictionary(o => o.Name, o => o.Value),
                 redirects.ToDictionary(o => o.Name, o => o.Value)
                 );
 
-            if (modified)
-            {
-                FunctionHandler.TriggerRestart();
-            }
         }
 
         private IEnumerable<FunctionDef> GetFunctionDefinitions(IMethodBinding mb)
@@ -251,19 +250,19 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             return functions;
         }
 
-        private async Task<bool> WriteAzFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
+        private async Task WriteAzFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
         {
             var functionTypes = new Type[]
             {
                 typeof(IAzHttpFunction),
                 typeof(IAzSvcBusFunction),
                 typeof(IAzQueueFunction),
+                typeof(IAzTimerFunction),
             };
             var existingFunctions = FunctionHandler.GetFunctions()
                 .Where(f => functionTypes.Any(ft => ft.IsAssignableFrom(f.GetType()))).ToList();
             var touchedFunctions = new List<IAzFunction>();
             var functionNames = new HashSet<string>(functionDefs.Select(o => o.FunctionName));
-            var modified = false;
 
             //
             // remove functions that are not available any more
@@ -327,10 +326,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
             // write all touched functions
             var solidRpcFunctionsCs = new StringBuilder();
-            touchedFunctions.ForEach(o =>
-            {
-                modified = o.Save() || modified;
-            });
+            touchedFunctions.ForEach(o => o.Save());
 
             if(FunctionHandler.DevDir != null)
             {
@@ -352,8 +348,6 @@ namespace SolidRpc.OpenApi.AzFunctions
 }}");
                 }
             }
-
-            return modified;
         }
     }
 }

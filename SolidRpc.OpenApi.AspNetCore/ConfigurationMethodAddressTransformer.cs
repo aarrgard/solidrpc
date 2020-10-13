@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
-[assembly:SolidRpc.Abstractions.SolidRpcService(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer))]
+[assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer), SolidRpcServiceLifetime.Singleton)]
 
 namespace SolidRpc.OpenApi.Binder
 {
@@ -77,13 +77,15 @@ namespace SolidRpc.OpenApi.Binder
                     }
                 }
             }
+            BaseAddress = TransformUri(new Uri("http://localhost/"), null);
         }
 
+        public Uri BaseAddress { get; }
         private string Scheme { get; }
         private HostString Host { get; }
         private string PathPrefix { get; }
 
-        Uri IMethodAddressTransformer.TransformUriAsync(Uri uri, MethodInfo methodInfo)
+        public Uri TransformUri(Uri uri, MethodInfo methodInfo)
         {
             //
             // we are only interested in transforming the base path

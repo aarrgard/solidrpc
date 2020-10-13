@@ -106,7 +106,7 @@
           "GET"
         ]
       },
-      "backendUri": "http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=A{arg}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=A{arg}"
     },
     "EmPtY": {
       "matchCondition": {
@@ -117,7 +117,7 @@
       },
       "responseOverrides": {
         "response.statusCode": "302",
-        "response.headers.Location": "http://localhost:7071/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml?onlyImplemented=true"
+        "response.headers.Location": "http://%WEBSITE_HOSTNAME%/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml?onlyImplemented=true"
       }
     },
     "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/GetSettingsAsync": {

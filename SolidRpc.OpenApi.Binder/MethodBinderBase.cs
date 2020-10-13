@@ -34,7 +34,7 @@ namespace SolidRpc.OpenApi.Binder
             if (configuration == null) return uri;
             var methodAddressResolver = (IMethodAddressTransformer)ServiceProvider.GetService(typeof(IMethodAddressTransformer));
             if (methodAddressResolver == null) return uri;
-            return methodAddressResolver.TransformUriAsync(uri, null);
+            return methodAddressResolver.TransformUri(uri, null);
         }
 
         public IServiceProvider ServiceProvider { get; }

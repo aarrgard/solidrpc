@@ -223,5 +223,18 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             config.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = securityKey;
             config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
         }
+
+        /// <summary>
+        /// Sets the securitykey
+        /// </summary>
+        /// <param name="config"></param>
+        public static void DisableSecurity(this ISolidRpcOpenApiConfig config)
+        {
+            config.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = null;
+            config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = false;
+            config.GetAdviceConfig<ISolidAzureFunctionConfig>().HttpAuthLevel = "anonymous";
+        }
+
+
     }
 }

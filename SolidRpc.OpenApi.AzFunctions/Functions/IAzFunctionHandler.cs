@@ -49,12 +49,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         T GetOrCreateFunction<T>(string name) where T : class, IAzFunction;
 
         /// <summary>
-        /// Triggers a restart by writing some additional data to 
-        /// the end of a config file
-        /// </summary>
-        void TriggerRestart();
-
-        /// <summary>
         /// Puts all the functions in the proxies file.
         /// </summary>
         void SyncProxiesFile(

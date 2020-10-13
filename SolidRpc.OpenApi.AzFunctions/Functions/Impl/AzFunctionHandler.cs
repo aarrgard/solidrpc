@@ -301,44 +301,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         }
 
         /// <summary>
-        /// triggers a restart of the application
-        /// </summary>
-        public void TriggerRestart()
-        {
-            var hostJson = new FileInfo(Path.Combine(BaseDir.FullName, "host.json"));
-            if (!hostJson.Exists)
-            {
-                return;
-            }
-            if (s_restartJob.Status == TaskStatus.RanToCompletion)
-            {
-                // start it again
-            }
-            else if (s_restartJob.Status == TaskStatus.Faulted)
-            {
-                // start it again
-            }
-            else
-            {
-                return;
-            }
-            s_restartJob = Task.Run(async () => {
-                await Task.Delay(2000);
-                using (var sw = hostJson.AppendText())
-                {
-                    sw.WriteLine($"//{DateTime.Now.ToString("yyyyMMddHHmmssfffff")}");
-                }
-            });
-        }
-
-        /// <summary>
         /// Syncronizes the proxies file with the functions.
         /// </summary>
         public void SyncProxiesFile(
             IDictionary<string, string> staticRoutes,
             IDictionary<string, string> redirects)
         {
-            SyncProxiesFile(BaseDir, staticRoutes, redirects);
             if(DevDir != null)
             {
                 SyncProxiesFile(DevDir, staticRoutes, redirects);

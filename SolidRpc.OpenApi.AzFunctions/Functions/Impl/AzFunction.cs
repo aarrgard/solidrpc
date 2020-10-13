@@ -154,13 +154,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// <summary>
         /// Saves the run.csx and function.json files
         /// </summary>
-        public bool Save()
+        public void Save()
         {
             FunctionHandler.FunctionCode[Name] = WriteFunctionClass();
-            return FunctionDirs.Select(o =>
-            {
-                return Save(new FileInfo(Path.Combine(o.FullName, "function.json")));
-            }).ToList().First(); // Do not remove "ToList()"!
         }
 
         /// <summary>
@@ -168,83 +164,5 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// </summary>
         /// <returns></returns>
         protected abstract string WriteFunctionClass();
-
-        /// <summary>
-        /// Saves the run.csx and function.json files
-        /// </summary>
-        public bool Save(FileInfo fi)
-        {
-            if (!fi.Directory.Exists)
-            {
-                fi.Directory.Create();
-            }
-            var oldFunc = DeserializeFunction(ReadFunctionJson(fi));
-            if(Differs(Function, oldFunc))
-            {
-                WriteFunctionJson(fi);
-                return true;
-            }
-            return false;
-        }
-
-        private bool Differs(object o1, object o2)
-        {
-            if (o1 is string)
-            {
-                return !String.Equals((string)o1, (string)o2, StringComparison.InvariantCultureIgnoreCase);
-            }
-            if (o1 is int)
-            {
-                return (int)o1 != (int)o2;
-            }
-            if (o1 is bool)
-            {
-                return (bool)o1 != (bool)o2;
-            }
-            if(o1 is System.Collections.IEnumerable)
-            {
-                var e1 = ((System.Collections.IEnumerable)o1).GetEnumerator();
-                var e2 = ((System.Collections.IEnumerable)o2).GetEnumerator();
-                while(e1.MoveNext())
-                {
-                    if (!e2.MoveNext())
-                    {
-                        return true;
-                    }
-                    if(Differs(e1.Current, e2.Current))
-                    {
-                        return true;
-                    }
-                }
-                if(e2.MoveNext())
-                {
-                    return true;
-                }
-                return false;
-            }
-            if (ReferenceEquals(o1, o2))
-            {
-                return false;
-            }
-            if(o1 == null || o2 == null)
-            {
-                return true;
-            }
-            foreach(var prop in o1.GetType().GetProperties())
-            {
-                try
-                {
-                    if (Differs(prop.GetValue(o1), prop.GetValue(o2)))
-                    {
-                        return true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
-            return false;
-        }
     }
 }

@@ -63,7 +63,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
                 var methodAddressResolver = (IMethodAddressTransformer)serviceProvider.GetService(typeof(IMethodAddressTransformer));
                 if (methodAddressResolver != null)
                 {
-                    address = methodAddressResolver.TransformUriAsync(address, methodInfo);
+                    address = methodAddressResolver.TransformUri(address, methodInfo);
                 }
             }
             return address;
