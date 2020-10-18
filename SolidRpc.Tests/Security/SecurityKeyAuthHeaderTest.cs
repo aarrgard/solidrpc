@@ -20,7 +20,7 @@ namespace SolidRpc.Tests.Security
         /// </summary>
         public SecurityKeyAuthHeaderTest()
         {
-            SecurityKey = new KeyValuePair<string, string>("Authorization", Guid.NewGuid().ToString());
+            SecurityKey = new KeyValuePair<string, string>("Authorization", "Bearer "+ Guid.NewGuid().ToString());
         }
         /// <summary>
         /// 
@@ -120,7 +120,7 @@ namespace SolidRpc.Tests.Security
 
                 var testInterface = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
                 await testInterface.InvokeAsync(o => o.MethodWithClientKeySpecified(), InvocationOptions.Http.AddPreInvokeCallback(req => {
-                    Assert.AreEqual($"Bearer {SecurityKey.Value}", req.Headers.Single(o => o.Name == "Authorization").GetStringValue());
+                    Assert.AreEqual($"{SecurityKey.Value}", req.Headers.Single(o => o.Name == "Authorization").GetStringValue());
                     return Task.CompletedTask;
                 }));
                 try

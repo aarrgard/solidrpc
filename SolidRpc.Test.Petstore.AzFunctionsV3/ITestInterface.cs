@@ -15,7 +15,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
     }
 
     public class TestImplementation : ITestInterface
-
     {
         public Task<string> MyFunc(string arg)
         {

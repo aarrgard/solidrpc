@@ -30,16 +30,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <summary>
         /// Constucts a new instance
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="openApiParser"></param>
-        /// <param name="methodBinderStore"></param>
-        /// <param name="serviceProvider"></param>
-        public SecurityKeyAdvice(
-            ILogger<SecurityKeyAdvice<TObject, TMethod, TAdvice>> logger)
+        public SecurityKeyAdvice()
         {
-            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        private ILogger Logger { get; }
 
         private KeyValuePair<string, string>? SecurityKey { get; set; } 
 
@@ -66,15 +59,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         {
             if(RemoteCall)
             {
-                // Add the security key
-                if(string.Equals(SecurityKey.Value.Key, "authorization", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues($"Bearer {SecurityKey.Value.Value}"));
-                }
-                else
-                {
-                    invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
-                }
+                // add security key
+                invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
             }
             else
             {
@@ -82,10 +68,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 var val = invocation.GetValue<StringValues>($"http_{SecurityKey.Value.Key}".ToLowerInvariant()).ToString();
                 if(val != null)
                 {
-                    if (val.StartsWith("Bearer ", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        val = val.Substring("Bearer ".Length);
-                    }
                     if (val.Equals(SecurityKey.Value.Value))
                     {
                         var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
