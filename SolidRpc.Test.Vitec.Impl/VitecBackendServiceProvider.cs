@@ -21,7 +21,7 @@ namespace SolidRpc.Test.Vitec.Impl
         {
             Frontend = frontend;
             var conf = frontend.GetRequiredService<IConfiguration>();
-            var sc = new ServiceCollection();
+            var sc = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
             sc.AddSingleton(conf);
             var proxyGenerator = frontend.GetRequiredService<ISolidProxyGenerator>();
             typeof(ISolidConfigurationBuilder).GetMethod(nameof(ISolidConfigurationBuilder.SetGenerator))
