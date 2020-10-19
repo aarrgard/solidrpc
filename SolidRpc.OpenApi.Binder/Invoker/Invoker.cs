@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -17,11 +16,11 @@ using System.Threading.Tasks;
 [assembly: SolidRpcService(typeof(IInvoker<>), typeof(Invoker<>), SolidRpcServiceLifetime.Transient)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
-    public class Invoker<T> : IInvoker<T> where T:class
+    public class Invoker<TObj> : IInvoker<TObj> where TObj:class
     {
         private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
         public Invoker(
-            ILogger<Invoker<T>> logger, 
+            ILogger<Invoker<TObj>> logger, 
             Invokers invokers,
             IServiceProvider serviceProvider)
         {
@@ -36,25 +35,25 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return Invokers.MethodBinderStore.GetMethodBinding(mi);
         }
 
-        public IMethodBinding GetMethodBinding(Expression<Action<T>> action)
+        public IMethodBinding GetMethodBinding(Expression<Action<TObj>> action)
         {
             var (mi, _) = GetMethodInfo(action);
             return GetMethodBinding(mi);
         }
 
-        public IMethodBinding GetMethodBinding<TResult>(Expression<Func<T, TResult>> func)
+        public IMethodBinding GetMethodBinding<TResult>(Expression<Func<TObj, TResult>> func)
         {
             var (mi, _) = GetMethodInfo(func);
             return GetMethodBinding(mi);
         }
 
-        public Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true)
+        public Task<Uri> GetUriAsync(Expression<Action<TObj>> action, bool includeQueryString = true)
         {
             var (mi, args) = GetMethodInfo(action);
             return GetUriAsync(mi, args, includeQueryString);
         }
 
-        public Task<Uri> GetUriAsync<TRes>(Expression<Func<T, TRes>> func, bool includeQueryString = true)
+        public Task<Uri> GetUriAsync<TRes>(Expression<Func<TObj, TRes>> func, bool includeQueryString = true)
         {
             var (mi, args) = GetMethodInfo(func);
             return GetUriAsync(mi, args, includeQueryString);
@@ -77,22 +76,19 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return req.CreateUri(includeQueryString);
         }
 
-        public Task InvokeAsync(Expression<Action<T>> action, InvocationOptions invocationOptions)
+        public Task InvokeAsync(Expression<Action<TObj>> action, InvocationOptions invocationOptions)
         {
             var (mi, args) = GetMethodInfo(action);
             return InvokeAsync(mi, args, invocationOptions);
         }
 
-        public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, InvocationOptions invocationOptions)
+        public TResult InvokeAsync<TResult>(Expression<Func<TObj, TResult>> func, InvocationOptions invocationOptions)
         {
             var (mi, args) = GetMethodInfo(func);
-            var res = Invokers.CachedInvokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>)(mi, args, invocationOptions);
+            var mb = Invokers.MethodBinderStore.GetMethodBinding(mi);
+            var svc = ServiceProvider.GetRequiredService<TObj>();
+            var res = Invokers.GetCachedInvoker<TResult>()(mb, svc, mi, args, invocationOptions);
             return (TResult)res;
-        }
-
-        private async Task<TResult> Narrow<TResult>(Task<object> result)
-        {
-            return (TResult)(await result);
         }
 
         protected static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
@@ -111,57 +107,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             throw new Exception("expression should be a method call.");
         }
 
-        public Func<MethodInfo, object[], InvocationOptions, object> CreateInvoker<TResult>(Type t)
-        {
-            if (t.IsTaskType(out Type taskType))
-            {
-                if(taskType == null)
-                {
-                    taskType = typeof(object);
-                }
-                var gmi = typeof(Invoker<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Where(o => o.Name == nameof(Narrow))
-                    .Where(o => o.IsGenericMethod)
-                    .Single();
-                gmi = gmi.MakeGenericMethod(taskType);
-                return (mi, args, opts) =>
-                {
-                    var taskRes = InvokeMethodAsync(mi, args, opts);
-                    var res = gmi.Invoke(this, new object[] { taskRes });
-                    return res;
-                };
-            }
-            return (mi, args, opts) =>
-            {
-                return InvokeMethodAsync(mi, args, opts).Result;
-            };
-        }
-
         public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
         {
-            return InvokeMethodAsync(mi, args.ToArray(), invocationOptions);
-        }
-
-        protected virtual Task<object> InvokeMethodAsync(MethodInfo mi, object[] args, InvocationOptions invocationOptions)
-        {
-            var handler = GetHandler(mi, ref invocationOptions);
-            return handler.InvokeAsync<T>(ServiceProvider, mi, args, invocationOptions);
-        }
-
-        private IHandler GetHandler(MethodInfo mi, ref InvocationOptions invocationOptions)
-        {
-            var transportType = invocationOptions?.TransportType;
-            if (transportType == null)
-            {
-                transportType = GetMethodBinding(mi).Transports
-                    .OrderBy(o => o.InvocationStrategy)
-                    .First().TransportType;
-                invocationOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
-            }
-
-            var handler = Invokers.Handlers.FirstOrDefault(o => o.TransportType == transportType);
-            if (handler == null) throw new Exception($"Transport {transportType} not configured.");
-            return handler;
+            var mb = GetMethodBinding(mi);
+            var target = ServiceProvider.GetRequiredService<TObj>();
+            return Invokers.InvokeMethodAsync(mb, target, mi, args.ToArray(), invocationOptions);
         }
     }
 }

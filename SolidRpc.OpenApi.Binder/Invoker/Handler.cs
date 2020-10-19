@@ -41,12 +41,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public string TransportType => GetTransportType(GetType());
 
-        public virtual Task<object> InvokeAsync<TObj>(IServiceProvider serviceProvider, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
+        public virtual Task<object> InvokeAsync(IMethodBinding methodBinding, object target, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
-            var proxy = (ISolidProxy)ServiceProvider.GetRequiredService<TObj>();
+            var proxy = (ISolidProxy)target;
             return proxy.InvokeAsync(this, mi, args, new Dictionary<string, object>
             {
                 { typeof(IHandler).FullName, this },
+                { typeof(IMethodBinding).FullName, methodBinding },
                 { typeof(InvocationOptions).FullName, invocationOptions }
             });
         }
@@ -62,7 +63,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             var cancellationToken = args.OfType<CancellationToken>().FirstOrDefault();
             await invocationOptions.PreInvokeCallback(httpReq);
-            var httpResp = await InvokeAsync<TResp>(methodBinding, transport, httpReq, invocationOptions, cancellationToken);
+            var httpResp = await InvokeAsync(methodBinding, transport, httpReq, invocationOptions, cancellationToken);
             await invocationOptions.PostInvokeCallback(httpResp);
 
             var resp = methodBinding.ExtractResponse<TResp>(httpResp);
@@ -90,6 +91,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             httpReq.Headers = httpReq.Headers.Union(newCookies).ToList();
         }
 
-        public abstract Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
+        public abstract Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
     }
 }

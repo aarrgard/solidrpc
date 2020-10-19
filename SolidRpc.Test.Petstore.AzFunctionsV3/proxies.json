@@ -138,15 +138,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateSettings"
     },
-    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync",
-        "methods": [
-          "POST"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync"
-    },
     "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessMessageAsync/{arg0}/{arg1}/{arg2}": {
       "matchCondition": {
         "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessMessageAsync/{arg0}/{arg1}/{arg2}",
@@ -227,6 +218,15 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync"
     },
     "front/{path}": {
       "matchCondition": {

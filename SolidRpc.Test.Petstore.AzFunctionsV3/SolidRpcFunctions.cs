@@ -206,11 +206,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_SendTestMessageAync
+    public class Http_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_SendTestMessageAsync
     {
-        [FunctionName("Http_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_SendTestMessageAync")]
+        [FunctionName("Http_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_SendTestMessageAsync")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAync")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

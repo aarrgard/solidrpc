@@ -10,7 +10,6 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using System.Linq;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.Binder.Http;
 using Microsoft.Extensions.Primitives;
 
@@ -40,6 +39,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
         private bool HasImplementation { get; set; }
         private IMethodBinding MethodBinding { get; set; }
+        private IHandler LocalHandler { get; set; }
         private IHandler ProxyHandler { get; set; }
         private ITransport ProxyTransport { get; set; }
         private IHandler InvokerHandler { get; set; }
@@ -51,7 +51,19 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="config"></param>
         public bool Configure(ISolidRpcOpenApiConfig config)
         {
+            //
+            // get binding
+            //
+            MethodBinding = MethodBinderStore.CreateMethodBindings(
+                config.OpenApiSpec,
+                config.InvocationConfiguration.MethodInfo,
+                config.GetTransports()
+            ).First();
+
             HasImplementation = config.InvocationConfiguration.HasImplementation;
+
+            var handlers = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>();
+            LocalHandler = handlers.Where(o => o.TransportType == "Local").FirstOrDefault();
 
             //
             // Determine transport type. If not explititly set use Http
@@ -69,19 +81,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     proxyTransportType = HttpHandler.TransportType;
                 }
             }
-            if (proxyTransportType == LocalHandler.TransportType)
-            {
-                return false;
-            }
-
-            //
-            // get binding
-            //
-            MethodBinding = MethodBinderStore.CreateMethodBindings(
-                config.OpenApiSpec,
-                config.InvocationConfiguration.MethodInfo,
-                config.GetTransports()
-            ).First();
 
             //
             // Get proxy transport + handler
@@ -91,7 +90,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new Exception($"Cannot find the transport for {proxyTransportType} transport in configured method.");
             }
-            ProxyHandler = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>().Where(o => o.TransportType == ProxyTransport.TransportType).FirstOrDefault();
+            ProxyHandler = handlers.Where(o => o.TransportType == ProxyTransport.TransportType).FirstOrDefault();
             if(ProxyHandler == null)
             {
                 throw new Exception($"Cannot find the handler for {proxyTransportType} transport.");
@@ -105,7 +104,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new Exception($"No invocation transport configured");
             }
-            InvokerHandler = ServiceProvider.GetRequiredService<IEnumerable<IHandler>>().Where(o => o.TransportType == InvokerTransport.TransportType).FirstOrDefault();
+            InvokerHandler = handlers.Where(o => o.TransportType == InvokerTransport.TransportType).FirstOrDefault();
             if (InvokerHandler == null)
             {
                 throw new Exception($"Cannot find the handler for {proxyTransportType} transport.");
@@ -122,28 +121,35 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            IHandler handler;
-            if (invocation.Caller is ISolidProxy)
+            IHandler handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName);
+            if(handler == null)
             {
-                handler = ProxyHandler;
+                if (invocation.Caller is ISolidProxy)
+                {
+                    handler = ProxyHandler;
+                }
+                else if (HasImplementation)
+                {
+                    handler = LocalHandler;
+                }
+                else
+                {
+                    handler = InvokerHandler;
+                }
             }
-            else if (HasImplementation)
+            if (HasImplementation && handler.TransportType == LocalHandler.TransportType)
             {
                 return next();
             }
-            else
-            {
-                handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? InvokerHandler;
-            }
-            return InvokeAsync(handler, MethodBinding, ProxyTransport, invocation);
+            return InvokeAsync(handler, MethodBinding, invocation);
         }
 
-        private Task<T> InvokeAsync<T>(IHandler proxyHandler, IMethodBinding methodBinding, ITransport transport, ISolidProxyInvocation<TObject, TMethod, T> invocation)
+        private Task<T> InvokeAsync<T>(IHandler handler, IMethodBinding methodBinding, ISolidProxyInvocation<TObject, TMethod, T> invocation)
         {
             var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName);
             if(invocationOptions == null)
             {
-                invocationOptions = new InvocationOptions(proxyHandler.TransportType, InvocationOptions.MessagePriorityNormal);
+                invocationOptions = new InvocationOptions(handler.TransportType, InvocationOptions.MessagePriorityNormal);
             }
             var httpHeaders = invocation.Keys.Where(o => o.StartsWith("http_", StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (httpHeaders.Any())
@@ -157,8 +163,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     return Task.CompletedTask;
                 });
             }
-
-            return proxyHandler.InvokeAsync<T>(methodBinding, transport, invocation.Arguments, invocationOptions);
+            var transport = methodBinding.Transports.First(o => o.TransportType == handler.TransportType);
+            return handler.InvokeAsync<T>(methodBinding, transport, invocation.Arguments, invocationOptions);
         }
     }
 }

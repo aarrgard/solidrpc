@@ -148,7 +148,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                 .SelectMany(o => o.MethodBindings)
                 .SelectMany(o => o.Transports)
                 .OfType<IQueueTransport>()
-                .Where(o => o.TransportType == "AzTable")
+                .Where(o => o.TransportType == TransportType)
                 .ToList();
         }
 
@@ -322,11 +322,22 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
 
             // message locked and ready - add queue message
-            using (var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            try
             {
-                var invoker = scope.ServiceProvider.GetRequiredService<IInvoker<IAzTableQueue>>();
-                await invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), InvocationOptions.AzQueue);
+                using (var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    var invoker = scope.ServiceProvider.GetRequiredService<IInvoker<IAzTableQueue>>();
+                    await invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), InvocationOptions.AzQueue);
+                }
             }
+            catch(Exception e)
+            {
+                Logger.LogError(e, "Error processing message - flaggin it as error.");
+                
+                nextMessage.Status = TableMessageEntity.StatusError;
+                await cloudTable.ExecuteAsync(TableOperation.Replace(nextMessage), TableRequestOptions, OperationContext, cancellationToken);
+            }
+
 
             // try to dispatch another message
             return true;

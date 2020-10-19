@@ -62,6 +62,10 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
                 transportFound = true;
                 yield return queueTransport;
             }
+            if(config.InvocationConfiguration.HasImplementation)
+            {
+                yield return new LocalTransport(InvocationStrategy.Invoke);
+            }
             if(!transportFound)
             {
                 config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, null, null);

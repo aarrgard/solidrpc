@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidProxy.Core.Proxy;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
@@ -22,14 +23,13 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the method
         /// </summary>
-        /// <typeparam name="TResp"></typeparam>
         /// <param name="methodBinding"></param>
         /// <param name="transport"></param>
         /// <param name="httpReq"></param>
         /// <param name="invocationOptions"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IHttpResponse> InvokeAsync<TResp>(
+        Task<IHttpResponse> InvokeAsync(
             IMethodBinding methodBinding, 
             ITransport transport, 
             IHttpRequest httpReq, 
@@ -40,13 +40,15 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the supplied method
         /// </summary>
-        /// <param name="serviceProvider"></param>
+        /// <param name="methodBinding"></param>
+        /// <param name="target"></param>
         /// <param name="mi"></param>
         /// <param name="args"></param>
         /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        Task<object> InvokeAsync<TObj>(
-            IServiceProvider serviceProvider,
+        Task<object> InvokeAsync(
+            IMethodBinding methodBinding,
+            object target,
             MethodInfo mi,
             object[] args,
             InvocationOptions invocationOptions);

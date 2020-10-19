@@ -210,11 +210,13 @@ namespace SolidRpc.OpenApi.Binder
                 .Where(o => o.MethodInfo == mi).FirstOrDefault();
             if(invocConfig == null)
             {
-                throw new ArgumentException("No proxy configuration exists for method:"+mi.Name);
+                return new IMethodBinding[0];
+                //throw new ArgumentException("No proxy configuration exists for method:"+mi.Name);
             }
             if(!invocConfig.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
             {
-                throw new ArgumentException("No solid rpc open api configuration exists for method:"+mi.Name);
+                return new IMethodBinding[0];
+                //throw new ArgumentException("No solid rpc open api configuration exists for method:"+mi.Name);
             }
             var apiConfig = invocConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             var config = apiConfig.OpenApiSpec;

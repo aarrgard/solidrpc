@@ -137,7 +137,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             return QueueHandler.UpdateSettings(settings, cancellationToken);
         }
 
-        public async Task SendTestMessageAync(Stream payload, int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
+        public async Task SendTestMessageAsync(Stream payload, int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
         {
             var ms = new MemoryStream();
             await payload.CopyToAsync(ms);

@@ -33,7 +33,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
-        public override async Task<IHttpResponse> InvokeAsync<TResp>(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
             if (Logger.IsEnabled(LogLevel.Trace))

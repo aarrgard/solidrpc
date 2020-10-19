@@ -1,5 +1,4 @@
 using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Model;
 using System;
 using System.Reflection;
 

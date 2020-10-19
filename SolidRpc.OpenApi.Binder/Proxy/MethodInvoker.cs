@@ -223,7 +223,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             // add invocation values
             var invocationValues = new Dictionary<string, object>();
-            invocationValues[typeof(IHandler).FullName] = invocationSource;
             invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invocationSource.TransportType, InvocationOptions.MessagePriorityNormal);
             invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
 

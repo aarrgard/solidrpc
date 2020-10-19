@@ -3,7 +3,7 @@
 namespace SolidRpc.Abstractions.OpenApi.Transport
 {
     /// <summary>
-    /// Represents the settings for the queue transport
+    /// Represents the settings for the http transport
     /// </summary>
     public interface IHttpTransport : ITransport
     {
