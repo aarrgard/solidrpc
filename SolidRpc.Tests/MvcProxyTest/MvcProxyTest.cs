@@ -428,9 +428,9 @@ namespace SolidRpc.Tests.MvcProxyTest
                 return true;
             });
 
-            sc.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiInitAdvice<,,>));
             sc.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
             return sp.GetRequiredService<T>();

@@ -477,8 +477,8 @@ namespace SolidRpc.Tests
                     conf.OpenApiSpec = config;
                     conf.SetMethodAddressTransformer(GetBaseUrl);
 
-                    clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
-                    clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiAdvice<,,>));
+                    clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiInitAdvice<,,>));
+                    clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiInitAdvice<,,>));
                     clientServices.GetSolidConfigurationBuilder().AddAdvice(typeof(LoggingAdvice<,,>), o => o.MethodInfo.DeclaringType == typeof(T));
                 });
             }

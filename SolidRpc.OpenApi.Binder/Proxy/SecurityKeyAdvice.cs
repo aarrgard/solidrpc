@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Proxy;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Collections.Generic;
-using System.Threading;
 using Microsoft.Extensions.Primitives;
-using SolidRpc.OpenApi.Binder.Invoker;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Services;
-using System.Security.Principal;
-using System.Security.Claims;
+using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.OpenApi.Binder.Invoker;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -20,12 +16,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SecurityKeyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        /// <summary>
-        /// The security advice should run befor the invocations
-        /// </summary>
-        public static IEnumerable<Type> BeforeAdvices = new Type[] {
-            typeof(SecurityPathClaimAdvice<,,>)
-        };
+        public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>) };
+        public static IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
 
         /// <summary>
         /// Constucts a new instance
@@ -43,11 +35,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public bool Configure(ISecurityKeyConfig config)
         {
             SecurityKey = config.SecurityKey;
-            RemoteCall = !config.InvocationConfiguration.HasImplementation;
             return SecurityKey != null;
         }
-
-        private bool RemoteCall { get; set; }
 
         /// <summary>
         /// Handles  the invocation
@@ -57,7 +46,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            if(RemoteCall)
+            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? throw new Exception("No handler assigned to the invocation");
+            if(handler.TransportType != LocalHandler.TransportType)
             {
                 // add security key
                 invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));

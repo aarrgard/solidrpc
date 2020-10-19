@@ -35,7 +35,7 @@ namespace SolidRpc.Tests.Security
             sc.AddSolidRpcSecurityFrontend();
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((_, conf) => _.ConfigureOptions(conf));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
             var httpInvoker = sp.GetRequiredService<IInvoker<IMicrosoftRemote>>();
@@ -67,7 +67,7 @@ namespace SolidRpc.Tests.Security
             sc.AddSolidRpcSecurityFrontend();
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((_, conf) => _.ConfigureOptions(conf));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
 
@@ -94,7 +94,7 @@ namespace SolidRpc.Tests.Security
             sc.AddSolidRpcSecurityFrontend();
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendGoogle((_, conf) => _.ConfigureOptions(conf));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
 
@@ -126,7 +126,7 @@ namespace SolidRpc.Tests.Security
             sc.AddSolidRpcSecurityFrontend();
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendFacebook((_, conf) => _.ConfigureOptions(conf));
-            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+            sc.GetSolidConfigurationBuilder().AddAdvice(typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             var sp = sc.BuildServiceProvider();
 

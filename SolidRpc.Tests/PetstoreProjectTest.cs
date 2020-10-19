@@ -136,7 +136,7 @@ namespace SolidRpc.Tests
             services.AddHttpClient();
             services.GetSolidConfigurationBuilder()
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
-                .AddAdvice(typeof(SolidRpcOpenApiAdvice<,,>));
+                .AddAdvice(typeof(SolidRpcOpenApiInitAdvice<,,>));
             services.AddSolidRpcSingletonServices();
             services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), (c) =>
             {
@@ -182,6 +182,8 @@ namespace SolidRpc.Tests
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)
                 .ConfigureAdvice<ISolidRpcOpenApiConfig>()
                 .SetMethodAddressTransformer(GetBaseUrl);
+
+            var cb = sc.GetSolidConfigurationBuilder();
 
             var petService = sc.BuildServiceProvider().GetRequiredService<IPet>();
             Assert.AreEqual(4711, (await petService.GetPetById(4711)).Id);

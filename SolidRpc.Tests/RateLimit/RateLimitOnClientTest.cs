@@ -64,7 +64,7 @@ namespace SolidRpc.Tests.RateLimit
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             clientServices.GetSolidConfigurationBuilder()
-                .AddAdviceDependency(typeof(SolidRpcRateLimitAdvice<,,>), typeof(SolidRpcOpenApiAdvice<,,>));
+                .AddAdviceDependency(typeof(SolidRpcRateLimitAdvice<,,>), typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             base.ConfigureClientServices(clientServices, baseAddress);
             clientServices.AddSolidRpcRateLimit();

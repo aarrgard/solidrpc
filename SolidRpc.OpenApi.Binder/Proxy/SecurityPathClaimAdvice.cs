@@ -44,14 +44,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SecurityPathClaimAdvice<TObject, TMethod, TAdvice> : SecurityPathClaimAdvice, ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        private static ConcurrentDictionary<string, Regex> PathMatcher = new ConcurrentDictionary<string, Regex>();
+        public IEnumerable<Type> AfterAdvices = new[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
+        public IEnumerable<Type> BeforeAdvices = new[] { typeof(SolidRpcOpenApiInvocAdvice<,,>) };
 
-        /// <summary>
-        /// The security advice should run befor the invocations
-        /// </summary>
-        public static IEnumerable<Type> BeforeAdvices = new Type[] {
-            typeof(SolidRpcOpenApiAdvice<,,>),
-        };
+        private static ConcurrentDictionary<string, Regex> PathMatcher = new ConcurrentDictionary<string, Regex>();
 
         /// <summary>
         /// Constucts a new instance
