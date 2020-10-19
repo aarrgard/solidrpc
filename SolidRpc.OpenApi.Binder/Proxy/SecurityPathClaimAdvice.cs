@@ -44,8 +44,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SecurityPathClaimAdvice<TObject, TMethod, TAdvice> : SecurityPathClaimAdvice, ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        public IEnumerable<Type> AfterAdvices = new[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
-        public IEnumerable<Type> BeforeAdvices = new[] { typeof(SolidRpcOpenApiInvocAdvice<,,>) };
+        public static IEnumerable<Type> AfterAdvices = new[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
+        public static IEnumerable<Type> BeforeAdvices = new[] { typeof(SolidRpcOpenApiInvocAdvice<,,>) };
 
         private static ConcurrentDictionary<string, Regex> PathMatcher = new ConcurrentDictionary<string, Regex>();
 

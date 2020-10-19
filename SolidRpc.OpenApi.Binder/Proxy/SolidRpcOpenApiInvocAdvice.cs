@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using System.Linq;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.OpenApi.Binder.Http;
+using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
+using SolidRpc.OpenApi.Binder.Http;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -20,6 +17,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SolidRpcOpenApiInvocAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
+        public static IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
+
         /// <summary>
         /// Constucts a new instance
         /// </summary>
@@ -71,6 +70,22 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
             else
             {
+                //
+                // add http headers
+                //
+                var httpHeaders = invocation.Keys.Where(o => o.StartsWith("http_", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                if (httpHeaders.Any())
+                {
+                    invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
+                    {
+                        var data = httpHeaders
+                            .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(5), Value = o2 }))
+                            .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value)).ToList();
+                        req.Headers = req.Headers.Union(data).ToList();
+                        return Task.CompletedTask;
+                    });
+                }
+
                 return handler.InvokeAsync<TAdvice>(MethodBinding, transport, invocation.Arguments, invocationOptions);
             }
 

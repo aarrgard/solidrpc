@@ -20,6 +20,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SolidRpcOpenApiInitAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
+        public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SolidRpcOpenApiInvocAdvice<,,>) };
+
         /// <summary>
         /// Constucts a new instance
         /// </summary>
@@ -138,18 +140,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             if (invocationOptions == null)
             {
                 invocationOptions = new InvocationOptions(handler.TransportType, InvocationOptions.MessagePriorityNormal);
-            }
-            var httpHeaders = invocation.Keys.Where(o => o.StartsWith("http_", StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (httpHeaders.Any())
-            {
-                invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
-                {
-                    var data = httpHeaders
-                        .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(5), Value = o2 }))
-                        .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value)).ToList();
-                    req.Headers = req.Headers.Union(data).ToList();
-                    return Task.CompletedTask;
-                });
             }
 
             //
