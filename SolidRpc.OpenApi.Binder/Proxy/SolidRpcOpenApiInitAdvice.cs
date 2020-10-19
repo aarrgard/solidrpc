@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using System.Linq;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.OpenApi.Binder.Http;
-using Microsoft.Extensions.Primitives;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -56,7 +52,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
                 config.GetTransports()
-            ).First();
+            ).FirstOrDefault();
+            if(MethodBinding == null)
+            {
+                return false;
+            }
+                 
 
             HasImplementation = config.InvocationConfiguration.HasImplementation;
 

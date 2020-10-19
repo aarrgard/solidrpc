@@ -47,7 +47,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return proxy.InvokeAsync(this, mi, args, new Dictionary<string, object>
             {
                 { typeof(IHandler).FullName, this },
-                { typeof(IMethodBinding).FullName, methodBinding },
                 { typeof(InvocationOptions).FullName, invocationOptions }
             });
         }

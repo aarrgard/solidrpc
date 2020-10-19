@@ -22,7 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 if (conf.Methods.First().Name == nameof(IAzTableQueue.ProcessMessageAsync))
                 {
-                    conf.SetHttpTransport();
+                    conf.ProxyTransportType = AzQueueHandler.TransportType;
+                    conf.SetHttpTransport(InvocationStrategy.Forward);
                     conf.SetQueueTransport<AzQueueHandler>(InvocationStrategy.Invoke, connectionName);
                     conf.SetQueueTransportInboundHandler(inboundHandler);
                 }

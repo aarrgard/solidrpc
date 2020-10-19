@@ -47,7 +47,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
                 config.GetTransports()
-            ).First();
+            ).FirstOrDefault();
+            if (MethodBinding == null)
+            {
+                return false;
+            }
 
             return true;
         }

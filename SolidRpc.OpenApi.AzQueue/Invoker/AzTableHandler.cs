@@ -130,15 +130,18 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             IServiceProvider serviceProvider, 
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
-            ISolidRpcApplication solidRpcApplication) 
+            ISolidRpcApplication solidRpcApplication,
+            IServiceScopeFactory serviceScopeFactory) 
             : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
         {
             CloudQueueStore = cloudQueueStore;
             Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
             PendingDispatches = new ConcurrentDictionary<string, RunningDispatch>();
+            ServiceScopeFactory = serviceScopeFactory;
         }
         private ConcurrentDictionary<string, SemaphoreSlim> Semaphores { get; }
         private IDictionary<string, RunningDispatch> PendingDispatches { get; }
+        private IServiceScopeFactory ServiceScopeFactory { get; }
         private ICloudQueueStore CloudQueueStore { get; }
 
         public IEnumerable<IQueueTransport> GetTableTransports()
@@ -189,22 +192,22 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
         {
             //
             // Get/create pending dispatch
+            // if we create a new dispatch we have to wait for it - otherwise we can return a completed task.
             //
-            var key = $"{connectionName}:{queueName}";
-            RunningDispatch runningDispatch;
+            Task returnTask = Task.CompletedTask;
+            var key = $"{connectionName}:{queueName}:{scheduledScan}";
             lock (PendingDispatches)
             {
+                RunningDispatch runningDispatch;
                 if (!PendingDispatches.TryGetValue(key, out runningDispatch))
                 {
                     PendingDispatches[key] = runningDispatch = new RunningDispatch(this, key, connectionName, queueName);
-                }
-                if (scheduledScan)
-                {
-                    runningDispatch.ScheduledScan = true;
+                    runningDispatch.ScheduledScan = scheduledScan;
+                    returnTask = runningDispatch.Task;
                 }
             }
 
-            return runningDispatch.Task;
+            return returnTask;
         }
 
         private (IEnumerable<TableMessageEntity>, AzTableQueueSettings) GetSettings(IEnumerable<TableMessageEntity> results)
@@ -322,22 +325,26 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
 
             // message locked and ready - add queue message
-            try
+            using (var scope = ServiceScopeFactory.CreateScope())
             {
-                using (var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                try
                 {
-                    var invoker = scope.ServiceProvider.GetRequiredService<IInvoker<IAzTableQueue>>();
-                    await invoker.InvokeAsync(o => o.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken), InvocationOptions.AzQueue);
+                    var azTableQueue = scope.ServiceProvider.GetRequiredService<IAzTableQueue>();
+                    await azTableQueue.ProcessMessageAsync(connectionName, nextMessage.PartitionKey, nextMessage.RowKey, cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e, "Error processing message - flaggin it as error.");
+
+                    var fetchResult = await cloudTable.ExecuteAsync(TableOperation.Retrieve<TableMessageEntity>(nextMessage.PartitionKey, nextMessage.RowKey), TableRequestOptions, OperationContext, cancellationToken);
+                    var oldMessage = (TableMessageEntity)fetchResult.Result;
+                    if (oldMessage.Status == TableMessageEntity.StatusDispatched)
+                    {
+                        oldMessage.Status = TableMessageEntity.StatusError;
+                        await cloudTable.ExecuteAsync(TableOperation.Replace(oldMessage), TableRequestOptions, OperationContext, cancellationToken);
+                    }
                 }
             }
-            catch(Exception e)
-            {
-                Logger.LogError(e, "Error processing message - flaggin it as error.");
-                
-                nextMessage.Status = TableMessageEntity.StatusError;
-                await cloudTable.ExecuteAsync(TableOperation.Replace(nextMessage), TableRequestOptions, OperationContext, cancellationToken);
-            }
-
 
             // try to dispatch another message
             return true;

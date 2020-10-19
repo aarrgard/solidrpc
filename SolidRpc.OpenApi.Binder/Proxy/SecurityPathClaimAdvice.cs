@@ -13,6 +13,8 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Security.Principal;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -56,12 +58,27 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="openApiParser"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="serviceProvider"></param>
-        public SecurityPathClaimAdvice()
+        public SecurityPathClaimAdvice(IMethodBinderStore methodBinderStore)
         {
+            MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
         }
+
+        private IMethodBinderStore MethodBinderStore { get; }
+        public IMethodBinding MethodBinding { get; private set; }
+
 
         public bool Configure(ISecurityPathClaimConfig config)
         {
+            //
+            // get binding
+            //
+            var apiConfig = config.GetAdviceConfig<ISolidRpcOpenApiConfig>();
+            MethodBinding = MethodBinderStore.CreateMethodBindings(
+                apiConfig.OpenApiSpec,
+                apiConfig.InvocationConfiguration.MethodInfo,
+                apiConfig.GetTransports()
+            ).First();
+
             return true;
         }
 
@@ -73,6 +90,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
+            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? throw new Exception("No handler assigned to invocation");
             if (invocation.Caller is ISolidProxy)
             {
                 return await next();
@@ -92,13 +110,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new UnauthorizedException("No principal");
             }
-            var methodBinding = invocation.GetValue<IMethodBinding>(typeof(IMethodBinding).FullName);
-            if(methodBinding == null)
-            {
-                throw new UnauthorizedException("No method binding");
-            }
 
-            var localPath = methodBinding.LocalPath;
+            var localPath = MethodBinding.LocalPath;
             var match = prin.Claims.Where(o => o.Type == AllowedPathClaim)
                 .Select(o => PathMatcher.GetOrAdd(o.Value, CreatePathMatcher))
                 .Any(o => o.Match(localPath).Success);

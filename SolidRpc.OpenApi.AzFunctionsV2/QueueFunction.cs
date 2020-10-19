@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Queue.Protocol;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
-using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
-using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +12,7 @@ using System.Threading.Tasks;
 namespace SolidRpc.OpenApi.AzFunctions
 {
     /// <summary>
-    /// Handles timer triggers
+    /// Handles queue triggers
     /// </summary>
     public static class QueueFunction
     {

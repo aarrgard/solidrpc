@@ -103,7 +103,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
                 await cloudTable.ExecuteAsync(TableOperation.Replace(row), TableRequestOptions, OperationContext, cancellationToken);
             }
 
-            QueueHandler.DispatchMessageAsync(connectionName, row.QueueName, false, cancellationToken);
+            await QueueHandler.DispatchMessageAsync(connectionName, row.QueueName, false, cancellationToken);
         }
 
         public async Task<IEnumerable<AzTableQueueSettings>> GetSettingsAsync(CancellationToken cancellationToken = default)

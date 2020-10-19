@@ -273,7 +273,7 @@
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.QueueFunction">
             <summary>
-            Handles timer triggers
+            Handles queue triggers
             </summary>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.QueueFunction.Run(System.String,System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">

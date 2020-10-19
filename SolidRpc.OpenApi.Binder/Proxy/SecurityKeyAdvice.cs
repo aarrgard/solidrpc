@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.OpenApi.Binder.Invoker;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -25,8 +23,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public SecurityKeyAdvice()
         {
         }
-
-        private KeyValuePair<string, string>? SecurityKey { get; set; } 
+        private KeyValuePair<string, string>? SecurityKey { get; set; }
 
         /// <summary>
         /// Configure the proxy
@@ -46,25 +43,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? throw new Exception("No handler assigned to the invocation");
-            if(handler.TransportType != LocalHandler.TransportType)
+            // Check the security key - if supplied
+            var val = invocation.GetValue<StringValues>($"http_{SecurityKey.Value.Key}").ToString();
+            if (val != null)
             {
-                // add security key
-                invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
-            }
-            else
-            {
-                // Check the security key
-                var val = invocation.GetValue<StringValues>($"http_{SecurityKey.Value.Key}".ToLowerInvariant()).ToString();
-                if(val != null)
+                if (val.Equals(SecurityKey.Value.Value))
                 {
-                    if (val.Equals(SecurityKey.Value.Value))
-                    {
-                        var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-                        auth.CurrentPrincipal = SecurityPathClaimAdvice.AdminPrincipal;
-                    }
+                    var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
+                    auth.CurrentPrincipal = SecurityPathClaimAdvice.AdminPrincipal;
                 }
             }
+
+            // add security key(if not set)
+            invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
+
             return await next();
         }
     }
