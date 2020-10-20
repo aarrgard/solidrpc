@@ -470,8 +470,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureMethod(mi);
 
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-            SetSecurityKey(openApiProxyConfig, sc.GetSolidRpcService<IConfiguration>(false));
-            SetBaseUrl(openApiProxyConfig, sc.GetSolidRpcService<IConfiguration>(false));
+            sc.SetSolidRpcSecurityKeyFromConfig(openApiProxyConfig);
+            sc.SetSolidRpcBaseUrlFromConfig(openApiProxyConfig);
             var enabled = configurator?.Invoke(openApiProxyConfig) ?? true;
             if(openApiProxyConfig.Enabled != mc.Enabled)
             {
@@ -481,8 +481,14 @@ namespace Microsoft.Extensions.DependencyInjection
             return openApiProxyConfig;
         }
 
-        private static void SetSecurityKey(ISolidRpcOpenApiConfig openApiProxyConfig, IConfiguration configuration)
+        /// <summary>
+        /// Sets the security key in supplied proxy config by getting the values from the configuration
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="openApiProxyConfig"></param>
+        public static void SetSolidRpcSecurityKeyFromConfig(this IServiceCollection sc, ISolidRpcOpenApiConfig openApiProxyConfig)
         {
+            var configuration = sc.GetSolidRpcService<IConfiguration>(false);
             if (configuration == null) return;
             var method = openApiProxyConfig.Methods.Single();
             var sKey = "SecurityKey";
@@ -498,8 +504,13 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        private static void SetBaseUrl(ISolidRpcOpenApiConfig openApiProxyConfig, IConfiguration configuration)
+        /// Sets the base url in supplied proxy config by getting the values from the configuration
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="openApiProxyConfig"></param>
+        public static void SetSolidRpcBaseUrlFromConfig(this IServiceCollection sc, ISolidRpcOpenApiConfig openApiProxyConfig)
         {
+            var configuration = sc.GetSolidRpcService<IConfiguration>(false);
             if (configuration == null) return;
             var method = openApiProxyConfig.Methods.Single();
             var sKey = "BaseUrl";
@@ -519,6 +530,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             }
         }
+
+        public static void SetSolidRpcBaseUrlInConfig<T>(this IServiceCollection sc, Uri baseUri)
+        {
+            var cb = sc.GetConfigurationBuilder();
+            cb.Add(new PropertiesConfigurationSource() { { $"{typeof(T).FullName.Replace(".", ":")}:BaseUrl", baseUri.ToString() } });
+            sc.BuildConfiguration();
+        }
+
 
         private static IEnumerable<string> CreateConfigKeys(MethodInfo method, string sKey)
         {
@@ -542,8 +561,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="ctor"></param>
         /// <param name="createSource"></param>
         /// <returns></returns>
-        public static IConfigurationBuilder GetConfigurationBuilder(this IServiceCollection services, Func<IConfigurationBuilder> ctor, Func<IConfiguration, IConfigurationSource> createSource)
+        public static IConfigurationBuilder GetConfigurationBuilder(this IServiceCollection services, Func<IConfigurationBuilder> ctor = null, Func<IConfiguration, IConfigurationSource> createSource = null)
         {
+            if (ctor == null) ctor = CreateConfigurationBuilder;
+            if (createSource == null) createSource = CreateConfigurationSource;
             //
             // find configuration builder
             //
@@ -571,14 +592,25 @@ namespace Microsoft.Extensions.DependencyInjection
             return cb;
         }
 
+        private static IConfigurationSource CreateConfigurationSource(IConfiguration arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static IConfigurationBuilder CreateConfigurationBuilder()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Returns the configuration builder
         /// </summary>
         /// <param name="services"></param>
         /// <param name="ctor"></param>
         /// <returns></returns>
-        public static IConfiguration BuildConfiguration(this IServiceCollection services, Func<IConfigurationBuilder> ctor)
+        public static IConfiguration BuildConfiguration(this IServiceCollection services, Func<IConfigurationBuilder> ctor = null)
         {
+            if (ctor == null) ctor = CreateConfigurationBuilder;
             var configuration = (IConfiguration)services
                 .Where(o => typeof(IConfiguration).IsAssignableFrom(o.ServiceType))
                 .Select(o => o.ImplementationInstance).FirstOrDefault();

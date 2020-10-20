@@ -102,9 +102,30 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         {
             target.Method = new HttpMethod(source.Method);
             target.RequestUri = source.CreateUri();
-            source.Headers.ToList().ForEach(o => target.Headers.Add(o.Name, o.GetStringValue()));
+            source.Headers
+                .Where(o => !IsContentHeader(o.Name))
+                .ToList()
+                .ForEach(o => target.Headers.Add(o.Name, o.GetStringValue()));
 
             target.Content = CreateContent(source.ContentType, source.BodyData);
+        }
+
+        private static bool IsContentHeader(string name)
+        {
+            switch(name.ToLower())
+            {
+                case "content-type":
+                case "content-length":
+                case "content-disposition":
+                case "content-encoding":
+                case "content-range":
+                case "content-location":
+                case "content-md5":
+                case "lastmodified":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private static HttpContent CreateContent(string contentType, IEnumerable<IHttpRequestData> bodyData)

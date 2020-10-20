@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
@@ -9,6 +8,12 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
+using System.Linq;
+using SolidRpc.Abstractions.Serialization;
+using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.Abstractions.OpenApi.Http;
 
 namespace SolidRpc.Tests.Invoker
 {
@@ -17,6 +22,7 @@ namespace SolidRpc.Tests.Invoker
     /// </summary>
     public class HttpInvokerTest3 : WebHostTest
     {
+        public class ComplexType { }
 
         /// <summary>
         /// 
@@ -28,7 +34,7 @@ namespace SolidRpc.Tests.Invoker
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task DoXAsync(CancellationToken cancellation = default(CancellationToken));
+            Task DoXAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -41,7 +47,7 @@ namespace SolidRpc.Tests.Invoker
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task DoYAsync(CancellationToken cancellation = default(CancellationToken));
+            Task DoYAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -67,9 +73,11 @@ namespace SolidRpc.Tests.Invoker
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task DoXAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task DoXAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken))
             {
-                return Back.DoYAsync(cancellation);
+                var caller = SolidProxyInvocationImplAdvice.CurrentInvocation.Caller.GetType().Name;
+                Assert.IsTrue(new[] { "ITestInterfaceFrontProxy", "LocalHandler" }.Contains(caller));
+                return Back.DoYAsync(ct, cancellation);
             }
         }
 
@@ -78,7 +86,7 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementationBack : ITestInterfaceBack
         {
-            public Task DoYAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task DoYAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken))
             {
                 var caller = SolidProxyInvocationImplAdvice.CurrentInvocation.Caller.GetType().Name;
                 Assert.AreEqual("HttpHandler", caller);
@@ -101,18 +109,24 @@ namespace SolidRpc.Tests.Invoker
 
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
-
-            var openApiSpec = clientServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterfaceFront)).WriteAsJsonString();
+            //
+            // front api
+            //
+            var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
+                .CreateSpecification(typeof(ITestInterfaceFront))
+                .WriteAsJsonString();
             clientServices.AddSolidRpcBindings(typeof(ITestInterfaceFront), typeof(TestImplementationFront), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
                 return true;
             });
 
-
+            //
+            // backend api
+            //
+            clientServices.SetSolidRpcBaseUrlInConfig<ITestInterfaceBack>(baseAddress);
             openApiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterfaceBack))
-                .SetBaseAddress(baseAddress)
                 .WriteAsJsonString();
             clientServices.AddSolidRpcBindings(typeof(ITestInterfaceBack), null, conf =>
             {
@@ -139,7 +153,42 @@ namespace SolidRpc.Tests.Invoker
                 await ctx.StartAsync();
                 var binders = ctx.ClientServiceProvider.GetRequiredService<IMethodBinderStore>().MethodBinders;
                 var front = ctx.ClientServiceProvider.GetRequiredService<ITestInterfaceFront>();
-                await front.DoXAsync();
+                await front.DoXAsync(new ComplexType());
+
+                var frontInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterfaceFront>>();
+                await frontInvoker.InvokeAsync(o => o.DoXAsync(new ComplexType(), CancellationToken.None), InvocationOptions.Local);
+
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestInvokeFromSerializedMessage()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var sp = ctx.ClientServiceProvider;
+                var serializerFactory = sp.GetRequiredService<ISerializerFactory>();
+                var methodInvoker = sp.GetRequiredService<IMethodInvoker>();
+                var memoryQueueHandler = sp.GetRequiredService<MemoryQueueHandler>();
+                
+                var message = @"{""Method"":""POST"",""Uri"":""https://localhost/SolidRpc/Tests/Invoker/HttpInvokerTest3/ITestInterfaceBack/DoYAsync"",""Headers"":{""Content-Type"":[""application/json; charset=utf-8""]},""Body"":""e30=""}";
+
+                HttpRequest httpRequest;
+                serializerFactory.DeserializeFromString(message, out httpRequest);
+
+                var request = new SolidHttpRequest();
+                await request.CopyFromAsync(httpRequest);
+
+                var reqMsg = new System.Net.Http.HttpRequestMessage();
+                request.CopyTo(reqMsg);
+
+                //var resp = await methodInvoker.InvokeAsync(sp, memoryQueueHandler, request);
+
             }
         }
 

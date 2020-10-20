@@ -5,7 +5,6 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Concurrent;
@@ -58,7 +57,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             var httpReq = new SolidHttpRequest();
             await methodBinding.BindArgumentsAsync(httpReq, args, transport.OperationAddress);
-            //AddTargetInstance(methodBinding, httpReq);
 
             var cancellationToken = args.OfType<CancellationToken>().FirstOrDefault();
             await invocationOptions.PreInvokeCallback(httpReq);
@@ -67,27 +65,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             var resp = methodBinding.ExtractResponse<TResp>(httpResp);
             return resp;
-        }
-
-        protected void AddTargetInstance(SolidRpcHostInstance targetInstance, IHttpRequest httpReq)
-        {
-            if (targetInstance == null)
-            {
-                return;
-            }
-
-            var newCookies = EmptyCookieList;
-
-            // add the cookies if set
-            if (targetInstance.HttpCookies != null)
-            {
-                newCookies = targetInstance.HttpCookies.Select(o => new SolidHttpRequestDataString("text/plain", "Cookie", $"{o.Key}={o.Value}"));
-            }
-
-            // add the "x-solidrpchosttarget"
-            newCookies = newCookies.Union(new[] { new SolidHttpRequestDataString("text/plain", "X-SolidRpcTargetHost", targetInstance.HostId.ToString()) });
-
-            httpReq.Headers = httpReq.Headers.Union(newCookies).ToList();
         }
 
         public abstract Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);

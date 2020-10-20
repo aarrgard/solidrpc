@@ -26,7 +26,6 @@ namespace SolidRpc.Tests.Invoker
         public QueueInvokerTest()
         {
             SecKey = Guid.NewGuid();
-            //SecKey = Guid.Parse("53ca29a5-1b3c-40eb-ba85-23734fbaefd0");
         }
 
         /// <summary>
@@ -59,6 +58,10 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            /// <summary>
+            /// Constructs a new instance
+            /// </summary>
+            /// <param name="logger"></param>
             public TestImplementation(ILogger<TestImplementation> logger)
             {
                 Logger = logger;
@@ -119,7 +122,6 @@ namespace SolidRpc.Tests.Invoker
             });
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
-                .SetBaseAddress(baseAddress)
                 .WriteAsJsonString();
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
@@ -190,8 +192,18 @@ namespace SolidRpc.Tests.Invoker
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
 
                 await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
-                
+
                 Assert.AreEqual(1, _doYInvocations);
+
+
+                Abstractions.OpenApi.Http.IHttpRequest invocation;
+                var frontInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                await frontInvoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = "test" }, CancellationToken.None), InvocationOptions.MemoryQueue.AddPreInvokeCallback(req =>
+                {
+                    invocation = req;
+                    return Task.CompletedTask;
+                }));
+
             }
         }
     }
