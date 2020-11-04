@@ -16,7 +16,7 @@
         "tags": [
           "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
         ],
-        "description": "",
+        "description": "A test method",
         "operationId": "DoXAsync",
         "produces": [
           "application/json"
@@ -55,7 +55,7 @@
   "tags": [
     {
       "name": "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface",
-      "description": ""
+      "description": "A test interface"
     }
   ]
 }

@@ -272,6 +272,7 @@
             <param name="methodBinderStore"></param>
             <param name="codeNamespaceGenerator"></param>
             <param name="typescriptGenerator"></param>
+            <param name="invoker"></param>
             <param name="serviceProvider"></param>
         </member>
         <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.CreateNpm(System.String,System.Threading.CancellationToken)">
