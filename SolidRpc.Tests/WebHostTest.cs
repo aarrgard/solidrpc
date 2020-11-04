@@ -45,6 +45,11 @@ namespace SolidRpc.Tests
             }
         }
 
+        /// <summary>
+        /// Returns the specification folder
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
         protected virtual DirectoryInfo GetSpecFolder(string folderName)
         {
             throw new NotImplementedException();
@@ -74,6 +79,10 @@ namespace SolidRpc.Tests
             /// </summary>
             public override IServiceProvider ServerServiceProvider => WebHost.Services;
 
+            /// <summary>
+            /// Configures the client services
+            /// </summary>
+            /// <param name="clientServices"></param>
             public override void ConfigureClientServices(IServiceCollection clientServices)
             {
                 base.ConfigureClientServices(clientServices);

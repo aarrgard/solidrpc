@@ -127,7 +127,21 @@
             <param name="sc"></param>
             <param name="openApiProxyConfig"></param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)" -->
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the base url in supplied proxy config by getting the values from the configuration
+            </summary>
+            <param name="sc"></param>
+            <param name="openApiProxyConfig"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlInConfig``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Uri)">
+            <summary>
+            Adds the base url of the service to the configuration
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sc"></param>
+            <param name="baseUri"></param>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetConfigurationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder},System.Func{Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfigurationSource})">
             <summary>
             Returns the configuration builder

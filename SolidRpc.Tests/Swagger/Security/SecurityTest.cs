@@ -15,8 +15,16 @@ namespace SolidRpc.Tests.Swagger.Binder
     /// </summary>
     public class SecurityTest : TestBase
     {
+        /// <summary>
+        /// A test interface
+        /// </summary>
         public interface ITestInterface
         {
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             Task<string> DoXAsync(CancellationToken cancellationToken);
         }
 

@@ -16,7 +16,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SecurityOAuth2Advice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
+        /// <summary>
+        /// The advices that must run after this advice
+        /// </summary>
         public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>) };
+
+        /// <summary>
+        /// The advices that must run before this advice
+        /// </summary>
         public static IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
 
         /// <summary>

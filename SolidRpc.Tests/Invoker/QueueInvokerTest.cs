@@ -23,6 +23,9 @@ namespace SolidRpc.Tests.Invoker
     {
         private static int _doYInvocations = 0;
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
         public QueueInvokerTest()
         {
             SecKey = Guid.NewGuid();
@@ -132,6 +135,9 @@ namespace SolidRpc.Tests.Invoker
             });
         }
 
+        /// <summary>
+        /// The security key
+        /// </summary>
         public Guid SecKey { get; }
 
         /// <summary>

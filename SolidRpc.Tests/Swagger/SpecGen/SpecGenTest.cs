@@ -91,6 +91,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             return dir;
         }
 
+        /// <summary>
+        /// Runs the test function in a hosting context
+        /// </summary>
+        /// <param name="testFunc"></param>
+        /// <returns></returns>
         public async Task RunTestInContext(Func<TestHostContext, Task> testFunc)
         {
             using (var ctx = CreateKestrelHostContext())
@@ -156,13 +161,26 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             });
         }
 
+        /// <summary>
+        /// A dummy implemtation
+        /// </summary>
         public class HttpRequestArgsProxy : HttpRequestArgs.Services.IHttpRequestArgs
         {
+            /// <summary>
+            /// Implements the stub
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<HttpRequest> ReturnNullRequest(CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.FromResult<HttpRequest>(null);
             }
-
+            /// <summary>
+            /// Implements the stub
+            /// </summary>
+            /// <param name="req"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<HttpRequestArgs.Types.HttpRequest> TestInvokeRequest(HttpRequestArgs.Types.HttpRequest req, CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.FromResult(req);

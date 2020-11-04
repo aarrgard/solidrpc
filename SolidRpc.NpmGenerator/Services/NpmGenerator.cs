@@ -33,6 +33,7 @@ namespace SolidRpc.NpmGenerator.Services
         /// <param name="methodBinderStore"></param>
         /// <param name="codeNamespaceGenerator"></param>
         /// <param name="typescriptGenerator"></param>
+        /// <param name="invoker"></param>
         /// <param name="serviceProvider"></param>
         public NpmGenerator(
             ILogger<NpmGenerator> logger,

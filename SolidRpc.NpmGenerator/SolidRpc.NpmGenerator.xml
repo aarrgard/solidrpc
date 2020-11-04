@@ -109,6 +109,11 @@
             <param name="uid"></param>
             <param name="cancellationToken"></param>
         </member>
+        <member name="M:SolidRpc.NpmGenerator.Debugger.NodeDebugger.Connect">
+            <summary>
+            Connects the debugger
+            </summary>
+        </member>
         <member name="T:SolidRpc.NpmGenerator.InternalServices.CodeNamespaceGenerator">
             <summary>
             Creates code namespaces from the reggistered bindings.

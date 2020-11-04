@@ -2,20 +2,17 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
-using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.OpenApi.Binder.Logger;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -157,121 +154,123 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (Logger.IsEnabled(LogLevel.Information))
+            using (Logger.BeginScope(new InvocationState()))
             {
-                Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
-            }
-
-            if(!methodBindings?.Any() ?? true)
-            {
-                throw new ArgumentException("No method bindings supplied");
-            }
-            var selectedBinding = methodBindings.First();
-
-            //
-            // check if we should just forward the calls
-            //
-            var transport = selectedBinding.Transports.SingleOrDefault(o => o.TransportType == invocationSource.TransportType);
-            if(transport == null)
-            {
-                throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",",selectedBinding.Transports.Select(o => o.TransportType))}).");
-            }
-            
-            if (transport.InvocationStrategy == InvocationStrategy.Forward)
-            {
-                //
-                // switch invocation source
-                //
-                var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
-                if(Logger.IsEnabled(LogLevel.Trace))
+                if (Logger.IsEnabled(LogLevel.Information))
                 {
-                    Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");                
+                    Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
                 }
-                var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
-                invocationSource = handlers.First(o => o.TransportType == invokeTransport.TransportType);
-            }
 
-            //
-            // Locate service
-            //
-            var svc = serviceProvider.GetService(selectedBinding.MethodInfo.DeclaringType);
-            if (svc == null)
-            {
-                throw new Exception($"Failed to resolve service for type {selectedBinding.MethodInfo.DeclaringType}");
-            }
-            var proxy = (ISolidProxy)svc;
-            if (proxy == null)
-            {
-                throw new Exception($"Service for {selectedBinding.MethodInfo.DeclaringType} is not a solid proxy.");
-            }
+                if (!methodBindings?.Any() ?? true)
+                {
+                    throw new ArgumentException("No method bindings supplied");
+                }
+                var selectedBinding = methodBindings.First();
 
-            var resp = new SolidHttpResponse();
-            //
-            // extract arguments
-            //
-            object[] args;
-            try
-            {
-                args = await selectedBinding.ExtractArgumentsAsync(request);
-            }
-            catch(Exception e)
-            {
-                Logger.LogError(e, "Failed to extract arguments - returning 400 - bad request");
-                resp.StatusCode = 400;
+                //
+                // check if we should just forward the calls
+                //
+                var transport = selectedBinding.Transports.SingleOrDefault(o => o.TransportType == invocationSource.TransportType);
+                if (transport == null)
+                {
+                    throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.TransportType))}).");
+                }
+
+                if (transport.InvocationStrategy == InvocationStrategy.Forward)
+                {
+                    //
+                    // switch invocation source
+                    //
+                    var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+                    if (Logger.IsEnabled(LogLevel.Trace))
+                    {
+                        Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");
+                    }
+                    var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
+                    invocationSource = handlers.First(o => o.TransportType == invokeTransport.TransportType);
+                }
+
+                //
+                // Locate service
+                //
+                var svc = serviceProvider.GetService(selectedBinding.MethodInfo.DeclaringType);
+                if (svc == null)
+                {
+                    throw new Exception($"Failed to resolve service for type {selectedBinding.MethodInfo.DeclaringType}");
+                }
+                var proxy = (ISolidProxy)svc;
+                if (proxy == null)
+                {
+                    throw new Exception($"Service for {selectedBinding.MethodInfo.DeclaringType} is not a solid proxy.");
+                }
+
+                var resp = new SolidHttpResponse();
+                //
+                // extract arguments
+                //
+                object[] args;
+                try
+                {
+                    args = await selectedBinding.ExtractArgumentsAsync(request);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e, "Failed to extract arguments - returning 400 - bad request");
+                    resp.StatusCode = 400;
+                    return resp;
+                }
+
+                // add invocation values
+                var invocationValues = new Dictionary<string, object>();
+                invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invocationSource.TransportType, InvocationOptions.MessagePriorityNormal);
+                invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
+
+                //
+                // sett http headers
+                //
+                foreach (var qv in request.Headers)
+                {
+                    var headerName = $"http_{qv.Name}".ToLower();
+                    if (invocationValues.TryGetValue(headerName, out object value))
+                    {
+                        invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
+                    }
+                    else
+                    {
+                        invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
+                    }
+                }
+
+                try
+                {
+                    //
+                    // Invoke
+                    //
+                    var res = await proxy.InvokeAsync(invocationSource, selectedBinding.MethodInfo, args, invocationValues);
+
+                    //
+                    // return response
+                    //
+                    // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
+                    //
+                    var resType = selectedBinding.MethodInfo.ReturnType;
+                    if (resType.IsTaskType(out Type taskType))
+                    {
+                        resType = taskType ?? resType;
+                    }
+                    //
+                    // bind the response
+                    //
+                    await selectedBinding.BindResponseAsync(resp, res, resType);
+                }
+                catch (Exception ex)
+                {
+                    // handle exception
+                    Logger.LogError(ex, "Service returned an exception - sending to client");
+                    await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
+                }
                 return resp;
             }
-
-            // add invocation values
-            var invocationValues = new Dictionary<string, object>();
-            invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invocationSource.TransportType, InvocationOptions.MessagePriorityNormal);
-            invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
-
-            //
-            // sett http headers
-            //
-            foreach (var qv in request.Headers)
-            {
-                var headerName = $"http_{qv.Name}".ToLower();
-                if(invocationValues.TryGetValue(headerName, out object value))
-                {
-                    invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
-                }
-                else
-                {
-                    invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
-                }
-            }
-
-            try
-            {
-                //
-                // Invoke
-                //
-                var res = await proxy.InvokeAsync(invocationSource, selectedBinding.MethodInfo, args, invocationValues);
-
-                //
-                // return response
-                //
-                // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
-                //
-                var resType = selectedBinding.MethodInfo.ReturnType;
-                if (resType.IsTaskType(out Type taskType))
-                {
-                    resType = taskType ?? resType;
-                }
-                //
-                // bind the response
-                //
-                await selectedBinding.BindResponseAsync(resp, res, resType);
-            }
-            catch (Exception ex)
-            {
-                // handle exception
-                Logger.LogError(ex, "Service returned an exception - sending to client");
-                await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
-            }
-            return resp;
-
         }
     }
 }

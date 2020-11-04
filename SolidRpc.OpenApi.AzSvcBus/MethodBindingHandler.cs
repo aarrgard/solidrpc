@@ -105,7 +105,7 @@ namespace SolidRpc.OpenApi.AzSvcBus
             {
                 var queue = await mgmt.GetQueueAsync(queueName, cancellationToken);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 var queueDescription = new QueueDescription(queueName);
                 queueDescription.AutoDeleteOnIdle = new TimeSpan(1, 0, 0, 0);

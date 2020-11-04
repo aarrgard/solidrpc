@@ -22,6 +22,9 @@ namespace SolidRpc.Tests.Invoker
     /// </summary>
     public class HttpInvokerTest3 : WebHostTest
     {
+        /// <summary>
+        /// A complex type
+        /// </summary>
         public class ComplexType { }
 
         /// <summary>
@@ -32,6 +35,7 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="ct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task DoXAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken));
@@ -45,6 +49,7 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="ct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task DoYAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken));
@@ -71,6 +76,7 @@ namespace SolidRpc.Tests.Invoker
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="ct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
             public Task DoXAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken))

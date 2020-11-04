@@ -144,7 +144,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
                     await ReturnRateLimitTokenAsync(rateLimitToken, cancellationToken);
                     return new RateLimitToken();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // make sure that we return the token
                     await ReturnRateLimitTokenAsync(rateLimitToken, CancellationToken.None);

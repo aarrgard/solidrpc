@@ -41,6 +41,10 @@ namespace SolidRpc.NpmGenerator.Debugger
         private Uri Uri => new Uri($"ws://{Host}:{Port}/{Uid}");
         private CancellationToken CancellationToken { get; }
         private ClientWebSocket ClientWebSocket { get; set; }
+
+        /// <summary>
+        /// Connects the debugger
+        /// </summary>
         public void Connect()
         {
             ClientWebSocket = new ClientWebSocket();

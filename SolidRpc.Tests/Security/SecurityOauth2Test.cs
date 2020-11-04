@@ -18,13 +18,29 @@ namespace SolidRpc.Tests.Security
     /// </summary>
     public class SecurityOauth2Test : WebHostTest
     {
+        /// <summary>
+        /// A test interface
+        /// </summary>
         public interface IOAuthProtectedService
         {
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
             Task<string> InvokeAsync(string arg);
         }
 
+        /// <summary>
+        /// A test implementation
+        /// </summary>
         public class OAuthProtectedService : IOAuthProtectedService
         {
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
             public Task<string> InvokeAsync(string arg)
             {
                 return Task.FromResult(arg);

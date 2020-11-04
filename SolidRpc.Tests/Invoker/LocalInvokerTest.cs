@@ -129,7 +129,7 @@ namespace SolidRpc.Tests.Invoker
                 await ((ISolidProxy)proxy).InvokeAsync(this, typeof(ITestInterface).GetMethod(nameof(ITestInterface.DoXAsync)), null, null);
                 Assert.Fail();
             }
-            catch (UnauthorizedException e)
+            catch (UnauthorizedException)
             {
                 // this is the way we want it.
             }

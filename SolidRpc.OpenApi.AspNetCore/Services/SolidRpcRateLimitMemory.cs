@@ -118,6 +118,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             }
         }
 
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="configuration"></param>
         public SolidRpcRateLimitMemory(ILogger<SolidRpcRateLimitMemory> logger, IConfiguration configuration)
         {
             Logger = logger;
@@ -126,7 +131,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         }
 
         private ILogger Logger { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         private ConcurrentDictionary<string, ResourceItem> ResourceItems { get; }
 
         private ResourceItem CreateResourceItem(string resourceName)
@@ -146,6 +151,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             
         }
 
+        /// <summary>
+        /// Returns the rate limit settings
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<IEnumerable<RateLimitSetting>> GetRateLimitSettingsAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var settings = ResourceItems.Values.Select(o => new RateLimitSetting()
@@ -155,7 +165,13 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             });
             return Task.FromResult(settings);
         }
-
+        /// <summary>
+        /// Returns the rate limit token
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<RateLimitToken> GetRateLimitTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             var resourceItem = ResourceItems.GetOrAdd(resourceName, CreateResourceItem);
@@ -167,7 +183,12 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 Expires = token.Expires
             };
         }
-
+        /// <summary>
+        /// Returns the rate limit settings
+        /// </summary>
+        /// <param name="rateLimitToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task ReturnRateLimitTokenAsync(RateLimitToken rateLimitToken, CancellationToken cancellationToken = default(CancellationToken))
         {
             var resourceItem = ResourceItems.GetOrAdd(rateLimitToken.ResourceName, CreateResourceItem);
@@ -175,6 +196,12 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Updates the rate limit settings
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task UpdateRateLimitSetting(RateLimitSetting setting, CancellationToken cancellationToken = default(CancellationToken))
         {
             var resourceItem = ResourceItems.GetOrAdd(setting.ResourceName, CreateResourceItem);
@@ -182,6 +209,13 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Returns the singleton token
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<RateLimitToken> GetSingeltonTokenAsync(string resourceName, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             var resourceItem = ResourceItems.GetOrAdd(resourceName, CreateResourceItem);

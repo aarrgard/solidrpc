@@ -22,6 +22,9 @@ namespace SolidRpc.Tests
     /// </summary>
     public class VitecTest : TestBase
     {
+        /// <summary>
+        /// Test class
+        /// </summary>
         public class JsonInfo
         {
             /// <summary>
@@ -44,6 +47,9 @@ namespace SolidRpc.Tests
             /// </summary>
             public string ETag { get; set; }
         }
+        /// <summary>
+        /// Test class
+        /// </summary>
         public class JsonBlob : JsonInfo
         {
             /// <summary>
@@ -166,7 +172,7 @@ namespace SolidRpc.Tests
 
                     await tq.UpdateMessageAsync(msg);
                 } 
-                catch(Exception e)
+                catch(Exception)
                 {
                     // continue;
                 }

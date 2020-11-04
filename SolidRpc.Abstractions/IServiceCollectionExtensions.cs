@@ -504,6 +504,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
+        /// <summary>
         /// Sets the base url in supplied proxy config by getting the values from the configuration
         /// </summary>
         /// <param name="sc"></param>
@@ -531,6 +532,12 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
+        /// <summary>
+        /// Adds the base url of the service to the configuration
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sc"></param>
+        /// <param name="baseUri"></param>
         public static void SetSolidRpcBaseUrlInConfig<T>(this IServiceCollection sc, Uri baseUri)
         {
             var cb = sc.GetConfigurationBuilder();

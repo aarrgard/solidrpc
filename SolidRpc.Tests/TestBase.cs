@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using SolidRpc.OpenApi.Binder.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,10 +16,21 @@ namespace SolidRpc.Tests
     /// </summary>
     public class TestBase
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         public static TaskConsoleLoggerClass TaskConsoleLogger = new TaskConsoleLoggerClass();
+
+        /// <summary>
+        /// Console logger implementation
+        /// </summary>
         public class TaskConsoleLoggerClass
         {
             SemaphoreSlim logsemaphore = new SemaphoreSlim(0);
+
+            /// <summary>
+            /// Constructs a new instance
+            /// </summary>
             public TaskConsoleLoggerClass()
             {
                 StartLogger();
@@ -38,6 +50,11 @@ namespace SolidRpc.Tests
             }
 
             private Queue<string> LogItems = new Queue<string>();
+
+            /// <summary>
+            /// Logs to the console
+            /// </summary>
+            /// <param name="log"></param>
             public void Log(string log)
             {
                 lock(LogItems)
@@ -47,6 +64,9 @@ namespace SolidRpc.Tests
                 logsemaphore.Release();
             }
 
+            /// <summary>
+            /// Fluses the data to console
+            /// </summary>
             public void Flush()
             {
                 lock (LogItems)
@@ -111,6 +131,7 @@ namespace SolidRpc.Tests
                 o.IncludeScopes = true;
                 o.TimestampFormat = "HH:mm:ss.ffff";
             });
+            builder.AddProvider(new InvocationLoggingProvider());
             //builder.ClearProviders();
             //builder.AddProvider(new ConsoleProvider(Log));
         }
