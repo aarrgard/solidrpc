@@ -54,16 +54,17 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             bool onlyImplemented, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var strBase = "../..";
+
+            var strBase = new Uri(await Invoker.GetUriAsync(o => o.GetIndexHtml(onlyImplemented, cancellationToken)),"../..");
             var html = $@"<!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
 <html lang=""en"">
   <head>
     <meta charset=""UTF-8"">
     <title>Swagger UI</title>
-    <link rel=""stylesheet"" type=""text/css"" href=""{strBase}/swagger-ui.css"" >
-    <link rel=""icon"" type=""image/png"" href=""{strBase}/favicon-32x32.png"" sizes=""32x32"" />
-    <link rel=""icon"" type=""image/png"" href=""{strBase}/favicon-16x16.png"" sizes=""16x16"" />
+    <link rel=""stylesheet"" type=""text/css"" href=""{strBase}swagger-ui.css"" >
+    <link rel=""icon"" type=""image/png"" href=""{strBase}favicon-32x32.png"" sizes=""32x32"" />
+    <link rel=""icon"" type=""image/png"" href=""{strBase}favicon-16x16.png"" sizes=""16x16"" />
     <style>
       html
       {{
@@ -90,8 +91,8 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
   <body>
     <div id=""swagger-ui""></div>
 
-    <script src=""{strBase}/swagger-ui-bundle.js"" charset=""UTF-8""> </script>
-    <script src=""{strBase}/swagger-ui-standalone-preset.js"" charset=""UTF-8""> </script>
+    <script src=""{strBase}swagger-ui-bundle.js"" charset=""UTF-8""> </script>
+    <script src=""{strBase}swagger-ui-standalone-preset.js"" charset=""UTF-8""> </script>
     <script>
     window.onload = function() {{
       // Begin Swagger UI call region
