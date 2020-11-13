@@ -69,10 +69,15 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="applicationBuilder"></param>
         /// <param name="allowedCorsOrigins"></param>
         /// <returns></returns>
-        public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder, params string[] allowedCorsOrigins)
+        public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder, Func<HttpContext, Task> preInvoke = null, params string[] allowedCorsOrigins)
         {
+            if (preInvoke is null)
+            {
+                preInvoke = (ctx) => Task.CompletedTask;
+            }
+
             // if no allowed CORS origins supplied - add the wildcard
-            if(!allowedCorsOrigins.Any())
+            if (!allowedCorsOrigins.Any())
             {
                 allowedCorsOrigins = new[] { "*" };
             }
@@ -143,12 +148,12 @@ namespace Microsoft.AspNetCore.Builder
             {
                 applicationBuilder.MapWhen(
                     ctx => string.Equals(ctx.Request.Method, method, StringComparison.InvariantCultureIgnoreCase),
-                    (ab) => BindPath(ab, method, dict));
+                    (ab) => BindPath(ab, method, dict, preInvoke));
             }
             return applicationBuilder;
         }
 
-        private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, PathHandler> paths)
+        private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, PathHandler> paths, Func<HttpContext, Task> preInvoke)
         {
             //ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
 
@@ -170,7 +175,7 @@ namespace Microsoft.AspNetCore.Builder
             var fixedPaths = parts.Where(o => !o.StartsWith("{")).Select(o => $"/{o}").ToList();
             foreach (var part in parts)
             {
-                ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths));
+                ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths, preInvoke));
             }
 
             // add handler for this path
@@ -182,7 +187,10 @@ namespace Microsoft.AspNetCore.Builder
                 // bind path
                 if(pathHandler.MethodBinding != null)
                 {
-                    ab.Run((ctx) => HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.HttpTransport, pathHandler.MethodBinding, ctx));
+                    ab.Run(async (ctx) => {
+                        await preInvoke.Invoke(ctx);
+                        await HandleInvocation(pathHandler.AllowedCorsOrigins, pathHandler.HttpTransport, pathHandler.MethodBinding, ctx);
+                    });
                 }
                 else if (pathHandler.ContentHandler != null)
                 {

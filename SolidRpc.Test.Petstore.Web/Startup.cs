@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http.Features;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -53,7 +55,11 @@ namespace SolidRpc.Test.PetstoreWeb
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSolidRpcProxies();
+            app.UseSolidRpcProxies((context) =>
+            {
+                context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = null;
+                return Task.CompletedTask;
+            });
         }
     }
 }
