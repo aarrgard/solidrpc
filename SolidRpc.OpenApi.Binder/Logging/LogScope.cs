@@ -16,7 +16,7 @@ namespace SolidRpc.OpenApi.Binder.Logging
         {
             InvocationState = invocationState;
             MemoryLogger = memoryLogger;
-            memoryLogger.Push(this);
+            memoryLogger.Push(InvocationState);
         }
 
         internal LogScope Parent { get; set; }
@@ -33,7 +33,7 @@ namespace SolidRpc.OpenApi.Binder.Logging
         /// </summary>
         public void Dispose()
         {
-            MemoryLogger.Pop(this);
+            MemoryLogger.Pop(InvocationState);
         }
     }
 }

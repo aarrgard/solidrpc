@@ -1824,6 +1824,18 @@
             </summary>
             <param name="startupTask"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="startupCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="shutdownCallback"></param>
+        </member>
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.WaitForStartupTasks">
             <summary>
             Ensures that all the startup tasks have completed.
@@ -2049,6 +2061,18 @@
             <summary>
             The host id
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="shutdownCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a startup callback
+            </summary>
+            <param name="startupCallback"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
             <summary>

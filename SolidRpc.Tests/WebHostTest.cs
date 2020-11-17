@@ -9,6 +9,7 @@ using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.Binder.Proxy;
 using Swashbuckle.AspNetCore.Swagger;
@@ -65,7 +66,13 @@ namespace SolidRpc.Tests
             /// Constructor
             /// </summary>
             /// <param name="webHostTest"></param>
-            public TestHostContextKestrel(WebHostTest webHostTest) : base(webHostTest, new HttpClient())
+            /// <param name="configureServerServices"></param>
+            /// <param name="configureClientServices"></param>
+            public TestHostContextKestrel(
+                WebHostTest webHostTest, 
+                Action<IServiceCollection> configureServerServices = null, 
+                Action<IServiceCollection> configureClientServices = null) 
+                : base(webHostTest, new HttpClient(), configureServerServices, configureClientServices)
             {
             }
 
@@ -141,6 +148,7 @@ namespace SolidRpc.Tests
             public override void Dispose()
             {
                 base.Dispose();
+                ((ISolidRpcApplication)WebHost.Services.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
                 WebHost?.StopAsync().Wait();
                 WebHost?.Dispose();
             }
@@ -214,12 +222,18 @@ namespace SolidRpc.Tests
             /// </summary>
             /// <param name="webHostTest"></param>
             /// <param name="httpClient"></param>
-            public TestHostContext(WebHostTest webHostTest, HttpClient httpClient)
+            /// <param name="configureServerServices"></param>
+            /// <param name="configureClientServices"></param>
+            public TestHostContext(
+                WebHostTest webHostTest,
+                HttpClient httpClient, 
+                Action<IServiceCollection> configureServerServices = null, 
+                Action<IServiceCollection> configureClientServices = null)
             {
                 WebHostTest = webHostTest;
                 HttpClient = httpClient;
-                ServerServicesCallback = (_) => { };
-                ClientServicesCallback = (_) => { };
+                ServerServicesCallback = (_) => { configureServerServices?.Invoke(_); };
+                ClientServicesCallback = (_) => { configureClientServices?.Invoke(_); };
             }
 
             private Action<IServiceCollection> ServerServicesCallback { get; set; }
@@ -507,9 +521,9 @@ namespace SolidRpc.Tests
         /// Constructs a new host context
         /// </summary>
         /// <returns></returns>
-        protected TestHostContext CreateKestrelHostContext()
+        protected TestHostContext CreateKestrelHostContext(Action<IServiceCollection> configureServerServices = null, Action<IServiceCollection> configureClientServices = null)
         {
-            var ctx = new TestHostContextKestrel(this);
+            var ctx = new TestHostContextKestrel(this, configureServerServices, configureClientServices);
             return ctx;
         }
 

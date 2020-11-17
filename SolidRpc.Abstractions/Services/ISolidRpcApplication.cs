@@ -26,6 +26,18 @@ namespace SolidRpc.Abstractions.Services
         void AddStartupTask(Task startupTask);
 
         /// <summary>
+        /// Adds a shutdown callback
+        /// </summary>
+        /// <param name="startupCallback"></param>
+        void AddStartupCallback(Func<Task> startupCallback);
+
+        /// <summary>
+        /// Adds a shutdown callback
+        /// </summary>
+        /// <param name="shutdownCallback"></param>
+        void AddShutdownCallback(Func<Task> shutdownCallback);
+
+        /// <summary>
         /// Ensures that all the startup tasks have completed.
         /// </summary>
         /// <returns></returns>

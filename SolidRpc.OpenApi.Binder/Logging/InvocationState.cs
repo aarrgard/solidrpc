@@ -15,20 +15,27 @@ namespace SolidRpc.OpenApi.Binder.Logger
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public InvocationState()
+        public InvocationState(IEnumerable<KeyValuePair<string, object>> parentScope = null, string invocationId = null)
         {
-            kvps = new KeyValuePair<string, object>[]
-            {  
-                new KeyValuePair<string, object>(nameof(SolidRpcCallId), Guid.NewGuid().ToString())
-            };
+            kvps = parentScope;
+            InvocationId = kvps.Where(o => o.Key == nameof(InvocationId)).Select(o => o.Value).FirstOrDefault();
+            if (!(kvps?.Any() ?? false))
+            {
+                kvps = (kvps ?? new KeyValuePair<string, object>[0]).Union(new KeyValuePair<string, object>[]
+                {
+                    new KeyValuePair<string, object>(nameof(InvocationId), invocationId ?? Guid.NewGuid().ToString())
+                }).ToArray();
+            }
         }
 
         /// <summary>
         /// The invocation id.
         /// </summary>
-        public string SolidRpcCallId => (string)kvps.First().Value;
+        public string InvocationId => (string)kvps.Where(o => o.Key ').First().Value;
 
-       IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
+        public IDictionary<string, string> Properties => this.Select(o => new { o.Key, Value = o.Value?.ToString() }).ToDictionary(o => o.Key, o => o.Value);
+
+        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
             return kvps.AsEnumerable().GetEnumerator();
         }

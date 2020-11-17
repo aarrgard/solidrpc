@@ -294,10 +294,13 @@ namespace SolidRpc.Tests.Security
         /// <summary>
         /// Tests the web host
         /// </summary>
-        [Test, Ignore("Fix binding of host")]
+        [Test]
         public async Task TestOauthProtectedResource()
         {
-            using (var ctx = CreateKestrelHostContext())
+            using (var ctx = CreateKestrelHostContext(serverServices =>
+            {
+                serverServices.AddSolidRpcApplicationInsights();
+            }))
             {
                 await ctx.StartAsync();
                 var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuthProtectedService>();

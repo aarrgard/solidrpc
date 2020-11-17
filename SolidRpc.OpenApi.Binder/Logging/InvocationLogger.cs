@@ -2,6 +2,7 @@
 using SolidRpc.OpenApi.Binder.Logger;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace SolidRpc.OpenApi.Binder.Logging
@@ -11,39 +12,41 @@ namespace SolidRpc.OpenApi.Binder.Logging
     /// </summary>
     public class InvocationLogger : ILogger
     {
-        private readonly AsyncLocal<LogScope> _currentScope = new AsyncLocal<LogScope>();
+        private readonly AsyncLocal<Stack<IEnumerable<KeyValuePair<string, object>>>> _currentScope = new AsyncLocal<Stack<IEnumerable<KeyValuePair<string, object>>>>();
 
         public InvocationLogger(InvocationLoggingProvider memoryLoggingProvider, string categoryName)
         {
-            MemoryLoggingProvider = memoryLoggingProvider;
+            InvocationLoggerProvider = memoryLoggingProvider;
             CategoryName = categoryName;
         }
 
-        internal void Push(LogScope logScope)
+        internal void Push(InvocationState invocationState)
         {
-            logScope.Parent = _currentScope.Value;
-            _currentScope.Value = logScope;
-            MemoryLoggingProvider.InvocationScopeCreated(logScope.InvocationState);
+            if(_currentScope.Value == null)
+            {
+                _currentScope.Value = new Stack<IEnumerable<KeyValuePair<string, object>>>();
+            }
+            _currentScope.Value.Push(invocationState);
+            InvocationLoggerProvider.InvocationScopeCreated(invocationState);
         }
 
-        internal void Pop(LogScope logScope)
+        internal void Pop(InvocationState invocationState)
         {
-            _currentScope.Value = logScope.Parent;
-            MemoryLoggingProvider.InvocationScopeDisposed(logScope.InvocationState);
+            _currentScope.Value.Pop();
+            InvocationLoggerProvider.InvocationScopeDisposed(invocationState);
         }
 
-        private InvocationLoggingProvider MemoryLoggingProvider { get; }
+        private InvocationLoggingProvider InvocationLoggerProvider { get; }
         private string CategoryName { get; }
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            var logState = state as InvocationState;
-            if(logState == null)
+            var logState = state as IEnumerable<KeyValuePair<string, object>>;
+            if (logState == null)
             {
                 return null;
             }
-            _currentScope.Value = new LogScope(this, logState);
-            return _currentScope.Value;
+            return new LogScope(this, new InvocationState(logState));
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -53,8 +56,8 @@ namespace SolidRpc.OpenApi.Binder.Logging
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            var logState = _currentScope.Value?.InvocationState;
-            MemoryLoggingProvider.Log<TState>(logState, logLevel, eventId, state, exception, formatter);
+            var logState = _currentScope.Value?.FirstOrDefault();
+            InvocationLoggerProvider.Log<TState>(logState, logLevel, eventId, state, exception, formatter);
         }
     }
 }

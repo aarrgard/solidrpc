@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SolidRpc.OpenApi.Binder.Logger;
 using System;
+using System.Collections.Generic;
 
 namespace SolidRpc.OpenApi.Binder.Logging
 {
@@ -11,7 +12,8 @@ namespace SolidRpc.OpenApi.Binder.Logging
     {
         public event Action<InvocationState> InvocationCreatedEvent;
         public event Action<InvocationState> InvocationDisposedEvent;
-        public event Action<InvocationState, LogLevel, EventId, Exception, string> InvocationLogEvent;
+        public event Action<IEnumerable<KeyValuePair<string, object>>, LogLevel, EventId, Exception, string> InvocationLogEvent;
+        public event Action LoggerDisposeEvent;
 
         /// <summary>
         /// Constructs a new logger
@@ -28,6 +30,7 @@ namespace SolidRpc.OpenApi.Binder.Logging
         /// </summary>
         public void Dispose()
         {
+            LoggerDisposeEvent?.Invoke();
         }
 
         internal void InvocationScopeCreated(InvocationState invocationState)
@@ -40,7 +43,7 @@ namespace SolidRpc.OpenApi.Binder.Logging
             InvocationDisposedEvent?.Invoke(invocationState);
         }
 
-        internal void Log<TState>(InvocationState invocationState, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        internal void Log<TState>(IEnumerable<KeyValuePair<string, object>> invocationState, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (InvocationLogEvent == null) return;
             var msg = formatter(state, exception);
