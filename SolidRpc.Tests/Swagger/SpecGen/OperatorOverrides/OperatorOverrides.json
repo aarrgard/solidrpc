@@ -1,0 +1,60 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OperatorOverrides",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/OperatorOverrides",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IOperatorOverrides/GetComplexType": {
+      "post": {
+        "tags": [
+          "IOperatorOverrides"
+        ],
+        "description": "Consumes the type with overrides",
+        "operationId": "GetComplexType",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ct",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ComplexType"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/ComplexType"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType": {
+      "type": "object",
+      "description": "ComplexType1"
+    }
+  },
+  "tags": [
+    {
+      "name": "IOperatorOverrides",
+      "description": "Tests operator overrides in type"
+    }
+  ]
+}

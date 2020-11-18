@@ -96,6 +96,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
         private void LoadSystemTypes()
         {
+            GetClass(typeof(object), "object");
             GetClass(typeof(void), "void");
             GetClass(typeof(bool), "bool");
             GetClass(typeof(short), "short");

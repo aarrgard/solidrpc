@@ -18,7 +18,7 @@ namespace SolidRpc.OpenApi.Binder.Logger
         public InvocationState(IEnumerable<KeyValuePair<string, object>> parentScope = null, string invocationId = null)
         {
             kvps = parentScope;
-            InvocationId = kvps.Where(o => o.Key == nameof(InvocationId)).Select(o => o.Value).FirstOrDefault();
+            InvocationId = kvps?.Where(o => o.Key == nameof(InvocationId)).Select(o => o.Value).FirstOrDefault()?.ToString();
             if (!(kvps?.Any() ?? false))
             {
                 kvps = (kvps ?? new KeyValuePair<string, object>[0]).Union(new KeyValuePair<string, object>[]
@@ -31,7 +31,7 @@ namespace SolidRpc.OpenApi.Binder.Logger
         /// <summary>
         /// The invocation id.
         /// </summary>
-        public string InvocationId => (string)kvps.Where(o => o.Key ').First().Value;
+        public string InvocationId { get; }
 
         public IDictionary<string, string> Properties => this.Select(o => new { o.Key, Value = o.Value?.ToString() }).ToDictionary(o => o.Key, o => o.Value);
 

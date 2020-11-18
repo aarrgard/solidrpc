@@ -508,6 +508,30 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
+        public Task TestOperatorOverrides()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestOperatorOverrides).Substring(4));
+
+                var moq = new Mock<OperatorOverrides.Services.IOperatorOverrides>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                moq.Setup(o => o.GetComplexType(
+                    It.Is<OperatorOverrides.Types.ComplexType>(a => true)
+                    )).Returns(new OperatorOverrides.Types.ComplexType());
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<OperatorOverrides.Services.IOperatorOverrides>();
+                var res = proxy.GetComplexType(new OperatorOverrides.Types.ComplexType());
+                Assert.AreEqual(new OperatorOverrides.Types.ComplexType(), res);
+            });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
         public Task TestMoreComplexArgs()
         {
             return RunTestInContext(async ctx =>

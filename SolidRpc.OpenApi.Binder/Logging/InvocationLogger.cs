@@ -26,14 +26,32 @@ namespace SolidRpc.OpenApi.Binder.Logging
             {
                 _currentScope.Value = new Stack<IEnumerable<KeyValuePair<string, object>>>();
             }
+            string oldInvocationId = null;
+            if(_currentScope.Value.Any())
+            {
+                var oldScope = _currentScope.Value.Peek() as InvocationState;
+                oldInvocationId = oldScope?.InvocationId;
+            }
             _currentScope.Value.Push(invocationState);
-            InvocationLoggerProvider.InvocationScopeCreated(invocationState);
+            if(oldInvocationId != invocationState.InvocationId)
+            {
+                InvocationLoggerProvider.InvocationScopeCreated(invocationState);
+            }
         }
 
         internal void Pop(InvocationState invocationState)
         {
-            _currentScope.Value.Pop();
-            InvocationLoggerProvider.InvocationScopeDisposed(invocationState);
+            var popedScope = _currentScope.Value.Pop() as InvocationState;
+            string topInvocationId = null;
+            if (_currentScope.Value.Any())
+            {
+                var topScope = _currentScope.Value.Peek() as InvocationState;
+                topInvocationId = topScope?.InvocationId;
+            }
+            if (popedScope?.InvocationId != topInvocationId)
+            {
+                InvocationLoggerProvider.InvocationScopeDisposed(invocationState);
+            }
         }
 
         private InvocationLoggingProvider InvocationLoggerProvider { get; }

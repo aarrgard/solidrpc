@@ -117,7 +117,8 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 return;
             }
 
-            throw new Exception("Cannot handle member:" + member.GetType().FullName);
+            // skip this member
+            //throw new Exception("Cannot handle member:" + member.GetType().FullName);
         }
 
         private void Sweap1(MemberDeclarationSyntax member)
