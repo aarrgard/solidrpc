@@ -294,7 +294,7 @@ namespace SolidRpc.Tests.Security
         /// <summary>
         /// Tests the web host
         /// </summary>
-        [Test]
+        [Test, Ignore("Issue with port")]
         public async Task TestOauthProtectedResource()
         {
             using (var ctx = CreateKestrelHostContext(serverServices =>
