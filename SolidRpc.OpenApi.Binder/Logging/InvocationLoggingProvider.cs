@@ -1,19 +1,55 @@
 ﻿using Microsoft.Extensions.Logging;
-using SolidRpc.OpenApi.Binder.Logger;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace SolidRpc.OpenApi.Binder.Logging
 {
     /// <summary>
     /// Implements a logging logger provider
     /// </summary>
-    public class InvocationLoggingProvider : ILoggerProvider
+    public class InvocationLoggingProvider : IDisposable, ILoggerProvider
     {
-        public event Action<InvocationState> InvocationCreatedEvent;
-        public event Action<InvocationState> InvocationDisposedEvent;
-        public event Action<IEnumerable<KeyValuePair<string, object>>, LogLevel, EventId, Exception, string> InvocationLogEvent;
+        private AsyncLocal<LogScope> CurrentLogScope = new AsyncLocal<LogScope>();
+        private ConcurrentDictionary<string, ILogger> Loggers = new ConcurrentDictionary<string, ILogger>();
+
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="activatorProperty"></param>
+        public InvocationLoggingProvider(string activatorProperty = null)
+        {
+            ActivatorProperty = activatorProperty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ActivatorProperty { get; }
+        public InvocationState CurrentScope => CurrentLogScope.Value?.InvocationState ?? InvocationState.EmptyState;
+
+        public event Action<string> InvocationCreatedEvent;
+        public event Action<string> InvocationDisposedEvent;
+        public event Action<IDictionary<string, string>, LogLevel, EventId, Exception, string> InvocationLogEvent;
         public event Action LoggerDisposeEvent;
+
+        internal void Push(LogScope logScope)
+        {
+            logScope.ParentScope = CurrentLogScope.Value;
+            CurrentLogScope.Value = logScope;
+            if (logScope.IsActivatorScope) InvocationScopeCreated(logScope.ActivatorPropertyValue);
+        }
+
+        internal void Pop(LogScope logScope)
+        {
+            if(CurrentLogScope.Value != logScope)
+            {
+                throw new Exception();
+            }
+            CurrentLogScope.Value = logScope.ParentScope;
+            if (logScope.IsActivatorScope) InvocationScopeDisposed(logScope.ActivatorPropertyValue);
+        }
 
         /// <summary>
         /// Constructs a new logger
@@ -22,7 +58,7 @@ namespace SolidRpc.OpenApi.Binder.Logging
         /// <returns></returns>
         public ILogger CreateLogger(string categoryName)
         {
-            return new InvocationLogger(this, categoryName);
+            return Loggers.GetOrAdd(categoryName, _ => new InvocationLogger(this, categoryName));
         }
 
         /// <summary>
@@ -33,21 +69,37 @@ namespace SolidRpc.OpenApi.Binder.Logging
             LoggerDisposeEvent?.Invoke();
         }
 
-        internal void InvocationScopeCreated(InvocationState invocationState)
+        internal void InvocationScopeCreated(string invocationState)
         {
             InvocationCreatedEvent?.Invoke(invocationState);
         }
 
-        internal void InvocationScopeDisposed(InvocationState invocationState)
+        internal void InvocationScopeDisposed(string invocationState)
         {
             InvocationDisposedEvent?.Invoke(invocationState);
         }
 
-        internal void Log<TState>(IEnumerable<KeyValuePair<string, object>> invocationState, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        internal void Log<TState>(string categoryName, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (InvocationLogEvent == null) return;
             var msg = formatter(state, exception);
-            InvocationLogEvent(invocationState, logLevel, eventId, exception, msg);
+
+            var props = new Dictionary<string, string>();
+            foreach (var prop in CurrentScope)
+            {
+                props[prop.Key] = prop.Value?.ToString();
+            }
+            if(state is IEnumerable<KeyValuePair<string, object>> e)
+            {
+                foreach (var prop in e)
+                {
+                    props[prop.Key] = prop.Value?.ToString();
+                }
+            }
+            props["CategoryName"] = categoryName;
+
+
+            InvocationLogEvent(props, logLevel, eventId, exception, msg);
         }
     }
 }

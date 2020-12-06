@@ -294,12 +294,12 @@ namespace SolidRpc.Tests.Security
         /// <summary>
         /// Tests the web host
         /// </summary>
-        [Test, Ignore("Not implemented")]
+        [Test]
         public async Task TestOauthProtectedResource()
         {
             using (var ctx = CreateKestrelHostContext(serverServices =>
             {
-                serverServices.AddSolidRpcApplicationInsights();
+                serverServices.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "RequestId");
             }))
             {
                 await ctx.StartAsync();

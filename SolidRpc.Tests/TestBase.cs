@@ -131,7 +131,7 @@ namespace SolidRpc.Tests
                 o.IncludeScopes = true;
                 o.TimestampFormat = "HH:mm:ss.ffff";
             });
-            builder.AddProvider(new InvocationLoggingProvider());
+            builder.AddProvider(new InvocationLoggingProvider("RequestId"));
             //builder.ClearProviders();
             //builder.AddProvider(new ConsoleProvider(Log));
         }

@@ -1,48 +1,39 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SolidRpc.OpenApi.Binder.Logger
+namespace SolidRpc.OpenApi.Binder.Logging
 {
     /// <summary>
     /// The logger scope is added to the logger when invocations are picked up by the queue handler.
     /// </summary>
     public class InvocationState : IEnumerable<KeyValuePair<string, object>>
     {
-        private IEnumerable<KeyValuePair<string, object>> kvps;
+        private static IEnumerable<KeyValuePair<string, object>> EmptyList = new KeyValuePair<string, object>[0];
+        public static InvocationState EmptyState = new InvocationState(null, EmptyList);
+
+        private InvocationState _parentState;
+        private IEnumerable<KeyValuePair<string, object>> _scopeValues;
+        private IEnumerable<string> _keys;
 
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public InvocationState(IEnumerable<KeyValuePair<string, object>> parentScope = null, string invocationId = null)
+        public InvocationState(InvocationState parentState, IEnumerable<KeyValuePair<string, object>> scopeValues)
         {
-            kvps = parentScope;
-            InvocationId = kvps?.Where(o => o.Key == nameof(InvocationId)).Select(o => o.Value).FirstOrDefault()?.ToString();
-            if (!(kvps?.Any() ?? false))
-            {
-                kvps = (kvps ?? new KeyValuePair<string, object>[0]).Union(new KeyValuePair<string, object>[]
-                {
-                    new KeyValuePair<string, object>(nameof(InvocationId), invocationId ?? Guid.NewGuid().ToString())
-                }).ToArray();
-            }
+            _parentState = parentState ?? EmptyState;
+            _scopeValues = scopeValues ?? EmptyState;
+            _keys = _scopeValues.Select(o => o.Key).ToList();
         }
 
-        /// <summary>
-        /// The invocation id.
-        /// </summary>
-        public string InvocationId { get; }
-
-        public IDictionary<string, string> Properties => this.Select(o => new { o.Key, Value = o.Value?.ToString() }).ToDictionary(o => o.Key, o => o.Value);
-
-        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            return kvps.AsEnumerable().GetEnumerator();
+            return (_parentState ?? EmptyList).Where(o => !_keys.Contains(o.Key)).Union(_scopeValues).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return kvps.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

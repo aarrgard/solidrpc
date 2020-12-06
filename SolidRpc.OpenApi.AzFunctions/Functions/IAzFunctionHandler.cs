@@ -52,6 +52,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// Puts all the functions in the proxies file.
         /// </summary>
         void SyncProxiesFile(
+            List<FunctionDef> functionDefs,
             IDictionary<string, string> staticRoutes, 
             IDictionary<string, string> redirects);
 

@@ -1,5 +1,5 @@
-﻿using SolidRpc.OpenApi.Binder.Logger;
-using System;
+﻿using System;
+using System.Linq;
 
 namespace SolidRpc.OpenApi.Binder.Logging
 {
@@ -12,28 +12,36 @@ namespace SolidRpc.OpenApi.Binder.Logging
         /// Constructs a new log scope
         /// </summary>
         /// <param name="invocationState"></param>
-        public LogScope(InvocationLogger memoryLogger, InvocationState invocationState)
+        public LogScope(InvocationLogger invocationLogger, InvocationState invocationState)
         {
             InvocationState = invocationState;
-            MemoryLogger = memoryLogger;
-            memoryLogger.Push(InvocationState);
+            InvocationLogger = invocationLogger;
+            ActivatorPropertyValue = invocationState.Where(o => o.Key == invocationLogger.InvocationLoggerProvider.ActivatorProperty).Select(o => o.Value).FirstOrDefault()?.ToString();
+            invocationLogger.InvocationLoggerProvider.Push(this);
         }
 
-        internal LogScope Parent { get; set; }
+        public LogScope ParentScope { get; internal set; }
+
+        /// <summary>
+        /// The activator property value
+        /// </summary>
+        public string ActivatorPropertyValue { get; }
 
         /// <summary>
         /// The log state
         /// </summary>
-        internal InvocationState InvocationState { get; }
+        public InvocationState InvocationState { get; }
 
-        private InvocationLogger MemoryLogger { get; }
+        public bool IsActivatorScope => ParentScope?.ActivatorPropertyValue != ActivatorPropertyValue;
+
+        private InvocationLogger InvocationLogger { get; }
 
         /// <summary>
         /// Disposes of the scope
         /// </summary>
         public void Dispose()
         {
-            MemoryLogger.Pop(InvocationState);
+            InvocationLogger.InvocationLoggerProvider.Pop(this);
         }
     }
 }

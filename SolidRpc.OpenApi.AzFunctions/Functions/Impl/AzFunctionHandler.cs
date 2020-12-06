@@ -304,16 +304,18 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Syncronizes the proxies file with the functions.
         /// </summary>
         public void SyncProxiesFile(
+            List<FunctionDef> functionDefs,
             IDictionary<string, string> staticRoutes,
             IDictionary<string, string> redirects)
         {
             if(DevDir != null)
             {
-                SyncProxiesFile(DevDir, staticRoutes, redirects);
+                SyncProxiesFile(DevDir, functionDefs, staticRoutes, redirects);
             }
         }
         private void SyncProxiesFile(
-            DirectoryInfo baseDir, 
+            DirectoryInfo baseDir,
+            List<FunctionDef> functionDefs,
             IDictionary<string, string> staticRoutes,
             IDictionary<string, string> redirects)
         {
@@ -349,10 +351,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                 proxies = new AzProxies();
             }
 
-            var routes = GetFunctions().OfType<IAzHttpFunction>()
-                .SelectMany(o => o.Methods.Select(o2 => new { o.Route, Method = o2.ToUpper() }))
-                .Distinct()
-                .GroupBy(o => o.Route)
+            var routes = functionDefs.OfType<HttpFunctionDef>()
+                .GroupBy(o => o.PathWithArgNames)
                 .ToList();
 
             bool modified = false;
@@ -392,7 +392,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     return;
                 }
 
-                var methods = o.Select(o2 => o2.Method).ToList();
+                var methods = o.Select(o2 => o2.Method.ToUpper()).ToList();
                 var backendUri = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{o.Key}";
                 var frontEndRoute = CreateFrontendRoute(o.Key);
                 var proxyModified = CreateProxy(proxies.Proxies, o.Key, methods, frontEndRoute, backendUri, false);

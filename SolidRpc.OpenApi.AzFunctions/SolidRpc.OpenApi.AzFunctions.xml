@@ -46,6 +46,11 @@
             </summary>
             <param name="serviceConfig"></param>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.FunctionDef">
+            <summary>
+            Represents a function
+            </summary>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction">
             <summary>
             Represents an azure function
@@ -120,7 +125,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.List{SolidRpc.OpenApi.AzFunctions.FunctionDef},System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Puts all the functions in the proxies file.
             </summary>
@@ -403,7 +408,7 @@
             <param name="functionName"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.List{SolidRpc.OpenApi.AzFunctions.FunctionDef},System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
             Syncronizes the proxies file with the functions.
             </summary>

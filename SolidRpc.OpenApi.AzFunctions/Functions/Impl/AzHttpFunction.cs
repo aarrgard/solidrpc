@@ -65,46 +65,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         {
         }
 
-        private string SetRouteArgs(string route)
-        {
-            var args = GetRouteArgs(ref route);
-            return route;
-        }
-
-        private IEnumerable<string> GetRouteArgs(ref string route)
-        {
-            var sbRoute = new StringBuilder();
-            var sbArg = new StringBuilder();
-            var args = new List<string>();
-           
-            foreach(var c in route)
-            {
-                switch(c)
-                {
-                    case '{':
-                        sbArg.Clear();
-                        break;
-                    case '}':
-                        var arg = sbArg.ToString();
-                        if(string.IsNullOrEmpty(arg))
-                        {
-                            arg = $"arg{args.Count}";
-                            sbRoute.Append(arg);
-                        }
-                        args.Add(arg);
-                        break;
-                    default:
-                        sbArg.Append(c);
-                        break;
-
-                }
-                sbRoute.Append(c);
-            }
-
-            route = sbRoute.ToString();
-            return args;
-        }
-
         /// <summary>
         /// Writes the function class
         /// </summary>
@@ -138,7 +98,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public string Route
         {
             get => TriggerBinding.Route ?? Name;
-            set => TriggerBinding.Route = SetRouteArgs(value);
+            set => TriggerBinding.Route = value;
         }
 
         /// <summary>

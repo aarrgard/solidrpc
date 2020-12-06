@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.OpenApi.Binder.Logger;
+using SolidRpc.OpenApi.ApplicationInsights;
 using SolidRpc.OpenApi.Binder.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -20,16 +20,20 @@ namespace System
     /// </summary>
     public static class IServiceCollectionExtensions
     {
-        private static ConcurrentDictionary<string, IList<TraceEvent>> LogScopes = new ConcurrentDictionary<string, IList<TraceEvent>>();
+        private static LogSettings LogSettings;
+        private static string PropertyActivator;
+        private static ConcurrentDictionary<string, IList<AIEvent>> LogScopes = new ConcurrentDictionary<string, IList<AIEvent>>();
         private static TelemetryClient s_telemetryClient;
 
-        private class TraceEvent
+        private class AIEvent
         {
-            public TraceEvent(string message, LogLevel logLevel, IDictionary<string, string> properties)
+            public AIEvent(LogLevel logLevel, string message, Exception exception, IDictionary<string, string> properties)
             {
-                Message = message;
                 SeverityLevel = MapLogLevel(logLevel);
+                Message = message;
+                Exception = exception;
                 Properties = properties;
+                Timestamp = DateTimeOffset.Now;
             }
 
             private SeverityLevel MapLogLevel(LogLevel logLevel)
@@ -52,12 +56,11 @@ namespace System
                         throw new Exception("Cannot handle log level:"+logLevel);
                 }
             }
-
-            public string Name { get; }
-
+            public Exception Exception { get; }
             public IDictionary<string, string> Properties { get; }
-            public string Message { get; internal set; }
-            public SeverityLevel SeverityLevel { get; internal set; }
+            public DateTimeOffset Timestamp { get; }
+            public string Message { get; }
+            public SeverityLevel SeverityLevel { get; }
         }
 
         /// <summary>
@@ -66,7 +69,7 @@ namespace System
         /// <typeparam name="T"></typeparam>
         /// <param name="sp"></param>
         /// <param name="message"></param>
-        public static void AddSolidRpcApplicationInsights(this IServiceCollection services)
+        public static void AddSolidRpcApplicationInsights(this IServiceCollection services, LogSettings logSettings, string propertyActivator = null)
         {
             var conf = services.GetSolidRpcService<IConfiguration>();
             var instrumentationKey = conf["InstrumentationKey"];
@@ -78,8 +81,9 @@ namespace System
             s_telemetryClient = new TelemetryClient(telConf);
             s_telemetryClient.InstrumentationKey = instrumentationKey;
 
-
-            var logProvider = new InvocationLoggingProvider();
+            LogSettings = logSettings;
+            PropertyActivator = propertyActivator;
+            var logProvider = new InvocationLoggingProvider(PropertyActivator);
             services.AddLogging(o => {
                 o.AddProvider(logProvider);
                 logProvider.InvocationCreatedEvent += InvocationCreatedEvent;
@@ -99,38 +103,68 @@ namespace System
             Thread.Sleep(1000);
         }
 
-        private static void InvocationLogEvent(IEnumerable<KeyValuePair<string, object>> state, LogLevel logLevel, EventId arg3, Exception arg4, string msg)
+        private static void InvocationLogEvent(IDictionary<string, string> props, LogLevel logLevel, EventId eventId, Exception exception, string msg)
         {
-            var props = state?.Select(o => new { o.Key, Value = o.Value?.ToString() }).ToDictionary(o => o.Key, o => o.Value);
-            var traceEvt = new TraceEvent(msg, logLevel, props);
-            if(props != null && props.TryGetValue("InvocationId", out string invocationId))
+            if (LogSettings == LogSettings.AllEvents)
             {
-                if (LogScopes.TryGetValue(invocationId, out IList<TraceEvent> msgs))
+                TrackTrace(new AIEvent(logLevel, msg, exception, props));
+                return;
+            }
+            if (PropertyActivator != null)
+            {
+                if (props != null && props.TryGetValue(PropertyActivator, out string invocationId))
                 {
-                    lock (msgs)
+                    if (LogScopes.TryGetValue(invocationId, out IList<AIEvent> msgs))
                     {
-                        msgs.Add(traceEvt);
+                        lock (msgs)
+                        {
+                            msgs.Add(new AIEvent(logLevel, msg, exception, props));
+                        }
                     }
                 }
             }
-            else
+        }
+
+        private static void InvocationDisposedEvent(string activatorPropertyValue)
+        {
+            LogScopes.TryRemove(activatorPropertyValue, out IList<AIEvent> msgs);
+            if(msgs.Any(o => o.SeverityLevel >= SeverityLevel.Warning))
             {
-                s_telemetryClient.TrackTrace(traceEvt.Message, traceEvt.SeverityLevel, traceEvt.Properties);
+                msgs.ToList().ForEach(msg =>
+                {
+                    TrackTrace(msg);
+                });
             }
         }
 
-        private static void InvocationDisposedEvent(InvocationState state)
+        private static void TrackTrace(AIEvent msg)
         {
-            LogScopes.TryRemove(state.InvocationId, out IList<TraceEvent> msgs);
-            msgs.ToList().ForEach(o =>
+            var tt = new TraceTelemetry()
             {
-                s_telemetryClient.TrackTrace(o.Message, o.SeverityLevel, o.Properties);
-            });
+                Message = msg.Message,
+                SeverityLevel = msg.SeverityLevel,
+                Timestamp = msg.Timestamp
+            };
+            msg.Properties?.ToList().ForEach(o => tt.Properties[o.Key] = o.Value);
+            s_telemetryClient.TrackTrace(tt);
+
+            if(msg.Exception != null)
+            {
+                var et = new ExceptionTelemetry()
+                {
+                    Message = msg.Message,
+                    Exception = msg.Exception,
+                    SeverityLevel = msg.SeverityLevel,
+                    Timestamp = msg.Timestamp
+                };
+                msg.Properties?.ToList().ForEach(o => et.Properties[o.Key] = o.Value);
+                s_telemetryClient.TrackException(et);
+            }
         }
 
-        private static void InvocationCreatedEvent(InvocationState state)
+        private static void InvocationCreatedEvent(string activatorPropertyValue)
         {
-            LogScopes.GetOrAdd(state.InvocationId, _ => new List<TraceEvent>());
+            LogScopes.GetOrAdd(activatorPropertyValue, _ => new List<AIEvent>());
         }
     }
 }

@@ -23,95 +23,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     /// </summary>
     public abstract class SolidRpcHostAzFunctions : SolidRpcHost
     {
-        private class FunctionDef
-        {
-            public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path)
-            {
-                FunctionHandler = functionHandler;
-                Protocol = protocol;
-                FunctionName = CreateFunctionName(openApiPath);
-                Path = FixupPath(path);
-            }
-
-            private string FixupPath(string path)
-            {
-                // remove frontend prefix
-                if (path.StartsWith($"{FunctionHandler.HttpRouteFrontendPrefix}/"))
-                {
-                    path = path.Substring(FunctionHandler.HttpRouteFrontendPrefix.Length + 1);
-                }
-                //
-                // transform wildcard names
-                //
-                var level = 0;
-                var sb = new StringBuilder();
-                for (int i = 0; i < path.Length; i++)
-                {
-                    if (path[i] == '}') level--;
-                    if (level == 0)
-                    {
-                        sb.Append(path[i]);
-                    }
-                    if (path[i] == '{') level++;
-                }
-
-                return sb.ToString();
-            }
-            private string CreateFunctionName(string functionName)
-            {
-                int argCount = 0;
-                var sb = new StringBuilder();
-                sb.Append(Protocol.Substring(0, 1).ToUpper());
-                sb.Append(Protocol.Substring(1).ToLower());
-                int level = 0;
-                foreach (var c in functionName)
-                {
-                    switch (c)
-                    {
-                        case '{':
-                            sb.Append($"arg{argCount++}");
-                            level++;
-                            break;
-                        case '}':
-                            level--;
-                            break;
-                        case '.':
-                        case '/':
-                            sb.Append('_');
-                            break;
-                        default:
-                            if(level == 0)
-                            {
-                                sb.Append(c);
-                            }
-                            break;
-                    }
-                }
-                return sb.ToString();
-            }
-
-            public IAzFunctionHandler FunctionHandler { get; }
-            public string Protocol { get; }
-            public string Path { get; }
-            public string FunctionName { get; }
-        }
-
-        private class HttpFunctionDef : FunctionDef
-        {
-            public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
-
-            public string Method { get; set; }
-            public string AuthLevel { get; set; }
-        }
-
-        private class QueueFunctionDef : FunctionDef
-        {
-            public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
-            public string QueueName { get; set; }
-            public string Connection { get; set; }
-            public string TransportType { get; set; }
-        }
-
         /// <summary>
         /// Constructs a new instance
         /// </summary>
@@ -189,6 +100,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             redirects = redirects.Select(o => new NameValuePair() { Name = o.Name, Value = o.Value.Replace($"/{hostAddress.Authority}/", "/%WEBSITE_HOSTNAME%/") }).ToList();
 
             FunctionHandler.SyncProxiesFile(
+                functionDefs,
                 staticRoutes.ToDictionary(o => o.Name, o => o.Value),
                 redirects.ToDictionary(o => o.Name, o => o.Value)
                 );
@@ -279,12 +191,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             // handle http functions
             //
             var httpFunctionDefs = functionDefs.OfType<HttpFunctionDef>().ToList();
-            var httpPaths = httpFunctionDefs.Select(o => o.Path).Distinct().ToList();
+            var httpPaths = httpFunctionDefs.Select(o => o.PathWithArgNames).Distinct().ToList();
             foreach (var path in httpPaths)
             {
-                var functionName = httpFunctionDefs.Where(o => o.Path == path).Select(o => o.FunctionName).Single();
-                var methods = httpFunctionDefs.Where(o => o.Path == path).Select(o => o.Method).OrderBy(o => o).ToArray();
-                var authLevel = httpFunctionDefs.Where(o => o.Path == path).Select(o => o.AuthLevel).Single();
+                var functionName = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.FunctionName).Single();
+                var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).OrderBy(o => o).ToArray();
+                var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Single();
 
                 var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
                 httpFunction.AuthLevel = authLevel;
