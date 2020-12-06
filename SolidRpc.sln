@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzQueue", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzSvcBus", "SolidRpc.OpenApi.AzSvcBus\SolidRpc.OpenApi.AzSvcBus.csproj", "{E17B2427-FF7F-40F3-B029-9EBA0291DF2F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.ApplicationInsights", "SolidRpc.OpenApi.ApplicationInsights\SolidRpc.OpenApi.ApplicationInsights.csproj", "{F13E896A-B051-4EEA-9E10-222B76D8E249}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,10 @@ Global
 		{E17B2427-FF7F-40F3-B029-9EBA0291DF2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E17B2427-FF7F-40F3-B029-9EBA0291DF2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E17B2427-FF7F-40F3-B029-9EBA0291DF2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F13E896A-B051-4EEA-9E10-222B76D8E249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F13E896A-B051-4EEA-9E10-222B76D8E249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F13E896A-B051-4EEA-9E10-222B76D8E249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F13E896A-B051-4EEA-9E10-222B76D8E249}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +171,7 @@ Global
 		{0F09F090-A112-435A-B290-7EB33C34556E} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{9FB1389A-1EF0-41A1-9679-46DEBF49F156} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{E17B2427-FF7F-40F3-B029-9EBA0291DF2F} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{F13E896A-B051-4EEA-9E10-222B76D8E249} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}
