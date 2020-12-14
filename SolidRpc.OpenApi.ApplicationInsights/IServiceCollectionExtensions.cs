@@ -153,7 +153,7 @@ namespace System
             {
                 var et = new ExceptionTelemetry()
                 {
-                    Message = msg.Message,
+                    Message = msg.Exception.Message,
                     Exception = msg.Exception,
                     SeverityLevel = msg.SeverityLevel,
                     Timestamp = msg.Timestamp
