@@ -78,6 +78,7 @@ namespace System
                 throw new Exception("No instrumentation key specified.");
             }
             var telConf = TelemetryConfiguration.CreateDefault();
+            telConf.TelemetryInitializers.Add(new TelemetryInitializer(services.GetSolidRpcService<IConfiguration>()));
             s_telemetryClient = new TelemetryClient(telConf);
             s_telemetryClient.InstrumentationKey = instrumentationKey;
 
