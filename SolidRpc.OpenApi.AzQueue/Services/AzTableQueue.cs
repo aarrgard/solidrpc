@@ -82,6 +82,11 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
 
             var message = await CloudQueueStore.RetreiveLargeMessageAsync(connectionName, row.Message, cancellationToken);
+            if (message == null)
+            {
+                Logger.LogError($"Failed to retreive large message:{connectionName}:{partitionKey}:{rowKey}");
+                return;
+            }
 
             HttpRequest httpRequest;
             SerializerFactory.DeserializeFromString(message, out httpRequest);
@@ -193,7 +198,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
 
             await Task.WhenAll(azMessages.Select(o => SetLargeMessage(connectionName, o, cancellationToken)));
 
-            return azMessages;
+            return azMessages.Where(o => o.Message != null).ToList();
         }
 
         private async Task SetLargeMessage(string connectionName, AzTableMessage msg, CancellationToken cancellationToken)

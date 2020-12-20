@@ -32,6 +32,11 @@ namespace SolidRpc.Tests
     public abstract class WebHostTest : TestBase
     {
         /// <summary>
+        /// The memory queue bus
+        /// </summary>
+        protected MemoryQueueBus MemoryQueueBus { get; } = new MemoryQueueBus();
+
+        /// <summary>
         /// Reads the api config
         /// </summary>
         /// <param name="folderName"></param>
@@ -148,7 +153,9 @@ namespace SolidRpc.Tests
             public override void Dispose()
             {
                 base.Dispose();
-                ((ISolidRpcApplication)WebHost.Services.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
+
+                ((ISolidRpcApplication)ClientServiceProvider.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
+                ((ISolidRpcApplication)ServerServiceProvider.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
                 WebHost?.StopAsync().Wait();
                 WebHost?.Dispose();
             }
@@ -485,7 +492,7 @@ namespace SolidRpc.Tests
             /// <param name="config"></param>
             public void AddServerAndClientService<T>(T impl, string config) where T : class
             {
-                AddServerService(sc => sc.AddSolidRpcSingletonBindings(impl, c =>
+                AddServerService(serverServices => serverServices.AddSolidRpcSingletonBindings(impl, c =>
                 {
                     c.OpenApiSpec = config;
                     return true;
@@ -562,14 +569,15 @@ namespace SolidRpc.Tests
         /// <summary>
         /// Configures the services hosted on the server
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="serverServices"></param>
         /// <returns></returns>
-        public virtual void ConfigureServerServices(IServiceCollection services)
+        public virtual void ConfigureServerServices(IServiceCollection serverServices)
         {
-            ConfigureConfiguration(services);
-            services.AddLogging(ConfigureLogging);
-            services.AddHttpClient();
-            services.AddSolidRpcSingletonServices();
+            ConfigureConfiguration(serverServices);
+            serverServices.AddSingleton(MemoryQueueBus);
+            serverServices.AddLogging(ConfigureLogging);
+            serverServices.AddHttpClient();
+            serverServices.AddSolidRpcSingletonServices();
         }
 
         /// <summary>
@@ -581,6 +589,7 @@ namespace SolidRpc.Tests
         public virtual void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             ConfigureConfiguration(clientServices);
+            clientServices.AddSingleton(MemoryQueueBus);
             clientServices.AddLogging(ConfigureLogging);
             clientServices.AddHttpClient();
             clientServices.AddSolidRpcSingletonServices();

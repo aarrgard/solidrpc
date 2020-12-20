@@ -27,20 +27,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     {
         public const string GenericInboundHandler = "generic";
 
-        private static IDictionary<string, Func<string, Task>> s_Handlers = new Dictionary<string, Func<string, Task>>();
-
-        public static Task HandleMessage(string queueName, string message)
-        {
-            if(!s_Handlers.TryGetValue(queueName, out Func<string, Task> handler))
-            {
-                throw new ArgumentException("No queue handler registered for queue:"+queueName);
-            }
-            return handler(message);
-        }
-
         public MemoryQueueMethodBindingHandler(
             ILogger<MemoryQueueMethodBindingHandler> logger,
-            IConfiguration configuration,
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
             MemoryQueueHandler queueHandler,
@@ -48,24 +36,28 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             IServiceScopeFactory serviceScopeFactory)
         {
             Logger = logger;
-            Configuration = configuration;
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
             QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             ServiceScopeFactory = serviceScopeFactory;
             RegisteredQueues = new HashSet<string>();
+            using (var scope = ServiceScopeFactory.CreateScope())
+            {
+                MemoryQueueBus = scope.ServiceProvider.GetService<MemoryQueueBus>();
+            }
+            SolidRpcApplication.AddShutdownCallback(() => { Dispose(); return Task.CompletedTask; });
         }
 
 
         private ILogger Logger { get; }
-        public IConfiguration Configuration { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private QueueHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
         private HashSet<string> RegisteredQueues { get; }
+        private MemoryQueueBus MemoryQueueBus { get; }
 
         /// <summary>
         /// Invoked when a binding has been created. If there is a Queue transport
@@ -74,6 +66,10 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         /// <param name="binding"></param>
         public void BindingCreated(IMethodBinding binding)
         {
+            if(MemoryQueueBus == null)
+            {
+                return;
+            }
             var queueTransport = binding.Transports.OfType<IQueueTransport>().Where(o => o.TransportType == QueueHandler.TransportType).FirstOrDefault();
             if (queueTransport == null)
             {
@@ -93,7 +89,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 return;
             }
             RegisteredQueues.Add(queueTransport.QueueName);
-            s_Handlers.Add(queueTransport.QueueName, msg => MessageHandler(msg, SolidRpcApplication.ShutdownToken));
+            MemoryQueueBus.AddHandler(queueTransport.QueueName, msg => MessageHandler(msg, SolidRpcApplication.ShutdownToken));
         }
 
         private async Task MessageHandler(string msg, CancellationToken cancellationToken)
@@ -101,6 +97,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             try
             {
                 Logger.LogInformation("Started processing message..");
+
+                SolidRpcApplication.ShutdownToken.ThrowIfCancellationRequested();
 
                 HttpRequest httpRequest;
                 SerializerFactory.DeserializeFromString(msg, out httpRequest);
@@ -121,15 +119,21 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public Task FlushQueuesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Task.CompletedTask;
+            if(MemoryQueueBus == null)
+            {
+                return Task.CompletedTask;
+            }
+            return MemoryQueueBus.DispatchAllMessagesAsync();
         }
 
         public void Dispose()
         {
-            RegisteredQueues.ToList().ForEach(o =>
+            var queueNames = new List<string>(RegisteredQueues);
+            foreach (var queueName in queueNames)
             {
-                s_Handlers.Remove(o);
-            });
+                MemoryQueueBus.RemoveHandler(queueName);
+                RegisteredQueues.Remove(queueName);
+            }
         }
     }
 }

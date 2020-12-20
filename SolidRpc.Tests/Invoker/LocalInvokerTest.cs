@@ -145,13 +145,14 @@ namespace SolidRpc.Tests.Invoker
         [Test]
         public async Task TestInvokeLocalImplementationWithProxyAdvice()
         {
+            var ms = new MemoryQueueBus();
             var sb = new ConfigurationBuilder();
             var sc = new ServiceCollection();
             sc.AddSingleton<IConfiguration>(sb.Build());
             sc.AddLogging(ConfigureLogging);
+            sc.AddSingleton(ms);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcSingletonServices();
-
             var openApiSpec = sc.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             sc.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
@@ -165,8 +166,13 @@ namespace SolidRpc.Tests.Invoker
             var sp = sc.BuildServiceProvider();
             var mbs = sp.GetRequiredService<IMethodBinderStore>().MethodBinders;
             // we should not be able to invoke the service directly
+
+            // use proxy
             var proxy = sp.GetRequiredService<ITestInterface>();
             await proxy.DoXAsync("MemoryQueueHandler");
+            Assert.AreEqual(1, await ms.DispatchAllMessagesAsync());
+
+
         }
     }
 }

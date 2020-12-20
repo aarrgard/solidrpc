@@ -100,11 +100,11 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
-        public override void ConfigureServerServices(IServiceCollection services)
+        public override void ConfigureServerServices(IServiceCollection serverServices)
         {
-            base.ConfigureServerServices(services);
-            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
-            services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
+            base.ConfigureServerServices(serverServices);
+            var openApiSpec = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
+            serverServices.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetSecurityKey(SecKey.ToString());
@@ -170,6 +170,8 @@ namespace SolidRpc.Tests.Invoker
                 var tasks = ctx.ServerServiceProvider.GetRequiredService<IEnumerable<IMethodBindingHandler>>().Select(o => o.FlushQueuesAsync());
                 await Task.WhenAll(tasks);
 
+                await MemoryQueueBus.DispatchAllMessagesAsync();
+
                 Assert.AreEqual(count, _doYInvocations);
                 for (int i = 0; i < count; i++)
                 {
@@ -198,6 +200,8 @@ namespace SolidRpc.Tests.Invoker
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
 
                 await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
+
+                await MemoryQueueBus.DispatchAllMessagesAsync();
 
                 Assert.AreEqual(1, _doYInvocations);
 

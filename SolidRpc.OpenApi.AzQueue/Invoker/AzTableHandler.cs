@@ -334,7 +334,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e, "Error processing message - flaggin it as error.");
+                    Logger.LogError(e, "Error processing message - flagging it as error.");
 
                     var fetchResult = await cloudTable.ExecuteAsync(TableOperation.Retrieve<TableMessageEntity>(nextMessage.PartitionKey, nextMessage.RowKey), TableRequestOptions, OperationContext, cancellationToken);
                     var oldMessage = (TableMessageEntity)fetchResult.Result;

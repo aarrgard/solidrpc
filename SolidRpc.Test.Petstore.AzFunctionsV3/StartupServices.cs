@@ -8,6 +8,7 @@ using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
+using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using SolidRpc.Test.Petstore.AzFunctionsV3;
@@ -62,7 +63,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             }, true);
         }
 
-        protected override bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
+        protected override bool ConfigureAzureFunction(ISolidRpcOpenApiConfig conf)
         {
             //
             // enable anonyous access to the swagger methods and static content.
@@ -74,18 +75,30 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //c.SetQueueTransport<QueueInvocationHandler>();
             //c.SetQueueTransportInboundHandler("azfunctions");
 
-            if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
+            var method = conf.Methods.First();
+            if (method.DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
-                c.DisableSecurity();
+                conf.DisableSecurity();
                 return true;
             }
-            if (c.Methods.First().DeclaringType == typeof(ISolidRpcContentHandler))
+            if (method.DeclaringType == typeof(ISolidRpcContentHandler))
             {
-                c.DisableSecurity();
+                conf.DisableSecurity();
                 return true;
+            }
+            if (method.DeclaringType == typeof(IAzTableQueue))
+            {
+                switch(method.Name)
+                {
+                    case nameof(IAzTableQueue.ProcessTestMessage):
+                        conf.ProxyTransportType = AzTableHandler.TransportType;
+                        conf.SetHttpTransport(InvocationStrategy.Forward);
+                        conf.SetQueueTransport<AzTableHandler>(InvocationStrategy.Invoke, "AzureWebJobsStorage");
+                        break;
+                }
             }
 
-            var res = base.ConfigureAzureFunction(c);
+            var res = base.ConfigureAzureFunction(conf);
             return true;
         }
     }

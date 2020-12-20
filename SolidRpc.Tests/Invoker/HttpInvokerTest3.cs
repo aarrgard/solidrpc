@@ -161,9 +161,12 @@ namespace SolidRpc.Tests.Invoker
                 var front = ctx.ClientServiceProvider.GetRequiredService<ITestInterfaceFront>();
                 await front.DoXAsync(new ComplexType());
 
+                Assert.AreEqual(1, await MemoryQueueBus.DispatchAllMessagesAsync());
+
                 var frontInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterfaceFront>>();
                 await frontInvoker.InvokeAsync(o => o.DoXAsync(new ComplexType(), CancellationToken.None), InvocationOptions.Local);
 
+                Assert.AreEqual(1, await MemoryQueueBus.DispatchAllMessagesAsync());
             }
         }
 
@@ -193,7 +196,7 @@ namespace SolidRpc.Tests.Invoker
                 var reqMsg = new System.Net.Http.HttpRequestMessage();
                 request.CopyTo(reqMsg);
 
-                //var resp = await methodInvoker.InvokeAsync(sp, memoryQueueHandler, request);
+                var resp = await methodInvoker.InvokeAsync(sp, memoryQueueHandler, request);
 
             }
         }

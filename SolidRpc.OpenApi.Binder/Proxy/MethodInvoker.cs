@@ -153,6 +153,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            var invocationValues = new Dictionary<string, object>();
+
             if (Logger.IsEnabled(LogLevel.Information))
             {
                 Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
@@ -185,6 +187,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
                 var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
                 invocationSource = handlers.First(o => o.TransportType == invokeTransport.TransportType);
+                invocationValues[typeof(IHandler).FullName] = invocationSource;
             }
 
             //
@@ -218,7 +221,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
 
             // add invocation values
-            var invocationValues = new Dictionary<string, object>();
             invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invocationSource.TransportType, InvocationOptions.MessagePriorityNormal);
             invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
 

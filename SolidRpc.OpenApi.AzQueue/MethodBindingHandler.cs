@@ -203,6 +203,11 @@ namespace SolidRpc.OpenApi.AzQueue
                 }
 
                 var strMsg = await CloudQueueStore.RetreiveLargeMessageAsync(connectionName, msg.AsString, cancellationToken);
+                if (strMsg == null)
+                {
+                    Logger.LogError($"Failed to retreive large message:{connectionName}:{msg.Id}");
+                    return true;
+                }
 
                 HttpRequest httpRequest;
                 SerializerFactory.DeserializeFromString(strMsg, out httpRequest);

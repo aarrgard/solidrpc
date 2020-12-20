@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -30,12 +31,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         {
         }
 
+        private MemoryQueueBus MemoryQueueBus => ServiceProvider.GetRequiredService<MemoryQueueBus>();
+
         protected override Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             try
             {
                 Logger.LogInformation("MemoryQueue dispatching message...");
-                return MemoryQueueMethodBindingHandler.HandleMessage(transport.QueueName, message);
+                return MemoryQueueBus.HandleMessage(transport.QueueName, message);
             }
             finally
             {
