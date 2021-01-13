@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
-using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -260,7 +259,7 @@ module.exports = {{
             {
                 var npmFolder = await DownloadToCache("npm", "6.11.2");
                 var script = WriteNodeServicesScript(tmpDir, "NpmGenerator.NpmScript.js");
-                var nodeServicesOptions = new NodeServicesOptions(ServiceProvider);
+                //var nodeServicesOptions = new NodeServicesOptions(ServiceProvider);
 
                 ////
                 //// put old project path in the path env
@@ -276,31 +275,31 @@ module.exports = {{
                 //}
                 //nodeServicesOptions.EnvironmentVariables = env;
 
-                nodeServicesOptions.ProjectPath = Path.Combine(tmpDir.FullName, "package");
-                nodeServicesOptions.WatchFileExtensions = new string[0];
-                nodeServicesOptions.InvocationTimeoutMilliseconds = 5 * 60 * 1000;
-                using (var nodeService = NodeServicesFactory.CreateNodeServices(nodeServicesOptions))
-                {
-                    var resultCode = await nodeService.InvokeAsync<int>(
-                        cancellationToken,
-                        script.FullName,
-                        npmFolder.FullName,
-                        "install");
-                    if (resultCode != 0)
-                    {
-                        throw new Exception("Failed to install npm packages");
-                    }
-                    resultCode = await nodeService.InvokeAsync<int>(
-                        cancellationToken,
-                        script.FullName,
-                        npmFolder.FullName,
-                        "run",
-                        npmCommmand);
-                    if (resultCode != 0)
-                    {
-                        throw new Exception("Failed to run command");
-                    }
-                }
+                //nodeServicesOptions.ProjectPath = Path.Combine(tmpDir.FullName, "package");
+                //nodeServicesOptions.WatchFileExtensions = new string[0];
+                //nodeServicesOptions.InvocationTimeoutMilliseconds = 5 * 60 * 1000;
+                //using (var nodeService = NodeServicesFactory.CreateNodeServices(nodeServicesOptions))
+                //{
+                //    var resultCode = await nodeService.InvokeAsync<int>(
+                //        cancellationToken,
+                //        script.FullName,
+                //        npmFolder.FullName,
+                //        "install");
+                //    if (resultCode != 0)
+                //    {
+                //        throw new Exception("Failed to install npm packages");
+                //    }
+                //    resultCode = await nodeService.InvokeAsync<int>(
+                //        cancellationToken,
+                //        script.FullName,
+                //        npmFolder.FullName,
+                //        "run",
+                //        npmCommmand);
+                //    if (resultCode != 0)
+                //    {
+                //        throw new Exception("Failed to run command");
+                //    }
+                //}
                 return CreateNpmPackage(tmpDir);
             }
             finally

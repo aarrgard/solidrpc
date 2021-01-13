@@ -45,6 +45,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             });
             services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
+            services.AddSolidRpcNpmGenerator(ConfigureAzureFunction);
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);

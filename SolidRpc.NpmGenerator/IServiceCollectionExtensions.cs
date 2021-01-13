@@ -31,7 +31,6 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 services.AddSingleton<ICodeDocRepository, CodeDocRepository>();
             }
-            services.AddNodeServices();
             services.AddHttpClient();
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator), typeof(INodeService));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();

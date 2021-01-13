@@ -156,7 +156,7 @@ namespace SolidRpc.Tests.NpmGenerator
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Works locally")]
+        [Test]
         public async Task TestRunNodeJsSimple()
         {
             var sc = new ServiceCollection();

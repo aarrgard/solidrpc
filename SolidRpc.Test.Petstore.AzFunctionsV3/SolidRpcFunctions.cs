@@ -108,6 +108,132 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_NpmGenerator_Services_INodeService_DownloadPackageAsync_arg0_arg1
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_DownloadPackageAsync_arg0_arg1")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSAsync_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSAsync_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSInDebugger_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSInDebugger_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INodeService_GetNodeVersionAsync
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_GetNodeVersionAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateCodeNamespace_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateCodeNamespace_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpm_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpm_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpmPackage_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpmPackage_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpmPackage/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateTypesTs_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateTypesTs_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_RunNpm_arg0
+    {
+        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_RunNpm_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DispatchMessageAsync_arg0_arg1
     {
         [FunctionName("Http_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DispatchMessageAsync_arg0_arg1")]
@@ -309,6 +435,20 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_MyFunc_arg0_arg1")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}/{arg1}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService
+    {
+        [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

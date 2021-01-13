@@ -10,6 +10,7 @@
     <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc012" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.ApplicationInsights\SolidRpc.OpenApi.ApplicationInsights.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctionsV2\SolidRpc.OpenApi.AzFunctionsV2Extension.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj" />

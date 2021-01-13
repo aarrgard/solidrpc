@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="SharpZipLib" Version="1.3.0" />
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
@@ -46,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Arch\x86\node.exe">
+    <Content Update="Arch\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

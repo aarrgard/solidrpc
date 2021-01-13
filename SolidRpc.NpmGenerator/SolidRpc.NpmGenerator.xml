@@ -258,6 +258,14 @@
             </summary>
             <param name="logger"></param>
         </member>
+        <member name="M:SolidRpc.NpmGenerator.Services.NodeService.ExecuteJSAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Executes the supplied js
+            </summary>
+            <param name="js"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.NpmGenerator.Services.NpmGenerator">
             <summary>
             The npm generator implementation.

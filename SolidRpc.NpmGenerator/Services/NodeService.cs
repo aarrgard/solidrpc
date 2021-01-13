@@ -4,6 +4,7 @@ using SolidRpc.NpmGenerator.Types;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -36,6 +37,12 @@ namespace SolidRpc.NpmGenerator.Services
 
         private ILogger Logger { get; }
 
+        /// <summary>
+        /// Executes the supplied js
+        /// </summary>
+        /// <param name="js"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<NodeExecution> ExecuteJSAsync(string js, CancellationToken cancellationToken = default(CancellationToken))
         {
             //
@@ -50,7 +57,7 @@ namespace SolidRpc.NpmGenerator.Services
                 //
                 // Run script
                 //
-                return await Task.Factory.StartNew<NodeExecution>(RunJs, new ExecutionArg()
+                return await Task.Factory.StartNew(RunJs, new ExecutionArg()
                 {
                     UseDebugger = false,
                     Script = js,
@@ -88,16 +95,20 @@ namespace SolidRpc.NpmGenerator.Services
                 switch(arch)
                 {
                     case "x86":
+                    case "AMD64":
                         executableName = "node.exe";
                         break;
                     default:
                         throw new Exception($"Cannot handle architecture {arch}");
                 }
-                var exeFileName = Path.Combine(dllLocation.DirectoryName, "Arch", arch, executableName);
-
-                if(!File.Exists(exeFileName))
+                var exeFileNames = new string[] {
+                    Path.Combine(dllLocation.Directory.Parent.Name, "Arch", arch, executableName),
+                    Path.Combine(dllLocation.Directory.Parent.FullName, "Arch", arch, executableName),
+                };
+                var exeFileName = exeFileNames.FirstOrDefault(o => File.Exists(o));
+                if(exeFileName == null)
                 {
-                    throw new Exception($"Cannot find the executable {exeFileName}");
+                    throw new Exception($"Cannot find any of the executables {string.Join(",", exeFileNames)}");
                 }
 
                 var nodeArgs = eArg.Arguments;

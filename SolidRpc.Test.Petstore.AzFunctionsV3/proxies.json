@@ -228,6 +228,96 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync"
     },
+    "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService"
+    },
+    "SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}"
+    },
+    "SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync"
+    },
+    "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}"
+    },
+    "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}"
+    },
+    "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}"
+    },
+    "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}"
+    },
+    "SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}"
+    },
+    "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}"
+    },
+    "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpmPackage/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpmPackage/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpmPackage/{arg0}"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

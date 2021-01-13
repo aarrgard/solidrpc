@@ -1,14 +1,17 @@
 ﻿using SolidRpc.Abstractions.Types;
+using SolidRpc.NpmGenerator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Test.Petstore.AzFunctionsV3
 {
     public interface ITestInterface 
     {
+        Task<string> RunNodeService(CancellationToken cancellationToke = default);
         Task<string> MyFunc(string arg1);
         Task<string> MyFunc(string arg1, string arg2);
         Task<FileContent> UploadFile(string container, FileContent fileContent);
@@ -16,6 +19,13 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
 
     public class TestImplementation : ITestInterface
     {
+        public TestImplementation(INodeService nodeService)
+        {
+            NodeService = nodeService;
+        }
+
+        public INodeService NodeService { get; }
+
         public Task<string> MyFunc(string arg)
         {
             throw new NotImplementedException();
@@ -24,6 +34,13 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
         public Task<string> MyFunc(string arg1, string arg2)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> RunNodeService(CancellationToken cancellationToken)
+        {
+            var res = await NodeService.ExecuteJSAsync("console.log('test');", cancellationToken);
+            if (res.ExitCode == 0) return res.Out;
+            throw new Exception(res.Err);
         }
 
         public Task<FileContent> UploadFile(string container, FileContent fileContent)
