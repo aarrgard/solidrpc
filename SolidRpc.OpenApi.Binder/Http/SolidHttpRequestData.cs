@@ -37,6 +37,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         private const string SystemString = "System.String";
         private const string SystemIOStream = "System.IO.Stream";
         private const string SystemThreadingCancellationToken = "System.Threading.CancellationToken";
+        private const string SystemSecurityPrincipalIPrincipal = "System.Security.Principal.IPrincipal";
         private static readonly ICollection<string> SystemTypes = new HashSet<string>()
         {
             SystemBoolean, SystemDouble, SystemByte, SystemSingle,
@@ -170,6 +171,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case null:
                         case SystemThreadingCancellationToken:
                             return (_) => nullable ? (CancellationToken?)null : CancellationToken.None;
+                        case SystemSecurityPrincipalIPrincipal:
+                            return (_) => null;
                         case SystemBoolean:
                             return (_) => {
                                 if (bool.TryParse(_?.GetStringValue(), out bool parsed)) 
@@ -475,6 +478,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                     {
                         case null:
                         case SystemThreadingCancellationToken:
+                        case SystemSecurityPrincipalIPrincipal:
                             return (_, val) => null;
                         case SystemBoolean:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((bool)val) ? "true" : "false"));

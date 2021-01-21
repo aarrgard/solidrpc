@@ -9,6 +9,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen.OperatorOverrides.Types
     /// </summary>
     public class ComplexType
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if(!(obj is ComplexType other))
@@ -17,16 +22,35 @@ namespace SolidRpc.Tests.Swagger.SpecGen.OperatorOverrides.Types
             }
             return true;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return 1;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return base.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static ComplexType operator -(ComplexType a, ComplexType b) => new ComplexType();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static ComplexType operator +(ComplexType a, ComplexType b) => new ComplexType();
     }
 }

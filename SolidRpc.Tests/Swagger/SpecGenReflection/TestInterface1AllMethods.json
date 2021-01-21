@@ -215,6 +215,20 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestIPrincipal": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a principal argument",
+        "operationId": "TestIPrincipal",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestNullableParameter": {
       "get": {
         "tags": [

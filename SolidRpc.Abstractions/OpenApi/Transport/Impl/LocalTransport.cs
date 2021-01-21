@@ -8,8 +8,6 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
     /// </summary>
     public class LocalTransport : Transport, ILocalTransport
     {
-        private Uri _operationAddress;
-
         /// <summary>
         /// Represents a queue transport
         /// </summary>
@@ -19,7 +17,10 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         {
         }
 
-        public override Uri OperationAddress => _operationAddress;
+        /// <summary>
+        /// Returns the operation address
+        /// </summary>
+        public override Uri OperationAddress => null;
 
         /// <summary>
         ///  configures this transport

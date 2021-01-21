@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,9 +37,18 @@ namespace SolidRpc.OpenApi.Binder.V2
             var parameter = parameters.FirstOrDefault(o => NameMatches(o.Name, parameterInfo.Name));
             if(parameter == null)
             {
-                if(parameterInfo.ParameterType == typeof(CancellationToken))
+                if (parameterInfo.ParameterType == typeof(CancellationToken))
                 {
-                    return new ParameterObject(operationObject) {
+                    return new ParameterObject(operationObject)
+                    {
+                        In = "skip",
+                        Name = parameterInfo.Name
+                    };
+                }
+                if (parameterInfo.ParameterType == typeof(IPrincipal))
+                {
+                    return new ParameterObject(operationObject)
+                    {
                         In = "skip",
                         Name = parameterInfo.Name
                     };

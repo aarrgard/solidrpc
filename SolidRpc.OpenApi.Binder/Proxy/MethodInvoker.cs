@@ -6,6 +6,7 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
@@ -211,6 +212,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             object[] args;
             try
             {
+                request.Principal = serviceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal;
                 args = await selectedBinding.ExtractArgumentsAsync(request);
             }
             catch (Exception e)
@@ -225,7 +227,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
 
             //
-            // sett http headers
+            // set http headers
             //
             foreach (var qv in request.Headers)
             {

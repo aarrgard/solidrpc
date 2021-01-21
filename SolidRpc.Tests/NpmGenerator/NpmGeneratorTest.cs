@@ -168,7 +168,7 @@ namespace SolidRpc.Tests.NpmGenerator
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();
             var version = await nodeService.GetNodeVersionAsync();
-            Assert.AreEqual("v8.17.0", version);
+            Assert.AreEqual("v14.15.4", version);
 
             var cts = new CancellationTokenSource();
             cts.CancelAfter(10000); 

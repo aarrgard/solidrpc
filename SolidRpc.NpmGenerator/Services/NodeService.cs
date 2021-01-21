@@ -102,7 +102,7 @@ namespace SolidRpc.NpmGenerator.Services
                         throw new Exception($"Cannot handle architecture {arch}");
                 }
                 var exeFileNames = new string[] {
-                    Path.Combine(dllLocation.Directory.Parent.Name, "Arch", arch, executableName),
+                    Path.Combine(dllLocation.Directory.FullName, "Arch", arch, executableName),
                     Path.Combine(dllLocation.Directory.Parent.FullName, "Arch", arch, executableName),
                 };
                 var exeFileName = exeFileNames.FirstOrDefault(o => File.Exists(o));

@@ -28,6 +28,7 @@
     <None Remove="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1NullableParameter.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1OptionalParameter.json" />
+    <None Remove="Swagger\SpecGenReflection\TestInterface1Principal.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1StringValues.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
@@ -43,6 +44,7 @@
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1FileTypeWithAdditionalData.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Principal.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
@@ -59,20 +61,19 @@
     <PackageReference Include="IdentityModel" Version="4.4.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.9" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
-    <PackageReference Include="Moq" Version="4.15.1" />
+    <PackageReference Include="Moq" Version="4.16.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="nunit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc012" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc013" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 

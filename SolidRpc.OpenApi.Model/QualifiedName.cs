@@ -9,10 +9,19 @@ namespace SolidRpc.OpenApi.Model
     /// </summary>
     public class QualifiedName
     {
+        /// <summary>
+        /// Converts the string to a qualified name
+        /// </summary>
+        /// <param name="s"></param>
         public static implicit operator QualifiedName(string s)
         {
             return new QualifiedName("", s);
         }
+
+        /// <summary>
+        /// Converts the qualified name to a string
+        /// </summary>
+        /// <param name="qn"></param>
         public static implicit operator string(QualifiedName qn)
         {
             return qn.ToString();

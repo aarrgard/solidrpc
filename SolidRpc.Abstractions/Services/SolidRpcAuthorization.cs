@@ -11,6 +11,9 @@ namespace SolidRpc.Abstractions.Services
     /// </summary>
     public class SolidRpcAuthorization : ISolidRpcAuthorization
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
         public SolidRpcAuthorization()
         {
             var claims = new Claim[] { };

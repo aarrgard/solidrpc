@@ -1,0 +1,33 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestIPrincipal": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a principal argument",
+        "operationId": "TestIPrincipal",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
+    }
+  ]
+}

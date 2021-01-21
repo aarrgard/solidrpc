@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -111,18 +112,17 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
 
             //
-            // cancellation tokens can be implicitly bound
+            // cancellation tokens, http requests and IPrincipal objects can be implicitly bound
             //
-            if(parameter.ParameterType == typeof(CancellationToken))
+            if (parameter.ParameterType == typeof(CancellationToken))
             {
                 return true;
             }
-
-            //
-            // http requests can be introduced at runtime.
-            //
-            var httpTemplate = HttpRequestTemplate.GetTemplate(parameter.ParameterType);
-            if(httpTemplate.IsTemplateType)
+            if (parameter.ParameterType == typeof(IPrincipal))
+            {
+                return true;
+            }
+            if(HttpRequestTemplate.GetTemplate(parameter.ParameterType).IsTemplateType)
             {
                 return true;
             }

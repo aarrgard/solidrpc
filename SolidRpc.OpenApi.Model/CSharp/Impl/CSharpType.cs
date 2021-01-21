@@ -88,6 +88,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }).ToList();
         }
 
+        /// <summary>
+        /// Determines if this is a generic type
+        /// </summary>
+        /// <returns></returns>
         public ICSharpType GetGenericType()
         {
             var (typeName, genArgs) = CSharpRepository.ReadType(FullName);
@@ -99,6 +103,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             return null;
         }
 
+        /// <summary>
+        /// Determines if this is a dictionary type
+        /// </summary>
+        /// <param name="keyType"></param>
+        /// <param name="valueType"></param>
+        /// <returns></returns>
         public bool IsDictionaryType(out ICSharpType keyType, out ICSharpType valueType)
         {
             if (!IsGenericType)

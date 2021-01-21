@@ -447,6 +447,11 @@
             Returns the cancellation token
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Principal">
+            <summary>
+            Returns the cancellation token
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Method">
             <summary>
             The method to use
@@ -1392,6 +1397,11 @@
             </summary>
             <param name="invocationStrategy"></param>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.LocalTransport.OperationAddress">
+            <summary>
+            Returns the operation address
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.LocalTransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
             <summary>
              configures this transport
@@ -2099,6 +2109,11 @@
         <member name="T:SolidRpc.Abstractions.Services.SolidRpcAuthorization">
             <summary>
             Implements the solid authorization logic
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.SolidRpcAuthorization.#ctor">
+            <summary>
+            Constructs a new instance
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.CurrentPrincipal">

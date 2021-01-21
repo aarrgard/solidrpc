@@ -10,6 +10,7 @@ using SolidRpc.OpenApi.Model.Generator.V2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -86,6 +87,13 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// <param name="req"></param>
             /// <returns></returns>
             Task TestHttpRequest(HttpRequest req);
+
+            /// <summary>
+            /// Tests a principal argument
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <returns></returns>
+            Task TestIPrincipal(IPrincipal principal);
 
             /// <summary>
             /// Tests a TimeSpan argument
@@ -323,6 +331,24 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1HttpRequest)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
+            Assert.AreEqual(1, binding.Arguments.Count());
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestInterface1Principal()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestIPrincipal));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1Principal)}.json"), spec);
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());

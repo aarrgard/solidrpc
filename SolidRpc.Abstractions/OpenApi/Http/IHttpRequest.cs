@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Security.Principal;
 using System.Threading;
 
 namespace SolidRpc.Abstractions.OpenApi.Http
@@ -12,8 +12,12 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <summary>
         /// Returns the cancellation token
         /// </summary>
-
         CancellationToken CancellationToken { get; set; }
+
+        /// <summary>
+        /// Returns the cancellation token
+        /// </summary>
+        IPrincipal Principal { get; set; }
 
         /// <summary>
         /// The method to use

@@ -14,7 +14,6 @@ using System.Text.RegularExpressions;
 using System.Security.Principal;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -83,7 +82,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         }
 
         /// <summary>
-        /// Handles  the invocation
+        /// Handles the invocation
         /// </summary>
         /// <param name="next"></param>
         /// <param name="invocation"></param>
@@ -120,6 +119,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new UnauthorizedException("No valid path");
             }
+
+            invocation.ReplaceArgument<IPrincipal>((n, v) => prin);
 
             return await next();
         }

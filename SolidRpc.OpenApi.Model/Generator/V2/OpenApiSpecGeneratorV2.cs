@@ -5,6 +5,7 @@ using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 
 namespace SolidRpc.OpenApi.Model.Generator.V2
@@ -134,7 +135,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             operationObject.Description = method.Comment?.Summary;
 
             var parameters = method.Parameters
-                .Where(o => o.ParameterType.RuntimeType != typeof(CancellationToken));
+                .Where(o => o.ParameterType.RuntimeType != typeof(CancellationToken))
+                .Where(o => o.ParameterType.RuntimeType != typeof(IPrincipal));
 
             if (parameters.Any(o => o.ParameterType.IsFileType))
             {
