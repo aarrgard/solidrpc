@@ -119,14 +119,15 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public override async Task StartAsync()
             {
+                BaseAddress = new Uri($"http://localhost:{s_hostPort++}");
                 WebHost = GetWebHost();
                 await WebHost.StartAsync();
 
                 var feature = WebHost.ServerFeatures.Get<IServerAddressesFeature>();
                 foreach (var addr in feature.Addresses)
                 {
-                    ServerStarted(new Uri(addr)); 
-                    BaseAddress = new Uri(addr);
+                    if (new Uri(addr) != BaseAddress) throw new Exception("Addresses does not match");
+                    ServerStarted(BaseAddress); 
                 }
 
                 await base.StartAsync();
@@ -141,9 +142,10 @@ namespace SolidRpc.Tests
                 var builder = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(new string[0]);
                 builder.ConfigureLogging(WebHostTest.ConfigureLogging);
                 builder.ConfigureServices((sc) => {
+                    sc.AddSingleton<Uri>(BaseAddress);
                     sc.AddSingleton<IStartup>(this);
                 });
-                builder.UseUrls($"http://localhost:{s_hostPort++}");
+                builder.UseUrls(BaseAddress.ToString());
                 return builder.Build();
             }
 

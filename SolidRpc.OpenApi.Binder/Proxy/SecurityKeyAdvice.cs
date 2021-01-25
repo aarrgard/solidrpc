@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Services;
+using System.Security.Principal;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -51,6 +52,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 {
                     var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
                     auth.CurrentPrincipal = SecurityPathClaimAdvice.AdminPrincipal;
+                    invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
                 }
             }
 

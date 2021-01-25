@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using System.Security.Principal;
 
 namespace SolidRpc.Tests.Security
 {
@@ -26,9 +27,10 @@ namespace SolidRpc.Tests.Security
             /// <summary>
             /// A test method
             /// </summary>
+            /// <param name="principal"></param>
             /// <param name="arg"></param>
             /// <returns></returns>
-            Task<string> InvokeAsync(string arg);
+            Task<string> InvokeAsync(IPrincipal principal, string arg);
         }
 
         /// <summary>
@@ -39,11 +41,12 @@ namespace SolidRpc.Tests.Security
             /// <summary>
             /// A test method
             /// </summary>
+            /// <param name="principal"></param>
             /// <param name="arg"></param>
             /// <returns></returns>
-            public Task<string> InvokeAsync(string arg)
+            public Task<string> InvokeAsync(IPrincipal principal, string arg)
             {
-                return Task.FromResult(arg);
+                return Task.FromResult(arg + ":" + principal.Identity.Name);
             }
         }
 
@@ -88,7 +91,8 @@ namespace SolidRpc.Tests.Security
             {
 
                 o.OpenApiSpec = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(o.Methods.ToArray()).WriteAsJsonString();
-                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = new Uri("http://localhost:5000/");
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>();
+                //o.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
                 return true;
             });
         }
@@ -294,7 +298,7 @@ namespace SolidRpc.Tests.Security
         /// <summary>
         /// Tests the web host
         /// </summary>
-        [Test, Ignore("Issue with port")]
+        [Test]
         public async Task TestOauthProtectedResource()
         {
             using (var ctx = CreateKestrelHostContext(serverServices =>
@@ -303,10 +307,11 @@ namespace SolidRpc.Tests.Security
             }))
             {
                 await ctx.StartAsync();
+
                 var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuthProtectedService>();
 
-                var res = await protectedService.InvokeAsync("test");
-                Assert.AreEqual("test", res);
+                var res = await protectedService.InvokeAsync(null, "test");
+                Assert.AreEqual("test:clientid", res);
             }
         }
 

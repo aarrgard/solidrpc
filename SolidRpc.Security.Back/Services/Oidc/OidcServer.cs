@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -124,6 +125,7 @@ namespace SolidRpc.Security.Back.Services
         {
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
+            claimsIdentity.AddClaim(new System.Security.Claims.Claim(ClaimsIdentity.DefaultNameClaimType, clientId));
             var accessToken = await TokenFactory.CreateAccessToken(claimsIdentity, cancellationToken);
             return new TokenResponse()
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,13 +31,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// Constucts a new instance
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="authorityFactory"></param>
+        /// <param name="serviceProvider"></param>
         public SecurityOAuth2Advice(
             ILogger<SolidRpcRateLimitAdvice<TObject, TMethod, TAdvice>> logger,
-            IAuthorityFactory authorityFactory)
+            IServiceProvider serviceProvider)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            AuthorityFactory = authorityFactory;
+            AuthorityFactory = serviceProvider.GetService<IAuthorityFactory>();
         }
         private ILogger Logger { get; }
         private IAuthorityFactory AuthorityFactory { get; }
@@ -52,7 +53,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="config"></param>
         public bool Configure(ISecurityOAuth2Config config)
         {
-            if(config.OAuth2Authority == null) 
+            if (AuthorityFactory == null)
+            {
+                return false;
+            }
+            if (config.OAuth2Authority == null)
             {
                 return false;
             }
@@ -108,8 +113,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 return;
             }
             var jwt = authHeader.Substring("bearer ".Length);
-            var authorization = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-            authorization.CurrentPrincipal = await Authority.GetPrincipalAsync(jwt, invocation.CancellationToken);
+            var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
+            auth.CurrentPrincipal = await Authority.GetPrincipalAsync(jwt, invocation.CancellationToken);
+            invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
         }
 
         private async Task HandleRemoteCall(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
