@@ -2503,26 +2503,6 @@
             The value
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.Types.UnauthorizedException">
-            <summary>
-            Raised when the the method invocation is not allowed
-            </summary>
-        </member>
-        <member name="F:SolidRpc.Abstractions.Types.UnauthorizedException.HttpStatusCode">
-            <summary>
-            The http status code
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor">
-            <summary>
-            Constructs a new exception
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor(System.String)">
-            <summary>
-            Constructs a new exception
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery">
             <summary>
             Represents a deiscovery document.
@@ -2835,6 +2815,26 @@
         <member name="P:SolidRpc.Abstractions.Types.SolidRpcHostInstance.HttpCookies">
             <summary>
             The cookie to set in order to reach this host
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.UnauthorizedException">
+            <summary>
+            Raised when the the method invocation is not allowed
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Types.UnauthorizedException.HttpStatusCode">
+            <summary>
+            The http status code
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor">
+            <summary>
+            Constructs a new exception
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.UnauthorizedException.#ctor(System.String)">
+            <summary>
+            Constructs a new exception
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.TypeTemplate">

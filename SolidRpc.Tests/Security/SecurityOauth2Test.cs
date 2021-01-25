@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Security.Principal;
+using SolidRpc.Abstractions.Types;
 
 namespace SolidRpc.Tests.Security
 {
@@ -22,7 +23,7 @@ namespace SolidRpc.Tests.Security
         /// <summary>
         /// A test interface
         /// </summary>
-        public interface IOAuthProtectedService
+        public interface IOAuth2EnabledService
         {
             /// <summary>
             /// A test method
@@ -30,13 +31,13 @@ namespace SolidRpc.Tests.Security
             /// <param name="principal"></param>
             /// <param name="arg"></param>
             /// <returns></returns>
-            Task<string> InvokeAsync(IPrincipal principal, string arg);
+            Task<string> GetEnabledResource(IPrincipal principal, string arg);
         }
 
         /// <summary>
         /// A test implementation
         /// </summary>
-        public class OAuthProtectedService : IOAuthProtectedService
+        public class OAuth2EnabledService : IOAuth2EnabledService
         {
             /// <summary>
             /// A test method
@@ -44,7 +45,37 @@ namespace SolidRpc.Tests.Security
             /// <param name="principal"></param>
             /// <param name="arg"></param>
             /// <returns></returns>
-            public Task<string> InvokeAsync(IPrincipal principal, string arg)
+            public Task<string> GetEnabledResource(IPrincipal principal, string arg)
+            {
+                return Task.FromResult(arg + ":" + principal.Identity.Name);
+            }
+        }
+        /// <summary>
+        /// A test interface
+        /// </summary>
+        public interface IOAuth2ProtectedService
+        {
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <param name="arg"></param>
+            /// <returns></returns>
+            Task<string> GetProtectedResource(IPrincipal principal, string arg);
+        }
+
+        /// <summary>
+        /// A test implementation
+        /// </summary>
+        public class OAuth2ProtectedService : IOAuth2ProtectedService
+        {
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="principal"></param>
+            /// <param name="arg"></param>
+            /// <returns></returns>
+            public Task<string> GetProtectedResource(IPrincipal principal, string arg)
             {
                 return Task.FromResult(arg + ":" + principal.Identity.Name);
             }
@@ -59,23 +90,28 @@ namespace SolidRpc.Tests.Security
         {
             clientServices.AddHttpClient();
             clientServices.AddSolidRpcOAuth2();
-            clientServices.AddSolidRpcBindings(typeof(IOAuthProtectedService), null, o =>
-            {
-
-                o.OpenApiSpec = clientServices.GetSolidRpcOpenApiParser().CreateSpecification(o.Methods.ToArray())
-                    .SetBaseAddress(baseAddress)
-                    .WriteAsJsonString();
-
-                var oauth2Config = o.GetAdviceConfig<ISecurityOAuth2Config>();
-                oauth2Config.OAuth2Authority = baseAddress;
-                oauth2Config.OAuth2ClientId = "clientid";
-                oauth2Config.OAuth2ClientSecret = "secret";
-                oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
-
-                return true;
-            });
+            clientServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), null, o => ConfigureClientService(clientServices, o, baseAddress));
+            clientServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), null, o => ConfigureClientService(clientServices, o, baseAddress));
             base.ConfigureClientServices(clientServices, baseAddress);
         }
+
+        private bool ConfigureClientService(IServiceCollection clientServices, ISolidRpcOpenApiConfig conf, Uri baseAddress)
+        {
+
+            conf.OpenApiSpec = clientServices.GetSolidRpcOpenApiParser()
+                .CreateSpecification(conf.Methods.ToArray())
+                .SetBaseAddress(baseAddress)
+                .WriteAsJsonString();
+
+            var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
+            oauth2Config.OAuth2Authority = baseAddress;
+            oauth2Config.OAuth2ClientId = "clientid";
+            oauth2Config.OAuth2ClientSecret = "secret";
+            oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
+
+            return true;
+        }
+
         /// <summary>
         /// Configures the server services
         /// </summary>
@@ -87,12 +123,18 @@ namespace SolidRpc.Tests.Security
             serverServices.AddSolidRpcOAuth2();
             serverServices.AddSolidRpcSecurityFrontend();
             serverServices.AddSolidRpcSecurityBackend();
-            serverServices.AddSolidRpcBindings(typeof(IOAuthProtectedService), typeof(OAuthProtectedService), o =>
+            var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
+            serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {
-
-                o.OpenApiSpec = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(o.Methods.ToArray()).WriteAsJsonString();
+                o.OpenApiSpec = openApi;
                 o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>();
-                //o.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
+                return true;
+            });
+            serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
+            {
+                o.OpenApiSpec = openApi;
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>();
+                o.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
                 return true;
             });
         }
@@ -299,19 +341,39 @@ namespace SolidRpc.Tests.Security
         /// Tests the web host
         /// </summary>
         [Test]
-        public async Task TestOauthProtectedResource()
+        public async Task TestOauthEnabledResource()
         {
-            using (var ctx = CreateKestrelHostContext(serverServices =>
-            {
-                serverServices.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "RequestId");
-            }))
+            using (var ctx = CreateKestrelHostContext())
             {
                 await ctx.StartAsync();
 
-                var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuthProtectedService>();
+                var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuth2EnabledService>();
 
-                var res = await protectedService.InvokeAsync(null, "test");
+                var res = await protectedService.GetEnabledResource(null, "test");
                 Assert.AreEqual("test:clientid", res);
+            }
+        }
+
+        /// <summary>
+        /// Tests the web host
+        /// </summary>
+        [Test]
+        public async Task TestOauthProtectedResource()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuth2ProtectedService>();
+                try
+                {
+                    var res = await protectedService.GetProtectedResource(null, "test");
+                    Assert.Fail();
+                }
+                catch(UnauthorizedException)
+                {
+                    // This is the way we want it..
+                }
             }
         }
 

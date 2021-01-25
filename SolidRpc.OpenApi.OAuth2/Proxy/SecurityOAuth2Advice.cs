@@ -8,6 +8,7 @@ using Microsoft.Extensions.Primitives;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
@@ -77,8 +78,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-
-            if(RemoteCall)
+            if (RemoteCall)
             {
                 await HandleRemoteCall(invocation);
             }
