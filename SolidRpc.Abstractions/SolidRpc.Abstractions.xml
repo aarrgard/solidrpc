@@ -1037,6 +1037,50 @@
             <param name="basePath"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority">
+            <summary>
+            Represents an authority
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetDiscoveryDocumentAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns the discovery document
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetPrincipalAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the principal for supplied jwt token
+            </summary>
+            <param name="jwt"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetSigningKeysAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns the signing keys
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetClientJwtAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the client jwt from the authority
+            </summary>
+            <param name="clientId"></param>
+            <param name="clientSecret"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory">
+            <summary>
+            Interface that provides access to an authority factory
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory.GetAuthority(System.Uri)">
+            <summary>
+            Returns the authority @ supplied url
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig">
             <summary>
             Configures a security key.

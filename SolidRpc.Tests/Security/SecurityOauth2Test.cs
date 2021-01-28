@@ -8,10 +8,10 @@ using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
-using SolidRpc.OpenApi.OAuth2.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Security.Principal;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 
 namespace SolidRpc.Tests.Security
 {

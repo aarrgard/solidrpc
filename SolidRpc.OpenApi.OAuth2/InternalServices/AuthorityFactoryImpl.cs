@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using System;
 using System.Collections.Concurrent;

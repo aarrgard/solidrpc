@@ -1,11 +1,10 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using SolidRpc.Abstractions.Types.OAuth2;
+﻿using SolidRpc.Abstractions.Types.OAuth2;
 using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.OpenApi.OAuth2.InternalServices
+namespace SolidRpc.Abstractions.OpenApi.OAuth2
 {
     /// <summary>
     /// Represents an authority
@@ -30,7 +29,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<SecurityKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the client jwt from the authority

@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types.OAuth2;
 using System;
@@ -6,11 +7,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace SolidRpc.OpenApi.OAuth2.InternalServices
 {
@@ -44,7 +43,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         
         private OpenIDConnnectDiscovery OpenIDConnnectDiscovery { get; set; }
 
-        private IEnumerable<RsaSecurityKey> Keys { get; set; }
+        private OpenIDKeys OpenIdKeys { get; set; }
+        private IEnumerable<RsaSecurityKey> RsaKeys { get; set; }
 
         /// <summary>
         /// Return the client jwt.
@@ -101,6 +101,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 SerializerFactory.DeserializeFromStream(s, out result);
             }
             openIDConnnectDiscovery = result;
+            OpenIdKeys = null;
+            RsaKeys = null;
             return openIDConnnectDiscovery;
         }
 
@@ -113,7 +115,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public async Task<IPrincipal> GetPrincipalAsync(string jwt, CancellationToken cancellationToken = default(CancellationToken))
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
-            var allSigningKeys = await GetSigningKeysAsync(cancellationToken);
+            var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);
             var tokenValidationParameter = new TokenValidationParameters()
             {
                 ValidateActor = false,
@@ -151,18 +153,39 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<SecurityKey>> GetSigningKeysAsync(CancellationToken cancellationToken)
+        private async Task<IEnumerable<SecurityKey>> GetSecuritySigningKeysAsync(CancellationToken cancellationToken)
         {
-            var keys = Keys;
-            if(keys != null)
+            var rsaKeys = RsaKeys;
+            if(rsaKeys != null)
             {
-                return keys;
+                return rsaKeys;
             }
+            var openIdKeys = await GetSigningKeysAsync(cancellationToken);
+            string json;
+            SerializerFactory.SerializeToString(out json, new OpenIDKeys() { Keys = openIdKeys });
+            var jsonKeys = JsonWebKeySet.Create(json);
+            return jsonKeys.GetSigningKeys();
+        }
+
+        /// <summary>
+        /// Returns the signing keys
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var openIdKeys = OpenIdKeys;
+            if (openIdKeys != null)
+            {
+                return openIdKeys.Keys;
+            }
+
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var client = HttpClientFactory.CreateClient();
             var json = await client.GetStringAsync(doc.JwksUri);
-            var jsonKeys = JsonWebKeySet.Create(json);
-            return jsonKeys.GetSigningKeys();
+            SerializerFactory.DeserializeFromString(json, out openIdKeys);
+            OpenIdKeys = openIdKeys;
+            return openIdKeys.Keys;
         }
     }
 }

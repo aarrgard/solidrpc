@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SolidRpc.OpenApi.OAuth2.InternalServices
+namespace SolidRpc.Abstractions.OpenApi.OAuth2
 {
     /// <summary>
     /// Interface that provides access to an authority factory

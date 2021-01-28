@@ -1,4 +1,5 @@
-﻿using SolidRpc.OpenApi.OAuth2.InternalServices;
+﻿using SolidRpc.Abstractions.OpenApi.OAuth2;
+using SolidRpc.OpenApi.OAuth2.InternalServices;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
