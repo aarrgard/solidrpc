@@ -1,6 +1,8 @@
 using System.Runtime.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+
 namespace SolidRpc.Abstractions.Types.OAuth2
 {
     /// <summary>
@@ -60,7 +62,7 @@ namespace SolidRpc.Abstractions.Types.OAuth2
         /// </summary>
         [DataMember(Name="e",EmitDefaultValue=false)]
         public string E { get; set; }
-    
+
         /// <summary>
         /// 
         /// </summary>

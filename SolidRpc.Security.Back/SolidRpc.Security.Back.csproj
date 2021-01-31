@@ -39,10 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.Security.Front\SolidRpc.Security.Front.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="npm\providers\dist\" />
   </ItemGroup>
 
@@ -52,6 +48,11 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
+    <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,10 @@
-﻿using SolidProxy.Core.Configuration.Builder;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Invoker;
+﻿using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Security.Back.Services;
 using SolidRpc.Security.Back.Services.Facebook;
 using SolidRpc.Security.Back.Services.Google;
 using SolidRpc.Security.Back.Services.Microsoft;
-using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services;
 using SolidRpc.Security.Services.Facebook;
 using SolidRpc.Security.Services.Google;
@@ -16,7 +14,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -37,9 +34,9 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<IServiceProvider, SolidRpcSecurityOptions> configurator = null,
             Func<ISolidRpcOpenApiConfig, bool> mbConfigurator = null)
         {
-            if(!services.Any(o => o.ServiceType == typeof(IOidcClient)))
+            if(!services.Any(o => o.ServiceType == typeof(IAuthorityLocal)))
             {
-                throw new Exception("You need to add the security frontend before adding the backend.");
+                throw new Exception("You need to add the local authority before adding the backend");
             }
 
             if (configurator != null)
@@ -74,11 +71,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurityBackendMicrosoft(this IServiceCollection services, Action<IServiceProvider, MicrosoftOptions> configurator)
         {
-            if (!services.Any(o => o.ServiceType == typeof(IOidcServer)))
-            {
-                throw new Exception("You need to add the security backend before adding the backend provider.");
-            }
-
             services.AddSingleton(sp =>
             {
                 var mc = new MicrosoftOptions();
@@ -141,11 +133,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcSecurityBackendGoogle(this IServiceCollection services, Action<IServiceProvider, GoogleOptions> configurator)
         {
-            if (!services.Any(o => o.ServiceType == typeof(IOidcServer)))
-            {
-                throw new Exception("You need to add the security backend before adding the backend provider.");
-            }
-
             services.AddSingleton(sp =>
             {
                 var gc = new GoogleOptions();

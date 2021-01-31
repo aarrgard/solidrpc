@@ -2,7 +2,6 @@
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Security.Front.InternalServices;
 using SolidRpc.Security.Services;
 using SolidRpc.Security.Types;
 using System;
@@ -18,19 +17,16 @@ namespace SolidRpc.Security.Back.Services
         public SolidRpcSecurity(
             IServiceProvider serviceProvider, 
             IMethodBinderStore methodBinderStore,
-            ISolidRpcContentHandler contentHandler,
-            IAccessTokenFactory tokenFactory)
+            ISolidRpcContentHandler contentHandler)
         {
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             ContentHandler = contentHandler ?? throw new ArgumentNullException(nameof(contentHandler));
-            TokenFactory = tokenFactory ?? throw new ArgumentNullException(nameof(tokenFactory));
         }
 
         private IServiceProvider ServiceProvider { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
-        private IAccessTokenFactory TokenFactory { get; }
 
         public async Task<WebContent> LoginPage(CancellationToken cancellationToken = default(CancellationToken))
         {

@@ -171,7 +171,7 @@
         </member>
         <member name="T:SolidRpc.NpmGenerator.Services.INodeService">
             <summary>
-            The npm generator
+            The node service
             </summary>
         </member>
         <member name="M:SolidRpc.NpmGenerator.Services.INodeService.ExecuteJSInDebugger(System.String,System.Threading.CancellationToken)">

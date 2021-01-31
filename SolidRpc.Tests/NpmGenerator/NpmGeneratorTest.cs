@@ -11,6 +11,7 @@ using System.IO;
 using SolidRpc.Security.Services;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System.Threading;
+using System;
 
 namespace SolidRpc.Tests.NpmGenerator
 {
@@ -126,8 +127,9 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcBindings(typeof(ISolidRpcSecurity), null);
             sc.AddSolidRpcNpmGenerator();
-            sc.AddSolidRpcSecurityFrontend();
+            sc.AddSolidRpcOAuth2Local(new Uri("http://localhost"), _ => { });
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((o, opts) =>
             {

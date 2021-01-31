@@ -120,8 +120,7 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureServerServices(IServiceCollection serverServices)
         {
             base.ConfigureServerServices(serverServices);
-            serverServices.AddSolidRpcOAuth2();
-            serverServices.AddSolidRpcSecurityFrontend();
+            serverServices.AddSolidRpcOAuth2Local(serverServices.GetSolidRpcService<Uri>(), o => o.CreateSigningKey());
             serverServices.AddSolidRpcSecurityBackend();
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>

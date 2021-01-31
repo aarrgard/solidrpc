@@ -1,9 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.Services;
-using SolidRpc.Security.Front.InternalServices;
+﻿using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Security.Services.Oidc;
 using SolidRpc.Security.Types;
 using System;
@@ -20,26 +16,20 @@ namespace SolidRpc.Security.Back.Services
     public class OidcServer : IOidcServer
     {
         public OidcServer(
-            IServiceProvider serviceProvider, 
             IInvoker<IOidcServer> httpInvoker,
-            ISolidRpcContentHandler contentHandler,
-            IAccessTokenFactory tokenFactory)
+            IAuthorityLocal authorityLocal)
         {
-            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             HttpInvoker = httpInvoker ?? throw new ArgumentNullException(nameof(httpInvoker));
-            ContentHandler = contentHandler ?? throw new ArgumentNullException(nameof(contentHandler));
-            TokenFactory = tokenFactory ?? throw new ArgumentNullException(nameof(tokenFactory));
+            AuthorityLocal = authorityLocal ?? throw new ArgumentNullException(nameof(authorityLocal));
         }
 
-        private IServiceProvider ServiceProvider { get; }
         private IInvoker<IOidcServer> HttpInvoker { get; }
-        private ISolidRpcContentHandler ContentHandler { get; }
-        private IAccessTokenFactory TokenFactory { get; }
+        private IAuthorityLocal AuthorityLocal { get; }
 
         public async Task<OpenIDConnnectDiscovery> OAuth2Discovery(CancellationToken cancellationToken = default(CancellationToken))
         {
             var doc = new OpenIDConnnectDiscovery();
-            doc.Issuer = new Uri(await TokenFactory.GetIssuerAsync(cancellationToken));
+            doc.Issuer = AuthorityLocal.Authority;
             doc.JwksUri = await HttpInvoker.GetUriAsync(o => o.OAuth2Keys(cancellationToken), false);
             doc.AuthorizationEndpoint = await HttpInvoker.GetUriAsync(o => o.OAuth2AuthorizeGet(null, null, null, null, null, cancellationToken), false);
             doc.TokenEndpoint = await HttpInvoker.GetUriAsync(o => o.OAuth2TokenGet(cancellationToken), false);
@@ -48,14 +38,23 @@ namespace SolidRpc.Security.Back.Services
 
         public async Task<OpenIDKeys> OAuth2Keys(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var keys = new OpenIDKeys()
+            var keys = await AuthorityLocal.GetSigningKeysAsync();
+            return new OpenIDKeys()
             {
-                Keys = (await TokenFactory.GetSigningPublicKeys()).Select(key => {
-                    var str = JsonConvert.SerializeObject(JsonWebKeyConverter.ConvertFromSecurityKey(key));
-                    return JsonConvert.DeserializeObject<OpenIDKey>(str);
-                }).ToList()
+                Keys = keys.Select(o => new OpenIDKey()
+                {
+                    Alg = o.Alg,
+                    E = o.E,
+                    Issuer = o.Issuer,
+                    Kid = o.Kid,
+                    Kty = o.Kty,
+                    N = o.N,
+                    Use = o.Use,
+                    X5c = o.X5c,
+                    X5t = o.X5t,
+                    X5u = o.X5u
+                }).ToArray()
             };
-            return keys;
         }
 
         public Task<TokenResponse> OAuth2TokenGet(CancellationToken cancellationToken)
@@ -84,11 +83,11 @@ namespace SolidRpc.Security.Back.Services
         {
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
-            var accessToken = await TokenFactory.CreateAccessToken(claimsIdentity, cancellationToken);
+            var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
-                ExpiresIn = accessToken.ExpiresInSeconds.ToString(),
+                ExpiresIn = accessToken.ExpiresIn,
                 TokenType = accessToken.TokenType
             };
         }
@@ -97,11 +96,11 @@ namespace SolidRpc.Security.Back.Services
         {
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
-            var accessToken = await TokenFactory.CreateAccessToken(claimsIdentity, cancellationToken);
+            var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
-                ExpiresIn = accessToken.ExpiresInSeconds.ToString(),
+                ExpiresIn = accessToken.ExpiresIn,
                 TokenType = accessToken.TokenType
             };
         }
@@ -111,11 +110,11 @@ namespace SolidRpc.Security.Back.Services
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("sub", username));
-            var accessToken = await TokenFactory.CreateAccessToken(claimsIdentity, cancellationToken);
+            var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
-                ExpiresIn = accessToken.ExpiresInSeconds.ToString(),
+                ExpiresIn = accessToken.ExpiresIn,
                 Scope = scope,
                 TokenType = accessToken.TokenType
             };
@@ -126,11 +125,11 @@ namespace SolidRpc.Security.Back.Services
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
             claimsIdentity.AddClaim(new System.Security.Claims.Claim(ClaimsIdentity.DefaultNameClaimType, clientId));
-            var accessToken = await TokenFactory.CreateAccessToken(claimsIdentity, cancellationToken);
+            var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
-                ExpiresIn = accessToken.ExpiresInSeconds.ToString(),
+                ExpiresIn = accessToken.ExpiresIn,
                 Scope = scope,
                 TokenType = accessToken.TokenType
             };

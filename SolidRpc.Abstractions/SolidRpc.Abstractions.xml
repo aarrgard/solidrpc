@@ -1042,6 +1042,11 @@
             Represents an authority
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.Authority">
+            <summary>
+            The uri of the issuer
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetDiscoveryDocumentAsync(System.Threading.CancellationToken)">
             <summary>
             Returns the discovery document
@@ -1080,6 +1085,42 @@
             <summary>
             Returns the authority @ supplied url
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory.GetLocalAuthority(System.Uri)">
+            <summary>
+            Returns the local authority @ supplied url
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal">
+            <summary>
+            Represents additional functionality for a local
+            authority.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateSigningKey">
+            <summary>
+            Creates a new set of signing keys for this authority.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.SetSigningKey(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Sets the signing keys
+            </summary>
+            <param name="cert"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.PrivateSigningKey">
+            <summary>
+            The signing key
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateAccessTokenAsync(System.Security.Claims.ClaimsIdentity,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Creates the jwt token from supplied claims
+            </summary>
+            <param name="claimsIdentity"></param>
+            <param name="expiryTime"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig">
             <summary>

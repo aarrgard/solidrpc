@@ -155,9 +155,11 @@ namespace SolidRpc.Tests
             public override void Dispose()
             {
                 base.Dispose();
-
-                ((ISolidRpcApplication)ClientServiceProvider.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
-                ((ISolidRpcApplication)ServerServiceProvider.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
+                try
+                {
+                    ((ISolidRpcApplication)ClientServiceProvider.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
+                    ((ISolidRpcApplication)ServerServiceProvider.GetService(typeof(ISolidRpcApplication)))?.StopApplication();
+                } catch(Exception e) { }
                 WebHost?.StopAsync().Wait();
                 WebHost?.Dispose();
             }

@@ -535,7 +535,7 @@ module.exports = {{
             }
 
             //
-            // create dynamoc package
+            // create dynamic package
             //
             var codeNamespace = await CreateCodeNamespace(assemblyName);
             return TypescriptGenerator.CreateTypesTs(codeNamespace);

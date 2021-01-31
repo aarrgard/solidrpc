@@ -3,7 +3,7 @@ using SolidRpc.NpmGenerator.Types;
 using System.Threading;
 namespace SolidRpc.NpmGenerator.Services {
     /// <summary>
-    /// The npm generator
+    /// The node service
     /// </summary>
     public interface INodeService
     {

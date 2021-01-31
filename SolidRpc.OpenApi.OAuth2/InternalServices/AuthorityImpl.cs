@@ -39,12 +39,11 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         private IAuthorityFactory AuthorityFactoryImpl { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
-        private Uri Authority { get; }
+        public Uri Authority { get; }
         
         private OpenIDConnnectDiscovery OpenIDConnnectDiscovery { get; set; }
 
-        private OpenIDKeys OpenIdKeys { get; set; }
-        private IEnumerable<RsaSecurityKey> RsaKeys { get; set; }
+        protected OpenIDKeys OpenIdKeys { get; set; }
 
         /// <summary>
         /// Return the client jwt.
@@ -102,7 +101,6 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             }
             openIDConnnectDiscovery = result;
             OpenIdKeys = null;
-            RsaKeys = null;
             return openIDConnnectDiscovery;
         }
 
@@ -120,7 +118,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             {
                 ValidateActor = false,
                 ValidateAudience = false,
-                ValidIssuer = CreateIssuer(doc.Issuer),
+                ValidIssuer = CreateIssuer(Authority.ToString()),
                 ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
                 ValidateLifetime = true,
@@ -137,10 +135,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
             return claimsPrincipal;
         }
-
-        private string CreateIssuer(Uri issuer)
+        protected string CreateIssuer(OpenIDConnnectDiscovery doc)
         {
-            var iss = issuer.ToString();
+            return CreateIssuer(doc?.Issuer.ToString() ?? "https://localhost");
+        }
+        protected string CreateIssuer(string iss)
+        {
             if(iss.EndsWith("/"))
             {
                 iss = iss.Substring(0, iss.Length - 1);
@@ -155,16 +155,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         private async Task<IEnumerable<SecurityKey>> GetSecuritySigningKeysAsync(CancellationToken cancellationToken)
         {
-            var rsaKeys = RsaKeys;
-            if(rsaKeys != null)
-            {
-                return rsaKeys;
-            }
             var openIdKeys = await GetSigningKeysAsync(cancellationToken);
-            string json;
-            SerializerFactory.SerializeToString(out json, new OpenIDKeys() { Keys = openIdKeys });
-            var jsonKeys = JsonWebKeySet.Create(json);
-            return jsonKeys.GetSigningKeys();
+            return openIdKeys.Select(o => o.AsSecurityKey());
         }
 
         /// <summary>
@@ -180,12 +172,25 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 return openIdKeys.Keys;
             }
 
-            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
-            var client = HttpClientFactory.CreateClient();
-            var json = await client.GetStringAsync(doc.JwksUri);
-            SerializerFactory.DeserializeFromString(json, out openIdKeys);
+            var localKeys = GetLocalKeys();
+            if(localKeys.Any())
+            {
+                openIdKeys = new OpenIDKeys() { Keys = localKeys };
+            }
+            else
+            {
+                var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+                var client = HttpClientFactory.CreateClient();
+                var json = await client.GetStringAsync(doc.JwksUri);
+                SerializerFactory.DeserializeFromString(json, out openIdKeys);
+            }
             OpenIdKeys = openIdKeys;
             return openIdKeys.Keys;
+        }
+
+        protected virtual IEnumerable<OpenIDKey> GetLocalKeys()
+        {
+            return new OpenIDKey[0];
         }
     }
 }

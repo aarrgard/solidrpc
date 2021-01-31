@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.Types.OAuth2;
+using System;
 using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading;
@@ -11,6 +12,11 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
     /// </summary>
     public interface IAuthority
     {
+        /// <summary>
+        /// The uri of the issuer
+        /// </summary>
+        Uri Authority { get; }
+
         /// <summary>
         /// Returns the discovery document
         /// </summary>
