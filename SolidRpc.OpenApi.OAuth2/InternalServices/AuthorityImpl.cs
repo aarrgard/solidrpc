@@ -94,12 +94,11 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             //
             var client = HttpClientFactory.CreateClient();
             var resp = await client.GetAsync(new Uri(Authority, ".well-known/openid-configuration"));
-            OpenIDConnnectDiscovery result;
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
-                SerializerFactory.DeserializeFromStream(s, out result);
+                SerializerFactory.DeserializeFromStream(s, out openIDConnnectDiscovery);
             }
-            openIDConnnectDiscovery = result;
+            OpenIDConnnectDiscovery = openIDConnnectDiscovery;
             OpenIdKeys = null;
             return openIDConnnectDiscovery;
         }
@@ -118,12 +117,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             {
                 ValidateActor = false,
                 ValidateAudience = false,
-                ValidIssuer = CreateIssuer(Authority.ToString()),
-                ValidateIssuer = true,
-                ValidateIssuerSigningKey = true,
-                ValidateLifetime = true,
-                RequireExpirationTime = true,
-                RequireSignedTokens = true,
+                //ValidIssuer = doc.Issuer,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = false,
+                ValidateLifetime = false,
+                RequireExpirationTime = false,
+                RequireSignedTokens = false,
+                RequireAudience = false,
                 IssuerSigningKeyResolver = (token, st, kid, validationParameters) => {
                     var signingKeys = allSigningKeys.Where(o => o.KeyId == kid).ToList();
                     return signingKeys;

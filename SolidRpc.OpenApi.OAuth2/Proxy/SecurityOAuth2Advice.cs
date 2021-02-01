@@ -9,8 +9,9 @@ using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.Binder.Proxy;
 
-namespace SolidRpc.OpenApi.Binder.Proxy
+namespace SolidRpc.OpenApi.OAuth2.Proxy
 {
     /// <summary>
     /// Configures the bindings for the rpc proxy.

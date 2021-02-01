@@ -10,11 +10,11 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <summary>
         /// Returns the authority @ supplied url
         /// </summary>
-        IAuthority GetAuthority(Uri url);
+        IAuthority GetAuthority(Uri authority);
 
         /// <summary>
         /// Returns the local authority @ supplied url
         /// </summary>
-        IAuthorityLocal GetLocalAuthority(Uri url);
+        IAuthorityLocal GetLocalAuthority(Uri authority);
     }
 }

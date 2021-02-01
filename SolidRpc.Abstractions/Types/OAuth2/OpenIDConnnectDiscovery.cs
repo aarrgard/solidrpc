@@ -11,7 +11,7 @@ namespace SolidRpc.Abstractions.Types.OAuth2
         /// REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
         /// </summary>
         [DataMember(Name="issuer",EmitDefaultValue=false)]
-        public Uri Issuer { get; set; }
+        public string Issuer { get; set; }
     
         /// <summary>
         /// REQUIRED. URL of the OP&#39;s OAuth 2.0 Authorization Endpoint [OpenID.Core].

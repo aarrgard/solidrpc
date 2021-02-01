@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
+using System;
 
 namespace SolidRpc.Tests.Security
 {
@@ -60,7 +61,7 @@ namespace SolidRpc.Tests.Security
             {
                 await ctx.StartAsync();
 
-                    
+
                 var af = ctx.ServerServiceProvider.GetRequiredService<IAuthorityFactory>();
                 var a = af.GetLocalAuthority(ctx.BaseAddress);
 
