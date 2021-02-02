@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Principal;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -138,7 +138,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="tokenChecks"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ClaimsPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default(CancellationToken))
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);

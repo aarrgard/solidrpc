@@ -1,7 +1,7 @@
 ﻿using SolidRpc.Abstractions.Types.OAuth2;
 using System;
 using System.Collections.Generic;
-using System.Security.Principal;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +29,7 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="tokenChecks"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ClaimsPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the signing keys

@@ -1,6 +1,5 @@
 ﻿using SolidRpc.Abstractions.Types.OAuth2;
 using System;
-using System.Runtime.Serialization;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
