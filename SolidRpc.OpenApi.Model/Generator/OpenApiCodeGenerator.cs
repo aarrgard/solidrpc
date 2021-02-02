@@ -47,7 +47,7 @@ namespace SolidRpc.OpenApi.Model.Generator
         {
             if(!name.EndsWith(suffix))
             {
-                name = name + suffix;
+                name += suffix;
             }
             return name;
         }
@@ -453,6 +453,11 @@ namespace SolidRpc.OpenApi.Model.Generator
             namespaces.Remove(ns);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cSharpMethods"></param>
+        /// <returns></returns>
         protected IEnumerable<Agnostic.CSharpMethod> MergeMethods(IEnumerable<Agnostic.CSharpMethod> cSharpMethods)
         {
             var retVal = new Dictionary<string, Agnostic.CSharpMethod>();

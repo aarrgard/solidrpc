@@ -1052,11 +1052,12 @@
             Returns the discovery document
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetPrincipalAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetPrincipalAsync(System.String,System.Action{SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks},System.Threading.CancellationToken)">
             <summary>
             Returns the principal for supplied jwt token
             </summary>
             <param name="jwt"></param>
+            <param name="tokenChecks"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -1121,6 +1122,51 @@
             <param name="expiryTime"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks">
+            <summary>
+            Configures the token checks to perform
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.ValidateActor">
+            <summary>
+            should the actory be validated
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.ValidateAudience">
+            <summary>
+            Should the audience be validated
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.ValidateIssuer">
+            <summary>
+            Should the issuer be validated
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.ValidateIssuerSigningKey">
+            <summary>
+            Should the signing key ve validated
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.ValidateLifetime">
+            <summary>
+            Should the lifetime be validated
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.RequireExpirationTime">
+            <summary>
+            Do we require expiration time
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.RequireSignedTokens">
+            <summary>
+            Does the token have to be signed
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityTokenChecks.RequireAudience">
+            <summary>
+            Do we require an audience
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityKeyConfig">
             <summary>

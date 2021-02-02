@@ -114,7 +114,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             var jwt = authHeader.Substring("bearer ".Length);
             var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-            auth.CurrentPrincipal = await Authority.GetPrincipalAsync(jwt, invocation.CancellationToken);
+            auth.CurrentPrincipal = await Authority.GetPrincipalAsync(jwt, null, invocation.CancellationToken);
             invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
         }
 

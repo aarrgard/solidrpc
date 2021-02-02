@@ -38,13 +38,29 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             :base(authorityFactoryImpl, httpClientFactory, serializerFactory, authority)
         {
         }
+
+        /// <summary>
+        /// Returns the private signing key.
+        /// </summary>
         public OpenIDKey PrivateSigningKey => _privateKey.AsOpenIDKey();
+
+        /// <summary>
+        /// Returns the local keys
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<OpenIDKey> GetLocalKeys()
         {
             if (_publicKey == null) throw new Exception("No signing key exists for local authority.");
             yield return _publicKey.AsOpenIDKey();
         }
 
+        /// <summary>
+        /// Creates the access token
+        /// </summary>
+        /// <param name="claimsIdentity"></param>
+        /// <param name="expiryTime"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<TokenResponse> CreateAccessTokenAsync(ClaimsIdentity claimsIdentity, TimeSpan? expiryTime = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if(expiryTime == null)
@@ -83,6 +99,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             };
         }
 
+        /// <summary>
+        /// Creates a signing key
+        /// </summary>
         public void CreateSigningKey()
         {
             var rsa = RSA.Create();
@@ -104,6 +123,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             _publicKey = publicKey;
         }
 
+        /// <summary>
+        /// Sets the signing key.
+        /// </summary>
+        /// <param name="cert"></param>
         public void SetSigningKey(X509Certificate2 cert)
         {
             SetSigningKey(new RsaSecurityKey(cert.GetRSAPrivateKey()), new RsaSecurityKey(cert.GetRSAPublicKey()));

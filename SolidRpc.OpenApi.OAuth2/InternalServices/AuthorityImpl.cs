@@ -18,6 +18,27 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class AuthorityImpl : IAuthority
     {
+        private class AuthorityTokenValidationParameters : TokenValidationParameters, IAuthorityTokenChecks
+        {
+            public AuthorityTokenValidationParameters(string issuer, IEnumerable<SecurityKey> allSigningKeys)
+            {
+                ValidateActor = false;
+                ValidateAudience = false;
+                ValidIssuer = issuer;
+                ValidateIssuer = true;
+                ValidateIssuerSigningKey = true;
+                ValidateLifetime = true;
+                RequireExpirationTime = true;
+                RequireSignedTokens = true;
+                RequireAudience = false;
+                IssuerSigningKeyResolver = (token, st, kid, validationParameters) => {
+                    var signingKeys = allSigningKeys.Where(o => o.KeyId == kid).ToList();
+                    return signingKeys;
+                };
+            }
+            
+        }
+
         /// <summary>
         /// Constructs a new instance
         /// </summary>
@@ -39,10 +60,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         private IAuthorityFactory AuthorityFactoryImpl { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
+
+        /// <summary>
+        /// The authority
+        /// </summary>
         public Uri Authority { get; }
         
         private OpenIDConnnectDiscovery OpenIDConnnectDiscovery { get; set; }
 
+        /// <summary>
+        /// All the signing keys
+        /// </summary>
         protected OpenIDKeys OpenIdKeys { get; set; }
 
         /// <summary>
@@ -107,38 +135,21 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// Returns the principal for supplied jwt token.
         /// </summary>
         /// <param name="jwt"></param>
+        /// <param name="tokenChecks"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IPrincipal> GetPrincipalAsync(string jwt, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default(CancellationToken))
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);
-            var tokenValidationParameter = new TokenValidationParameters()
-            {
-                ValidateActor = false,
-                ValidateAudience = false,
-                //ValidIssuer = doc.Issuer,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = false,
-                ValidateLifetime = false,
-                RequireExpirationTime = false,
-                RequireSignedTokens = false,
-                RequireAudience = false,
-                IssuerSigningKeyResolver = (token, st, kid, validationParameters) => {
-                    var signingKeys = allSigningKeys.Where(o => o.KeyId == kid).ToList();
-                    return signingKeys;
-                }
-            };
+            var tokenValidationParameter = new AuthorityTokenValidationParameters(doc.Issuer, allSigningKeys);
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
             var claimsPrincipal = tokenHandler.ValidateToken(jwt, tokenValidationParameter, out securityToken);
 
             return claimsPrincipal;
         }
-        protected string CreateIssuer(OpenIDConnnectDiscovery doc)
-        {
-            return CreateIssuer(doc?.Issuer.ToString() ?? "https://localhost");
-        }
+
         protected string CreateIssuer(string iss)
         {
             if(iss.EndsWith("/"))

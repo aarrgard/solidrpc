@@ -15,21 +15,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        /// <param name="logger"></param>
         /// <param name="httpClientFactory"></param>
         /// <param name="serializerFactory"></param>
         public AuthorityFactoryImpl(
-            ILogger<AuthorityFactoryImpl> logger,
             IHttpClientFactory httpClientFactory,
             ISerializerFactory serializerFactory)
         {
-            Logger = logger;
             HttpClientFactory = httpClientFactory;
             SerializerFactory = serializerFactory;
             Authorities = new ConcurrentDictionary<Uri, IAuthority>();
             LocalAuthorities = new ConcurrentDictionary<Uri, IAuthorityLocal>();
         }
-        private ILogger Logger { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ConcurrentDictionary<Uri, IAuthority> Authorities { get; }
@@ -45,6 +41,11 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return Authorities.GetOrAdd(url, _ => new AuthorityImpl(this, HttpClientFactory, SerializerFactory, url));
         }
 
+        /// <summary>
+        /// Returns the local authority
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public IAuthorityLocal GetLocalAuthority(Uri url)
         {
             return LocalAuthorities.GetOrAdd(url, _ => new AuthorityLocalImpl(this, HttpClientFactory, SerializerFactory, url));

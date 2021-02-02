@@ -21,8 +21,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="name"></param>
         public static void AddNamespacesFromName(IDictionary<string, HashSet<string>> namespaces, string fullName, string name)
         {
-            HashSet<string> namesInNamespace;
-            if (!namespaces.TryGetValue(fullName, out namesInNamespace))
+            if (!namespaces.TryGetValue(fullName, out HashSet<string> namesInNamespace))
             {
                 namespaces[fullName] = namesInNamespace = new HashSet<string>();
             }

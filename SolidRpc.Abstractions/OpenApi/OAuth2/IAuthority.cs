@@ -26,9 +26,10 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// Returns the principal for supplied jwt token
         /// </summary>
         /// <param name="jwt"></param>
+        /// <param name="tokenChecks"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IPrincipal> GetPrincipalAsync(string jwt, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the signing keys
