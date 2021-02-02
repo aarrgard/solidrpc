@@ -6,6 +6,7 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +34,15 @@ namespace SolidRpc.OpenApi.AzFunctions
                 {
                     log.LogTrace($"Picked up message({id}) from queue:{message}");
                 }
+
+                //
+                // the message might be base64 encoded. Microsoft tends to break contracts on a regular basis...
+                // 
+                if(!message.StartsWith("{"))
+                {
+                    message = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+                }
+                
                 //
                 // deserialize the message
                 //
