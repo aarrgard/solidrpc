@@ -142,12 +142,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);
-            var tokenValidationParameter = new AuthorityTokenValidationParameters(doc.Issuer, allSigningKeys);
+            var tokenValidationParameter = new AuthorityTokenValidationParameters(CreateIssuer(doc), allSigningKeys);
+            tokenChecks?.Invoke(tokenValidationParameter);
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
             var claimsPrincipal = tokenHandler.ValidateToken(jwt, tokenValidationParameter, out securityToken);
 
             return claimsPrincipal;
+        }
+        protected string CreateIssuer(OpenIDConnnectDiscovery doc)
+        {
+            return CreateIssuer(doc?.Issuer.ToString() ?? Authority.ToString());
         }
 
         protected string CreateIssuer(string iss)
