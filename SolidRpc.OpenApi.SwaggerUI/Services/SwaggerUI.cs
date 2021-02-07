@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
@@ -31,18 +32,21 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             SwaggerOptions swaggerOptions, 
             IMethodBinderStore methodBinderStore,
             ISolidRpcContentHandler contentHandler,
-            IInvoker<ISwaggerUI> invoker)
+            IInvoker<ISwaggerUI> invoker,
+            IAuthorityFactory authorityFactory = null)
         {
             SwaggerOptions = swaggerOptions;
             MethodBinderStore = methodBinderStore;
             ContentHandler = contentHandler;
             Invoker = invoker;
+            AuthorityFactory = authorityFactory;
         }
 
         private SwaggerOptions SwaggerOptions { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private ISolidRpcContentHandler ContentHandler { get; }
         private IInvoker<ISwaggerUI> Invoker { get; }
+        private IAuthorityFactory AuthorityFactory { get; }
 
         /// <summary>
         /// Returns the index.hmtl file.
@@ -55,7 +59,8 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             CancellationToken cancellationToken = default(CancellationToken))
         {
 
-            var strBase = new Uri(await Invoker.GetUriAsync(o => o.GetIndexHtml(onlyImplemented, cancellationToken)),"../..");
+            var strBase = new Uri(await Invoker.GetUriAsync(o => o.GetIndexHtml(onlyImplemented, cancellationToken)), "../..");
+            var oauth2Redirect = await Invoker.GetUriAsync(o => o.GetOauth2RedirectHtml(cancellationToken));
             var html = $@"<!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
 <html lang=""en"">
@@ -107,8 +112,12 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         plugins: [
           SwaggerUIBundle.plugins.DownloadUrl
         ],
-        layout: ""StandaloneLayout""
+        layout: ""StandaloneLayout"",
+        oauth2RedirectUrl: ""{oauth2Redirect}""
       }})
+      ui.initOAuth({{
+        clientId: ""{SwaggerOptions.OAuthClientId}""
+      }});
       // End Swagger UI call region
 
       window.ui = ui
@@ -235,18 +244,34 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     }
                     if (binding.IsLocal)
                     {
-                        var securityKey = binding.GetSolidProxyConfig<ISecurityKeyConfig>()?.SecurityKey;
-                        if (securityKey != null)
+                        var oauth2Config = binding.GetSolidProxyConfig<ISecurityOAuth2Config>();
+                        if (oauth2Config?.Enabled ?? false)
                         {
-                            var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
-                            op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
+                            var authority = AuthorityFactory.GetAuthority(oauth2Config.OAuth2Authority);
+                            var authDoc = await authority.GetDiscoveryDocumentAsync(cancellationToken);
+                            authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnnectDiscovery()
+                            {
+                                AuthorizationEndpoint = new Uri("https://no.authority.found"),
+                                TokenEndpoint = new Uri("https://no.authority.found"),
+                            };
+                            op.AddOAuth2Auth(authDoc, "authorizationCode", new string[] { binding.MethodBinder.Assembly.GetName().Name });
                         }
-                        var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
-                        if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))
+                        else
                         {
-                            var definitionName = $"AzureFunctions";
-                            var headerName = "x-functions-key";
-                            op.AddApiKeyAuth(definitionName, headerName);
+                            var securityKeyConfig = binding.GetSolidProxyConfig<ISecurityKeyConfig>();
+                            var securityKey = securityKeyConfig.SecurityKey;
+                            if (securityKeyConfig.Enabled && securityKey != null)
+                            {
+                                var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
+                                op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
+                            }
+                            var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
+                            if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                var definitionName = $"AzureFunctions";
+                                var headerName = "x-functions-key";
+                                op.AddApiKeyAuth(definitionName, headerName);
+                            }
                         }
                     }
                     else
@@ -303,6 +328,36 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             return swaggerUrls
                 .OrderBy(o => o.Name == SwaggerOptions.DefaultOpenApiSpec ? 0 : 1)
                 .ThenBy(o => o.Name);
+        }
+
+        /// <summary>
+        /// Returns the oauth2 redirect
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<FileContent> GetOauth2RedirectHtml(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var str = GetManifestResourceAsString("oauth2-redirect.html");
+            var encoding = Encoding.UTF8;
+            return Task.FromResult(new FileContent()
+            {
+                CharSet = encoding.HeaderName,
+                Content = new MemoryStream(encoding.GetBytes(str)),
+                ContentType = "text/html"
+            });
+        }
+
+        private string GetManifestResourceAsString(string fileName)
+        {
+            var a = GetType().Assembly; ;
+            var resourceName = a.GetManifestResourceNames().Where(o => o.EndsWith(fileName)).Single();
+            using (var s = a.GetManifestResourceStream(resourceName))
+            {
+                using (var sr = new StreamReader(s))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
         }
     }
 }

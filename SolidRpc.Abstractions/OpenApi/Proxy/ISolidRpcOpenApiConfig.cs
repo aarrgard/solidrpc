@@ -232,9 +232,24 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// Sets the securitykey
         /// </summary>
         /// <param name="config"></param>
+        /// <param name="authority"></param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        public static void SetOauth2Security(this ISolidRpcOpenApiConfig config, Uri authority, string clientId, string clientSecret)
+        {
+            config.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = authority;
+            config.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2ClientId = clientId;
+            config.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2ClientSecret = clientSecret;
+            config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
+        }
+
+        /// <summary>
+        /// Sets the securitykey
+        /// </summary>
+        /// <param name="config"></param>
         public static void DisableSecurity(this ISolidRpcOpenApiConfig config)
         {
-            config.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = null;
+            config.GetAdviceConfig<ISecurityKeyConfig>().Enabled = false;
             config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = false;
             config.GetAdviceConfig<ISolidAzureFunctionConfig>().HttpAuthLevel = "anonymous";
         }

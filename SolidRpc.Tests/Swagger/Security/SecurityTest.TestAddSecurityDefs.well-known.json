@@ -1,0 +1,5 @@
+{
+  "issuer": "http://localhost",
+  "authorization_endpoint": "http://localhost/authorize",
+  "token_endpoint": "http://localhost/token"
+}

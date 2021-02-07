@@ -21,7 +21,8 @@
     <None Remove="NpmGenerator\TestCreateTypescript.ts" />
     <None Remove="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <None Remove="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
-    <None Remove="Swagger\Security\SecurityTest.TestAddSecurityKey.json" />
+    <None Remove="Swagger\Security\SecurityTest.TestAddSecurityDefs.json" />
+    <None Remove="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />
     <None Remove="Swagger\SpecGenReflection\TestEmptyRepo.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
@@ -41,7 +42,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
-    <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityKey.json" />
+    <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />
+    <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityDefs.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1StringValues.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1FileTypeWithAdditionalData.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />

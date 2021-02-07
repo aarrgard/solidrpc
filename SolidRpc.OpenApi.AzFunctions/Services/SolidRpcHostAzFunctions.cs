@@ -194,9 +194,14 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var httpPaths = httpFunctionDefs.Select(o => o.PathWithArgNames).Distinct().ToList();
             foreach (var path in httpPaths)
             {
-                var functionName = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.FunctionName).Single();
+                var pathFunctionNames = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.FunctionName).Distinct();
+                if(pathFunctionNames.Count() > 1)
+                {
+                    throw new Exception("Found more than one function for path:"+path);
+                }
+                var functionName = pathFunctionNames.Single();
                 var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).OrderBy(o => o).ToArray();
-                var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Single();
+                var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Distinct().Single();
 
                 var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
                 httpFunction.AuthLevel = authLevel;

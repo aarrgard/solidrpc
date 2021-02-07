@@ -94,9 +94,16 @@ namespace SolidRpc.Security.Back.Services
 
         private async Task<TokenResponse> OAuth2TokenAuthorizationCode(string clientId, string clientSecret, string code, string redirectUri, string codeVerifier, CancellationToken cancellationToken)
         {
-            var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
-            claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
-            var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
+            ClaimsPrincipal prin;
+            if (code == "my code")
+            {
+                prin = new ClaimsPrincipal();
+            }
+            else
+            {
+                prin = await AuthorityLocal.GetPrincipalAsync(code, null, cancellationToken);
+            }
+            var accessToken = await AuthorityLocal.CreateAccessTokenAsync((ClaimsIdentity)prin.Identity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
@@ -135,7 +142,7 @@ namespace SolidRpc.Security.Back.Services
             };
         }
 
-        public Task<WebContent> OAuth2AuthorizeGet(IEnumerable<string> scope, string responseType, string clientId, string redirectUri = null, string state = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebContent> OAuth2AuthorizeGet(IEnumerable<string> scope, string responseType, string clientId, string redirectUri = null, string state = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             //return Task.FromResult(new WebContent()
             //{
@@ -144,10 +151,12 @@ namespace SolidRpc.Security.Back.Services
             //    CharSet = Encoding.UTF8.EncodingName
             //});
             var session_state = "asdfsadf";
-            return Task.FromResult(new WebContent()
+            var ci = new ClaimsIdentity(new[] { new System.Security.Claims.Claim("AllowedPath", "/*")});
+            var idToken = await AuthorityLocal.CreateAccessTokenAsync(ci, null, cancellationToken);
+            return new WebContent()
             {
-                Location = $"{redirectUri}#id_token=sdfsdf&state={state}&session_state={session_state}"
-            });
+                Location = $"{redirectUri}#{responseType}={idToken.AccessToken}&state={state}&session_state={session_state}"
+            };
         }
 
         public Task<WebContent> OAuth2AuthorizePost(CancellationToken cancellationToken = default(CancellationToken))

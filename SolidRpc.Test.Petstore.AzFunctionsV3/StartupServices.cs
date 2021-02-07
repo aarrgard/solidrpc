@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
@@ -8,7 +9,6 @@ using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
-using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using SolidRpc.Test.Petstore.AzFunctionsV3;
@@ -26,15 +26,18 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
+            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress;
 
-            services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
+            //services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
 
+            services.AddSolidRpcOAuth2();
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
 
             services.AddSolidRpcBindings(typeof(ITestInterface).Assembly, typeof(TestImplementation).Assembly, conf =>
             {
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
 
+                conf.SetOauth2Security(baseAddress, "clientid", "secret");
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
                     conf.SetHttpTransport(InvocationStrategy.Forward);
@@ -44,13 +47,14 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 return ConfigureAzureFunction(conf);
             });
             services.AddSolidRpcServices(ConfigureAzureFunction);
-            services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
+            services.AddSolidRpcSwaggerUI(o => { o.OAuthClientId = "testar"; }, ConfigureAzureFunction);
             services.AddSolidRpcNpmGenerator(ConfigureAzureFunction);
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
-            //services.AddSolidRpcSecurityBackend();
+            services.AddSolidRpcOAuth2Local(baseAddress, conf => { conf.CreateSigningKey(); });
+            services.AddSolidRpcSecurityBackend((sp, conf) => { }, ConfigureAzureFunction);
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
 

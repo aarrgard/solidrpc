@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using SolidRpc.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using System.Reflection;
+using System;
 
 namespace SolidRpc.OpenApi.AzFunctions
 {
@@ -22,12 +24,14 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="services"></param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
             var azFuncHandler = services.GetAzFunctionHandler();
 
             //
             // configure IConfiguration
             //
-            var config = (IConfiguration)services.FirstOrDefault(o => o.ServiceType == typeof(IConfiguration))?.ImplementationInstance;
+            var configService = services.FirstOrDefault(o => o.ServiceType == typeof(IConfiguration));
+            var config = (IConfiguration)configService?.ImplementationInstance;
             var cb = new ConfigurationBuilder();
             if(config == null)
             {
@@ -40,6 +44,10 @@ namespace SolidRpc.OpenApi.AzFunctions
             cb.AddInMemoryCollection(new Dictionary<string, string>() {
                 { ConfigurationMethodAddressTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
             });
+            if(configService != null)
+            {
+                services.Remove(configService);
+            }
             services.AddSingleton<IConfiguration>(cb.Build());
 
             //
@@ -65,13 +73,13 @@ namespace SolidRpc.OpenApi.AzFunctions
         protected virtual bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
-            if (c.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey == null)
+            if (c.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled)
             {
-                azConfig.HttpAuthLevel = "function";
+                azConfig.HttpAuthLevel = "anonymous";
             }
             else
             {
-                azConfig.HttpAuthLevel = "anonymous";
+                azConfig.HttpAuthLevel = "function";
             }
 
             var method = c.Methods.First();
@@ -80,6 +88,20 @@ namespace SolidRpc.OpenApi.AzFunctions
                 return method.Name == nameof(ISolidRpcHost.IsAlive);
             }
             return true;
+        }
+
+        private static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        {
+            var an = new AssemblyName(args.Name);
+            switch (an.Name)
+            {
+                case "Microsoft.IdentityModel.Tokens":
+                case "System.IdentityModel.Tokens.Jwt":
+                    var a = Assembly.Load(an.Name);
+                    return a;
+                default:
+                    return null;
+            }
         }
     }
 }

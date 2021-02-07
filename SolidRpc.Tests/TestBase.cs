@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SolidRpc.OpenApi.Binder.Logging;
 using System;
@@ -6,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +20,65 @@ namespace SolidRpc.Tests
     /// </summary>
     public class TestBase
     {
+        /// <summary>
+        /// The connect handler
+        /// </summary>
+        public class ConnectHandler : DelegatingHandler
+        {
+            /// <summary>
+            /// The callbacks
+            /// </summary>
+            public ICollection<Func<Uri, string>> Callbacks = new List<Func<Uri, string>>();
+
+            /// <summary>
+            /// Constructs a new instance
+            /// </summary>
+            public ConnectHandler()
+            {
+            }
+
+            /// <summary>
+            /// Returns the data
+            /// </summary>
+            /// <param name="request"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var resp = new HttpResponseMessage();
+                foreach (var callback in Callbacks)
+                {
+                    var strContent = callback(request.RequestUri);
+                    if (!string.IsNullOrEmpty(strContent))
+                    {
+                        resp.StatusCode = System.Net.HttpStatusCode.OK;
+                        resp.Content = new StringContent(strContent, Encoding.UTF8, "application/json");
+                        return Task.FromResult(resp);
+                    }
+                }
+                resp.StatusCode = System.Net.HttpStatusCode.NotFound;
+                return Task.FromResult(resp);
+            }
+        }
+
+        public class CustomHttpMessageHandlerBuilder : HttpMessageHandlerBuilder
+        {
+            public CustomHttpMessageHandlerBuilder(ConnectHandler connectHandler)
+            {
+                ConnectHandler = connectHandler;
+            }
+            public override string Name { get; set; }
+            public override HttpMessageHandler PrimaryHandler { get; set; }
+            public override IList<DelegatingHandler> AdditionalHandlers => new List<DelegatingHandler>();
+            private ConnectHandler ConnectHandler { get; }
+
+            // Our custom builder doesn't care about any of the above.
+            public override HttpMessageHandler Build()
+            {
+                return ConnectHandler;
+            }
+        }
+
         /// <summary>
         /// The logger
         /// </summary>
@@ -134,6 +197,20 @@ namespace SolidRpc.Tests
             builder.AddProvider(new InvocationLoggingProvider("RequestId"));
             //builder.ClearProviders();
             //builder.AddProvider(new ConsoleProvider(Log));
+        }
+
+        protected void AddHttpClient(IServiceCollection services, Func<Uri, string> callback)
+        {
+            var connectHandler = services.GetSolidRpcService<ConnectHandler>(false);
+            if(connectHandler == null)
+            {
+                connectHandler = new ConnectHandler();
+                services.AddSingleton(connectHandler);
+            }
+            connectHandler.Callbacks.Add(callback);
+            
+            services.AddHttpClient();
+            services.AddSingleton<HttpMessageHandlerBuilder, CustomHttpMessageHandlerBuilder>();
         }
 
         /// <summary>

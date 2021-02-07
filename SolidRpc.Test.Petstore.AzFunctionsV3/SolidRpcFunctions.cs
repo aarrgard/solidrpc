@@ -388,6 +388,20 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOauth2RedirectHtml
+    {
+        [FunctionName("Http_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOauth2RedirectHtml")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOauth2RedirectHtml")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOpenApiSpec_arg0_arg1
     {
         [FunctionName("Http_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOpenApiSpec_arg0_arg1")]
@@ -407,6 +421,132 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetSwaggerUrls")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_LoginPage
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_LoginPage")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/LoginPage")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_LoginProviders
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_LoginProviders")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/LoginProviders")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_LoginScript
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_LoginScript")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/LoginScript")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_LoginScripts
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_LoginScripts")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/LoginScripts")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_Oidc_authorize
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_Oidc_authorize")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "SolidRpc/Security/Services/Oidc/authorize")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_Oidc_discovery
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_Oidc_discovery")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/Oidc/discovery")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_Oidc_keys
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_Oidc_keys")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/Oidc/keys")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_Oidc_token
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_Oidc_token")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "SolidRpc/Security/Services/Oidc/token")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Security_Services_Profile
+    {
+        [FunctionName("Http_SolidRpc_Security_Services_Profile")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Security/Services/Profile")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

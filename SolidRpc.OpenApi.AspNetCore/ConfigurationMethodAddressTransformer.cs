@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-[assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer), SolidRpcServiceLifetime.Singleton)]
+[assembly: SolidRpcService(typeof(IMethodAddressTransformer), typeof(ConfigurationMethodAddressTransformer), SolidRpcServiceLifetime.Singleton)]
 
 namespace SolidRpc.OpenApi.Binder
 {

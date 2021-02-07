@@ -18,7 +18,15 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<FileContent> GetIndexHtml(
-            bool onlyImplemented = true, 
+            bool onlyImplemented = true,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the oauth2-redirect file
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> GetOauth2RedirectHtml(
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

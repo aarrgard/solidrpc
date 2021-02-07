@@ -133,7 +133,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static object GetSolidRpcService(this IServiceCollection services, Type serviceType, bool mustExist = true)
         {
             var serviceProspects = services.Where(o => o.ServiceType == serviceType);
-            var service = serviceProspects.FirstOrDefault();
+            ServiceDescriptor service;
+            if(serviceProspects.Count() != 1)
+            {
+                service = serviceProspects.FirstOrDefault();
+            }
+            else
+            {
+                service = serviceProspects.FirstOrDefault();
+            }
             if (service == null)
             {
                 if(mustExist)

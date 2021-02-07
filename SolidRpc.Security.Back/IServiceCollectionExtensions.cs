@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Invoker;
+﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Security.Back.Services;
@@ -49,10 +50,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             }
 
-            services.AddSolidRpcBindings(typeof(IOidcServer), typeof(OidcServer), mbConfigurator);
+            services.AddSolidRpcBindings(typeof(IOidcServer), typeof(OidcServer), o => {
+                var res = mbConfigurator?.Invoke(o) ?? true;
+                o.DisableSecurity();
+                return res;
+            });
             services.AddSolidRpcBindings(typeof(ISolidRpcSecurity), typeof(SolidRpcSecurity), mbConfigurator);
+            var baseAddess = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress;
             services.GetSolidRpcContentStore().AddMapping(
-                "/.well-known/openid-configuration", 
+                $"{baseAddess.AbsolutePath}.well-known/openid-configuration", 
                 (sp) => sp.GetRequiredService<IInvoker<IOidcServer>>().GetUriAsync(o => o.OAuth2Discovery(CancellationToken.None)));
             var sc = new SolidRpcSecurityOptions();
             configurator?.Invoke(null, sc);

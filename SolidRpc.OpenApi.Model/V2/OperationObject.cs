@@ -1,4 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
+using SolidRpc.Abstractions.Types.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -272,19 +274,7 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <param name="headerName"></param>
         public void AddApiKeyAuth(string securityDefinitionName, string headerName)
         {
-            if(Security == null)
-            {
-                Security = new SecurityRequirementObject[0];
-            }
-            if(Security.SelectMany(o => o.Keys).Contains(securityDefinitionName))
-            {
-                return;
-            }
-            var sro = new SecurityRequirementObject(this);
-            sro[securityDefinitionName] = new string[0];
-            Security = Security.Union(new[] {
-                sro
-            }).ToList();
+            var sro = GetSecurityRequirement(securityDefinitionName);
 
             //
             // make sure that the security definition exists
@@ -297,6 +287,104 @@ namespace SolidRpc.OpenApi.Model.V2
                 sso.In = "header";
                 sso.Name = headerName;
             }
+        }
+
+        private SecurityRequirementObject GetSecurityRequirement(string securityDefinitionName)
+        {
+            if (Security == null) Security = new SecurityRequirementObject[0];
+            var sro = Security.FirstOrDefault(o => o.Keys.Contains(securityDefinitionName));
+            if(sro == null)
+            {
+                sro = new SecurityRequirementObject(this);
+                Security = Security.Union(new[] {
+                    sro
+                }).ToList();
+                sro[securityDefinitionName] = new string[0];
+            }
+            return sro;
+        }
+
+        /// <summary>
+        /// Adds the supplied authority scheme to this methos
+        /// </summary>
+        /// <param name="authDoc"></param>
+        /// <param name="flow"></param>
+        /// <param name="scopes"></param>
+        /// <returns></returns>
+        public void AddOAuth2Auth(OpenIDConnnectDiscovery authDoc, string flow, IEnumerable<string> scopes)
+        {
+            switch(flow.ToLower())
+            {
+                case "authorizationcode":
+                    AddOAuth2AuthorizationCodeAuth(authDoc, scopes);
+                    break;
+                default:
+                    throw new Exception();
+
+            } 
+        }
+
+        private void AddOAuth2AuthorizationCodeAuth(OpenIDConnnectDiscovery authDoc, IEnumerable<string> scopes)
+        {
+            //
+            // make sure that the security definition exists
+            //
+            var flow = "authorizationCode";
+            var securityDefinitions = GetParent<SwaggerObject>().GetSecurityDefinitions();
+            string defName = null;
+            SecuritySchemeObject securityScheme = null;
+            foreach(var securityDefinition in securityDefinitions)
+            {
+                if (securityDefinition.Value.Type != "oauth2") continue;
+                if (securityDefinition.Value.Flow != flow) continue;
+                if (securityDefinition.Value.AuthorizationUrl != authDoc.AuthorizationEndpoint.ToString()) continue;
+                if (securityDefinition.Value.TokenUrl != authDoc.TokenEndpoint.ToString()) continue;
+                AddScopes(securityDefinition.Value, scopes);
+                defName = securityDefinition.Key;
+            }
+            if(defName == null)
+            {
+                securityScheme = new SecuritySchemeObject(this)
+                {
+                    AuthorizationUrl = authDoc.AuthorizationEndpoint.ToString(),
+                    TokenUrl = authDoc.TokenEndpoint.ToString(),
+                    Type = "oauth2",
+                    Flow = flow,
+                };
+                AddScopes(securityScheme, scopes);
+                defName = GetDefinitionName(securityDefinitions.Keys, flow);
+                securityDefinitions.Add(defName, securityScheme);
+            }
+
+            var sro = GetSecurityRequirement(defName);
+            sro[defName] = scopes.ToList();
+        }
+
+        private void AddScopes(SecuritySchemeObject sco, IEnumerable<string> scopes)
+        {
+            if(sco.Scopes == null)
+            {
+                sco.Scopes = new ScopesObject(sco);
+            }
+            foreach (var scope in scopes)
+            {
+                if(!sco.Scopes.TryGetValue(scope, out string desc))
+                {
+                    sco.Scopes[scope] = scope;
+                }
+            }
+        }
+
+        private string GetDefinitionName(IEnumerable<string> keys, string name)
+        {
+            int count = 1;
+            var newName = name;
+            while (keys.Contains(name))
+            {
+                count++;
+                newName = $"{name}{count}";
+            }
+            return newName;
         }
     }
 }

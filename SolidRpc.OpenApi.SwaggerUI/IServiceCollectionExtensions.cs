@@ -1,6 +1,4 @@
-﻿using SolidProxy.Core.Configuration.Builder;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Proxy;
+﻿using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.SwaggerUI;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using System;

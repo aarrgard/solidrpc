@@ -1,0 +1,103 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SolidRpc.Tests",
+    "description": "",
+    "version": ""
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Swagger/Binder/SecurityTest/ITestInterface/DoXAsync": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
+        ],
+        "description": "A test method",
+        "operationId": "DoXAsync",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "security": [
+          {
+            "security-definition1": []
+          },
+          {
+            "authorizationCode": [
+              "scope1"
+            ]
+          }
+        ]
+      }
+    },
+    "/Swagger/Binder/SecurityTest/ITestInterface/DoYAsync": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
+        ],
+        "description": "A test method",
+        "operationId": "DoYAsync",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "security": [
+          {
+            "authorizationCode": [
+              "scope2"
+            ]
+          },
+          {
+            "security-definition2": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "security-definition1": {
+      "type": "apiKey",
+      "name": "security-header1",
+      "in": "header"
+    },
+    "authorizationCode": {
+      "type": "oauth2",
+      "flow": "authorizationCode",
+      "authorizationUrl": "http://localhost/authorize",
+      "tokenUrl": "http://localhost/token",
+      "scopes": {
+        "scope1": "scope1",
+        "scope2": "scope2"
+      }
+    },
+    "security-definition2": {
+      "type": "apiKey",
+      "name": "security-header2",
+      "in": "header"
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface",
+      "description": "A test interface"
+    }
+  ]
+}

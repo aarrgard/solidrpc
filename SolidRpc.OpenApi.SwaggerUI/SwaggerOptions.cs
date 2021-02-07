@@ -13,5 +13,10 @@ namespace SolidRpc.OpenApi.SwaggerUI
         /// The default open api spec
         /// </summary>
         public string DefaultOpenApiSpec { get; set; }
+
+        /// <summary>
+        /// The oauth client id.
+        /// </summary>
+        public string OAuthClientId { get; set; }
     }
 }
