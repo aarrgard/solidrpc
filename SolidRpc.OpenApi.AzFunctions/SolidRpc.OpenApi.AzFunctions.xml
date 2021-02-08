@@ -51,6 +51,93 @@
             Represents a function
             </summary>
         </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.FunctionDef.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,System.String,System.String)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="protocol"></param>
+            <param name="openApiPath"></param>
+            <param name="path"></param>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.FunctionDef.FunctionHandler">
+            <summary>
+            The function handler
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.FunctionDef.Protocol">
+            <summary>
+            The protocol
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.FunctionDef.Path">
+            <summary>
+            The path
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.FunctionDef.PathWithArgNames">
+            <summary>
+            The path with arg names
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.FunctionDef.FunctionName">
+            <summary>
+            The function name
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.HttpFunctionDef">
+            <summary>
+            Represents a http function
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.HttpFunctionDef.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,System.String,System.String)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="protocol"></param>
+            <param name="openApiPath"></param>
+            <param name="path"></param>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.HttpFunctionDef.Method">
+            <summary>
+            The metod
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.HttpFunctionDef.AuthLevel">
+            <summary>
+            The auth level
+            </summary>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.QueueFunctionDef">
+            <summary>
+            represents a queue function
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.QueueFunctionDef.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,System.String,System.String)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="functionHandler"></param>
+            <param name="protocol"></param>
+            <param name="openApiPath"></param>
+            <param name="path"></param>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.QueueFunctionDef.QueueName">
+            <summary>
+            The queue name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.QueueFunctionDef.Connection">
+            <summary>
+            The connection
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.QueueFunctionDef.TransportType">
+            <summary>
+            The transport type
+            </summary>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction">
             <summary>
             Represents an azure function

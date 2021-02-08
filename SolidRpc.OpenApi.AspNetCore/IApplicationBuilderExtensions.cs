@@ -67,6 +67,7 @@ namespace Microsoft.AspNetCore.Builder
         /// Binds all the solid rpc proxies that has an implementation on this server.
         /// </summary>
         /// <param name="applicationBuilder"></param>
+        /// <param name="preInvoke"></param>
         /// <param name="allowedCorsOrigins"></param>
         /// <returns></returns>
         public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder, Func<HttpContext, Task> preInvoke = null, params string[] allowedCorsOrigins)
@@ -406,6 +407,7 @@ namespace Microsoft.AspNetCore.Builder
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);
 
+                context.RequestServices.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = context.User;
                 var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();
                 var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
                 var response = await methodInvoker.InvokeAsync(context.RequestServices, httpHandler, request, new[] { methodBinding }, context.RequestAborted);

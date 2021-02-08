@@ -19,6 +19,10 @@ namespace SolidRpc.Tests
             Scope = scope.ToString().Substring(24);
         }
         private Action<string> Logger { get; }
+
+        /// <summary>
+        /// The scope
+        /// </summary>
         public string Scope { get; }
 
         /// <summary>

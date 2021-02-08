@@ -8,6 +8,13 @@ namespace SolidRpc.OpenApi.AzFunctions
     /// </summary>
     public class FunctionDef
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="functionHandler"></param>
+        /// <param name="protocol"></param>
+        /// <param name="openApiPath"></param>
+        /// <param name="path"></param>
         public FunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path)
         {
             FunctionHandler = functionHandler;
@@ -88,27 +95,75 @@ namespace SolidRpc.OpenApi.AzFunctions
             }
             return sb.ToString();
         }
-
+        /// <summary>
+        /// The function handler
+        /// </summary>
         public IAzFunctionHandler FunctionHandler { get; }
+        /// <summary>
+        /// The protocol
+        /// </summary>
         public string Protocol { get; }
+        /// <summary>
+        /// The path
+        /// </summary>
         public string Path { get; }
+        /// <summary>
+        /// The path with arg names
+        /// </summary>
         public string PathWithArgNames { get; }
+        /// <summary>
+        /// The function name
+        /// </summary>
         public string FunctionName { get; }
     }
 
+    /// <summary>
+    /// Represents a http function
+    /// </summary>
     public class HttpFunctionDef : FunctionDef
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="functionHandler"></param>
+        /// <param name="protocol"></param>
+        /// <param name="openApiPath"></param>
+        /// <param name="path"></param>
         public HttpFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
-
+        /// <summary>
+        /// The metod
+        /// </summary>
         public string Method { get; set; }
+        /// <summary>
+        /// The auth level
+        /// </summary>
         public string AuthLevel { get; set; }
     }
 
+    /// <summary>
+    /// represents a queue function
+    /// </summary>
     public class QueueFunctionDef : FunctionDef
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="functionHandler"></param>
+        /// <param name="protocol"></param>
+        /// <param name="openApiPath"></param>
+        /// <param name="path"></param>
         public QueueFunctionDef(IAzFunctionHandler functionHandler, string protocol, string openApiPath, string path) : base(functionHandler, protocol, openApiPath, path) { }
+        /// <summary>
+        /// The queue name
+        /// </summary>
         public string QueueName { get; set; }
+        /// <summary>
+        /// The connection
+        /// </summary>
         public string Connection { get; set; }
+        /// <summary>
+        /// The transport type
+        /// </summary>
         public string TransportType { get; set; }
     }
 

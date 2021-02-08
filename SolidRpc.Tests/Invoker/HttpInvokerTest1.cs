@@ -15,6 +15,9 @@ namespace SolidRpc.Tests.Invoker
     /// </summary>
     public class HttpInvokerTest1 : WebHostTest
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
         public HttpInvokerTest1()
         {
             SecKey = Guid.NewGuid();
@@ -63,6 +66,10 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Configures the server services
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
@@ -76,6 +83,11 @@ namespace SolidRpc.Tests.Invoker
 
         }
 
+        /// <summary>
+        /// Configures the client services
+        /// </summary>
+        /// <param name="clientServices"></param>
+        /// <param name="baseAddress"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
@@ -92,6 +104,9 @@ namespace SolidRpc.Tests.Invoker
             base.ConfigureClientServices(clientServices, baseAddress);
         }
 
+        /// <summary>
+        /// The sec key
+        /// </summary>
         public Guid SecKey { get; }
 
         /// <summary>

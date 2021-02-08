@@ -60,19 +60,40 @@ namespace SolidRpc.Tests
                 return Task.FromResult(resp);
             }
         }
-
+        /// <summary>
+        /// The custom message handler for mock:ing data
+        /// </summary>
         public class CustomHttpMessageHandlerBuilder : HttpMessageHandlerBuilder
         {
+            /// <summary>
+            /// Constructs a new instance
+            /// </summary>
+            /// <param name="connectHandler"></param>
             public CustomHttpMessageHandlerBuilder(ConnectHandler connectHandler)
             {
                 ConnectHandler = connectHandler;
             }
+            /// <summary>
+            /// The name
+            /// </summary>
             public override string Name { get; set; }
+            /// <summary>
+            /// The primary heander
+            /// </summary>
             public override HttpMessageHandler PrimaryHandler { get; set; }
+            /// <summary>
+            /// The additional handlers
+            /// </summary>
             public override IList<DelegatingHandler> AdditionalHandlers => new List<DelegatingHandler>();
+            /// <summary>
+            /// The connect handler
+            /// </summary>
             private ConnectHandler ConnectHandler { get; }
 
-            // Our custom builder doesn't care about any of the above.
+            /// <summary>
+            /// Builds the handler
+            /// </summary>
+            /// <returns></returns>
             public override HttpMessageHandler Build()
             {
                 return ConnectHandler;
@@ -99,7 +120,7 @@ namespace SolidRpc.Tests
                 StartLogger();
             }
 
-            private async Task StartLogger()
+            private async void StartLogger()
             {
                 while(true)
                 {
@@ -199,6 +220,11 @@ namespace SolidRpc.Tests
             //builder.AddProvider(new ConsoleProvider(Log));
         }
 
+        /// <summary>
+        /// Adds support for mocking http responses
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="callback"></param>
         protected void AddHttpClient(IServiceCollection services, Func<Uri, string> callback)
         {
             var connectHandler = services.GetSolidRpcService<ConnectHandler>(false);

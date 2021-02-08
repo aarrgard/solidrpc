@@ -14,6 +14,9 @@ namespace SolidRpc.Tests.Serialization
     /// </summary>
     public class SerializationTest : TestBase
     {
+        /// <summary>
+        /// Test class
+        /// </summary>
         private class ComplexType
         {
             [DataMember(Name= "MyData", EmitDefaultValue = false)]

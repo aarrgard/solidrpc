@@ -80,11 +80,20 @@ namespace SolidRpc.OpenApi.Binder
             BaseAddress = TransformUri(new Uri("http://localhost/"), null);
         }
 
+        /// <summary>
+        /// The  base address
+        /// </summary>
         public Uri BaseAddress { get; }
         private string Scheme { get; }
         private HostString Host { get; }
         private string PathPrefix { get; }
 
+        /// <summary>
+        /// Transforms the supplied uri
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
         public Uri TransformUri(Uri uri, MethodInfo methodInfo)
         {
             //
