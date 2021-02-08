@@ -37,7 +37,7 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
                 var af = ctx.ServerServiceProvider.GetRequiredService<IAuthorityFactory>();
-                var a = af.GetLocalAuthority(ctx.BaseAddress);
+                var a = af.GetLocalAuthority(ctx.BaseAddress.ToString());
                 a.CreateSigningKey();
 
                 var claimsIdentity = new ClaimsIdentity(new[] {
@@ -63,7 +63,7 @@ namespace SolidRpc.Tests.Security
 
 
                 var af = ctx.ServerServiceProvider.GetRequiredService<IAuthorityFactory>();
-                var a = af.GetLocalAuthority(ctx.BaseAddress);
+                var a = af.GetLocalAuthority(ctx.BaseAddress.ToString());
 
                 using (var cert = GetManifestResource(nameof(TestLocalAuthority2) + ".pfx"))
                 {

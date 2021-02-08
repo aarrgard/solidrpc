@@ -129,7 +129,7 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcBindings(typeof(ISolidRpcSecurity), null);
             sc.AddSolidRpcNpmGenerator();
-            sc.AddSolidRpcOAuth2Local(new Uri("http://localhost"), _ => { });
+            sc.AddSolidRpcOAuth2Local("http://localhost", _ => { });
             sc.AddSolidRpcSecurityBackend();
             sc.AddSolidRpcSecurityBackendMicrosoft((o, opts) =>
             {

@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="localAuthority"></param>
         /// <param name="conf"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, Uri localAuthority, Action<IAuthorityLocal> conf)
+        public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, string localAuthority, Action<IAuthorityLocal> conf)
         {
             services.AddSingletonIfMissing<IAuthorityFactory, AuthorityFactoryImpl>();
             services.AddSingletonIfMissing(o =>

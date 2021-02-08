@@ -1091,14 +1091,14 @@
             Interface that provides access to an authority factory
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory.GetAuthority(System.Uri)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory.GetAuthority(System.String)">
             <summary>
-            Returns the authority @ supplied url
+            Returns the authority @ supplied url. The supplied string will be used to validate the issuer in the tokens.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory.GetLocalAuthority(System.Uri)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory.GetLocalAuthority(System.String)">
             <summary>
-            Returns the local authority @ supplied url
+            Returns the local authority @ supplied url. The supplied string will be used as the issuer when issuing tokens.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal">
@@ -1367,7 +1367,7 @@
             <param name="config"></param>
             <param name="securityKey"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetOauth2Security(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Uri,System.String,System.String)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetOauth2Security(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String,System.String,System.String)">
             <summary>
             Sets the securitykey
             </summary>

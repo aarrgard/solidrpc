@@ -104,7 +104,7 @@ namespace SolidRpc.Tests.Security
                 .WriteAsJsonString();
 
             var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
-            oauth2Config.OAuth2Authority = baseAddress;
+            oauth2Config.OAuth2Authority = baseAddress.ToString();
             oauth2Config.OAuth2ClientId = "clientid";
             oauth2Config.OAuth2ClientSecret = "secret";
             oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
@@ -120,19 +120,19 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureServerServices(IServiceCollection serverServices)
         {
             base.ConfigureServerServices(serverServices);
-            serverServices.AddSolidRpcOAuth2Local(serverServices.GetSolidRpcService<Uri>(), o => o.CreateSigningKey());
+            serverServices.AddSolidRpcOAuth2Local(serverServices.GetSolidRpcService<Uri>().ToString(), o => o.CreateSigningKey());
             serverServices.AddSolidRpcSecurityBackend();
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {
                 o.OpenApiSpec = openApi;
-                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>();
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
                 return true;
             });
             serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
             {
                 o.OpenApiSpec = openApi;
-                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>();
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
                 o.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
                 return true;
             });
@@ -154,7 +154,7 @@ namespace SolidRpc.Tests.Security
                 Assert.IsFalse(res.IsError);
 
                 var issuer = ctx.BaseAddress.ToString();
-                Assert.AreEqual(issuer.Substring(0, issuer.Length - 1), res.Issuer);
+                Assert.AreEqual(issuer, res.Issuer);
                 Assert.AreEqual(1, res.KeySet.Keys.Count);
             }
         }
@@ -170,7 +170,7 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
                 var authFactory = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>();
-                var authority = authFactory.GetAuthority(ctx.BaseAddress);
+                var authority = authFactory.GetAuthority(ctx.BaseAddress.ToString());
                 var doc = await authority.GetDiscoveryDocumentAsync();
                 var keys = await authority.GetSigningKeysAsync();
 

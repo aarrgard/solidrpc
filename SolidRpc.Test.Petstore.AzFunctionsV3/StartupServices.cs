@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
 
-                conf.SetOauth2Security(baseAddress, "clientid", "secret");
+                conf.SetOauth2Security(baseAddress.ToString(), "clientid", "secret");
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
                     conf.SetHttpTransport(InvocationStrategy.Forward);
@@ -53,7 +53,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
-            services.AddSolidRpcOAuth2Local(baseAddress, conf => { conf.CreateSigningKey(); });
+            services.AddSolidRpcOAuth2Local(baseAddress.ToString(), conf => { conf.CreateSigningKey(); });
             services.AddSolidRpcSecurityBackend((sp, conf) => { }, ConfigureAzureFunction);
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");

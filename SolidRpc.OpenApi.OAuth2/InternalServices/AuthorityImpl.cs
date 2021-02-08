@@ -50,7 +50,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             IAuthorityFactory authorityFactoryImpl,
             IHttpClientFactory httpClientFactory,
             ISerializerFactory serializerFactory,
-            Uri authority)
+            string authority)
         {
             AuthorityFactoryImpl = authorityFactoryImpl;
             SerializerFactory = serializerFactory;
@@ -64,7 +64,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <summary>
         /// The authority
         /// </summary>
-        public Uri Authority { get; }
+        public string Authority { get; }
         
         private OpenIDConnnectDiscovery OpenIDConnnectDiscovery { get; set; }
 
@@ -121,7 +121,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             // fetch new version
             //
             var client = HttpClientFactory.CreateClient();
-            var resp = await client.GetAsync(new Uri(Authority, ".well-known/openid-configuration"));
+            var resp = await client.GetAsync(new Uri(new Uri(Authority), ".well-known/openid-configuration"));
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
                 SerializerFactory.DeserializeFromStream(s, out openIDConnnectDiscovery);
@@ -140,28 +140,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public async Task<ClaimsPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default(CancellationToken))
         {
-            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);
-            var tokenValidationParameter = new AuthorityTokenValidationParameters(CreateIssuer(doc), allSigningKeys);
+            var tokenValidationParameter = new AuthorityTokenValidationParameters(Authority, allSigningKeys);
             tokenChecks?.Invoke(tokenValidationParameter);
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
             var claimsPrincipal = tokenHandler.ValidateToken(jwt, tokenValidationParameter, out securityToken);
-
             return claimsPrincipal;
-        }
-        protected string CreateIssuer(OpenIDConnnectDiscovery doc)
-        {
-            return CreateIssuer(doc?.Issuer.ToString() ?? Authority.ToString());
-        }
-
-        protected string CreateIssuer(string iss)
-        {
-            if(iss.EndsWith("/"))
-            {
-                iss = iss.Substring(0, iss.Length - 1);
-            }
-            return iss;
         }
 
         /// <summary>

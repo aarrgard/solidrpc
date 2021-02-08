@@ -34,7 +34,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             IAuthorityFactory authorityFactoryImpl,
             IHttpClientFactory httpClientFactory,
             ISerializerFactory serializerFactory,
-            Uri authority)
+            string authority)
             :base(authorityFactoryImpl, httpClientFactory, serializerFactory, authority)
         {
         }
@@ -81,7 +81,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             var signingCredentials = new SigningCredentials(_privateKey, SecurityAlgorithms.RsaSha512Signature);
             var securityTokenDescriptor = new SecurityTokenDescriptor()
             {
-                Issuer = CreateIssuer(Authority.ToString()),
+                Issuer = Authority,
                 Expires = issuedAt.Add(expiryTime.Value),
                 IssuedAt = issuedAt,
                 Subject = claimsIdentity,

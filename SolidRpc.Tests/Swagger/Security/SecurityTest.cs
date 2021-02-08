@@ -58,7 +58,7 @@ namespace SolidRpc.Tests.Swagger.Binder
                 }
             });
             var sp = services.BuildServiceProvider();
-            var authority = sp.GetRequiredService<IAuthorityFactory>().GetAuthority(new Uri("http://localhost/"));
+            var authority = sp.GetRequiredService<IAuthorityFactory>().GetAuthority("http://localhost/");
             var docs = await authority.GetDiscoveryDocumentAsync();
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface));
             spec.Operations.ToList().ForEach(o =>

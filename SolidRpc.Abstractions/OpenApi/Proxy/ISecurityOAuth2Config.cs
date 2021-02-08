@@ -11,7 +11,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <summary>
         /// The authority uri. Add .well-known/openid-configuration to fetch the config. 
         /// </summary>
-        Uri OAuth2Authority { get; set; }
+        string OAuth2Authority { get; set; }
 
         /// <summary>
         /// The client id.

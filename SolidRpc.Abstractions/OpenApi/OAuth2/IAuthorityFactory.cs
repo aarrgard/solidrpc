@@ -8,13 +8,13 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
     public interface IAuthorityFactory
     {
         /// <summary>
-        /// Returns the authority @ supplied url
+        /// Returns the authority @ supplied url. The supplied string will be used to validate the issuer in the tokens.
         /// </summary>
-        IAuthority GetAuthority(Uri authority);
+        IAuthority GetAuthority(string authority);
 
         /// <summary>
-        /// Returns the local authority @ supplied url
+        /// Returns the local authority @ supplied url. The supplied string will be used as the issuer when issuing tokens.
         /// </summary>
-        IAuthorityLocal GetLocalAuthority(Uri authority);
+        IAuthorityLocal GetLocalAuthority(string authority);
     }
 }

@@ -15,7 +15,7 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <summary>
         /// The uri of the issuer
         /// </summary>
-        Uri Authority { get; }
+        string Authority { get; }
 
         /// <summary>
         /// Returns the discovery document
