@@ -55,6 +55,10 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Configures the server services
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
@@ -67,6 +71,11 @@ namespace SolidRpc.Tests.Invoker
 
         }
 
+        /// <summary>
+        /// Configures the client services
+        /// </summary>
+        /// <param name="clientServices"></param>
+        /// <param name="baseAddress"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()

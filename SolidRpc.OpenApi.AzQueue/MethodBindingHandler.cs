@@ -140,7 +140,7 @@ namespace SolidRpc.OpenApi.AzQueue
             }
         }
 
-        private async Task StartMessagePump(string connectionName, CloudQueue cloudQueue)
+        private async void StartMessagePump(string connectionName, CloudQueue cloudQueue)
         {
             int emptyQueueCount = 0;
             var cancellationToken = SolidRpcApplication.ShutdownToken;

@@ -87,7 +87,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         protected IDictionary<string, string> HttpCookies { get; set; }
 
-        private async Task RegisterHost()
+        private async void RegisterHost()
         {
             // we need to complete the construction...
             await Task.Yield();

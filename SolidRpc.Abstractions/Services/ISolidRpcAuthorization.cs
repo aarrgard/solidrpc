@@ -1,4 +1,4 @@
-﻿using System.Security.Principal;
+﻿using System.Security.Claims;
 
 namespace SolidRpc.Abstractions.Services
 {
@@ -10,6 +10,6 @@ namespace SolidRpc.Abstractions.Services
         /// <summary>
         /// Gets / sets the current principal
         /// </summary>
-        IPrincipal CurrentPrincipal { get; set; }
+        ClaimsPrincipal CurrentPrincipal { get; set; }
     }
 }

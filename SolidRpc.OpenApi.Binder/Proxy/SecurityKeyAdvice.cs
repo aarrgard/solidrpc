@@ -51,7 +51,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 if (val.Equals(SecurityKey.Value.Value))
                 {
                     var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-                    auth.CurrentPrincipal = SecurityPathClaimAdvice.AdminPrincipal;
+                    auth.CurrentPrincipal.AddIdentity(SecurityPathClaimAdvice.SecurityKeyIdentity);
                     invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
                 }
             }

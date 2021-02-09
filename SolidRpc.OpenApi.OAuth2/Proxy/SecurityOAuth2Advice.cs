@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         /// <summary>
         /// The advices that must run after this advice
         /// </summary>
-        public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>) };
+        public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>), typeof(SecurityPathClaimAdvice<,,>) };
 
         /// <summary>
         /// The advices that must run before this advice
@@ -122,7 +123,15 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 return;
             }
             var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-            auth.CurrentPrincipal = await Authority.GetPrincipalAsync(jwt, null, invocation.CancellationToken);
+            var jwtPrincipal = await Authority.GetPrincipalAsync(jwt, null, invocation.CancellationToken);
+            if(auth.CurrentPrincipal.Claims.Any())
+            {
+                auth.CurrentPrincipal.AddIdentities(jwtPrincipal.Identities);
+            }
+            else 
+            {
+                auth.CurrentPrincipal = jwtPrincipal;
+            }
             invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
         }
 

@@ -92,6 +92,12 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementationBack : ITestInterfaceBack
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="ct"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
             public Task DoYAsync(ComplexType ct, CancellationToken cancellation = default(CancellationToken))
             {
                 var caller = SolidProxyInvocationImplAdvice.CurrentInvocation.Caller.GetType().Name;
@@ -100,6 +106,10 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Configures the server services
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
@@ -113,6 +123,11 @@ namespace SolidRpc.Tests.Invoker
 
         }
 
+        /// <summary>
+        /// Configures the client services
+        /// </summary>
+        /// <param name="clientServices"></param>
+        /// <param name="baseAddress"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             //

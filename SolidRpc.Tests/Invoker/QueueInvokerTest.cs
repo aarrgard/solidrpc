@@ -100,6 +100,10 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Configures the server services
+        /// </summary>
+        /// <param name="serverServices"></param>
         public override void ConfigureServerServices(IServiceCollection serverServices)
         {
             base.ConfigureServerServices(serverServices);
@@ -114,6 +118,11 @@ namespace SolidRpc.Tests.Invoker
             //services.AddAzTableQueue("SolidRpcAzTableConnection", "generic");
         }
 
+        /// <summary>
+        /// Configures the client services
+        /// </summary>
+        /// <param name="clientServices"></param>
+        /// <param name="baseAddress"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             base.ConfigureClientServices(clientServices, baseAddress);

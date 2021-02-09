@@ -331,8 +331,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/authorize"
@@ -341,8 +341,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/token",
         "methods": [
-          "POST",
-          "GET"
+          "GET",
+          "POST"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/token"

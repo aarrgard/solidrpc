@@ -189,6 +189,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return openIdKeys.Keys;
         }
 
+        /// <summary>
+        /// Returns the local keys
+        /// </summary>
+        /// <returns></returns>
         protected virtual IEnumerable<OpenIDKey> GetLocalKeys()
         {
             return new OpenIDKey[0];

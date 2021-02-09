@@ -1,7 +1,7 @@
 ﻿using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services;
+using System;
 using System.Security.Claims;
-using System.Security.Principal;
 
 [assembly: SolidRpcServiceAttribute(typeof(ISolidRpcAuthorization), typeof(SolidRpcAuthorization), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.Abstractions.Services
@@ -11,18 +11,22 @@ namespace SolidRpc.Abstractions.Services
     /// </summary>
     public class SolidRpcAuthorization : ISolidRpcAuthorization
     {
+        private ClaimsPrincipal _currentPrincipal;
+
         /// <summary>
         /// Constructs a new instance
         /// </summary>
         public SolidRpcAuthorization()
         {
-            var claims = new Claim[] { };
-            CurrentPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims));
+            _currentPrincipal = new ClaimsPrincipal();
         }
 
         /// <summary>
         /// The current principal
         /// </summary>
-        public IPrincipal CurrentPrincipal { get; set; }
+        public ClaimsPrincipal CurrentPrincipal { 
+            get => _currentPrincipal;
+            set => _currentPrincipal = value ?? new ClaimsPrincipal();
+        }
     }
 }

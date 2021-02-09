@@ -14,31 +14,37 @@ using System.Text.RegularExpressions;
 using System.Security.Principal;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using Microsoft.Extensions.Logging;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
     public class SecurityPathClaimAdvice
     {
-        public static string AllowedPathClaim = "AllowedPath";
+        /// <summary>
+        /// The name claim
+        /// </summary>
+        public static readonly Claim NameClaim = new Claim(ClaimsIdentity.DefaultNameClaimType, "SecurityKey");
+        
+        /// <summary>
+        /// The allowed path claim
+        /// </summary>
+        public static readonly Claim AllowedPathClaim = new Claim("AllowedPath", "/*");
 
-        private static IPrincipal _AdminPrincipal;
-        private static IEnumerable<Claim> _AdminClaims = new Claim[]
+        private static readonly Claim[] SecurityKeyIdentityClaims = new Claim[]
         {
-            new Claim(AllowedPathClaim, "/*")
+            NameClaim, AllowedPathClaim
         };
-        public static IPrincipal AdminPrincipal
+
+        /// <summary>
+        /// The identity added to the principal when a security key is supplied.
+        /// </summary>
+        public static ClaimsIdentity SecurityKeyIdentity
         {
             get
             {
-                if (_AdminPrincipal == null)
-                {
-                    _AdminPrincipal = new ClaimsPrincipal(new ClaimsIdentity(_AdminClaims));
-                }
-                return _AdminPrincipal;
+                return new ClaimsIdentity(SecurityKeyIdentityClaims, "SecurityKey");
             }
         }
-
-
     }
     /// <summary>
     /// Configures the bindings for the rpc proxy.
@@ -57,13 +63,15 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="openApiParser"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="serviceProvider"></param>
-        public SecurityPathClaimAdvice(IMethodBinderStore methodBinderStore)
+        public SecurityPathClaimAdvice(ILogger<SecurityPathClaimAdvice> logger, IMethodBinderStore methodBinderStore)
         {
+            Logger = logger;
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
         }
 
+        private ILogger Logger { get; }
         private IMethodBinderStore MethodBinderStore { get; }
-        public IMethodBinding MethodBinding { get; private set; }
+        private IMethodBinding MethodBinding { get; set; }
 
 
         public bool Configure(ISecurityPathClaimConfig config)
@@ -104,20 +112,22 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
 
             var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-            var prin = auth.CurrentPrincipal as ClaimsPrincipal;
-            if(prin == null)
+            var prin = auth.CurrentPrincipal;
+            if(!prin.Identities.Any())
             {
-                throw new UnauthorizedException("No principal");
+                throw new UnauthorizedException("Principal has no identities.");
             }
 
             var localPath = MethodBinding.LocalPath;
-            var match = prin.Claims.Where(o => o.Type == AllowedPathClaim)
-                .Select(o => PathMatcher.GetOrAdd(o.Value, CreatePathMatcher))
-                .Any(o => o.Match(localPath).Success);
+            var identityMatch = prin.Identities.FirstOrDefault(i => i.Claims.Any(c => c.Type == AllowedPathClaim.Type && PathMatcher.GetOrAdd(c.Value, CreatePathMatcher).IsMatch(localPath)));
 
-            if(!match)
+            if(identityMatch == null)
             {
-                throw new UnauthorizedException("No valid path");
+                throw new UnauthorizedException($"None of the {AllowedPathClaim.Type} claims matches the path {localPath} for the identities {string.Join(",",prin.Identities.Select(o => o.Name))}");
+            }
+            if(Logger.IsEnabled(LogLevel.Information))
+            {
+                Logger.LogInformation($"The identity {identityMatch.Name} is allowed to access the path {localPath}.");
             }
 
             invocation.ReplaceArgument<IPrincipal>((n, v) => prin);
