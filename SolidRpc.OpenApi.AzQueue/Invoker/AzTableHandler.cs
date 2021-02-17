@@ -227,7 +227,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
             var timedOutMessages = results
                 .Where(o => o.DispachedAt != null)
-                .Where(o => o.DispachedAt.Value.AddMinutes(Math.Pow(2, o.DispatchCount)) < DateTimeOffset.Now);
+                .Where(o => o.DispachedAt.Value.AddMinutes(Math.Pow(2, Math.Min(o.DispatchCount, 20))) < DateTimeOffset.Now);
             foreach (var row in timedOutMessages)
             {
                 try

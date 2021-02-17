@@ -17,13 +17,17 @@ namespace SolidRpc.OpenApi.AzFunctions
     /// </summary>
     public class StartupSolidRpcServices 
     {
-
+        private static Assembly[] s_assemblies = new Assembly[0];
         /// <summary>
         /// Configures the services.
         /// </summary>
         /// <param name="services"></param>
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            s_assemblies = new[] {
+                Assembly.Load("Microsoft.IdentityModel.Tokens"),
+                Assembly.Load("System.IdentityModel.Tokens.Jwt"),
+            };
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
             var azFuncHandler = services.GetAzFunctionHandler();
 
@@ -93,15 +97,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         private static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
             var an = new AssemblyName(args.Name);
-            switch (an.Name)
-            {
-                case "Microsoft.IdentityModel.Tokens":
-                case "System.IdentityModel.Tokens.Jwt":
-                    var a = Assembly.Load(an.Name);
-                    return a;
-                default:
-                    return null;
-            }
+            return s_assemblies.FirstOrDefault(o => o.GetName().Name == an.Name);
         }
     }
 }
