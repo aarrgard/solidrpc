@@ -356,7 +356,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             {
                 Content = new MemoryStream(enc.GetBytes("{\"test\":\"test\"}")),
                 CharSet = enc.HeaderName,
-                FileName = "filename.txt",
+                FileName = "filename.txt[]",
                 ContentType = "application/json"
             };
         }

@@ -30,7 +30,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 target.MediaType = source.Content.Headers?.ContentType?.MediaType;
                 target.CharSet = RemoveQuotes(source.Content.Headers?.ContentType?.CharSet);
-                target.Filename = source.Content.Headers?.ContentDisposition?.FileName;
+                target.Filename = RemoveQuotes(source.Content.Headers?.ContentDisposition?.FileName);
                 target.LastModified = source.Content.Headers?.LastModified;
                 //if(source.Headers.ETag != null) // this will only be set if etag i within quotes - azure functions seems to remove them 
                 if(source.Headers.TryGetValues("ETag", out IEnumerable<string> etags))

@@ -98,6 +98,9 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private bool FindParameter(IEnumerable<ParameterObject> parameters, ParameterInfo parameter)
         {
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+
             var prospect = parameters.FirstOrDefault(o => MethodBindingV2.NameMatches(o.Name, parameter.Name));
             if(prospect != null)
             {
