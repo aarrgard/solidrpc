@@ -68,7 +68,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             foreach(var subDir in dir.GetDirectories())
             {
                 if (subDir.Name == "SecurityPermissionAttribute") continue;
-                CreateCode(subDir, false);
+                CreateCode(subDir, true);
             }
         }
 
@@ -116,6 +116,37 @@ namespace SolidRpc.Tests.Swagger.CodeGen
 
                 var res = await proxy.ProxyIntegerInPath(3);
                 Assert.AreEqual(3, res);
+                Assert.AreEqual(1, moq.Invocations.Count);
+            }
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public async Task TestDateParam()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestDateParam).Substring(4));
+
+                var dt = DateTime.Now;
+                var moq = new Moq.Mock<DateParam.Services.IDateParam>();
+                moq.Setup(o => o.ProxyDateInParam(It.Is<DateTime>(val => val.Year == dt.Year && val.Month == dt.Month && val.Day == dt.Day && val.Hour == 0 && val.Minute == 0 && val.Second == 0 && val.Millisecond == 0), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult(dt.Date));
+
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<DateParam.Services.IDateParam>();
+
+                var res = await proxy.ProxyDateInParam(dt);
+                Assert.AreEqual(dt.Year, res.Year);
+                Assert.AreEqual(dt.Month, res.Month);
+                Assert.AreEqual(dt.Day, res.Day);
+                Assert.AreEqual(0, res.Hour);
+                Assert.AreEqual(0, res.Minute);
+                Assert.AreEqual(0, res.Second);
+                Assert.AreEqual(0, res.Millisecond);
                 Assert.AreEqual(1, moq.Invocations.Count);
             }
         }

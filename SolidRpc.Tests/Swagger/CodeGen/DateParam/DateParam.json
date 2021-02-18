@@ -1,0 +1,36 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "DateParam"
+  },
+  "host": "localhost:5001",
+  "schemes": [ "https" ],
+  "paths": {
+    "/UrlParam1/{p}": {
+      "get": {
+        "tags": [ "DateParam" ],
+        "summary": "Sends a date back and forth between client and server",
+        "operationId": "ProxyDateInParam",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "p",
+            "in": "path",
+            "description": "The number to proxy",
+            "required": true,
+            "type": "string",
+            "format": "date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": { "type": "string", "format": "date" }
+          }
+        }
+      }
+    }
+  }
+}

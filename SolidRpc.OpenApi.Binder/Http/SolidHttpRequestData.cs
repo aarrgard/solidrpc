@@ -60,35 +60,35 @@ namespace SolidRpc.OpenApi.Binder.Http
             return SystemTypes.Contains(type.FullName);
         }
 
-        public static Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> CreateBinder(string contentType, string name, Type parameterType, string collectionFormat)
+        public static Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> CreateBinder(string contentType, string name, Type parameterType, string format, string collectionFormat)
         {
             Func<IEnumerable<IHttpRequestData>, object, Task<IHttpRequestData>> subBinder;
             switch (collectionFormat)
             {
                 case null:
-                    subBinder = CreateBinder(contentType, name, parameterType);
+                    subBinder = CreateBinder(contentType, name, parameterType, format);
                     return async (_, __) => new IHttpRequestData[] { await subBinder(_, __) };
                 case "multi":
-                    var binder = CreateEnumBinder(contentType, name, parameterType);
+                    var binder = CreateEnumBinder(contentType, name, parameterType, format);
                     return (_, __) => binder(_, __);
                 case "csv":
-                    var csvBinder = CreateEnumBinder(contentType, name, parameterType);
+                    var csvBinder = CreateEnumBinder(contentType, name, parameterType, format);
                     return async (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join(",", (await csvBinder(_, __)).Select(o => o.GetStringValue()))) };
                 case "ssv":
-                    var ssvBinder = CreateEnumBinder(contentType, name, parameterType);
+                    var ssvBinder = CreateEnumBinder(contentType, name, parameterType, format);
                     return async (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join(" ", (await ssvBinder(_, __)).Select(o => o.GetStringValue()))) };
                 case "pipes":
-                    var pipesBinder = CreateEnumBinder(contentType, name, parameterType);
+                    var pipesBinder = CreateEnumBinder(contentType, name, parameterType, format);
                     return async (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join("|", (await pipesBinder(_, __)).Select(o => o.GetStringValue()))) };
                 case "tsv":
-                    var tsvBinder = CreateEnumBinder(contentType, name, parameterType);
+                    var tsvBinder = CreateEnumBinder(contentType, name, parameterType, format);
                     return async (_, __) => new IHttpRequestData[] { new SolidHttpRequestDataString("text/plain", name, string.Join("\t", (await tsvBinder(_, __)).Select(o => o.GetStringValue()))) };
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
         }
 
-        public static Func<IEnumerable<IHttpRequestData>, object> CreateExtractor(string contentType, string name, Type parameterType, string collectionFormat)
+        public static Func<IEnumerable<IHttpRequestData>, object> CreateExtractor(string contentType, string name, Type parameterType, string format, string collectionFormat)
         {
             Func<IHttpRequestData, object> subExtractor;
             switch (collectionFormat)
@@ -422,20 +422,20 @@ namespace SolidRpc.OpenApi.Binder.Http
             return type.GetInterfaces().Select(o => GetEnumType(o)).Where(o => o != null).FirstOrDefault();
         }
 
-        private static Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> CreateEnumBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> CreateEnumBinder(string contentType, string name, Type type, string format)
         {
             var enumType = GetEnumType(type);
             var m = typeof(SolidHttpRequestData).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
                     .Where(o => o.Name == nameof(CreateEnumBinder))
-                    .Where(o => o.GetParameters().Length == 2)
+                    .Where(o => o.GetParameters().Length == 3)
                     .Where(o => o.IsGenericMethod)
                     .Single();
-            return (Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name });
+            return (Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>>)m.MakeGenericMethod(enumType).Invoke(null, new object[] { contentType, name, format });
         }
 
-        private static Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> CreateEnumBinder<T>(string contentType, string name)
+        private static Func<IEnumerable<IHttpRequestData>, object, Task<IEnumerable<IHttpRequestData>>> CreateEnumBinder<T>(string contentType, string name, string format)
         {
-            var subBinder = CreateBinder(contentType, name, typeof(T));
+            var subBinder = CreateBinder(contentType, name, typeof(T), format);
             return async (rd, e) =>
             {
                 if (e == null) return EmptyArray;
@@ -445,11 +445,11 @@ namespace SolidRpc.OpenApi.Binder.Http
             };
         }
 
-        private static Func<IEnumerable<IHttpRequestData>, object, Task<IHttpRequestData>> CreateBinder(string contentType, string name, Type type)
+        private static Func<IEnumerable<IHttpRequestData>, object, Task<IHttpRequestData>> CreateBinder(string contentType, string name, Type type, string format)
         {
             if(type.IsNullableType(out Type nullableType))
             {
-                var subBinder = CreateBinder(contentType, name, nullableType);
+                var subBinder = CreateBinder(contentType, name, nullableType, format);
                 return (_, val) =>
                 {
                     if(val == null)
@@ -495,7 +495,13 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemGuid:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((Guid)val).ToString()));
                         case SystemDateTime:
-                            return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture)));
+                            switch(format?.ToLower())
+                            {
+                                case "date":
+                                    return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+                                default:
+                                    return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((DateTime)val).ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture)));
+                            }
                         case SystemDateTimeOffset:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((DateTimeOffset)val).ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture)));
                         case SystemTimeSpan:

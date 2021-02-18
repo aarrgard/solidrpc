@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             if (ParameterObject.IsBinaryType())
             {
                 HttpRequestDataBinder = (_, __) => SetFileData(ParameterObject.Name, _, __);
-                HttpRequestDataExtractor = GetFileData(contentType, ParameterObject.Name, ParameterInfo.ParameterType);
+                HttpRequestDataExtractor = GetFileData(contentType, ParameterObject.Name, ParameterInfo.ParameterType, ParameterObject.Format);
             }
             else if (ParameterInfo.ParameterType.IsHttpRequest())
             {
@@ -53,9 +53,9 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     parameterName = ParameterInfo.Name;
                 }
-                HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
-                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
-                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, collectionFormat);
+                HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterName, ParameterInfo.ParameterType, ParameterObject.Format, collectionFormat);
+                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, ParameterObject.Format, collectionFormat);
+                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, ParameterObject.Format, collectionFormat);
             }
 
             if(parameterObject.Default != null)
@@ -70,7 +70,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private IEnumerable<IHttpRequestData> DefaultValue { get; }
 
-        private Func<IEnumerable<IHttpRequestData>, object> GetFileData(string contentType, string name, Type type)
+        private Func<IEnumerable<IHttpRequestData>, object> GetFileData(string contentType, string name, Type type, string format)
         {
             var template = FileContentTemplate.GetTemplate(type);
             if(template.IsTemplateType)
@@ -104,7 +104,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     return _.FirstOrDefault()?.GetBinaryValue();
                 };
             }
-            return SolidHttpRequestData.CreateExtractor(contentType, name, type, null);
+            return SolidHttpRequestData.CreateExtractor(contentType, name, type, format, null);
         }
 
         private IEnumerable<string> GetArgumentPath()
