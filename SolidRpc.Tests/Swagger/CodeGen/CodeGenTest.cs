@@ -68,7 +68,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             foreach(var subDir in dir.GetDirectories())
             {
                 if (subDir.Name == "SecurityPermissionAttribute") continue;
-                CreateCode(subDir, true);
+                CreateCode(subDir, false);
             }
         }
 
