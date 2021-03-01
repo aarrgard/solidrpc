@@ -4,116 +4,6 @@
         <name>SolidRpc.NpmGenerator</name>
     </assembly>
     <members>
-        <member name="T:SolidRpc.NpmGenerator.Debugger.Events.Debugger.Paused">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.Paused.Reason">
-            <summary>
-            Pause reason.
-            Allowed Values: ambiguous, assert, debugCommand, DOM, EventListener, exception, instrumentation, OOM, other, promiseRejection, XHR
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed">
-            <summary>
-            Fired when virtual machine parses script. This event is also fired for all known and uncollected scripts upon enabling debugger.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.ScriptId">
-            <summary>
-            Identifier of the script parsed.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.Url">
-            <summary>
-            URL or name of the script parsed (if any).
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.StartLine">
-            <summary>
-            Line offset of the script within the resource with given URL (for script tags).
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.StartColumn">
-            <summary>
-            Column offset of the script within the resource with given URL.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.EndLine">
-            <summary>
-            Last line of the script.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.EndColumn">
-            <summary>
-            Length of the last line of the script.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.ExecutionContextId">
-            <summary>
-            Specifies script creation context.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.Hash">
-            <summary>
-            Content hash of the script.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Debugger.ScriptParsed.executionContextAuxData">
-            <summary>
-            Embedder-specific auxiliary data.
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Debugger.Events.Runtime.ExecutionContextCreated">
-            <summary>
-            Represents an execution context created event
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Runtime.ExecutionContextCreated.ExecutionContextDescription.Id">
-            <summary>
-            Unique id of the execution context. It can be used to specify in which execution context script evaluation should be performed.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Runtime.ExecutionContextCreated.ExecutionContextDescription.Origin">
-            <summary>
-            Execution context origin.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Runtime.ExecutionContextCreated.ExecutionContextDescription.Name">
-            <summary>
-            Human readable name describing given context.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Runtime.ExecutionContextCreated.ExecutionContextDescription.AuxData">
-            <summary>
-            Unique id of the execution context. It can be used to specify in which execution context script evaluation should be performed.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Debugger.Events.Runtime.ExecutionContextCreated.Context">
-            <summary>
-            A newly created execution contex.
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Debugger.NodeDebugger">
-            <summary>
-            The debugger for the node service
-            </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Debugger.NodeDebugger.#ctor(System.String,System.Int32,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Creates a new instance
-            </summary>
-            <param name="host"></param>
-            <param name="port"></param>
-            <param name="uid"></param>
-            <param name="cancellationToken"></param>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Debugger.NodeDebugger.Connect">
-            <summary>
-            Connects the debugger
-            </summary>
-        </member>
         <member name="T:SolidRpc.NpmGenerator.InternalServices.CodeNamespaceGenerator">
             <summary>
             Creates code namespaces from the reggistered bindings.
@@ -169,43 +59,6 @@
             <param name="rootNamespace"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.NpmGenerator.Services.INodeService">
-            <summary>
-            The node service
-            </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.ExecuteJSInDebugger(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Runs the supplied javascript.
-            </summary>
-            <param name="js"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.ExecuteJSAsync(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Runs the supplied javascript.
-            </summary>
-            <param name="js"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.GetNodeVersionAsync(System.Threading.CancellationToken)">
-            <summary>
-            Returns the node version
-            </summary>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.INodeService.DownloadPackageAsync(System.String,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Downloads the specified package so that it is available to the executed scripts.
-            </summary>
-            <param name="package"></param>
-            <param name="version"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
         <member name="T:SolidRpc.NpmGenerator.Services.INpmGenerator">
             <summary>
             The npm generator
@@ -246,25 +99,6 @@
             </summary>
             <param name="assemblyName">The name of the assembly to create an npm package for.</param>
             <param name="cancellationToken"></param>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Services.NodeService">
-            <summary>
-            Implements the node service. Executables are fetched from https://nodejs.org/es/blog/release/v8.17.0/.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.NodeService.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.NpmGenerator.Services.NodeService})">
-            <summary>
-            Constructs the instance
-            </summary>
-            <param name="logger"></param>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.NodeService.ExecuteJSAsync(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Executes the supplied js
-            </summary>
-            <param name="js"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
         </member>
         <member name="T:SolidRpc.NpmGenerator.Services.NpmGenerator">
             <summary>
@@ -514,26 +348,6 @@
         <member name="P:SolidRpc.NpmGenerator.Types.FileContent.FileName">
             <summary>
             The file name
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.NodeExecution">
-            <summary>
-            Represents the result from a node execution.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.NodeExecution.ExitCode">
-            <summary>
-            The exit code. Null means that the process is still running.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.NodeExecution.Out">
-            <summary>
-            The result from the std.out.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.NodeExecution.Err">
-            <summary>
-            The result from the std.err.
             </summary>
         </member>
         <member name="T:SolidRpc.NpmGenerator.Types.NpmPackage">

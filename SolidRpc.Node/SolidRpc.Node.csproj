@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Services\NodeModuleNpmResolver.83d3fb56-0d08-4506-ac9a-0a4373795350.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\NodeModuleNpmResolver.83d3fb56-0d08-4506-ac9a-0a4373795350.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

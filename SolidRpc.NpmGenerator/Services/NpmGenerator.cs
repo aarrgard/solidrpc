@@ -258,7 +258,6 @@ module.exports = {{
             try
             {
                 var npmFolder = await DownloadToCache("npm", "6.11.2");
-                var script = WriteNodeServicesScript(tmpDir, "NpmGenerator.NpmScript.js");
                 //var nodeServicesOptions = new NodeServicesOptions(ServiceProvider);
 
                 ////
@@ -409,22 +408,6 @@ module.exports = {{
                 fi.Directory.Create();
             }
             return fi.Create();
-        }
-
-        private FileInfo WriteNodeServicesScript(DirectoryInfo tmpDir, string scriptName)
-        {
-            var compilerScriptResourceName = GetType().Assembly
-                .GetManifestResourceNames()
-                .Where(o => o.EndsWith(scriptName, StringComparison.InvariantCultureIgnoreCase))
-                .Single();
-            var fi = new FileInfo(Path.Combine(tmpDir.FullName, "npm.js"));
-            using (var tw = fi.CreateText())
-            using (var s = GetType().Assembly.GetManifestResourceStream(compilerScriptResourceName))
-            using (var sw = new StreamReader(s))
-            {
-                tw.Write(sw.ReadToEnd());
-            }
-            return fi;
         }
 
         private NpmPackage CreateNpmPackage(DirectoryInfo dir)

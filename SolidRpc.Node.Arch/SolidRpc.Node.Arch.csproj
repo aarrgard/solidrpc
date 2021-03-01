@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Arch\AMD64\node.exe" />
+    <None Remove="Arch\x86\node.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Arch\AMD64\node.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Arch\x86\node.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
+  </ItemGroup>
+
+</Project>

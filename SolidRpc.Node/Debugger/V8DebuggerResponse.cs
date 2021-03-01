@@ -1,0 +1,19 @@
+﻿using System.Runtime.Serialization;
+
+namespace SolidRpc.NpmGenerator.Debugger
+{
+    public class V8DebuggerResponse
+    {
+        [DataMember(Name = "id")]
+        public int? Id { get; set; }
+
+        [DataMember(Name = "result")]
+        public object Result { get; set; }
+
+        [DataMember(Name = "method")]
+        public string MethodName { get; set; }
+
+        [DataMember(Name = "params", EmitDefaultValue = false)]
+        public object Parameters { get; set; }
+    }
+}

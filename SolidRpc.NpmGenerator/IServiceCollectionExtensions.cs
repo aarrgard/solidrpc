@@ -1,6 +1,4 @@
-﻿using SolidProxy.Core.Configuration.Builder;
-using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Proxy;
+﻿using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.NpmGenerator.InternalServices;
 using SolidRpc.NpmGenerator.Services;
 using SolidRpc.OpenApi.Model.CodeDoc;
@@ -25,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services, 
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
+            services.AddSolidRpcNode(configurator);
             services.AddTransient<ICodeNamespaceGenerator, CodeNamespaceGenerator>();
             services.AddTransient<ITypescriptGenerator, TypeScriptGenerator>();
             if(!services.Any(o => o.ServiceType == typeof(ICodeDocRepository)))
@@ -32,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddSingleton<ICodeDocRepository, CodeDocRepository>();
             }
             services.AddHttpClient();
-            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator), typeof(INodeService));
+            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();
 
             services.AddSolidRpcBindings(
@@ -43,14 +42,6 @@ namespace Microsoft.Extensions.DependencyInjection
                     c.OpenApiSpec = strOpenApiSpec;
                     return configurator?.Invoke(c) ?? true;
                 });
-            services.AddSolidRpcBindings(
-                  typeof(INodeService),
-                  typeof(NodeService),
-                  (c) =>
-                  {
-                      c.OpenApiSpec = strOpenApiSpec;
-                      return configurator?.Invoke(c) ?? true;
-                  });
             return services;
         }
     }

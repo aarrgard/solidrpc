@@ -7,10 +7,9 @@ using SolidRpc.NpmGenerator.Types;
 using SolidProxy.GeneratorCastle;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using System.IO;
 using SolidRpc.Security.Services;
-using SolidRpc.OpenApi.Binder.Proxy;
 using System.Threading;
+using SolidRpc.Node.Services;
 using System;
 
 namespace SolidRpc.Tests.NpmGenerator
@@ -23,7 +22,7 @@ namespace SolidRpc.Tests.NpmGenerator
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Problem with path in tests - works on webserver.")]
+        [Test, Ignore("Implement")]
         public async Task TestNodeServices()
         {
             var sc = new ServiceCollection();
@@ -170,21 +169,77 @@ namespace SolidRpc.Tests.NpmGenerator
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();
             var version = await nodeService.GetNodeVersionAsync();
-            Assert.AreEqual("v14.15.4", version);
+            Assert.IsTrue(version.StartsWith("v"));
 
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(10000); 
-            var res = await nodeService.ExecuteJSAsync("console.log('test');", cts.Token);
 
-            Assert.AreEqual(0, res.ExitCode);
-            Assert.AreEqual("test", res.Out);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var cts = new CancellationTokenSource();
+                cts.CancelAfter(10000);
+                var str = $"testing{i}";
+                var res = await nodeService.ExecuteScriptAsync(Guid.Empty, $"(async function() {{ console.log('test'); return '{str}'; }})() ", cts.Token);
+                Assert.AreEqual(0, res.ExitCode);
+                Assert.AreEqual($"\"{str}\"", res.Result);
+                Assert.AreEqual("test", res.Out.Trim());
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+                var cts = new CancellationTokenSource();
+                cts.CancelAfter(10000);
+                var str = $"testing{i}";
+                var res = await nodeService.ExecuteScriptAsync(Guid.Empty, $"console.log('test'); '{str}';", cts.Token);
+                Assert.AreEqual(0, res.ExitCode);
+                Assert.AreEqual($"\"{str}\"", res.Result);
+                Assert.AreEqual("test", res.Out.Trim());
+            }
+        }
+
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestRunNodeJsPuppeteer()
+        {
+            var sc = new ServiceCollection();
+            sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+            sc.AddLogging(ConfigureLogging);
+            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
+            sc.AddSolidRpcNpmGenerator();
+
+            var sp = sc.BuildServiceProvider();
+            var nodeService = sp.GetRequiredService<INodeService>();
+
+
+            for (int i = 0; i < 5; i++)
+            {
+                var cts = new CancellationTokenSource();
+                cts.CancelAfter(10000);
+                var res = await nodeService.ExecuteScriptAsync(NodeModulePuppeteerResolver.GuidModuleId, @"
+const puppeteer = require('puppeteer');
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto('https://google.se');
+    await page.screenshot({ path: 'example.png' });
+
+    await browser.close();
+    return 'example.png';
+})();", cts.Token);
+                Assert.AreEqual(0, res.ExitCode);
+                Assert.AreEqual($"\"example.png\"", res.Result);
+                Assert.AreEqual("", res.Out.Trim());
+            }
+
             //Assert.AreEqual("", res.Err);
         }
 
         /// <summary>
         /// Tests the type store
         /// </summary>
-        [Test, Ignore("Implement")]
+        [Test]
         public async Task TestRunNodeJsNpm()
         {
             var sc = new ServiceCollection();
@@ -195,26 +250,12 @@ namespace SolidRpc.Tests.NpmGenerator
 
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();
-            await nodeService.DownloadPackageAsync("npm", "6.14.8");
 
-            var res = await nodeService.ExecuteJSAsync(@"var npm = require('npm');
-npm.load(function(err) {
-  // handle errors
-
-  // install module ffi
-  npm.commands.install(['ffi'], function(er, data) {
-    // log errors or data
-  });
-
-  npm.on('log', function(message) {
-    // log installation progress
-    console.log(message);
-  });
-});");
+            var res = await nodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, null, "npm\\bin\\npm-cli.js", new string[] { "--version"});
 
             Assert.AreEqual(0, res.ExitCode);
-            //Assert.AreEqual("test", res.Out);
-            //Assert.AreEqual("", res.Err);
+            Assert.AreEqual("7.6.0", res.Out.Trim());
+            Assert.AreEqual("", res.Err);
         }
     }
 }

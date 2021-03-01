@@ -20,12 +20,6 @@
     <None Remove="Services\NpmGenerator.CreateTypeTs.SolidRpc.ts" />
     <None Remove="Services\NpmGenerator.NpmScript.js" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Arch\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="$(AssemblyName).xml" />
@@ -41,13 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Arch\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 

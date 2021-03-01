@@ -68,6 +68,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.OAuth2", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.ApplicationInsights", "SolidRpc.OpenApi.ApplicationInsights\SolidRpc.OpenApi.ApplicationInsights.csproj", "{F9616CB2-C8E9-4637-93E9-5A82CD06CB05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Node", "SolidRpc.Node\SolidRpc.Node.csproj", "{82709B24-F308-4175-A04A-C4F7E2A75B64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Node.Arch", "SolidRpc.Node.Arch\SolidRpc.Node.Arch.csproj", "{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -182,6 +186,14 @@ Global
 		{F9616CB2-C8E9-4637-93E9-5A82CD06CB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9616CB2-C8E9-4637-93E9-5A82CD06CB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9616CB2-C8E9-4637-93E9-5A82CD06CB05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82709B24-F308-4175-A04A-C4F7E2A75B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82709B24-F308-4175-A04A-C4F7E2A75B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82709B24-F308-4175-A04A-C4F7E2A75B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82709B24-F308-4175-A04A-C4F7E2A75B64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -214,6 +226,8 @@ Global
 		{43603697-8345-4B96-9B07-BFE3989D6717} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{126B01D7-4220-499B-87F0-24B544BFAC74} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{F9616CB2-C8E9-4637-93E9-5A82CD06CB05} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{82709B24-F308-4175-A04A-C4F7E2A75B64} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}
