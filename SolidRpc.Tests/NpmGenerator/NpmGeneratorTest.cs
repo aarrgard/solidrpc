@@ -216,7 +216,7 @@ namespace SolidRpc.Tests.NpmGenerator
             for (int i = 0; i < 5; i++)
             {
                 var cts = new CancellationTokenSource();
-                cts.CancelAfter(10000);
+                cts.CancelAfter(60000);
                 var res = await nodeService.ExecuteScriptAsync(NodeModulePuppeteerResolver.GuidModuleId, @"
 const puppeteer = require('puppeteer');
 (async () => {
