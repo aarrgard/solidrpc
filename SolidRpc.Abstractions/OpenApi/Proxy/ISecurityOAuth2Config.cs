@@ -1,5 +1,6 @@
 ﻿using SolidProxy.Core.Configuration;
 using System;
+using System.Collections.Generic;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {
@@ -22,6 +23,11 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// The client secret - will be used to authenticate the client if client credentials are used
         /// </summary>
         string OAuth2ClientSecret { get; set; }
+
+        /// <summary>
+        /// The scopes that are required for this invocation - default is "SolidRpc"
+        /// </summary>
+        IEnumerable<string> OAuth2Scopes { get; set; }
 
         /// <summary>
         /// Which authorization should be used when invoking proxies.

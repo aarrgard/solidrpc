@@ -47,6 +47,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         private IAuthority Authority { get; set; }
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
+        private IEnumerable<string> Scopes { get; set; }
         private OAuthProxyInvocationPrincipal ProxyInvocationPrincipal { get; set; }
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             Authority = AuthorityFactory.GetAuthority(config.OAuth2Authority);
             ClientId = config.OAuth2ClientId;
             ClientSecret = config.OAuth2ClientSecret;
+            Scopes = config.OAuth2Scopes;
             ProxyInvocationPrincipal = config.OAuthProxyInvocationPrincipal;
             return true;
         }
@@ -143,7 +145,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Client)
             {
-                var jwt = await Authority.GetClientJwtAsync(ClientId, ClientSecret);
+                var jwt = await Authority.GetClientJwtAsync(ClientId, ClientSecret, new[] { "SolidRpc" });
                 invocation.SetValue<StringValues>("http_authorization", $"bearer {jwt}");
                 return;
             }

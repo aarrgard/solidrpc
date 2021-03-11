@@ -78,9 +78,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="clientId"></param>
         /// <param name="clientSecret"></param>
+        /// <param name="scopes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> GetClientJwtAsync(string clientId, string clientSecret, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken))
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var client = HttpClientFactory.CreateClient();
@@ -88,7 +89,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
             nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
-            nvc.Add(new KeyValuePair<string, string>("scope", "api"));
+            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(",", scopes)));
             var content = new FormUrlEncodedContent(nvc);
 
             var resp = await client.PostAsync(doc.TokenEndpoint, content);
@@ -121,7 +122,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             // fetch new version
             //
             var client = HttpClientFactory.CreateClient();
-            var resp = await client.GetAsync(new Uri(new Uri(Authority), ".well-known/openid-configuration"));
+            var separator = Authority.EndsWith("/") ? "" : "/";
+            var resp = await client.GetAsync(new Uri($"{Authority}{separator}.well-known/openid-configuration"));
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
                 SerializerFactory.DeserializeFromStream(s, out openIDConnnectDiscovery);

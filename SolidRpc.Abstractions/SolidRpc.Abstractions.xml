@@ -1077,12 +1077,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetClientJwtAsync(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetClientJwtAsync(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <summary>
             Returns the client jwt from the authority
             </summary>
             <param name="clientId"></param>
             <param name="clientSecret"></param>
+            <param name="scopes"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -1208,6 +1209,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuth2ClientSecret">
             <summary>
             The client secret - will be used to authenticate the client if client credentials are used
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuth2Scopes">
+            <summary>
+            The scopes that are required for this invocation - default is "SolidRpc"
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuthProxyInvocationPrincipal">

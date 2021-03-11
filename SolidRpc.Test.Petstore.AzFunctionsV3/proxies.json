@@ -237,24 +237,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService"
     },
-    "SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}"
-    },
-    "SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync"
-    },
     "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}": {
       "matchCondition": {
         "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}",
@@ -273,15 +255,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}"
     },
-    "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}"
-    },
     "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}": {
       "matchCondition": {
         "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}",
@@ -299,15 +272,6 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}"
-    },
-    "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}"
     },
     "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpmPackage/{arg0}": {
       "matchCondition": {
@@ -341,8 +305,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/token",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/token"
@@ -418,6 +382,42 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOauth2RedirectHtml"
+    },
+    "SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}"
+    },
+    "SolidRpc/Node/Services/INodeService/ListNodeModulesAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/ListNodeModulesAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ListNodeModulesAsync"
+    },
+    "SolidRpc/Node/Services/INodeService/GetNodeVersionAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/GetNodeVersionAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/GetNodeVersionAsync"
+    },
+    "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}"
     },
     "front/{path}": {
       "matchCondition": {

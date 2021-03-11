@@ -108,11 +108,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_NpmGenerator_Services_INodeService_DownloadPackageAsync_arg0_arg1
+    public class Http_SolidRpc_Node_Services_INodeService_ExecuteFileAsync_arg0_arg1_arg2
     {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_DownloadPackageAsync_arg0_arg1")]
+        [FunctionName("Http_SolidRpc_Node_Services_INodeService_ExecuteFileAsync_arg0_arg1_arg2")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/DownloadPackageAsync/{arg0}/{arg1}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -122,11 +122,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSAsync_arg0
+    public class Http_SolidRpc_Node_Services_INodeService_ExecuteScriptAsync_arg0_arg1
     {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSAsync_arg0")]
+        [FunctionName("Http_SolidRpc_Node_Services_INodeService_ExecuteScriptAsync_arg0_arg1")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSAsync/{arg0}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -136,11 +136,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSInDebugger_arg0
+    public class Http_SolidRpc_Node_Services_INodeService_GetNodeVersionAsync
     {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_ExecuteJSInDebugger_arg0")]
+        [FunctionName("Http_SolidRpc_Node_Services_INodeService_GetNodeVersionAsync")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/ExecuteJSInDebugger/{arg0}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/GetNodeVersionAsync")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -150,11 +150,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_NpmGenerator_Services_INodeService_GetNodeVersionAsync
+    public class Http_SolidRpc_Node_Services_INodeService_ListNodeModulesAsync
     {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INodeService_GetNodeVersionAsync")]
+        [FunctionName("Http_SolidRpc_Node_Services_INodeService_ListNodeModulesAsync")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INodeService/GetNodeVersionAsync")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/ListNodeModulesAsync")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

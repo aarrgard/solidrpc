@@ -43,8 +43,9 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// </summary>
         /// <param name="clientId"></param>
         /// <param name="clientSecret"></param>
+        /// <param name="scopes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetClientJwtAsync(string clientId, string clientSecret, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

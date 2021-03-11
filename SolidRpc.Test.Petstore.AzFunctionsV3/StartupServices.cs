@@ -102,7 +102,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                         break;
                 }
             }
-
+            conf.SetOauth2Security("http://localhost:7071/front", "test", "test");
             var res = base.ConfigureAzureFunction(conf);
             return true;
         }

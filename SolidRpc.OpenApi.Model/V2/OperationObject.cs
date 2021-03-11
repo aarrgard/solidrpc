@@ -313,6 +313,10 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <returns></returns>
         public void AddOAuth2Auth(OpenIDConnnectDiscovery authDoc, string flow, IEnumerable<string> scopes)
         {
+            if(scopes == null || !scopes.Any())
+            {
+                scopes = new[] { "SolidRpc" };
+            }
             switch(flow.ToLower())
             {
                 case "authorizationcode":

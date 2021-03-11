@@ -254,11 +254,11 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                                 AuthorizationEndpoint = new Uri("https://no.authority.found"),
                                 TokenEndpoint = new Uri("https://no.authority.found"),
                             };
-                            op.AddOAuth2Auth(authDoc, "authorizationCode", new string[] { binding.MethodBinder.Assembly.GetName().Name });
+                            op.AddOAuth2Auth(authDoc, "authorizationCode", oauth2Config.OAuth2Scopes);
                         }
                         var securityKeyConfig = binding.GetSolidProxyConfig<ISecurityKeyConfig>();
-                        var securityKey = securityKeyConfig.SecurityKey;
-                        if (securityKeyConfig.Enabled && securityKey != null)
+                        var securityKey = securityKeyConfig?.SecurityKey;
+                        if (securityKeyConfig?.Enabled ?? false && securityKey != null)
                         {
                             var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
                             op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
