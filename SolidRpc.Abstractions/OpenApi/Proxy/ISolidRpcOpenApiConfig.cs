@@ -235,11 +235,14 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <param name="authority"></param>
         /// <param name="clientId"></param>
         /// <param name="clientSecret"></param>
-        public static void SetOauth2Security(this ISolidRpcOpenApiConfig config, string authority, string clientId, string clientSecret)
+        /// <param name="scopes"></param>
+        public static void SetOauth2Security(this ISolidRpcOpenApiConfig config, string authority, string clientId, string clientSecret, params string[] scopes)
         {
-            config.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = authority;
-            config.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2ClientId = clientId;
-            config.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2ClientSecret = clientSecret;
+            var advice = config.GetAdviceConfig<ISecurityOAuth2Config>();
+            advice.OAuth2Authority = authority;
+            advice.OAuth2ClientId = clientId;
+            advice.OAuth2ClientSecret = clientSecret;
+            advice.OAuth2Scopes = scopes;
             config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
         }
 

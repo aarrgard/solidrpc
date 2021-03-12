@@ -315,7 +315,7 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             if(scopes == null || !scopes.Any())
             {
-                scopes = new[] { "SolidRpc" };
+                scopes = new[] { "openid", "solidrpc" };
             }
             switch(flow.ToLower())
             {

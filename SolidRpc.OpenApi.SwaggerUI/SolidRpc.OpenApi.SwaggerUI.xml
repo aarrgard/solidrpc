@@ -118,6 +118,11 @@
             The oauth client id.
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.SwaggerOptions.OAuthClientSecret">
+            <summary>
+            The oauth client secret
+            </summary>
+        </member>
         <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl">
             <summary>
             Represent a swagger url

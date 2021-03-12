@@ -116,7 +116,8 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         oauth2RedirectUrl: ""{oauth2Redirect}""
       }})
       ui.initOAuth({{
-        clientId: ""{SwaggerOptions.OAuthClientId}""
+        clientId: ""{SwaggerOptions.OAuthClientId}"",
+        clientSecret: ""{SwaggerOptions.OAuthClientSecret}""
       }});
       // End Swagger UI call region
 
