@@ -1,7 +1,10 @@
 ﻿using SolidRpc.Abstractions.OpenApi.OAuth2;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 using System;
 using System.Reflection;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -31,6 +34,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, string localAuthority, Action<IAuthorityLocal> conf)
         {
+            services.AddTransient(sp => sp.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal);
+            services.AddTransient<IPrincipal, ClaimsPrincipal>();
             services.AddSingletonIfMissing<IAuthorityFactory, AuthorityFactoryImpl>();
             services.AddSingletonIfMissing(o =>
             {

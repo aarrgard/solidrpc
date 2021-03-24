@@ -129,7 +129,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="cert"></param>
         public void SetSigningKey(X509Certificate2 cert)
         {
-            SetSigningKey(new RsaSecurityKey(cert.GetRSAPrivateKey()), new RsaSecurityKey(cert.GetRSAPublicKey()));
+            SetSigningKey(new RsaSecurityKey(cert.GetRSAPrivateKey())
+            {
+                KeyId = cert.Thumbprint
+            }, new RsaSecurityKey(cert.GetRSAPublicKey())
+            {
+                KeyId = cert.Thumbprint
+            });
 
         }
     }

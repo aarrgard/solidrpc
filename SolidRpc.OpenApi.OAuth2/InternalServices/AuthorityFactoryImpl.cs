@@ -38,6 +38,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public IAuthority GetAuthority(string url)
         {
+            if (string.IsNullOrEmpty(url)) return null;
             return Authorities.GetOrAdd(url, _ => new AuthorityImpl(this, HttpClientFactory, SerializerFactory, url));
         }
 

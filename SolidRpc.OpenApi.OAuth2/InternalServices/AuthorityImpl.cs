@@ -102,6 +102,29 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return result.AccessToken;
         }
 
+        public async Task<string> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+            var client = HttpClientFactory.CreateClient();
+            var nvc = new List<KeyValuePair<string, string>>();
+            nvc.Add(new KeyValuePair<string, string>("grant_type", "password"));
+            nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
+            nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
+            nvc.Add(new KeyValuePair<string, string>("username", username));
+            nvc.Add(new KeyValuePair<string, string>("password", password));
+            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(",", scopes)));
+            var content = new FormUrlEncodedContent(nvc);
+
+            var resp = await client.PostAsync(doc.TokenEndpoint, content);
+            TokenResponse result;
+            using (var s = await resp.Content.ReadAsStreamAsync())
+            {
+                SerializerFactory.DeserializeFromStream(s, out result);
+            }
+
+            return result.AccessToken;
+        }
+
         /// <summary>
         /// Returns the discovery document for this authority
         /// </summary>
@@ -148,6 +171,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
             var claimsPrincipal = tokenHandler.ValidateToken(jwt, tokenValidationParameter, out securityToken);
+            claimsPrincipal.Identities.First().AddClaim(new Claim("accesstoken", jwt));
             return claimsPrincipal;
         }
 

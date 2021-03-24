@@ -12,6 +12,9 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Security.Principal;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
+using IdentityModel;
+using System.Security.Claims;
+using SolidRpc.Abstractions.Services;
 
 namespace SolidRpc.Tests.Security
 {
@@ -28,10 +31,16 @@ namespace SolidRpc.Tests.Security
             /// <summary>
             /// A test method
             /// </summary>
-            /// <param name="principal"></param>
             /// <param name="arg"></param>
             /// <returns></returns>
-            Task<string> GetEnabledResource(IPrincipal principal, string arg);
+            Task<string> GetClientEnabledResource(string arg);
+            
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
+            Task<string> GetUserEnabledResource(string arg);
         }
 
         /// <summary>
@@ -40,14 +49,34 @@ namespace SolidRpc.Tests.Security
         public class OAuth2EnabledService : IOAuth2EnabledService
         {
             /// <summary>
-            /// A test method
+            /// Constructs a new instance
             /// </summary>
             /// <param name="principal"></param>
+            public OAuth2EnabledService(ClaimsPrincipal principal)
+            {
+                Principal = principal;
+            }
+
+            public IPrincipal Principal { get; }
+
+            /// <summary>
+            /// A test method
+            /// </summary>
             /// <param name="arg"></param>
             /// <returns></returns>
-            public Task<string> GetEnabledResource(IPrincipal principal, string arg)
+            public Task<string> GetClientEnabledResource(string arg)
             {
-                return Task.FromResult(arg + ":" + principal.Identity.Name);
+                return Task.FromResult(arg + ":" + Principal.Identity.Name);
+            }
+
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
+            public Task<string> GetUserEnabledResource(string arg)
+            {
+                return Task.FromResult(arg + ":" + Principal.Identity.Name);
             }
         }
         /// <summary>
@@ -103,11 +132,20 @@ namespace SolidRpc.Tests.Security
                 .SetBaseAddress(baseAddress)
                 .WriteAsJsonString();
 
-            var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
-            oauth2Config.OAuth2Authority = baseAddress.ToString();
-            oauth2Config.OAuth2ClientId = "clientid";
-            oauth2Config.OAuth2ClientSecret = "secret";
-            oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
+            if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetClientEnabledResource))
+            {
+                var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
+                oauth2Config.OAuth2Authority = baseAddress.ToString();
+                oauth2Config.OAuth2ClientId = "clientid";
+                oauth2Config.OAuth2ClientSecret = "secret";
+                oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
+            }
+            if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetUserEnabledResource))
+            {
+                var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
+                oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Proxy;
+            }
+
 
             return true;
         }
@@ -348,8 +386,31 @@ namespace SolidRpc.Tests.Security
 
                 var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuth2EnabledService>();
 
-                var res = await protectedService.GetEnabledResource(null, "test");
+                var res = await protectedService.GetClientEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
+
+                var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(ctx.BaseAddress.ToString());
+                var userJwt = await authLocal.GetUserJwtAsync("clientid", "clientsecret", "userid", "password", new[] { "test" });
+
+                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(userJwt);
+                res = await protectedService.GetUserEnabledResource("test");
+                Assert.AreEqual("test:userid", res);
+
+                var clientJwt = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
+
+                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt);
+                res = await protectedService.GetUserEnabledResource("test");
+                Assert.AreEqual("test:clientid", res);
+                
+                try
+                {
+                    ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = null;
+                    res = await protectedService.GetUserEnabledResource("test");
+                    Assert.Fail();
+                } catch(UnauthorizedException)
+                {
+                    // this is the way we want it
+                }
             }
         }
 

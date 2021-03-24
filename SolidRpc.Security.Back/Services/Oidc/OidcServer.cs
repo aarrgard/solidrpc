@@ -117,6 +117,7 @@ namespace SolidRpc.Security.Back.Services
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("sub", username));
+            claimsIdentity.AddClaim(new System.Security.Claims.Claim(ClaimsIdentity.DefaultNameClaimType, username));
             var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Proxy;
 
 namespace SolidRpc.OpenApi.OAuth2.Proxy
@@ -60,7 +62,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             {
                 return false;
             }
-            if (config.OAuth2Authority == null)
+            if (config.OAuth2Authority == null && config.OAuthProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.None)
             {
                 return false;
             }
@@ -146,6 +148,17 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Client)
             {
                 var jwt = await Authority.GetClientJwtAsync(ClientId, ClientSecret, new[] { "SolidRpc" });
+                invocation.SetValue<StringValues>("http_authorization", $"bearer {jwt}");
+                return;
+            }
+            if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Proxy)
+            {
+                var cp = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal;
+                var jwt = cp.Claims.Where(o => o.Type == "accesstoken").Select(o => o.Value).FirstOrDefault();
+                if(jwt == null)
+                {
+                    throw new UnauthorizedException("No accesstoken claim exists");
+                }
                 invocation.SetValue<StringValues>("http_authorization", $"bearer {jwt}");
                 return;
             }
