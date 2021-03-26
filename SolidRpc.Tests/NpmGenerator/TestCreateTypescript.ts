@@ -2142,8 +2142,8 @@ export namespace Security {
             constructor(obj?: any) {
                 for(let prop in obj) {
                     switch(prop) {
-                        case "Keys":
-                            if (obj.Keys) { this.Keys = Array.from(obj.Keys).map(o => new Security.Types.OpenIDKey(o)); }
+                        case "keys":
+                            if (obj.keys) { this.Keys = Array.from(obj.keys).map(o => new Security.Types.OpenIDKey(o)); }
                             break;
                     }
                 }
@@ -2155,7 +2155,7 @@ export namespace Security {
                     returnString = true;
                 }
                 arr.push('{');
-                if(this.Keys) { arr.push('"Keys": '); this.Keys.forEach(o => o.toJson(arr)); arr.push(','); } 
+                if(this.Keys) { arr.push('"keys": '); this.Keys.forEach(o => o.toJson(arr)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
