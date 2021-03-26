@@ -231,6 +231,8 @@ namespace SolidRpc.Tests.Security
                 var httpClient = clientFactory.CreateClient();
                 var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
 
+                var x = await httpClient.GetStringAsync($"{ctx.BaseAddress}SolidRpc/Security/Services/Oidc/keys");
+
 
                 // authenticate client
                 var response = await httpClient.RequestTokenAsync(new TokenRequest
@@ -386,22 +388,32 @@ namespace SolidRpc.Tests.Security
 
                 var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuth2EnabledService>();
 
+                //
+                // Test invoking using the configured client
+                //
                 var res = await protectedService.GetClientEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
 
+                //
+                // Test user as user principal
+                //
                 var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(ctx.BaseAddress.ToString());
                 var userJwt = await authLocal.GetUserJwtAsync("clientid", "clientsecret", "userid", "password", new[] { "test" });
-
                 ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(userJwt);
                 res = await protectedService.GetUserEnabledResource("test");
                 Assert.AreEqual("test:userid", res);
 
+                //
+                // Test client as user principal
+                //
                 var clientJwt = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
-
                 ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt);
                 res = await protectedService.GetUserEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
                 
+                //
+                // Test resetting the current principal
+                //
                 try
                 {
                     ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = null;

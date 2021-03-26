@@ -1125,11 +1125,12 @@
             Creates a new set of signing keys for this authority.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.SetSigningKey(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.SetSigningKey(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{System.Security.Cryptography.X509Certificates.X509Certificate2,System.String})">
             <summary>
             Sets the signing keys
             </summary>
             <param name="cert"></param>
+            <param name="keyId"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.PrivateSigningKey">
             <summary>

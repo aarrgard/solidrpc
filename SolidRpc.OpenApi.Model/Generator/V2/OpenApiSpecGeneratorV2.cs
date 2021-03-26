@@ -44,6 +44,12 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 .OrderBy(o => o.FullName);
         }
 
+        /// <summary>
+        /// Creates the swagger spec
+        /// </summary>
+        /// <param name="openApiSpecResolver"></param>
+        /// <param name="cSharpRepository"></param>
+        /// <returns></returns>
         public override IOpenApiSpec CreateSwaggerSpec(IOpenApiSpecResolver openApiSpecResolver, ICSharpRepository cSharpRepository)
         {
             var swaggerObject = new SwaggerObject((ModelBase)openApiSpecResolver)

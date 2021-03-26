@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, string localAuthority, Action<IAuthorityLocal> conf)
         {
             services.AddTransient(sp => sp.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal);
-            services.AddTransient<IPrincipal, ClaimsPrincipal>();
+            services.AddTransient<IPrincipal>(sp => sp.GetRequiredService<ClaimsPrincipal>());
             services.AddSingletonIfMissing<IAuthorityFactory, AuthorityFactoryImpl>();
             services.AddSingletonIfMissing(o =>
             {

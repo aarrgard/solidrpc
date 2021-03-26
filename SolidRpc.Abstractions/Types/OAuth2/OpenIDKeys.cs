@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 namespace SolidRpc.Abstractions.Types.OAuth2
 {
     /// <summary>
@@ -8,6 +10,7 @@ namespace SolidRpc.Abstractions.Types.OAuth2
         /// <summary>
         /// The keys
         /// </summary>
+        [DataMember(Name = "keys", EmitDefaultValue = false)]
         public IEnumerable<OpenIDKey> Keys { get; set; }
     
     }

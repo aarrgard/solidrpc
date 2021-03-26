@@ -57,7 +57,7 @@ namespace SolidRpc.Node.Debugger
             SendCommand("Runtime.runIfWaitingForDebugger");
         }
 
-        private async Task ReceiveAsync()
+        private async void ReceiveAsync()
         {
             var ms = new MemoryStream();
             var buffer = new ArraySegment<byte>(new byte[1024]);
@@ -104,7 +104,7 @@ namespace SolidRpc.Node.Debugger
                     //var evt = ((JObject)resp.Parameters).ToObject(eventType);
                     object evt = null;
                     throw new Exception("Implement!");
-                    return HandleEvent(evt);
+                    //return HandleEvent(evt);
                 }
                 else if (resp.Id != null)
                 {

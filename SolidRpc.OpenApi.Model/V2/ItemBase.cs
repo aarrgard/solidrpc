@@ -13,6 +13,10 @@ namespace SolidRpc.OpenApi.Model.V2
     /// <a href="https://swagger.io/specification/v2/#itemsObject"/>
     public class ItemBase : ModelBase
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="parent"></param>
         public ItemBase(ModelBase parent) : base(parent) { }
 
         [DataMember(Name = "$ref", EmitDefaultValue = false)]

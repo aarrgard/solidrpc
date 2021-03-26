@@ -22,7 +22,8 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// Sets the signing keys
         /// </summary>
         /// <param name="cert"></param>
-        void SetSigningKey(X509Certificate2 cert);
+        /// <param name="keyId"></param>
+        void SetSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId = null);
 
         /// <summary>
         /// The signing key

@@ -65,12 +65,16 @@ namespace SolidRpc.Tests.Security
                 var af = ctx.ServerServiceProvider.GetRequiredService<IAuthorityFactory>();
                 var a = af.GetLocalAuthority(ctx.BaseAddress.ToString());
 
-                using (var cert = GetManifestResource(nameof(TestLocalAuthority2) + ".pfx"))
+                X509Certificate2 cert;
+                using (var certStream = GetManifestResource(nameof(TestLocalAuthority2) + ".pfx"))
                 {
                     var ms = new MemoryStream();
-                    await cert.CopyToAsync(ms);
-                    a.SetSigningKey(new X509Certificate2(ms.ToArray()));
+                    await certStream.CopyToAsync(ms);
+                    cert = new X509Certificate2(ms.ToArray());
+                    a.SetSigningKey(cert, c => $"{c.Thumbprint}{c.SignatureAlgorithm}");
                 }
+
+                Assert.IsTrue((await a.GetSigningKeysAsync()).Any(o => o.Kid == $"{cert.Thumbprint}{cert.SignatureAlgorithm}"));
 
                 var claimsIdentity = new ClaimsIdentity(new[] {
                     new Claim("test", "test")

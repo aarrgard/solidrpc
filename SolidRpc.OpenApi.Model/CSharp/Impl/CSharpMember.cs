@@ -301,6 +301,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             }
         }
 
+        /// <summary>
+        /// populates the namespace dictionary
+        /// </summary>
+        /// <param name="namespaces"></param>
         public virtual void GetNamespaces(IDictionary<string, HashSet<string>> namespaces)
         {
             Members.ToList().ForEach(o => o.GetNamespaces(namespaces));

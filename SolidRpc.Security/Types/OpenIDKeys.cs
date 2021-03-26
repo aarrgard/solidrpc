@@ -1,5 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 namespace SolidRpc.Security.Types {
     /// <summary>
     /// success
@@ -9,6 +11,7 @@ namespace SolidRpc.Security.Types {
         /// <summary>
         /// 
         /// </summary>
+        [DataMember(Name = "keys", EmitDefaultValue = false)]
         public IEnumerable<SolidRpc.Security.Types.OpenIDKey> Keys { get; set; }
     
     }
