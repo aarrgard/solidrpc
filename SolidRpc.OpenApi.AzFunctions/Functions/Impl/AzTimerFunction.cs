@@ -32,12 +32,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                         Type =  "inject"
                     }, new Binding()
                     {
-                        Name ="serviceType",
-                        Type =  "constant",
-                        Value = ""
-                    }, new Binding()
-                    {
-                        Name ="methodName",
+                        Name ="timerId",
                         Type =  "constant",
                         Value = ""
                     }
@@ -60,12 +55,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         public static Task Run(
             [TimerTrigger(""{Schedule}"", RunOnStartup = {RunOnStartup.ToString().ToLower()})] TimerInfo timerInfo,
             [Inject] IServiceProvider serviceProvider,
-            [Constant(""{ServiceType}"")] Type serviceType,
-            [Constant(""{MethodName}"")] string methodName,
+            [Constant(""{TimerId}"")] string timerId,
             ILogger log,
             CancellationToken cancellationToken)
         {{
-            return TimerFunction.Run(timerInfo, log, serviceProvider, serviceType, methodName, cancellationToken);
+            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
         }}
     }}
 ";
@@ -115,21 +109,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         }
 
         /// <summary>
-        /// The service type
-        /// </summary>
-        public string ServiceType
-        {
-            get => Function.Bindings.Where(o => o.Name == "serviceType").First().Value;
-            set => Function.Bindings.Where(o => o.Name == "serviceType").First().Value = value;
-        }
-
-        /// <summary>
         /// The method
         /// </summary>
-        public string MethodName
+        public string TimerId
         {
-            get => Function.Bindings.Where(o => o.Name == "methodName").First().Value;
-            set => Function.Bindings.Where(o => o.Name == "methodName").First().Value = value;
+            get => Function.Bindings.Where(o => o.Name == "timerId").First().Value;
+            set => Function.Bindings.Where(o => o.Name == "timerId").First().Value = value;
         }
 
     }

@@ -320,14 +320,9 @@
             Specifies if the trigger should run on startup.
             </summary>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzTimerFunction.ServiceType">
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzTimerFunction.TimerId">
             <summary>
-            The service type to resolve
-            </summary>
-        </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzTimerFunction.MethodName">
-            <summary>
-            The method to invoke on the service
+            The timer id
             </summary>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction">
@@ -676,12 +671,7 @@
             Should the trigger run on startup
             </summary>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.ServiceType">
-            <summary>
-            The service type
-            </summary>
-        </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.MethodName">
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.TimerId">
             <summary>
             The method
             </summary>
@@ -945,6 +935,25 @@
             <param name="value"></param>
             <param name="serializer"></param>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore">
+            <summary>
+            The timer store is used to invoke timers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore.AddTimerAction(System.String,System.Func{System.IServiceProvider,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+            <summary>
+            Adds the timer action
+            </summary>
+            <param name="timerId"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore.GetTimerAction(System.String)">
+            <summary>
+            Returns the action associated with the supplied timer id
+            </summary>
+            <param name="timerId"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions">
             <summary>
             The setup class
@@ -998,7 +1007,7 @@
             <param name="services"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddAzFunctionStartup``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Linq.Expressions.Expression{System.Action{``0}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddAzFunctionStartup``2(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task}},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
             <summary>
             
             </summary>
@@ -1009,7 +1018,7 @@
             <param name="serviceLifetime"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddAzFunctionTimer``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Linq.Expressions.Expression{System.Action{``0}},System.String,System.Boolean)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddAzFunctionTimer``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Linq.Expressions.Expression{System.Func{``0,System.Threading.Tasks.Task}},System.String,System.Boolean)">
             <summary>
             
             </summary>

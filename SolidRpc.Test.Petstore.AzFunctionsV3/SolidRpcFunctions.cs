@@ -628,34 +628,32 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId
+    public class Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId_1
     {
-        [FunctionName("Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId")]
+        [FunctionName("Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId_1")]
         public static Task Run(
             [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
             [Inject] IServiceProvider serviceProvider,
-            [Constant("SolidRpc.Abstractions.Services.ISolidRpcHost")] Type serviceType,
-            [Constant("GetHostId")] string methodName,
+            [Constant("Timer_SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId_1")] string timerId,
             ILogger log,
             CancellationToken cancellationToken)
         {
-            return TimerFunction.Run(timerInfo, log, serviceProvider, serviceType, methodName, cancellationToken);
+            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
         }
     }
 
 
-    public class Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync
+    public class Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync_1
     {
-        [FunctionName("Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync")]
+        [FunctionName("Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync_1")]
         public static Task Run(
             [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
             [Inject] IServiceProvider serviceProvider,
-            [Constant("SolidRpc.OpenApi.AzQueue.Services.IAzTableQueue")] Type serviceType,
-            [Constant("DoScheduledScanAsync")] string methodName,
+            [Constant("Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync_1")] string timerId,
             ILogger log,
             CancellationToken cancellationToken)
         {
-            return TimerFunction.Run(timerInfo, log, serviceProvider, serviceType, methodName, cancellationToken);
+            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
         }
     }
 

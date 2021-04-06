@@ -1,12 +1,13 @@
-﻿using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.OpenApi.AzFunctions;
+﻿using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using System;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -76,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="invocation"></param>
         /// <param name="serviceLifetime"></param>
         /// <returns></returns>
-        public static IServiceCollection AddAzFunctionStartup<TService, TImpl>(this IServiceCollection services, Expression<Action<TService>> invocation, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TService : class where TImpl : class,TService
+        public static IServiceCollection AddAzFunctionStartup<TService, TImpl>(this IServiceCollection services, Expression<Func<TService, Task>> invocation, ServiceLifetime serviceLifetime = ServiceLifetime.Transient) where TService : class where TImpl : class,TService
         {
             services.AddServiceIfMissing<TService, TImpl>(serviceLifetime);
             services.AddAzFunctionTimer<TService>(invocation, "0 0 0 1 1 0", true);
@@ -92,18 +93,20 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="schedule"></param>
         /// <param name="runOnStartup"></param>
         /// <returns></returns>
-        public static IServiceCollection AddAzFunctionTimer<TService>(this IServiceCollection services, Expression<Action<TService>> invocation, string schedule, bool runOnStartup = false) where TService : class
+        public static IServiceCollection AddAzFunctionTimer<TService>(this IServiceCollection services, Expression<Func<TService, Task>> invocation, string schedule, bool runOnStartup = false) where TService : class
         {
             var mi = GetMethodInfo(invocation);
-            var functionName = $"Timer_{typeof(TService).FullName}.{mi.Name}".Replace(".", "_");
+            var functionName = $"Timer_{typeof(TService).FullName}.{mi.Name}_{mi.GetParameters().Length}".Replace(".", "_");
             var funcHandler = services.GetAzFunctionHandler();
             var azFunc = funcHandler.GetFunctions().SingleOrDefault(o => o.Name == functionName);
+
+            var action = invocation.Compile();
+            services.GetSolidRpcService<ITimerStore>().AddTimerAction(functionName, (sp, c) => action.Invoke(sp.GetRequiredService<TService>()));
 
             var timerFunc = funcHandler.CreateFunction<IAzTimerFunction>(functionName);
             timerFunc.RunOnStartup = runOnStartup;
             timerFunc.Schedule = schedule;
-            timerFunc.ServiceType = typeof(TService).FullName;
-            timerFunc.MethodName = mi.Name;
+            timerFunc.TimerId = functionName;
             timerFunc.Save();
 
             return services;

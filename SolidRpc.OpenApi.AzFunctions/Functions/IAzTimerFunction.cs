@@ -20,13 +20,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         bool RunOnStartup { get; set; }
 
         /// <summary>
-        /// The service type to resolve
+        /// The timer id
         /// </summary>
-        string ServiceType { get; set; }
-
-        /// <summary>
-        /// The method to invoke on the service
-        /// </summary>
-        string MethodName { get; set; }
+        string TimerId { get; set; }
     }
 }
