@@ -94,9 +94,14 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 conf.DisableSecurity();
                 return true;
             }
+            if (method.DeclaringType == typeof(ISolidRpcHost))
+            {
+                conf.SetOauth2Security("https://identity.erikolsson.se", "test", "test");
+                return true;
+            }
             if (method.DeclaringType == typeof(IAzTableQueue))
             {
-                switch(method.Name)
+                switch (method.Name)
                 {
                     case nameof(IAzTableQueue.ProcessTestMessage):
                         conf.ProxyTransportType = AzTableHandler.TransportType;
@@ -105,7 +110,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                         break;
                 }
             }
-            conf.SetOauth2Security("http://localhost:7071/front", "test", "test");
             var res = base.ConfigureAzureFunction(conf);
             return true;
         }

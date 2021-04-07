@@ -4,6 +4,8 @@
     <AzureFunctionsVersion>v1</AzureFunctionsVersion>
     <IsPackable>false</IsPackable>
     <LangVersion>7</LangVersion>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />

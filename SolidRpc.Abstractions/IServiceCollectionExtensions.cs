@@ -316,6 +316,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzFunctionsV2Extension", false);
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzQueue", false);
                 LoadAssembly(assemblies, "SolidRpc.OpenApi.AzSvcBus", false);
+                LoadAssembly(assemblies, "SolidRpc.OpenApi.OAuth2", false);
                 LoadAssembly(assemblies, "SolidRpc.Node", false);
                 LoadAssembly(assemblies, "SolidRpc.Node.Arch", false);
                 s_LoadedAssemblies = assemblies;

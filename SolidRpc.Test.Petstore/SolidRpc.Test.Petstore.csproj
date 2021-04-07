@@ -12,6 +12,8 @@
     <Copyright>MyCompany</Copyright>
     <PackageProjectUrl>https://github.com/aarrgard/solidrpc/wiki</PackageProjectUrl>
     <LangVersion>7</LangVersion>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup>

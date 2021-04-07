@@ -248,6 +248,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                         var oauth2Config = binding.GetSolidProxyConfig<ISecurityOAuth2Config>();
                         if (oauth2Config?.Enabled ?? false)
                         {
+                            if (AuthorityFactory == null) throw new Exception("You need to add the OAuth2 services.");
                             var authority = AuthorityFactory.GetAuthority(oauth2Config.OAuth2Authority);
                             var authDoc = await authority.GetDiscoveryDocumentAsync(cancellationToken);
                             authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnnectDiscovery()
