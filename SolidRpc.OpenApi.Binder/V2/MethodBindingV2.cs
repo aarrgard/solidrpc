@@ -662,9 +662,14 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 response.StatusCode = 500;
                 var respCode = ex.Data["HttpStatusCode"] as int?;
-                if(respCode != null)
+                if (respCode != null)
                 {
                     response.StatusCode = respCode.Value;
+                }
+                var httpLocation = ex.Data["HttpLocation"] as Uri;
+                if (httpLocation != null)
+                {
+                    response.Location = httpLocation.ToString();
                 }
                 return Task.CompletedTask;
             }

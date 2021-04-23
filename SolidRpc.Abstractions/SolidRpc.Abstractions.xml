@@ -1229,6 +1229,12 @@
             The scopes that are required for this invocation - default is "SolidRpc"
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.RedirectUnauthorizedIdentity">
+            <summary>
+            Specifies if unauthorized identities should be redirected to the authorization endpoint instead of 
+            raising UnauthorizedException.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISecurityOAuth2Config.OAuthProxyInvocationPrincipal">
             <summary>
             Which authorization should be used when invoking proxies.
@@ -2543,6 +2549,21 @@
         <member name="P:SolidRpc.Abstractions.Types.FileContentTemplate.GetETag">
             <summary>
             Returns the etag from the template copy
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.FoundException">
+            <summary>
+            Raised when we want to send a redirect
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Types.FoundException.HttpStatusCode">
+            <summary>
+            The http status code
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FoundException.#ctor(System.Uri)">
+            <summary>
+            Constructs a new exception
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.HttpRequest">

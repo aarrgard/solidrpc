@@ -151,12 +151,16 @@ namespace SolidRpc.Security.Back.Services
             //    ContentType = "text/plain",
             //    CharSet = Encoding.UTF8.EncodingName
             //});
-            var session_state = "asdfsadf";
+            if (string.IsNullOrEmpty(redirectUri)) throw new ArgumentNullException(nameof(redirectUri));
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (string.IsNullOrEmpty(responseType)) throw new ArgumentNullException(nameof(responseType));
             var ci = new ClaimsIdentity(new[] { new System.Security.Claims.Claim("AllowedPath", "/*")});
             var idToken = await AuthorityLocal.CreateAccessTokenAsync(ci, null, cancellationToken);
+            var session_state = Guid.NewGuid().ToString();
+            state = string.IsNullOrEmpty(state) ? "" : "&state={state}";
             return new WebContent()
             {
-                Location = $"{redirectUri}#{responseType}={idToken.AccessToken}&state={state}&session_state={session_state}"
+                Location = $"{redirectUri}#{responseType}={idToken.AccessToken}&session_state={session_state}{state}"
             };
         }
 

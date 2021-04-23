@@ -83,20 +83,17 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //c.SetQueueTransport<QueueInvocationHandler>();
             //c.SetQueueTransportInboundHandler("azfunctions");
 
+            var authority = "http://localhost:7071/front";
+            conf.SetOauth2Security(authority, "test", "test");
+
             var method = conf.Methods.First();
             if (method.DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {
-                conf.DisableSecurity();
-                return true;
+                conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
             }
             if (method.DeclaringType == typeof(ISolidRpcContentHandler))
             {
                 conf.DisableSecurity();
-                return true;
-            }
-            if (method.DeclaringType == typeof(ISolidRpcHost))
-            {
-                conf.SetOauth2Security("https://identity.erikolsson.se", "test", "test");
                 return true;
             }
             if (method.DeclaringType == typeof(IAzTableQueue))

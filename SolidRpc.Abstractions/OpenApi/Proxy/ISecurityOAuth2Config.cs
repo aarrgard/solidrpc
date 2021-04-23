@@ -30,6 +30,12 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         IEnumerable<string> OAuth2Scopes { get; set; }
 
         /// <summary>
+        /// Specifies if unauthorized identities should be redirected to the authorization endpoint instead of 
+        /// raising UnauthorizedException.
+        /// </summary>
+        bool RedirectUnauthorizedIdentity { get; set; }
+
+        /// <summary>
         /// Which authorization should be used when invoking proxies.
         /// </summary>
         OAuthProxyInvocationPrincipal OAuthProxyInvocationPrincipal { get; set; }

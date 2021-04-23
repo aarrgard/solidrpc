@@ -140,8 +140,21 @@ namespace SolidRpc.Tests.Serialization
             TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = dtOffsetNow }, str => Assert.AreEqual($"{{\"DtOffset\":\"{RemoveZeroes(dtOffsetNow.ToString($"yyyy-MM-ddTHH:mm:ss.fffffffzzz"))}\"}}", str));
             TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = DateTimeOffset.MinValue }, str => Assert.AreEqual("{\"DtOffset\":\"0001-01-01T00:00:00+00:00\"}", str));
 
+            // test min value
             ComplexType ct;
             serFact.DeserializeFromString("{\"DtOffset\":\"0001-01-01T00:00:00\"}", out ct);
+            Assert.AreEqual(DateTimeOffset.MinValue, ct.DtOffset);
+
+            // test now
+            var now = DateTimeOffset.Now;
+            serFact.DeserializeFromString($"{{\"DtOffset\":\"{now.ToString("yyyy-MM-ddTHH:mm:ss")}\"}}", out ct);
+            Assert.AreEqual(now.Ticks / 10000000, ct.DtOffset.Value.Ticks / 10000000);
+
+            // test specific date
+            //var dt = ((DateTimeOffset)DateTime.Parse("2021-01-02T19:03:31")).ToString();
+            //var dt2 = DateTimeOffset.Parse("2021-04-16 19:03:31+02:00");
+            //var dt3 = DateTimeOffset.Parse("2021-01-02 19:03:31+01:00");
+
         }
 
         /// <summary>
