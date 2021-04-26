@@ -241,7 +241,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
                 }
             }
-            invocationValues["http_uri"] = request.CreateUri(false);
 
             try
             {

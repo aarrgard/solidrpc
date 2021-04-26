@@ -53,6 +53,17 @@ namespace SolidRpc.OpenApi.Binder.Http
                 }
             }
 
+            // extract query
+            var queryList = new List<IHttpRequestData>();
+            foreach (var q in source.Query)
+            {
+                foreach (var sv in q.Value)
+                {
+                    queryList.Add(new SolidHttpRequestDataString("text/plain", q.Key, sv));
+                }
+            }
+            target.Query = queryList;
+
             // extract headers
             var headerList = new List<IHttpRequestData>();
             foreach (var h in source.Headers)
@@ -62,18 +73,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                     headerList.Add(new SolidHttpRequestDataString("text/plain", h.Key, sv));
                 }
             }
+            headerList.Add(new SolidHttpRequestDataString("text/plain", "X-Orig-Uri", target.CreateUri(true).ToString()));
             target.Headers = headerList;
-
-            // extract query
-            var queryList = new List<IHttpRequestData>();
-            foreach(var q in source.Query)
-            {
-                foreach(var sv in q.Value)
-                {
-                    queryList.Add(new SolidHttpRequestDataString("text/plain", q.Key, sv));
-                }
-            }
-            target.Query = queryList;
 
             if(source.ContentType != null)
             {

@@ -160,7 +160,7 @@ namespace SolidRpc.Security.Back.Services
             state = string.IsNullOrEmpty(state) ? "" : "&state={state}";
             return new WebContent()
             {
-                Location = $"{redirectUri}#{responseType}={idToken.AccessToken}&session_state={session_state}{state}"
+                Location = $"{redirectUri}?{responseType}={idToken.AccessToken}&session_state={session_state}{state}"
             };
         }
 

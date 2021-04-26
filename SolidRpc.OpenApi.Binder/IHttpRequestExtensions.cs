@@ -231,6 +231,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             target.Headers = source.Headers
                 .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
                 .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value))
+                .Union(new[] { new SolidHttpRequestDataString("text/plain", "X-Orig-Uri", source.RequestUri.ToString()) })
                 .ToList();
 
             var mediaType = source.Content?.Headers?.ContentType;
