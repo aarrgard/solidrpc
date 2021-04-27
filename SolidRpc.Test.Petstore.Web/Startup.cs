@@ -5,6 +5,9 @@ using SolidProxy.GeneratorCastle;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http.Features;
 using System.Threading.Tasks;
+using SolidRpc.Abstractions.OpenApi.Proxy;
+using System.Linq;
+using SolidRpc.OpenApi.SwaggerUI.Services;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -23,8 +26,22 @@ namespace SolidRpc.Test.PetstoreWeb
             //services.AddSolidRpcServices(o => true);
             services.AddSolidRpcRateLimitMemory();
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "generic");
-            services.AddSolidRpcSwaggerUI();
+            services.AddSolidRpcSwaggerUI(conf =>
+            {
+                conf.DefaultOpenApiSpec = "SolidRpc.OpenApi.SwaggerUI";
+                conf.OAuthClientId = "swagger-ui";
+                conf.OAuthClientSecret = "swagger-ui";
+            }, conf =>
+            {
+                conf.SetOauth2Security("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
+                if(conf.Methods.Any(o => o.Name == nameof(ISwaggerUI.GetIndexHtml)))
+                {
+                    conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
+                }
+                return true;
+            });
             services.AddSolidRpcNpmGenerator();
+            services.AddSolidRpcOAuth2();
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>
             //{
             //    //conf.Authority = "https://login.microsoftonline.com/common/v2.0";

@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -9,6 +10,14 @@ namespace SolidRpc.OpenApi.Binder.Http
     /// </summary>
     public class SolidHttpResponse : IHttpResponse
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        public SolidHttpResponse()
+        {
+            AdditionalHeaders = new Dictionary<string, string>(0);
+        }
+
         /// <summary>
         /// The response stream
         /// </summary>
@@ -48,5 +57,10 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// The ETag.
         /// </summary>
         public string ETag { get; set; }
+
+        /// <summary>
+        /// The additional headers
+        /// </summary>
+        public IDictionary<string, string> AdditionalHeaders { get; }
     }
 }

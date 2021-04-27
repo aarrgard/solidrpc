@@ -260,7 +260,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                         }
                         var securityKeyConfig = binding.GetSolidProxyConfig<ISecurityKeyConfig>();
                         var securityKey = securityKeyConfig?.SecurityKey;
-                        if (securityKeyConfig?.Enabled ?? false && securityKey != null)
+                        if ((securityKeyConfig?.Enabled ?? false) && securityKey != null)
                         {
                             var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
                             op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());

@@ -120,6 +120,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.Headers.ETag = EntityTagHeaderValue.Parse(AddQuotesIfMissing(source.ETag));
             }
 
+            foreach (var header in source.AdditionalHeaders)
+            {
+                target.Headers.Add(header.Key, header.Value);
+            }
+
             return Task.CompletedTask;
         }
 

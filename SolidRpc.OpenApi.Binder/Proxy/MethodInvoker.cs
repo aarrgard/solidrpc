@@ -24,6 +24,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class MethodInvoker : IMethodInvoker
     {
+        public const string RequestHeaderPrefixInInvocation = "http_req_";
+        public const string ResponseHeaderPrefixInInvocation = "http_resp_";
+
         private class PathSegment
         {
             public PathSegment()
@@ -231,7 +234,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             foreach (var qv in request.Headers)
             {
-                var headerName = $"http_{qv.Name}".ToLower();
+                var headerName = $"{RequestHeaderPrefixInInvocation }{qv.Name}".ToLower();
                 if (invocationValues.TryGetValue(headerName, out object value))
                 {
                     invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
@@ -270,6 +273,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 Logger.LogError(ex, "Service returned an exception - sending to client");
                 await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
             }
+
+            foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(ResponseHeaderPrefixInInvocation)))
+            {
+                resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
+            }
+
             return resp;
         }
     }

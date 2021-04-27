@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SolidRpc.Security.Back.Services
 {
@@ -156,11 +157,11 @@ namespace SolidRpc.Security.Back.Services
             if (string.IsNullOrEmpty(responseType)) throw new ArgumentNullException(nameof(responseType));
             var ci = new ClaimsIdentity(new[] { new System.Security.Claims.Claim("AllowedPath", "/*")});
             var idToken = await AuthorityLocal.CreateAccessTokenAsync(ci, null, cancellationToken);
-            var session_state = Guid.NewGuid().ToString();
-            state = string.IsNullOrEmpty(state) ? "" : "&state={state}";
+            var session_state = $"&session_state={Guid.NewGuid()}";
+            state = string.IsNullOrEmpty(state) ? "" : $"&state={HttpUtility.UrlEncode(state)}";
             return new WebContent()
             {
-                Location = $"{redirectUri}?{responseType}={idToken.AccessToken}&session_state={session_state}{state}"
+                Location = $"{redirectUri}?{responseType}={idToken.AccessToken}{session_state}{state}"
             };
         }
 

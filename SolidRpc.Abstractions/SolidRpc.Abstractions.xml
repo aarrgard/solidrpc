@@ -449,7 +449,7 @@
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Principal">
             <summary>
-            Returns the cancellation token
+            Returns the principal associated whit this request
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Method">
@@ -603,6 +603,11 @@
             Returns the response stream
             </summary>
             <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.AdditionalHeaders">
+            <summary>
+            The additional headers
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker">
             <summary>

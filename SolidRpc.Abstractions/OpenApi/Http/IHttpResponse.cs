@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SolidRpc.Abstractions.OpenApi.Http
@@ -48,5 +49,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// </summary>
         /// <returns></returns>
         Stream ResponseStream { get; set; }
+
+        /// <summary>
+        /// The additional headers
+        /// </summary>
+        IDictionary<string, string> AdditionalHeaders { get; }
     }
 }

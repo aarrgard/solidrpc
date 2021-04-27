@@ -16,7 +16,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SolidRpcOpenApiInitAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SolidRpcOpenApiInvocAdvice<,,>) };
+        public static readonly IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SolidRpcOpenApiInvocAdvice<,,>) };
 
         /// <summary>
         /// Constucts a new instance
