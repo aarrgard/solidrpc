@@ -12,6 +12,16 @@ namespace SolidRpc.OpenApi.Model.Serialization
 {
     public class SerializerFactory : ISerializerFactory
     {
+        public SerializerFactory()
+        {
+            SerializerSettings = new SerializerSettings(TimeZoneInfo.Local, false);
+        }
+        public SerializerFactory(SerializerSettings serializerSettings)
+        {
+            SerializerSettings = serializerSettings;
+        }
+
+        public SerializerSettings SerializerSettings { get; }
 
         public void SerializeToString<T>(out string s, T o, string contentType, Encoding charSet = null, bool prettyFormat = false)
         {

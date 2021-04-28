@@ -494,8 +494,11 @@ namespace SolidRpc.Tests.Security
                 resp = await httpClient.GetAsync(resp.Headers.Location);
                 Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
 
-                // return to original path
+                // return to original path - first returns redirect + set-cookie
                 Assert.IsTrue(resp.Headers.Location.ToString().StartsWith(uri.ToString()));
+                resp = await httpClient.GetAsync(resp.Headers.Location);
+                Assert.AreEqual(HttpStatusCode.Redirect, resp.StatusCode);
+
                 resp = await httpClient.GetAsync(resp.Headers.Location);
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
 

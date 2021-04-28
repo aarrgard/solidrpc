@@ -1868,6 +1868,11 @@
             Implements logic to create seralizers.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializerSettings">
+            <summary>
+            Returns the settings that are supplied to the serializers
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.GetSerializer(System.String,System.Text.Encoding)">
             <summary>
             Gets the serializer for suplied media type.
@@ -1992,6 +1997,28 @@
             </summary>
             <param name="fileTypeInstance"></param>
             <param name="o"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Serialization.SerializerSettings">
+            <summary>
+            Represents the serializer settings
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.#ctor(System.TimeZoneInfo,System.Boolean)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="defaultTimeZone"></param>
+            <param name="prettyPrint"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.SerializerSettings.DefaultTimeZone">
+            <summary>
+            The default time zone to use when deserializing dates.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.SerializerSettings.PrettyPrint">
+            <summary>
+            Should the formatting be pretty - defaults to false
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcApplication">
             <summary>

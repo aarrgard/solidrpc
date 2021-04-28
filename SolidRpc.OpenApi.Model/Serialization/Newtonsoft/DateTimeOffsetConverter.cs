@@ -21,7 +21,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            switch(reader.TokenType)
+            switch (reader.TokenType)
             {
                 case JsonToken.Null:
                     return DateTimeOffset.MinValue;

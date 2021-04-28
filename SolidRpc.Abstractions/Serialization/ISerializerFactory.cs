@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions.Types;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -10,6 +9,11 @@ namespace SolidRpc.Abstractions.Serialization
     /// </summary>
     public interface ISerializerFactory
     {
+        /// <summary>
+        /// Returns the settings that are supplied to the serializers
+        /// </summary>
+        SerializerSettings SerializerSettings { get; }
+
         /// <summary>
         /// Gets the serializer for suplied media type.
         /// </summary>
