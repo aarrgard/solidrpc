@@ -85,6 +85,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 var bodyParam = parameters.FirstOrDefault(o => o.In == "body");
                 if (bodyParam != null)
                 {
+                    if (bodyParam.Name == "body") return bodyParam;
                     var schema = bodyParam.Schema.GetRefSchema() ?? bodyParam.Schema;
                     if (schema != null)
                     {

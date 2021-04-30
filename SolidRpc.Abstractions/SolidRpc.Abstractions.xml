@@ -1835,24 +1835,18 @@
             such as xml or json.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Serialization.ISerializer.ContentType">
+        <member name="P:SolidRpc.Abstractions.Serialization.ISerializer.SerializerSettings">
             <summary>
-            Returns the content type for this serializer
+            Returns the settings for this serializer
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Serialization.ISerializer.CharSet">
-            <summary>
-            The charset for this serializer
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Serialization.ISerializer.Serialize(System.IO.Stream,System.Type,System.Object,System.Boolean)">
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializer.Serialize(System.IO.Stream,System.Type,System.Object)">
             <summary>
             Serializes an object of specified type.
             </summary>
             <param name="stream"></param>
             <param name="type"></param>
             <param name="o"></param>
-            <param name="prettyFormat"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.Serialization.ISerializer.Deserialize(System.IO.Stream,System.Type,System.Object@)">
             <summary>
@@ -1868,17 +1862,18 @@
             Implements logic to create seralizers.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializerSettings">
+        <member name="P:SolidRpc.Abstractions.Serialization.ISerializerFactory.DefaultSerializerSettings">
             <summary>
-            Returns the settings that are supplied to the serializers
+            The settings that are supplied to the serializers
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.GetSerializer(System.String,System.Text.Encoding)">
+        <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.GetSerializer(System.String,System.Text.Encoding,System.Boolean)">
             <summary>
             Gets the serializer for suplied media type.
             </summary>
             <param name="mediaType"></param>
             <param name="charSet"></param>
+            <param name="prettyPrint"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.Serialization.ISerializerFactory.SerializeToStream``1(System.IO.Stream,``0,System.String,System.Text.Encoding,System.Boolean)">
@@ -2003,12 +1998,29 @@
             Represents the serializer settings
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.#ctor(System.TimeZoneInfo,System.Boolean)">
+        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.#ctor(System.String,System.Text.Encoding,System.TimeZoneInfo,System.Boolean)">
             <summary>
             Constructs a new instance
             </summary>
+            <param name="contentType"></param>
+            <param name="charSet"></param>
             <param name="defaultTimeZone"></param>
             <param name="prettyPrint"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.SerializerSettings.UniqueKey">
+            <summary>
+            The unique key tata identifies this settings
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.SerializerSettings.ContentType">
+            <summary>
+            Returns the content type for this serializer
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Serialization.SerializerSettings.CharSet">
+            <summary>
+            The charset for this serializer
+            </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.Serialization.SerializerSettings.DefaultTimeZone">
             <summary>
@@ -2019,6 +2031,34 @@
             <summary>
             Should the formatting be pretty - defaults to false
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.SetContentType(System.String)">
+            <summary>
+            Sets the content type of the settings
+            </summary>
+            <param name="contentType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.SetCharSet(System.Text.Encoding)">
+            <summary>
+            Sets the charset of the settings
+            </summary>
+            <param name="charSet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.SetPrettyPrint(System.Boolean)">
+            <summary>
+            Sets the pretty print of the settings
+            </summary>
+            <param name="prettyPrint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.SetDefaultTimeZone(System.TimeZoneInfo)">
+            <summary>
+            Sets the default time zone
+            </summary>
+            <param name="timeZone"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcApplication">
             <summary>

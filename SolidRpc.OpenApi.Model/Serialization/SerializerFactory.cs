@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Model.Serialization;
 using SolidRpc.OpenApi.Model.Serialization.Newtonsoft;
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 
@@ -12,16 +13,15 @@ namespace SolidRpc.OpenApi.Model.Serialization
 {
     public class SerializerFactory : ISerializerFactory
     {
+        private ConcurrentDictionary<string, ISerializer> _serializers = new ConcurrentDictionary<string, ISerializer>();
+
         public SerializerFactory()
         {
-            SerializerSettings = new SerializerSettings(TimeZoneInfo.Local, false);
-        }
-        public SerializerFactory(SerializerSettings serializerSettings)
-        {
-            SerializerSettings = serializerSettings;
+            DefaultSerializerSettings = SerializerSettings.Default;
         }
 
-        public SerializerSettings SerializerSettings { get; }
+
+        public SerializerSettings DefaultSerializerSettings { get; set; }
 
         public void SerializeToString<T>(out string s, T o, string contentType, Encoding charSet = null, bool prettyFormat = false)
         {
@@ -49,7 +49,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
 
         public void SerializeToStream(Stream s, Type type, object o, string contentType, Encoding charSet = null, bool prettyFormat = false)
         {
-            GetSerializer(contentType, charSet).Serialize(s, type, o, prettyFormat);
+            GetSerializer(contentType, charSet, prettyFormat).Serialize(s, type, o);
         }
 
         public void DeserializeFromStream(Stream s, Type type, out object o, string contentType, Encoding charSet = null)
@@ -80,13 +80,23 @@ namespace SolidRpc.OpenApi.Model.Serialization
             }
         }
 
-        public ISerializer GetSerializer(string contentType, Encoding charSet = null)
+        public ISerializer GetSerializer(string contentType, Encoding charSet = null, bool prettyPrint = false)
         {
-            if(contentType == "application/json")
+            var serializerSettings = DefaultSerializerSettings
+                .SetContentType(contentType)
+                .SetCharSet(charSet)
+                .SetPrettyPrint(prettyPrint);
+
+            return _serializers.GetOrAdd(serializerSettings.UniqueKey, _ =>
             {
-                return new SerializerJsonNewtonsoft(this, contentType, charSet);
-            }
-            throw new Exception("Cannot handle content type:" + contentType);
+                switch(serializerSettings.ContentType)
+                {
+                    case "application/json":
+                        return new SerializerJsonNewtonsoft(this, serializerSettings);
+                    default:
+                        throw new Exception("Cannot create serializer for content type:" + serializerSettings.ContentType);
+                }
+            });
         }
 
         public void SerializeToFileType<T>(object fileTypeInstance, T o, string mediaType = "application/json", Encoding charSet = null, bool prettyFormat = false)

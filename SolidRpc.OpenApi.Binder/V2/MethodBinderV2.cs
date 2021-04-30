@@ -52,7 +52,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             binderStatus.Append($"->#{prospects.Count}");
 
             // operation id must start with method name
-            prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.OperationId, mi.Name)).ToList();
+            prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.GetOperationId(), mi.Name)).ToList();
             binderStatus.Append($"->method({mi.Name})->#{prospects.Count}");
 
             // find all parameters for clr method
@@ -93,6 +93,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private bool FindParameter(ParameterObject p, ParameterInfo[] parameterInfos)
         {
+            if (p.In == "body" && p.Name == "body") return parameterInfos.Length > 0;
             return parameterInfos.Any(o => MethodBindingV2.NameMatches(o.Name, p.Name));
         }
 
@@ -147,6 +148,10 @@ namespace SolidRpc.OpenApi.Binder.V2
             var bodyParam = parameters.FirstOrDefault(o => o.In == "body");
             if (bodyParam != null)
             {
+                if(bodyParam.Name == "body")
+                {
+                    return true;
+                }
                 var schema = bodyParam.Schema.GetRefSchema() ?? bodyParam.Schema;
                 if(schema != null)
                 {

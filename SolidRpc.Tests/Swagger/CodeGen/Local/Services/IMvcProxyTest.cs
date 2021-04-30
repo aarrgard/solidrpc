@@ -50,7 +50,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <summary>
         /// Sends an integer back and forth between client and server
         /// </summary>
-        /// <param name="i">The interger to proxy</param>
+        /// <param name="i"></param>
         /// <param name="cancellationToken"></param>
         Task<int> ProxyIntInForm(
             int? i = null,
@@ -158,7 +158,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <summary>
         /// Sends a datetime back and forth between client and server
         /// </summary>
-        /// <param name="dArr">The datetime to proxy</param>
+        /// <param name="dArr"></param>
         /// <param name="cancellationToken"></param>
         Task<IEnumerable<DateTimeOffset>> ProxyDateTimeArrayInForm(
             IEnumerable<DateTimeOffset> dArr = null,
@@ -167,7 +167,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <summary>
         /// Sends a stream back and forth between client and server
         /// </summary>
-        /// <param name="ff">The stream to proxy</param>
+        /// <param name="ff"></param>
         /// <param name="cancellationToken"></param>
         Task<Stream> ProxyStream(
             Stream ff = null,
@@ -176,10 +176,10 @@ namespace SolidRpc.Tests.Swagger.CodeGen.Local.Services {
         /// <summary>
         /// Sends a complex object back and forth between client and server
         /// </summary>
-        /// <param name="co1">The complex object to proxy</param>
+        /// <param name="body">The complex object to proxy</param>
         /// <param name="cancellationToken"></param>
         Task<ComplexObject1> ProxyComplexObject1InBody(
-            ComplexObject1 co1 = null,
+            ComplexObject1 body = null,
             CancellationToken cancellationToken = default(CancellationToken));
     
     }

@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SolidRpc.Tests
@@ -20,7 +21,11 @@ namespace SolidRpc.Tests
         public override void Configure(IApplicationBuilder app)
         {
             base.Configure(app);
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
 
         /// <summary>
@@ -39,7 +44,7 @@ namespace SolidRpc.Tests
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info {
+                c.SwaggerDoc("v1", new OpenApiInfo {
                     Title = "My API",
                     Version = "v1"
                 });

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -559,7 +560,7 @@ namespace SolidRpc.Tests
             var content = await resp.Content.ReadAsStringAsync();
             if (resp.StatusCode != HttpStatusCode.OK)
             {
-                var fi = new FileInfo("c:\\temp\\result.html");
+                var fi = new FileInfo("c:\\tmp\\result.html");
                 using (var fs = fi.Create())
                 {
                     var buf = Encoding.UTF8.GetBytes(content);
@@ -619,9 +620,12 @@ namespace SolidRpc.Tests
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseSwagger(c =>
                 {
+                    c.SerializeAsV2 = true;
                     c.PreSerializeFilters.Add((swaggerDoc, httpReq) => {
-                        swaggerDoc.Host = httpReq.Host.Value;
-                        swaggerDoc.Schemes = new string[] { httpReq.Scheme };
+                        swaggerDoc.Servers.Add(new OpenApiServer()
+                        {
+                            Url = $"{httpReq.Scheme }://{httpReq.Host.Value}"
+                        }); ;
                     });
                 });
 

@@ -390,5 +390,18 @@ namespace SolidRpc.OpenApi.Model.V2
             }
             return newName;
         }
+
+        /// <summary>
+        /// Returns the operation id from 
+        /// </summary>
+        /// <returns></returns>
+        public string GetOperationId()
+        {
+            if(!string.IsNullOrEmpty(OperationId))
+            {
+                return OperationId;
+            }
+            return GetPath().Split('/').Where(o => !o.StartsWith("{")).Last();
+        }
     }
 }

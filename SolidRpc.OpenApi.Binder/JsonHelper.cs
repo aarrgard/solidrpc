@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.Model.Serialization.Newtonsoft;
 using System;
 using System.Collections.Concurrent;
@@ -19,7 +20,7 @@ namespace SolidRpc.OpenApi.Binder
         private static ConcurrentDictionary<Type, Func<object, object>> s_makeArray = new ConcurrentDictionary<Type, Func<object, object>>();
         private static readonly JsonSerializer s_serializer = new JsonSerializer()
         {
-            ContractResolver = NewtonsoftContractResolver.Instance,
+            ContractResolver = new NewtonsoftContractResolver(SerializerSettings.Default)
         };
 
         /// <summary>

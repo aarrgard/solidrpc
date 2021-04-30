@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using SolidRpc.Abstractions.Serialization;
 using System;
 using System.Linq;
 
@@ -7,12 +8,14 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
     public class DateTimeOffsetConverter : JsonConverter
     {
-        public DateTimeOffsetConverter()
+        public DateTimeOffsetConverter(SerializerSettings serializerSettings)
         {
             TimeZoneTicks = DateTimeOffset.Now.Offset.Ticks;
+            SerializerSettings = serializerSettings;
         }
 
-        public long TimeZoneTicks { get; }
+        private long TimeZoneTicks { get; }
+        private SerializerSettings SerializerSettings { get; }
 
         public override bool CanConvert(Type objectType)
         {
@@ -31,7 +34,16 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                     {
                         return DateTimeOffset.MinValue;
                     }
-                    return new DateTimeOffset(dt);
+                    switch(dt.Kind)
+                    {
+                        case DateTimeKind.Utc:
+                        case DateTimeKind.Local:
+                            return new DateTimeOffset(dt);
+                        case DateTimeKind.Unspecified:
+                            return new DateTimeOffset(dt, SerializerSettings.DefaultTimeZone.GetUtcOffset(dt));
+                        default:
+                            throw new Exception("Cannot handle datetime kind.");
+                    }
                 default:
                     throw new Exception("Cannot handle token type:"+reader.TokenType);
             }

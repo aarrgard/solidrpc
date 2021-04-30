@@ -152,7 +152,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var stringValues = new StringValues(new[] { "test1", "test2" });
                 var complexType = new StringValuesArg.Types.ComplexType() { StringValues = stringValues };
                 moq.Setup(o => o.GetStringValueArgs(
-                    It.Is<StringValues>(a => a == stringValues),
+                    It.Is<StringValues>(a => CompareStructs(stringValues, a)),
                     It.Is<StringValuesArg.Types.ComplexType>(a => CompareStructs(complexType, a))
                     )).Returns(complexType);
 
