@@ -125,16 +125,27 @@ namespace SolidRpc.OpenApi.AzQueue
             {
                 return message;
             }
-            var blobContainer = GetCloudBlobContainer(connectionName);
-            var blob = blobContainer.GetBlockBlobReference(guid.ToString());
-            using (var s = await blob.OpenReadAsync(new AccessCondition(), new BlobRequestOptions(), new OperationContext(), cancellationToken))
-            using (var zs = new GZipStream(s, CompressionMode.Decompress))
+            try
             {
-                var enc = Encoding.GetEncoding(blob.Properties.ContentEncoding);
-                using(var sr = new StreamReader(zs, enc))
+                var blobContainer = GetCloudBlobContainer(connectionName);
+                var blob = blobContainer.GetBlockBlobReference(guid.ToString());
+                using (var s = await blob.OpenReadAsync(new AccessCondition(), new BlobRequestOptions(), new OperationContext(), cancellationToken))
+                using (var zs = new GZipStream(s, CompressionMode.Decompress))
                 {
-                    return await sr.ReadToEndAsync();
+                    var enc = Encoding.GetEncoding(blob.Properties.ContentEncoding);
+                    using (var sr = new StreamReader(zs, enc))
+                    {
+                        return await sr.ReadToEndAsync();
+                    }
                 }
+            }
+            catch(StorageException se)
+            {
+                if(se.RequestInformation.HttpStatusCode == 404)
+                {
+                    return null;
+                }
+                throw;
             }
         }
 
