@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions.Types;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -11,12 +10,18 @@ namespace SolidRpc.Abstractions.Serialization
     public interface ISerializerFactory
     {
         /// <summary>
+        /// The settings that are supplied to the serializers
+        /// </summary>
+        SerializerSettings DefaultSerializerSettings { get; set; }
+
+        /// <summary>
         /// Gets the serializer for suplied media type.
         /// </summary>
         /// <param name="mediaType"></param>
         /// <param name="charSet"></param>
+        /// <param name="prettyPrint"></param>
         /// <returns></returns>
-        ISerializer GetSerializer(string mediaType, Encoding charSet = null);
+        ISerializer GetSerializer(string mediaType, Encoding charSet = null, bool prettyPrint = false);
 
         /// <summary>
         /// Serializes supplied object to a string representation

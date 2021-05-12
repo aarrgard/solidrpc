@@ -11,14 +11,9 @@ namespace SolidRpc.Abstractions.Serialization
     public interface ISerializer
     {
         /// <summary>
-        /// Returns the content type for this serializer
+        /// Returns the settings for this serializer
         /// </summary>
-        string ContentType { get; }
-
-        /// <summary>
-        /// The charset for this serializer
-        /// </summary>
-        Encoding CharSet { get; }
+        SerializerSettings SerializerSettings { get; }
 
         /// <summary>
         /// Serializes an object of specified type.
@@ -26,8 +21,7 @@ namespace SolidRpc.Abstractions.Serialization
         /// <param name="stream"></param>
         /// <param name="type"></param>
         /// <param name="o"></param>
-        /// <param name="prettyFormat"></param>
-        void Serialize(Stream stream, Type type, object o, bool prettyFormat = false);
+        void Serialize(Stream stream, Type type, object o);
 
         /// <summary>
         /// Deserializes an object.

@@ -15,8 +15,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SecurityKeyAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>) };
-        public static IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
+        public static readonly IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>) };
+        public static readonly IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
 
         /// <summary>
         /// Constucts a new instance
@@ -45,7 +45,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             // Check the security key - if supplied
-            var val = invocation.GetValue<StringValues>($"http_{SecurityKey.Value.Key}").ToString();
+            var val = invocation.GetValue<StringValues>($"http_req_{SecurityKey.Value.Key}").ToString();
             if (val != null)
             {
                 if (val.Equals(SecurityKey.Value.Value))
@@ -56,8 +56,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
             }
 
-            // add security key(if not set)
-            invocation.SetValue($"http_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
+            // add security key(if not set) - this key will be used when invoking remote calls.
+            invocation.SetValue($"http_req_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
 
             return await next();
         }

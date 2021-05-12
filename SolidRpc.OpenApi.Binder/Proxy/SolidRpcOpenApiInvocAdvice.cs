@@ -17,7 +17,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SolidRpcOpenApiInvocAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        public static IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
+        private const string s_HeaderPrefix = "http_req_";
+        public static readonly IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
 
         /// <summary>
         /// Constucts a new instance
@@ -77,13 +78,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // add http headers
                 //
-                var httpHeaders = invocation.Keys.Where(o => o.StartsWith("http_", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                var httpHeaders = invocation.Keys.Where(o => o.StartsWith(s_HeaderPrefix, StringComparison.InvariantCultureIgnoreCase)).ToList();
                 if (httpHeaders.Any())
                 {
                     invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
                     {
                         var data = httpHeaders
-                            .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(5), Value = o2 }))
+                            .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(s_HeaderPrefix.Length), Value = o2 }))
                             .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value)).ToList();
                         req.Headers = req.Headers.Union(data).ToList();
                         return Task.CompletedTask;

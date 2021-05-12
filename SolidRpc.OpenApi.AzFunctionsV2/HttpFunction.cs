@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
@@ -29,6 +29,17 @@ namespace SolidRpc.OpenApi.AzFunctions
         {
             return AzFunction.DoRun(async () =>
             {
+                //
+                // for some reason the port is not added to the request
+                //
+                var baseAddress = serviceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress;
+                if (baseAddress.Host == req.RequestUri.Host)
+                {
+                    var ub = new UriBuilder(req.RequestUri);
+                    ub.Port = baseAddress.Port;
+                    req.RequestUri = ub.Uri;
+                }
+                
                 // copy data from req to generic structure
                 // skip api prefix.
                 var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();

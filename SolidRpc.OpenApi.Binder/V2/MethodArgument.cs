@@ -34,8 +34,6 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
             }
 
-            var collectionFormat = ParameterObject.Type == "array" ? ParameterObject.CollectionFormat ?? "csv" : null;
-
             if (ParameterObject.IsBinaryType())
             {
                 HttpRequestDataBinder = (_, __) => SetFileData(ParameterObject.Name, _, __);
@@ -53,8 +51,22 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     parameterName = ParameterInfo.Name;
                 }
+                string collectionFormat = null;
+                if (ParameterObject.Format == null)
+                {
+                    if(ParameterObject.Type == "array")
+                    {
+                        if (ParameterObject.In == "path")
+                        {
+                            collectionFormat = "csv";
+                        }
+                        else
+                        {
+                            collectionFormat = "multi";
+                        }
+                    }
+                }
                 HttpRequestDataBinder = SolidHttpRequestData.CreateBinder(contentType, parameterName, ParameterInfo.ParameterType, ParameterObject.Format, collectionFormat);
-                HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, ParameterObject.Format, collectionFormat);
                 HttpRequestDataExtractor = SolidHttpRequestData.CreateExtractor(contentType, parameterName, ParameterInfo.ParameterType, ParameterObject.Format, collectionFormat);
             }
 

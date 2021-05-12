@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
@@ -21,6 +23,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
     /// </summary>
     public class SecurityOAuth2Advice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
+        private const string SolidRpcJwtTokenCookieName = "SolidRpcJwtToken";
         /// <summary>
         /// The advices that must run after this advice
         /// </summary>
@@ -51,6 +54,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         private string ClientSecret { get; set; }
         private IEnumerable<string> Scopes { get; set; }
         private OAuthProxyInvocationPrincipal ProxyInvocationPrincipal { get; set; }
+        private bool RedirectUnauthorizedIdentity { get; set; }
 
         /// <summary>
         /// Configure the proxy
@@ -70,8 +74,14 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             Authority = AuthorityFactory.GetAuthority(config.OAuth2Authority);
             ClientId = config.OAuth2ClientId;
             ClientSecret = config.OAuth2ClientSecret;
-            Scopes = config.OAuth2Scopes;
+
+            if (Scopes == null || !Scopes.Any())
+            {
+                Scopes = new[] { "openid", "solidrpc" };
+            }
             ProxyInvocationPrincipal = config.OAuthProxyInvocationPrincipal;
+            RedirectUnauthorizedIdentity = config.RedirectUnauthorizedIdentity;
+
             return true;
         }
 
@@ -108,13 +118,13 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             //
             // check authorization
             //
-            var authHeader = invocation.GetValue<StringValues>($"http_authorization").ToString();
+            string jwt;
+            var authHeader = invocation.GetValue<StringValues>($"http_req_authorization").ToString();
             if (string.IsNullOrEmpty(authHeader))
             {
-                return;
+                jwt = await DoRedirectUnauthorizedIdentity(invocation, true);
             }
-            string jwt;
-            if (authHeader.StartsWith("bearer ", StringComparison.InvariantCultureIgnoreCase))
+            else if (authHeader.StartsWith("bearer ", StringComparison.InvariantCultureIgnoreCase))
             {
                 jwt = authHeader.Substring("bearer ".Length);
             }
@@ -124,19 +134,87 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             else
             {
+                jwt = await DoRedirectUnauthorizedIdentity(invocation, true);
+            }
+            if(string.IsNullOrEmpty(jwt))
+            {
                 return;
             }
             var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
-            var jwtPrincipal = await Authority.GetPrincipalAsync(jwt, null, invocation.CancellationToken);
-            if(auth.CurrentPrincipal.Claims.Any())
+            ClaimsPrincipal jwtPrincipal;
+            try
+            {
+                jwtPrincipal = await Authority.GetPrincipalAsync(jwt, null, invocation.CancellationToken);
+            }
+            catch (Exception e)
+            {
+                await DoRedirectUnauthorizedIdentity(invocation, false);
+                return;
+            }
+            if (auth.CurrentPrincipal.Claims.Any())
             {
                 auth.CurrentPrincipal.AddIdentities(jwtPrincipal.Identities);
             }
-            else 
+            else
             {
                 auth.CurrentPrincipal = jwtPrincipal;
             }
             invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
+        }
+
+        private async Task<string> DoRedirectUnauthorizedIdentity(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation, bool useCookie)
+        {
+            if(RedirectUnauthorizedIdentity)
+            {
+                var redirectUri = new Uri(invocation.GetValue<StringValues>($"{MethodInvoker.RequestHeaderPrefixInInvocation}x-orig-uri").ToString());
+                //
+                // try to fetch token from query
+                //
+                var idToken = redirectUri.Query.Split('?').Skip(1).FirstOrDefault()?
+                    .Split('&').Select(o => o.Split('=')).Where(o => o.Length > 1).Where(o => o[0] == "id_token").Select(o => o[1]).FirstOrDefault();
+                if (!string.IsNullOrEmpty(idToken))
+                {
+                    var secure = string.Equals(redirectUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase) ? "; Secure" : "";
+                    invocation.SetValue($"{MethodInvoker.ResponseHeaderPrefixInInvocation}Set-Cookie", $"{SolidRpcJwtTokenCookieName}={idToken}{secure}; SameSite=Strict; path=/");
+                    var ub1 = new UriBuilder(redirectUri);
+                    ub1.Query = null;
+                    throw new FoundException(ub1.Uri);
+                    //return idToken;
+                }
+
+                idToken = GetTokenFromCookie(invocation, useCookie);
+                if (!string.IsNullOrEmpty(idToken))
+                {
+                    return idToken;
+                }
+
+                //
+                // Redirect to auth server
+                //
+                var doc = await Authority.GetDiscoveryDocumentAsync(invocation.CancellationToken);
+                var ub = new UriBuilder(doc.AuthorizationEndpoint);
+                ub.Query = $"response_type=id_token&client_id={HttpUtility.UrlEncode(ClientId)}&client_secret={HttpUtility.UrlEncode(ClientSecret)}&scopes={string.Join(" ", Scopes.Select(o => HttpUtility.UrlEncode(o)))}&redirect_uri={HttpUtility.UrlEncode(redirectUri.ToString())}";
+                throw new FoundException(ub.Uri);
+            }
+            return GetTokenFromCookie(invocation, useCookie);
+        }
+
+        private string GetTokenFromCookie(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation, bool useCookie)
+        {
+            if(!useCookie)
+            {
+                return null;
+            }
+            var cookieValues = invocation.GetValue<StringValues>($"{MethodInvoker.RequestHeaderPrefixInInvocation}Cookie").ToString();
+            foreach (var val in cookieValues.Split(';'))
+            {
+                var values = val.Split('=').Select(o => o.Trim());
+                if (values.First() == SolidRpcJwtTokenCookieName)
+                {
+                    return values.Skip(1).FirstOrDefault();
+                }
+            }
+            return null;
         }
 
         private async Task HandleRemoteCall(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
@@ -148,7 +226,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Client)
             {
                 var jwt = await Authority.GetClientJwtAsync(ClientId, ClientSecret, new[] { "SolidRpc" });
-                invocation.SetValue<StringValues>("http_authorization", $"bearer {jwt}");
+                invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt}");
                 return;
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Proxy)
@@ -159,7 +237,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     throw new UnauthorizedException("No accesstoken claim exists");
                 }
-                invocation.SetValue<StringValues>("http_authorization", $"bearer {jwt}");
+                invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt}");
                 return;
             }
             throw new NotImplementedException();

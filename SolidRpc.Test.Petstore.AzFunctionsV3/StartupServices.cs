@@ -10,6 +10,7 @@ using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
+using SolidRpc.Security.Services.Oidc;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using SolidRpc.Test.Petstore.AzFunctionsV3;
 using System;
@@ -26,7 +27,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
-            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress;
+            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
+            if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
 
             //services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
 
@@ -37,7 +39,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
 
-                conf.SetOauth2Security(baseAddress.ToString(), "clientid", "secret");
+                conf.SetOauth2Security(baseAddress, "clientid", "secret");
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
                     conf.SetHttpTransport(InvocationStrategy.Forward);
@@ -56,7 +58,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
-            services.AddSolidRpcOAuth2Local(baseAddress.ToString(), conf => { conf.CreateSigningKey(); });
+            services.AddSolidRpcOAuth2Local(baseAddress, conf => { conf.CreateSigningKey(); });
             services.AddSolidRpcSecurityBackend((sp, conf) => { }, ConfigureAzureFunction);
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
@@ -83,20 +85,27 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //c.SetQueueTransport<QueueInvocationHandler>();
             //c.SetQueueTransportInboundHandler("azfunctions");
 
+            var authority = "http://localhost:7071/front";
+            conf.SetOauth2Security(authority, "test", "test");
+
             var method = conf.Methods.First();
-            if (method.DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
+            if (method.DeclaringType == typeof(ISwaggerUI))
             {
-                conf.DisableSecurity();
-                return true;
+                switch (method.Name)
+                {
+                    case nameof(ISwaggerUI.GetIndexHtml):
+                        conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
+                        break;
+                }
             }
             if (method.DeclaringType == typeof(ISolidRpcContentHandler))
             {
                 conf.DisableSecurity();
                 return true;
             }
-            if (method.DeclaringType == typeof(ISolidRpcHost))
+            if (method.DeclaringType == typeof(IOidcServer))
             {
-                conf.SetOauth2Security("https://identity.erikolsson.se", "test", "test");
+                conf.DisableSecurity();
                 return true;
             }
             if (method.DeclaringType == typeof(IAzTableQueue))

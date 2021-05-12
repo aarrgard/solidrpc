@@ -6,6 +6,7 @@ using System.IO;
 using SolidRpc.Abstractions.Types;
 using Microsoft.Extensions.Primitives;
 using System.Runtime.Serialization;
+using System.Linq;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -140,8 +141,38 @@ namespace SolidRpc.Tests.Serialization
             TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = dtOffsetNow }, str => Assert.AreEqual($"{{\"DtOffset\":\"{RemoveZeroes(dtOffsetNow.ToString($"yyyy-MM-ddTHH:mm:ss.fffffffzzz"))}\"}}", str));
             TestSerializeDeserialize(serFact, new ComplexType() { DtOffset = DateTimeOffset.MinValue }, str => Assert.AreEqual("{\"DtOffset\":\"0001-01-01T00:00:00+00:00\"}", str));
 
+            // test min value
             ComplexType ct;
             serFact.DeserializeFromString("{\"DtOffset\":\"0001-01-01T00:00:00\"}", out ct);
+            Assert.AreEqual(DateTimeOffset.MinValue, ct.DtOffset);
+
+            // test now
+            var now = DateTimeOffset.Now;
+            serFact.DeserializeFromString($"{{\"DtOffset\":\"{now.ToString("yyyy-MM-ddTHH:mm:ss")}\"}}", out ct);
+            Assert.AreEqual(now.Ticks / 10000000, ct.DtOffset.Value.Ticks / 10000000);
+
+            // test specific date
+            TestParseDate(serFact, 2021, 01, 02, 19, 03, 31, "Stockholm");
+            TestParseDate(serFact, 2021, 04, 16, 19, 03, 31, "Stockholm");
+
+            TestParseDate(serFact, 2021, 01, 02, 19, 03, 31, "London");
+            TestParseDate(serFact, 2021, 04, 16, 19, 03, 31, "London");
+
+            //var dt = ((DateTimeOffset)DateTime.Parse("2021-01-02T19:03:31")).ToString();
+            //var dt2 = DateTimeOffset.Parse("2021-04-16 19:03:31+02:00");
+            //var dt3 = DateTimeOffset.Parse("2021-01-02 19:03:31+01:00");
+
+        }
+
+        private void TestParseDate(ISerializerFactory serFact, int year, int month, int day, int hour, int minute, int second, string capital)
+        {
+            var tz = TimeZoneInfo.GetSystemTimeZones().Where(o => o.DisplayName.Contains(capital)).FirstOrDefault();
+            serFact.DefaultSerializerSettings = serFact.DefaultSerializerSettings.SetDefaultTimeZone(tz);
+            DateTimeOffset dt;
+            var dtStr = $"\"{year.ToString("#0000")}-{month.ToString("#00")}-{day.ToString("#00")}T{hour.ToString("#00")}:{minute.ToString("#00")}:{second.ToString("#00")}\"";
+            serFact.DeserializeFromString(dtStr, out dt);
+            var d = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Unspecified);
+            Assert.AreEqual(new DateTimeOffset(d, tz.GetUtcOffset(d)), dt);
         }
 
         /// <summary>

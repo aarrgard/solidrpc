@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SolidRpc.Abstractions.Serialization;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,20 +14,17 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
     /// </summary>
     public class NewtonsoftContractResolver : DefaultContractResolver
     {
-        private static ConcurrentDictionary<Type, JsonContract> s_converters = new ConcurrentDictionary<Type, JsonContract>();
-
-        /// <summary>
-        /// The default contract resolver
-        /// </summary>
-        public static NewtonsoftContractResolver Instance = new NewtonsoftContractResolver();
+        private ConcurrentDictionary<Type, JsonContract> converters = new ConcurrentDictionary<Type, JsonContract>();
 
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        public NewtonsoftContractResolver()
+        public NewtonsoftContractResolver(SerializerSettings serializerSettings)
         {
-
+            SerializerSettings = serializerSettings;
         }
+
+        private SerializerSettings SerializerSettings { get; }
 
         /// <summary>
         /// Cretes a contract for supplied type
@@ -35,7 +33,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
         /// <returns></returns>
         protected override JsonContract CreateContract(Type objectType)
         {
-            return s_converters.GetOrAdd(objectType, CreateContractInternal);
+            return converters.GetOrAdd(objectType, CreateContractInternal);
         }
 
         private JsonContract CreateContractInternal(Type type)
@@ -54,7 +52,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             if (typeof(DateTimeOffset).IsAssignableFrom(type))
             {
                 var contract = new JsonObjectContract(type);
-                contract.Converter = new DateTimeOffsetConverter();
+                contract.Converter = new DateTimeOffsetConverter(SerializerSettings);
                 return contract;
             }
             if (typeof(Stream).IsAssignableFrom(type))

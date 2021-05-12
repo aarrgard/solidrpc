@@ -15,6 +15,9 @@ using SolidRpc.Abstractions.OpenApi.OAuth2;
 using IdentityModel;
 using System.Security.Claims;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Http;
+using System.Net;
 
 namespace SolidRpc.Tests.Security
 {
@@ -87,10 +90,16 @@ namespace SolidRpc.Tests.Security
             /// <summary>
             /// A test method
             /// </summary>
-            /// <param name="principal"></param>
             /// <param name="arg"></param>
             /// <returns></returns>
-            Task<string> GetProtectedResource(IPrincipal principal, string arg);
+            Task<string> GetProtectedResource(string arg);
+
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
+            Task<string> GetProtectedResourceWithRedirect(string arg);
         }
 
         /// <summary>
@@ -99,14 +108,35 @@ namespace SolidRpc.Tests.Security
         public class OAuth2ProtectedService : IOAuth2ProtectedService
         {
             /// <summary>
-            /// A test method
+            /// Constructs a new instance
             /// </summary>
             /// <param name="principal"></param>
+            public OAuth2ProtectedService(ClaimsPrincipal principal)
+            {
+                Principal = principal;
+            }
+
+            public IPrincipal Principal { get; }
+
+            /// <summary>
+            /// A test method
+            /// </summary>
             /// <param name="arg"></param>
             /// <returns></returns>
-            public Task<string> GetProtectedResource(IPrincipal principal, string arg)
+            public Task<string> GetProtectedResource(string arg)
             {
-                return Task.FromResult(arg + ":" + principal.Identity.Name);
+                return Task.FromResult(arg + ":" + Principal.Identity.Name);
+            }
+
+
+            /// <summary>
+            /// A test method
+            /// </summary>
+            /// <param name="arg"></param>
+            /// <returns></returns>
+            public Task<string> GetProtectedResourceWithRedirect(string arg)
+            {
+                return Task.FromResult(arg + ":" + Principal.Identity.Name);
             }
         }
 
@@ -146,7 +176,6 @@ namespace SolidRpc.Tests.Security
                 oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Proxy;
             }
 
-
             return true;
         }
 
@@ -170,7 +199,14 @@ namespace SolidRpc.Tests.Security
             serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
             {
                 o.OpenApiSpec = openApi;
-                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
+                var oauth2Config = o.GetAdviceConfig<ISecurityOAuth2Config>();
+                oauth2Config.OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
+                oauth2Config.OAuth2ClientId = "clientid";
+                oauth2Config.OAuth2ClientSecret = "secret";
+                if (o.Methods.Single().Name == nameof(IOAuth2ProtectedService.GetProtectedResourceWithRedirect))
+                {
+                    oauth2Config.RedirectUnauthorizedIdentity = true;
+                }
                 o.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
                 return true;
             });
@@ -439,13 +475,38 @@ namespace SolidRpc.Tests.Security
                 var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuth2ProtectedService>();
                 try
                 {
-                    var res = await protectedService.GetProtectedResource(null, "test");
+                    var res = await protectedService.GetProtectedResource("test");
                     Assert.Fail();
                 }
                 catch(UnauthorizedException)
                 {
                     // This is the way we want it..
                 }
+
+                // invoke directly - intercept 302
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<IOAuth2ProtectedService>>();
+                var uri = await invoker.GetUriAsync(o => o.GetProtectedResourceWithRedirect("test"));
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+                var resp = await httpClient.GetAsync(uri);
+                Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
+
+                // fetch token
+                resp = await httpClient.GetAsync(resp.Headers.Location);
+                Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
+
+                // return to original path - first returns redirect + set-cookie
+                Assert.IsTrue(resp.Headers.Location.ToString().StartsWith(uri.ToString()));
+                resp = await httpClient.GetAsync(resp.Headers.Location);
+                Assert.AreEqual(HttpStatusCode.Redirect, resp.StatusCode);
+
+                resp = await httpClient.GetAsync(resp.Headers.Location);
+                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+
+                // now the cookie should do the "trick"
+                resp = await httpClient.GetAsync(uri);
+                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+
+
             }
         }
 

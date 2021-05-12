@@ -67,6 +67,15 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 target.Headers.Add("Last-Modified", source.LastModified.Value.UtcDateTime.ToString("r"));
             }
+            if (!string.IsNullOrEmpty(source.Location))
+            {
+                target.StatusCode = 302;
+                target.Headers.Add("Location", source.Location);
+            }
+            foreach (var header in source.AdditionalHeaders)
+            {
+                target.Headers[header.Key] = header.Value;
+            }
             if (!string.IsNullOrEmpty(source.MediaType))
             {
                 var ct = new MediaTypeHeaderValue(source.MediaType);
@@ -76,11 +85,6 @@ namespace SolidRpc.OpenApi.Binder.Http
                 }
                 target.ContentType = ct.ToString();
                 await source.ResponseStream.CopyToAsync(target.Body);
-            }
-            if (!string.IsNullOrEmpty(source.Location))
-            {
-                target.StatusCode = 302;
-                target.Headers.Add("Location", source.Location);
             }
         }
 

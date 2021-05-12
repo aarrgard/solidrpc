@@ -15,7 +15,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         CancellationToken CancellationToken { get; set; }
 
         /// <summary>
-        /// Returns the cancellation token
+        /// Returns the principal associated whit this request
         /// </summary>
         IPrincipal Principal { get; set; }
 

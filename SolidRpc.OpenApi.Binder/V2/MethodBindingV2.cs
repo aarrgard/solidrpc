@@ -85,6 +85,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 var bodyParam = parameters.FirstOrDefault(o => o.In == "body");
                 if (bodyParam != null)
                 {
+                    if (bodyParam.Name == "body") return bodyParam;
                     var schema = bodyParam.Schema.GetRefSchema() ?? bodyParam.Schema;
                     if (schema != null)
                     {
@@ -662,9 +663,14 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 response.StatusCode = 500;
                 var respCode = ex.Data["HttpStatusCode"] as int?;
-                if(respCode != null)
+                if (respCode != null)
                 {
                     response.StatusCode = respCode.Value;
+                }
+                var httpLocation = ex.Data["HttpLocation"] as Uri;
+                if (httpLocation != null)
+                {
+                    response.Location = httpLocation.ToString();
                 }
                 return Task.CompletedTask;
             }
