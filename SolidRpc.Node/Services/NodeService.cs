@@ -43,15 +43,15 @@ namespace SolidRpc.Node.Services
             return NodeModulesRepository.GetNodeModulesAsync(cancellationToken);
         }
 
-        public async Task<NodeExecution> ExecuteScriptAsync(Guid moduleId, string js, CancellationToken cancellationToken = default)
+        public async Task<NodeExecutionOutput> ExecuteScriptAsync(NodeExecutionInput input, CancellationToken cancellationToken = default)
         {
-            using (var np = await NodeProcessFactory.CreateNodeProcessAsync(moduleId, null, cancellationToken))
+            using (var np = await NodeProcessFactory.CreateNodeProcessAsync(input.ModuleId, null, cancellationToken))
             {
-                return await np.ExecuteScriptAsync(js, cancellationToken);
+                return await np.ExecuteScriptAsync(input.Js, cancellationToken);
             }
         }
 
-        public async Task<NodeExecution> ExecuteFileAsync(Guid moduleId, string workingDir, string fileName, IEnumerable<string> args, CancellationToken cancellationToken = default)
+        public async Task<NodeExecutionOutput> ExecuteFileAsync(Guid moduleId, string workingDir, string fileName, IEnumerable<string> args, CancellationToken cancellationToken = default)
         {
             using (var np = await NodeProcessFactory.CreateNodeProcessAsync(moduleId, workingDir, cancellationToken))
             {

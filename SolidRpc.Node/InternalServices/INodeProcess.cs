@@ -25,7 +25,7 @@ namespace SolidRpc.Node.InternalServices
         /// <param name="js"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<NodeExecution> ExecuteScriptAsync(string js, CancellationToken cancellationToken = default);
+        Task<NodeExecutionOutput> ExecuteScriptAsync(string js, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Executes the supplied js script.
@@ -33,7 +33,7 @@ namespace SolidRpc.Node.InternalServices
         /// <param name="js"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<NodeExecution> ExecuteFileAsync(string fileName, IEnumerable<string> args = null, CancellationToken cancellationToken = default);
+        Task<NodeExecutionOutput> ExecuteFileAsync(string fileName, IEnumerable<string> args = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Returns the version.

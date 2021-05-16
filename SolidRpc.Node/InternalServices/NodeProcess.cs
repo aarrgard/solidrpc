@@ -73,7 +73,7 @@ namespace SolidRpc.Node.InternalServices
         }
 
 
-        public async Task<NodeExecution> ExecuteScriptAsync(string js, CancellationToken cancellationToken = default)
+        public async Task<NodeExecutionOutput> ExecuteScriptAsync(string js, CancellationToken cancellationToken = default)
         {
             if (Process == null)
             {
@@ -116,15 +116,18 @@ process.stdin.on('data', handleCommand);
                 Id = Guid.NewGuid().ToString(),
                 Script = js
             };
-            string str;
-            SerializerFactory.SerializeToString(out str, command);
+            SerializerFactory.SerializeToString(out string str, command);
             Process.StandardInput.WriteLine(str);
+            if (Logger.IsEnabled(LogLevel.Trace))
+            {
+                Logger.LogTrace("Pushing command to stdin:" + str);
+            }
             await Process.StandardInput.FlushAsync();
 
             return await WaitForResponse(command.Id, cancellationToken);
         }
 
-        private async Task<NodeExecution> WaitForResponse(string id, CancellationToken cancellationToken)
+        private async Task<NodeExecutionOutput> WaitForResponse(string id, CancellationToken cancellationToken)
         {
             try
             {
@@ -132,7 +135,11 @@ process.stdin.on('data', handleCommand);
                 {
                     if (Process.HasExited)
                     {
-                        return new NodeExecution()
+                        if(Logger.IsEnabled(LogLevel.Information))
+                        {
+                            Logger.LogInformation($"Node process has exited - returning result({Process.ExitCode}:{StdErr})");
+                        }
+                        return new NodeExecutionOutput()
                         {
                             ExitCode = Process.ExitCode,
                             Result = null,
@@ -144,7 +151,11 @@ process.stdin.on('data', handleCommand);
                     var resp = Responses.FirstOrDefault(o => o.Id == id);
                     if(resp != null)
                     {
-                        return new NodeExecution()
+                        if (Logger.IsEnabled(LogLevel.Information))
+                        {
+                            Logger.LogInformation("Found response - node process is still alive");
+                        }
+                        return new NodeExecutionOutput()
                         {
                             ExitCode = Process.HasExited ? Process.ExitCode : 0,
                             Result = resp.Result,
@@ -184,7 +195,7 @@ process.stdin.on('data', handleCommand);
             return res.Out;
         }
 
-        public async Task<NodeExecution> ExecuteFileAsync(string fileName, IEnumerable<string> args, CancellationToken cancellationToken = default)
+        public async Task<NodeExecutionOutput> ExecuteFileAsync(string fileName, IEnumerable<string> args, CancellationToken cancellationToken = default)
         {
             var scriptFile = Path.Combine(NodeContext.NodeModulesDir, fileName);
             return await Task.Factory.StartNew(RunJs, new ExecutionArg()
@@ -247,6 +258,10 @@ process.stdin.on('data', handleCommand);
             {
                 if(data.Data.StartsWith("{") && data.Data.EndsWith("}"))
                 {
+                    if (Logger.IsEnabled(LogLevel.Trace))
+                    {
+                        Logger.LogTrace("Received response from stdout:" + data.Data);
+                    }
                     NodeResponse resp;
                     SerializerFactory.DeserializeFromString(data.Data, out resp);
                     if(resp?.Id != null)
@@ -260,7 +275,7 @@ process.stdin.on('data', handleCommand);
             }
         }
 
-        private NodeExecution RunJs(object oArg)
+        private NodeExecutionOutput RunJs(object oArg)
         {
             var eArg = (ExecutionArg)oArg;
             try
@@ -293,8 +308,12 @@ process.stdin.on('data', handleCommand);
                     Process.Dispose();
                     Process = null;
                 }
+                if (Logger.IsEnabled(LogLevel.Information))
+                {
+                    Logger.LogInformation($"Process completed - {exitCode}:{StdErr}");
+                }
 
-                return new NodeExecution()
+                return new NodeExecutionOutput()
                 {
                     ExitCode = exitCode ?? -1,
                     Out = StdOut.ToString(),
@@ -303,7 +322,7 @@ process.stdin.on('data', handleCommand);
             }
             catch (Exception e)
             {
-                return new NodeExecution()
+                return new NodeExecutionOutput()
                 {
                     ExitCode = -1,
                     Err = e.Message,

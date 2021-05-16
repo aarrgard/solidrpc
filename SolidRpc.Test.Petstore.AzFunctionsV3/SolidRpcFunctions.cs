@@ -122,11 +122,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_Node_Services_INodeService_ExecuteScriptAsync_arg0_arg1
+    public class Http_SolidRpc_Node_Services_INodeService_ExecuteScriptAsync
     {
-        [FunctionName("Http_SolidRpc_Node_Services_INodeService_ExecuteScriptAsync_arg0_arg1")]
+        [FunctionName("Http_SolidRpc_Node_Services_INodeService_ExecuteScriptAsync")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

@@ -19,7 +19,7 @@ namespace SolidRpc.Node.Services
         public static readonly Guid GuidModuleId = Guid.Parse(StrModuleId);
         public Guid ModuleId => GuidModuleId;
 
-        public async Task<string> ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
+        public async Task ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
         {
             var a = GetType().Assembly;
             var resName = a.GetManifestResourceNames().Single(o => o.EndsWith($"{StrModuleId}.zip"));
@@ -48,7 +48,6 @@ namespace SolidRpc.Node.Services
                     }
                 }
             }
-            return directoryInfo.FullName;
         }
 
         private void CreateDirectory(DirectoryInfo directory)

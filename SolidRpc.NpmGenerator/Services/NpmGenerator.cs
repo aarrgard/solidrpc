@@ -99,7 +99,7 @@ namespace SolidRpc.NpmGenerator.Services
             using (var outStream = new MemoryStream())
             {
                 using (var gzoStream = new GZipOutputStream(outStream))
-                using (var tarOutputStream = new TarOutputStream(gzoStream))
+                using (var tarOutputStream = new TarOutputStream(gzoStream, Encoding.UTF8))
                 {
                     foreach (var npmFile in npmPackage.Files)
                     {
@@ -367,9 +367,9 @@ module.exports = {{
             var extractedFiles = new List<string>();
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
-                using (var gzi = new GZipInputStream(s))
+                using (var gzip = new GZipInputStream(s))
                 {
-                    using (var tis = new TarInputStream(gzi))
+                    using (var tis = new TarInputStream(gzip, Encoding.UTF8))
                     {
                         var nextEntry = tis.GetNextEntry();
                         while(nextEntry != null)

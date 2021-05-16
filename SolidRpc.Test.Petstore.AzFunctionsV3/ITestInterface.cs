@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.Types;
 using SolidRpc.Node.Services;
+using SolidRpc.Node.Types;
 using System;
 using System.IO;
 using System.Text;
@@ -37,7 +38,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV3
 
         public async Task<string> RunNodeService(CancellationToken cancellationToken)
         {
-            var res = await NodeService.ExecuteScriptAsync(Guid.Empty, "console.log('test');", cancellationToken);
+            var res = await NodeService.ExecuteScriptAsync(new NodeExecutionInput()
+            {
+                ModuleId = Guid.Empty,
+                Js = "console.log('test');"
+            }, cancellationToken);
             if (res.ExitCode == 0) return res.Out;
             throw new Exception(res.Err);
         }

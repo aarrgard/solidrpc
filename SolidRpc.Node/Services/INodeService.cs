@@ -23,7 +23,7 @@ namespace SolidRpc.Node.Services {
         /// <param name="js"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<NodeExecution> ExecuteScriptAsync(Guid moduleId, string js, CancellationToken cancellationToken = default(CancellationToken));
+        Task<NodeExecutionOutput> ExecuteScriptAsync(NodeExecutionInput input, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Runs the supplied file. The file must be relativ to the modules dir.
@@ -31,7 +31,7 @@ namespace SolidRpc.Node.Services {
         /// <param name="js"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<NodeExecution> ExecuteFileAsync(Guid moduleId, string workingDir, string fileName, IEnumerable<string> args = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<NodeExecutionOutput> ExecuteFileAsync(Guid moduleId, string workingDir, string fileName, IEnumerable<string> args = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the node version

@@ -11,6 +11,7 @@ using SolidRpc.Security.Services;
 using System.Threading;
 using SolidRpc.Node.Services;
 using System;
+using SolidRpc.Node.Types;
 
 namespace SolidRpc.Tests.NpmGenerator
 {
@@ -178,7 +179,11 @@ namespace SolidRpc.Tests.NpmGenerator
                 var cts = new CancellationTokenSource();
                 cts.CancelAfter(10000);
                 var str = $"testing{i}";
-                var res = await nodeService.ExecuteScriptAsync(Guid.Empty, $"(async function() {{ console.log('test'); return '{str}'; }})() ", cts.Token);
+                var res = await nodeService.ExecuteScriptAsync(new NodeExecutionInput()
+                {
+                    ModuleId = Guid.Empty,
+                    Js = $"(async function() {{ console.log('test'); return '{str}'; }})() "
+                }, cts.Token);
                 Assert.AreEqual(0, res.ExitCode);
                 Assert.AreEqual($"\"{str}\"", res.Result);
                 Assert.AreEqual("test", res.Out.Trim());
@@ -189,7 +194,11 @@ namespace SolidRpc.Tests.NpmGenerator
                 var cts = new CancellationTokenSource();
                 cts.CancelAfter(10000);
                 var str = $"testing{i}";
-                var res = await nodeService.ExecuteScriptAsync(Guid.Empty, $"console.log('test'); '{str}';", cts.Token);
+                var res = await nodeService.ExecuteScriptAsync(new NodeExecutionInput()
+                {
+                    ModuleId = Guid.Empty,
+                    Js = $"console.log('test'); '{str}';"
+                }, cts.Token);
                 Assert.AreEqual(0, res.ExitCode);
                 Assert.AreEqual($"\"{str}\"", res.Result);
                 Assert.AreEqual("test", res.Out.Trim());
@@ -216,8 +225,11 @@ namespace SolidRpc.Tests.NpmGenerator
             for (int i = 0; i < 5; i++)
             {
                 var cts = new CancellationTokenSource();
-                cts.CancelAfter(60000);
-                var res = await nodeService.ExecuteScriptAsync(NodeModulePuppeteerResolver.GuidModuleId, @"
+                cts.CancelAfter(120000);
+                var res = await nodeService.ExecuteScriptAsync(new NodeExecutionInput()
+                {
+                    ModuleId = NodeModulePuppeteerResolver.GuidModuleId,
+                    Js = @"
 const puppeteer = require('puppeteer');
 (async () => {
     const browser = await puppeteer.launch();
@@ -227,7 +239,7 @@ const puppeteer = require('puppeteer');
 
     await browser.close();
     return 'example.png';
-})();", cts.Token);
+})();" }, cts.Token);
                 Assert.AreEqual(0, res.ExitCode);
                 Assert.AreEqual($"\"example.png\"", res.Result);
                 Assert.AreEqual("", res.Out.Trim());
@@ -254,7 +266,7 @@ const puppeteer = require('puppeteer');
             var res = await nodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, null, "npm\\bin\\npm-cli.js", new string[] { "--version"});
 
             Assert.AreEqual(0, res.ExitCode);
-            Assert.AreEqual("7.6.0", res.Out.Trim());
+            Assert.AreEqual("7.13.0", res.Out.Trim());
             Assert.AreEqual("", res.Err);
         }
     }

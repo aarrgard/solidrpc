@@ -295,8 +295,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/authorize"
@@ -410,14 +410,14 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/GetNodeVersionAsync"
     },
-    "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}": {
+    "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync": {
       "matchCondition": {
-        "route": "/front/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}",
+        "route": "/front/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync",
         "methods": [
-          "GET"
+          "POST"
         ]
       },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync/{arg0}/{arg1}"
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync"
     },
     "front/{path}": {
       "matchCondition": {

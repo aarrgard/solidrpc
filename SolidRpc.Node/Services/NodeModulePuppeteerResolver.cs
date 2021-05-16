@@ -23,19 +23,19 @@ namespace SolidRpc.Node.Services
         public Guid ModuleId => GuidModuleId;
         private INodeService NodeService { get; }
 
-        public async Task<string> ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
+        public async Task ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
         {
             var packageFile = new FileInfo(Path.Combine(directoryInfo.FullName, "package.json"));
             using (var tw = packageFile.CreateText())
             {
                 tw.Write(@"{
 ""dependencies"": {
-    ""puppeteer"": ""^7.1.0""
+    ""puppeteer"": ""^9.1.1""
   }
 }");
             }
-            await NodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, directoryInfo.FullName, "npm\\bin\\npm-cli.js", new[] { "install" }, cancellationToken);
-            return Path.Combine(directoryInfo.FullName, "node_modules");
+            var sep = Path.DirectorySeparatorChar;
+            await NodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, directoryInfo.FullName, $"npm{sep}bin{sep}npm-cli.js", new[] { "install" }, cancellationToken);
         }
     }
 }
