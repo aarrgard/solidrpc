@@ -84,6 +84,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             if (message == null)
             {
                 Logger.LogError($"Failed to retreive large message:{connectionName}:{partitionKey}:{rowKey}");
+                await cloudTable.ExecuteAsync(TableOperation.Delete(row), TableRequestOptions, OperationContext, cancellationToken);
                 return;
             }
 
