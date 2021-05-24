@@ -3,6 +3,7 @@ using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types.OAuth2;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -18,6 +19,25 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class AuthorityImpl : IAuthority
     {
+        private class DummySecurityKey : SecurityKey
+        {
+            public DummySecurityKey(string kid)
+            {
+                KeyId = kid;
+            }
+            public override int KeySize => throw new NotImplementedException();
+        }
+        private class CachedJwt
+        {
+            public CachedJwt(string jwt, DateTime validTo)
+            {
+                Jwt = jwt;
+                ValidTo = validTo;
+            }
+            public string Jwt { get; }
+            public DateTime ValidTo { get; }
+        }
+
         private class AuthorityTokenValidationParameters : TokenValidationParameters, IAuthorityTokenChecks
         {
             public AuthorityTokenValidationParameters(string issuer, IEnumerable<SecurityKey> allSigningKeys)
@@ -56,16 +76,18 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             SerializerFactory = serializerFactory;
             HttpClientFactory = httpClientFactory;
             Authority = authority;
+            CachedJwts = new ConcurrentDictionary<string, CachedJwt>();
         }
         private IAuthorityFactory AuthorityFactoryImpl { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
+        private ConcurrentDictionary<string, CachedJwt> CachedJwts { get; }
 
         /// <summary>
         /// The authority
         /// </summary>
         public string Authority { get; }
-        
+
         private OpenIDConnnectDiscovery OpenIDConnnectDiscovery { get; set; }
 
         /// <summary>
@@ -81,31 +103,18 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="scopes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
-            var client = HttpClientFactory.CreateClient();
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
             nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
             nvc.Add(new KeyValuePair<string, string>("scope", string.Join(",", scopes)));
-            var content = new FormUrlEncodedContent(nvc);
-
-            var resp = await client.PostAsync(doc.TokenEndpoint, content);
-            TokenResponse result;
-            using (var s = await resp.Content.ReadAsStreamAsync())
-            {
-                SerializerFactory.DeserializeFromStream(s, out result);
-            }
-
-            return result.AccessToken;
+            return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
-        public async Task<string> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
-            var client = HttpClientFactory.CreateClient();
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "password"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
@@ -113,14 +122,44 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             nvc.Add(new KeyValuePair<string, string>("username", username));
             nvc.Add(new KeyValuePair<string, string>("password", password));
             nvc.Add(new KeyValuePair<string, string>("scope", string.Join(",", scopes)));
-            var content = new FormUrlEncodedContent(nvc);
 
+            return GetJwtAsync(nvc, timeout, cancellationToken);
+        }
+
+        private async Task<string> GetJwtAsync(List<KeyValuePair<string, string>> nvc, TimeSpan? timeout, CancellationToken cancellationToken)
+        {
+            // defalt timeout of 5 minutes...
+            if (timeout == null) timeout = TimeSpan.FromMinutes(5);
+
+            var key = string.Join(":", nvc.Select(o => o.Value));
+            if(CachedJwts.TryGetValue(key, out CachedJwt cachedJwt))
+            {
+                if(cachedJwt.ValidTo < DateTime.Now.Subtract(timeout.Value))
+                {
+                    return cachedJwt.Jwt;
+                }
+            }
+            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+            var client = HttpClientFactory.CreateClient();
+            var content = new FormUrlEncodedContent(nvc);
             var resp = await client.PostAsync(doc.TokenEndpoint, content);
             TokenResponse result;
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
                 SerializerFactory.DeserializeFromStream(s, out result);
             }
+
+            //
+            // parse returned token
+            //
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(result.AccessToken);
+
+            //
+            // add cached token
+            //
+            var cj = new CachedJwt(result.AccessToken, securityToken.ValidTo);
+            CachedJwts.AddOrUpdate(key, cj, (k, o) => cj);
 
             return result.AccessToken;
         }

@@ -1082,17 +1082,18 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetClientJwtAsync(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetClientJwtAsync(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
             <summary>
             Returns the client jwt from the authority
             </summary>
             <param name="clientId"></param>
             <param name="clientSecret"></param>
             <param name="scopes"></param>
+            <param name="timeout"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetUserJwtAsync(System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetUserJwtAsync(System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
             <summary>
             Returns the client jwt from the authority
             </summary>
@@ -1101,6 +1102,7 @@
             <param name="userId"></param>
             <param name="password"></param>
             <param name="scopes"></param>
+            <param name="timeout"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

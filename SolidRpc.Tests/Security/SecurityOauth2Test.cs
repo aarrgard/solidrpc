@@ -442,8 +442,10 @@ namespace SolidRpc.Tests.Security
                 //
                 // Test client as user principal
                 //
-                var clientJwt = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
-                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt);
+                var clientJwt1 = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
+                var clientJwt2 = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
+                Assert.AreEqual(clientJwt1, clientJwt2);
+                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt1);
                 res = await protectedService.GetUserEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
                 

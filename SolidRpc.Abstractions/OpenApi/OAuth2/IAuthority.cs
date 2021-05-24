@@ -44,9 +44,15 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="clientId"></param>
         /// <param name="clientSecret"></param>
         /// <param name="scopes"></param>
+        /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetClientJwtAsync(
+            string clientId, 
+            string clientSecret, 
+            IEnumerable<string> scopes, 
+            TimeSpan? timeout = null, 
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the client jwt from the authority
@@ -56,8 +62,16 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="userId"></param>
         /// <param name="password"></param>
         /// <param name="scopes"></param>
+        /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetUserJwtAsync(string clientId, string clientSecret, string userId, string password, IEnumerable<string> scopes, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetUserJwtAsync(
+            string clientId, 
+            string clientSecret, 
+            string userId, 
+            string password, 
+            IEnumerable<string> scopes,
+            TimeSpan? timeout = null,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }
