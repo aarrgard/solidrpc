@@ -33,7 +33,7 @@ namespace SolidRpc.Test.PetstoreWeb
                 conf.OAuthClientSecret = "swagger-ui";
             }, conf =>
             {
-                conf.SetOauth2Security("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
+                conf.SetOAuth2Security("https://identity.erikolsson.se");
                 if(conf.Methods.Any(o => o.Name == nameof(ISwaggerUI.GetIndexHtml)))
                 {
                     conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;

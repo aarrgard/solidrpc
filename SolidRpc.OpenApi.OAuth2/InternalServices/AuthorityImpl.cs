@@ -118,7 +118,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
             nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
-            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(",", scopes)));
+            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(" ", scopes)));
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
@@ -130,7 +130,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
             nvc.Add(new KeyValuePair<string, string>("username", username));
             nvc.Add(new KeyValuePair<string, string>("password", password));
-            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(",", scopes)));
+            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(" ", scopes)));
 
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }

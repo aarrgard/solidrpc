@@ -1399,15 +1399,28 @@
             <param name="config"></param>
             <param name="securityKey"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetOauth2Security(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String,System.String,System.String,System.String[])">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetOAuth2Security(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String)">
             <summary>
-            Sets the securitykey
+            Sets the OAuth2 security configuration
+            </summary>
+            <param name="config"></param>
+            <param name="authority"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetOAuth2ClientSecurity(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.String,System.String,System.String,System.String[])">
+            <summary>
+            Sets the OAuth2 security configuration
             </summary>
             <param name="config"></param>
             <param name="authority"></param>
             <param name="clientId"></param>
             <param name="clientSecret"></param>
             <param name="scopes"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetOAuth2ProxySecurity(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the OAuth2 security configuration
+            </summary>
+            <param name="config"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.DisableSecurity(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>

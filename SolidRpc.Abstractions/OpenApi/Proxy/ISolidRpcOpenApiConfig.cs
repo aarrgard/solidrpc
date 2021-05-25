@@ -229,20 +229,44 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         }
 
         /// <summary>
-        /// Sets the securitykey
+        /// Sets the OAuth2 security configuration
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="authority"></param>
+        public static void SetOAuth2Security(this ISolidRpcOpenApiConfig config, string authority)
+        {
+            var advice = config.GetAdviceConfig<ISecurityOAuth2Config>();
+            advice.OAuth2Authority = authority;
+            config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
+        }
+
+        /// <summary>
+        /// Sets the OAuth2 security configuration
         /// </summary>
         /// <param name="config"></param>
         /// <param name="authority"></param>
         /// <param name="clientId"></param>
         /// <param name="clientSecret"></param>
         /// <param name="scopes"></param>
-        public static void SetOauth2Security(this ISolidRpcOpenApiConfig config, string authority, string clientId, string clientSecret, params string[] scopes)
+        public static void SetOAuth2ClientSecurity(this ISolidRpcOpenApiConfig config, string authority, string clientId, string clientSecret, params string[] scopes)
         {
             var advice = config.GetAdviceConfig<ISecurityOAuth2Config>();
             advice.OAuth2Authority = authority;
             advice.OAuth2ClientId = clientId;
             advice.OAuth2ClientSecret = clientSecret;
             advice.OAuth2Scopes = scopes;
+            advice.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
+            config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
+        }
+
+        /// <summary>
+        /// Sets the OAuth2 security configuration
+        /// </summary>
+        /// <param name="config"></param>
+        public static void SetOAuth2ProxySecurity(this ISolidRpcOpenApiConfig config)
+        {
+            var advice = config.GetAdviceConfig<ISecurityOAuth2Config>();
+            advice.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Proxy;
             config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
         }
 

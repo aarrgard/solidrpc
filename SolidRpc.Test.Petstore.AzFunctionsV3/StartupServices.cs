@@ -39,7 +39,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
 
-                conf.SetOauth2Security(baseAddress, "clientid", "secret");
+                conf.SetOAuth2Security(baseAddress);
                 if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
                     conf.SetHttpTransport(InvocationStrategy.Forward);
@@ -86,7 +86,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //c.SetQueueTransportInboundHandler("azfunctions");
 
             var authority = "http://localhost:7071/front";
-            conf.SetOauth2Security(authority, "test", "test");
+            conf.SetOAuth2Security(authority);
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))

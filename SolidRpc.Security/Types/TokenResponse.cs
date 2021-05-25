@@ -35,7 +35,7 @@ namespace SolidRpc.Security.Types {
         /// OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
         /// </summary>
         [DataMember(Name="scope",EmitDefaultValue=false)]
-        public IEnumerable<string> Scope { get; set; }
+        public string Scope { get; set; }
     
     }
 }

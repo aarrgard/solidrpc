@@ -62,24 +62,37 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         /// <param name="config"></param>
         public bool Configure(ISecurityOAuth2Config config)
         {
-            if (AuthorityFactory == null)
+            ProxyInvocationPrincipal = config.OAuthProxyInvocationPrincipal;
+            Authority = AuthorityFactory?.GetAuthority(config.OAuth2Authority);
+            if (Authority == null)
             {
-                return false;
-            }
-            if (config.OAuth2Authority == null && config.OAuthProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.None)
-            {
-                return false;
+                switch(ProxyInvocationPrincipal)
+                {
+                    case OAuthProxyInvocationPrincipal.None:
+                        // no oaut2 configured
+                        return false;
+                    case OAuthProxyInvocationPrincipal.Proxy:
+                        // we do not need a configured authority to proxy user
+                        break;
+                    default:
+                        throw new Exception("No OAuth2 Authority configured.");
+                }
             }
             RemoteCall = !config.InvocationConfiguration.HasImplementation;
-            Authority = AuthorityFactory.GetAuthority(config.OAuth2Authority);
             ClientId = config.OAuth2ClientId;
             ClientSecret = config.OAuth2ClientSecret;
 
             if (Scopes == null || !Scopes.Any())
             {
-                Scopes = new[] { "openid", "solidrpc" };
+                if(ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Client)
+                {
+                    Scopes = new[] { "solidrpc-api" };
+                }
+                else
+                {
+                    Scopes = new string[0];
+                }
             }
-            ProxyInvocationPrincipal = config.OAuthProxyInvocationPrincipal;
             RedirectUnauthorizedIdentity = config.RedirectUnauthorizedIdentity;
 
             return true;
@@ -225,7 +238,11 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Client)
             {
-                var jwt = await Authority.GetClientJwtAsync(ClientId, ClientSecret, new[] { "SolidRpc" });
+                var jwt = await Authority.GetClientJwtAsync(ClientId, ClientSecret, Scopes);
+                if(jwt == null)
+                {
+                    throw new Exception($"Cannot obtain jwt token for client {ClientId}@{Authority.Authority}.");
+                }
                 invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt}");
                 return;
             }

@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
+using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -61,6 +62,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public IAuthorityLocal GetLocalAuthority(string url)
         {
+            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException(nameof(url));
             var authorityImpl = (AuthorityImpl)GetAuthority(url);
             return LocalAuthorities.GetOrAdd(url, _ => new AuthorityLocalImpl(authorityImpl));
 

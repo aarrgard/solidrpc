@@ -164,16 +164,11 @@ namespace SolidRpc.Tests.Security
 
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetClientEnabledResource))
             {
-                var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
-                oauth2Config.OAuth2Authority = baseAddress.ToString();
-                oauth2Config.OAuth2ClientId = "clientid";
-                oauth2Config.OAuth2ClientSecret = "secret";
-                oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Client;
+                conf.SetOAuth2ClientSecurity(baseAddress.ToString(), "clientid", "secret");
             }
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetUserEnabledResource))
             {
-                var oauth2Config = conf.GetAdviceConfig<ISecurityOAuth2Config>();
-                oauth2Config.OAuthProxyInvocationPrincipal = OAuthProxyInvocationPrincipal.Proxy;
+                conf.SetOAuth2ProxySecurity();
             }
 
             return true;
@@ -430,12 +425,16 @@ namespace SolidRpc.Tests.Security
                 var res = await protectedService.GetClientEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
 
+                var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(ctx.BaseAddress.ToString());
+
                 //
                 // Test user as user principal
                 //
-                var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(ctx.BaseAddress.ToString());
-                var userJwt = await authLocal.GetUserJwtAsync("clientid", "clientsecret", "userid", "password", new[] { "test" });
-                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(userJwt);
+                var userJwt = await authLocal.GetUserJwtAsync("clientid", "clientsecret", "userid", "password", new[] { "scope1", "scope2" });
+                var prin = await authLocal.GetPrincipalAsync(userJwt);
+                Assert.IsNotNull(prin.Claims.Where(o => o.Type == "scope").Where(o => o.Value == "scope1").Single());
+                Assert.IsNotNull(prin.Claims.Where(o => o.Type == "scope").Where(o => o.Value == "scope2").Single());
+                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = prin;
                 res = await protectedService.GetUserEnabledResource("test");
                 Assert.AreEqual("test:userid", res);
 

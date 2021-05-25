@@ -51,8 +51,8 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     parameterName = ParameterInfo.Name;
                 }
-                string collectionFormat = null;
-                if (ParameterObject.Format == null)
+                string collectionFormat = ParameterObject?.Items?.CollectionFormat;
+                if (collectionFormat == null)
                 {
                     if(ParameterObject.Type == "array")
                     {

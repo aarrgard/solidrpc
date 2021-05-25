@@ -2185,7 +2185,7 @@ export namespace Security {
                             if (obj.refresh_token) { this.RefreshToken = obj.refresh_token.toString(); }
                             break;
                         case "scope":
-                            if (obj.scope) { this.Scope = Array.from(obj.scope).map(o => o.toString()); }
+                            if (obj.scope) { this.Scope = obj.scope.toString(); }
                             break;
                     }
                 }
@@ -2201,7 +2201,7 @@ export namespace Security {
                 if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
                 if(this.ExpiresIn) { arr.push('"expires_in": '); arr.push(JSON.stringify(this.ExpiresIn)); arr.push(','); } 
                 if(this.RefreshToken) { arr.push('"refresh_token": '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
-                if(this.Scope) { arr.push('"scope": '); this.Scope.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.Scope) { arr.push('"scope": '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
@@ -2225,7 +2225,7 @@ export namespace Security {
             /**
              * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
              */
-            Scope: string[];
+            Scope: string;
         }
         /**
          * success

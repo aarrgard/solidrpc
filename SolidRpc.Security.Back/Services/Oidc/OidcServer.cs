@@ -113,33 +113,41 @@ namespace SolidRpc.Security.Back.Services
             };
         }
 
-        private async Task<TokenResponse> OAuth2TokenPassword(string clientId, string clientSecret, string username, string password, IEnumerable<string> scope, CancellationToken cancellationToken)
+        private async Task<TokenResponse> OAuth2TokenPassword(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, CancellationToken cancellationToken)
         {
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("sub", username));
             claimsIdentity.AddClaim(new System.Security.Claims.Claim(ClaimsIdentity.DefaultNameClaimType, username));
+            foreach (var scope in scopes)
+            {
+                claimsIdentity.AddClaim(new System.Security.Claims.Claim("scope", scope));
+            }
             var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
                 ExpiresIn = accessToken.ExpiresIn,
-                Scope = scope,
+                Scope = string.Join(" ", scopes),
                 TokenType = accessToken.TokenType
             };
         }
 
-        private async Task<TokenResponse> OAuth2TokenClientCredentials(string clientId, string clientSecret, IEnumerable<string> scope, CancellationToken cancellationToken)
+        private async Task<TokenResponse> OAuth2TokenClientCredentials(string clientId, string clientSecret, IEnumerable<string> scopes, CancellationToken cancellationToken)
         {
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity();
             claimsIdentity.AddClaim(new System.Security.Claims.Claim("client_id", clientId));
             claimsIdentity.AddClaim(new System.Security.Claims.Claim(ClaimsIdentity.DefaultNameClaimType, clientId));
+            foreach(var scope in scopes)
+            {
+                claimsIdentity.AddClaim(new System.Security.Claims.Claim("scope", scope));
+            }
             var accessToken = await AuthorityLocal.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
                 ExpiresIn = accessToken.ExpiresIn,
-                Scope = scope,
+                Scope = string.Join(" ", scopes),
                 TokenType = accessToken.TokenType
             };
         }
