@@ -19,14 +19,6 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class AuthorityImpl : IAuthority
     {
-        private class DummySecurityKey : SecurityKey
-        {
-            public DummySecurityKey(string kid)
-            {
-                KeyId = kid;
-            }
-            public override int KeySize => throw new NotImplementedException();
-        }
         private class CachedJwt
         {
             public CachedJwt(string jwt, DateTime validTo)
@@ -40,7 +32,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
         private class AuthorityTokenValidationParameters : TokenValidationParameters, IAuthorityTokenChecks
         {
-            public AuthorityTokenValidationParameters(string issuer, IEnumerable<SecurityKey> allSigningKeys)
+            public AuthorityTokenValidationParameters(string issuer, IEnumerable<SecurityKey> allSigningKeys, Action keyMissingAction)
             {
                 ValidateActor = false;
                 ValidateAudience = false;
@@ -53,6 +45,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 RequireAudience = false;
                 IssuerSigningKeyResolver = (token, st, kid, validationParameters) => {
                     var signingKeys = allSigningKeys.Where(o => o.KeyId == kid).ToList();
+                    if(signingKeys.Count == 0)
+                    {
+                        keyMissingAction();
+                    }
                     return signingKeys;
                 };
             }
@@ -95,6 +91,19 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         protected OpenIDKeys OpenIdKeys { get; set; }
 
+        internal Task PruneCachedJwts()
+        {
+            var now = DateTime.UtcNow;
+            foreach (var cachedJwt in CachedJwts)
+            {
+                if(cachedJwt.Value.ValidTo < now)
+                {
+                    CachedJwts.TryRemove(cachedJwt.Key, out CachedJwt tmp);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Return the client jwt.
         /// </summary>
@@ -134,7 +143,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             var key = string.Join(":", nvc.Select(o => o.Value));
             if(CachedJwts.TryGetValue(key, out CachedJwt cachedJwt))
             {
-                if(cachedJwt.ValidTo < DateTime.Now.Subtract(timeout.Value))
+                if (cachedJwt.ValidTo < DateTime.Now.Subtract(timeout.Value))
                 {
                     return cachedJwt.Jwt;
                 }
@@ -185,13 +194,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             //
             var client = HttpClientFactory.CreateClient();
             var separator = Authority.EndsWith("/") ? "" : "/";
-            var resp = await client.GetAsync(new Uri($"{Authority}{separator}.well-known/openid-configuration"));
+            var uri = new Uri($"{Authority}{separator}.well-known/openid-configuration");
+            var resp = await client.GetAsync(uri);
+            if(!resp.IsSuccessStatusCode)
+            {
+                throw new Exception($"Cannot find well known configuration @ {uri}");
+            }
             using (var s = await resp.Content.ReadAsStreamAsync())
             {
                 SerializerFactory.DeserializeFromStream(s, out openIDConnnectDiscovery);
             }
             OpenIDConnnectDiscovery = openIDConnnectDiscovery;
-            OpenIdKeys = null;
             return openIDConnnectDiscovery;
         }
 
@@ -205,13 +218,18 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public async Task<ClaimsPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default(CancellationToken))
         {
             var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);
-            var tokenValidationParameter = new AuthorityTokenValidationParameters(Authority, allSigningKeys);
+            var tokenValidationParameter = new AuthorityTokenValidationParameters(Authority, allSigningKeys, ReloadSigningKeys);
             tokenChecks?.Invoke(tokenValidationParameter);
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
             var claimsPrincipal = tokenHandler.ValidateToken(jwt, tokenValidationParameter, out securityToken);
             claimsPrincipal.Identities.First().AddClaim(new Claim("accesstoken", jwt));
             return claimsPrincipal;
+        }
+
+        private async void ReloadSigningKeys()
+        {
+            await GetSigningKeysNoCacheAsync(CancellationToken.None);
         }
 
         /// <summary>
@@ -230,37 +248,30 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var openIdKeys = OpenIdKeys;
             if (openIdKeys != null)
             {
-                return openIdKeys.Keys;
+                return Task.FromResult(openIdKeys.Keys);
             }
 
-            var localKeys = GetLocalKeys();
-            if(localKeys.Any())
-            {
-                openIdKeys = new OpenIDKeys() { Keys = localKeys };
-            }
-            else
-            {
-                var doc = await GetDiscoveryDocumentAsync(cancellationToken);
-                var client = HttpClientFactory.CreateClient();
-                var json = await client.GetStringAsync(doc.JwksUri);
-                SerializerFactory.DeserializeFromString(json, out openIdKeys);
-            }
+            return GetSigningKeysNoCacheAsync(cancellationToken);
+        }
+        /// <summary>
+        /// Returns the signing keys
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task<IEnumerable<OpenIDKey>> GetSigningKeysNoCacheAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+            var client = HttpClientFactory.CreateClient();
+            var json = await client.GetStringAsync(doc.JwksUri);
+            SerializerFactory.DeserializeFromString(json, out OpenIDKeys openIdKeys);
+
             OpenIdKeys = openIdKeys;
             return openIdKeys.Keys;
-        }
-
-        /// <summary>
-        /// Returns the local keys
-        /// </summary>
-        /// <returns></returns>
-        protected virtual IEnumerable<OpenIDKey> GetLocalKeys()
-        {
-            return new OpenIDKey[0];
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSolidRpcOAuth2(this IServiceCollection services)
         {
             services.AddSolidRpcSingletonServices();
+            services.AddTransient(sp => sp.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal);
+            services.AddTransient<IPrincipal>(sp => sp.GetRequiredService<ClaimsPrincipal>());
             services.AddSingletonIfMissing<IAuthorityFactory, AuthorityFactoryImpl>();
             return services;
         }
@@ -32,15 +34,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="localAuthority"></param>
         /// <param name="conf"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, string localAuthority, Action<IAuthorityLocal> conf)
+        public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, string localAuthority, Action<IAuthorityLocal> conf = null)
         {
-            services.AddTransient(sp => sp.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal);
-            services.AddTransient<IPrincipal>(sp => sp.GetRequiredService<ClaimsPrincipal>());
-            services.AddSingletonIfMissing<IAuthorityFactory, AuthorityFactoryImpl>();
+            services.AddSolidRpcOAuth2();
             services.AddSingletonIfMissing(o =>
             {
                 var auth = o.GetRequiredService<IAuthorityFactory>().GetLocalAuthority(localAuthority);
-                conf(auth);
+                conf?.Invoke(auth);
                 return auth;
             });
             return services;

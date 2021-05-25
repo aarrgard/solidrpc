@@ -23,7 +23,8 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
-            services.AddSolidRpcOAuth2();
+            services.AddSolidRpcOAuth2Local(services.GetSolidRpcService<Uri>().ToString());
+            services.AddSolidRpcSecurityBackend();
         }
 
         /// <summary>

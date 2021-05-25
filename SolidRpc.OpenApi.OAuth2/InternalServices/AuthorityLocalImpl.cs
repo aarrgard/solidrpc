@@ -18,7 +18,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// <summary>
     /// Implements the local authority.
     /// </summary>
-    public class AuthorityLocalImpl : AuthorityImpl, IAuthorityLocal
+    public class AuthorityLocalImpl : IAuthorityLocal
     {
         private SecurityKey _privateKey;
         private SecurityKey _publicKey;
@@ -26,29 +26,27 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <summary>
         /// Constructs a new instance
         /// </summary>
-        /// <param name="authorityFactoryImpl"></param>
-        /// <param name="httpClientFactory"></param>
-        /// <param name="serializerFactory"></param>
-        /// <param name="authority"></param>
+        /// <param name="authorityImpl"></param>
         public AuthorityLocalImpl(
-            IAuthorityFactory authorityFactoryImpl,
-            IHttpClientFactory httpClientFactory,
-            ISerializerFactory serializerFactory,
-            string authority)
-            :base(authorityFactoryImpl, httpClientFactory, serializerFactory, authority)
+            AuthorityImpl authorityImpl)
         {
+            AuthorityImpl = authorityImpl;
         }
+
+        private AuthorityImpl AuthorityImpl { get; }
 
         /// <summary>
         /// Returns the private signing key.
         /// </summary>
-        public OpenIDKey PrivateSigningKey => _privateKey.AsOpenIDKey();
+        OpenIDKey IAuthorityLocal.PrivateSigningKey => _privateKey.AsOpenIDKey();
+
+        public string Authority => AuthorityImpl.Authority;
 
         /// <summary>
         /// Returns the local keys
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<OpenIDKey> GetLocalKeys()
+        private IEnumerable<OpenIDKey> GetLocalKeys()
         {
             if (_publicKey == null) throw new Exception("No signing key exists for local authority.");
             yield return _publicKey.AsOpenIDKey();
@@ -138,6 +136,31 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 KeyId = keyId(cert)
             });
 
+        }
+
+        Task<OpenIDConnnectDiscovery> IAuthority.GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
+        {
+            return AuthorityImpl.GetDiscoveryDocumentAsync(cancellationToken);
+        }
+
+        Task<ClaimsPrincipal> IAuthority.GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks, CancellationToken cancellationToken)
+        {
+            return AuthorityImpl.GetPrincipalAsync(jwt, tokenChecks, cancellationToken);
+        }
+
+        public Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(GetLocalKeys());
+        }
+
+        Task<string> IAuthority.GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken)
+        {
+            return AuthorityImpl.GetClientJwtAsync(clientId, clientSecret, scopes, timeout, cancellationToken);
+        }
+
+        Task<string> IAuthority.GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken)
+        {
+            return AuthorityImpl.GetUserJwtAsync(clientId, clientSecret, username, password, scopes, timeout, cancellationToken);
         }
     }
 }

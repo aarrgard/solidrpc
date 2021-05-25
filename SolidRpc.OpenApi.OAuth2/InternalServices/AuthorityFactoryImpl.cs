@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using SolidRpc.Abstractions.OpenApi.OAuth2;
+﻿using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
-using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.OAuth2.InternalServices
 {
@@ -23,13 +22,26 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         {
             HttpClientFactory = httpClientFactory;
             SerializerFactory = serializerFactory;
-            Authorities = new ConcurrentDictionary<string, IAuthority>();
+            Authorities = new ConcurrentDictionary<string, AuthorityImpl>();
             LocalAuthorities = new ConcurrentDictionary<string, IAuthorityLocal>();
+            PruneCachedJwts();
         }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
-        private ConcurrentDictionary<string, IAuthority> Authorities { get; }
+        private ConcurrentDictionary<string, AuthorityImpl> Authorities { get; }
         private ConcurrentDictionary<string, IAuthorityLocal> LocalAuthorities { get; }
+
+        private async void PruneCachedJwts()
+        {
+            while(true)
+            {
+                foreach (var localAuth in Authorities.Values)
+                {
+                    await localAuth.PruneCachedJwts();
+                }
+                await Task.Delay(60 * 1000);
+            }
+        }
 
         /// <summary>
         /// Returns the authority
@@ -49,7 +61,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public IAuthorityLocal GetLocalAuthority(string url)
         {
-            return LocalAuthorities.GetOrAdd(url, _ => new AuthorityLocalImpl(this, HttpClientFactory, SerializerFactory, url));
+            var authorityImpl = (AuthorityImpl)GetAuthority(url);
+            return LocalAuthorities.GetOrAdd(url, _ => new AuthorityLocalImpl(authorityImpl));
 
         }
     }
