@@ -98,9 +98,9 @@
             "required": false,
             "type": "array",
             "items": {
-              "type": "string",
-              "collectionFormat": "ssv"
-            }
+              "type": "string"
+            },
+            "collectionFormat": "ssv"
           },
           {
             "in": "formData",
@@ -153,9 +153,9 @@
             "required": true,
             "type": "array",
             "items": {
-              "type": "string",
-              "collectionFormat": "ssv"
-            }
+              "type": "string"
+            },
+            "collectionFormat": "ssv"
           },
           {
             "in": "query",

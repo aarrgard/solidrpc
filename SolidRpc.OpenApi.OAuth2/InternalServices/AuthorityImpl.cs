@@ -122,6 +122,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
+        /// <summary>
+        /// Returns the user JWT
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="scopes"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<string> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             var nvc = new List<KeyValuePair<string, string>>();

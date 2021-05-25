@@ -177,11 +177,13 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     {
                         po.In = "path";
                         SetItemProps(po, true, o.ParameterType);
+                        if (po.Type == "array") po.CollectionFormat = "csv";
                     }
                     else
                     {
                         po.In = "query";
                         SetItemProps(po, true, o.ParameterType);
+                        if (po.Type == "array") po.CollectionFormat = "csv";
                     }
                 });
 
@@ -336,7 +338,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             if (type.EnumerableType != null)
             {
                 itemBase.Type = "array";
-                itemBase.Items = GetSchema(itemBase, canHandleFile, type.EnumerableType);
+                itemBase.Items = GetSchema(itemBase, false, type.EnumerableType);
                 return;
             }
             else if (type.NullableType != null)

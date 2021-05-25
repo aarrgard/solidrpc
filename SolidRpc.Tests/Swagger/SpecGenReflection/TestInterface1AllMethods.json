@@ -42,7 +42,8 @@
             "items": {
               "type": "string",
               "format": "uuid"
-            }
+            },
+            "collectionFormat": "csv"
           }
         ],
         "responses": {
@@ -292,7 +293,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "collectionFormat": "csv"
           }
         ],
         "responses": {

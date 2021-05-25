@@ -32,7 +32,8 @@
             "description": "The string values",
             "items": {
               "type": "string"
-            }
+            },
+            "collectionFormat": "csv"
           },
           {
             "name": "ct",
