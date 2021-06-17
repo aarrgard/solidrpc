@@ -100,9 +100,23 @@ namespace SolidRpc.OpenApi.Binder.V2
             return parameter;
         }
 
-        public static bool NameMatches(string name1, string name2)
+        public static bool NameMatches(string openApiName, string name)
         {
-            int name1Idx = 0;
+            int openApiNameIdx = 0;
+            while (openApiNameIdx < openApiName.Length)
+            {
+                while (openApiNameIdx < openApiName.Length && SolidRpcConstants.OpenApiWordSeparators.Contains(openApiName[openApiNameIdx])) openApiNameIdx++;
+                if (NameMatchesInternal(openApiNameIdx, openApiName, name))
+                {
+                    return true;
+                }
+                while (openApiNameIdx < openApiName.Length && !SolidRpcConstants.OpenApiWordSeparators.Contains(openApiName[openApiNameIdx])) openApiNameIdx++;
+            }
+            return false;
+        }
+
+        private static bool NameMatchesInternal(int name1Idx, string name1, string name2)
+        {
             int name2Idx = 0;
             while(true)
             {
@@ -133,19 +147,20 @@ namespace SolidRpc.OpenApi.Binder.V2
                     }
                     if (name1.Length <= name1Idx)
                     {
-                        if (name2.Length > name2Idx && name2[name2Idx] == '#')
-                        {
-                            return true;
-                        }
-                        return false;
+                        while (name2Idx < name2.Length && SolidRpcConstants.OpenApiWordSeparators.Contains(name2[name2Idx])) name2Idx++;
+                        return name2.Length == name2Idx;
                     }
                     if (name2.Length <= name2Idx)
                     {
-                        if (name1.Length > name1Idx && name1[name1Idx] == '#')
+                        if (name1.Length > name1Idx)
                         {
-                            return true;
+                            if(SolidRpcConstants.OpenApiWordSeparators.Contains(name1[name1Idx]))
+                            {
+                                return true;
+                            }
+                            return false;
                         }
-                        return false;
+                        return true;
                     }
 
                     if (char.ToLower(name1[name1Idx]) == char.ToLower(name2[name2Idx]))
@@ -160,6 +175,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 }
             }
         }
+
 
         public MethodBindingV2(
             MethodBinderV2 methodBinder, 

@@ -16,7 +16,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies a decimal",
-        "operationId": "GetDecimal#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetDecimal#1",
         "produces": [
           "application/json"
         ],
@@ -47,7 +47,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies a guid",
-        "operationId": "GetGuid#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetGuid#1",
         "produces": [
           "application/json"
         ],
@@ -78,7 +78,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies an integer",
-        "operationId": "GetInteger#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetInteger#1",
         "produces": [
           "application/json"
         ],
@@ -109,7 +109,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "GetSimpleAndComplexType#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetSimpleAndComplexType#1",
         "consumes": [
           "application/json"
         ],
@@ -150,7 +150,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies a uri",
-        "operationId": "GetUri#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetUri#1",
         "produces": [
           "application/json"
         ],

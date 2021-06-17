@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Some more testing",
-        "operationId": "TestArray#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestArray#1",
         "consumes": [
           "application/json"
         ],
@@ -65,7 +65,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a dictionary",
-        "operationId": "TestDictionary",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestDictionary",
         "consumes": [
           "application/json"
         ],
@@ -98,7 +98,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Nullable parameters should be optional",
-        "operationId": "TestFileTypeWithAdditionalData#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestFileTypeWithAdditionalData#1",
         "consumes": [
           "multipart/form-data"
         ],
@@ -129,7 +129,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest",
         "parameters": [],
         "responses": {
           "200": {
@@ -142,7 +142,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest#Put",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest#Put",
         "parameters": [],
         "responses": {
           "200": {
@@ -155,7 +155,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest#Post",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest#Post",
         "parameters": [],
         "responses": {
           "200": {
@@ -168,7 +168,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest#Delete",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest#Delete",
         "parameters": [],
         "responses": {
           "200": {
@@ -181,7 +181,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest#Options",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest#Options",
         "parameters": [],
         "responses": {
           "200": {
@@ -194,7 +194,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest#Head",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest#Head",
         "parameters": [],
         "responses": {
           "200": {
@@ -207,7 +207,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a http request argument",
-        "operationId": "TestHttpRequest#Patch",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestHttpRequest#Patch",
         "parameters": [],
         "responses": {
           "200": {
@@ -222,7 +222,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a principal argument",
-        "operationId": "TestIPrincipal",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestIPrincipal",
         "responses": {
           "200": {
             "description": "Success"
@@ -236,7 +236,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Nullable parameters should be optional",
-        "operationId": "TestNullableParameter",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestNullableParameter",
         "parameters": [
           {
             "name": "d",
@@ -259,7 +259,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Optional parameters should be placed in the query.",
-        "operationId": "TestOptionalParameter",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestOptionalParameter",
         "parameters": [
           {
             "name": "s",
@@ -281,7 +281,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a set of string values",
-        "operationId": "TestStringValues#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStringValues#1",
         "produces": [
           "application/json"
         ],
@@ -316,7 +316,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests some stuff",
-        "operationId": "TestStuff",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff",
         "responses": {
           "200": {
             "description": "Success"
@@ -330,7 +330,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Some more testing",
-        "operationId": "TestStuff2#5",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff2#5",
         "produces": [
           "application/json"
         ],
@@ -387,7 +387,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a TimeSpan argument",
-        "operationId": "TestTimeSpan#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestTimeSpan#1",
         "produces": [
           "application/json"
         ],

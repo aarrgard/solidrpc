@@ -16,7 +16,7 @@
           "IRedirect"
         ],
         "description": "Redirects",
-        "operationId": "Redirect",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#Redirect#Services#IRedirect#Redirect",
         "consumes": [
           "multipart/form-data"
         ],
@@ -47,7 +47,7 @@
           "IRedirect"
         ],
         "description": "The redirected resource.",
-        "operationId": "Redirected",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#Redirect#Services#IRedirect#Redirected",
         "produces": [
           "*/*"
         ],

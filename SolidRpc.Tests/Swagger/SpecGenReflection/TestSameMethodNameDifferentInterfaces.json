@@ -1,0 +1,94 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestStuff2/{i}/{d}/{s}/{u}/{g}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Some more testing",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff2#5",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "i",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "d",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "s",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "u",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "name": "g",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface2/TestStuff2": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface2"
+        ],
+        "description": "Tests some stuff",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface2#TestStuff2",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
+    },
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface2",
+      "description": "A test interface"
+    }
+  ]
+}

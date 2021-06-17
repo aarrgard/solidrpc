@@ -45,7 +45,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
             operationAddress = TransformAddress(methodBinding, operationAddress, methodBinding.MethodInfo);
             if (_operationAddress != null && _operationAddress != operationAddress)
             {
-                throw new Exception("Operation address has already been configured.");
+                throw new Exception($"Operation address({operationAddress}) has already been configured.");
             }
             _operationAddress = operationAddress;
         }

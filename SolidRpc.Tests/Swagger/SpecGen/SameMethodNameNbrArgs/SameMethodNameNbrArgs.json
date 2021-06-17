@@ -16,7 +16,7 @@
           "ISameMethodNameNbrArgs"
         ],
         "description": "consumes one string",
-        "operationId": "ConsumeString#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#SameMethodNameNbrArgs#Services#ISameMethodNameNbrArgs#ConsumeString#1",
         "parameters": [
           {
             "name": "s1",
@@ -39,7 +39,7 @@
           "ISameMethodNameNbrArgs"
         ],
         "description": "consumes two strings",
-        "operationId": "ConsumeString#2",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#SameMethodNameNbrArgs#Services#ISameMethodNameNbrArgs#ConsumeString#2",
         "parameters": [
           {
             "name": "s1",

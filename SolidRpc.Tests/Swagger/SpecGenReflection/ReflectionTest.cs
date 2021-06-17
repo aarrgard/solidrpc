@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Binder;
@@ -104,6 +105,19 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         }
 
         /// <summary>
+        /// A test interface
+        /// </summary>
+        public interface Interface2
+        {
+            /// <summary>
+            /// Tests some stuff
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            Task TestStuff2(CancellationToken cancellationToken);
+        }
+
+        /// <summary>
         /// The test struct
         /// </summary>
         public class TestStruct
@@ -133,8 +147,10 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         private IServiceProvider ServiceProvider { 
             get
             {
+                var cb = new ConfigurationBuilder();
                 var sc = new ServiceCollection();
                 sc.AddLogging(ConfigureLogging);
+                sc.AddSingleton<IConfiguration>(cb.Build());
                 sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
                 sc.AddSolidRpcServices();
                 return sc.BuildServiceProvider();
@@ -367,6 +383,29 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TimeSpan)}.json"), spec);
+
+            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
+            Assert.AreEqual(1, binding.Arguments.Count());
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestSameMethodNameDifferentInterfaces()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestStuff2));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            methodInfo = typeof(Interface2).GetMethod(nameof(Interface2.TestStuff2));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestSameMethodNameDifferentInterfaces)}.json"), spec);
+
+            var bindings = ServiceProvider.GetRequiredService<IMethodBinderStore>().MethodBinders.SelectMany(o => o.MethodBindings);
+            Assert.AreEqual(7, bindings.Count());
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());

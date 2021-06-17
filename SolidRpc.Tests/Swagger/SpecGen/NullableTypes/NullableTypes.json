@@ -16,7 +16,7 @@
           "INullableTypes"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "GetComplexType",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#NullableTypes#Services#INullableTypes#GetComplexType",
         "consumes": [
           "application/json"
         ],
@@ -50,7 +50,7 @@
           "INullableTypes"
         ],
         "description": "Consumes one nullable int and returns it.",
-        "operationId": "GetNullableType#1",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#NullableTypes#Services#INullableTypes#GetNullableType#1",
         "produces": [
           "application/json"
         ],

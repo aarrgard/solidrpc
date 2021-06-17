@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.OpenApi.Binder.V2;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +36,7 @@ namespace SolidRpc.Tests.Swagger.Binder
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>();
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHelloWorld));
             services.AddSolidRpcBindings(
-                typeof(IHelloWorld), 
+                typeof(IHelloWorld),
                 typeof(IHelloWorld),
                 (c) =>
                 {
@@ -48,6 +48,28 @@ namespace SolidRpc.Tests.Swagger.Binder
             var store = sp.GetRequiredService<IMethodBinderStore>();
             var methods = store.MethodBinders.SelectMany(o => o.MethodBindings).Select(o => o.MethodInfo.Name).ToList();
             Assert.AreEqual(1, methods.Count);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Test]
+        public void TestNameMatches()
+        {
+            Assert.IsFalse(MethodBindingV2.NameMatches("Test", "TestX"));
+            Assert.IsTrue(MethodBindingV2.NameMatches("Test", "Test"));
+            Assert.IsTrue(MethodBindingV2.NameMatches("X#Test", "Test"));
+            Assert.IsTrue(MethodBindingV2.NameMatches("X#Test#Y", "Test"));
+            Assert.IsTrue(MethodBindingV2.NameMatches("X#Test#Y", "Test"));
+
+            Assert.IsFalse(MethodBindingV2.NameMatches("XTest", "Test"));
+            Assert.IsFalse(MethodBindingV2.NameMatches("TestX", "Test"));
+            Assert.IsFalse(MethodBindingV2.NameMatches("#TestX", "Test"));
+            Assert.IsFalse(MethodBindingV2.NameMatches("#TestX#", "Test"));
+            Assert.IsFalse(MethodBindingV2.NameMatches("TestX#", "Test"));
+
+            Assert.IsTrue(MethodBindingV2.NameMatches("Test", "Test#"));
+            Assert.IsTrue(MethodBindingV2.NameMatches("Test", "#Test"));
         }
     }
 }

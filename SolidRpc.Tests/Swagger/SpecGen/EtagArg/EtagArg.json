@@ -16,7 +16,7 @@
           "SolidRpc.Tests.Swagger.SpecGen.ETagArg.Services.IETagArg"
         ],
         "description": "Consumes two complex types an a simple string...",
-        "operationId": "GetEtagStruct",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#ETagArg#Services#IETagArg#GetEtagStruct",
         "consumes": [
           "multipart/form-data"
         ],

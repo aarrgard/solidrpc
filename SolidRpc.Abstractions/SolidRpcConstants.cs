@@ -12,6 +12,6 @@ namespace SolidRpc.Abstractions
         /// <summary>
         /// characters to be used when splittung up words in a openapi spec
         /// </summary>
-        public static readonly char[] OpenApiWordSeparators = new[] { ' ', '/', '.', '_' };
+        public static readonly char[] OpenApiWordSeparators = new[] { ' ', '/', '.', '_', '#' };
     }
 }

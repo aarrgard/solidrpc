@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Nullable parameters should be optional",
-        "operationId": "TestNullableParameter",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestNullableParameter",
         "parameters": [
           {
             "name": "d",

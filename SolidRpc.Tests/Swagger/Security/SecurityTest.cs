@@ -63,7 +63,7 @@ namespace SolidRpc.Tests.Swagger.Binder
             var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface));
             spec.Operations.ToList().ForEach(o =>
             {
-                if(o.OperationId == "DoXAsync")
+                if(o.OperationId.EndsWith("#DoXAsync"))
                 {
                     o.AddApiKeyAuth("security-definition1", "security-header1");
                     o.AddOAuth2Auth(docs, "authorizationCode", new[] { "scope1" });

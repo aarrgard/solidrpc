@@ -137,7 +137,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         {
             var operationObject = new OperationObject(pathItemObject);
             operationObject.Tags = new string[] { CreateTag(null, (ICSharpType)method.Parent).Name };
-            operationObject.OperationId = method.Name;
+            operationObject.OperationId = MapPath(method.FullName).Replace("/", "#").Replace("{", "#").Replace("}", "").Substring(1);
             operationObject.Description = method.Comment?.Summary;
 
             var parameters = method.Parameters
