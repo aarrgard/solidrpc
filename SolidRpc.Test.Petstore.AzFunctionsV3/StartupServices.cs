@@ -91,12 +91,14 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))
             {
-                switch (method.Name)
-                {
-                    case nameof(ISwaggerUI.GetIndexHtml):
-                        conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
-                        break;
-                }
+                conf.DisableSecurity();
+                return true;
+                //switch (method.Name)
+                //{
+                //    case nameof(ISwaggerUI.GetIndexHtml):
+                //        conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = false;
+                //        break;
+                //}
             }
             if (method.DeclaringType == typeof(ISolidRpcContentHandler))
             {

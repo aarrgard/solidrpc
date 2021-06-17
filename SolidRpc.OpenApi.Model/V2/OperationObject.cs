@@ -320,7 +320,7 @@ namespace SolidRpc.OpenApi.Model.V2
             switch(flow.ToLower())
             {
                 case "authorizationcode":
-                    AddOAuth2AuthorizationCodeAuth(authDoc, scopes);
+                    AddOAuth2AccessCodeAuth(authDoc, scopes);
                     break;
                 default:
                     throw new Exception();
@@ -328,12 +328,12 @@ namespace SolidRpc.OpenApi.Model.V2
             } 
         }
 
-        private void AddOAuth2AuthorizationCodeAuth(OpenIDConnnectDiscovery authDoc, IEnumerable<string> scopes)
+        private void AddOAuth2AccessCodeAuth(OpenIDConnnectDiscovery authDoc, IEnumerable<string> scopes)
         {
             //
             // make sure that the security definition exists
             //
-            var flow = "authorizationCode";
+            var flow = "accessCode";
             var securityDefinitions = GetParent<SwaggerObject>().GetSecurityDefinitions();
             string defName = null;
             SecuritySchemeObject securityScheme = null;

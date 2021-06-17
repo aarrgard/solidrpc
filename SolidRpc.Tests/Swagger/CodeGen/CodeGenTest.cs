@@ -114,9 +114,32 @@ namespace SolidRpc.Tests.Swagger.CodeGen
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlParam.Services.IUrlParam>();
 
+                // int
                 var res = await proxy.ProxyIntegerInPath(3);
                 Assert.AreEqual(3, res);
                 Assert.AreEqual(1, moq.Invocations.Count);
+
+                // int array using ','
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<UrlParam.Services.IUrlParam>>();
+                var arr = (new int[] { 1, 2, 3 }).AsEnumerable();
+                var uri = await invoker.GetUriAsync(o => o.ProxyArrayInPathCsv(arr, CancellationToken.None));
+                Assert.AreEqual("/UrlParamArrayCsv/1%2c2%2c3", uri.PathAndQuery);
+                moq.Setup(o => o.ProxyArrayInPathCsv(It.Is<int[]>(val => CompareStructs(arr, val)), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult(arr));
+
+                var res2 = (await proxy.ProxyArrayInPathCsv(arr)).ToArray();
+                CompareStructs(arr, res2);
+                Assert.AreEqual(2, moq.Invocations.Count);
+
+                // int array using '|'
+                uri = await invoker.GetUriAsync(o => o.ProxyArrayInPathPipe(arr, CancellationToken.None));
+                Assert.AreEqual("/UrlParamArrayPipe/1%7c2%7c3", uri.PathAndQuery);
+                moq.Setup(o => o.ProxyArrayInPathPipe(It.Is<int[]>(val => CompareStructs(arr, val)), It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult(arr));
+
+                res2 = (await proxy.ProxyArrayInPathPipe(arr)).ToArray();
+                CompareStructs(arr, res2);
+                Assert.AreEqual(3, moq.Invocations.Count);
             }
         }
 

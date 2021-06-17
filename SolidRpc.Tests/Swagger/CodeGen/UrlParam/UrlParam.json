@@ -5,11 +5,15 @@
     "title": "UrlParam"
   },
   "host": "localhost:5001",
-  "schemes": [ "https" ],
+  "schemes": [
+    "https"
+  ],
   "paths": {
     "/UrlParam1/{p}": {
       "get": {
-        "tags": [ "UrlParam" ],
+        "tags": [
+          "UrlParam"
+        ],
         "summary": "Sends an integer back and forth between client and server",
         "operationId": "ProxyIntegerInPath",
         "consumes": [],
@@ -27,7 +31,84 @@
         "responses": {
           "200": {
             "description": "Success",
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    },
+    "/UrlParamArrayCsv/{arr}": {
+      "get": {
+        "tags": [
+          "UrlParam"
+        ],
+        "summary": "Sends an integer back and forth between client and server",
+        "operationId": "ProxyArrayInPathCsv",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "arr",
+            "in": "path",
+            "description": "The array to proxy",
+            "required": true,
+            "type": "array",
+            "collectionFormat": "csv",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/UrlParamArrayPipe/{arr}": {
+      "get": {
+        "tags": [
+          "UrlParam"
+        ],
+        "summary": "Sends an integer back and forth between client and server",
+        "operationId": "ProxyArrayInPathPipe",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "arr",
+            "in": "path",
+            "description": "The array to proxy",
+            "required": true,
+            "type": "array",
+            "collectionFormat": "pipes",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
           }
         }
       }
