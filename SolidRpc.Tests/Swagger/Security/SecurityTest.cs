@@ -66,11 +66,11 @@ namespace SolidRpc.Tests.Swagger.Binder
                 if(o.OperationId == "DoXAsync")
                 {
                     o.AddApiKeyAuth("security-definition1", "security-header1");
-                    o.AddOAuth2Auth(docs, "authorizationCode", new[] { "scope1" });
+                    o.AddOAuth2Auth(docs, "accessCode", new[] { "scope1" });
                 }
                 else
                 {
-                    o.AddOAuth2Auth(docs, "authorizationCode", new[] { "scope2" });
+                    o.AddOAuth2Auth(docs, "accessCode", new[] { "scope2" });
                     o.AddApiKeyAuth("security-definition2", "security-header2");
                 }
             });

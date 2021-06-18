@@ -62,9 +62,10 @@ namespace SolidRpc.Node.InternalServices
             {
                 workingDir = GetNodeWorkingDir();
             }
-            var nodeModulesDir = await NodeModulesRepository.GetNodeModulePathAsync(modulesId);
+            var nodeModuleResolver = await NodeModulesRepository.GetNodeModuleResolverAsync(modulesId, cancellationToken);
+            var nodeModulesDir = await NodeModulesRepository.GetNodeModulePathAsync(modulesId, cancellationToken);
             var nodecontext = new NodeContext(
-                modulesId,
+                nodeModuleResolver,
                 NodeExePath,
                 workingDir,
                 nodeModulesDir
@@ -83,7 +84,7 @@ namespace SolidRpc.Node.InternalServices
 
         internal void ReturnNodeProcess(NodeProcess nodeProcess)
         {
-            var processes = AvailableProcesses.GetOrAdd(nodeProcess.Scope, _ => new List<NodeProcess>());
+            var processes = AvailableProcesses.GetOrAdd(nodeProcess.ModuleId, _ => new List<NodeProcess>());
             lock (processes)
             {
                 processes.Add(nodeProcess);

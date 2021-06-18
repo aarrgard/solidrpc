@@ -27,7 +27,6 @@
     <EmbeddedResource Include="$(AssemblyName).xml" />
     <EmbeddedResource Include="$(AssemblyName).json" />
     <EmbeddedResource Include="NpmGenerator.NpmScript.js" />
-    <EmbeddedResource Include="NpmGenerator.SolidRpc.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +38,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="InternalServices\" />
   </ItemGroup>
 
 

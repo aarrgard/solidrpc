@@ -7,15 +7,6 @@ namespace SolidRpc.NpmGenerator.Services {
     /// </summary>
     public interface INpmGenerator {
         /// <summary>
-        /// Creates a representation of the code namespace of supplied assembly
-        /// </summary>
-        /// <param name="assemblyName">The name of the assembly to create the namespace stuff for.</param>
-        /// <param name="cancellationToken"></param>
-        Task<CodeNamespace> CreateCodeNamespace(
-            string assemblyName,
-            CancellationToken cancellationToken = default(CancellationToken));
-    
-        /// <summary>
         /// Creates types.ts file from the code namespace structure.
         /// </summary>
         /// <param name="assemblyName">The name of the assembly to create the types.ts file for.</param>

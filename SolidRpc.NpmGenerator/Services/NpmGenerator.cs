@@ -12,7 +12,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.NpmGenerator.InternalServices;
+using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.NpmGenerator.Types;
 
 namespace SolidRpc.NpmGenerator.Services
@@ -486,17 +486,6 @@ module.exports = {{
         }
 
         /// <summary>
-        /// Creates a code representation for supplied assembly
-        /// </summary>
-        /// <param name="assemblyName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<CodeNamespace> CreateCodeNamespace(string assemblyName, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Task.FromResult(CodeNamespaceGenerator.CreateCodeNamespace(assemblyName));
-        }
-
-        /// <summary>
         /// Creates the types.ts file for supplied assembly
         /// </summary>
         /// <param name="assemblyName"></param>
@@ -520,8 +509,8 @@ module.exports = {{
             //
             // create dynamic package
             //
-            var codeNamespace = await CreateCodeNamespace(assemblyName);
-            return TypescriptGenerator.CreateTypesTs(codeNamespace);
+            var codeNamespace = await CodeNamespaceGenerator.CreateCodeNamespace(assemblyName);
+            return await TypescriptGenerator.CreateTypesTsForCodeNamespaceAsync(codeNamespace);
         }
     }
 }

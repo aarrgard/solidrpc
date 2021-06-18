@@ -59,8 +59,16 @@ namespace SolidRpc.Node.InternalServices
             {
                 if(resolver.ModuleId == moduleId)
                 {
-                    await resolver.ExplodeNodeModulesAsync(path, cancellationToken);
-                    return Path.Combine(path.FullName, "node_modules");
+                    try
+                    {
+                        await resolver.ExplodeNodeModulesAsync(path, cancellationToken);
+                        return Path.Combine(path.FullName, "node_modules");
+                    } 
+                    catch(Exception e)
+                    {
+                        path.Delete(true);
+                        throw;
+                    }
                 }
             }
 
@@ -95,6 +103,11 @@ namespace SolidRpc.Node.InternalServices
                 }
             }
             return packages;
+        }
+
+        public Task<INodeModuleResolver> GetNodeModuleResolverAsync(Guid moduleId, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(Resolvers.FirstOrDefault(o => o.ModuleId == moduleId));
         }
     }
 }

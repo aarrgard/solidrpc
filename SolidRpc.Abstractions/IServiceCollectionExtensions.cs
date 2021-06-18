@@ -4,6 +4,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Services.RateLimit;
 using System;
 using System.Collections.Generic;
@@ -86,7 +87,9 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var methods = typeof(ISolidRpcContentHandler).GetMethods()
                 .Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent))
-                .Union(typeof(ISolidRpcHost).GetMethods());
+                .Union(typeof(ISolidRpcHost).GetMethods())
+                .Union(typeof(ICodeNamespaceGenerator).GetMethods())
+                .Union(typeof(ITypescriptGenerator).GetMethods());
 
             var openApiParser = services.GetSolidRpcOpenApiParser();
             var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();

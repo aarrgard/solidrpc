@@ -978,6 +978,18 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.TimerStore">
+            <summary>
+            Implements the timer store logic
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.TimerStore.AddTimerAction(System.String,System.Func{System.IServiceProvider,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+            <summary>
+            Adds a new timer to the store
+            </summary>
+            <param name="timerId"></param>
+            <param name="action"></param>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices">
             <summary>
             Base class to configure the solid rpc services

@@ -1,10 +1,10 @@
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-using SolidRpc.NpmGenerator.Types;
 using System;
-namespace SolidRpc.NpmGenerator.Types {
+namespace SolidRpc.Abstractions.Types.Code
+{
     /// <summary>
-    /// 
+    /// Represents a method
     /// </summary>
     public class CodeMethod {
         /// <summary>

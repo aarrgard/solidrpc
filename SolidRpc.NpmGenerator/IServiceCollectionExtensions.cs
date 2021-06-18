@@ -1,5 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Proxy;
-using SolidRpc.NpmGenerator.InternalServices;
+using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.NpmGenerator.Services;
 using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
@@ -24,12 +24,6 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             services.AddSolidRpcNode(configurator);
-            services.AddTransient<ICodeNamespaceGenerator, CodeNamespaceGenerator>();
-            services.AddTransient<ITypescriptGenerator, TypeScriptGenerator>();
-            if(!services.Any(o => o.ServiceType == typeof(ICodeDocRepository)))
-            {
-                services.AddSingleton<ICodeDocRepository, CodeDocRepository>();
-            }
             services.AddHttpClient();
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(INpmGenerator));
             var strOpenApiSpec = openApiSpec.WriteAsJsonString();

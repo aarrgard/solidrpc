@@ -1,9 +1,13 @@
-﻿using System;
+﻿using SolidRpc.Abstractions;
+using SolidRpc.OpenApi.Model.CodeDoc;
+using SolidRpc.OpenApi.Model.CodeDoc.Impl;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 using System.Xml;
 
+[assembly: SolidRpcServiceAttribute(typeof(ICodeDocRepository), typeof(CodeDocRepository), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
 {
     /// <summary>

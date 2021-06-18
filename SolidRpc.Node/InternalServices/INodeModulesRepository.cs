@@ -1,4 +1,5 @@
-﻿using SolidRpc.Node.Types;
+﻿using SolidRpc.Node.Services;
+using SolidRpc.Node.Types;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -23,5 +24,12 @@ namespace SolidRpc.Node.InternalServices
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<string> GetNodeModulePathAsync(Guid moduleId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Returns the module resolver for supplie module id.
+        /// </summary>
+        /// <param name="moduleId"></param>
+        /// <returns></returns>
+        Task<INodeModuleResolver> GetNodeModuleResolverAsync(Guid moduleId, CancellationToken cancellationToken = default);
     }
 }
