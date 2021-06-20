@@ -12,7 +12,16 @@ namespace SolidRpc.Tests.Swagger.CodeGen.TwoOpsOneMeth.Services {
         /// </summary>
         /// <param name="p"></param>
         /// <param name="cancellationToken"></param>
-        Task<int> TwoOpsOneMeth(
+        Task<int> TwoOpsOneMethGet(
+            int p,
+            CancellationToken cancellationToken = default(CancellationToken));
+    
+        /// <summary>
+        /// This is the post version
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="cancellationToken"></param>
+        Task<int> TwoOpsOneMethPost(
             int p,
             CancellationToken cancellationToken = default(CancellationToken));
     
