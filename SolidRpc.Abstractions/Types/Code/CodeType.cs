@@ -1,9 +1,9 @@
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-using SolidRpc.NpmGenerator.Types;
-namespace SolidRpc.NpmGenerator.Types {
+namespace SolidRpc.Abstractions.Types.Code
+{
     /// <summary>
-    /// 
+    /// Represents a type
     /// </summary>
     public class CodeType {
         /// <summary>
@@ -17,7 +17,13 @@ namespace SolidRpc.NpmGenerator.Types {
         /// </summary>
         [DataMember(Name="name")]
         public string Name { get; set; }
-    
+
+        /// <summary>
+        /// The type that this type extends
+        /// </summary>
+        [DataMember(Name = "extends")]
+        public IEnumerable<string> Extends { get; set; }
+
         /// <summary>
         /// The method arguments
         /// </summary>

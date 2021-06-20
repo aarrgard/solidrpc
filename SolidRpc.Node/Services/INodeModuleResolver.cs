@@ -20,6 +20,12 @@ namespace SolidRpc.Node.Services
         /// Returns the node modules
         /// </summary>
         /// <returns></returns>
-        Task ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default);
+        Task ExplodeNodeModulesAsync(DirectoryInfo moduleDir, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Sets up the work folder
+        /// </summary>
+        /// <returns></returns>
+        Task SetupWorkDirAsync(string nodeModulesDir, string workDir, CancellationToken cancellationToken = default);
     }
 }

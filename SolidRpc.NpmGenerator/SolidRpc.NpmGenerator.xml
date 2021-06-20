@@ -4,72 +4,23 @@
         <name>SolidRpc.NpmGenerator</name>
     </assembly>
     <members>
-        <member name="T:SolidRpc.NpmGenerator.InternalServices.CodeNamespaceGenerator">
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>
-            Creates code namespaces from the reggistered bindings.
+            Extension methods or the service collections
             </summary>
         </member>
-        <member name="M:SolidRpc.NpmGenerator.InternalServices.CodeNamespaceGenerator.#ctor(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.OpenApi.Model.CodeDoc.ICodeDocRepository)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcNpmGenerator(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
-            Creates an instance
+            Adds the npm generator.
             </summary>
-            <param name="methodBinderStore"></param>
-            <param name="codeDocRepository"></param>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.InternalServices.CodeNamespaceGenerator.CreateCodeNamespace(System.String)">
-            <summary>
-            Creates code for an assembly
-            </summary>
-            <param name="assemblyName"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.InternalServices.ICodeNamespaceGenerator">
-            <summary>
-            instance responsible for generating code structures
-            </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.InternalServices.ICodeNamespaceGenerator.CreateCodeNamespace(System.String)">
-            <summary>
-            Creates a code namespace for supplied assembly name
-            </summary>
-            <param name="assemblyName"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.InternalServices.ITypescriptGenerator">
-            <summary>
-            instance responsible for generating code structures
-            </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.InternalServices.ITypescriptGenerator.CreateTypesTs(SolidRpc.NpmGenerator.Types.CodeNamespace)">
-            <summary>
-            Creates a types.ts file from supplied 
-            </summary>
-            <param name="codeNamespace"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.InternalServices.TypeScriptGenerator">
-            <summary>
-            Creates typescript code from supplied code namespace.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.InternalServices.TypeScriptGenerator.CreateTypesTs(SolidRpc.NpmGenerator.Types.CodeNamespace)">
-            <summary>
-            Creates a types.ts file
-            </summary>
-            <param name="rootNamespace"></param>
+            <param name="services"></param>
+            <param name="configurator"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.NpmGenerator.Services.INpmGenerator">
             <summary>
             The npm generator
             </summary>
-        </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.INpmGenerator.CreateCodeNamespace(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Creates a representation of the code namespace of supplied assembly
-            </summary>
-            <param name="assemblyName">The name of the assembly to create the namespace stuff for.</param>
-            <param name="cancellationToken"></param>
         </member>
         <member name="M:SolidRpc.NpmGenerator.Services.INpmGenerator.CreateTypesTs(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -105,7 +56,7 @@
             The npm generator implementation.
             </summary>
         </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.NpmGenerator.Services.NpmGenerator},System.Net.Http.IHttpClientFactory,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.NpmGenerator.InternalServices.ICodeNamespaceGenerator,SolidRpc.NpmGenerator.InternalServices.ITypescriptGenerator,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.NpmGenerator.Services.INpmGenerator},System.IServiceProvider)">
+        <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.NpmGenerator.Services.NpmGenerator},System.Net.Http.IHttpClientFactory,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator,SolidRpc.Abstractions.Services.Code.ITypescriptGenerator,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.NpmGenerator.Services.INpmGenerator},System.IServiceProvider)">
             <summary>
             Constructs a new instance
             </summary>
@@ -149,14 +100,6 @@
             <param name="cachedModuleDir"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.CreateCodeNamespace(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Creates a code representation for supplied assembly
-            </summary>
-            <param name="assemblyName"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
         <member name="M:SolidRpc.NpmGenerator.Services.NpmGenerator.CreateTypesTs(System.String,System.Threading.CancellationToken)">
             <summary>
             Creates the types.ts file for supplied assembly
@@ -164,171 +107,6 @@
             <param name="assemblyName"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.CodeInterface">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeInterface.Description">
-            <summary>
-            The description of this interface
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeInterface.Name">
-            <summary>
-            The name of this interface
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeInterface.Methods">
-            <summary>
-            The methods in the interface
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.CodeMethod">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.Description">
-            <summary>
-            A description of the the method
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.Name">
-            <summary>
-            The name of this method
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.Arguments">
-            <summary>
-            The method arguments
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.ReturnType">
-            <summary>
-            The return type of the method(fully qualified)
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.HttpMethod">
-            <summary>
-            The http method(GET,POST,etc.)
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.HttpBaseAddress">
-            <summary>
-            The base address to this method
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethod.HttpPath">
-            <summary>
-            The http path relative to the base address
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.CodeMethodArg">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethodArg.Description">
-            <summary>
-            A description of the the argument
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethodArg.Name">
-            <summary>
-            The name of the argument
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethodArg.ArgType">
-            <summary>
-            The argument type(fully qualified)
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethodArg.Optional">
-            <summary>
-            Specifies if this argument is optional(not required)
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethodArg.HttpName">
-            <summary>
-            The name of the argument in the http protocol.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeMethodArg.HttpLocation">
-            <summary>
-            The location of the argument(&#39;path&#39;, &#39;query&#39;, &#39;header&#39;, &#39;body&#39;, &#39;body-inline&#39;)
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.CodeNamespace">
-            <summary>
-            successful operation
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeNamespace.Name">
-            <summary>
-            The name of this namespace part(not fully qualified).
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeNamespace.Namespaces">
-            <summary>
-            The namespaces within this namespace
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeNamespace.Interfaces">
-            <summary>
-            The interfaces within this namespace
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeNamespace.Types">
-            <summary>
-            The types within this namespace
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.CodeType">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeType.Description">
-            <summary>
-            A description of the the type
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeType.Name">
-            <summary>
-            The name of the type
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeType.Properties">
-            <summary>
-            The method arguments
-            </summary>
-        </member>
-        <member name="T:SolidRpc.NpmGenerator.Types.CodeTypeProperty">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeTypeProperty.Description">
-            <summary>
-            A description of the the property
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeTypeProperty.Name">
-            <summary>
-            The name of the property
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeTypeProperty.PropertyType">
-            <summary>
-            The property type(fully qualified)
-            </summary>
-        </member>
-        <member name="P:SolidRpc.NpmGenerator.Types.CodeTypeProperty.HttpName">
-            <summary>
-            The name of the property in the http protocol.
-            </summary>
         </member>
         <member name="T:SolidRpc.NpmGenerator.Types.FileContent">
             <summary>
@@ -374,19 +152,6 @@
             <summary>
             The file content(binary content not supported)
             </summary>
-        </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
-            <summary>
-            Extension methods or the service collections
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcNpmGenerator(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Adds the npm generator.
-            </summary>
-            <param name="services"></param>
-            <param name="configurator"></param>
-            <returns></returns>
         </member>
     </members>
 </doc>

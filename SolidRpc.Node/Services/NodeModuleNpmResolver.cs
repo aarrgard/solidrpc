@@ -50,6 +50,11 @@ namespace SolidRpc.Node.Services
             }
         }
 
+        public Task SetupWorkDirAsync(string nodeModulesDir, string workDir, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+
         private void CreateDirectory(DirectoryInfo directory)
         {
             if (directory.Exists) return;

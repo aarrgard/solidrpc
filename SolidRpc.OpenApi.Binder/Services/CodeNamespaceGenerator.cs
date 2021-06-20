@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.NpmGenerator.Types;
+using SolidRpc.Abstractions.Services.Code;
+using SolidRpc.Abstractions.Types.Code;
+using SolidRpc.OpenApi.Binder.Services;
 using SolidRpc.OpenApi.Model.CodeDoc;
 
-namespace SolidRpc.NpmGenerator.InternalServices
+[assembly: SolidRpcServiceAttribute(typeof(ICodeNamespaceGenerator), typeof(CodeNamespaceGenerator), SolidRpcServiceLifetime.Transient)]
+namespace SolidRpc.OpenApi.Binder.Services
 {
     /// <summary>
     /// Creates code namespaces from the reggistered bindings.
@@ -34,12 +40,12 @@ namespace SolidRpc.NpmGenerator.InternalServices
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <returns></returns>
-        public CodeNamespace CreateCodeNamespace(string assemblyName)
+        public Task<CodeNamespace> CreateCodeNamespace(string assemblyName, CancellationToken cancellationToken = default(CancellationToken))
         {
             var bindings = MethodBinderStore.MethodBinders
                 .Where(o => o.Assembly.GetName().Name == assemblyName)
                 .SelectMany(o => o.MethodBindings);
-            return CreateCodeNamespace(bindings);
+            return Task.FromResult(CreateCodeNamespace(bindings));
         }
 
         private CodeNamespace CreateCodeNamespace(IEnumerable<IMethodBinding> bindings)

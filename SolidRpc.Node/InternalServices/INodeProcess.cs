@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Node.Types;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +12,14 @@ namespace SolidRpc.Node.InternalServices
     /// </summary>
     public interface INodeProcess : IDisposable
     {
+        /// <summary>
+        /// Sets up the work dir
+        /// </summary>
+        /// <param name="inputFiles"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task SetupWorkDirAsync(IEnumerable<NodeExecutionFile> inputFiles, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Executes the supplied js script.
         /// </summary>

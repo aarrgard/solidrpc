@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidRpc.Node.Services;
+using System;
 
 namespace SolidRpc.Node.InternalServices
 {
@@ -8,17 +9,22 @@ namespace SolidRpc.Node.InternalServices
     public class NodeContext
     {
         public NodeContext(
-            Guid scope,
+            INodeModuleResolver resolver,
             string nodeExePath,
             string nodeWorkingDir,
             string nodeModulesDir)
         {
-            Scope = scope;
+            Resolver = resolver;
             NodeExePath = nodeExePath;
             NodeWorkingDir = nodeWorkingDir;
             NodeModulesDir = nodeModulesDir;
         }
-        public Guid Scope { get; }
+
+        /// <summary>
+        /// The resolver
+        /// </summary>
+        public INodeModuleResolver Resolver { get; }
+
         /// <summary>
         /// The node execution path
         /// </summary>

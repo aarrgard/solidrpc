@@ -319,6 +319,7 @@ namespace SolidRpc.OpenApi.Model.V2
             }
             switch(flow.ToLower())
             {
+                case "accesscode":
                 case "authorizationcode":
                     AddOAuth2AccessCodeAuth(authDoc, scopes);
                     break;

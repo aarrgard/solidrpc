@@ -34,7 +34,7 @@
             "security-definition1": []
           },
           {
-            "authorizationCode": [
+            "accessCode": [
               "scope1"
             ]
           }
@@ -61,7 +61,7 @@
         },
         "security": [
           {
-            "authorizationCode": [
+            "accessCode": [
               "scope2"
             ]
           },
@@ -78,9 +78,9 @@
       "name": "security-header1",
       "in": "header"
     },
-    "authorizationCode": {
+    "accessCode": {
       "type": "oauth2",
-      "flow": "authorizationCode",
+      "flow": "accessCode",
       "authorizationUrl": "http://localhost/authorize",
       "tokenUrl": "http://localhost/token",
       "scopes": {

@@ -28,5 +28,10 @@ namespace SolidRpc.Node.Types
         /// The result from the std.err.
         /// </summary>
         public string Err { get; set; }
+
+        /// <summary>
+        /// The result files
+        /// </summary>
+        public IEnumerable<NodeExecutionFile> ResultFiles { get; set; }
     }
 }

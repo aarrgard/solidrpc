@@ -47,7 +47,15 @@ namespace SolidRpc.Node.Services
         {
             using (var np = await NodeProcessFactory.CreateNodeProcessAsync(input.ModuleId, null, cancellationToken))
             {
-                return await np.ExecuteScriptAsync(input.Js, cancellationToken);
+                await np.SetupWorkDirAsync(input.InputFiles, cancellationToken);
+                if(input.Args != null)
+                {
+                    return await np.ExecuteFileAsync(input.Js, input.Args, cancellationToken);
+                }
+                else
+                {
+                    return await np.ExecuteScriptAsync(input.Js, cancellationToken);
+                }
             }
         }
 

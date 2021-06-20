@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-namespace SolidRpc.NpmGenerator.Types {
+namespace SolidRpc.Abstractions.Types.Code {
     /// <summary>
-    /// 
+    /// Represents a property in a type
     /// </summary>
     public class CodeTypeProperty {
         /// <summary>

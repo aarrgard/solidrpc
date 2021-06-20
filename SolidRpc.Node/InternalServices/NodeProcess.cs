@@ -33,7 +33,7 @@ namespace SolidRpc.Node.InternalServices
         private NodeProcessFactory NodeProcessFactory { get; }
         private NodeContext NodeContext { get; }
         internal string NodeWorkingDir => NodeContext.NodeWorkingDir;
-        internal Guid Scope => NodeContext.Scope;
+        internal Guid ModuleId => NodeContext.Resolver.ModuleId;
         internal ILogger Logger => NodeProcessFactory.Logger;
         internal ISerializerFactory SerializerFactory => NodeProcessFactory.SerializerFactory;
 
@@ -139,13 +139,7 @@ process.stdin.on('data', handleCommand);
                         {
                             Logger.LogInformation($"Node process has exited - returning result({Process.ExitCode}:{StdErr})");
                         }
-                        return new NodeExecutionOutput()
-                        {
-                            ExitCode = Process.ExitCode,
-                            Result = null,
-                            Err = StdErr.ToString(),
-                            Out = StdOut.ToString()
-                        };
+                        return await CreateOutputAsync(null);
                     }
                     await ResponseMutex.WaitAsync(cancellationToken);
                     var resp = Responses.FirstOrDefault(o => o.Id == id);
@@ -155,13 +149,7 @@ process.stdin.on('data', handleCommand);
                         {
                             Logger.LogInformation("Found response - node process is still alive");
                         }
-                        return new NodeExecutionOutput()
-                        {
-                            ExitCode = Process.HasExited ? Process.ExitCode : 0,
-                            Result = resp.Result,
-                            Err = StdErr.ToString(),
-                            Out = StdOut.ToString()
-                        };
+                        return await CreateOutputAsync(resp.Result);
                     }
                 }
             }
@@ -170,6 +158,38 @@ process.stdin.on('data', handleCommand);
                 StdErr.Clear();
                 StdOut.Clear();
             }
+        }
+
+        private async Task<NodeExecutionOutput> CreateOutputAsync(string result)
+        {
+            return new NodeExecutionOutput()
+            {
+                ExitCode = Process.HasExited ? Process.ExitCode : 0,
+                Result = result,
+                Err = StdErr.ToString(),
+                Out = StdOut.ToString(),
+                ResultFiles = GetResultFiles()
+            };
+        }
+
+        private IEnumerable<NodeExecutionFile> GetResultFiles()
+        {
+            var resultFiles = new List<NodeExecutionFile>();
+            foreach (var file in new DirectoryInfo(NodeWorkingDir).GetFiles())
+            {
+                var ms = new MemoryStream();
+                using (var fs = file.OpenRead())
+                {
+                    ms.CopyTo(ms);
+                }
+                ms.Position = 0;
+                resultFiles.Add(new NodeExecutionFile()
+                {
+                    FileName = file.Name,
+                    Content = ms
+                });
+            }
+            return resultFiles;
         }
 
         public async Task<T> ExecuteScriptAsync<T>(string js, CancellationToken cancellationToken = default)
@@ -317,7 +337,8 @@ process.stdin.on('data', handleCommand);
                 {
                     ExitCode = exitCode ?? -1,
                     Out = StdOut.ToString(),
-                    Err = StdErr.ToString()
+                    Err = StdErr.ToString(),
+                    ResultFiles = GetResultFiles()
                 };
             }
             catch (Exception e)
@@ -331,37 +352,21 @@ process.stdin.on('data', handleCommand);
             }
         }
 
-
-
-        //private NodeDebugger WaitForDebugger(Process process, StringBuilder stdErr, CancellationToken cancellationToken)
-        //{
-        //    //
-        //    // grab debug port from std.err
-        //    //
-        //    NodeDebugger debugger = null;
-        //    var re = new Regex("Debugger listening on ws://([^:]+):([\\d]+)/([0-9a-z\\-]+)");
-        //    var exited = false;
-        //    while (!exited && !cancellationToken.IsCancellationRequested)
-        //    {
-        //        var match = re.Match(stdErr.ToString());
-        //        if (match.Success)
-        //        {
-        //            debugger = new NodeDebugger(
-        //                SerializerFactory,
-        //                match.Groups[1].Value,
-        //                int.Parse(match.Groups[2].Value),
-        //                match.Groups[3].Value,
-        //                cancellationToken);
-        //            break;
-        //        }
-        //        exited = process.WaitForExit(10);
-        //    }
-
-        //    if (debugger != null)
-        //    {
-        //        debugger.Connect();
-        //    }
-        //    return debugger;
-        //}
+        public async Task SetupWorkDirAsync(IEnumerable<NodeExecutionFile> inputFiles, CancellationToken cancellationToken = default)
+        {
+            
+            await NodeContext.Resolver.SetupWorkDirAsync(NodeContext.NodeModulesDir, NodeContext.NodeWorkingDir, cancellationToken);
+            if(inputFiles != null)
+            {
+                foreach (var f in inputFiles)
+                {
+                    var path = Path.Combine(NodeWorkingDir, f.FileName);
+                    using (var fs = File.OpenWrite(path))
+                    {
+                        await f.Content.CopyToAsync(fs);
+                    }
+                }
+            }
+        }
     }
 }

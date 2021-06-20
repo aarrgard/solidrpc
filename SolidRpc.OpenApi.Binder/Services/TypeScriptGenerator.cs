@@ -1,24 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using SolidRpc.NpmGenerator.Types;
+using System.Threading;
+using System.Threading.Tasks;
+using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.Services.Code;
+using SolidRpc.Abstractions.Types.Code;
+using SolidRpc.OpenApi.Binder.Services;
 
-namespace SolidRpc.NpmGenerator.InternalServices
+[assembly: SolidRpcServiceAttribute(typeof(ITypescriptGenerator), typeof(TypeScriptGenerator), SolidRpcServiceLifetime.Transient)]
+namespace SolidRpc.OpenApi.Binder.Services
 {
     /// <summary>
     /// Creates typescript code from supplied code namespace.
     /// </summary>
     public class TypeScriptGenerator : ITypescriptGenerator
     {
+        public TypeScriptGenerator(ICodeNamespaceGenerator codeGenerator)
+        {
+            CodeGenerator = codeGenerator;
+        }
+        private ICodeNamespaceGenerator CodeGenerator { get; }
+
+        public async Task<string> CreateTypesTsForAssemblyAsync(string assemblyName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            //
+            // create static package
+            //
+            var resName = GetType().Assembly.GetManifestResourceNames().FirstOrDefault(o => o.EndsWith($".{assemblyName}.ts", StringComparison.InvariantCultureIgnoreCase));
+            if (resName != null)
+            {
+                using (var s = GetType().Assembly.GetManifestResourceStream(resName))
+                using (var sr = new StreamReader(s))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
+
+            var codeNamepace = await CodeGenerator.CreateCodeNamespace(assemblyName, cancellationToken);
+            return await CreateTypesTsForCodeNamespaceAsync(codeNamepace, cancellationToken);
+        }
+        
         /// <summary>
         /// Creates a types.ts file
         /// </summary>
         /// <param name="rootNamespace"></param>
         /// <returns></returns>
-        public string CreateTypesTs(CodeNamespace rootNamespace)
+        public Task<string> CreateTypesTsForCodeNamespaceAsync(CodeNamespace codeNamespace, CancellationToken cancellationToken = default(CancellationToken))
         {
-            rootNamespace = FindRootNamespace(rootNamespace);
+            codeNamespace = FindRootNamespace(codeNamespace);
             var sb = new StringBuilder();
             sb.AppendLine("import { default as CancellationToken } from 'cancellationtoken';");
             sb.AppendLine("import { Observable, Subject } from 'rxjs';");
@@ -26,8 +58,8 @@ namespace SolidRpc.NpmGenerator.InternalServices
             sb.AppendLine("import { SolidRpc } from 'solidrpc';");
 
 
-            CreateTypesTs(rootNamespace, sb, "", rootNamespace);
-            return sb.ToString();
+            CreateTypesTs(codeNamespace, sb, "", codeNamespace);
+            return Task.FromResult(sb.ToString());
         }
 
         private CodeNamespace FindRootNamespace(CodeNamespace codeNamespace)
@@ -445,6 +477,11 @@ namespace SolidRpc.NpmGenerator.InternalServices
                 return null;
             }
             return FindType(subCns, type);
+        }
+
+        public Task<string> CreateCommonTs(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
         }
     }
 }

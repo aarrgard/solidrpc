@@ -12,6 +12,7 @@ using System.Threading;
 using SolidRpc.Node.Services;
 using System;
 using SolidRpc.Node.Types;
+using SolidRpc.Abstractions.Services.Code;
 
 namespace SolidRpc.Tests.NpmGenerator
 {
@@ -87,73 +88,6 @@ namespace SolidRpc.Tests.NpmGenerator
             //let x=5;
             //");
         }
-
-        /// <summary>
-        /// Tests the type store
-        /// </summary>
-        [Test]
-        public async Task TestCreateCodeNamespace()
-        {
-            var sc = new ServiceCollection();
-            sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
-            sc.AddLogging(ConfigureLogging);
-            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcNpmGenerator();
-
-            var sp = sc.BuildServiceProvider();
-            var npmGenerator = sp.GetRequiredService<INpmGenerator>();
-
-            var codeNamespace = await npmGenerator.CreateCodeNamespace(typeof(INpmGenerator).Assembly.GetName().Name);
-            var iNpmGenerator = codeNamespace
-                .Namespaces.Single(o => o.Name == "SolidRpc")
-                .Namespaces.Single(o => o.Name == "NpmGenerator")
-                .Namespaces.Single(o => o.Name == "Services")
-                .Interfaces.Single(o => o.Name == "INpmGenerator");
-            Assert.IsNotNull(iNpmGenerator);
-
-            var mCreateCodeNamespace = iNpmGenerator.Methods.Single(o => o.Name == nameof(INpmGenerator.CreateCodeNamespace));
-            Assert.AreEqual("assemblyName", mCreateCodeNamespace.Arguments.First().Name);
-            Assert.AreEqual(new string[] { "string" }, mCreateCodeNamespace.Arguments.First().ArgType);
-            Assert.AreEqual(new string[] { "SolidRpc", "NpmGenerator", "Types", "CodeNamespace" }, mCreateCodeNamespace.ReturnType);
-        }
-
-        /// <summary>
-        /// Tests the type store
-        /// </summary>
-        [Test]
-        public async Task TestCreateTypescript()
-        {
-            var sc = new ServiceCollection();
-            sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
-            sc.AddLogging(ConfigureLogging);
-            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcBindings(typeof(ISolidRpcSecurity), null);
-            sc.AddSolidRpcNpmGenerator();
-            sc.AddSolidRpcOAuth2Local("http://localhost", _ => { });
-            sc.AddSolidRpcSecurityBackend();
-            sc.AddSolidRpcSecurityBackendMicrosoft((o, opts) =>
-            {
-            });
-            sc.AddSolidRpcSecurityBackendGoogle((o, opts) =>
-            {
-            });
-            sc.AddSolidRpcSecurityBackendFacebook((o, opts) =>
-            {
-            });
-
-            var sp = sc.BuildServiceProvider();
-            var npmGenerator = sp.GetRequiredService<INpmGenerator>();
-
-            var ts = await npmGenerator.CreateTypesTs(typeof(ISolidRpcSecurity).Assembly.GetName().Name);
-            //using (var fs = new FileInfo(@"C:\Development\github\solidrpc\SolidRpc.Tests\NpmGenerator\src\types.ts").CreateText())
-            //{
-            //    fs.Write(ts);
-            //}
-            var tsTemplate = GetManifestResourceAsString("TestCreateTypescript.ts");
-
-            Assert.AreEqual(tsTemplate, ts);
-        }
-
 
         /// <summary>
         /// Tests the type store

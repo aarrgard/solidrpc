@@ -2075,6 +2075,40 @@
             <param name="timeZone"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator">
+            <summary>
+            instance responsible for generating code structures
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator.CreateCodeNamespace(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Creates a code namespace for supplied assembly name
+            </summary>
+            <param name="assemblyName"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.Code.ITypescriptGenerator">
+            <summary>
+            instance responsible for generating code structures
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.Code.ITypescriptGenerator.CreateTypesTsForAssemblyAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Creates a types.ts file from supplied assembly name
+            </summary>
+            <param name="assemblyName"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.Code.ITypescriptGenerator.CreateTypesTsForCodeNamespaceAsync(SolidRpc.Abstractions.Types.Code.CodeNamespace,System.Threading.CancellationToken)">
+            <summary>
+            Creates a types.ts file from supplied code namespace
+            </summary>
+            <param name="codeNamespace"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcApplication">
             <summary>
             Implements some basic features of the application
@@ -2460,6 +2494,176 @@
         <member name="P:SolidRpc.Abstractions.SolidRpcServiceAttribute.ServiceInstances">
             <summary>
             The service lifetime
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.CodeInterface">
+            <summary>
+            Represents an interface
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeInterface.Description">
+            <summary>
+            The description of this interface
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeInterface.Name">
+            <summary>
+            The name of this interface
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeInterface.Methods">
+            <summary>
+            The methods in the interface
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.CodeMethod">
+            <summary>
+            Represents a method
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.Description">
+            <summary>
+            A description of the the method
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.Name">
+            <summary>
+            The name of this method
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.Arguments">
+            <summary>
+            The method arguments
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.ReturnType">
+            <summary>
+            The return type of the method(fully qualified)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.HttpMethod">
+            <summary>
+            The http method(GET,POST,etc.)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.HttpBaseAddress">
+            <summary>
+            The base address to this method
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethod.HttpPath">
+            <summary>
+            The http path relative to the base address
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.CodeMethodArg">
+            <summary>
+            Represents a method argument
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethodArg.Description">
+            <summary>
+            A description of the the argument
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethodArg.Name">
+            <summary>
+            The name of the argument
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethodArg.ArgType">
+            <summary>
+            The argument type(fully qualified)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethodArg.Optional">
+            <summary>
+            Specifies if this argument is optional(not required)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethodArg.HttpName">
+            <summary>
+            The name of the argument in the http protocol.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeMethodArg.HttpLocation">
+            <summary>
+            The location of the argument(&#39;path&#39;, &#39;query&#39;, &#39;header&#39;, &#39;body&#39;, &#39;body-inline&#39;)
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.CodeNamespace">
+            <summary>
+            represents a namespace
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeNamespace.Name">
+            <summary>
+            The name of this namespace part(not fully qualified).
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeNamespace.Namespaces">
+            <summary>
+            The namespaces within this namespace
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeNamespace.Interfaces">
+            <summary>
+            The interfaces within this namespace
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeNamespace.Types">
+            <summary>
+            The types within this namespace
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.CodeType">
+            <summary>
+            Represents a type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeType.Description">
+            <summary>
+            A description of the the type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeType.Name">
+            <summary>
+            The name of the type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeType.Extends">
+            <summary>
+            The type that this type extends
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeType.Properties">
+            <summary>
+            The method arguments
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.CodeTypeProperty">
+            <summary>
+            Represents a property in a type
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeTypeProperty.Description">
+            <summary>
+            A description of the the property
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeTypeProperty.Name">
+            <summary>
+            The name of the property
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeTypeProperty.PropertyType">
+            <summary>
+            The property type(fully qualified)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.CodeTypeProperty.HttpName">
+            <summary>
+            The name of the property in the http protocol.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContent">
