@@ -2,6 +2,7 @@
 using SolidRpc.OpenApi.Model.Agnostic;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
+using SolidRpc.OpenApi.Model.V2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,17 @@ namespace SolidRpc.OpenApi.Model.Generator
                 return name;
             }
             return letter + name;
+        }
+        private static string RemoveEndingVerbPart(string token)
+        {
+            var words = token.Split('#')
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .ToList();
+            if (OperationObject.ALL_METHODS.Any(o => string.Equals(words.Last(),o, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                return string.Join("#", words.Take(words.Count() - 1));
+            }
+            return token;
         }
         private static string CreateCamelCase(string token, bool capitalizeFirstChar)
         {
@@ -140,7 +152,9 @@ namespace SolidRpc.OpenApi.Model.Generator
             };
             InterfaceNameMapper = qn => MakeSafeName(NameStartsWithLetter(CapitalizeFirstChar(qn), 'I'));
             ClassNameMapper = (s) => { return MakeSafeName(CapitalizeFirstChar(s)); };
-            MethodNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)).Split('#').First(); };
+            MethodNameMapper = (s) => { 
+                return MakeSafeName(CreateCamelCase(RemoveEndingVerbPart(s), true)); 
+            };
             ParameterNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, false)); };
             PropertyNameMapper = (s) => { return MakeSafeName(CreateCamelCase(s, true)); };
             ExceptionNameMapper = (s) => { return MakeSafeName(NameEndsWith(CreateCamelCase(s, true), "Exception")); };

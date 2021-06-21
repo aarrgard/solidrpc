@@ -1,5 +1,4 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
-using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Types.OAuth2;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,23 @@ namespace SolidRpc.OpenApi.Model.V2
     /// </summary>
     public class OperationObject : ModelBase, IOpenApiOperation
     {
+        public static readonly string METHOD_DELETE = "DELETE";
+        public static readonly string METHOD_GET = "GET";
+        public static readonly string METHOD_HEAD = "HEAD";
+        public static readonly string METHOD_PATCH = "PATCH";
+        public static readonly string METHOD_POST = "POST";
+        public static readonly string METHOD_PUT = "PUT";
+        public static readonly string METHOD_OPTIONS = "OPTIONS";
+
+        /// <summary>
+        /// All the methods/verbs
+        /// </summary>
+        public static readonly string[] ALL_METHODS = new[] {
+            METHOD_DELETE, METHOD_GET, METHOD_HEAD,
+            METHOD_PATCH, METHOD_POST, METHOD_PUT,
+            METHOD_OPTIONS
+        };
+
         /// <summary>
         /// The empty list of parameters
         /// </summary>
@@ -151,31 +167,31 @@ namespace SolidRpc.OpenApi.Model.V2
             {
                 if (pathItem.Delete == this)
                 {
-                    return "DELETE";
+                    return METHOD_DELETE;
                 }
                 else if (pathItem.Get == this)
                 {
-                    return "GET";
+                    return METHOD_GET;
                 }
                 else if (pathItem.Head == this)
                 {
-                    return "HEAD";
+                    return METHOD_HEAD;
                 }
                 else if (pathItem.Patch == this)
                 {
-                    return "PATCH";
+                    return METHOD_PATCH;
                 }
                 else if (pathItem.Post == this)
                 {
-                    return "POST";
+                    return METHOD_POST;
                 }
                 else if (pathItem.Put == this)
                 {
-                    return "PUT";
+                    return METHOD_PUT;
                 }
                 else if (pathItem.Options == this)
                 {
-                    return "OPTIONS";
+                    return METHOD_OPTIONS;
                 }
                 else
                 {

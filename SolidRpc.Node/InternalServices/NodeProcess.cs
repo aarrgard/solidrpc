@@ -180,7 +180,7 @@ process.stdin.on('data', handleCommand);
                 var ms = new MemoryStream();
                 using (var fs = file.OpenRead())
                 {
-                    ms.CopyTo(ms);
+                    fs.CopyTo(ms);
                 }
                 ms.Position = 0;
                 resultFiles.Add(new NodeExecutionFile()
@@ -360,8 +360,16 @@ process.stdin.on('data', handleCommand);
             {
                 foreach (var f in inputFiles)
                 {
-                    var path = Path.Combine(NodeWorkingDir, f.FileName);
-                    using (var fs = File.OpenWrite(path))
+                    var fi = new FileInfo(Path.Combine(NodeWorkingDir, f.FileName));
+                    if(!fi.Directory.Exists)
+                    {
+                        fi.Directory.Create();
+                    }
+                    if (fi.Exists)
+                    {
+                        fi.Delete();
+                    }
+                    using (var fs = fi.Create())
                     {
                         await f.Content.CopyToAsync(fs);
                     }

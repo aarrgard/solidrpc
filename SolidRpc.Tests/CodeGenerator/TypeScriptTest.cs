@@ -14,6 +14,7 @@ using SolidRpc.Node.Services;
 using SolidRpc.Node.Types;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -78,34 +79,47 @@ namespace SolidRpc.Tests.CodeGenerator
 
                 // now we create typescript & compile
                 var assemblyName = typeof(ITestInterface).Assembly.GetName().Name;
-                var tsg = ctx.ClientServiceProvider.GetRequiredService<ITypescriptGenerator>();
-                var ts1 = await tsg.CreateTypesTsForAssemblyAsync("SolidRpc");
-                var ts2 = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
-
-                var ns = ctx.ClientServiceProvider.GetRequiredService<INodeService>();
-                var sep = Path.DirectorySeparatorChar;
-                var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
-                {
-                    Js = $"typescript{sep}lib{sep}tsc.js",
-                    Args = new string[0],
-                    InputFiles = new[] {
-                        new NodeExecutionFile()
-                        {
-                            FileName = $"solidrpc.ts",
-                            Content = new MemoryStream(Encoding.UTF8.GetBytes(ts1))
-                        },
-                        new NodeExecutionFile()
-                        {
-                            FileName = $"{assemblyName}.ts",
-                            Content = new MemoryStream(Encoding.UTF8.GetBytes(ts2))
-                        }
-                    },
-                    ModuleId = NodeModuleRpcResolver.GuidModuleId
-                });
-
-                Assert.AreEqual(0, nodeRes.ExitCode);
+                var packages = new Dictionary<string, string>();
+                packages["solidrpc"] = await CompileTsAsync(ctx.ClientServiceProvider, packages, "SolidRpc");
+                packages[assemblyName.ToLower()] = await CompileTsAsync(ctx.ClientServiceProvider, packages, assemblyName);
            }
             
+        }
+
+        private async Task<string> CompileTsAsync(IServiceProvider sp, Dictionary<string, string> packages, string assemblyName)
+        {
+            var tsg = sp.GetRequiredService<ITypescriptGenerator>();
+            var ts = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
+
+            var inputFiles = packages.Select(o => new NodeExecutionFile()
+            {
+                FileName = $"node_modules/{o.Key}/index.js",
+                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value))
+            }).Union(new[] {
+                new NodeExecutionFile()
+                {
+                    FileName = $"ts.ts",
+                    Content = new MemoryStream(Encoding.UTF8.GetBytes(ts))
+                }
+            }).ToList();
+
+            var sep = Path.DirectorySeparatorChar;
+            var ns = sp.GetRequiredService<INodeService>();
+            var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
+            {
+                Js = $"typescript{sep}lib{sep}tsc.js",
+                Args = new string[0],
+                InputFiles = inputFiles,
+                ModuleId = NodeModuleRpcResolver.GuidModuleId
+            });
+
+            //Assert.AreEqual(0, nodeRes.ExitCode);
+
+            var resultFile = nodeRes.ResultFiles.Single(o => o.FileName == "ts.js");
+            using (var sr = new StreamReader(resultFile.Content))
+            {
+                return await sr.ReadToEndAsync();
+            }
         }
     }
 }

@@ -67,7 +67,7 @@ namespace SolidRpc.Tests.Swagger.CodeGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                if (subDir.Name == "SecurityPermissionAttribute") continue;
+                if (subDir.Name != "TwoOpsOneMeth") continue;
                 CreateCode(subDir, false);
             }
         }
