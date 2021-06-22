@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="CodeGenerator\TypeScriptTest.TestInvoke.ts" />
     <None Remove="NpmGenerator\TestCreateTypescript.ts" />
     <None Remove="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <None Remove="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
@@ -43,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="CodeGenerator\TypeScriptTest.TestInvoke.ts" />
     <EmbeddedResource Include="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
     <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />

@@ -17,6 +17,22 @@ namespace SolidRpc.Node.Services
         public const string StrModuleId = "e29485f2-9392-4d1a-b19a-9b31091c19b4";
         public static readonly Guid GuidModuleId = Guid.Parse(StrModuleId);
 
+        public static string tsconfig = $@"{{
+  ""include"": [ ""**/*.ts"" ],
+  ""exclude"": [ ""node_modules"", ""dist"" ],
+  ""compilerOptions"": {{
+    ""module"": ""commonjs"",
+    ""target"": ""es6"",
+    ""strict"": true,
+    ""esModuleInterop"": true,
+    ""baseUrl"": ""."",
+    ""paths"": {{ ""*"": [ ""node_modules/*"",""../{StrModuleId}/node_modules/*"" ] }},
+    ""typeRoots"": [ ""../{StrModuleId}/@types"" ],
+    ""lib"": [ ""es2018"",""es2017"",""es7"",""es6"",""DOM"" ],
+    ""declaration"": true
+  }}
+}}";
+
         public NodeModuleRpcResolver(INodeService nodeService)
         {
             NodeService = nodeService;
@@ -59,27 +75,12 @@ namespace SolidRpc.Node.Services
 
         public async Task SetupWorkDirAsync(string nodeModulesDir, string workDir, CancellationToken cancellationToken = default)
         {
-            var tsconfig = new FileInfo(Path.Combine(workDir, "tsconfig.json"));
-            if(!tsconfig.Exists)
+            var tsconfigFile = new FileInfo(Path.Combine(workDir, "tsconfig.json"));
+            if(!tsconfigFile.Exists)
             {
-                var nodeModulesPath = string.Join("/", nodeModulesDir.Split(Path.DirectorySeparatorChar).Reverse().Take(2).Reverse());
-                using (var w = tsconfig.CreateText())
+                using (var w = tsconfigFile.CreateText())
                 {
-                    await w.WriteAsync($@"{{
-  ""include"": [ ""**/*.ts"" ],
-  ""exclude"": [ ""node_modules"", ""dist"" ],
-  ""compilerOptions"": {{
-    ""module"": ""commonjs"",
-    ""target"": ""es6"",
-    ""strict"": true,
-    ""esModuleInterop"": true,
-    ""baseUrl"": ""."",
-    ""paths"": {{ ""*"": [ ""node_modules/*"",""../{nodeModulesPath}/*"" ] }},
-    ""typeRoots"": [ ""../{nodeModulesPath}/@types"" ],
-    ""lib"": [ ""es2018"",""es2017"",""es7"",""es6"",""DOM"" ],
-    ""declaration"": true
-  }}
-}}");
+                    await w.WriteAsync(tsconfig);
                 }
             }
 

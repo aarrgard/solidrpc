@@ -15,6 +15,7 @@ using SolidRpc.Node.Types;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using SolidRpc.Abstractions.Serialization;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -30,13 +31,25 @@ namespace SolidRpc.Tests.CodeGenerator
         }
         public interface ITestInterface
         {
-            Task<int> DoSomethingAsync(CancellationToken cancellation = default(CancellationToken));
+            Task<int> ProxyIntegerAsync(int x, CancellationToken cancellation = default(CancellationToken));
+            Task<string> ProxyStringAsync(string x, CancellationToken cancellation = default(CancellationToken));
+            Task<decimal> ProxyDecimalAsync(decimal x, CancellationToken cancellation = default(CancellationToken));
         }
         public class TestInterfaceImpl : ITestInterface
         {
-            public Task<int> DoSomethingAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task<decimal> ProxyDecimalAsync(decimal x, CancellationToken cancellation = default(CancellationToken))
             {
-                return Task.FromResult(4711);
+                return Task.FromResult(x);
+            }
+
+            public Task<int> ProxyIntegerAsync(int x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<string> ProxyStringAsync(string x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
             }
         }
 
@@ -79,8 +92,9 @@ namespace SolidRpc.Tests.CodeGenerator
             {
                 // make sure that the c# bindings work
                 var ti = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
-                var res = await ti.DoSomethingAsync();
-                Assert.AreEqual(4711, res);
+                Assert.AreEqual(4711, await ti.ProxyIntegerAsync(4711));
+                Assert.AreEqual("str", await ti.ProxyStringAsync("str"));
+                Assert.AreEqual(1.43m, await ti.ProxyDecimalAsync(1.43m));
 
                 // now we create typescript & compile
                 var assemblyName = typeof(ITestInterface).Assembly.GetName().Name;
@@ -90,10 +104,47 @@ namespace SolidRpc.Tests.CodeGenerator
 
                 //var tsg = ctx.ClientServiceProvider.GetRequiredService<ITypescriptGenerator>();
                 //var ts = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
-                //await WritePackageFile("index.ts", ts);
-                //var js = await CompileTsAsync(ctx.ClientServiceProvider, packages, ts);
+                /*
+                var ts = GetAssemblyResource($"{nameof(TestInvoke)}.ts");
+                await WritePackageFile("tsconfig.json", NodeModuleRpcResolver.tsconfig);
+                await WritePackageFile("index.ts", ts);
+                var js = await CompileTsAsync(ctx.ClientServiceProvider, packages, ts);
+                await WritePackageFile("index.js", js.Js);
+                */
+                Assert.AreEqual(4711, await RunTestScriptAsync<int>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyIntegerAsync), "4711"));
+                Assert.AreEqual("My string", await RunTestScriptAsync<string>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyStringAsync), "'My string'"));
+                Assert.AreEqual(1.43m, await RunTestScriptAsync<string>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDecimalAsync), "1.43"));
             }
 
+        }
+
+        private async Task<T> RunTestScriptAsync<T>(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string methodName, string arg)
+        {
+            var ns = sp.GetRequiredService<INodeService>();
+            var js = $@"const x = require(""solidrpc.tests""); (async function(){{
+  return await x.CodeGenerator.TestInterfaceInstance.{methodName}({arg}).toPromise();
+}})();";
+            var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
+            {
+                Js = js,
+                InputFiles = CreateInputFiles(packages),
+                ModuleId = NodeModuleRpcResolver.GuidModuleId
+            });
+
+            Assert.AreEqual(0, nodeRes.ExitCode);
+
+            sp.GetRequiredService<ISerializerFactory>().DeserializeFromString<T>(nodeRes.Result, out T res);
+            return res;
+        }
+
+        private string GetAssemblyResource(string name)
+        {
+            var a = GetType().Assembly;
+            var resourceName = a.GetManifestResourceNames().Single(o => o.EndsWith(name));
+            using(var sr = new StreamReader(a.GetManifestResourceStream(resourceName)))
+            {
+                return sr.ReadToEnd();
+            }
         }
 
         private async Task CreatePackage(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string assemblyName)
@@ -125,22 +176,13 @@ namespace SolidRpc.Tests.CodeGenerator
 
         private async Task<CompiledTs> CompileTsAsync(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string ts)
         {
-            var inputFiles = packages.Select(o => new NodeExecutionFile()
-            {
-                FileName = $"node_modules/{o.Key}/index.js",
-                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.Js))
-            }).Union(packages.Select(o => new NodeExecutionFile()
-            {
-                FileName = $"node_modules/{o.Key}/index.d.ts",
-                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.DTs))
-            })).Union(new[] {
+            var inputFiles = CreateInputFiles(packages).Union(new[] {
                 new NodeExecutionFile()
                 {
                     FileName = $"ts.ts",
                     Content = new MemoryStream(Encoding.UTF8.GetBytes(ts))
                 }
             }).ToList();
-
             var sep = Path.DirectorySeparatorChar;
             var ns = sp.GetRequiredService<INodeService>();
             var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
@@ -160,6 +202,19 @@ namespace SolidRpc.Tests.CodeGenerator
                 Js = await GetContent(nodeRes.ResultFiles, "ts.js"),
                 DTs = await GetContent(nodeRes.ResultFiles, "ts.d.ts")
             };
+        }
+
+        private IEnumerable<NodeExecutionFile> CreateInputFiles(Dictionary<string, CompiledTs> packages)
+        {
+            return packages.Select(o => new NodeExecutionFile()
+            {
+                FileName = $"node_modules/{o.Key}/index.js",
+                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.Js))
+            }).Union(packages.Select(o => new NodeExecutionFile()
+            {
+                FileName = $"node_modules/{o.Key}/index.d.ts",
+                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.DTs))
+            })).ToList();
         }
 
         private async Task<string> GetContent(IEnumerable<NodeExecutionFile> resultFiles, string fileName)

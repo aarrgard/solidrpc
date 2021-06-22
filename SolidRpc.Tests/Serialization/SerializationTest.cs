@@ -232,5 +232,17 @@ namespace SolidRpc.Tests.Serialization
 
             TestSerializeDeserialize(serFact, new MemoryStream(new byte[] { 1, 2, 3 }), str => Assert.AreEqual("\"AQID\"", str));
         }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public void TestDecimal()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            TestSerializeDeserialize(serFact, 1.43m, str => Assert.AreEqual("1.43", str));
+        }
     }
 }

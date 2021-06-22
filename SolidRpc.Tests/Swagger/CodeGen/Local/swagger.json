@@ -4,7 +4,7 @@
     "title": "My API",
     "version": "v1"
   },
-  "host": "localhost:5039",
+  "host": "localhost:5001",
   "schemes": [
     "http"
   ],

@@ -51,7 +51,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach(var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 

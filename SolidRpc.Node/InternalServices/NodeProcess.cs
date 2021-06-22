@@ -83,7 +83,7 @@ namespace SolidRpc.Node.InternalServices
                 {
                     tw.Write(@"
 let id = 'dummy';
-function solidRpcSendRespone(resp) {
+function solidRpcSendResponse(resp) {
     console.log(JSON.stringify({Id: id, Result: JSON.stringify(resp)}));
 }
 function handleCommand(chunk) {
@@ -92,10 +92,10 @@ function handleCommand(chunk) {
     var r = eval(x.Script);
     if(typeof(r) === 'object') {
        r.then(o => {
-           solidRpcSendRespone(o);
+           solidRpcSendResponse(o);
        });
     } else {
-       solidRpcSendRespone(r);
+       solidRpcSendResponse(r);
     }
 }
 process.stdin.resume();

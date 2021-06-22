@@ -213,7 +213,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                         code.Append(codeIndentation).AppendLine($"let uri = '{m.HttpBaseAddress}{m.HttpPath}';");
                         m.Arguments.Where(o => o.HttpLocation == "path").ToList().ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"uri = uri.replace('{{{o.Name}}}', encodeURI({o.Name}));");
+                            code.Append(codeIndentation).AppendLine($"uri = uri.replace('{{{o.Name}}}', encodeURI({o.Name}.toString()));");
                         });
 
                         var strQueryArgs = new StringBuilder();

@@ -172,6 +172,8 @@ namespace SolidRpc.OpenApi.Model.V2
                             return typeof(int);
                         case "int64":
                             return typeof(long);
+                        case "decimal":
+                            return typeof(decimal);
                     }
                     break;
                 case "string":

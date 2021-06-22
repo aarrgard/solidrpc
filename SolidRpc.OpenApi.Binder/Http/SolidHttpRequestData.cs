@@ -23,6 +23,7 @@ namespace SolidRpc.OpenApi.Binder.Http
     {
         private const string SystemBoolean = "System.Boolean";
         private const string SystemDouble = "System.Double";
+        private const string SystemDecimal = "System.Decimal";
         private const string SystemByte = "System.Byte";
         private const string SystemByteArray = "System.Byte[]";
         private const string SystemSingle = "System.Single";
@@ -43,7 +44,8 @@ namespace SolidRpc.OpenApi.Binder.Http
             SystemBoolean, SystemDouble, SystemByte, SystemSingle,
             SystemInt16, SystemInt32, SystemInt64, SystemGuid,
             SystemDateTime, SystemDateTimeOffset, SystemTimeSpan,
-            SystemUri, SystemString, SystemIOStream, SystemThreadingCancellationToken
+            SystemUri, SystemString, SystemIOStream, SystemThreadingCancellationToken,
+            SystemDecimal
         };
         public static readonly IEnumerable<IHttpRequestData> EmptyArray = new SolidHttpRequestData[0];
 
@@ -204,6 +206,17 @@ namespace SolidRpc.OpenApi.Binder.Http
                                 else
                                 {
                                     return nullable ? (float?)null : 0;
+                                };
+                            };
+                        case SystemDecimal:
+                            return (_) => {
+                                if (decimal.TryParse(_?.GetStringValue(), out decimal parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (decimal?)null : 0;
                                 };
                             };
                         case SystemInt16:
@@ -486,6 +499,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((double)val).ToString(CultureInfo.InvariantCulture)));
                         case SystemSingle:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((float)val).ToString(CultureInfo.InvariantCulture)));
+                        case SystemDecimal:
+                            return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((decimal)val).ToString(CultureInfo.InvariantCulture)));
                         case SystemInt16:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((short)val).ToString(CultureInfo.InvariantCulture)));
                         case SystemInt32:

@@ -198,6 +198,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "System.Guid":
                 case "System.String":
                     return new string[] { "string" };
+                case "System.Decimal":
                 case "System.Int16":
                 case "System.Int32":
                 case "System.Int64":

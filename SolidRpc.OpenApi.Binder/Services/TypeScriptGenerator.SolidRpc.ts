@@ -4,6 +4,9 @@ import { Observable, Subscriber, Subject } from 'rxjs';
 //import { stringify } from 'qs';
 
 export namespace SolidRpc {
+    // the global namespace
+    var rootNS: Namespace;
+
     /**
      * The actual transformer that is used to transform uris before invocation.
      * @param uri the uri to convert
@@ -67,12 +70,18 @@ export namespace SolidRpc {
     }
 
     function GetRootNamespace(): Namespace {
-        var rootNs = (window as any)['_solidrpc_rootns_'];
-        if (rootNs === undefined) {
-            rootNs = new Namespace(null, '');
-            (window as any)['_solidrpc_rootns_'] = rootNs;
+        if (typeof rootNS === 'undefined') {
+            if (typeof window === 'undefined') {
+                rootNS = new Namespace(null, '');
+            } else {
+                rootNS = (window as any)['_solidrpc_rootns_'];
+                if (rootNS === undefined) {
+                    rootNS = new Namespace(null, '');
+                    (window as any)['_solidrpc_rootns_'] = rootNS;
+                }
+            }
         }
-        return rootNs;
+        return rootNS;
     }
     /** The root namespace */
     export var rootNamespace = GetRootNamespace();
