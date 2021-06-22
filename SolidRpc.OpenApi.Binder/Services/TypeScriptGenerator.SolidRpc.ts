@@ -1,7 +1,7 @@
 ﻿import { default as axios, AxiosRequestConfig, CancelToken } from 'axios';
 import { default as CancellationToken } from 'cancellationtoken';
 import { Observable, Subscriber, Subject } from 'rxjs';
-import { stringify } from 'qs';
+//import { stringify } from 'qs';
 
 export namespace SolidRpc {
     /**
@@ -19,7 +19,7 @@ export namespace SolidRpc {
          * @param parent
          * @param name
          */
-        constructor(parent: Namespace, name: string) {
+        constructor(parent: Namespace | null, name: string) {
             this.parent = parent;
             this.name = name;
         }
@@ -28,7 +28,7 @@ export namespace SolidRpc {
         name: string;
 
         /** The parent namespace */
-        parent: Namespace;
+        parent: Namespace | null;
 
         /** Adds a callback that is invoked when the scope is modified*/
         addModifiedCallback(callback: { (): void }): Namespace {
@@ -91,25 +91,25 @@ export namespace SolidRpc {
          * @param cancellationToken
          * @param conv
          */
-        request<T>(method: string, uri: string, query: any, headers: any, data: any, cancellationToken: CancellationToken, conv: (status: number, body: any) => T, bcast: Subject<T>): Observable<T> {
+        request<T>(method: string, uri: string, query: any, headers: any, data: any, cancellationToken: CancellationToken | undefined, conv: (status: number, body: any) => T, bcast: Subject<T>): Observable<T> {
             return Observable.create((subscriber: Subscriber<T>) => {
                 //
                 // setup cancellation token
                 //
                 let cancelToken: CancelToken;
+                let source = axios.CancelToken.source();
                 if (cancellationToken) {
-                    let source = axios.CancelToken.source();
                     cancellationToken.onCancelled(reason => { source.cancel(reason); });
-                    cancelToken = source.token;
                 }
+                cancelToken = source.token;
 
                 //
                 // setup query string
                 //
-                let sQuery = stringify(query, { addQueryPrefix: true });
-                if (sQuery !== "?") {
-                    uri = uri + sQuery;
-                }
+                //let sQuery = stringify(query, { addQueryPrefix: true });
+                //if (sQuery !== "?") {
+                //    uri = uri + sQuery;
+                //}
 
                 //
                 // add default headers

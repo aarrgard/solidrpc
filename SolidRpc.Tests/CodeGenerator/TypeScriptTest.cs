@@ -23,6 +23,11 @@ namespace SolidRpc.Tests.CodeGenerator
     /// </summary>
     public class TypeScriptTest : WebHostTest
     {
+        public class CompiledTs
+        {
+            public string Js { get; set; }
+            public string DTs { get; set; }
+        }
         public interface ITestInterface
         {
             Task<int> DoSomethingAsync(CancellationToken cancellation = default(CancellationToken));
@@ -79,23 +84,56 @@ namespace SolidRpc.Tests.CodeGenerator
 
                 // now we create typescript & compile
                 var assemblyName = typeof(ITestInterface).Assembly.GetName().Name;
-                var packages = new Dictionary<string, string>();
-                packages["solidrpc"] = await CompileTsAsync(ctx.ClientServiceProvider, packages, "SolidRpc");
-                packages[assemblyName.ToLower()] = await CompileTsAsync(ctx.ClientServiceProvider, packages, assemblyName);
-           }
-            
+                var packages = new Dictionary<string, CompiledTs>();
+                await CreatePackage(ctx.ClientServiceProvider, packages, "SolidRpc");
+                await CreatePackage(ctx.ClientServiceProvider, packages, assemblyName);
+
+                //var tsg = ctx.ClientServiceProvider.GetRequiredService<ITypescriptGenerator>();
+                //var ts = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
+                //await WritePackageFile("index.ts", ts);
+                //var js = await CompileTsAsync(ctx.ClientServiceProvider, packages, ts);
+            }
+
         }
 
-        private async Task<string> CompileTsAsync(IServiceProvider sp, Dictionary<string, string> packages, string assemblyName)
+        private async Task CreatePackage(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string assemblyName)
         {
             var tsg = sp.GetRequiredService<ITypescriptGenerator>();
             var ts = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
+            var js = await CompileTsAsync(sp, packages, ts);
+            packages[assemblyName.ToLower()] = js;
 
+            await WriteModuleFile(assemblyName.ToLower(), "index.js", js.Js);
+            await WriteModuleFile(assemblyName.ToLower(), "index.d.ts", js.DTs);
+            await WriteModuleFile(assemblyName.ToLower(), "index.ts", ts);
+        }
+
+        private Task WriteModuleFile(string packageName, string fileName, string fileContent)
+        {
+            return WritePackageFile($"node_modules\\{packageName}\\{fileName}", fileContent);
+        }
+
+        private async Task WritePackageFile(string fileName, string fileContent)
+        {
+            var fi = new FileInfo($"c:\\tmp\\code\\{fileName}");
+            fi.Directory.Create();
+            using (var fs = fi.CreateText())
+            {
+                await fs.WriteAsync(fileContent);
+            }
+        }
+
+        private async Task<CompiledTs> CompileTsAsync(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string ts)
+        {
             var inputFiles = packages.Select(o => new NodeExecutionFile()
             {
                 FileName = $"node_modules/{o.Key}/index.js",
-                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value))
-            }).Union(new[] {
+                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.Js))
+            }).Union(packages.Select(o => new NodeExecutionFile()
+            {
+                FileName = $"node_modules/{o.Key}/index.d.ts",
+                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.DTs))
+            })).Union(new[] {
                 new NodeExecutionFile()
                 {
                     FileName = $"ts.ts",
@@ -113,13 +151,27 @@ namespace SolidRpc.Tests.CodeGenerator
                 ModuleId = NodeModuleRpcResolver.GuidModuleId
             });
 
-            //Assert.AreEqual(0, nodeRes.ExitCode);
+            if(nodeRes.ExitCode != 0)
+            {
+                throw new Exception("NodeError:" + nodeRes.Out);
+            }
+            return new CompiledTs()
+            {
+                Js = await GetContent(nodeRes.ResultFiles, "ts.js"),
+                DTs = await GetContent(nodeRes.ResultFiles, "ts.d.ts")
+            };
+        }
 
-            var resultFile = nodeRes.ResultFiles.Single(o => o.FileName == "ts.js");
+        private async Task<string> GetContent(IEnumerable<NodeExecutionFile> resultFiles, string fileName)
+        {
+
+            string jsContent;
+            var resultFile = resultFiles.Single(o => o.FileName == fileName);
             using (var sr = new StreamReader(resultFile.Content))
             {
-                return await sr.ReadToEndAsync();
+                jsContent = await sr.ReadToEndAsync();
             }
+            return jsContent;
         }
     }
 }

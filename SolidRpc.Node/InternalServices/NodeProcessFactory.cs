@@ -28,13 +28,14 @@ namespace SolidRpc.Node.InternalServices
             Logger = logger;
             NodeModulesRepository = nodeModulesRepository;
             SerializerFactory = serializerFactory;
-            NodeExePath = nodePaths.SelectMany(o => o.GetNodeExePaths()).FirstOrDefault() ?? throw new Exception("Cannot find node.exe");
+            NodeExePaths = nodePaths.SelectMany(o => o.GetNodeExePaths()).ToArray();
             AvailableProcesses = new ConcurrentDictionary<Guid, IList<NodeProcess>>();
         }
 
         internal ILogger Logger { get; }
         internal ISerializerFactory SerializerFactory { get; }
-        private string NodeExePath { get; }
+        private IEnumerable<string> NodeExePaths { get; }
+        private string NodeExePath => NodeExePaths.FirstOrDefault() ?? throw new Exception("Cannot find node.exe");
         private INodeModulesRepository NodeModulesRepository { get; }
         private ConcurrentDictionary<Guid, IList<NodeProcess>> AvailableProcesses { get; }
 

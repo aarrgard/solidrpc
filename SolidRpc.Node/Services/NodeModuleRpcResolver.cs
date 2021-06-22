@@ -26,17 +26,23 @@ namespace SolidRpc.Node.Services
 
         public async Task ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
         {
+            var explodedFile = new FileInfo(Path.Combine(directoryInfo.FullName, "exploded"));
+            if (explodedFile.Exists) return;
+
             var packageFile = new FileInfo(Path.Combine(directoryInfo.FullName, "package.json"));
             using (var tw = packageFile.CreateText())
             {
                 tw.Write(@"{
-""dependencies"": {
+ ""dependencies"": {
     ""axios"": ""^0.21.1"",
     ""cancellationtoken"": ""^2.2.0"",
     ""qs"": ""^6.10.1"",
     ""rxjs"": ""^7.1.0"",
     ""typescript"": ""^4.3.4""
-  }
+ },
+ ""devDependencies"": {
+    ""@types/qs"": ""^6.9.6""
+ }
 }");
             }
             var sep = Path.DirectorySeparatorChar;
@@ -44,6 +50,10 @@ namespace SolidRpc.Node.Services
             if(res.ExitCode != 0)
             {
                 throw new Exception("Cannot explode module!");
+            }
+            using (var fs = explodedFile.CreateText())
+            {
+
             }
         }
 
@@ -59,12 +69,15 @@ namespace SolidRpc.Node.Services
   ""include"": [ ""**/*.ts"" ],
   ""exclude"": [ ""node_modules"", ""dist"" ],
   ""compilerOptions"": {{
+    ""module"": ""commonjs"",
+    ""target"": ""es6"",
+    ""strict"": true,
+    ""esModuleInterop"": true,
     ""baseUrl"": ""."",
-    ""paths"": {{
-      ""*"": [ ""../{nodeModulesPath}/*"" ],
-      ""solidrpc"": [ ""solidrpc.js"" ]
-    }},
-    ""lib"": [ ""es2018"", ""DOM"" ]
+    ""paths"": {{ ""*"": [ ""node_modules/*"",""../{nodeModulesPath}/*"" ] }},
+    ""typeRoots"": [ ""../{nodeModulesPath}/@types"" ],
+    ""lib"": [ ""es2018"",""es2017"",""es7"",""es6"",""DOM"" ],
+    ""declaration"": true
   }}
 }}");
                 }

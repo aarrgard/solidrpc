@@ -12,8 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="InternalServices\**" />
     <Compile Remove="node_modules\**" />
+    <EmbeddedResource Remove="InternalServices\**" />
     <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="InternalServices\**" />
     <None Remove="node_modules\**" />
   </ItemGroup>
 
@@ -38,10 +41,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="InternalServices\" />
   </ItemGroup>
 
 
