@@ -188,7 +188,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                             };
                         case SystemDouble:
                             return (_) => {
-                                if (double.TryParse(_?.GetStringValue(), out double parsed))
+                                if (double.TryParse(_?.GetStringValue(), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out double parsed))
                                 {
                                     return parsed;
                                 }
@@ -199,7 +199,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                             };
                         case SystemSingle:
                             return (_) => {
-                                if (float.TryParse(_?.GetStringValue(), out float parsed))
+                                if (float.TryParse(_?.GetStringValue(), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out float parsed))
                                 {
                                     return parsed;
                                 }
@@ -210,7 +210,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                             };
                         case SystemDecimal:
                             return (_) => {
-                                if (decimal.TryParse(_?.GetStringValue(), out decimal parsed))
+                                if (decimal.TryParse(_?.GetStringValue(), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out decimal parsed))
                                 {
                                     return parsed;
                                 }

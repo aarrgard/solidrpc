@@ -508,6 +508,56 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         /// Tests invoking the generated proxy.
         /// </summary>
         [Test]
+        public Task TestComplexAndSimpleArgs()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestComplexAndSimpleArgs).Substring(4));
+
+                var moq = new Mock<ComplexAndSimpleArgs.Services.IComplexAndSimpleArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<ComplexAndSimpleArgs.Services.IComplexAndSimpleArgs>();
+
+                // Guid
+                var g = Guid.NewGuid();
+                moq.Setup(o => o.GetGuid(
+                    It.Is<Guid>(a => CompareStructs(g, a))
+                    )).Returns(g);
+                var gres = proxy.GetGuid(g);
+                CompareStructs(g, gres);
+
+                // decimal
+                var d = 10.3m;
+                moq.Setup(o => o.GetDecimal(
+                    It.Is<Decimal>(a => CompareStructs(d, a))
+                    )).Returns(d);
+                var dres = proxy.GetDecimal(d);
+                CompareStructs(d, dres);
+
+                // integer
+                var i = 11;
+                moq.Setup(o => o.GetInteger(
+                    It.Is<int>(a => CompareStructs(i, a))
+                    )).Returns(i);
+                var ires = proxy.GetInteger(i);
+                CompareStructs(i, ires);
+
+                // url
+                var uri = new Uri("wss://test.ws/testing");
+                moq.Setup(o => o.GetUri(
+                    It.Is<Uri>(a => CompareStructs(uri, a))
+                    )).Returns(uri);
+                var urires = proxy.GetUri(uri);
+                CompareStructs(uri, urires);
+            });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
         public Task TestOperatorOverrides()
         {
             return RunTestInContext(async ctx =>
