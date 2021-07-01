@@ -210,7 +210,7 @@ namespace SolidRpc.Tests.Serialization
         }
 
         /// <summary>
-        /// Tests the type store
+        /// Tests the complex type
         /// </summary>
         [Test]
         public void TestComplexType()
@@ -234,7 +234,7 @@ namespace SolidRpc.Tests.Serialization
         }
 
         /// <summary>
-        /// Tests the type store
+        /// Tests the decimal type
         /// </summary>
         [Test]
         public void TestDecimal()
@@ -243,6 +243,18 @@ namespace SolidRpc.Tests.Serialization
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
             TestSerializeDeserialize(serFact, 1.43m, str => Assert.AreEqual("1.43", str));
+        }
+
+        /// <summary>
+        /// Tests the uri type
+        /// </summary>
+        [Test]
+        public void TestUri()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            TestSerializeDeserialize(serFact, new Uri("ws://test.ws/ws"), str => Assert.AreEqual("\"ws://test.ws/ws\"", str));
         }
     }
 }

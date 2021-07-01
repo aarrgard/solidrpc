@@ -1,11 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.NpmGenerator.Services;
-using SolidProxy.GeneratorCastle;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
-using SolidRpc.Security.Services;
 using SolidRpc.Abstractions.Services.Code;
 using System;
 using System.Threading;
@@ -16,6 +12,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using SolidRpc.Abstractions.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -29,15 +26,74 @@ namespace SolidRpc.Tests.CodeGenerator
             public string Js { get; set; }
             public string DTs { get; set; }
         }
+
+        public class ComplexType
+        {
+            [DataMember(Name = "int")]
+            public int Integer { get; set; }
+
+            [DataMember(Name = "str")]
+            public string String { get; set; }
+        }
+
         public interface ITestInterface
         {
+            Task<bool> ProxyBooleanAsync(bool x, CancellationToken cancellation = default(CancellationToken));
+            Task<byte> ProxyByteAsync(byte x, CancellationToken cancellation = default(CancellationToken));
+            Task<short> ProxyShortAsync(short x, CancellationToken cancellation = default(CancellationToken));
             Task<int> ProxyIntegerAsync(int x, CancellationToken cancellation = default(CancellationToken));
             Task<string> ProxyStringAsync(string x, CancellationToken cancellation = default(CancellationToken));
             Task<decimal> ProxyDecimalAsync(decimal x, CancellationToken cancellation = default(CancellationToken));
+            Task<float> ProxyFloatAsync(float x, CancellationToken cancellation = default(CancellationToken));
+            Task<double> ProxyDoubleAsync(double x, CancellationToken cancellation = default(CancellationToken));
+            Task<Guid> ProxyGuidAsync(Guid x, CancellationToken cancellation = default(CancellationToken));
+            Task<Uri> ProxyUriAsync(Uri x, CancellationToken cancellation = default(CancellationToken));
+            Task<ComplexType> ProxyComplexTypeAsync(ComplexType x, CancellationToken cancellation = default(CancellationToken));
+
+            Task<bool?> ProxyOBooleanAsync(bool? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<byte?> ProxyOByteAsync(byte? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<short?> ProxyOShortAsync(short? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<int?> ProxyOIntegerAsync(int? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<string> ProxyOStringAsync(string x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<decimal?> ProxyODecimalAsync(decimal? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<float?> ProxyOFloatAsync(float? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<double?> ProxyODoubleAsync(double? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<Guid?> ProxyOGuidAsync(Guid? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<Uri> ProxyOUriAsync(Uri x = null, CancellationToken cancellation = default(CancellationToken));
         }
         public class TestInterfaceImpl : ITestInterface
         {
+            public Task<bool> ProxyBooleanAsync(bool x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<byte> ProxyByteAsync(byte x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<ComplexType> ProxyComplexTypeAsync(ComplexType x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
             public Task<decimal> ProxyDecimalAsync(decimal x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<double> ProxyDoubleAsync(double x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<float> ProxyFloatAsync(float x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<Guid> ProxyGuidAsync(Guid x, CancellationToken cancellation = default(CancellationToken))
             {
                 return Task.FromResult(x);
             }
@@ -47,7 +103,67 @@ namespace SolidRpc.Tests.CodeGenerator
                 return Task.FromResult(x);
             }
 
+            public Task<bool?> ProxyOBooleanAsync(bool? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<byte?> ProxyOByteAsync(byte? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<decimal?> ProxyODecimalAsync(decimal? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<double?> ProxyODoubleAsync(double? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<float?> ProxyOFloatAsync(float? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<Guid?> ProxyOGuidAsync(Guid? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<int?> ProxyOIntegerAsync(int? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<short?> ProxyOShortAsync(short? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<string> ProxyOStringAsync(string x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<Uri> ProxyOUriAsync(Uri x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<short> ProxyShortAsync(short x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
             public Task<string> ProxyStringAsync(string x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<Uri> ProxyUriAsync(Uri x, CancellationToken cancellation = default(CancellationToken))
             {
                 return Task.FromResult(x);
             }
@@ -111,18 +227,54 @@ namespace SolidRpc.Tests.CodeGenerator
                 var js = await CompileTsAsync(ctx.ClientServiceProvider, packages, ts);
                 await WritePackageFile("index.js", js.Js);
                 */
-                Assert.AreEqual(4711, await RunTestScriptAsync<int>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyIntegerAsync), "4711"));
-                Assert.AreEqual("My string", await RunTestScriptAsync<string>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyStringAsync), "'My string'"));
-                Assert.AreEqual(1.43m, await RunTestScriptAsync<string>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDecimalAsync), "1.43"));
+                var guid = Guid.NewGuid();
+                var uri = new Uri("ws://test.ws/ws");
+                var ct = new ComplexType() { String = "test string", Integer = 123 };
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().SerializeToString(out string strCt, ct);
+
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)true, "true");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)false, "false");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyByteAsync), (byte)17, "17");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyShortAsync), (short)11, "11");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyIntegerAsync), (int)4711, "4711");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyStringAsync), (string)"My string", "\"My string\"");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDecimalAsync), (decimal)1.43m, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyFloatAsync), (float)1.43f, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDoubleAsync), (double)1.43d, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyGuidAsync), guid, $"\"{guid}\"");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyUriAsync), uri, $"\"{uri}\"");
+
+                await RunTestScriptNoArgConvAsync<ComplexType>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyComplexTypeAsync), $"new x.TypeScriptTest.ComplexType({strCt})", "{\"Integer\":123,\"String\":\"test string\"}");
+
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)true, "true");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)false, "false");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOByteAsync), (byte)17, "17");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOShortAsync), (short)11, "11");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOIntegerAsync), (int)4711, "4711");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOStringAsync), (string)"My string", "\"My string\"");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), (decimal)1.43m, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOFloatAsync), (float)1.43f, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODoubleAsync), (double)1.43d, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOGuidAsync), guid, $"\"{guid}\"");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOUriAsync), uri, $"\"{uri}\"");
             }
 
         }
 
-        private async Task<T> RunTestScriptAsync<T>(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string methodName, string arg)
+        private async Task RunTestScriptAsync<T>(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string methodName, T input, string jsonText)
         {
+            var sf = sp.GetRequiredService<ISerializerFactory>();
+            sf.SerializeToString(out string jsInput, input);
+            var res = await RunTestScriptNoArgConvAsync<T>(sp, packages, methodName, jsInput, jsonText);
+            Assert.AreEqual(input, res);
+        }
+
+        private async Task<T> RunTestScriptNoArgConvAsync<T>(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string methodName, string jsInput, string jsonText)
+        {
+
             var ns = sp.GetRequiredService<INodeService>();
             var js = $@"const x = require(""solidrpc.tests""); (async function(){{
-  return await x.CodeGenerator.TestInterfaceInstance.{methodName}({arg}).toPromise();
+  return await x.TypeScriptTest.TestInterfaceInstance.{methodName}({jsInput}).toPromise();
 }})();";
             var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
             {
@@ -131,9 +283,14 @@ namespace SolidRpc.Tests.CodeGenerator
                 ModuleId = NodeModuleRpcResolver.GuidModuleId
             });
 
-            Assert.AreEqual(0, nodeRes.ExitCode);
+            if(nodeRes.ExitCode != 0)
+            {
+                throw new Exception(nodeRes.Err);
+            }
+            Assert.AreEqual(jsonText, nodeRes.Result);
 
-            sp.GetRequiredService<ISerializerFactory>().DeserializeFromString<T>(nodeRes.Result, out T res);
+            var sf = sp.GetRequiredService<ISerializerFactory>();
+            sf.DeserializeFromString<T>(nodeRes.Result, out T res);
             return res;
         }
 

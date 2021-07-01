@@ -1,4 +1,4 @@
-﻿import { default as axios, AxiosRequestConfig, CancelToken } from 'axios';
+﻿import { default as axios, AxiosRequestConfig, CancelToken, Method } from 'axios';
 import { default as CancellationToken } from 'cancellationtoken';
 import { Observable, Subscriber, Subject } from 'rxjs';
 //import { stringify } from 'qs';
@@ -91,6 +91,27 @@ export namespace SolidRpc {
 
     export class RpcServiceImpl {
         /**
+         * Encodes the supplied uri value
+         * @param input the value to encode
+         */
+        enocodeUriValue(input: string): string {
+            input = encodeURI(input);
+            input = input.replace(/\//g, '%2F');
+            return input;
+        }
+
+        /**
+         * Encodes the supplied uri value
+         * @param input the value to encode
+         */
+        toJson(input: any): string | null {
+            if (input && input.toJson) {
+                return input.toJson();
+            }
+            return null;
+        }
+
+        /**
          * Performs the underlying request
          * @param method
          * @param uri
@@ -115,10 +136,14 @@ export namespace SolidRpc {
                 //
                 // setup query string
                 //
-                //let sQuery = stringify(query, { addQueryPrefix: true });
-                //if (sQuery !== "?") {
-                //    uri = uri + sQuery;
-                //}
+                let sQuery = '';
+                for (const property in query) {
+                    sQuery += `&${property}=${this.enocodeUriValue(query[property])}`
+                }
+
+                if (sQuery.length > 0) {
+                    uri = uri + '?' + sQuery.substr(1)
+                }
 
                 //
                 // add default headers
@@ -128,11 +153,25 @@ export namespace SolidRpc {
                     headers[h] = defaultHeaders[h];
                 }
 
+                let axiosMethod: Method | undefined = undefined;
+                switch (method) {
+                    case 'get': axiosMethod = 'get'; break; 
+                    case 'delete': axiosMethod = 'delete'; break; 
+                    case 'head': axiosMethod = 'head'; break; 
+                    case 'options': axiosMethod = 'options'; break; 
+                    case 'post': axiosMethod = 'post'; break; 
+                    case 'put': axiosMethod = 'put'; break; 
+                    case 'patch': axiosMethod = 'patch'; break; 
+                    case 'purge': axiosMethod = 'purge'; break; 
+                    case 'link': axiosMethod = 'link'; break; 
+                    case 'unlink': axiosMethod = 'unlink'; break; 
+                }
+
                 //
                 // send request
                 //
                 let requestConfig: AxiosRequestConfig = {
-                    method: 'get',
+                    method: axiosMethod,
                     url: uri,
                     headers: headers,
                     data: data,

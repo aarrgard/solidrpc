@@ -213,7 +213,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                         code.Append(codeIndentation).AppendLine($"let uri = '{m.HttpBaseAddress}{m.HttpPath}';");
                         m.Arguments.Where(o => o.HttpLocation == "path").ToList().ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"uri = uri.replace('{{{o.Name}}}', encodeURI({o.Name}.toString()));");
+                            code.Append(codeIndentation).AppendLine($"uri = uri.replace('{{{o.Name}}}', this.enocodeUriValue({o.Name}.toString()));");
                         });
 
                         var strQueryArgs = new StringBuilder();
@@ -254,13 +254,15 @@ namespace SolidRpc.OpenApi.Binder.Services
                             strBodyArgs.Append("{");
                             bodyInlineArgs.ForEach(o =>
                             {
-                                strHeaderArgs.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
+                                strBodyArgs.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
                             });
                             strBodyArgs.Append("}");
                         }
-                        else if (bodyInlineArgs.Any())
+                        else if (bodyArgs.Any())
                         {
-                            strBodyArgs.Append(bodyInlineArgs.First().Name);
+                            strHeaderArgs.Clear();
+                            strHeaderArgs.Append("{'Content-Type': 'application/json'}");
+                            strBodyArgs.Append($"this.toJson({bodyArgs.First().Name})");
                         }
                         else
                         {
@@ -382,7 +384,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 code.Append(classIndentation).AppendLine($"}}");
 
                 // asJson
-                code.Append(classIndentation).AppendLine($"toJson(arr: string[]): string {{");
+                code.Append(classIndentation).AppendLine($"toJson(arr: string[] | null): string | null {{");
                 {
                     var asIndentation = CreateIndentation(classIndentation);
                     code.Append(asIndentation).AppendLine($"let returnString = false");
@@ -404,7 +406,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 // params
                 (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
                     CreteJsComment(code, classIndentation, o.Description);
-                    code.Append(classIndentation).AppendLine($"{o.Name}: {CreateTypescriptType(rootNamespace, o.PropertyType)};");
+                    code.Append(classIndentation).AppendLine($"{o.Name}: {CreateTypescriptType(rootNamespace, o.PropertyType)} | null = null;");
                 });
             }
             code.Append(indentation).AppendLine($"}}");
@@ -435,11 +437,15 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 return "void";
             }
-            if(type.Last() == "[]")
+            if (type.Last() == "[]")
             {
                 return CreateTypescriptType(rootNamespace, type.Reverse().Skip(1).Reverse()) + "[]";
             }
-            if(type.Count() == 1)
+            if (type.Last() == "?")
+            {
+                return CreateTypescriptType(rootNamespace, type.Reverse().Skip(1).Reverse());
+            }
+            if (type.Count() == 1)
             {
                 if(type.First() == "Uri")
                 {
@@ -479,9 +485,5 @@ namespace SolidRpc.OpenApi.Binder.Services
             return FindType(subCns, type);
         }
 
-        public Task<string> CreateCommonTs(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
     }
 }

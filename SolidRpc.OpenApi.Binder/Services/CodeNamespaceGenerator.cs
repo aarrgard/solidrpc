@@ -57,22 +57,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             return rootNs;
         }
 
-        private Type ResolveType(Type type)
-        {
-            if (type.IsTaskType(out Type taskType))
-            {
-                return ResolveType(taskType);
-            }
-            if (type.IsEnumType(out Type enumType))
-            {
-                return ResolveType(enumType);
-            }
-            return type;
-        }
 
         private bool CreateCodeType(CodeNamespace rootNamespace, Type type)
         {
-            var ns = GetNamespace(rootNamespace, type.Namespace);
+            var ns = GetNamespace(rootNamespace, type.FullName);
             var nsTypes = ns.Types ?? new CodeType[0];
             var codeType = nsTypes.FirstOrDefault(o => o.Name == type.Name);
             if (codeType != null)
@@ -102,10 +90,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             };
         }
 
-        private CodeNamespace GetNamespace(CodeNamespace rootNamespace, string nsName)
+        private CodeNamespace GetNamespace(CodeNamespace rootNamespace, string fullName)
         {
             var ns = rootNamespace;
-            nsName.Split('.').ToList().ForEach(subNsName =>
+            fullName.Split('.').SelectMany(o => o.Split('+')).Reverse().Skip(1).Reverse().ToList().ForEach(subNsName =>
             {
                 var nsNamespaces = ns.Namespaces ?? new CodeNamespace[0];
                 var subNs = nsNamespaces.SingleOrDefault(o => o.Name == subNsName);
@@ -131,7 +119,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 Methods = interfaze.GetMethods().Select(o => CreateCodeMethod(rootNamespace, o)).ToList()
             };
 
-            var ns = GetNamespace(rootNamespace, interfaze.Namespace);
+            var ns = GetNamespace(rootNamespace, interfaze.FullName);
             var nsInterfaces = ns.Interfaces ?? new CodeInterface[0];
             ns.Interfaces = nsInterfaces.Union(new[] { ci }).ToArray();
         }
@@ -172,11 +160,6 @@ namespace SolidRpc.OpenApi.Binder.Services
             return mArg;
         }
 
-        private IEnumerable<string> ResolveCodeType(CodeNamespace rootNamespace, object parameterType)
-        {
-            throw new NotImplementedException();
-        }
-
         private IEnumerable<string> ResolveCodeType(CodeNamespace rootNamespace, Type type)
         {
             if(type == null)
@@ -191,6 +174,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 return ResolveCodeType(rootNamespace, enumType).Union(new string[] { "[]" }).ToArray();
             }
+            if (type.IsNullableType(out Type nullType))
+            {
+                return ResolveCodeType(rootNamespace, nullType).Union(new string[] { "?" }).ToArray();
+            }
             switch (type.FullName)
             {
                 case "System.Boolean":
@@ -198,10 +185,13 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "System.Guid":
                 case "System.String":
                     return new string[] { "string" };
-                case "System.Decimal":
+                case "System.Byte":
                 case "System.Int16":
                 case "System.Int32":
                 case "System.Int64":
+                case "System.Double":
+                case "System.Single":
+                case "System.Decimal":
                     return new string[] { "number" };
                 case "System.IO.Stream":
                     return new string[] { "Uint8Array" };
@@ -214,7 +204,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                     {
 
                     }
-                    return type.FullName.Split('.');
+                    return type.FullName.Split('.').SelectMany(o => o.Split('+'));
             }
         }
     }

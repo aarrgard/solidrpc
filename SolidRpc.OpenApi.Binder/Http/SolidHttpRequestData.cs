@@ -219,6 +219,17 @@ namespace SolidRpc.OpenApi.Binder.Http
                                     return nullable ? (decimal?)null : 0;
                                 };
                             };
+                        case SystemByte:
+                            return (_) => {
+                                if (byte.TryParse(_?.GetStringValue(), out byte parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return nullable ? (short?)null : 0;
+                                };
+                            };
                         case SystemInt16:
                             return (_) => {
                                 if (short.TryParse(_?.GetStringValue(), out short parsed))
@@ -501,6 +512,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((float)val).ToString(CultureInfo.InvariantCulture)));
                         case SystemDecimal:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((decimal)val).ToString(CultureInfo.InvariantCulture)));
+                        case SystemByte:
+                            return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((byte)val).ToString(CultureInfo.InvariantCulture)));
                         case SystemInt16:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((short)val).ToString(CultureInfo.InvariantCulture)));
                         case SystemInt32:

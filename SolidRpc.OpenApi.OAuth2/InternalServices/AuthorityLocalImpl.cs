@@ -147,7 +147,11 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         {
             return AuthorityImpl.GetPrincipalAsync(jwt, tokenChecks, cancellationToken);
         }
-
+        /// <summary>
+        /// Returns the signing keys
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken)
         {
             return Task.FromResult(GetLocalKeys());

@@ -168,6 +168,8 @@ namespace SolidRpc.OpenApi.Model.V2
                             return typeof(byte);
                         case "float":
                             return typeof(float);
+                        case "int16":
+                            return typeof(short);
                         case "int32":
                             return typeof(int);
                         case "int64":
