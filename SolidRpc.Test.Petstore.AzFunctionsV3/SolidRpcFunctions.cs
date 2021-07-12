@@ -10,6 +10,48 @@ using System.Threading.Tasks;
 namespace SolidRpc.OpenApi.AzFunctions
 {
 
+    public class Http_SolidRpc_Abstractions_Services_Code_ICodeNamespaceGenerator_CreateCodeNamespace_arg0
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_ICodeNamespaceGenerator_CreateCodeNamespace_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForAssemblyAsync_arg0
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForAssemblyAsync_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForCodeNamespaceAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForCodeNamespaceAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetContent
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetContent")]
@@ -155,20 +197,6 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Node_Services_INodeService_ListNodeModulesAsync")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/ListNodeModulesAsync")] HttpRequestMessage req,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
-        }
-    }
-
-
-    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateCodeNamespace_arg0
-    {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateCodeNamespace_arg0")]
-        public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

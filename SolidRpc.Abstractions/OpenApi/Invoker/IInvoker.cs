@@ -1,6 +1,4 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -28,7 +26,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="methodInfo"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        Task<object> InvokeAsync(MethodInfo methodInfo, IEnumerable<object> args, InvocationOptions invocationOptions = null);
+        Task<object> InvokeAsync(MethodInfo methodInfo, IEnumerable<object> args, Func<InvocationOptions, InvocationOptions> invocationOptions = null);
     }
 
     /// <summary>
@@ -73,7 +71,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="action"></param>
         /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        Task InvokeAsync(Expression<Action<T>> action, InvocationOptions invocationOptions = null);
+        Task InvokeAsync(Expression<Action<T>> action, Func<InvocationOptions, InvocationOptions> invocationOptions = null);
 
         /// <summary>
         /// Executes a function
@@ -81,6 +79,6 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="func"></param>
         /// <param name="invocationOptions"></param>
         /// <returns></returns>
-        TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, InvocationOptions invocationOptions = null);
+        TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, Func<InvocationOptions, InvocationOptions> invocationOptions = null);
     }
 }

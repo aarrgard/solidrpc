@@ -114,7 +114,7 @@ namespace SolidRpc.Tests.Invoker
                     visitedPostCallback = true;
                     return Task.CompletedTask;
                 }); 
-                var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), httpInvocationOptions);
+                var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => httpInvocationOptions);
                 Assert.AreEqual(4711, res);
                 Assert.IsTrue(visitedPreCallback);
                 Assert.IsTrue(visitedPostCallback);

@@ -126,7 +126,7 @@ namespace SolidRpc.Tests.Invoker
                 Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
-                var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None));
+                var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => opt);
                 Assert.AreEqual(4711, res);
             }
         }

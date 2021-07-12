@@ -25,18 +25,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         MethodAddressTransformer MethodAddressTransformer { get; }
 
         /// <summary>
-        /// 
+        /// Transforms the invocation address before it is invoked
         /// </summary>
         /// <param name="methodAddressTransformer"></param>
         /// <returns></returns>
         IHttpTransport SetMethodAddressTransformer(MethodAddressTransformer methodAddressTransformer);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="methodHeadersTransformer"></param>
-        /// <returns></returns>
-        IHttpTransport SetMethodHeadersTransformer(MethodHeadersTransformer methodHeadersTransformer);
         
         /// <summary>
         /// Sets the invocation strategy

@@ -696,7 +696,7 @@
             <param name="methodInfo"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object},SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker.InvokeAsync(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Object},System.Func{SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions})">
             <summary>
             Invokes the specified method with supplied arguments.
             </summary>
@@ -741,7 +741,7 @@
             <param name="includeQueryString"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}},SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync(System.Linq.Expressions.Expression{System.Action{`0}},System.Func{SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions})">
             <summary>
             Invokes an action
             </summary>
@@ -749,7 +749,7 @@
             <param name="invocationOptions"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker`1.InvokeAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions})">
             <summary>
             Executes a function
             </summary>
@@ -1492,16 +1492,9 @@
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
             <summary>
-            
+            Transforms the invocation address before it is invoked
             </summary>
             <param name="methodAddressTransformer"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetMethodHeadersTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
-            <summary>
-            
-            </summary>
-            <param name="methodHeadersTransformer"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.SetInvocationStrategy(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
@@ -1521,13 +1514,12 @@
             Contains the settings for the http transport.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer,SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
             <summary>
             Constructs a new instance
             </summary>
             <param name="invocationStrategy"></param>
             <param name="methodAddressTransformer"></param>
-            <param name="methodHeadersTransformer"></param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.Configure(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding)">
             <summary>
@@ -1538,11 +1530,6 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.MethodAddressTransformer">
             <summary>
             The address transformer
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.MethodHeadersTransformer">
-            <summary>
-            The header transformer
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.OperationAddress">
@@ -1565,13 +1552,6 @@
             Sets the address transformer
             </summary>
             <param name="methodAddressTransformer"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.SetMethodHeadersTransformer(SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer)">
-            <summary>
-            Sets the method headers transformer
-            </summary>
-            <param name="methodHeadersTransformer"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.SetInvocationStrategy(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy)">
@@ -1806,15 +1786,6 @@
             <param name="serviceProvider"></param>
             <param name="originalUri"></param>
             <param name="methodInfo">The method to resolve the uri for(may be null)</param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Transport.MethodHeadersTransformer">
-            <summary>
-            The method used to transform headers
-            </summary>
-            <param name="serviceProvider"></param>
-            <param name="headers"></param>
-            <param name="methodInfo">The method to transform the headers for</param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">

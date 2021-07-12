@@ -119,7 +119,7 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
                 var testInterface = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
-                await testInterface.InvokeAsync(o => o.MethodWithClientKeySpecified(), InvocationOptions.Http.AddPreInvokeCallback(req => {
+                await testInterface.InvokeAsync(o => o.MethodWithClientKeySpecified(), opt => InvocationOptions.Http.AddPreInvokeCallback(req => {
                     Assert.AreEqual($"{SecurityKey.Value}", req.Headers.Single(o => o.Name == "Authorization").GetStringValue());
                     return Task.CompletedTask;
                 }));

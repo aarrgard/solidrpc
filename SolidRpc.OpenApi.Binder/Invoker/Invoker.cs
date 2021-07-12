@@ -76,13 +76,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return req.CreateUri(includeQueryString);
         }
 
-        public Task InvokeAsync(Expression<Action<TObj>> action, InvocationOptions invocationOptions)
+        public Task InvokeAsync(Expression<Action<TObj>> action, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
             var (mi, args) = GetMethodInfo(action);
             return InvokeAsync(mi, args, invocationOptions);
         }
 
-        public TResult InvokeAsync<TResult>(Expression<Func<TObj, TResult>> func, InvocationOptions invocationOptions)
+        public TResult InvokeAsync<TResult>(Expression<Func<TObj, TResult>> func, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
             var (mi, args) = GetMethodInfo(func);
             var mb = Invokers.MethodBinderStore.GetMethodBinding(mi);
@@ -107,7 +107,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             throw new Exception("expression should be a method call.");
         }
 
-        public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, InvocationOptions invocationOptions)
+        public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
             var mb = GetMethodBinding(mi);
             var target = ServiceProvider.GetRequiredService<TObj>();

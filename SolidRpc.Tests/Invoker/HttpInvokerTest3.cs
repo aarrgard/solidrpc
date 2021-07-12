@@ -179,7 +179,7 @@ namespace SolidRpc.Tests.Invoker
                 Assert.AreEqual(1, await MemoryQueueBus.DispatchAllMessagesAsync());
 
                 var frontInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterfaceFront>>();
-                await frontInvoker.InvokeAsync(o => o.DoXAsync(new ComplexType(), CancellationToken.None), InvocationOptions.Local);
+                await frontInvoker.InvokeAsync(o => o.DoXAsync(new ComplexType(), CancellationToken.None), opt => InvocationOptions.Local);
 
                 Assert.AreEqual(1, await MemoryQueueBus.DispatchAllMessagesAsync());
             }

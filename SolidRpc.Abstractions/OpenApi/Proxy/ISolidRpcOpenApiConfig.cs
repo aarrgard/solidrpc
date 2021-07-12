@@ -68,7 +68,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             }
             if(!transportFound)
             {
-                config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, null, null);
+                config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, null);
                 yield return config.HttpTransport;
             }
         }
@@ -83,7 +83,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(invocationStrategy ?? InvocationStrategy.Invoke, null, null);
+                httpTransport = new HttpTransport(invocationStrategy ?? InvocationStrategy.Invoke, null);
             }
             else if(invocationStrategy != null)
             {
@@ -101,7 +101,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(InvocationStrategy.Invoke, methodAddressTransformer, null);
+                httpTransport = new HttpTransport(InvocationStrategy.Invoke, methodAddressTransformer);
             }
             else
             {

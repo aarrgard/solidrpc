@@ -18,7 +18,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// </summary>
     public class Invokers
     {
-        private ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], InvocationOptions, object>> CachedInvokers = new ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], InvocationOptions, object>>();
+        private ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object>> CachedInvokers = new ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object>>();
         public Invokers(
             IMethodBinderStore methodBinderStore,
             IEnumerable<IHandler> handlers)
@@ -29,12 +29,12 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public IMethodBinderStore MethodBinderStore { get; }
         public IEnumerable<IHandler> Handlers { get; }
 
-        public Func<IMethodBinding, object, MethodInfo, object[], InvocationOptions, object> GetCachedInvoker<TResult>()
+        public Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object> GetCachedInvoker<TResult>()
         {
             return CachedInvokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>);
         }
 
-        public Func<IMethodBinding, object, MethodInfo, object[], InvocationOptions, object> CreateInvoker<TResult>(Type t)
+        public Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object> CreateInvoker<TResult>(Type t)
         {
             if (t.IsTaskType(out Type taskType))
             {
@@ -65,26 +65,17 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return (TResult)(await result);
         }
 
-        public virtual Task<object> InvokeMethodAsync(IMethodBinding methodBinding, object proxy, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
+        public virtual Task<object> InvokeMethodAsync(IMethodBinding methodBinding, object proxy, MethodInfo mi, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
-            var handler = GetHandler(mi, ref invocationOptions);
-            return handler.InvokeAsync(methodBinding, proxy, mi, args, invocationOptions);
-        }
-
-        private IHandler GetHandler(MethodInfo mi, ref InvocationOptions invocationOptions)
-        {
-            var transportType = invocationOptions?.TransportType;
-            if (transportType == null)
-            {
-                transportType = MethodBinderStore.GetMethodBinding(mi).Transports
+            var transportType = MethodBinderStore.GetMethodBinding(mi)?.Transports
                     .OrderBy(o => o.InvocationStrategy)
-                    .First().TransportType;
-                invocationOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
-            }
+                    .First().TransportType ?? InvocationOptions.Local.TransportType;
+            var transformedOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
+            transformedOptions = invocationOptions?.Invoke(transformedOptions) ?? transformedOptions;
 
-            var handler = Handlers.FirstOrDefault(o => o.TransportType == transportType);
+            var handler = Handlers.FirstOrDefault(o => o.TransportType == transformedOptions.TransportType);
             if (handler == null) throw new Exception($"Transport {transportType} not configured.");
-            return handler;
+            return handler.InvokeAsync(methodBinding, proxy, mi, args, transformedOptions);
         }
     }
 }

@@ -16,12 +16,10 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// </summary>
         /// <param name="invocationStrategy"></param>
         /// <param name="methodAddressTransformer"></param>
-        /// <param name="methodHeadersTransformer"></param>
-        public HttpTransport(InvocationStrategy invocationStrategy, MethodAddressTransformer methodAddressTransformer, MethodHeadersTransformer methodHeadersTransformer)
+        public HttpTransport(InvocationStrategy invocationStrategy, MethodAddressTransformer methodAddressTransformer)
             : base("Http", invocationStrategy)
         {
             MethodAddressTransformer = methodAddressTransformer;
-            MethodHeadersTransformer = methodHeadersTransformer;
         }
     
         /// <summary>
@@ -74,11 +72,6 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public MethodAddressTransformer MethodAddressTransformer { get; }
 
         /// <summary>
-        /// The header transformer
-        /// </summary>
-        public MethodHeadersTransformer MethodHeadersTransformer { get; }
-
-        /// <summary>
         /// Returns the operation address
         /// </summary>
         public override Uri OperationAddress => _operationAddress;
@@ -100,17 +93,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IHttpTransport SetMethodAddressTransformer(MethodAddressTransformer methodAddressTransformer)
         {
-            return new HttpTransport(InvocationStrategy, methodAddressTransformer, MethodHeadersTransformer);
-        }
-
-        /// <summary>
-        /// Sets the method headers transformer
-        /// </summary>
-        /// <param name="methodHeadersTransformer"></param>
-        /// <returns></returns>
-        public IHttpTransport SetMethodHeadersTransformer(MethodHeadersTransformer methodHeadersTransformer)
-        {
-            return new HttpTransport(InvocationStrategy, MethodAddressTransformer, methodHeadersTransformer);
+            return new HttpTransport(InvocationStrategy, methodAddressTransformer);
         }
 
         /// <summary>
@@ -120,7 +103,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IHttpTransport SetInvocationStrategy(InvocationStrategy invocationStrategy)
         {
-            return new HttpTransport(invocationStrategy, MethodAddressTransformer, MethodHeadersTransformer);
+            return new HttpTransport(invocationStrategy, MethodAddressTransformer);
         }
     }
 }

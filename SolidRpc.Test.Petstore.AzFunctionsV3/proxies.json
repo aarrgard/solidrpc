@@ -255,15 +255,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}"
     },
-    "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/NpmGenerator/Services/INpmGenerator/CreateCodeNamespace/{arg0}"
-    },
     "SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}": {
       "matchCondition": {
         "route": "/front/SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}",
@@ -418,6 +409,33 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync"
+    },
+    "SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync"
+    },
+    "SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}"
+    },
+    "SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}"
     },
     "front/{path}": {
       "matchCondition": {

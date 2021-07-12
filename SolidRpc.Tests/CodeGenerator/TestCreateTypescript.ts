@@ -125,7 +125,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoggedIn/{accessToken}';
-                    uri = uri.replace('{accessToken}', encodeURI(accessToken.toString()));
+                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data.toString();
@@ -149,7 +149,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoggedOut/{accessToken}';
-                    uri = uri.replace('{accessToken}', encodeURI(accessToken.toString()));
+                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data.toString();
@@ -402,7 +402,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoggedIn/{accessToken}';
-                    uri = uri.replace('{accessToken}', encodeURI(accessToken.toString()));
+                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data.toString();
@@ -426,7 +426,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoggedOut/{accessToken}';
-                    uri = uri.replace('{accessToken}', encodeURI(accessToken.toString()));
+                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data.toString();
@@ -777,7 +777,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoggedOut/{accessToken}';
-                    uri = uri.replace('{accessToken}', encodeURI(accessToken.toString()));
+                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data.toString();
@@ -907,7 +907,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<void> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/oauth2/authorize';
-                    uri = uri.replace('{tenant}', encodeURI(tenant.toString()));
+                    uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
                     return this.request<void>('get', uri, {
                         'client_id': clientId,
                         'response_type': responseType,
@@ -943,7 +943,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration';
-                    uri = uri.replace('{tenant}', encodeURI(tenant.toString()));
+                    uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
                     return this.request<Security.Types.OpenIDConnnectDiscovery>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Security.Types.OpenIDConnnectDiscovery(data);
@@ -967,7 +967,7 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Security.Types.OpenIDKeys> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys';
-                    uri = uri.replace('{tenant}', encodeURI(tenant.toString()));
+                    uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
                     return this.request<Security.Types.OpenIDKeys>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Security.Types.OpenIDKeys(data);
@@ -1481,7 +1481,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1497,11 +1497,11 @@ export namespace Security {
             /**
              * The name of the claim
              */
-            Name: string;
+            Name: string | null = null;
             /**
              * The value of the claim
              */
-            Value: string;
+            Value: string | null = null;
         }
         /**
          * success
@@ -1519,7 +1519,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1535,11 +1535,11 @@ export namespace Security {
             /**
              * 
              */
-            AccessToken: string;
+            AccessToken: string | null = null;
             /**
              * 
              */
-            TokenType: string;
+            TokenType: string | null = null;
         }
         /**
          * success
@@ -1554,7 +1554,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1569,7 +1569,7 @@ export namespace Security {
             /**
              * 
              */
-            Data: Security.Types.FacebookDebugTokenData;
+            Data: Security.Types.FacebookDebugTokenData | null = null;
         }
         /**
          * 
@@ -1608,7 +1608,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1631,39 +1631,39 @@ export namespace Security {
             /**
              * 
              */
-            AppId: number;
+            AppId: number | null = null;
             /**
              * 
              */
-            Type: string;
+            Type: string | null = null;
             /**
              * 
              */
-            Application: string;
+            Application: string | null = null;
             /**
              * 
              */
-            DataAccessExpiresAt: number;
+            DataAccessExpiresAt: number | null = null;
             /**
              * 
              */
-            Error: Security.Types.FacebookDebugTokenDataError;
+            Error: Security.Types.FacebookDebugTokenDataError | null = null;
             /**
              * 
              */
-            ExpiresAt: number;
+            ExpiresAt: number | null = null;
             /**
              * 
              */
-            IsValid: boolean;
+            IsValid: boolean | null = null;
             /**
              * 
              */
-            Scopes: string[];
+            Scopes: string[] | null = null;
             /**
              * 
              */
-            UserId: number;
+            UserId: number | null = null;
         }
         /**
          * 
@@ -1684,7 +1684,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1701,15 +1701,15 @@ export namespace Security {
             /**
              * 
              */
-            Code: number;
+            Code: number | null = null;
             /**
              * 
              */
-            Message: string;
+            Message: string | null = null;
             /**
              * 
              */
-            Subcode: number;
+            Subcode: number | null = null;
         }
         /**
          * success
@@ -1736,7 +1736,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1755,23 +1755,23 @@ export namespace Security {
             /**
              * The name of the provider
              */
-            Name: string;
+            Name: string | null = null;
             /**
              * The user status @ the provider. LoggedIn or NotLoggedIn
              */
-            Status: string;
+            Status: string | null = null;
             /**
              * The script uris
              */
-            Script: string[];
+            Script: string[] | null = null;
             /**
              * The script uris
              */
-            Meta: Security.Types.LoginProviderMeta[];
+            Meta: Security.Types.LoginProviderMeta[] | null = null;
             /**
              * The html for the login button
              */
-            ButtonHtml: string;
+            ButtonHtml: string | null = null;
         }
         /**
          * 
@@ -1789,7 +1789,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1805,11 +1805,11 @@ export namespace Security {
             /**
              * The name of the meta data
              */
-            Name: string;
+            Name: string | null = null;
             /**
              * The content of the meta data
              */
-            Content: string;
+            Content: string | null = null;
         }
         /**
          * success
@@ -1896,7 +1896,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -1935,103 +1935,103 @@ export namespace Security {
             /**
              * REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
              */
-            Issuer: string;
+            Issuer: string | null = null;
             /**
              * REQUIRED. URL of the OP's OAuth 2.0 Authorization Endpoint [OpenID.Core].
              */
-            AuthorizationEndpoint: string;
+            AuthorizationEndpoint: string | null = null;
             /**
              * URL of the OP's OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
              */
-            TokenEndpoint: string;
+            TokenEndpoint: string | null = null;
             /**
              * RECOMMENDED. URL of the OP's UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
              */
-            UserinfoEndpoint: string;
+            UserinfoEndpoint: string | null = null;
             /**
              * 
              */
-            RevocationEndpoint: string;
+            RevocationEndpoint: string | null = null;
             /**
              * OPTIONAL. URL of the authorization server's device authorization endpoint defined in Section 3.1.
              */
-            DeviceAuthorizationEndpoint: string;
+            DeviceAuthorizationEndpoint: string | null = null;
             /**
              * REQUIRED. URL of the OP's JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server's encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key's intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
              */
-            JwksUri: string;
+            JwksUri: string | null = null;
             /**
              * RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
              */
-            ScopesSupported: string[];
+            ScopesSupported: string[] | null = null;
             /**
              * OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is ["authorization_code", "implicit"]"
              */
-            GrantTypesSupported: string[];
+            GrantTypesSupported: string[] | null = null;
             /**
              * 
              */
-            ResponseModesSupported: string[];
+            ResponseModesSupported: string[] | null = null;
             /**
              * 
              */
-            SubjectTypesSupported: string[];
+            SubjectTypesSupported: string[] | null = null;
             /**
              * 
              */
-            IdTokenSigningAlgValuesSupported: string[];
+            IdTokenSigningAlgValuesSupported: string[] | null = null;
             /**
              * 
              */
-            EndSessionEndpoint: string;
+            EndSessionEndpoint: string | null = null;
             /**
              * REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
              */
-            ResponseTypesSupported: string[];
+            ResponseTypesSupported: string[] | null = null;
             /**
              * 
              */
-            ClaimsSupported: string[];
+            ClaimsSupported: string[] | null = null;
             /**
              * 
              */
-            TokenEndpointAuthMethodsSupported: string[];
+            TokenEndpointAuthMethodsSupported: string[] | null = null;
             /**
              * 
              */
-            CodeChallengeMethodsSupported: string[];
+            CodeChallengeMethodsSupported: string[] | null = null;
             /**
              * 
              */
-            RequestUriParameterSupported: boolean;
+            RequestUriParameterSupported: boolean | null = null;
             /**
              * 
              */
-            HttpLogoutSupported: boolean;
+            HttpLogoutSupported: boolean | null = null;
             /**
              * 
              */
-            FrontchannelLogoutSupported: boolean;
+            FrontchannelLogoutSupported: boolean | null = null;
             /**
              * 
              */
-            RbacUrl: string;
+            RbacUrl: string | null = null;
             /**
              * 
              */
-            MsgraphHost: string;
+            MsgraphHost: string | null = null;
             /**
              * 
              */
-            CloudGraphHostName: string;
+            CloudGraphHostName: string | null = null;
             /**
              * 
              */
-            CloudInstanceName: string;
+            CloudInstanceName: string | null = null;
             /**
              * 
              */
-            TenantRegionScope: string;
+            TenantRegionScope: string | null = null;
         }
         /**
          * 
@@ -2073,7 +2073,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -2097,43 +2097,43 @@ export namespace Security {
             /**
              * (Algorithm) Parameter
              */
-            Alg: string;
+            Alg: string | null = null;
             /**
              * (Key Type) Parameter
              */
-            Kty: string;
+            Kty: string | null = null;
             /**
              * (Public Key Use) Parameter
              */
-            Use: string;
+            Use: string | null = null;
             /**
              * (Key ID) Parameter
              */
-            Kid: string;
+            Kid: string | null = null;
             /**
              * (X.509 URL) Parameter
              */
-            X5u: string;
+            X5u: string | null = null;
             /**
              * (X.509 Certificate SHA-1 Thumbprint) Parameter
              */
-            X5t: string;
+            X5t: string | null = null;
             /**
              * (X.509 Certificate Chain) Parameter
              */
-            X5c: string[];
+            X5c: string[] | null = null;
             /**
              * 
              */
-            N: string;
+            N: string | null = null;
             /**
              * 
              */
-            E: string;
+            E: string | null = null;
             /**
              * 
              */
-            Issuer: string;
+            Issuer: string | null = null;
         }
         /**
          * success
@@ -2148,7 +2148,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -2163,7 +2163,7 @@ export namespace Security {
             /**
              * 
              */
-            Keys: Security.Types.OpenIDKey[];
+            Keys: Security.Types.OpenIDKey[] | null = null;
         }
         /**
          * success
@@ -2190,7 +2190,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -2209,23 +2209,23 @@ export namespace Security {
             /**
              * REQUIRED.  The access token issued by the authorization server.
              */
-            AccessToken: string;
+            AccessToken: string | null = null;
             /**
              * REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive.
              */
-            TokenType: string;
+            TokenType: string | null = null;
             /**
              * RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value '3600' denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value.
              */
-            ExpiresIn: string;
+            ExpiresIn: string | null = null;
             /**
              * OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6.
              */
-            RefreshToken: string;
+            RefreshToken: string | null = null;
             /**
              * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
              */
-            Scope: string;
+            Scope: string | null = null;
         }
         /**
          * success
@@ -2249,7 +2249,7 @@ export namespace Security {
                     }
                 }
             }
-            toJson(arr: string[]): string {
+            toJson(arr: string[] | null): string | null {
                 let returnString = false
                 if(arr == null) {
                     arr = [];
@@ -2267,19 +2267,19 @@ export namespace Security {
             /**
              * The content
              */
-            Content: Uint8Array;
+            Content: Uint8Array | null = null;
             /**
              * The content type
              */
-            ContentType: string;
+            ContentType: string | null = null;
             /**
              * The charset - set if content is text
              */
-            CharSet: string;
+            CharSet: string | null = null;
             /**
              * The location of the data.
              */
-            Location: string;
+            Location: string | null = null;
         }
     }
 }
