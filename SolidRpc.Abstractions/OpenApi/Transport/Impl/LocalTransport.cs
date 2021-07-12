@@ -1,5 +1,7 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
 {
@@ -9,13 +11,23 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
     public class LocalTransport : Transport, ILocalTransport
     {
         /// <summary>
+        /// The default instance
+        /// </summary>
+        public static ITransport Instance { get; } = new LocalTransport(InvocationStrategy.Invoke);
+
+        /// <summary>
         /// Represents a queue transport
         /// </summary>
         /// <param name="invocationStrategy"></param>
-        public LocalTransport(InvocationStrategy invocationStrategy)
-            : base("Local", invocationStrategy)
+        /// <param name="preInvokeCallback"></param>
+        /// <param name="postInvokeCallback"></param>
+        public LocalTransport(InvocationStrategy invocationStrategy,
+            Func<IHttpRequest, Task> preInvokeCallback = null,
+            Func<IHttpResponse, Task> postInvokeCallback = null)
+            : base("Local", invocationStrategy, preInvokeCallback, postInvokeCallback)
         {
         }
+
 
         /// <summary>
         /// Returns the operation address

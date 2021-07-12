@@ -95,8 +95,8 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         {
             TransportType = transportType;
             Priority = priority;
-            PreInvokeCallback = preInvokeCallback;
-            PostInvokeCallback = postInvokeCallback;
+            PreInvokeCallback = preInvokeCallback ?? throw new ArgumentNullException(nameof(preInvokeCallback));
+            PostInvokeCallback = postInvokeCallback ?? throw new ArgumentNullException(nameof(postInvokeCallback));
         }
 
         /// <summary>

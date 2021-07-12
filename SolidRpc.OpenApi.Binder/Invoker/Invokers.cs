@@ -2,6 +2,8 @@
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Concurrent;
@@ -67,14 +69,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public virtual Task<object> InvokeMethodAsync(IMethodBinding methodBinding, object proxy, MethodInfo mi, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
-            var transportType = MethodBinderStore.GetMethodBinding(mi)?.Transports
+            var transport = MethodBinderStore.GetMethodBinding(mi)?.Transports
                     .OrderBy(o => o.InvocationStrategy)
-                    .First().TransportType ?? InvocationOptions.Local.TransportType;
-            var transformedOptions = new InvocationOptions(transportType, InvocationOptions.MessagePriorityNormal);
+                    .First() ?? LocalTransport.Instance;
+            var transformedOptions = new InvocationOptions(transport.TransportType, InvocationOptions.MessagePriorityNormal, transport.PreInvokeCallback, transport.PostInvokeCallback);
             transformedOptions = invocationOptions?.Invoke(transformedOptions) ?? transformedOptions;
 
             var handler = Handlers.FirstOrDefault(o => o.TransportType == transformedOptions.TransportType);
-            if (handler == null) throw new Exception($"Transport {transportType} not configured.");
+            if (handler == null) throw new Exception($"Transport {transport.TransportType} not configured.");
             return handler.InvokeAsync(methodBinding, proxy, mi, args, transformedOptions);
         }
     }

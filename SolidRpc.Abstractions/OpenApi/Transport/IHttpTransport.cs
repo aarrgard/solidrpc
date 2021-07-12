@@ -37,5 +37,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         /// <param name="value"></param>
         /// <returns></returns>
         IHttpTransport SetInvocationStrategy(InvocationStrategy value);
+
+
     }
 }

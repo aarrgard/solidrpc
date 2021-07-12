@@ -1,6 +1,8 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
 {
@@ -78,8 +80,17 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <param name="connectionString"></param>
         /// <param name="transportType"></param>
         /// <param name="inboundHandler"></param>
-        public QueueTransport(InvocationStrategy invocationStrategy, string queueName, string connectionString, string transportType, string inboundHandler)
-            : base(transportType, invocationStrategy)
+        /// <param name="preInvokeCallback"></param>
+        /// <param name="postInvokeCallback"></param>
+        public QueueTransport(
+            InvocationStrategy invocationStrategy,
+            string queueName,
+            string connectionString, 
+            string transportType,
+            string inboundHandler,
+            Func<IHttpRequest, Task> preInvokeCallback,
+            Func<IHttpResponse, Task> postInvokeCallback)
+            : base(transportType, invocationStrategy, preInvokeCallback, postInvokeCallback)
         {
             QueueName = queueName;
             ConnectionName = connectionString;
@@ -130,7 +141,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetConnectionName(string connectionName)
         {
-            return new QueueTransport(InvocationStrategy, QueueName, connectionName, TransportType, InboundHandler);
+            return new QueueTransport(InvocationStrategy, QueueName, connectionName, TransportType, InboundHandler, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -140,7 +151,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetQueueName(string queueName)
         {
-            return new QueueTransport(InvocationStrategy, queueName, ConnectionName, TransportType, InboundHandler);
+            return new QueueTransport(InvocationStrategy, queueName, ConnectionName, TransportType, InboundHandler, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -150,7 +161,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IQueueTransport SetInboundHandler(string inboundHandler)
         {
-            return new QueueTransport(InvocationStrategy, QueueName, ConnectionName, TransportType, inboundHandler);
+            return new QueueTransport(InvocationStrategy, QueueName, ConnectionName, TransportType, inboundHandler, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -160,7 +171,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public QueueTransport SetInvocationStrategy(InvocationStrategy invocationStrategy)
         {
-            return new QueueTransport(invocationStrategy, QueueName, ConnectionName, TransportType, InboundHandler);
+            return new QueueTransport(invocationStrategy, QueueName, ConnectionName, TransportType, InboundHandler, PreInvokeCallback, PostInvokeCallback);
         }
 
     }
