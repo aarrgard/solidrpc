@@ -28,12 +28,15 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="methodBinderStore"></param>
         /// <param name="serviceProvider"></param>
         public SolidRpcOpenApiInvocAdvice(
-            IMethodBinderStore methodBinderStore)
+            IMethodBinderStore methodBinderStore,
+            IEnumerable<IHandler> handlers)
         {
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
+            Handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
         }
 
         private IMethodBinderStore MethodBinderStore { get; }
+        private IEnumerable<IHandler> Handlers { get; }
 
         /// <summary>
         /// Confiugures the proxy
@@ -66,15 +69,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? throw new Exception("No handler assigned to the invocation");
-            var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName) ?? throw new Exception("No transport assigned to the invocation");
-            var transport = MethodBinding.Transports.Single(o => o.TransportType == handler.TransportType);
-            if (handler.TransportType == LocalHandler.TransportType)
+            var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName) ?? throw new Exception("No invocation options assigned to the invocation");
+            if (invocationOptions.TransportType == LocalHandler.TransportType)
             {
                 return next();
             }
             else
             {
+                var handler = Handlers.Single(o => o.TransportType == invocationOptions.TransportType);
+                var transport = MethodBinding.Transports.Single(o => o.TransportType == invocationOptions.TransportType);
+
                 //
                 // add http headers
                 //

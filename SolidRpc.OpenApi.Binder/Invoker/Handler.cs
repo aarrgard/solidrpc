@@ -42,10 +42,17 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public virtual Task<object> InvokeAsync(IMethodBinding methodBinding, object target, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
+            if (invocationOptions == null)
+            {
+                invocationOptions = new InvocationOptions(TransportType, InvocationOptions.MessagePriorityNormal);
+            }
+            if (TransportType != invocationOptions.TransportType)
+            {
+                throw new ArgumentException("TransportType for invocation options does not match handler type.");
+            }
             var proxy = (ISolidProxy)target;
             return proxy.InvokeAsync(this, mi, args, new Dictionary<string, object>
             {
-                { typeof(IHandler).FullName, this },
                 { typeof(InvocationOptions).FullName, invocationOptions }
             });
         }

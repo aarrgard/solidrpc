@@ -189,9 +189,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 {
                     Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");
                 }
-                var handlers = serviceProvider.GetRequiredService<IEnumerable<IHandler>>();
-                invocationSource = handlers.First(o => o.TransportType == invokeTransport.TransportType);
-                invocationValues[typeof(IHandler).FullName] = invocationSource;
+                invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invokeTransport.TransportType, InvocationOptions.MessagePriorityNormal);
             }
 
             //
@@ -224,10 +222,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 resp.StatusCode = 400;
                 return resp;
             }
-
-            // add invocation values
-            invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invocationSource.TransportType, InvocationOptions.MessagePriorityNormal);
-            invocationValues[typeof(IMethodBinding).FullName] = selectedBinding;
 
             //
             // set http headers

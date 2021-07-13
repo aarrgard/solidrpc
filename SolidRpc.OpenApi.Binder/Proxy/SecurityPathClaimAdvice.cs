@@ -97,7 +97,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var handler = invocation.GetValue<IHandler>(typeof(IHandler).FullName) ?? throw new Exception("No handler assigned to invocation");
             if (invocation.Caller is ISolidProxy)
             {
                 return await next();
