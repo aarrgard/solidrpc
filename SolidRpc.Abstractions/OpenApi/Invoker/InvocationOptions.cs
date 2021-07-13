@@ -32,15 +32,15 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// The high message prio
         /// </summary>
-        public static readonly int MessagePriorityHigh = 3;
+        public const int MessagePriorityHigh = 3;
         /// <summary>
         /// The normal message prio
         /// </summary>
-        public static readonly int MessagePriorityNormal = 5;
+        public const int MessagePriorityNormal = 5;
         /// <summary>
         /// The low message prio
         /// </summary>
-        public static readonly int MessagePriorityLow = 7;
+        public const int MessagePriorityLow = 7;
 
         /// <summary>
         /// The invocation options that uses the http protocol

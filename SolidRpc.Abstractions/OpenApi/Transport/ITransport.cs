@@ -26,6 +26,10 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         /// </summary>
         InvocationStrategy InvocationStrategy { get; }
 
+        /// <summary>
+        /// The message priority
+        /// </summary>
+        int MessagePriority { get; }
 
         /// <summary>
         /// The pre invoke callback

@@ -35,15 +35,18 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// </summary>
         /// <param name="transportType"></param>
         /// <param name="invocationStrategy"></param>
+        /// <param name="messagePriority"></param>
         /// <param name="preInvokeCallback"></param>
         /// <param name="postInvokeCallback"></param>
         public Transport(
             string transportType, 
             InvocationStrategy invocationStrategy,
+            int messagePriority,
             Func<IHttpRequest, Task> preInvokeCallback,
             Func<IHttpResponse, Task> postInvokeCallback)
         {
             TransportType = transportType ?? throw new ArgumentNullException(nameof(transportType));
+            MessagePriority = messagePriority;
             InvocationStrategy = invocationStrategy;
             PreInvokeCallback = preInvokeCallback ?? DefaultPreInvokeCallback;
             PostInvokeCallback = postInvokeCallback ?? DefaultPostInvokeCallback;
@@ -53,6 +56,11 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// The transport type.
         /// </summary>
         public string TransportType { get; }
+
+        /// <summary>
+        /// The transport type.
+        /// </summary>
+        public int MessagePriority { get; }
 
         /// <summary>
         /// Returns the operation address

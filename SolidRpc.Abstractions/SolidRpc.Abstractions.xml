@@ -1341,6 +1341,27 @@
             <param name="config"></param>
             <param name="methodAddressTransformer"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetHttpTransportMethodAddressTransformer(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer)">
+            <summary>
+            Sets the method address transformer on the transports
+            </summary>
+            <param name="config"></param>
+            <param name="methodAddressTransformer"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.AddHttpTransportPreInvokeCallback(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task})">
+            <summary>
+            Sets the pre invoke callback on the http transport
+            </summary>
+            <param name="config"></param>
+            <param name="preInvokeCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.AddHttpTransportPostInvokeCallback(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+            <summary>
+            Sets the pre invoke callback on the http transport
+            </summary>
+            <param name="config"></param>
+            <param name="postInvokeCallback"></param>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.SetQueueTransport``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Nullable{SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy},System.String,System.String)">
             <summary>
             Sets the queue transport type
@@ -1504,6 +1525,20 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.AddPreInvokeCallback(System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task})">
+            <summary>
+            Adds a pre invoke callback
+            </summary>
+            <param name="callback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.AddPostInvokeCallback(System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+            <summary>
+            Adds a post invoke callback
+            </summary>
+            <param name="callback"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.ILocalTransport">
             <summary>
             Represents the settings for the local transport
@@ -1514,11 +1549,12 @@
             Contains the settings for the http transport.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.HttpTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.Int32,SolidRpc.Abstractions.OpenApi.Transport.MethodAddressTransformer,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Constructs a new instance
             </summary>
             <param name="invocationStrategy"></param>
+            <param name="messagePriority"></param>
             <param name="methodAddressTransformer"></param>
             <param name="preInvokeCallback"></param>
             <param name="postInvokeCallback"></param>
@@ -1587,11 +1623,12 @@
             The default instance
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.LocalTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.LocalTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.Int32,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Represents a queue transport
             </summary>
             <param name="invocationStrategy"></param>
+            <param name="messagePriority"></param>
             <param name="preInvokeCallback"></param>
             <param name="postInvokeCallback"></param>
         </member>
@@ -1619,11 +1656,12 @@
             <param name="queueName"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.String,System.String,System.String,System.String,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.QueueTransport.#ctor(SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.Int32,System.String,System.String,System.String,System.String,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Represents a queue transport
             </summary>
             <param name="invocationStrategy"></param>
+            <param name="messagePriority"></param>
             <param name="queueName"></param>
             <param name="connectionString"></param>
             <param name="transportType"></param>
@@ -1704,16 +1742,22 @@
             <param name="httpReq"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.#ctor(System.String,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.#ctor(System.String,SolidRpc.Abstractions.OpenApi.Transport.InvocationStrategy,System.Int32,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Constructs a new instance
             </summary>
             <param name="transportType"></param>
             <param name="invocationStrategy"></param>
+            <param name="messagePriority"></param>
             <param name="preInvokeCallback"></param>
             <param name="postInvokeCallback"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.TransportType">
+            <summary>
+            The transport type.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.Impl.Transport.MessagePriority">
             <summary>
             The transport type.
             </summary>
@@ -1822,6 +1866,11 @@
             <summary>
             The invocation strategy to use when handling calls
             on this transport.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.MessagePriority">
+            <summary>
+            The message priority
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.ITransport.PreInvokeCallback">

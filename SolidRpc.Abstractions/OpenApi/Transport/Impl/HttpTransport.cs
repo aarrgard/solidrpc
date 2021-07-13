@@ -17,15 +17,17 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// Constructs a new instance
         /// </summary>
         /// <param name="invocationStrategy"></param>
+        /// <param name="messagePriority"></param>
         /// <param name="methodAddressTransformer"></param>
         /// <param name="preInvokeCallback"></param>
         /// <param name="postInvokeCallback"></param>
         public HttpTransport(
-            InvocationStrategy invocationStrategy, 
-            MethodAddressTransformer methodAddressTransformer,
-            Func<IHttpRequest, Task> preInvokeCallback,
-            Func<IHttpResponse, Task> postInvokeCallback)
-            : base("Http", invocationStrategy, preInvokeCallback, postInvokeCallback)
+            InvocationStrategy invocationStrategy,
+            int messagePriority,
+            MethodAddressTransformer methodAddressTransformer = null,
+            Func<IHttpRequest, Task> preInvokeCallback = null,
+            Func<IHttpResponse, Task> postInvokeCallback = null)
+            : base("Http", invocationStrategy, messagePriority, preInvokeCallback, postInvokeCallback)
         {
             MethodAddressTransformer = methodAddressTransformer;
         }
@@ -101,7 +103,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IHttpTransport SetMethodAddressTransformer(MethodAddressTransformer methodAddressTransformer)
         {
-            return new HttpTransport(InvocationStrategy, methodAddressTransformer, PreInvokeCallback, PostInvokeCallback);
+            return new HttpTransport(InvocationStrategy, MessagePriority, methodAddressTransformer, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -111,7 +113,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         /// <returns></returns>
         public IHttpTransport SetInvocationStrategy(InvocationStrategy invocationStrategy)
         {
-            return new HttpTransport(invocationStrategy, MethodAddressTransformer, PreInvokeCallback, PostInvokeCallback);
+            return new HttpTransport(invocationStrategy, MessagePriority, MethodAddressTransformer, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -122,7 +124,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public IHttpTransport AddPreInvokeCallback(Func<IHttpRequest, Task> callback)
         {
             var oldCallback = PreInvokeCallback;
-            return new HttpTransport(InvocationStrategy, MethodAddressTransformer, async (req) =>
+            return new HttpTransport(InvocationStrategy, MessagePriority, MethodAddressTransformer, async (req) =>
             {
                 await callback(req);
                 await oldCallback(req);
@@ -137,7 +139,7 @@ namespace SolidRpc.Abstractions.OpenApi.Transport.Impl
         public IHttpTransport AddPostInvokeCallback(Func<IHttpResponse, Task> callback)
         {
             var oldCallback = PostInvokeCallback;
-            return new HttpTransport(InvocationStrategy, MethodAddressTransformer, PreInvokeCallback, async (resp) =>
+            return new HttpTransport(InvocationStrategy, MessagePriority, MethodAddressTransformer, PreInvokeCallback, async (resp) =>
             {
                 await callback(resp);
                 await oldCallback(resp);

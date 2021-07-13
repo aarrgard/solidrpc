@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Http;
+using System;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Transport
 {
@@ -37,6 +39,21 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         /// <param name="value"></param>
         /// <returns></returns>
         IHttpTransport SetInvocationStrategy(InvocationStrategy value);
+
+        /// <summary>
+        /// Adds a pre invoke callback
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        IHttpTransport AddPreInvokeCallback(Func<IHttpRequest, Task> callback);
+
+        /// <summary>
+        /// Adds a post invoke callback
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        IHttpTransport AddPostInvokeCallback(Func<IHttpResponse, Task> callback);
+
 
 
     }

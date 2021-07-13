@@ -1,10 +1,12 @@
 ﻿using SolidProxy.Core.Configuration;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {
@@ -64,11 +66,11 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             }
             if(config.InvocationConfiguration.HasImplementation)
             {
-                yield return new LocalTransport(InvocationStrategy.Invoke, null, null);
+                yield return new LocalTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null);
             }
             if(!transportFound)
             {
-                config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, null, null, null);
+                config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, null);
                 yield return config.HttpTransport;
             }
         }
@@ -78,12 +80,14 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// </summary>
         /// <param name="config"></param>
         /// <param name="invocationStrategy"></param>
-        public static IHttpTransport SetHttpTransport(this ISolidRpcOpenApiConfig config, InvocationStrategy? invocationStrategy = null)
+        public static IHttpTransport SetHttpTransport(
+            this ISolidRpcOpenApiConfig config, 
+            InvocationStrategy? invocationStrategy = null)
         {
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(invocationStrategy ?? InvocationStrategy.Invoke, null, null, null);
+                httpTransport = new HttpTransport(invocationStrategy ?? InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, null);
             }
             else if(invocationStrategy != null)
             {
@@ -103,11 +107,68 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var httpTransport = config.HttpTransport;
             if (httpTransport == null)
             {
-                httpTransport = new HttpTransport(InvocationStrategy.Invoke, methodAddressTransformer, null, null);
+                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, methodAddressTransformer, null, null);
             }
             else
             {
                 httpTransport = httpTransport.SetMethodAddressTransformer(methodAddressTransformer);
+            }
+            config.HttpTransport = httpTransport;
+        }
+
+        /// <summary>
+        /// Sets the method address transformer on the transports
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="methodAddressTransformer"></param>
+        public static void SetHttpTransportMethodAddressTransformer(this ISolidRpcOpenApiConfig config, MethodAddressTransformer methodAddressTransformer)
+        {
+            var httpTransport = config.HttpTransport;
+            if (httpTransport == null)
+            {
+                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, methodAddressTransformer, null, null);
+            }
+            else
+            {
+                httpTransport = httpTransport.SetMethodAddressTransformer(methodAddressTransformer);
+            }
+            config.HttpTransport = httpTransport;
+        }
+
+        /// <summary>
+        /// Sets the pre invoke callback on the http transport
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="preInvokeCallback"></param>
+        public static void AddHttpTransportPreInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpRequest, Task> preInvokeCallback)
+        {
+            var httpTransport = config.HttpTransport;
+            if (httpTransport == null)
+            {
+                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, preInvokeCallback, null);
+            }
+            else
+            {
+                httpTransport = httpTransport.AddPreInvokeCallback(preInvokeCallback);
+            }
+            config.HttpTransport = httpTransport;
+        }
+
+        /// <summary>
+        /// Sets the pre invoke callback on the http transport
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="postInvokeCallback"></param>
+        public static void AddHttpTransportPostInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpResponse, Task> postInvokeCallback)
+        {
+            var httpTransport = config.HttpTransport;
+            if (httpTransport == null)
+            {
+                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, postInvokeCallback);
+            }
+            else
+            {
+                httpTransport = httpTransport.AddPostInvokeCallback(postInvokeCallback);
             }
             config.HttpTransport = httpTransport;
         }
@@ -129,7 +190,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(invocationStrategy ?? InvocationStrategy.Invoke, null, null, queueType, null, null, null);
+                queueTransport = new QueueTransport(invocationStrategy ?? InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, queueType, null, null, null);
             }
             if (!string.IsNullOrEmpty(connectionName))
             {
@@ -152,7 +213,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(InvocationStrategy.Invoke, null, connectionName, null, null, null, null);
+                queueTransport = new QueueTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, connectionName, null, null, null, null);
             }
             else
             {
@@ -171,7 +232,7 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             var queueTransport = config.QueueTransport;
             if (queueTransport == null)
             {
-                queueTransport = new QueueTransport(InvocationStrategy.Invoke, null, null, null, inboundHandler, null, null);
+                queueTransport = new QueueTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, null, inboundHandler, null, null);
             }
             else
             {

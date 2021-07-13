@@ -1,13 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using SolidProxy.Core.Proxy;
+﻿using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Binder;
-using SolidRpc.Abstractions.OpenApi.Proxy;
-using System.Collections.Generic;
-using SolidRpc.Abstractions.OpenApi.Transport;
-using System.Linq;
-using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.OpenApi.Binder.Invoker;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -140,7 +140,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName);
             if (invocationOptions == null)
             {
-                invocationOptions = new InvocationOptions(handler.TransportType, InvocationOptions.MessagePriorityNormal);
+                var transport = MethodBinding.Transports.Single(o => o.TransportType == handler.TransportType);
+                invocationOptions = new InvocationOptions(transport.TransportType, transport.MessagePriority, transport.PreInvokeCallback, transport.PostInvokeCallback);
             }
 
             //
