@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace SolidRpc.Tests.Invoker
 {
@@ -26,6 +27,11 @@ namespace SolidRpc.Tests.Invoker
             /// 
             /// </summary>
             public int Value { get; set; }
+
+            /// <summary>
+            /// The char set
+            /// </summary>
+            public string ContentType { get; set; }
         }
 
 
@@ -40,7 +46,7 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
+            Task<ComplexStruct> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -48,15 +54,23 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            public TestImplementation(IHttpContextAccessor httpContextAccessor)
+            {
+                HttpContext = httpContextAccessor.HttpContext;
+            }
+
+            public HttpContext HttpContext { get; }
+
             /// <summary>
             /// 
             /// </summary>
             /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
+            public Task<ComplexStruct> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
-                return Task.FromResult(myStruct.Value);
+                myStruct.ContentType = HttpContext.Request.Headers["Content-Type"];
+                return Task.FromResult(myStruct);
             }
         }
 
@@ -66,6 +80,7 @@ namespace SolidRpc.Tests.Invoker
         /// <param name="services"></param>
         public override void ConfigureServerServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             base.ConfigureServerServices(services);
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
@@ -129,7 +144,7 @@ namespace SolidRpc.Tests.Invoker
                 //
                 var ti = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
                 var res = await ti.DoXAsync(new ComplexStruct() { Value = 4711 });
-                Assert.AreEqual(4711, res);
+                Assert.AreEqual(4711, res.Value);
                 Assert.IsTrue(this.visitedPreCallback);
                 Assert.IsTrue(this.visitedPostCallback);
 
@@ -150,7 +165,7 @@ namespace SolidRpc.Tests.Invoker
                         visitedPostCallback = true;
                         return Task.CompletedTask;
                     }));
-                Assert.AreEqual(4711, res);
+                Assert.AreEqual(4711, res.Value);
                 Assert.IsTrue(this.visitedPreCallback);
                 Assert.IsTrue(this.visitedPostCallback);
                 Assert.IsTrue(visitedPreCallback);
@@ -158,5 +173,21 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestCharsetInResponse()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+                var res = await invoker.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None);
+                Assert.AreEqual(4711, res.Value);
+                Assert.AreEqual("application/json", res.ContentType);
+            }
+        }
     }
 }

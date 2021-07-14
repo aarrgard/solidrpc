@@ -546,7 +546,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                             throw new NotImplementedException("cannot handle type:" + type.FullName + ":" + contentType);
                     }
                 case "application/json":
-                    return (_, val) => f(new SolidHttpRequestDataBinary(contentType, JsonHelper.DefaultEncoding.HeaderName, name, JsonHelper.Serialize(val, type)));
+                    return (_, val) => f(new SolidHttpRequestDataBinary(contentType, null, name, JsonHelper.Serialize(val, type)));
                 default:
                     throw new NotImplementedException("cannot handle content type:" + contentType);
             }
