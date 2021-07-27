@@ -588,7 +588,7 @@ namespace SolidRpc.OpenApi.AzFunctions
     {
         [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_MyFunc_arg0")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -602,7 +602,7 @@ namespace SolidRpc.OpenApi.AzFunctions
     {
         [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_MyFunc_arg0_arg1")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}/{arg1}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/MyFunc/{arg0}/{arg1}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -616,7 +616,7 @@ namespace SolidRpc.OpenApi.AzFunctions
     {
         [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "get", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -630,7 +630,7 @@ namespace SolidRpc.OpenApi.AzFunctions
     {
         [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_UploadFile_arg0")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", "post", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/UploadFile/{arg0}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -678,6 +678,36 @@ namespace SolidRpc.OpenApi.AzFunctions
             [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
             [Inject] IServiceProvider serviceProvider,
             [Constant("Timer_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_DoScheduledScanAsync_1")] string timerId,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
+        }
+    }
+
+
+    public class Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService_1
+    {
+        [FunctionName("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService_1")]
+        public static Task Run(
+            [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
+            [Inject] IServiceProvider serviceProvider,
+            [Constant("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService_1")] string timerId,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
+        }
+    }
+
+
+    public class Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterfaceDel_RunNodeService_1
+    {
+        [FunctionName("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterfaceDel_RunNodeService_1")]
+        public static Task Run(
+            [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
+            [Inject] IServiceProvider serviceProvider,
+            [Constant("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterfaceDel_RunNodeService_1")] string timerId,
             ILogger log,
             CancellationToken cancellationToken)
         {

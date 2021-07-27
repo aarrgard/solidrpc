@@ -114,7 +114,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// </summary>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            Task TestStuff2(CancellationToken cancellationToken);
+            Task TestStuff(CancellationToken cancellationToken);
         }
 
         /// <summary>
@@ -395,25 +395,27 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         public void TestSameMethodNameDifferentInterfaces()
         {
             var cSharpRepository = new CSharpRepository();
-            var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestStuff2));
-            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
-            methodInfo = typeof(Interface2).GetMethod(nameof(Interface2.TestStuff2));
-            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo);
+            var methodInfo1 = typeof(Interface1).GetMethod(nameof(Interface1.TestStuff));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo1);
+            var methodInfo2 = typeof(Interface2).GetMethod(nameof(Interface2.TestStuff));
+            CSharpReflectionParser.AddMethod(cSharpRepository, methodInfo2);
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestSameMethodNameDifferentInterfaces)}.json"), spec);
 
-            var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
-            Assert.AreEqual(1, binding.Arguments.Count());
-            
-            /*
-            var bindings = ServiceProvider.GetRequiredService<IMethodBinderStore>()
-                .MethodBinders.Where(o => o.Assembly == methodInfo.DeclaringType.Assembly)
-                .SelectMany(o => o.MethodBindings);
-            Assert.AreEqual(7, bindings.Count());
-            */
+            var mbs = ServiceProvider.GetRequiredService<IMethodBinderStore>();
+            var binding1 = mbs.CreateMethodBindings(spec, methodInfo1).Single();
+            Assert.AreEqual("SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff", binding1.OperationId);
+            Assert.AreEqual(methodInfo1, binding1.MethodInfo);
 
+            var binding2 = mbs.CreateMethodBindings(spec, methodInfo2).Single();
+
+            Assert.AreEqual("SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface2#TestStuff", binding2.OperationId);
+            Assert.AreEqual(methodInfo2, binding2.MethodInfo);
+
+            var methodBinder = mbs.MethodBinders.Single(o => o.Assembly == typeof(Interface1).Assembly);
+            Assert.AreEqual(2, methodBinder.MethodBindings.Count());
 
         }
     }

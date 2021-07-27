@@ -40,7 +40,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
 
                 conf.SetOAuth2Security(baseAddress);
-                if(conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
+                if (conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
                 {
                     conf.SetHttpTransport(InvocationStrategy.Forward);
                     conf.SetQueueTransport<AzTableHandler>(InvocationStrategy.Invoke, "AzureWebJobsStorage");
@@ -48,6 +48,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
                 return ConfigureAzureFunction(conf);
             });
+
             services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { 
                 o.OAuthClientId = "testar";
@@ -62,6 +63,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.AddSolidRpcSecurityBackend((sp, conf) => { }, ConfigureAzureFunction);
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
+            services.AddAzFunctionTimer<ITestInterface>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
+            services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {

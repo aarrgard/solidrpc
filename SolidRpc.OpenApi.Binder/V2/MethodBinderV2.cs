@@ -52,7 +52,12 @@ namespace SolidRpc.OpenApi.Binder.V2
             binderStatus.Append($"->#{prospects.Count}");
 
             // operation id must start with method name
-            prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.GetOperationId(), mi.Name)).ToList();
+            var methodOpId = $"{mi.DeclaringType.FullName.Replace('.', '#').Replace('+', '#')}#{mi.Name}";
+            prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.GetOperationId(), methodOpId)).ToList();
+            if(prospects.Count == 0)
+            {
+                prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.GetOperationId(), mi.Name)).ToList();
+            }
             binderStatus.Append($"->method({mi.Name})->#{prospects.Count}");
 
             // find all parameters for clr method

@@ -9,70 +9,27 @@
     "https"
   ],
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestStuff2/{i}/{d}/{s}/{u}/{g}": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestStuff": {
       "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
-        "description": "Some more testing",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff2#5",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "i",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "d",
-            "in": "path",
-            "required": true,
-            "type": "number",
-            "format": "double"
-          },
-          {
-            "name": "s",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "u",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uri"
-          },
-          {
-            "name": "g",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
+        "description": "Tests some stuff",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff",
         "responses": {
           "200": {
-            "description": "The response type",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "description": "Success"
           }
         }
       }
     },
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface2/TestStuff2": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface2/TestStuff": {
       "get": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface2"
         ],
         "description": "Tests some stuff",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface2#TestStuff2",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface2#TestStuff",
         "responses": {
           "200": {
             "description": "Success"

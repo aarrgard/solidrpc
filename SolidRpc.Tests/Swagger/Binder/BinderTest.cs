@@ -61,6 +61,8 @@ namespace SolidRpc.Tests.Swagger.Binder
             Assert.IsTrue(MethodBindingV2.NameMatches("X#Test", "Test"));
             Assert.IsTrue(MethodBindingV2.NameMatches("X#Test#Y", "Test"));
             Assert.IsTrue(MethodBindingV2.NameMatches("X#Test#Y", "Test"));
+            Assert.IsTrue(MethodBindingV2.NameMatches("X#Test#Y", "X#Test"));
+            Assert.IsFalse(MethodBindingV2.NameMatches("Y#Test#Y", "X#Test"));
 
             Assert.IsFalse(MethodBindingV2.NameMatches("XTest", "Test"));
             Assert.IsFalse(MethodBindingV2.NameMatches("TestX", "Test"));
