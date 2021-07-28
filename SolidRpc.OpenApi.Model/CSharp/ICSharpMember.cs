@@ -7,7 +7,6 @@ namespace SolidRpc.OpenApi.Model.CSharp
     /// </summary>
     public interface ICSharpMember
     {
-
         /// <summary>
         /// The parent member.
         /// </summary>

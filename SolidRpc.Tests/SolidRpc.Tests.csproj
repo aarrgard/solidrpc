@@ -38,6 +38,7 @@
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />
+    <None Remove="Swagger\SpecGenReflection\TestOpenApiAttributes.json" />
     <None Remove="Swagger\SpecGenReflection\TestSameMethodNameDifferentInterfaces.json" />
     <None Remove="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <None Remove="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
@@ -54,6 +55,7 @@
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Principal.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestOpenApiAttributes.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestSameMethodNameDifferentInterfaces.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
@@ -71,7 +73,7 @@
     <PackageReference Include="IdentityModel" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.11.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="nunit" Version="3.13.2" />

@@ -16,7 +16,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="name"></param>
         /// <param name="args">The constructor args</param>
         /// <param name="attributeData"></param>
-        public CSharpAttribute(ICSharpMember parent, string name, object[] args, IDictionary<string, object> attributeData) : base(parent, name)
+        public CSharpAttribute(ICSharpMember parent, string name, IEnumerable<object> args, IDictionary<string, object> attributeData) : base(parent, name)
         {
             Args = args ?? new object[0];
             AttributeData = attributeData ?? new Dictionary<string, object>();
@@ -25,7 +25,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <summary>
         /// The constructor args
         /// </summary>
-        public object[] Args { get; }
+        public IEnumerable<object> Args { get; }
 
         /// <summary>
         /// The properties or the member

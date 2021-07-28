@@ -1,6 +1,7 @@
 ﻿using SolidRpc.OpenApi.Model.CodeDoc;
 using SolidRpc.OpenApi.Model.CodeDoc.Impl;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -21,7 +22,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         /// <param name="cSharpRepository"></param>
         /// <param name="method"></param>
-        public static void AddMethod(ICSharpRepository cSharpRepository, MethodInfo method)
+        public static ICSharpMethod AddMethod(ICSharpRepository cSharpRepository, MethodInfo method)
         {
             var returnType = GetType(cSharpRepository, method.ReturnType);
             var cSharpType = GetType(cSharpRepository, method.DeclaringType);
@@ -31,10 +32,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 var parameterType = GetType(cSharpRepository, o.ParameterType);
                 var cSharpMethodParameter = new CSharpMethodParameter(cSharpMethod, o.Name, parameterType, IsOptional(o));
+                AddAttributes(cSharpMethodParameter, o.CustomAttributes);
                 cSharpMethod.AddMember(cSharpMethodParameter);
             });
 
             cSharpType.AddMember(cSharpMethod);
+            return cSharpMethod;
         }
 
         private static bool IsOptional(ParameterInfo o)
@@ -62,6 +65,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 cSharpType = cSharpRepository.GetClass(CreateTypeName(type));
                 if (cSharpType.Comment == null)
                 {
+                    AddAttributes(cSharpType, type.CustomAttributes);
                     cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
                     type.GetProperties().ToList().ForEach(o =>
                     {
@@ -76,6 +80,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 cSharpType = cSharpRepository.GetInterface(CreateTypeName(type));
                 if (cSharpType.Comment == null)
                 {
+                    AddAttributes(cSharpType, type.CustomAttributes);
                     cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
                 }
             }
@@ -88,6 +93,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 }
                 if (cSharpType.Comment == null)
                 {
+                    AddAttributes(cSharpType, type.CustomAttributes);
                     cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
                 }
             }
@@ -96,6 +102,16 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 type.GetGenericArguments().ToList().ForEach(o => GetType(cSharpRepository, o));
             }
             return cSharpType;
+        }
+
+        private static void AddAttributes(ICSharpMember cSharpType, IEnumerable<CustomAttributeData> attributes)
+        {
+            foreach(var a in attributes)
+            {
+                var ags = a.ConstructorArguments.Select(o => o.Value).ToList();
+                var namedArgs = a.NamedArguments.ToDictionary(o => o.MemberName, o => o.TypedValue.Value);
+                cSharpType.AddMember(new CSharpAttribute(cSharpType, a.AttributeType.FullName, ags, namedArgs));
+            }
         }
 
         private static string CreateTypeName(Type type)

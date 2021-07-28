@@ -24,6 +24,15 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         }
 
         /// <summary>
+        /// Adds a member to this method
+        /// </summary>
+        /// <param name="member"></param>
+        public override void AddMember(ICSharpMember member)
+        {
+            ProtectedMembers.Add(member);
+        }
+
+        /// <summary>
         /// The parameter type
         /// </summary>
         public ICSharpType ParameterType { get; }

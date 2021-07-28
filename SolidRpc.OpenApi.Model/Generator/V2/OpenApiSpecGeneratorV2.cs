@@ -156,6 +156,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 });
             }
 
+            bool apiAttributeFound = false;
             parameters
                 .ToList()
                 .ForEach(o =>
@@ -184,6 +185,23 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                         po.In = "query";
                         SetItemProps(po, true, o.ParameterType);
                         if (po.Type == "array") po.CollectionFormat = "csv";
+                    }
+
+                    foreach(var oaa in o.Members.OfType<ICSharpAttribute>().Where(IsOpenApiAttribute).SelectMany(x => x.AttributeData)) 
+                    {
+                        apiAttributeFound = true;
+                        switch(oaa.Key.ToLower())
+                        {
+                            case "in":
+                                po.In = oaa.Value.ToString();
+                                break;
+                            case "type":
+                                po.Type = oaa.Value.ToString();
+                                break;
+                            case "collectionformat":
+                                po.CollectionFormat = oaa.Value.ToString();
+                                break;
+                        }
                     }
                 });
 
@@ -219,8 +237,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             //
             // if we have more than one "formData" parameters - convert all the refs to strings
             //
-            var formDataParameters = operationObject.GetParameters()
-                .Where(o => o.In == "formData").ToList();
+            var formDataParameters = operationObject.GetParameters().Where(o => o.In == "formData").ToList();
             if (formDataParameters.Count > 1)
             {
                 formDataParameters.Where(o => o.Schema?.GetRefSchema() != null).ToList().ForEach(o =>
@@ -233,7 +250,10 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             }
             else
             {
-                formDataParameters.Where(o => o.Type != "file").ToList().ForEach(o => o.In = "body");
+                if(!apiAttributeFound)
+                {
+                    formDataParameters.Where(o => o.Type != "file").ToList().ForEach(o => o.In = "body");
+                }
             }
 
             operationObject.Responses = CreateResponses(operationObject, method);
@@ -281,6 +301,17 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             }
 
             return operationObject;
+        }
+
+        private bool IsOpenApiAttribute(ICSharpAttribute arg)
+        {
+            if (arg.Name.Equals("OpenApi")) return true;
+            if (arg.Name.Equals("OpenApiAttribute")) return true;
+            if (arg.Name.EndsWith(".OpenApi")) return true;
+            if (arg.Name.EndsWith(".OpenApiAttribute")) return true;
+            if (arg.Name.EndsWith("+OpenApi")) return true;
+            if (arg.Name.EndsWith("+OpenApiAttribute")) return true;
+            return false;
         }
 
         private OperationObject CloneOperation(OperationObject operationObject, string method)

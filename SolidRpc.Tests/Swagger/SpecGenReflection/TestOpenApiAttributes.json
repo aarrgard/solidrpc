@@ -1,0 +1,56 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/IOpenApiAttributes/DoX/{val3}": {
+      "post": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.IOpenApiAttributes"
+        ],
+        "description": "Tests the location of the different arguments",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#IOpenApiAttributes#DoX#1",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "val1",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "val2",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "val3",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.IOpenApiAttributes",
+      "description": "Tests openapi attributes"
+    }
+  ]
+}

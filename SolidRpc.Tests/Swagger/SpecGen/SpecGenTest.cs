@@ -50,8 +50,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "FileUpload4") continue;
-                CreateSpec(subDir.Name, false);
+                //if (subDir.Name != "OpenApiConfig") continue;
+                CreateSpec(subDir.Name, true);
             }
         }
 
@@ -918,6 +918,32 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 moq.Setup(o => o.ConsumeString(It.IsAny<string>(), It.IsAny<string>()));
                 proxy.ConsumeString("s1", "s2");
+            });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestOpenApiConfig()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestOpenApiConfig).Substring(4));
+
+                var moq = new Mock<OpenApiConfig.Services.IOpenApiConfig>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<OpenApiConfig.Services.IOpenApiConfig>();
+                
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == "s1"), It.Is<string>(a => a == "s2"), It.Is<string>(a => a == "s3"))).Returns(() => "s4");
+                var res = proxy.ProxyStrings("s1", "s2", "s3");
+
+                Assert.AreEqual("s4", res);
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<OpenApiConfig.Services.IOpenApiConfig>>();
+                var uri = await invoker.GetUriAsync(o => o.ProxyStrings("s1", "s2", "s3"));
+                Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/OpenApiConfig/Services/IOpenApiConfig/ProxyStrings/s3?s2=s2", uri.PathAndQuery.ToString());
             });
         }
     }

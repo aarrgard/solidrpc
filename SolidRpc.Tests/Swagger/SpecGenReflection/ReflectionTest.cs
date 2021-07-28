@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Model.Generator;
 using SolidRpc.OpenApi.Model.Generator.V2;
@@ -22,6 +23,36 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
     /// </summary>
     public class ReflectionTest : TestBase
     {
+        /// <summary>
+        /// Attribute to configure openapi
+        /// </summary>
+        public class OpenApi : Attribute
+        {
+            /// <summary>
+            /// The location of the attribute
+            /// </summary>
+            public string In { get; set; }
+        }
+
+        /// <summary>
+        /// Tests openapi attributes
+        /// </summary>
+        public interface IOpenApiAttributes
+        {
+            /// <summary>
+            /// Tests the location of the different arguments
+            /// </summary>
+            /// <returns></returns>
+            Task DoX(
+                [OpenApi(In = "formData")]
+                string val1,
+                [OpenApi(In = "query")]
+                string val2,
+                [OpenApi(In = "path")]
+                string val3
+            );
+        }
+
         /// <summary>
         /// A test interface
         /// </summary>
@@ -417,6 +448,28 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var methodBinder = mbs.MethodBinders.Single(o => o.Assembly == typeof(Interface1).Assembly);
             Assert.AreEqual(2, methodBinder.MethodBindings.Count());
 
+        }
+
+        /// <summary>
+        /// Tests generating the swagger spec from compiled code
+        /// </summary>
+        [Test]
+        public void TestOpenApiAttributes()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var m = typeof(IOpenApiAttributes).GetMethod(nameof(IOpenApiAttributes.DoX));
+            var csm = CSharpReflectionParser.AddMethod(cSharpRepository, m);
+            var csas = csm.Parameters.SelectMany(o => o.Members.OfType<ICSharpAttribute>()).ToList();
+            Assert.AreEqual(3, csas.Count);
+            Assert.AreEqual("SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest+OpenApi", csas.First().Name);
+            Assert.AreEqual("formData", csas.Skip(0).First().AttributeData["In"]);
+            Assert.AreEqual("query", csas.Skip(1).First().AttributeData["In"]);
+            Assert.AreEqual("path", csas.Skip(2).First().AttributeData["In"]);
+
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(new SettingsSpecGen()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestOpenApiAttributes)}.json"), spec);
         }
     }
 }

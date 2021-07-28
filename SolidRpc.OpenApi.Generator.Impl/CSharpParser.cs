@@ -228,11 +228,38 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
                 var parameterName = o.Identifier.ToString();
                 var optional = o.Default != null;
-                method.AddMember(new CSharpMethodParameter(method, parameterName, parameterType, optional));
+                var mp = new CSharpMethodParameter(method, parameterName, parameterType, optional);
+                method.AddMember(mp);
+
+                foreach (var a in o.AttributeLists.SelectMany(x => x.Attributes))
+                {
+                    var attrName = a.Name.ToString();
+                    if (!attrName.EndsWith("Attribute"))
+                    {
+                        attrName = $"{attrName}Attribute";
+                    }
+                    attrName = GetFullName(mds, attrName);
+                    var namedArgs = new Dictionary<string, object>();
+                    a.ArgumentList.Arguments.Where(x => x.NameEquals != null).ToList().ForEach(x => namedArgs[x.NameEquals.Name.ToString()] = CreateValue(x.Expression));
+                    var args = a.ArgumentList.Arguments.Where(x => x.NameEquals == null).Select(x => CreateValue(x.Expression)).ToList();
+                    mp.AddMember(new CSharpAttribute(mp, attrName, args, namedArgs));
+                }
             });
 
             SetComment(mds, method);
             m.AddMember(method);
+        }
+
+        private object CreateValue(ExpressionSyntax expression)
+        {
+            switch(expression.Kind())
+            {
+                case SyntaxKind.StringLiteralExpression:
+                    var s = expression.ToString();
+                    return s.Substring(1, s.Length - 2);
+                default:
+                    throw new ArgumentException("Cannot create value from:" + expression.ToString());
+            }
         }
 
         private ICSharpMember GetMember(string className, NameScope nameScope)

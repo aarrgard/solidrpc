@@ -1,0 +1,66 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApiConfig",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/OpenApiConfig",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IOpenApiConfig/ProxyStrings/{s3}": {
+      "post": {
+        "tags": [
+          "IOpenApiConfig"
+        ],
+        "description": "Proxies the string",
+        "operationId": "SolidRpc#Tests#Swagger#SpecGen#OpenApiConfig#Services#IOpenApiConfig#ProxyStrings#1",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "s1",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "s2",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "s3",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IOpenApiConfig",
+      "description": "Tests method with two complex types"
+    }
+  ]
+}
