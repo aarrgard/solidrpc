@@ -27,7 +27,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <returns></returns>
         Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
-            IHandler invocationSource, 
+            ITransportHandler invocationSource, 
             IHttpRequest request, 
             CancellationToken cancellation = default(CancellationToken));
 
@@ -42,7 +42,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <returns></returns>
         Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
-            IHandler invocationSource, 
+            ITransportHandler invocationSource, 
             IHttpRequest request, 
             IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellation = default(CancellationToken));

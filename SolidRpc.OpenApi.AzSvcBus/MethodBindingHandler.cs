@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -62,12 +61,12 @@ namespace SolidRpc.OpenApi.AzSvcBus
         /// <param name="binding"></param>
         public void BindingCreated(IMethodBinding binding)
         {
-            var queueTransport = binding.Transports.OfType<IQueueTransport>().Where(o => o.TransportType == QueueHandler.TransportType).FirstOrDefault();
+            var queueTransport = binding.Transports.OfType<ISvcBusTransport>().FirstOrDefault();
             if (queueTransport == null)
             {
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"No queue transport({QueueHandler.TransportType}) configured for binding {binding.OperationId} - cannot configure queue");
+                    Logger.LogTrace($"No queue transport({SvcBusHandler.TransportType}) configured for binding {binding.OperationId} - cannot configure queue");
                 }
                 return;
             }

@@ -24,14 +24,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     conf.ProxyTransportType = AzQueueHandler.TransportType;
                     conf.SetHttpTransport(InvocationStrategy.Forward);
-                    conf.SetQueueTransport<AzQueueHandler>(InvocationStrategy.Invoke, connectionName);
-                    conf.SetQueueTransportInboundHandler(inboundHandler);
+                    conf.SetQueueTransport<IAzQueueTransport>(InvocationStrategy.Invoke, connectionName);
+                    conf.SetQueueTransportInboundHandler<IAzQueueTransport>(inboundHandler);
                 }
                 
                 if (conf.Methods.First().Name == nameof(IAzTableQueue.ProcessTestMessage))
                 {
                     conf.SetHttpTransport(InvocationStrategy.Forward);
-                    conf.SetQueueTransport<AzTableHandler>(InvocationStrategy.Invoke, connectionName);
+                    conf.SetQueueTransport<IAzTableTransport>(InvocationStrategy.Invoke, connectionName);
                 }
 
                 return configurator?.Invoke(conf) ?? true;

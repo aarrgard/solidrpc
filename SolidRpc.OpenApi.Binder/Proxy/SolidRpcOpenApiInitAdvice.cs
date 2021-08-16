@@ -31,9 +31,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private IMethodBinderStore MethodBinderStore { get; }
         private bool HasImplementation { get; set; }
         private IMethodBinding MethodBinding { get; set; }
-        private string ProxyTransportType { get; set; }
-        private string InvokerTransportType { get; set; }
-        
+        private ITransport ProxyTransport { get; set; }
+        private ITransport InvokerTransport { get; set; }
+        private ITransport LocalTransport { get; set; }
+
         /// <summary>
         /// Confiugures the proxy
         /// </summary>
@@ -56,28 +57,28 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             HasImplementation = config.InvocationConfiguration.HasImplementation;
 
+            var transports = MethodBinding.Transports.ToList();
             //
             // Determine transport type. If not explititly set use Http
             // if no implementation exists.
             //
-            ProxyTransportType = config.ProxyTransportType;
-            if (string.IsNullOrEmpty(ProxyTransportType))
+            var proxyTransportType = config.ProxyTransportType;
+            if (HasImplementation)
             {
-                if (HasImplementation)
+                LocalTransport = transports.FirstOrDefault(o => o.GetTransportType() == "Local");
+                if(LocalTransport == null)
                 {
-                    ProxyTransportType = LocalHandler.TransportType;
-                }
-                else
-                {
-                    ProxyTransportType = HttpHandler.TransportType;
+                    throw new Exception("Local implementation exists but no local transport configured.");
                 }
             }
+            var httpTransport = transports.FirstOrDefault(o => o.GetTransportType() == "Http");
+            ProxyTransport = transports.FirstOrDefault(o => o.GetTransportType() == proxyTransportType) ?? LocalTransport ?? httpTransport;
 
             //
             // Get invoker transport + handler
             //
-            InvokerTransportType = MethodBinding.Transports.Where(o => o.InvocationStrategy == InvocationStrategy.Invoke).Select(o => o.TransportType).FirstOrDefault();
-            if (InvokerTransportType == null)
+            InvokerTransport = transports.FirstOrDefault(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+            if (InvokerTransport == null)
             {
                 throw new Exception($"No invocation transport configured");
             }
@@ -99,22 +100,21 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName);
             if (invocationOptions == null)
             {
-                string transportType;
+                ITransport transport;
                 if (invocation.Caller is ISolidProxy)
                 {
-                    transportType = ProxyTransportType;
+                    transport = ProxyTransport;
                 }
                 else if (HasImplementation)
                 {
-                    transportType = LocalHandler.TransportType;
+                    transport = LocalTransport;
                 }
                 else
                 {
-                    transportType = InvokerTransportType;
+                    transport = InvokerTransport;
                 }
 
-                var transport = MethodBinding.Transports.Single(o => o.TransportType == transportType);
-                invocationOptions = new InvocationOptions(transport.TransportType, transport.MessagePriority, transport.PreInvokeCallback, transport.PostInvokeCallback);
+                invocationOptions = new InvocationOptions(transport.GetTransportType(), transport.MessagePriority, transport.PreInvokeCallback, transport.PostInvokeCallback);
             }
 
             //

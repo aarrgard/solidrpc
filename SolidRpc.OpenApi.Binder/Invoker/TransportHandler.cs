@@ -7,7 +7,6 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,16 +18,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// <summary>
     /// Base class for the handlers
     /// </summary>
-    public abstract class Handler : IHandler
+    public abstract class TransportHandler<TTransport> : ITransportHandler<TTransport> where TTransport : ITransport
     {
-        private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
-        private static ConcurrentDictionary<Type, Func<object, object>> Invokers = new ConcurrentDictionary<Type, Func<object, object>>();
-        protected static string GetTransportType(Type type)
-        {
-            return type.Name.Substring(0, type.Name.Length - "Handler".Length);
-        }
+        /// <summary>
+        /// The transport type
+        /// </summary>
+        public static readonly string TransportType = ITransportExtensions.GetTransportType(typeof(TTransport));
 
-        public Handler(ILogger<Handler> logger, IServiceProvider serviceProvider)
+        public TransportHandler(ILogger<TransportHandler<TTransport>> logger, IServiceProvider serviceProvider)
         {
             Logger = logger;
             ServiceProvider = serviceProvider;
@@ -38,13 +35,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         protected IServiceProvider ServiceProvider { get; }
         protected IMethodBinderStore MethodBinderStore => ServiceProvider.GetRequiredService<IMethodBinderStore>();
 
-        public string TransportType => GetTransportType(GetType());
+        string ITransportHandler.TransportType => TransportType;
 
         public virtual Task<object> InvokeAsync(IMethodBinding methodBinding, object target, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
         {
             if (invocationOptions == null)
             {
-                invocationOptions = new InvocationOptions(TransportType, InvocationOptions.MessagePriorityNormal);
+                var transport = methodBinding.Transports.OrderBy(o => o.InvocationStrategy).First();
+                invocationOptions = new InvocationOptions(transport.GetTransportType(), InvocationOptions.MessagePriorityNormal);
             }
             if (TransportType != invocationOptions.TransportType)
             {
@@ -74,6 +72,16 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return resp;
         }
 
-        public abstract Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
+        public Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        {
+            return InvokeAsync(methodBinding, (TTransport)transport, httpReq, invocationOptions, cancellationToken);
+        }
+
+        public virtual void Configure(IMethodBinding methodBinding, TTransport transport)
+        {
+
+        }
+
+        public abstract Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, TTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken);
     }
 }

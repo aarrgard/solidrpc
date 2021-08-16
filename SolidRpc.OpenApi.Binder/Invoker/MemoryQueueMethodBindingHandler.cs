@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
@@ -53,7 +54,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         private ILogger Logger { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
-        private QueueHandler QueueHandler { get; }
+        private ITransportHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
         private HashSet<string> RegisteredQueues { get; }
@@ -70,7 +71,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             {
                 return;
             }
-            var queueTransport = binding.Transports.OfType<IQueueTransport>().Where(o => o.TransportType == QueueHandler.TransportType).FirstOrDefault();
+            var queueTransport = binding.Transports.OfType<IMemoryQueueTransport>().FirstOrDefault();
             if (queueTransport == null)
             {
                 if (Logger.IsEnabled(LogLevel.Trace))

@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,7 +120,7 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
                 var testInterface = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
-                await testInterface.InvokeAsync(o => o.MethodWithClientKeySpecified(), opt => InvocationOptions.Http.AddPreInvokeCallback(req => {
+                await testInterface.InvokeAsync(o => o.MethodWithClientKeySpecified(), opt => opt.SetTransport(HttpHandler.TransportType).AddPreInvokeCallback(req => {
                     Assert.AreEqual($"{SecurityKey.Value}", req.Headers.Single(o => o.Name == "Authorization").GetStringValue());
                     return Task.CompletedTask;
                 }));

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
@@ -147,7 +148,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 var queueName = openApiConfig.QueueTransport.QueueName;
                 var connection = openApiConfig.QueueTransport.ConnectionName;
                 var inboundHandler = openApiConfig.QueueTransport.InboundHandler;
-                var transportType = openApiConfig.QueueTransport.TransportType;
+                var transportType = openApiConfig.QueueTransport.GetTransportType();
 
                 if(string.Equals(inboundHandler, "azfunctions", StringComparison.CurrentCultureIgnoreCase))
                 {

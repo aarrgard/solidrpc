@@ -1,9 +1,7 @@
 ﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Logging;
-using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.OpenApi.AzFunctions;
+using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +46,7 @@ namespace SolidRpc.OpenApi.AzFunctions
 
                 var invokerType = typeof(IInvoker<>).MakeGenericType(methodInfo.DeclaringType);
                 var localInvoker = (IInvoker)serviceProvider.GetService(invokerType);
-                var res = await localInvoker.InvokeAsync(methodInfo, args, opt => InvocationOptions.Local);
+                var res = await localInvoker.InvokeAsync(methodInfo, args, opt => opt.SetTransport(LocalHandler.TransportType));
                 var resTask = res as Task;
                 if (resTask != null)
                 {

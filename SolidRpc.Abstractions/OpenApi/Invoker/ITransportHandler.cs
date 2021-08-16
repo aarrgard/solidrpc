@@ -1,8 +1,6 @@
-﻿using SolidProxy.Core.Proxy;
-using SolidRpc.Abstractions.OpenApi.Binder;
+﻿using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +11,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// The invocation handler is responsible for doing
     /// the actual invokation
     /// </summary>
-    public interface IHandler
+    public interface ITransportHandler
     {
         /// <summary>
         /// The transport type that this handler uses.
@@ -67,5 +65,20 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             ITransport transport, 
             object[] args,
             InvocationOptions invocationOptions);
+    }
+
+    /// <summary>
+    /// Represents a transport handler for supplied configuration
+    /// </summary>
+    /// <typeparam name="TConfig"></typeparam>
+    public interface ITransportHandler<TConfig> : ITransportHandler where TConfig : ITransport
+    {
+        /// <summary>
+        /// Configures the supplied transport
+        /// </summary>
+        /// <param name="methodBinding"></param>
+        /// <param name="transport"></param>
+        void Configure(IMethodBinding methodBinding, TConfig transport);
+
     }
 }

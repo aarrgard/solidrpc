@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Threading.Tasks;
 
@@ -43,60 +44,18 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         public const int MessagePriorityLow = 7;
 
         /// <summary>
-        /// The invocation options that uses the http protocol
-        /// </summary>
-        public static readonly InvocationOptions Http = new InvocationOptions("Http", MessagePriorityNormal);
-
-        /// <summary>
-        /// The invocation options that uses the local implementation.
-        /// </summary>
-
-        public static readonly InvocationOptions Local = new InvocationOptions("Local", MessagePriorityNormal);
-
-        /// <summary>
-        /// The invocation options that uses the local implementation.
-        /// </summary>
-
-        public static readonly InvocationOptions MemoryQueue = new InvocationOptions("MemoryQueue", MessagePriorityNormal);
-
-        /// <summary>
-        /// The invocation options that uses the azure queue.
-        /// </summary>
-
-        public static readonly InvocationOptions AzQueue = new InvocationOptions("AzQueue", MessagePriorityNormal);
-
-        /// <summary>
-        /// The invocation options that uses the azure table.
-        /// </summary>
-
-        public static readonly InvocationOptions AzTable = new InvocationOptions("AzTable", MessagePriorityNormal);
-
-        /// <summary>
-        /// Constructs a new instance
-        /// </summary>
-        /// <param name="transportType"></param>
-        /// <param name="priority"></param>
-        public InvocationOptions(string transportType, int priority)
-        {
-            TransportType = transportType;
-            Priority = priority;
-            PreInvokeCallback = DefaultPreInvokeCallback;
-            PostInvokeCallback = DefaultPostInvokeCallback;
-        }
-
-        /// <summary>
         /// Constructs a new instance
         /// </summary>
         /// <param name="transportType"></param>
         /// <param name="priority"></param>
         /// <param name="preInvokeCallback"></param>
         /// <param name="postInvokeCallback"></param>
-        public InvocationOptions(string transportType, int priority, Func<IHttpRequest, Task> preInvokeCallback, Func<IHttpResponse, Task> postInvokeCallback)
+        public InvocationOptions(string transportType, int priority, Func<IHttpRequest, Task> preInvokeCallback = null, Func<IHttpResponse, Task> postInvokeCallback = null)
         {
             TransportType = transportType;
             Priority = priority;
-            PreInvokeCallback = preInvokeCallback ?? throw new ArgumentNullException(nameof(preInvokeCallback));
-            PostInvokeCallback = postInvokeCallback ?? throw new ArgumentNullException(nameof(postInvokeCallback));
+            PreInvokeCallback = preInvokeCallback ?? DefaultPreInvokeCallback;
+            PostInvokeCallback = postInvokeCallback ?? DefaultPostInvokeCallback;
         }
 
         /// <summary>
@@ -126,7 +85,17 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <returns></returns>
         public InvocationOptions SetPriority(int priority)
         {
-            return new InvocationOptions(TransportType, priority);
+            return new InvocationOptions(TransportType, priority, PreInvokeCallback, PostInvokeCallback);
+        }
+
+        /// <summary>
+        /// Sets the transport to use.
+        /// </summary>
+        /// <param name="transportType"></param>
+        /// <returns></returns>
+        public InvocationOptions SetTransport(string transportType)
+        {
+            return new InvocationOptions(transportType, Priority, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>

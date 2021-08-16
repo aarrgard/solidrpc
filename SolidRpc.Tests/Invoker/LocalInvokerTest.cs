@@ -66,7 +66,7 @@ namespace SolidRpc.Tests.Invoker
             sc.AddTransient<ITestInterface, TestImplementation>();
             var sp = sc.BuildServiceProvider();
             var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync(null, CancellationToken.None), opt => InvocationOptions.Local);
+            var result = await invoker.InvokeAsync(o => o.DoXAsync(null, CancellationToken.None), opt => opt.SetTransport(LocalHandler.TransportType));
             Assert.AreEqual(4711, result);
         }
 
@@ -92,7 +92,7 @@ namespace SolidRpc.Tests.Invoker
 
             var sp = sc.BuildServiceProvider();
             var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync("LocalHandler", CancellationToken.None), opt => InvocationOptions.Local);
+            var result = await invoker.InvokeAsync(o => o.DoXAsync("LocalHandler", CancellationToken.None), opt => opt.SetTransport(LocalHandler.TransportType));
             Assert.AreEqual(4711, result);
         }
 
@@ -135,7 +135,7 @@ namespace SolidRpc.Tests.Invoker
             }
 
             var invoker = sp.GetRequiredService<IInvoker<ITestInterface>>();
-            var result = await invoker.InvokeAsync(o => o.DoXAsync("LocalHandler", CancellationToken.None), opt => InvocationOptions.Local);
+            var result = await invoker.InvokeAsync(o => o.DoXAsync("LocalHandler", CancellationToken.None), opt => opt.SetTransport(LocalHandler.TransportType));
             Assert.AreEqual(4711, result);
         }
 
@@ -158,8 +158,8 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.ProxyTransportType = MemoryQueueHandler.TransportType;
                 conf.OpenApiSpec = openApiSpec;
-                conf.SetQueueTransport<MemoryQueueHandler>(InvocationStrategy.Invoke);
-                conf.SetQueueTransportInboundHandler("generic");
+                var c = conf.SetQueueTransport<IMemoryQueueTransport>(InvocationStrategy.Invoke);
+                conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
                 return true;
             });
 

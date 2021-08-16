@@ -133,7 +133,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         public Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
-            IHandler invocationSource,
+            ITransportHandler invocationSource,
             IHttpRequest request, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -152,7 +152,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         public async Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
-            IHandler invocationSource,
+            ITransportHandler invocationSource,
             IHttpRequest request,
             IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellationToken = default(CancellationToken))
@@ -173,10 +173,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // check if we should just forward the calls
             //
-            var transport = selectedBinding.Transports.SingleOrDefault(o => o.TransportType == invocationSource.TransportType);
+            var transport = selectedBinding.Transports.SingleOrDefault(o => o.GetTransportType() == invocationSource.TransportType);
             if (transport == null)
             {
-                throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.TransportType))}).");
+                throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.GetTransportType()))}).");
             }
 
             if (transport.InvocationStrategy == InvocationStrategy.Forward)
@@ -187,9 +187,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
-                    Logger.LogTrace($"Forwarding call from transport {transport.TransportType} to transport {invokeTransport.TransportType}");
+                    Logger.LogTrace($"Forwarding call from transport {transport.GetTransportType()} to transport {invokeTransport.GetTransportType()}");
                 }
-                invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invokeTransport.TransportType, InvocationOptions.MessagePriorityNormal);
+                invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invokeTransport.GetTransportType(), InvocationOptions.MessagePriorityNormal);
             }
 
             //

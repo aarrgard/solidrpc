@@ -9,6 +9,7 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
 using SolidRpc.OpenApi.Binder.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -29,14 +30,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <param name="serviceProvider"></param>
         public SolidRpcOpenApiInvocAdvice(
             IMethodBinderStore methodBinderStore,
-            IEnumerable<IHandler> handlers)
+            IEnumerable<ITransportHandler> handlers)
         {
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             Handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
         }
 
         private IMethodBinderStore MethodBinderStore { get; }
-        private IEnumerable<IHandler> Handlers { get; }
+        private IEnumerable<ITransportHandler> Handlers { get; }
 
         /// <summary>
         /// Confiugures the proxy
@@ -70,14 +71,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName) ?? throw new Exception("No invocation options assigned to the invocation");
-            if (invocationOptions.TransportType == LocalHandler.TransportType)
+            var transportType = invocationOptions.TransportType;
+            if (transportType == LocalHandler.TransportType)
             {
                 return next();
             }
             else
             {
-                var handler = Handlers.Single(o => o.TransportType == invocationOptions.TransportType);
-                var transport = MethodBinding.Transports.Single(o => o.TransportType == invocationOptions.TransportType);
+                var handler = Handlers.Single(o => o.TransportType == transportType);
 
                 //
                 // add http headers
@@ -95,6 +96,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     });
                 }
 
+                var transport = MethodBinding.Transports.Single(o => o.GetTransportType() == invocationOptions.TransportType);
                 return handler.InvokeAsync<TAdvice>(MethodBinding, transport, invocation.Arguments, invocationOptions);
             }
 

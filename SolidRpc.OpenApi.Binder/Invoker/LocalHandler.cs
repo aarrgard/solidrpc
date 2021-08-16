@@ -11,19 +11,14 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(IHandler), typeof(LocalHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(ITransportHandler), typeof(LocalHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
     /// <summary>
     /// Invokes methods on the local implementation.
     /// </summary>
-    public class LocalHandler : Handler
+    public class LocalHandler : TransportHandler<ILocalTransport>
     {
-        /// <summary>
-        /// Returns the "Local" transport type
-        /// </summary>
-        public static new string TransportType => GetTransportType(typeof(LocalHandler));
-
         public LocalHandler(ILogger<LocalHandler> logger, IServiceProvider serviceProvider)
             :base(logger, serviceProvider)
         {
@@ -62,9 +57,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return res;
         }
 
-        public override Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ITransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ILocalTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Configure(IMethodBinding methodBinding, ILocalTransport transport)
+        {
         }
     }
 }

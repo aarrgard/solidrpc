@@ -154,8 +154,8 @@ namespace SolidRpc.Tests.Invoker
                 conf.ProxyTransportType = MemoryQueueHandler.TransportType;
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetHttpTransport(InvocationStrategy.Invoke);
-                conf.SetQueueTransport<MemoryQueueHandler>(InvocationStrategy.Forward);
-                conf.SetQueueTransportInboundHandler("generic");
+                conf.SetQueueTransport<IMemoryQueueTransport>(InvocationStrategy.Forward);
+                conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
                 return true;
             });
 
@@ -179,7 +179,7 @@ namespace SolidRpc.Tests.Invoker
                 Assert.AreEqual(1, await MemoryQueueBus.DispatchAllMessagesAsync());
 
                 var frontInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterfaceFront>>();
-                await frontInvoker.InvokeAsync(o => o.DoXAsync(new ComplexType(), CancellationToken.None), opt => InvocationOptions.Local);
+                await frontInvoker.InvokeAsync(o => o.DoXAsync(new ComplexType(), CancellationToken.None), opt => opt.SetTransport(LocalHandler.TransportType));
 
                 Assert.AreEqual(1, await MemoryQueueBus.DispatchAllMessagesAsync());
             }

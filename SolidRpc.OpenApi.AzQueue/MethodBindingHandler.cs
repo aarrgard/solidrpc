@@ -80,8 +80,7 @@ namespace SolidRpc.OpenApi.AzQueue
             //
             // start all the queues
             //
-            binding.Transports.OfType<IQueueTransport>()
-                .Where(o => string.Equals(o.TransportType, AzTableHandler.TransportType, StringComparison.InvariantCultureIgnoreCase))
+            binding.Transports.OfType<IAzTableTransport>()
                 .ToList().ForEach(qt =>
                 {
                     if (Logger.IsEnabled(LogLevel.Trace))
@@ -92,8 +91,7 @@ namespace SolidRpc.OpenApi.AzQueue
                     SolidRpcApplication.AddStartupTask(SetupTable(binding, qt.ConnectionName, qt.QueueName));
                 });
 
-            binding.Transports.OfType<IQueueTransport>()
-                .Where(o => string.Equals(o.TransportType, AzQueueHandler.TransportType, StringComparison.InvariantCultureIgnoreCase))
+            binding.Transports.OfType<IAzQueueTransport>()
                 .ToList().ForEach(qt =>
                 {
                     if (Logger.IsEnabled(LogLevel.Trace))
@@ -246,7 +244,7 @@ namespace SolidRpc.OpenApi.AzQueue
             return Task.WhenAll(FlushQueuesTasks.Select(o => o(cancellationToken)));
         }
 
-        private async Task FlushTableTransport(IMethodBinding binding, IQueueTransport qt, CancellationToken cancellationToken)
+        private async Task FlushTableTransport(IMethodBinding binding, IAzTableTransport qt, CancellationToken cancellationToken)
         {
             await ServiceProvider.GetRequiredService<IAzTableQueue>().DoScheduledScanAsync(cancellationToken);
 
@@ -263,7 +261,7 @@ namespace SolidRpc.OpenApi.AzQueue
             }
         }
 
-        private async Task FlushQueueTransport(IMethodBinding binding, IQueueTransport qt, CancellationToken cancellationToken)
+        private async Task FlushQueueTransport(IMethodBinding binding, IAzQueueTransport qt, CancellationToken cancellationToken)
         {
             var cq = CloudQueueStore.GetCloudQueue(qt.ConnectionName, qt.QueueName);
             try

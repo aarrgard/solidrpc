@@ -150,7 +150,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             var tasks = new List<Task>();
             for(int i = 0; i < messageCount; i++)
             {
-                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(new MemoryStream(ms.ToArray()), raiseException, cancellationToken), opt => InvocationOptions.AzTable.SetPriority(messagePriority)));
+                tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(new MemoryStream(ms.ToArray()), raiseException, cancellationToken), opt => opt.SetTransport(AzTableHandler.TransportType).SetPriority(messagePriority)));
             }
             await Task.WhenAll(tasks);
         }

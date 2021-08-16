@@ -79,7 +79,7 @@ namespace SolidRpc.Tests.Invoker
             public Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 var caller = SolidProxyInvocationImplAdvice.CurrentInvocation.Caller;
-                if(false == caller is QueueHandler)
+                if(false == caller is MemoryQueueHandler)
                 {
                     throw new Exception("Caller is not a queue handler.");
                 }
@@ -93,10 +93,10 @@ namespace SolidRpc.Tests.Invoker
         {
             conf.ProxyTransportType = "MemoryQueue";
             conf.SetHttpTransport(InvocationStrategy.Forward);
-            conf.SetQueueTransport<MemoryQueueHandler>();
+            conf.SetQueueTransport<IMemoryQueueTransport>();
             if (addInboundHandler)
             {
-                conf.SetQueueTransportInboundHandler("generic");
+                conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
             }
         }
 
@@ -184,7 +184,7 @@ namespace SolidRpc.Tests.Invoker
                 Assert.AreEqual(count, _doYInvocations);
                 for (int i = 0; i < count; i++)
                 {
-                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = value }, CancellationToken.None), opt => InvocationOptions.Http);
+                    res = await invoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = value }, CancellationToken.None), opt => opt.SetTransport(HttpHandler.TransportType));
                 }
 
                 // wait for the handler queues to complete
@@ -217,7 +217,7 @@ namespace SolidRpc.Tests.Invoker
 
                 Abstractions.OpenApi.Http.IHttpRequest invocation;
                 var frontInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
-                await frontInvoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = "test" }, CancellationToken.None), opt => InvocationOptions.MemoryQueue.AddPreInvokeCallback(req =>
+                await frontInvoker.InvokeAsync(o => o.DoYAsync(new ComplexStruct() { Value = "test" }, CancellationToken.None), opt => opt.SetTransport(MemoryQueueHandler.TransportType).AddPreInvokeCallback(req =>
                 {
                     invocation = req;
                     return Task.CompletedTask;

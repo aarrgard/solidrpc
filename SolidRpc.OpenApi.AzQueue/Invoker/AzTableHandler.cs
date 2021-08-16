@@ -20,20 +20,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-[assembly: SolidRpcService(typeof(IHandler), typeof(AzTableHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(ITransportHandler), typeof(AzTableHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 [assembly: SolidRpcService(typeof(AzTableHandler), typeof(AzTableHandler), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>
     /// Class responsible for doing the actual invocation.
     /// </summary>
-    public class AzTableHandler : QueueHandler
+    public class AzTableHandler : QueueHandler<IAzTableTransport>
     {
-        /// <summary>
-        /// The transport type
-        /// </summary>
-        public static readonly new string TransportType = GetTransportType(typeof(AzTableHandler));
-
         private static TableRequestOptions TableRequestOptions => new TableRequestOptions();
         private static OperationContext OperationContext => new OperationContext();
 
@@ -126,7 +121,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
 
         public AzTableHandler(
-            ILogger<QueueHandler> logger, 
+            ILogger<QueueHandler<IAzTableTransport>> logger, 
             IServiceProvider serviceProvider, 
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
@@ -144,14 +139,13 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
         private IServiceScopeFactory ServiceScopeFactory { get; }
         private ICloudQueueStore CloudQueueStore { get; }
 
-        public IEnumerable<IQueueTransport> GetTableTransports()
+        public IEnumerable<IAzTableTransport> GetTableTransports()
         {
             // find all the table queues
             return MethodBinderStore.MethodBinders
                 .SelectMany(o => o.MethodBindings)
                 .SelectMany(o => o.Transports)
-                .OfType<IQueueTransport>()
-                .Where(o => o.TransportType == TransportType)
+                .OfType<IAzTableTransport>()
                 .ToList();
         }
 
@@ -173,7 +167,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
         }
 
-        protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IMethodBinding methodBinding, IAzTableTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message, cancellationToken);
             var msg = new TableMessageEntity(transport.QueueName, invocationOptions.Priority, message);
@@ -395,5 +389,9 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
         }
 
+        public override void Configure(IMethodBinding methodBinding, IAzTableTransport transport)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -4,6 +4,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -67,7 +68,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 throw new Exception($"Cannot find openapi method binding for method {mi.DeclaringType.FullName}.{mi.Name}");
             }
             var operationAddress = methodBinding.Transports
-                .Where(o => o.TransportType == "Http")
+                .OfType<IHttpTransport>()
                 .Select(o => o.OperationAddress)
                 .FirstOrDefault();
 

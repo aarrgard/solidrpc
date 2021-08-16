@@ -13,12 +13,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(IHandler), typeof(SvcBusHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(ITransportHandler), typeof(SvcBusHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AzSvcBus.Invoker
 {
-    public class SvcBusHandler : QueueHandler
+    public class SvcBusHandler : QueueHandler<ISvcBusTransport>
     {
-        public SvcBusHandler(ILogger<QueueHandler> logger,
+        public SvcBusHandler(ILogger<QueueHandler<ISvcBusTransport>> logger,
             IServiceProvider serviceProvider,
             ISerializerFactory serializerFactory,
             IQueueClientStore queueClientStore,
@@ -30,7 +30,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
 
         private IQueueClientStore QueueClientStore { get; }
 
-        protected override Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport queueTransport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override Task InvokeAsync(IMethodBinding methodBinding, ISvcBusTransport queueTransport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             // dispatch message
             var msg = new Message(Encoding.UTF8.GetBytes(message));

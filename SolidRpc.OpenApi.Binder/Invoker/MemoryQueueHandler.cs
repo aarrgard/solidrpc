@@ -11,19 +11,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(IHandler), typeof(MemoryQueueHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(ITransportHandler), typeof(MemoryQueueHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 [assembly: SolidRpcService(typeof(MemoryQueueHandler), typeof(MemoryQueueHandler), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
-   public class MemoryQueueHandler : QueueHandler
+   public class MemoryQueueHandler : QueueHandler<IMemoryQueueTransport>
     {
-        /// <summary>
-        /// Returns the "MemoryQueue" transport type
-        /// </summary>
-        public static new string TransportType => GetTransportType(typeof(MemoryQueueHandler));
-
         public MemoryQueueHandler(
-            ILogger<QueueHandler> logger, 
+            ILogger<QueueHandler<IMemoryQueueTransport>> logger, 
             IServiceProvider serviceProvider, 
             ISerializerFactory serializerFactory, 
             ISolidRpcApplication solidRpcApplication) 
@@ -33,7 +28,12 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         private MemoryQueueBus MemoryQueueBus => ServiceProvider.GetRequiredService<MemoryQueueBus>();
 
-        protected override Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override void Configure(IMethodBinding methodBinding, IMemoryQueueTransport transport)
+        {
+            base.Configure(methodBinding, transport);
+        }
+
+        protected override Task InvokeAsync(IMethodBinding methodBinding, IMemoryQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             try
             {

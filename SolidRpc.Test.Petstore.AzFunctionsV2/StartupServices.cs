@@ -41,8 +41,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
 
             c.SetHttpTransport();
-            c.SetQueueTransport<AzQueueHandler>();
-            c.SetQueueTransportInboundHandler("azfunctions");
+            c.SetQueueTransport<IAzQueueTransport>();
+            c.SetQueueTransportInboundHandler<IAzQueueTransport>("azfunctions");
 
             if (c.Methods.First().DeclaringType.Assembly == typeof(ISwaggerUI).Assembly)
             {

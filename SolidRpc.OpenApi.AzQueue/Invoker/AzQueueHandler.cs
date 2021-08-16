@@ -3,7 +3,6 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzQueue.Invoker;
@@ -12,22 +11,17 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(IHandler), typeof(AzQueueHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
+[assembly: SolidRpcService(typeof(ITransportHandler), typeof(AzQueueHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 [assembly: SolidRpcService(typeof(AzQueueHandler), typeof(AzQueueHandler), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzQueue.Invoker
 {
     /// <summary>
     /// Class responsible for doing the actual invocation.
     /// </summary>
-    public class AzQueueHandler : QueueHandler
+    public class AzQueueHandler : QueueHandler<IAzQueueTransport>
     {
-        /// <summary>
-        /// The transport type
-        /// </summary>
-        public static readonly new string TransportType = GetTransportType(typeof(AzQueueHandler));
-
         public AzQueueHandler(
-            ILogger<QueueHandler> logger, 
+            ILogger<QueueHandler<IAzQueueTransport>> logger, 
             IServiceProvider serviceProvider, 
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
@@ -39,7 +33,12 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         private ICloudQueueStore CloudQueueStore { get; }
 
-        protected override async Task InvokeAsync(IMethodBinding methodBinding, IQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
+        public override void Configure(IMethodBinding methodBinding, IAzQueueTransport transport)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override async Task InvokeAsync(IMethodBinding methodBinding, IAzQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message);
             var msg = new CloudQueueMessage(message);

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
 using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
@@ -682,7 +683,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 CompareStructs(CreateFileStruct(), res);
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ETagArg.Services.IETagArg>>();
-                res = invoker.InvokeAsync(o => o.GetEtagStruct(CreateFileStruct()), opt => InvocationOptions.Http.AddPostInvokeCallback(resp =>
+                res = invoker.InvokeAsync(o => o.GetEtagStruct(CreateFileStruct()), opt => opt.SetTransport(HttpHandler.TransportType).AddPostInvokeCallback(resp =>
                 {
                     return Task.CompletedTask;
                 }));

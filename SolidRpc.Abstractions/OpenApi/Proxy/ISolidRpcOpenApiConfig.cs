@@ -1,8 +1,7 @@
-﻿using SolidProxy.Core.Configuration;
+using SolidProxy.Core.Configuration;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,28 +50,27 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// <param name="config"></param>
         public static IEnumerable<ITransport> GetTransports(this ISolidRpcOpenApiConfig config)
         {
-            bool transportFound = false;
-            var httpTransport = config.HttpTransport;
-            if (httpTransport != null)
+            var configs = config.InvocationConfiguration.GetAdviceConfigurations<ITransport>();
+            if(!configs.Any())
             {
-                transportFound = true;
-                yield return httpTransport;
+                var hc = config.InvocationConfiguration.ConfigureAdvice<IHttpTransport>();
+                hc.InvocationStrategy = InvocationStrategy.Invoke;
+                hc.MessagePriority = InvocationOptions.MessagePriorityNormal;
+
+                configs = new[] { hc }; 
             }
-            var queueTransport = config.QueueTransport;
-            if (queueTransport != null)
+            if (config.InvocationConfiguration.HasImplementation)
             {
-                transportFound = true;
-                yield return queueTransport;
+                if(!configs.Any(o => o.GetTransportType() == "Local"))
+                {
+                    var lc = config.InvocationConfiguration.ConfigureAdvice<ILocalTransport>();
+                    lc.InvocationStrategy = InvocationStrategy.Invoke;
+                    lc.MessagePriority = InvocationOptions.MessagePriorityNormal;
+                    configs = configs.Union(new[] { lc });
+                }
             }
-            if(config.InvocationConfiguration.HasImplementation)
-            {
-                yield return new LocalTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null);
-            }
-            if(!transportFound)
-            {
-                config.HttpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, null);
-                yield return config.HttpTransport;
-            }
+
+            return configs;
         }
 
         /// <summary>
@@ -84,17 +82,9 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             this ISolidRpcOpenApiConfig config, 
             InvocationStrategy? invocationStrategy = null)
         {
-            var httpTransport = config.HttpTransport;
-            if (httpTransport == null)
-            {
-                httpTransport = new HttpTransport(invocationStrategy ?? InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, null);
-            }
-            else if(invocationStrategy != null)
-            {
-                httpTransport = httpTransport.SetInvocationStrategy(invocationStrategy.Value);
-            }
-            config.HttpTransport = httpTransport;
-            return httpTransport;
+            var c = config.GetAdviceConfig<IHttpTransport>();
+            c.InvocationStrategy = invocationStrategy ?? c.InvocationStrategy;
+            return c;
         }
 
         /// <summary>
@@ -102,37 +92,11 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// </summary>
         /// <param name="config"></param>
         /// <param name="methodAddressTransformer"></param>
-        public static void SetMethodAddressTransformer(this ISolidRpcOpenApiConfig config, MethodAddressTransformer methodAddressTransformer)
+        public static IHttpTransport SetMethodAddressTransformer(this ISolidRpcOpenApiConfig config, MethodAddressTransformer methodAddressTransformer)
         {
-            var httpTransport = config.HttpTransport;
-            if (httpTransport == null)
-            {
-                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, methodAddressTransformer, null, null);
-            }
-            else
-            {
-                httpTransport = httpTransport.SetMethodAddressTransformer(methodAddressTransformer);
-            }
-            config.HttpTransport = httpTransport;
-        }
-
-        /// <summary>
-        /// Sets the method address transformer on the transports
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="methodAddressTransformer"></param>
-        public static void SetHttpTransportMethodAddressTransformer(this ISolidRpcOpenApiConfig config, MethodAddressTransformer methodAddressTransformer)
-        {
-            var httpTransport = config.HttpTransport;
-            if (httpTransport == null)
-            {
-                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, methodAddressTransformer, null, null);
-            }
-            else
-            {
-                httpTransport = httpTransport.SetMethodAddressTransformer(methodAddressTransformer);
-            }
-            config.HttpTransport = httpTransport;
+            var c = config.GetAdviceConfig<IHttpTransport>();
+            c.MethodAddressTransformer = methodAddressTransformer ?? c.MethodAddressTransformer;
+            return c;
         }
 
         /// <summary>
@@ -140,18 +104,11 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// </summary>
         /// <param name="config"></param>
         /// <param name="preInvokeCallback"></param>
-        public static void AddHttpTransportPreInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpRequest, Task> preInvokeCallback)
+        public static IHttpTransport AddHttpTransportPreInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpRequest, Task> preInvokeCallback)
         {
-            var httpTransport = config.HttpTransport;
-            if (httpTransport == null)
-            {
-                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, preInvokeCallback, null);
-            }
-            else
-            {
-                httpTransport = httpTransport.AddPreInvokeCallback(preInvokeCallback);
-            }
-            config.HttpTransport = httpTransport;
+            var c = config.GetAdviceConfig<IHttpTransport>();
+            c.PreInvokeCallback = preInvokeCallback ?? c.PreInvokeCallback;
+            return c;
         }
 
         /// <summary>
@@ -159,86 +116,44 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// </summary>
         /// <param name="config"></param>
         /// <param name="postInvokeCallback"></param>
-        public static void AddHttpTransportPostInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpResponse, Task> postInvokeCallback)
+        public static IHttpTransport AddHttpTransportPostInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpResponse, Task> postInvokeCallback)
         {
-            var httpTransport = config.HttpTransport;
-            if (httpTransport == null)
-            {
-                httpTransport = new HttpTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, postInvokeCallback);
-            }
-            else
-            {
-                httpTransport = httpTransport.AddPostInvokeCallback(postInvokeCallback);
-            }
-            config.HttpTransport = httpTransport;
+            var c = config.GetAdviceConfig<IHttpTransport>();
+            c.PostInvokeCallback = postInvokeCallback ?? c.PostInvokeCallback;
+            return c;
         }
 
         /// <summary>
-        /// Sets the queue transport type
+        /// Sets the queue transport options
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="config"></param>
         /// <param name="invocationStrategy"></param>
         /// <param name="connectionName"></param>
         /// <param name="queueName"></param>
-        public static void SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, InvocationStrategy? invocationStrategy = null, string connectionName = null, string queueName = null) where T : IHandler
+        /// <returns></returns>
+        public static T SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, InvocationStrategy? invocationStrategy = null, string connectionName = null, string queueName = null) where T : IQueueTransport
         {
-            string queueType = typeof(T).FullName.Split('.').Last();
-            if(queueType.EndsWith("Handler"))
-            {
-                queueType = queueType.Substring(0, queueType.Length - "Handler".Length);
-            }
-            var queueTransport = config.QueueTransport;
-            if (queueTransport == null)
-            {
-                queueTransport = new QueueTransport(invocationStrategy ?? InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, queueType, null, null, null);
-            }
-            if (!string.IsNullOrEmpty(connectionName))
-            {
-                queueTransport = queueTransport.SetConnectionName(connectionName);
-            }
-            if (!string.IsNullOrEmpty(queueName))
-            {
-                queueTransport = queueTransport.SetQueueName(queueName);
-            }
-            config.QueueTransport = queueTransport;
+            var c = config.GetAdviceConfig<T>();
+            c.InvocationStrategy = invocationStrategy ?? c.InvocationStrategy;
+            c.ConnectionName = connectionName ?? c.ConnectionName;
+            c.QueueName = queueName ?? c.QueueName;
+            return c;
         }
 
         /// <summary>
-        /// Sets the queue transport connection name
+        /// Sets the inbound handler.
         /// </summary>
-        /// <param name="config"></param>
-        /// <param name="connectionName"></param>
-        public static void SetQueueTransportConnectionName(this ISolidRpcOpenApiConfig config, string connectionName)
-        {
-            var queueTransport = config.QueueTransport;
-            if (queueTransport == null)
-            {
-                queueTransport = new QueueTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, connectionName, null, null, null, null);
-            }
-            else
-            {
-                queueTransport = queueTransport.SetConnectionName(connectionName);
-            }
-            config.QueueTransport = queueTransport;
-        }
-
-        /// <summary>
-        /// Sets the queue transport inbound handler
-        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="config"></param>
         /// <param name="inboundHandler"></param>
-        public static void SetQueueTransportInboundHandler(this ISolidRpcOpenApiConfig config, string inboundHandler)
+        /// <returns></returns>
+
+        public static T SetQueueTransportInboundHandler<T>(this ISolidRpcOpenApiConfig config, string inboundHandler) where T : IQueueTransport
         {
-            var queueTransport = config.QueueTransport;
-            if (queueTransport == null)
-            {
-                queueTransport = new QueueTransport(InvocationStrategy.Invoke, InvocationOptions.MessagePriorityNormal, null, null, null, inboundHandler, null, null);
-            }
-            else
-            {
-                queueTransport = queueTransport.SetInboundHandler(inboundHandler);
-            }
-            config.QueueTransport = queueTransport;
+            var c = config.GetAdviceConfig<T>();
+            c.InboundHandler = inboundHandler;
+            return c;
         }
 
         /// <summary>

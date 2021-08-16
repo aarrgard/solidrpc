@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.Core.Configuration.Runtime;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Transport;
 
@@ -70,11 +71,15 @@ namespace SolidRpc.OpenApi.Binder
             methodBindings = methodBindings.OrderBy(o => GetMethodIdx(o.Method));
 
             // Configure transports
+            var handlers = ServiceProvider.GetRequiredService<IEnumerable<ITransportHandler>>();
             methodBindings.ToList().ForEach(methodBinding =>
             {
-                transports.ToList().ForEach(o =>
+                transports.ToList().ForEach(t =>
                 {
-                    o.Configure(methodBinding);
+                    var handlerType = typeof(ITransportHandler<>).MakeGenericType(t.GetTransportInterface());
+                    var h = handlers.Where(o => handlerType.IsAssignableFrom(o.GetType())).FirstOrDefault();
+                    var configMethod = h.GetType().GetMethod("Configure");
+                    configMethod.Invoke(h, new object[] { methodBinding, t });
                 });
                 
             });

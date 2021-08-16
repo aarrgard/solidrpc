@@ -118,7 +118,7 @@ namespace SolidRpc.Tests
 
             sc.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "none", config =>
             {
-                config.SetQueueTransport<AzTableHandler>(Abstractions.OpenApi.Transport.InvocationStrategy.Invoke, "AzureWebJobsStorage", "rdbms");
+                config.SetQueueTransport<IAzTableTransport>(Abstractions.OpenApi.Transport.InvocationStrategy.Invoke, "AzureWebJobsStorage", "rdbms");
                 return true;
             });
             //sc.AddVitecBackendServiceProvider();

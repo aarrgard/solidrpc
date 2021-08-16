@@ -1,9 +1,7 @@
-﻿using SolidProxy.Core.Proxy;
-using SolidRpc.Abstractions;
+﻿using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
-using SolidRpc.Abstractions.OpenApi.Transport.Impl;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
 using System.Collections.Concurrent;
@@ -23,13 +21,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         private ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object>> CachedInvokers = new ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object>>();
         public Invokers(
             IMethodBinderStore methodBinderStore,
-            IEnumerable<IHandler> handlers)
+            IEnumerable<ITransportHandler> handlers)
         {
             MethodBinderStore = methodBinderStore;
             Handlers = handlers;
         }
         public IMethodBinderStore MethodBinderStore { get; }
-        public IEnumerable<IHandler> Handlers { get; }
+        public IEnumerable<ITransportHandler> Handlers { get; }
 
         public Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object> GetCachedInvoker<TResult>()
         {
@@ -69,14 +67,15 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public virtual Task<object> InvokeMethodAsync(IMethodBinding methodBinding, object proxy, MethodInfo mi, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
-            var transport = MethodBinderStore.GetMethodBinding(mi)?.Transports
+            var transport = methodBinding?.Transports
                     .OrderBy(o => o.InvocationStrategy)
-                    .First() ?? LocalTransport.Instance;
-            var transformedOptions = new InvocationOptions(transport.TransportType, InvocationOptions.MessagePriorityNormal, transport.PreInvokeCallback, transport.PostInvokeCallback);
+                    .FirstOrDefault();
+            var transformedOptions = new InvocationOptions(transport.GetTransportType() ?? "Local", InvocationOptions.MessagePriorityNormal, transport?.PreInvokeCallback, transport?.PostInvokeCallback);
             transformedOptions = invocationOptions?.Invoke(transformedOptions) ?? transformedOptions;
 
-            var handler = Handlers.FirstOrDefault(o => o.TransportType == transformedOptions.TransportType);
-            if (handler == null) throw new Exception($"Transport {transport.TransportType} not configured.");
+            var transportType = transformedOptions.TransportType;
+            var handler = Handlers.FirstOrDefault(o => o.TransportType == transportType);
+            if (handler == null) throw new Exception($"Transport {transportType} not configured.");
             return handler.InvokeAsync(methodBinding, proxy, mi, args, transformedOptions);
         }
     }
