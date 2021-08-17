@@ -27,16 +27,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
         /// are registerd in the IoC container.
         /// </summary>
         string ProxyTransportType { get; set; }
-
-        /// <summary>
-        /// The configured http transport
-        /// </summary>
-        IHttpTransport HttpTransport { get; set; }
-
-        /// <summary>
-        /// The configured http transport
-        /// </summary>
-        IQueueTransport QueueTransport { get; set; }
     }
 
     /// <summary>

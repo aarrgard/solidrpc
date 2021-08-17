@@ -124,7 +124,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             var functions = new List<FunctionDef>();
             var openApiConfig = config.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             var azConfig = config.ConfigureAdvice<ISolidAzureFunctionConfig>();
-            var httpTransport = openApiConfig.HttpTransport;
+            var httpTransport = openApiConfig.GetTransports().OfType<IHttpTransport>().FirstOrDefault();
             if (httpTransport != null)
             {
                 //
@@ -136,19 +136,20 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     throw new Exception($"AuthLevel not set for {mb.MethodInfo.DeclaringType.FullName}.{mb.MethodInfo.Name}");
                 }
 
-                var functionPath = openApiConfig.HttpTransport.OperationAddress.LocalPath;
+                var functionPath = httpTransport.OperationAddress.LocalPath;
                 functions.Add(new HttpFunctionDef(FunctionHandler, "http", mb.LocalPath, httpTransport.OperationAddress.LocalPath)
                 {
                     Method = mb.Method.ToLower(),
                     AuthLevel = authLevel
                 });
             }
-            if (openApiConfig.QueueTransport != null)
+            var queueTransport = openApiConfig.GetTransports().OfType<IQueueTransport>().FirstOrDefault();
+            if (queueTransport != null)
             {
-                var queueName = openApiConfig.QueueTransport.QueueName;
-                var connection = openApiConfig.QueueTransport.ConnectionName;
-                var inboundHandler = openApiConfig.QueueTransport.InboundHandler;
-                var transportType = openApiConfig.QueueTransport.GetTransportType();
+                var queueName = queueTransport.QueueName;
+                var connection = queueTransport.ConnectionName;
+                var inboundHandler = queueTransport.InboundHandler;
+                var transportType = queueTransport.GetTransportType();
 
                 if(string.Equals(inboundHandler, "azfunctions", StringComparison.CurrentCultureIgnoreCase))
                 {

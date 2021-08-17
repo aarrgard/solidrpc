@@ -1294,16 +1294,6 @@
             are registerd in the IoC container.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.HttpTransport">
-            <summary>
-            The configured http transport
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig.QueueTransport">
-            <summary>
-            The configured http transport
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions">
             <summary>
             Extension methods to manipulate the settings
@@ -1519,24 +1509,10 @@
             Returns the qeueue name
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetQueueName(System.String)">
-            <summary>
-            Sets the queue name
-            </summary>
-            <param name="queueName"></param>
-            <returns></returns>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.ConnectionName">
             <summary>
             Returns the connection name to use(key in configuration)
             </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetConnectionName(System.String)">
-            <summary>
-            Sets the connection name
-            </summary>
-            <param name="connectionName"></param>
-            <returns></returns>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.InboundHandler">
             <summary>
@@ -1545,13 +1521,6 @@
             "azfunction" - means that the azure functions should pickup messages
             "generic" - means that we register a generic message handler for service bus.
             </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IQueueTransport.SetInboundHandler(System.String)">
-            <summary>
-            Sets the inbound handler.
-            </summary>
-            <param name="inboundHandler"></param>
-            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.ITransport">
             <summary>

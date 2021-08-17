@@ -35,7 +35,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         public override void Configure(IMethodBinding methodBinding, IAzQueueTransport transport)
         {
-            throw new NotImplementedException();
+            base.Configure(methodBinding, transport);
         }
 
         protected override async Task InvokeAsync(IMethodBinding methodBinding, IAzQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)

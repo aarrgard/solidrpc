@@ -391,7 +391,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         public override void Configure(IMethodBinding methodBinding, IAzTableTransport transport)
         {
-            throw new NotImplementedException();
+            base.Configure(methodBinding, transport);
         }
     }
 }

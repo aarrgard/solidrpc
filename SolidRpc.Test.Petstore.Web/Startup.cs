@@ -33,10 +33,11 @@ namespace SolidRpc.Test.PetstoreWeb
                 conf.OAuthClientSecret = "swagger-ui";
             }, conf =>
             {
-                conf.SetOAuth2Security("https://identity.erikolsson.se");
+                conf.DisableSecurity();
+                //conf.SetOAuth2Security("https://identity.erikolsson.se");
                 if(conf.Methods.Any(o => o.Name == nameof(ISwaggerUI.GetIndexHtml)))
                 {
-                    conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
+                    //conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
                 }
                 return true;
             });

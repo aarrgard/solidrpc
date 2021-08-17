@@ -20,31 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="CodeGenerator\TypeScriptTest.TestInvoke.ts" />
-    <None Remove="NpmGenerator\TestCreateTypescript.ts" />
-    <None Remove="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
-    <None Remove="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
-    <None Remove="Swagger\Security\SecurityTest.TestAddSecurityDefs.json" />
-    <None Remove="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />
-    <None Remove="Swagger\SpecGenReflection\TestEmptyRepo.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1FileTypeWithAdditionalData.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1NullableParameter.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1OptionalParameter.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1Principal.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1StringValues.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1TestStuff.json" />
-    <None Remove="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />
-    <None Remove="Swagger\SpecGenReflection\TestOpenApiAttributes.json" />
-    <None Remove="Swagger\SpecGenReflection\TestSameMethodNameDifferentInterfaces.json" />
-    <None Remove="Swagger\TestSwaggerSpecExternalFileReference.json" />
-    <None Remove="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="CodeGenerator\TypeScriptTest.TestInvoke.ts" />
     <EmbeddedResource Include="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
@@ -83,7 +58,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc018" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc019" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
   </ItemGroup>
 
