@@ -2,9 +2,11 @@
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.Services;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,6 +49,13 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
+
+            /// <summary>
+            /// Tests the continuation token.
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -63,6 +72,20 @@ namespace SolidRpc.Tests.Invoker
             public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 return Task.FromResult(myStruct.Value);
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            public Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default(CancellationToken))
+            {
+                ISolidRpcContinuationToken ct = null;
+                ct = ct.LoadToken();
+                int i = ct.GetToken<int>();
+                ct.SetToken(i + 1);
+                return Task.FromResult(i);
             }
         }
 
@@ -119,15 +142,45 @@ namespace SolidRpc.Tests.Invoker
             {
                 await ctx.StartAsync();
 
-                //var url = await ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>()
-                //    .GetUriAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None));
-                //var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
-                //var resp = await httpClient.PostAsync(url, new StringContent("{}"));
-                //Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
+                var url = await ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>()
+                    .GetUriAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None));
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+                var resp = await httpClient.PostAsync(url, new StringContent("{}"));
+                Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
                 var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => opt);
                 Assert.AreEqual(4711, res);
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestHttpInvokerContinuationToken()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                //var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                //for (int i = 500; i < 510; i++)
+                //{
+                //    var ctReq = Convert.ToBase64String(Encoding.UTF8.GetBytes(i.ToString()));
+                //    var ctResp = Convert.ToBase64String(Encoding.UTF8.GetBytes((i + 1).ToString()));
+                //    Assert.AreEqual(i, await invoker.InvokeAsync(o => o.TestContinuationTokenAsync(CancellationToken.None), opts => opts.SetContinuationToken(ctReq).AddPostInvokeCallback(resp =>
+                //    {
+                //        var ct = resp.AdditionalHeaders["X-SolidRpc-ContinuationToken"].ToString();
+                //        Assert.AreEqual(ctResp, ct);
+                //        return Task.CompletedTask;
+                //    })));
+                //}
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+                for (int i = 0; i < 10; i++)
+                {
+                    Assert.AreEqual(i, await proxy.TestContinuationTokenAsync());
+                }
             }
         }
     }

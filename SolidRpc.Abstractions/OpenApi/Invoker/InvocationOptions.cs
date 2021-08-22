@@ -11,7 +11,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     public class InvocationOptions
     {
         /// <summary>
-        /// The defaullt pre invoke callback(Does nothing)
+        /// The default pre invoke callback(Does nothing)
         /// </summary>
         /// <param name="httpReq"></param>
         /// <returns></returns>
@@ -21,11 +21,11 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         }
 
         /// <summary>
-        /// The defaullt post invoke callback(Does nothing)
+        /// The default post invoke callback(Does nothing)
         /// </summary>
-        /// <param name="httpReq"></param>
+        /// <param name="httpResp"></param>
         /// <returns></returns>
-        private static Task DefaultPostInvokeCallback(IHttpResponse httpReq)
+        private static Task DefaultPostInvokeCallback(IHttpResponse httpResp)
         {
             return Task.CompletedTask;
         }
@@ -48,12 +48,14 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// </summary>
         /// <param name="transportType"></param>
         /// <param name="priority"></param>
+        /// <param name="continuationToken"></param>
         /// <param name="preInvokeCallback"></param>
         /// <param name="postInvokeCallback"></param>
-        public InvocationOptions(string transportType, int priority, Func<IHttpRequest, Task> preInvokeCallback = null, Func<IHttpResponse, Task> postInvokeCallback = null)
+        public InvocationOptions(string transportType, int priority, string continuationToken = null, Func<IHttpRequest, Task> preInvokeCallback = null, Func<IHttpResponse, Task> postInvokeCallback = null)
         {
             TransportType = transportType;
             Priority = priority;
+            ContinuationToken = continuationToken;
             PreInvokeCallback = preInvokeCallback ?? DefaultPreInvokeCallback;
             PostInvokeCallback = postInvokeCallback ?? DefaultPostInvokeCallback;
         }
@@ -67,6 +69,11 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// The invocation priority.
         /// </summary>
         public int Priority { get; }
+
+        /// <summary>
+        /// The continuation token.
+        /// </summary>
+        public string ContinuationToken { get; }
 
         /// <summary>
         /// The pre invoke callback
@@ -85,7 +92,17 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <returns></returns>
         public InvocationOptions SetPriority(int priority)
         {
-            return new InvocationOptions(TransportType, priority, PreInvokeCallback, PostInvokeCallback);
+            return new InvocationOptions(TransportType, priority, ContinuationToken, PreInvokeCallback, PostInvokeCallback);
+        }
+
+        /// <summary>
+        /// Returns a copy of this instance with another continuation token.
+        /// </summary>
+        /// <param name="continuationToken"></param>
+        /// <returns></returns>
+        public InvocationOptions SetContinuationToken(string continuationToken)
+        {
+            return new InvocationOptions(TransportType, Priority, continuationToken, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -95,7 +112,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <returns></returns>
         public InvocationOptions SetTransport(string transportType)
         {
-            return new InvocationOptions(transportType, Priority, PreInvokeCallback, PostInvokeCallback);
+            return new InvocationOptions(transportType, Priority, ContinuationToken, PreInvokeCallback, PostInvokeCallback);
         }
 
         /// <summary>
@@ -106,7 +123,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         public InvocationOptions AddPreInvokeCallback(Func<IHttpRequest, Task> callback)
         {
             var oldCallback = PreInvokeCallback;
-            return new InvocationOptions(TransportType, Priority, async (req) =>
+            return new InvocationOptions(TransportType, Priority, ContinuationToken, async (req) =>
             {
                 await callback(req);
                 await oldCallback(req);
@@ -121,7 +138,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         public InvocationOptions AddPostInvokeCallback(Func<IHttpResponse, Task> callback)
         {
             var oldCallback = PostInvokeCallback;
-            return new InvocationOptions(TransportType, Priority, PreInvokeCallback, async (resp) =>
+            return new InvocationOptions(TransportType, Priority, ContinuationToken, PreInvokeCallback, async (resp) =>
             {
                 await callback(resp);
                 await oldCallback(resp);

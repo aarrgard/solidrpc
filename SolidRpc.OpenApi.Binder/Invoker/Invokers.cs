@@ -70,7 +70,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var transport = methodBinding?.Transports
                     .OrderBy(o => o.InvocationStrategy)
                     .FirstOrDefault();
-            var transformedOptions = new InvocationOptions(transport.GetTransportType() ?? "Local", InvocationOptions.MessagePriorityNormal, transport?.PreInvokeCallback, transport?.PostInvokeCallback);
+            var transformedOptions = new InvocationOptions(transport.GetTransportType() ?? "Local", InvocationOptions.MessagePriorityNormal, null, transport?.PreInvokeCallback, transport?.PostInvokeCallback);
             transformedOptions = invocationOptions?.Invoke(transformedOptions) ?? transformedOptions;
 
             var transportType = transformedOptions.TransportType;

@@ -9,6 +9,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
+using SolidRpc.OpenApi.Binder.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     public class MethodInvoker : IMethodInvoker
     {
         public const string RequestHeaderPrefixInInvocation = "http_req_";
+        public const string RequestHeaderContinuationTokenInInvocation = "http_req_X-SolidRpc-ContinuationToken";
         public const string ResponseHeaderPrefixInInvocation = "http_resp_";
 
         private class PathSegment
@@ -213,7 +215,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             object[] args;
             try
             {
-                request.Principal = serviceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal;
                 args = await selectedBinding.ExtractArgumentsAsync(request);
             }
             catch (Exception e)
@@ -228,7 +229,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             foreach (var qv in request.Headers)
             {
-                var headerName = $"{RequestHeaderPrefixInInvocation }{qv.Name}".ToLower();
+                var headerName = $"{RequestHeaderPrefixInInvocation}{qv.Name}".ToLower();
                 if (invocationValues.TryGetValue(headerName, out object value))
                 {
                     invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
@@ -239,38 +240,53 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
             }
 
-            try
+            //
+            // set continuation token
+            //
+            var continuationToken = serviceProvider.GetRequiredService<ISolidRpcContinuationToken>();
+            if(invocationValues.TryGetValue($"{RequestHeaderPrefixInInvocation}{continuationToken.GetHttpHeaderName()}".ToLower(), out object token)) 
             {
-                //
-                // Invoke
-                //
-                var res = await proxy.InvokeAsync(invocationSource, selectedBinding.MethodInfo, args, invocationValues);
-
-                //
-                // return response
-                //
-                // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
-                //
-                var resType = selectedBinding.MethodInfo.ReturnType;
-                if (resType.IsTaskType(out Type taskType))
+                continuationToken.Token = token?.ToString();
+            }
+            using (continuationToken.PushToken())
+            {
+                try
                 {
-                    resType = taskType ?? resType;
-                }
-                //
-                // bind the response
-                //
-                await selectedBinding.BindResponseAsync(resp, res, resType);
-            }
-            catch (Exception ex)
-            {
-                // handle exception
-                Logger.LogError(ex, "Service returned an exception - sending to client");
-                await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
-            }
+                    //
+                    // Invoke
+                    //
+                    var res = await proxy.InvokeAsync(invocationSource, selectedBinding.MethodInfo, args, invocationValues);
 
-            foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(ResponseHeaderPrefixInInvocation)))
-            {
-                resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
+                    //
+                    // return response
+                    //
+                    // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
+                    //
+                    var resType = selectedBinding.MethodInfo.ReturnType;
+                    if (resType.IsTaskType(out Type taskType))
+                    {
+                        resType = taskType ?? resType;
+                    }
+                    //
+                    // bind the response & continuation token
+                    //
+                    await selectedBinding.BindResponseAsync(resp, res, resType);
+                    if(!string.IsNullOrEmpty(continuationToken.Token))
+                    {
+                        resp.AdditionalHeaders.Add(continuationToken.GetHttpHeaderName(), continuationToken.Token);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // handle exception
+                    Logger.LogError(ex, "Service returned an exception - sending to client");
+                    await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
+                }
+
+                foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(ResponseHeaderPrefixInInvocation)))
+                {
+                    resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
+                }
             }
 
             return resp;

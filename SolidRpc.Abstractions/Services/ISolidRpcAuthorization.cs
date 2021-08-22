@@ -11,5 +11,15 @@ namespace SolidRpc.Abstractions.Services
         /// Gets / sets the current principal
         /// </summary>
         ClaimsPrincipal CurrentPrincipal { get; set; }
+
+        /// <summary>
+        /// Returns the "client_id" claim from current principal
+        /// </summary>
+        string ClientId { get; }
+
+        /// <summary>
+        /// Returns the "session_id" claim from current principal
+        /// </summary>
+        string SessionId { get; }
     }
 }

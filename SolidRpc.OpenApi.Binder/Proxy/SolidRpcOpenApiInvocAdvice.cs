@@ -18,7 +18,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class SolidRpcOpenApiInvocAdvice<TObject, TMethod, TAdvice> : ISolidProxyInvocationAdvice<TObject, TMethod, TAdvice> where TObject : class
     {
-        private const string s_HeaderPrefix = "http_req_";
         public static readonly IEnumerable<Type> AfterAdvices = new Type[] { typeof(SolidRpcOpenApiInitAdvice<,,>) };
 
         /// <summary>
@@ -83,14 +82,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 // add http headers
                 //
-                var httpHeaders = invocation.Keys.Where(o => o.StartsWith(s_HeaderPrefix, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                if (!string.IsNullOrEmpty(invocationOptions.ContinuationToken))
+                {
+                    invocation.SetValue<StringValues>(MethodInvoker.RequestHeaderContinuationTokenInInvocation, invocationOptions.ContinuationToken);
+                }
+                var httpHeaders = invocation.Keys.Where(o => o.StartsWith(MethodInvoker.RequestHeaderPrefixInInvocation, StringComparison.InvariantCultureIgnoreCase)).ToList();
                 if (httpHeaders.Any())
                 {
                     invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
                     {
                         var data = httpHeaders
-                            .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(s_HeaderPrefix.Length), Value = o2 }))
-                            .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value)).ToList();
+                            .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(MethodInvoker.RequestHeaderPrefixInInvocation.Length), Value = o2 }))
+                            .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value));
                         req.Headers = req.Headers.Union(data).ToList();
                         return Task.CompletedTask;
                     });

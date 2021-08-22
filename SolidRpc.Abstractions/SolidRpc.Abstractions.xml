@@ -447,11 +447,6 @@
             Returns the cancellation token
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Principal">
-            <summary>
-            Returns the principal associated whit this request
-            </summary>
-        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Method">
             <summary>
             The method to use
@@ -495,6 +490,7 @@
             When composing a request a call that consumes 
              - "application/x-www-form-urlencoded"
              - "multipart/form-data"
+             - "application/json"
             will create the request accordingly.
             </summary>
         </member>
@@ -720,16 +716,16 @@
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.DefaultPreInvokeCallback(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
             <summary>
-            The defaullt pre invoke callback(Does nothing)
+            The default pre invoke callback(Does nothing)
             </summary>
             <param name="httpReq"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.DefaultPostInvokeCallback(SolidRpc.Abstractions.OpenApi.Http.IHttpResponse)">
             <summary>
-            The defaullt post invoke callback(Does nothing)
+            The default post invoke callback(Does nothing)
             </summary>
-            <param name="httpReq"></param>
+            <param name="httpResp"></param>
             <returns></returns>
         </member>
         <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MessagePriorityHigh">
@@ -747,12 +743,13 @@
             The low message prio
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.String,System.Int32,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.String,System.Int32,System.String,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Constructs a new instance
             </summary>
             <param name="transportType"></param>
             <param name="priority"></param>
+            <param name="continuationToken"></param>
             <param name="preInvokeCallback"></param>
             <param name="postInvokeCallback"></param>
         </member>
@@ -764,6 +761,11 @@
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Priority">
             <summary>
             The invocation priority.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.ContinuationToken">
+            <summary>
+            The continuation token.
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.PreInvokeCallback">
@@ -781,6 +783,13 @@
             Returns a copy of this instance with another priority.
             </summary>
             <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetContinuationToken(System.String)">
+            <summary>
+            Returns a copy of this instance with another continuation token.
+            </summary>
+            <param name="continuationToken"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetTransport(System.String)">
@@ -1932,6 +1941,16 @@
             Gets / sets the current principal
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcAuthorization.ClientId">
+            <summary>
+            Returns the "client_id" claim from current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcAuthorization.SessionId">
+            <summary>
+            Returns the "session_id" claim from current principal
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -1995,6 +2014,61 @@
             <param name="path"></param>
             <param name="mapping"></param>
             <param name="isRedirect"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken">
+            <summary>
+            Represents a continuation token.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken.Token">
+            <summary>
+            The continuation token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken.GetToken``1">
+            <summary>
+            Returns the token
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken.SetToken``1(``0)">
+            <summary>
+            Returns the token
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions">
+            <summary>
+            Extension methods for the token
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.ContinuationToken">
+            <summary>
+            The continuation token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.GetHttpHeaderName(SolidRpc.Abstractions.Services.ISolidRpcContinuationToken)">
+            <summary>
+            Returns the http header name for the continuation token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.PushToken(SolidRpc.Abstractions.Services.ISolidRpcContinuationToken)">
+            <summary>
+            Pushes the token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.LoadToken(SolidRpc.Abstractions.Services.ISolidRpcContinuationToken)">
+            <summary>
+            Pushes the token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
             <summary>
@@ -2074,6 +2148,45 @@
             Lists the stored host instances
             </summary>
             <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcMethodStore">
+            <summary>
+            Implements the logic to get and store invocations for a user/session
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcMethodStore.GetHttpRequestAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Returns the http requests for the current user.
+            </summary>
+            <param name="takeCount"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcMethodStore.RemoveHttpRequestAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the http request for the current user.
+            </summary>
+            <param name="solidRpcCallId"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcMethodStore.GetHttpRequestsAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Returns the next http requests for supplied session
+            </summary>
+            <param name="sessionId"></param>
+            <param name="takeCount"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcMethodStore.RemoveHttpRequestAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Removes the http request 
+            </summary>
+            <param name="sessionId"></param>
+            <param name="solidRpcCallId"></param>
+            <param name="cancellation"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit">
@@ -2184,6 +2297,16 @@
         <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.CurrentPrincipal">
             <summary>
             The current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.ClientId">
+            <summary>
+            The client id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.SessionId">
+            <summary>
+            The session id.
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcConstants">
@@ -2651,6 +2774,43 @@
             <summary>
             The body.
             </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.HttpRequestExtensions">
+            <summary>
+            The request extensions
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestExtensions.SetHeader(SolidRpc.Abstractions.Types.HttpRequest,System.String,System.String)">
+            <summary>
+            Sets the header value
+            </summary>
+            <param name="httpRequest"></param>
+            <param name="headerName"></param>
+            <param name="headerValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestExtensions.GetHeader(SolidRpc.Abstractions.Types.HttpRequest,System.String)">
+            <summary>
+            Returns the header value
+            </summary>
+            <param name="httpRequest"></param>
+            <param name="headerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestExtensions.SetSolidRpcCallId(SolidRpc.Abstractions.Types.HttpRequest,System.String)">
+            <summary>
+            Sets the solid rpc call id
+            </summary>
+            <param name="httpRequest"></param>
+            <param name="callId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.HttpRequestExtensions.GetSolidRpcCallId(SolidRpc.Abstractions.Types.HttpRequest)">
+            <summary>
+            Sets the solid rpc call id
+            </summary>
+            <param name="httpRequest"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.HttpRequestTemplate">
             <summary>

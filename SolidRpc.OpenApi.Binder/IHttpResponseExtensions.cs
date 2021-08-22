@@ -45,6 +45,17 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 target.Location = source.Headers.Location.ToString();
             }
+            foreach(var h in source.Headers)
+            {
+                switch(h.Key.ToLower())
+                {
+                    case "location":
+                        break;
+                    default:
+                        target.AdditionalHeaders[h.Key] = string.Join("", h.Value);
+                        break;
+                }
+            }
         }
 
         private static string RemoveQuotes(string str)

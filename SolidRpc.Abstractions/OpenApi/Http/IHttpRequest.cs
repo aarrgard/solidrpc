@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Principal;
 using System.Threading;
 
 namespace SolidRpc.Abstractions.OpenApi.Http
@@ -13,11 +12,6 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// Returns the cancellation token
         /// </summary>
         CancellationToken CancellationToken { get; set; }
-
-        /// <summary>
-        /// Returns the principal associated whit this request
-        /// </summary>
-        IPrincipal Principal { get; set; }
 
         /// <summary>
         /// The method to use
@@ -61,6 +55,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// When composing a request a call that consumes 
         ///  - "application/x-www-form-urlencoded"
         ///  - "multipart/form-data"
+        ///  - "application/json"
         /// will create the request accordingly.
         /// </summary>
         string ContentType { get; set; }
