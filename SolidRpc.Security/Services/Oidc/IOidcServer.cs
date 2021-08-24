@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using SolidRpc.Security.Types;
 using System.Threading;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 namespace SolidRpc.Security.Services.Oidc {
     /// <summary>
     /// Defines logic for the oidc server

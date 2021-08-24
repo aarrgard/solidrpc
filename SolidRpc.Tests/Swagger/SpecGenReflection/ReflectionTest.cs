@@ -437,12 +437,12 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
 
             var mbs = ServiceProvider.GetRequiredService<IMethodBinderStore>();
             var binding1 = mbs.CreateMethodBindings(spec, methodInfo1).Single();
-            Assert.AreEqual("SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff", binding1.OperationId);
+            Assert.AreEqual("Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStuff", binding1.OperationId);
             Assert.AreEqual(methodInfo1, binding1.MethodInfo);
 
             var binding2 = mbs.CreateMethodBindings(spec, methodInfo2).Single();
 
-            Assert.AreEqual("SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface2#TestStuff", binding2.OperationId);
+            Assert.AreEqual("Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface2#TestStuff", binding2.OperationId);
             Assert.AreEqual(methodInfo2, binding2.MethodInfo);
 
             var methodBinder = mbs.MethodBinders.Single(o => o.Assembly == typeof(Interface1).Assembly);

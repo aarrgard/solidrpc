@@ -892,7 +892,7 @@
             <param name="securityDefinitionName"></param>
             <param name="headerName"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.AddOAuth2Auth(SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery,System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation.AddOAuth2Auth(SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery,System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Sets the oauth2 authentication
             </summary>
@@ -2913,132 +2913,132 @@
             The value
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery">
+        <member name="T:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery">
             <summary>
-            Represents a deiscovery document.
+            Represents a discovery document.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.Issuer">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.Issuer">
             <summary>
             REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.AuthorizationEndpoint">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.AuthorizationEndpoint">
             <summary>
             REQUIRED. URL of the OP&#39;s OAuth 2.0 Authorization Endpoint [OpenID.Core].
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.TokenEndpoint">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.TokenEndpoint">
             <summary>
             URL of the OP&#39;s OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.UserinfoEndpoint">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.UserinfoEndpoint">
             <summary>
             RECOMMENDED. URL of the OP&#39;s UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.RevocationEndpoint">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.RevocationEndpoint">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.DeviceAuthorizationEndpoint">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.DeviceAuthorizationEndpoint">
             <summary>
             OPTIONAL. URL of the authorization server&#39;s device authorization endpoint defined in Section 3.1.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.JwksUri">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.JwksUri">
             <summary>
             REQUIRED. URL of the OP&#39;s JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server&#39;s encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key&#39;s intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ScopesSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.ScopesSupported">
             <summary>
             RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.GrantTypesSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.GrantTypesSupported">
             <summary>
             OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is [&quot;authorization_code&quot;, &quot;implicit&quot;]&quot;
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ResponseModesSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.ResponseModesSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.SubjectTypesSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.SubjectTypesSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.IdTokenSigningAlgValuesSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.IdTokenSigningAlgValuesSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.EndSessionEndpoint">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.EndSessionEndpoint">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ResponseTypesSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.ResponseTypesSupported">
             <summary>
             REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.ClaimsSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.ClaimsSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.TokenEndpointAuthMethodsSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.TokenEndpointAuthMethodsSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.CodeChallengeMethodsSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.CodeChallengeMethodsSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.RequestUriParameterSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.RequestUriParameterSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.HttpLogoutSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.HttpLogoutSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.FrontchannelLogoutSupported">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.FrontchannelLogoutSupported">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.RbacUrl">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.RbacUrl">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.MsgraphHost">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.MsgraphHost">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.CloudGraphHostName">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.CloudGraphHostName">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.CloudInstanceName">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.CloudInstanceName">
             <summary>
             
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnnectDiscovery.TenantRegionScope">
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery.TenantRegionScope">
             <summary>
             
             </summary>

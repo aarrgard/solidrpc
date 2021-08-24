@@ -164,23 +164,23 @@ namespace SolidRpc.Tests.Invoker
             {
                 await ctx.StartAsync();
 
-                //var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
-                //for (int i = 500; i < 510; i++)
-                //{
-                //    var ctReq = Convert.ToBase64String(Encoding.UTF8.GetBytes(i.ToString()));
-                //    var ctResp = Convert.ToBase64String(Encoding.UTF8.GetBytes((i + 1).ToString()));
-                //    Assert.AreEqual(i, await invoker.InvokeAsync(o => o.TestContinuationTokenAsync(CancellationToken.None), opts => opts.SetContinuationToken(ctReq).AddPostInvokeCallback(resp =>
-                //    {
-                //        var ct = resp.AdditionalHeaders["X-SolidRpc-ContinuationToken"].ToString();
-                //        Assert.AreEqual(ctResp, ct);
-                //        return Task.CompletedTask;
-                //    })));
-                //}
-                var proxy = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
-                for (int i = 0; i < 10; i++)
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                for (int i = 500; i < 510; i++)
                 {
-                    Assert.AreEqual(i, await proxy.TestContinuationTokenAsync());
+                    var ctReq = Convert.ToBase64String(Encoding.UTF8.GetBytes(i.ToString()));
+                    var ctResp = Convert.ToBase64String(Encoding.UTF8.GetBytes((i + 1).ToString()));
+                    Assert.AreEqual(i, await invoker.InvokeAsync(o => o.TestContinuationTokenAsync(CancellationToken.None), opts => opts.SetContinuationToken(ctReq).AddPostInvokeCallback(resp =>
+                    {
+                        var ct = resp.AdditionalHeaders["X-SolidRpc-ContinuationToken"].ToString();
+                        Assert.AreEqual(ctResp, ct);
+                        return Task.CompletedTask;
+                    })));
                 }
+                //var proxy = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    Assert.AreEqual(i, await proxy.TestContinuationTokenAsync());
+                //}
             }
         }
     }

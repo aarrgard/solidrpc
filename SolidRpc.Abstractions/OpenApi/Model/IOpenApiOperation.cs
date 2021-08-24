@@ -33,7 +33,7 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <param name="scopes"></param>
         /// <returns>The security definition name for the supplied authority</returns>
         void AddOAuth2Auth(
-            OpenIDConnnectDiscovery authDoc,
+            OpenIDConnectDiscovery authDoc,
             string flow, 
             IEnumerable<string> scopes);
     }

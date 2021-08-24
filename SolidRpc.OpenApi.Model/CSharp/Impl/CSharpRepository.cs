@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
@@ -112,6 +113,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             LoadSystemTypes(typeof(Uri).Assembly);
             LoadSystemTypes(typeof(Guid).Assembly);
             LoadSystemTypes(typeof(StringValues).Assembly);
+            LoadSystemTypes(typeof(DataMemberAttribute).Assembly);
         }
 
         private void LoadSystemTypes(Assembly assembly)

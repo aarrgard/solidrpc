@@ -1,0 +1,398 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OAuth2",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/OAuth2",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/.well-known/openid-configuration": {
+      "get": {
+        "tags": [
+          "IOAuth2"
+        ],
+        "description": "Returns the discovery document",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#OAuth2#Services#IOAuth2#Discovery",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a discovery document.",
+            "schema": {
+              "$ref": "#/definitions/OpenIDConnectDiscovery"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IOAuth2/Token": {
+      "get": {
+        "tags": [
+          "IOAuth2"
+        ],
+        "description": "",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#OAuth2#Services#IOAuth2#Token",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "description": "",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "code_verifier",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "refresh_token",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response from a token request",
+            "schema": {
+              "$ref": "#/definitions/TokenResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "IOAuth2"
+        ],
+        "description": "",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#OAuth2#Services#IOAuth2#Token",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "description": "",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "code_verifier",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "refresh_token",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response from a token request",
+            "schema": {
+              "$ref": "#/definitions/TokenResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "OpenIDConnectDiscovery": {
+      "properties": {
+        "issuer": {
+          "type": "string",
+          "description": "REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer."
+        },
+        "authorization_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "REQUIRED. URL of the OP&#39;s OAuth 2.0 Authorization Endpoint [OpenID.Core]."
+        },
+        "token_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the OP&#39;s OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used."
+        },
+        "userinfo_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "RECOMMENDED. URL of the OP&#39;s UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components."
+        },
+        "revocation_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": ""
+        },
+        "device_authorization_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "OPTIONAL. URL of the authorization server&#39;s device authorization endpoint defined in Section 3.1."
+        },
+        "jwks_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "REQUIRED. URL of the OP&#39;s JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server&#39;s encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key&#39;s intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate."
+        },
+        "scopes_supported": {
+          "type": "array",
+          "description": "RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "grant_types_supported": {
+          "type": "array",
+          "description": "OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is [&quot;authorization_code&quot;, &quot;implicit&quot;]&quot;",
+          "items": {
+            "type": "string"
+          }
+        },
+        "response_modes_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subject_types_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id_token_signing_alg_values_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "end_session_endpoint": {
+          "type": "string",
+          "description": ""
+        },
+        "response_types_supported": {
+          "type": "array",
+          "description": "REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_endpoint_auth_methods_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code_challenge_methods_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "request_uri_parameter_supported": {
+          "type": "boolean",
+          "description": ""
+        },
+        "http_logout_supported": {
+          "type": "boolean",
+          "description": ""
+        },
+        "frontchannel_logout_supported": {
+          "type": "boolean",
+          "description": ""
+        },
+        "rbac_url": {
+          "type": "string",
+          "format": "uri",
+          "description": ""
+        },
+        "msgraph_host": {
+          "type": "string",
+          "description": ""
+        },
+        "cloud_graph_host_name": {
+          "type": "string",
+          "description": ""
+        },
+        "cloud_instance_name": {
+          "type": "string",
+          "description": ""
+        },
+        "tenant_region_scope": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "type": "object",
+      "description": "Represents a discovery document."
+    },
+    "TokenResponse": {
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "description": "REQUIRED.  The access token issued by the authorization server."
+        },
+        "token_type": {
+          "type": "string",
+          "description": "REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive."
+        },
+        "expires_in": {
+          "type": "string",
+          "description": "RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value &#39;3600&#39; denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value."
+        },
+        "refresh_token": {
+          "type": "string",
+          "description": "OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6."
+        },
+        "scope": {
+          "type": "string",
+          "description": "OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3."
+        }
+      },
+      "type": "object",
+      "description": "The response from a token request"
+    }
+  },
+  "tags": [
+    {
+      "name": "IOAuth2",
+      "description": "Creates an oauth2 spec"
+    }
+  ]
+}

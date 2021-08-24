@@ -138,7 +138,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
         }
 
-        Task<OpenIDConnnectDiscovery> IAuthority.GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
+        Task<OpenIDConnectDiscovery> IAuthority.GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
         {
             return AuthorityImpl.GetDiscoveryDocumentAsync(cancellationToken);
         }

@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.IOpenApiAttributes"
         ],
         "description": "Tests the location of the different arguments",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#IOpenApiAttributes#DoX#1",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#IOpenApiAttributes#DoX#1",
         "consumes": [
           "multipart/form-data"
         ],

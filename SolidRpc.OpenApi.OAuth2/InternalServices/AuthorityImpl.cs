@@ -84,7 +84,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         public string Authority { get; }
 
-        private OpenIDConnnectDiscovery OpenIDConnnectDiscovery { get; set; }
+        private OpenIDConnectDiscovery OpenIDConnnectDiscovery { get; set; }
 
         /// <summary>
         /// All the signing keys
@@ -194,7 +194,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<OpenIDConnnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             //
             // use cached version

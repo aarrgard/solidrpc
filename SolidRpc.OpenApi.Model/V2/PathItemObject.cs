@@ -106,5 +106,62 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             return Parameters ?? new ParameterObject[0];
         }
+
+        /// <summary>
+        /// Returns the operation object for supplied verb
+        /// </summary>
+        /// <param name="verb"></param>
+        /// <returns></returns>
+        public OperationObject this[string verb]
+        {
+            get
+            {
+                switch (verb.ToLower())
+                {
+                    case "head":
+                        return Head;
+                    case "options":
+                        return Options;
+                    case "get":
+                        return Get;
+                    case "put":
+                        return Put;
+                    case "delete":
+                        return Delete;
+                    case "post":
+                        return Post;
+                    case "patch":
+                        return Patch;
+                }
+                return null;
+            }
+            set
+            {
+                switch (verb.ToLower())
+                {
+                    case "head":
+                        Head = value;
+                        break;
+                    case "options":
+                        Options = value;
+                        break;
+                    case "get":
+                        Get = value;
+                        break;
+                    case "put":
+                        Put = value;
+                        break;
+                    case "delete":
+                        Delete = value;
+                        break;
+                    case "post":
+                        Post = value;
+                        break;
+                    case "patch":
+                        Patch = value;
+                        break;
+                }
+            }
+        }
     }
 }

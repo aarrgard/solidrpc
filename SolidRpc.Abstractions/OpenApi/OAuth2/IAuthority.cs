@@ -20,7 +20,7 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <summary>
         /// Returns the discovery document
         /// </summary>
-        Task<OpenIDConnnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Returns the principal for supplied jwt token

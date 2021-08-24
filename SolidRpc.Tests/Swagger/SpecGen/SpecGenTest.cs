@@ -51,8 +51,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach(var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "OpenApiConfig") continue;
-                CreateSpec(subDir.Name, true);
+                //if (subDir.Name != "OAuth2") continue;
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -936,7 +936,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<OpenApiConfig.Services.IOpenApiConfig>();
-                
+
                 moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == "s1"), It.Is<string>(a => a == "s2"), It.Is<string>(a => a == "s3"))).Returns(() => "s4");
                 var res = proxy.ProxyStrings("s1", "s2", "s3");
 
@@ -945,6 +945,61 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<OpenApiConfig.Services.IOpenApiConfig>>();
                 var uri = await invoker.GetUriAsync(o => o.ProxyStrings("s1", "s2", "s3"));
                 Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/OpenApiConfig/Services/IOpenApiConfig/ProxyStrings/s3?s2=s2", uri.PathAndQuery.ToString());
+            });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestOAuth2()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestOAuth2).Substring(4));
+
+                var moq = new Mock<OAuth2.Services.IOAuth2>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<OAuth2.Services.IOAuth2>();
+
+                moq.Setup(o => o.Discovery(It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(new OAuth2.Types.OpenIDConnectDiscovery() { Issuer = "My issuer" }));
+                moq.Setup(o => o.Token(It.Is<string>(a => a == "grant_type"), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(new OAuth2.Types.TokenResponse() { AccessToken = "AccessToken" }));
+                //
+                // use proxy(may be GET or POST)
+                //
+                var res = await proxy.Token("grant_type");
+                Assert.AreEqual("AccessToken", res.AccessToken);
+
+                //
+                // use GET method
+                //
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<OAuth2.Services.IOAuth2>>();
+                var uri = await invoker.GetUriAsync(o => o.Token("grant_type", null, null, null, null, null, null, null, null, null, CancellationToken.None));
+                Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/OAuth2/Services/IOAuth2/Token?grant_type=grant_type", uri.PathAndQuery.ToString());
+
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("OAuth2");
+                var strUri = uri.ToString();
+                var getResp = await httpClient.GetStringAsync(strUri);
+                Assert.AreEqual("{\"access_token\":\"AccessToken\"}", getResp);
+
+                //
+                // use POST method
+                //
+                var content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    { "grant_type", "grant_type" }
+                });
+                var postResp = await httpClient.PostAsync(strUri.Substring(0, strUri.IndexOf('?')), content);
+                var postStrResp = await postResp.Content.ReadAsStringAsync();
+                Assert.AreEqual("{\"access_token\":\"AccessToken\"}", postStrResp);
+                
+                // test discovery
+                uri = await invoker.GetUriAsync(o => o.Discovery(CancellationToken.None));
+                Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/OAuth2/.well-known/openid-configuration", uri.PathAndQuery.ToString());
+                strUri = uri.ToString();
+                getResp = await httpClient.GetStringAsync(strUri);
+                Assert.AreEqual("{\"issuer\":\"My issuer\"}", getResp);
             });
         }
     }

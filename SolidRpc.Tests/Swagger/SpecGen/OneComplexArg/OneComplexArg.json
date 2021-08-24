@@ -16,7 +16,7 @@
           "IOneComplexArg"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGen#OneComplexArg#Services#IOneComplexArg#GetComplexType",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#OneComplexArg#Services#IOneComplexArg#GetComplexType",
         "consumes": [
           "application/json"
         ],

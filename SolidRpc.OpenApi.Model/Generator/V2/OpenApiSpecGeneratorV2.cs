@@ -15,6 +15,11 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
     /// </summary>
     public class OpenApiSpecGeneratorV2 : OpenApiSpecGenerator
     {
+        private readonly static IEnumerable<string> s_AllVerbs = new string[] { 
+            "Get", "Put", "Post", "Head", "Options", "Patch", "Delete" 
+        };
+        private readonly static IEnumerable<string> s_AllVerbsLower = s_AllVerbs.Select(o => o.ToLower()).ToArray();
+
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
@@ -91,17 +96,21 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 .OrderBy(o => o.FullName)
                 .ToList().ForEach(m =>
             {
-                var (pathItemObject, operation) = CreatePathItemObject(paths, m);
-                var path = MapPath(m.FullName);
-                operation.GetParameters()
-                    .Where(o => o.In == "path")
-                    .Select(o => o.Name)
-                    .ToList().ForEach(o =>
-                    {
-                        path = $"{path}/{{{o}}}";
+                var (pathItemObject, operations) = CreatePathItemObject(paths, m);
+                var path = GetCSharpAttrValue(m, "OpenApi", "Path")?.ToString();
+                if(string.IsNullOrEmpty(path))
+                {
+                    path =MapPath(m.FullName);
+                    operations.First().GetParameters()
+                        .Where(o => o.In == "path")
+                        .Select(o => o.Name)
+                        .ToList().ForEach(o =>
+                        {
+                            path = $"{path}/{{{o}}}";
 
-                    });
-                if(!string.IsNullOrEmpty(Settings.BasePath) && path.StartsWith(Settings.BasePath))
+                        });
+                }
+                if (!string.IsNullOrEmpty(Settings.BasePath) && path.StartsWith(Settings.BasePath))
                 {
                     path = path.Substring(Settings.BasePath.Length);
                 }
@@ -110,30 +119,15 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             return paths;
         }
 
-        private (PathItemObject, OperationObject) CreatePathItemObject(PathsObject paths, ICSharpMethod method)
+        private (PathItemObject, IEnumerable<OperationObject>) CreatePathItemObject(PathsObject paths, ICSharpMethod method)
         {
             var pathItemObject = new PathItemObject(paths);
-            var operation = CreateOperationObject(pathItemObject, method);
+            var operations = CreateOperationObject(pathItemObject, method);
 
-            var paramTypes = operation.GetParameters()
-                .Select(o => o.In)
-                .Distinct();
-            var mustBePost = paramTypes
-                .Where(o => o != "query")
-                .Where(o => o != "path")
-                .Any();
-            if (mustBePost)
-            {
-                pathItemObject.Post = operation;
-            }
-            else
-            {
-                pathItemObject.Get = operation;
-            }
-            return (pathItemObject, operation);
+            return (pathItemObject, operations);
         }
 
-        private OperationObject CreateOperationObject(PathItemObject pathItemObject, ICSharpMethod method)
+        private IEnumerable<OperationObject> CreateOperationObject(PathItemObject pathItemObject, ICSharpMethod method)
         {
             var operationObject = new OperationObject(pathItemObject);
             operationObject.Tags = new string[] { CreateTag(null, (ICSharpType)method.Parent).Name };
@@ -166,7 +160,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     // get the schema for the property
                     //
                     var schema = GetSchema(operationObject, true, o.ParameterType);
-                    ParameterObject po = operationObject.GetParameter(o.Name);
+                    var name = GetCSharpAttrValue(o, "OpenApi", "Name")?.ToString() ?? o.Name;
+                    ParameterObject po = operationObject.GetParameter(name);
                     po.Description = o.Comment?.Summary;
                     po.Required = !o.Optional;
                     if(schema.GetBaseType() == "object")
@@ -187,7 +182,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                         if (po.Type == "array") po.CollectionFormat = "csv";
                     }
 
-                    foreach(var oaa in o.Members.OfType<ICSharpAttribute>().Where(IsOpenApiAttribute).SelectMany(x => x.AttributeData)) 
+                    foreach(var oaa in GetCSharpAttrs(o, "OpenApi")) 
                     {
                         apiAttributeFound = true;
                         switch(oaa.Key.ToLower())
@@ -278,21 +273,6 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 operationObject.AddProduces("application/json");
             }
 
-
-            // if we removed httprequest arg and no other parameters exists
-            // we put the call on all the other operations available.
-            if (foundHttpRequestArg && !operationObject.GetParameters().Any())
-            {
-                var pathItem = operationObject.GetParent<PathItemObject>();
-                if (pathItem.Get == null) pathItem.Get = CloneOperation(operationObject, "Get");
-                if (pathItem.Put == null) pathItem.Put = CloneOperation(operationObject, "Put");
-                if (pathItem.Post == null) pathItem.Post = CloneOperation(operationObject, "Post");
-                if (pathItem.Head == null) pathItem.Head = CloneOperation(operationObject, "Head");
-                if (pathItem.Options == null) pathItem.Options = CloneOperation(operationObject, "Options");
-                if (pathItem.Patch == null) pathItem.Patch = CloneOperation(operationObject, "Patch");
-                if (pathItem.Delete == null) pathItem.Delete = CloneOperation(operationObject, "Delete");
-            }
-
             // let the operation id reflect the number of path arguments there are
             var pathArgs = operationObject.GetParameters().Where(o => o.In == "path");
             if(pathArgs.Any())
@@ -300,26 +280,116 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 operationObject.OperationId = $"{operationObject.OperationId}#{pathArgs.Count()}";
             }
 
-            return operationObject;
+            //
+            // Determine verb to use
+            //
+            var verbs = GetCSharpAttrValue(method, "OpenApi", "Verbs") as string[];
+            if (verbs == null)
+            {
+                var paramTypes = operationObject.GetParameters()
+                    .Select(o => o.In)
+                    .Distinct();
+                var mustBePost = paramTypes
+                    .Where(o => o != "query")
+                    .Where(o => o != "path")
+                    .Any();
+                if (mustBePost)
+                {
+                    verbs = new[] { "Post" };
+                }
+                else
+                {
+                    verbs = new[] { "Get" };
+                }
+            }
+
+            var operationObjects = new List<OperationObject>();
+            for (int i = 0; i < verbs.Length; i++)
+            {
+                var verb = verbs[i];
+                var opCopy = operationObject;
+                if(i == 0)
+                {
+                    opCopy.OperationId = SetOperationVerb(verb, opCopy.OperationId);
+                }
+                else if (verb.ToLower() == "post")
+                {
+                    opCopy = CloneOperation(operationObject, verb);
+                    // supply all query parameters in the form
+                    opCopy.Parameters
+                        .Where(o => o.In == "query")
+                        .ToList().ForEach(o =>
+                        {
+                            o.In = "formData";
+                        });
+                }
+                pathItemObject[verb] = opCopy;
+                operationObjects.Add(opCopy);
+            }
+
+            // if we removed httprequest arg and no other parameters exists
+            // we put the call on all the other operations available.
+            if (foundHttpRequestArg && !operationObject.GetParameters().Any())
+            {
+                var pathItem = operationObject.GetParent<PathItemObject>();
+                foreach(var verb in s_AllVerbs)
+                {
+                    if(pathItem[verb] == null)
+                    {
+                        var opCopy = CloneOperation(operationObject, verb);
+                        pathItem[verb] = opCopy;
+                        operationObjects.Add(opCopy);
+                    }
+                }
+            }
+            return operationObjects;
         }
 
-        private bool IsOpenApiAttribute(ICSharpAttribute arg)
+        private IEnumerable<KeyValuePair<string, object>> GetCSharpAttrs(ICSharpMember m, string attrType)
         {
-            if (arg.Name.Equals("OpenApi")) return true;
-            if (arg.Name.Equals("OpenApiAttribute")) return true;
-            if (arg.Name.EndsWith(".OpenApi")) return true;
-            if (arg.Name.EndsWith(".OpenApiAttribute")) return true;
-            if (arg.Name.EndsWith("+OpenApi")) return true;
-            if (arg.Name.EndsWith("+OpenApiAttribute")) return true;
+            return m.Members.OfType<ICSharpAttribute>()
+                .Where(x => IsOpenApiAttribute(x, attrType))
+                .SelectMany(x => x.AttributeData);
+        }
+
+        private object GetCSharpAttrValue(ICSharpMember m, string attrType, string property)
+        {
+            return GetCSharpAttrs(m, attrType)
+                .Where(x => x.Key.ToLower() == property.ToLower())
+                .Select(x => x.Value).FirstOrDefault();
+
+        }
+
+        private bool IsOpenApiAttribute(ICSharpAttribute arg, string attrType)
+        {
+            if (arg.Name.Equals($"{attrType}")) return true;
+            if (arg.Name.Equals($"{attrType}Attribute")) return true;
+            if (arg.Name.EndsWith($".{attrType}")) return true;
+            if (arg.Name.EndsWith($".{attrType}Attribute")) return true;
+            if (arg.Name.EndsWith($"+{attrType}")) return true;
+            if (arg.Name.EndsWith($"+{attrType}Attribute")) return true;
             return false;
         }
 
-        private OperationObject CloneOperation(OperationObject operationObject, string method)
+        private OperationObject CloneOperation(OperationObject operationObject, string verb)
         {
             var resolver = operationObject.GetParent<IOpenApiSpecResolver>();
             var newOp = resolver.OpenApiParser.CloneNode(operationObject);
-            newOp.OperationId = $"{operationObject.OperationId}#{method}";
+            newOp.OperationId = SetOperationVerb(verb, newOp.OperationId);
             return newOp;
+        }
+
+        private string SetOperationVerb(string verb, string operationId)
+        {
+            if (s_AllVerbsLower.Any(o => operationId.Split('#').First().ToLower() == o))
+            {
+                int idx = operationId.IndexOf('#');
+                return $"{verb}{operationId.Substring(idx, operationId.Length - idx)}";
+            }
+            else
+            {
+                return $"{verb}#{operationId}";
+            }
         }
 
         private ResponsesObject CreateResponses(OperationObject operationObject, ICSharpMethod method)
@@ -447,7 +517,8 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 {
                     schema.Description = o.Comment?.Summary;
                 }
-                definitionsObject[o.Name] = schema;
+                var name = GetCSharpAttrValue(o, "DataMember", "Name")?.ToString() ?? o.Name;
+                definitionsObject[name] = schema;
             });
             return definitionsObject;
         }

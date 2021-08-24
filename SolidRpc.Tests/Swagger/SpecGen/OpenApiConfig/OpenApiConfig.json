@@ -16,7 +16,7 @@
           "IOpenApiConfig"
         ],
         "description": "Proxies the string",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGen#OpenApiConfig#Services#IOpenApiConfig#ProxyStrings#1",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#OpenApiConfig#Services#IOpenApiConfig#ProxyStrings#1",
         "consumes": [
           "multipart/form-data"
         ],

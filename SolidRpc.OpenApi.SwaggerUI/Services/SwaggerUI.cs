@@ -251,7 +251,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                             if (AuthorityFactory == null) throw new Exception("You need to add the OAuth2 services.");
                             var authority = AuthorityFactory.GetAuthority(oauth2Config.OAuth2Authority);
                             var authDoc = await authority.GetDiscoveryDocumentAsync(cancellationToken);
-                            authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnnectDiscovery()
+                            authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnectDiscovery()
                             {
                                 AuthorizationEndpoint = new Uri("https://no.authority.found"),
                                 TokenEndpoint = new Uri("https://no.authority.found"),

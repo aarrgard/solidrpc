@@ -199,6 +199,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
             var property = new CSharpProperty(m, propertyName, propertyType);
             SetComment(pds, property);
             m.AddMember(property);
+            AddAttributes(pds, pds.AttributeLists, property);
         }
 
         private void CreateCSharpMethod(MethodDeclarationSyntax mds)
@@ -230,33 +231,47 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 var optional = o.Default != null;
                 var mp = new CSharpMethodParameter(method, parameterName, parameterType, optional);
                 method.AddMember(mp);
-
-                foreach (var a in o.AttributeLists.SelectMany(x => x.Attributes))
-                {
-                    var attrName = a.Name.ToString();
-                    if (!attrName.EndsWith("Attribute"))
-                    {
-                        attrName = $"{attrName}Attribute";
-                    }
-                    attrName = GetFullName(mds, attrName);
-                    var namedArgs = new Dictionary<string, object>();
-                    a.ArgumentList.Arguments.Where(x => x.NameEquals != null).ToList().ForEach(x => namedArgs[x.NameEquals.Name.ToString()] = CreateValue(x.Expression));
-                    var args = a.ArgumentList.Arguments.Where(x => x.NameEquals == null).Select(x => CreateValue(x.Expression)).ToList();
-                    mp.AddMember(new CSharpAttribute(mp, attrName, args, namedArgs));
-                }
+                AddAttributes(o, o.AttributeLists, mp);
             });
 
             SetComment(mds, method);
             m.AddMember(method);
+            AddAttributes(mds, mds.AttributeLists, method);
         }
 
-        private object CreateValue(ExpressionSyntax expression)
+        private void AddAttributes(SyntaxNode sn, SyntaxList<AttributeListSyntax> lst, ICSharpMember mp)
+        {
+            foreach (var a in lst.SelectMany(x => x.Attributes))
+            {
+                var attrName = a.Name.ToString();
+                if (!attrName.EndsWith("Attribute"))
+                {
+                    attrName = $"{attrName}Attribute";
+                }
+                attrName = GetFullName(sn, attrName);
+                var namedArgs = new Dictionary<string, object>();
+                a.ArgumentList.Arguments.Where(x => x.NameEquals != null).ToList().ForEach(x => namedArgs[x.NameEquals.Name.ToString()] = CreateValue(x.Expression));
+                var args = a.ArgumentList.Arguments.Where(x => x.NameEquals == null).Select(x => CreateValue(x.Expression)).ToList();
+                mp.AddMember(new CSharpAttribute(mp, attrName, args, namedArgs));
+            }
+        }
+
+        private object CreateValue(SyntaxNode expression)
         {
             switch(expression.Kind())
             {
                 case SyntaxKind.StringLiteralExpression:
                     var s = expression.ToString();
                     return s.Substring(1, s.Length - 2);
+                case SyntaxKind.TrueLiteralExpression:
+                case SyntaxKind.FalseLiteralExpression:
+                    return expression.ToString();
+                case SyntaxKind.ImplicitArrayCreationExpression:
+                    var x = (ImplicitArrayCreationExpressionSyntax)expression;
+                    return x.ChildNodes().Select(o => (string[])CreateValue(o)).SelectMany(o => o).ToArray();
+                case SyntaxKind.ArrayInitializerExpression:
+                    var i = (InitializerExpressionSyntax)expression;
+                    return i.ChildNodes().Select(o => (string)CreateValue(o)).ToArray();
                 default:
                     throw new ArgumentException("Cannot create value from:" + expression.ToString());
             }

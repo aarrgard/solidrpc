@@ -1,12 +1,12 @@
 using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-namespace SolidRpc.Abstractions.Types.OAuth2
+namespace SolidRpc.Tests.Swagger.SpecGen.OAuth2.Types
 {
     /// <summary>
-    /// Represents a deiscovery document.
+    /// Represents a discovery document.
     /// </summary>
-    public class OpenIDConnnectDiscovery {
+    public class OpenIDConnectDiscovery {
         /// <summary>
         /// REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
         /// </summary>

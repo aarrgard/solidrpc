@@ -16,7 +16,7 @@
           "SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services.IUrlAndQueryArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGen#TestUrlAndQueryArgs#Services#IUrlAndQueryArgs#DoSometingAsync#1",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#TestUrlAndQueryArgs#Services#IUrlAndQueryArgs#DoSometingAsync#1",
         "parameters": [
           {
             "name": "urlArg",

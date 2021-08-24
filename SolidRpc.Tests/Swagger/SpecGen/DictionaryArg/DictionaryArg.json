@@ -16,7 +16,7 @@
           "IDictionaryArg"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "SolidRpc#Tests#Swagger#SpecGen#DictionaryArg#Services#IDictionaryArg#GetDictionaryValues",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#DictionaryArg#Services#IDictionaryArg#GetDictionaryValues",
         "consumes": [
           "application/json"
         ],

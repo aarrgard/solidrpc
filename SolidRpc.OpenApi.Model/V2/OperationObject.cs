@@ -327,7 +327,7 @@ namespace SolidRpc.OpenApi.Model.V2
         /// <param name="flow"></param>
         /// <param name="scopes"></param>
         /// <returns></returns>
-        public void AddOAuth2Auth(OpenIDConnnectDiscovery authDoc, string flow, IEnumerable<string> scopes)
+        public void AddOAuth2Auth(OpenIDConnectDiscovery authDoc, string flow, IEnumerable<string> scopes)
         {
             if(scopes == null || !scopes.Any())
             {
@@ -345,7 +345,7 @@ namespace SolidRpc.OpenApi.Model.V2
             } 
         }
 
-        private void AddOAuth2AccessCodeAuth(OpenIDConnnectDiscovery authDoc, IEnumerable<string> scopes)
+        private void AddOAuth2AccessCodeAuth(OpenIDConnectDiscovery authDoc, IEnumerable<string> scopes)
         {
             //
             // make sure that the security definition exists
