@@ -93,12 +93,13 @@ namespace SolidRpc.OpenApi.Model
         /// <typeparam name="T"></typeparam>
         /// <param name="node"></param>
         /// <returns></returns>
-        public T CloneNode<T>(T node)
+        public T CloneNode<T>(T node) where T : IOpenApiModelBase
         {
             string s;
             SerializerFactory.SerializeToString(out s, node);
             T newNode;
             SerializerFactory.DeserializeFromString(s, out newNode);
+            newNode.SetParent(node.Parent);
             return newNode;
         }
     }

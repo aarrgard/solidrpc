@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SolidRpc.Abstractions.OpenApi.Model;
 
 namespace SolidRpc.OpenApi.Model
 {
     /// <summary>
     /// Base class implemented by all the model instances.
     /// </summary>
-    public abstract class ModelBase
+    public abstract class ModelBase : IOpenApiModelBase
     {
         /// <summary>
         /// Constructs a new instance
         /// </summary>
         /// <param name="parent"></param>
-        protected ModelBase(ModelBase parent)
+        protected ModelBase(IOpenApiModelBase parent)
         {
             Parent = parent;
         }
         /// <summary>
         /// Returns the parent structure - null for SwaggerObject
         /// </summary>
-        public ModelBase Parent { get; private set; }
+        public IOpenApiModelBase Parent { get; private set; }
 
         /// <summary>
         /// Sets the parent.
         /// </summary>
         /// <param name="parent"></param>
-        public void SetParent(ModelBase parent)
+        public void SetParent(IOpenApiModelBase parent)
         {
             Parent = parent;
         }

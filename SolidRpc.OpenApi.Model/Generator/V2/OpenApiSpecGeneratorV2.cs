@@ -307,14 +307,10 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             for (int i = 0; i < verbs.Length; i++)
             {
                 var verb = verbs[i];
-                var opCopy = operationObject;
-                if(i == 0)
+                var opCopy = CloneOperation(operationObject, verb);
+
+                if (verbs.Length > 1 && verb.ToLower() == "post")
                 {
-                    opCopy.OperationId = SetOperationVerb(verb, opCopy.OperationId);
-                }
-                else if (verb.ToLower() == "post")
-                {
-                    opCopy = CloneOperation(operationObject, verb);
                     // supply all query parameters in the form
                     opCopy.Parameters
                         .Where(o => o.In == "query")

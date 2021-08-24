@@ -870,6 +870,21 @@
             <param name="methodBinding"></param>
             <param name="transport"></param>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiModelBase">
+            <summary>
+            Represents a model object
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Model.IOpenApiModelBase.Parent">
+            <summary>
+            Returns the parent node.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Model.IOpenApiModelBase.SetParent(SolidRpc.Abstractions.OpenApi.Model.IOpenApiModelBase)">
+            <summary>
+            Sets the parent node.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Model.IOpenApiOperation">
             <summary>
             Represents an operation.

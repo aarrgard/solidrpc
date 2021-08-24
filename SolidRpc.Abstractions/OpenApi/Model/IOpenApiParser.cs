@@ -45,6 +45,6 @@ namespace SolidRpc.Abstractions.OpenApi.Model
         /// <typeparam name="T"></typeparam>
         /// <param name="node"></param>
         /// <returns></returns>
-        T CloneNode<T>(T node);
+        T CloneNode<T>(T node) where T : IOpenApiModelBase;
     }
 }

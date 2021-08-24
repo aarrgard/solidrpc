@@ -36,7 +36,7 @@
           "IOAuth2"
         ],
         "description": "",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#OAuth2#Services#IOAuth2#Token",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#OAuth2#Services#IOAuth2#Token",
         "produces": [
           "application/json"
         ],
@@ -137,42 +137,42 @@
         "parameters": [
           {
             "name": "grant_type",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "client_id",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "client_secret",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "username",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "password",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "scope",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "array",
             "description": "",
@@ -183,28 +183,28 @@
           },
           {
             "name": "code",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "redirect_uri",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "code_verifier",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
           },
           {
             "name": "refresh_token",
-            "in": "query",
+            "in": "formData",
             "required": false,
             "type": "string",
             "description": ""
