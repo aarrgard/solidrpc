@@ -9,10 +9,10 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.4" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc019" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc020" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj" />
+    <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.ApplicationInsights\SolidRpc.OpenApi.ApplicationInsights.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctionsV2\SolidRpc.OpenApi.AzFunctionsV2Extension.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj" />

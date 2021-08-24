@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.NpmGenerator.Services;
-using SolidRpc.NpmGenerator.Types;
 using SolidProxy.GeneratorCastle;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
-using SolidRpc.Security.Services;
 using System.Threading;
 using SolidRpc.Node.Services;
 using System;
 using SolidRpc.Node.Types;
 using SolidRpc.Abstractions.Services.Code;
+using SolidRpc.Abstractions.Types.Code;
 
 namespace SolidRpc.Tests.NpmGenerator
 {
@@ -21,73 +18,6 @@ namespace SolidRpc.Tests.NpmGenerator
     /// </summary>
     public class NpmGeneratorTest : TestBase
     {
-        /// <summary>
-        /// Tests the type store
-        /// </summary>
-        [Test, Ignore("Implement")]
-        public async Task TestNodeServices()
-        {
-            var sc = new ServiceCollection();
-            sc.AddLogging(ConfigureLogging);
-            sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcNpmGenerator();
-
-            var sp = sc.BuildServiceProvider();
-            var npmGenerator = sp.GetRequiredService<INpmGenerator>();
-
-            var npmPackage = new NpmPackage()
-            {
-                Files = new[]
-                {
-                    new NpmPackageFile()
-                    {
-                        FilePath = "package.json",
-                        Content = @"{
-    ""name"": ""test"",
-    ""version"": ""1.0.0"",
-    ""devDependencies"": {
-        ""webpack"": ""4.39.2""
-    },
-    ""scripts"": {
-        ""build"": ""webpack --mode production""
-    }
-}"
-                    },
-                    new NpmPackageFile()
-                    {
-                        FilePath = "tsconfig.json",
-                        Content = @"
-{
-  ""compilerOptions"": {
-    ""target"": ""es5"",       
-    ""module"": ""commonjs"",  
-    ""outDir"": ""./dist"",    
-  },
-  ""include"": [""./src/**/*""],
-  ""exclude"": [
-    ""node_modules""
-  ]
-}"
-                    }
-                }
-            };
-
-            var compiledPackage = await npmGenerator.RunNpm("webpack", npmPackage);
-
-            // make sure that all the supplied files are returned.
-            var files = new List<NpmPackageFile>(compiledPackage.Files);
-            foreach (var f in npmPackage.Files)
-            {
-                Assert.AreEqual(1, files.RemoveAll(o => o.FilePath == f.FilePath));
-            }
-
-
-            //            var nodeServices = sp.GetRequiredService<INodeServices>();
-            //            var res = await nodeServices.InvokeAsync<string>("NodeServices\\main.js", @"
-            //declare function greet(greeting: string): void;
-            //let x=5;
-            //");
-        }
 
         /// <summary>
         /// Tests the type store
@@ -99,7 +29,7 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcNpmGenerator();
+            sc.AddSolidRpcNode();
 
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();
@@ -150,7 +80,7 @@ namespace SolidRpc.Tests.NpmGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcNpmGenerator();
+            sc.AddSolidRpcNode();
 
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();
@@ -192,7 +122,7 @@ const puppeteer = require('puppeteer');
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcNpmGenerator();
+            sc.AddSolidRpcNode();
 
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();

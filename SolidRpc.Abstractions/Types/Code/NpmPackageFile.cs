@@ -1,5 +1,5 @@
 using System.Runtime.Serialization;
-namespace SolidRpc.NpmGenerator.Types {
+namespace SolidRpc.Abstractions.Types.Code {
     /// <summary>
     /// 
     /// </summary>

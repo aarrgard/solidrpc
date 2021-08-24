@@ -54,7 +54,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 o.OAuthClientId = "testar";
                 o.OAuthClientSecret = "secret";
             }, ConfigureAzureFunction);
-            services.AddSolidRpcNpmGenerator(ConfigureAzureFunction);
+            services.AddSolidRpcNode(ConfigureAzureFunction);
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
@@ -64,7 +64,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<ITestInterface>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
-            services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
+            //services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {

@@ -41,7 +41,6 @@ namespace SolidRpc.Test.PetstoreWeb
                 }
                 return true;
             });
-            services.AddSolidRpcNpmGenerator();
             services.AddSolidRpcOAuth2();
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>
             //{

@@ -1,7 +1,7 @@
 ﻿import { default as CancellationToken } from 'cancellationtoken';
 import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators'
-import { SolidRpc } from 'solidrpc';
+import { SolidRpcJs } from 'solidrpc';
 export namespace Security {
     export namespace Services {
         export namespace Facebook {
@@ -61,7 +61,7 @@ export namespace Security {
             /**
              * Defines logic for the callback from facebook
              */
-            export class FacebookLocalImpl  extends SolidRpc.RpcServiceImpl implements IFacebookLocal {
+            export class FacebookLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IFacebookLocal {
                 constructor() {
                     super();
                     this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
@@ -208,7 +208,7 @@ export namespace Security {
             /**
              * Defines logic @ facebook
              */
-            export class FacebookRemoteImpl  extends SolidRpc.RpcServiceImpl implements IFacebookRemote {
+            export class FacebookRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IFacebookRemote {
                 constructor() {
                     super();
                     this.GetAccessTokenSubject = new Subject<Security.Types.FacebookAccessToken>();
@@ -338,7 +338,7 @@ export namespace Security {
             /**
              * Defines logic for the callback from google
              */
-            export class GoogleLocalImpl  extends SolidRpc.RpcServiceImpl implements IGoogleLocal {
+            export class GoogleLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IGoogleLocal {
                 constructor() {
                     super();
                     this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
@@ -512,7 +512,7 @@ export namespace Security {
             /**
              * Defines access to the google oauth implementation
              */
-            export class GoogleRemoteImpl  extends SolidRpc.RpcServiceImpl implements IGoogleRemote {
+            export class GoogleRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IGoogleRemote {
                 constructor() {
                     super();
                     this.AuthorizeSubject = new Subject<void>();
@@ -688,7 +688,7 @@ export namespace Security {
             /**
              * Defines logic for the callback from microsoft
              */
-            export class MicrosoftLocalImpl  extends SolidRpc.RpcServiceImpl implements IMicrosoftLocal {
+            export class MicrosoftLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IMicrosoftLocal {
                 constructor() {
                     super();
                     this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
@@ -865,7 +865,7 @@ export namespace Security {
             /**
              * Defines access to the microsoft oauth implementation
              */
-            export class MicrosoftRemoteImpl  extends SolidRpc.RpcServiceImpl implements IMicrosoftRemote {
+            export class MicrosoftRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IMicrosoftRemote {
                 constructor() {
                     super();
                     this.AuthorizeSubject = new Subject<void>();
@@ -1092,7 +1092,7 @@ export namespace Security {
             /**
              * Defines logic for the oidc server
              */
-            export class OidcServerImpl  extends SolidRpc.RpcServiceImpl implements IOidcServer {
+            export class OidcServerImpl  extends SolidRpcJs.RpcServiceImpl implements IOidcServer {
                 constructor() {
                     super();
                     this.OAuth2DiscoverySubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
@@ -1339,7 +1339,7 @@ export namespace Security {
         /**
          * Defines logic for solid rpc security
          */
-        export class SolidRpcSecurityImpl  extends SolidRpc.RpcServiceImpl implements ISolidRpcSecurity {
+        export class SolidRpcSecurityImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcSecurity {
             constructor() {
                 super();
                 this.LoginPageSubject = new Subject<Security.Types.WebContent>();

@@ -55,7 +55,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             sb.AppendLine("import { default as CancellationToken } from 'cancellationtoken';");
             sb.AppendLine("import { Observable, Subject } from 'rxjs';");
             sb.AppendLine("import { share } from 'rxjs/operators'");
-            sb.AppendLine("import { SolidRpc } from 'solidrpc';");
+            sb.AppendLine("import { SolidRpcJs } from 'solidrpc';");
 
 
             CreateTypesTs(codeNamespace, sb, "", codeNamespace);
@@ -163,7 +163,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             }
             CreteJsComment(code, indentation, interfaze.Description);
             className = $"{className}Impl";
-            code.Append(indentation).AppendLine($"export class {className}  extends SolidRpc.RpcServiceImpl implements {interfaze.Name} {{");
+            code.Append(indentation).AppendLine($"export class {className}  extends SolidRpcJs.RpcServiceImpl implements {interfaze.Name} {{");
             {
                 var interfazeIndentation = CreateIndentation(indentation);
                 //
@@ -305,7 +305,7 @@ namespace SolidRpc.OpenApi.Binder.Services
         {
             if (type.LastOrDefault() == "[]")
             {
-                return $"{varName}.forEach(o => {CreateJs2JsonConverter(rootNamespace, type.Reverse().Skip(1).Reverse(), "o")})";
+                return $"for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(',');";
             }
             var jsType = CreateTypescriptType(rootNamespace, type);
             switch (jsType)
@@ -337,7 +337,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "void":
                     return "null";
                 case "string":
-                    return $"{varName}.toString()";
+                    return $"{varName} as string";
                 case "boolean":
                     return $"[true, 'true', 1].some(o => o === {varName})";
                 case "number":

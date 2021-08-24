@@ -116,7 +116,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 Description = CodeDocRepository.GetClassDoc(interfaze).Summary,
                 Name = interfaze.Name,
-                Methods = interfaze.GetMethods().Select(o => CreateCodeMethod(rootNamespace, o)).ToList()
+                Methods = interfaze.GetMethods().Select(o => CreateCodeMethod(rootNamespace, o)).Where(o => o != null).ToList()
             };
 
             var ns = GetNamespace(rootNamespace, interfaze.FullName);
@@ -127,6 +127,7 @@ namespace SolidRpc.OpenApi.Binder.Services
         private CodeMethod CreateCodeMethod(CodeNamespace rootNamespace, MethodInfo mi)
         {
             var methodBinding = MethodBinderStore.GetMethodBinding(mi);
+            if (methodBinding == null) return null;
             var httpTransport = methodBinding.Transports.OfType<IHttpTransport>().FirstOrDefault();
             if(httpTransport == null)
             {
@@ -199,6 +200,9 @@ namespace SolidRpc.OpenApi.Binder.Services
                     return new string[] { "CancellationToken" };
                 case "System.Uri":
                     return new string[] { "Uri" };
+                case "System.DateTime":
+                case "System.DateTimeOffset":
+                    return new string[] { "Date" };
                 default:
                     if(CreateCodeType(rootNamespace, type))
                     {

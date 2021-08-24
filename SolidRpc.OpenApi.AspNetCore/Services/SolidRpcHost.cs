@@ -42,8 +42,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             //{
             //    { "MyCookie", Guid.NewGuid().ToString() }
             //};
-            HostStores = ServiceProvider.GetRequiredService<IEnumerable<ISolidRpcHostStore>>();
-            SolidRpcApplication = ServiceProvider.GetRequiredService<ISolidRpcApplication>();
+            HostStores = serviceProvider.GetRequiredService<IEnumerable<ISolidRpcHostStore>>();
+            SolidRpcApplication = serviceProvider.GetRequiredService<ISolidRpcApplication>();
+            MethodAddressResolver = ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
             RegisterHost();
         }
 
@@ -66,6 +67,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// The application
         /// </summary>
         protected ISolidRpcApplication SolidRpcApplication { get; }
+        private IMethodAddressTransformer MethodAddressResolver { get; }
 
         /// <summary>
         /// The start time
@@ -178,14 +180,13 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <returns></returns>
         public Task<SolidRpcHostInstance> GetHostInstance(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var addressTransformer = ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
             return Task.FromResult(new SolidRpcHostInstance()
             {
                 HostId = SolidRpcApplication.HostId,
                 Started = Started,
                 LastAlive = DateTimeOffset.Now,
                 HttpCookies = HttpCookies,
-                BaseAddress = addressTransformer.BaseAddress
+                BaseAddress = MethodAddressResolver.BaseAddress
             });
         }
 

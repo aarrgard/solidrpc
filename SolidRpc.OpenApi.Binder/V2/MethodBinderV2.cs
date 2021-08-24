@@ -178,13 +178,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
             item = item.GetRefSchema() ?? item;
             var clrType = item.GetClrType();
-            if (type.IsNullableType(out Type nullableType))
-            {
-                type = nullableType;
-            }
             if (type.IsTaskType(out Type taskType))
             {
                 type = taskType;
+            }
+            if (type.IsNullableType(out Type nullableType))
+            {
+                type = nullableType;
             }
             if (type.IsAssignableFrom(clrType))
             {

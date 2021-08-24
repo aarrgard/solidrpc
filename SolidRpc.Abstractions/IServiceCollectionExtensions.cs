@@ -89,7 +89,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent))
                 .Union(typeof(ISolidRpcHost).GetMethods())
                 .Union(typeof(ICodeNamespaceGenerator).GetMethods())
-                .Union(typeof(ITypescriptGenerator).GetMethods());
+                .Union(typeof(ITypescriptGenerator).GetMethods())
+                .Union(typeof(INpmGenerator).GetMethods());
 
             var openApiParser = services.GetSolidRpcOpenApiParser();
             var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
@@ -100,12 +101,12 @@ namespace Microsoft.Extensions.DependencyInjection
                     c.OpenApiSpec = solidRpcHostSpec;
 
                     //
-                    // remove securitykey for the content handler
+                    // disable security for content handler
                     //
                     var method = c.Methods.Single();
                     if(method.DeclaringType == typeof(ISolidRpcContentHandler))
                     {
-                        c.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = null;
+                        c.DisableSecurity();
                     }
                     return configurator?.Invoke(c) ?? false;
                 });

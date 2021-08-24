@@ -57,13 +57,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="SolidCI.Azure" Version="1.0.0" />
-    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc019" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc020" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
-    <ProjectReference Include="..\SolidRpc.NpmGenerator\SolidRpc.NpmGenerator.csproj" />
+    <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.ApplicationInsights\SolidRpc.OpenApi.ApplicationInsights.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AspNetCore\SolidRpc.OpenApi.AspNetCore.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj" />
@@ -73,6 +73,7 @@
     <ProjectReference Include="..\SolidRpc.OpenApi.Generator\SolidRpc.OpenApi.Generator.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.OAuth2\SolidRpc.OpenApi.OAuth2.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
     <ProjectReference Include="..\SolidRpc.Security.Back\SolidRpc.Security.Back.csproj" />
     <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />

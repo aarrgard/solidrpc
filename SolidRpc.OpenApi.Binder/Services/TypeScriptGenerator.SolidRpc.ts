@@ -1,9 +1,8 @@
 ﻿import { default as axios, AxiosRequestConfig, CancelToken, Method } from 'axios';
 import { default as CancellationToken } from 'cancellationtoken';
 import { Observable, Subscriber, Subject } from 'rxjs';
-//import { stringify } from 'qs';
 
-export namespace SolidRpc {
+export namespace SolidRpcJs {
     // the global namespace
     var rootNS: Namespace;
 
@@ -97,6 +96,8 @@ export namespace SolidRpc {
         enocodeUriValue(input: string): string {
             input = encodeURI(input);
             input = input.replace(/\//g, '%2F');
+            input = input.replace(/:/g, '%3a');
+            input = input.replace(/\+/g, '%2b');
             return input;
         }
 

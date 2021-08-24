@@ -24,6 +24,34 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_arg0
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmZip_arg0
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmZip_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForAssemblyAsync_arg0
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForAssemblyAsync_arg0")]
@@ -197,62 +225,6 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Node_Services_INodeService_ListNodeModulesAsync")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Node/Services/INodeService/ListNodeModulesAsync")] HttpRequestMessage req,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
-        }
-    }
-
-
-    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpm_arg0
-    {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpm_arg0")]
-        public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpm/{arg0}")] HttpRequestMessage req,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
-        }
-    }
-
-
-    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpmPackage_arg0
-    {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateNpmPackage_arg0")]
-        public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateNpmPackage/{arg0}")] HttpRequestMessage req,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
-        }
-    }
-
-
-    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateTypesTs_arg0
-    {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_CreateTypesTs_arg0")]
-        public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/CreateTypesTs/{arg0}")] HttpRequestMessage req,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
-        }
-    }
-
-
-    public class Http_SolidRpc_NpmGenerator_Services_INpmGenerator_RunNpm_arg0
-    {
-        [FunctionName("Http_SolidRpc_NpmGenerator_Services_INpmGenerator_RunNpm_arg0")]
-        public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/NpmGenerator/Services/INpmGenerator/RunNpm/{arg0}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -693,21 +665,6 @@ namespace SolidRpc.OpenApi.AzFunctions
             [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
             [Inject] IServiceProvider serviceProvider,
             [Constant("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService_1")] string timerId,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
-        }
-    }
-
-
-    public class Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterfaceDel_RunNodeService_1
-    {
-        [FunctionName("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterfaceDel_RunNodeService_1")]
-        public static Task Run(
-            [TimerTrigger("0 * * * * *", RunOnStartup = false)] TimerInfo timerInfo,
-            [Inject] IServiceProvider serviceProvider,
-            [Constant("Timer_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterfaceDel_RunNodeService_1")] string timerId,
             ILogger log,
             CancellationToken cancellationToken)
         {

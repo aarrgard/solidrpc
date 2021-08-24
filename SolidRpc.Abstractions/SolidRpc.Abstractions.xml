@@ -1881,6 +1881,25 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.Code.INpmGenerator">
+            <summary>
+            The npm generator
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.Code.INpmGenerator.CreateNpmPackage(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Returns the files that should be stored in the node_modules directory
+            </summary>
+            <param name="assemblyNames">The name of the assemblies to create an npm package for.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.Code.INpmGenerator.CreateNpmZip(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
+            </summary>
+            <param name="assemblyNames">The name of the assembly to create an npm package for.</param>
+            <param name="cancellationToken"></param>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.Code.ITypescriptGenerator">
             <summary>
             instance responsible for generating code structures
@@ -2571,6 +2590,36 @@
         <member name="P:SolidRpc.Abstractions.Types.Code.CodeTypeProperty.HttpName">
             <summary>
             The name of the property in the http protocol.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.NpmPackage">
+            <summary>
+            successful operation
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackage.Name">
+            <summary>
+            The package name(folder name)
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackage.Files">
+            <summary>
+            The files within the package
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.NpmPackageFile">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageFile.FilePath">
+            <summary>
+            The file path within the package
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageFile.Content">
+            <summary>
+            The file content(binary content not supported)
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContent">

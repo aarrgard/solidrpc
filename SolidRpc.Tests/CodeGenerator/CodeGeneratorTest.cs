@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.NpmGenerator.Services;
 using SolidProxy.GeneratorCastle;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +24,8 @@ namespace SolidRpc.Tests.CodeGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcNpmGenerator();
+            sc.AddSolidRpcServices();
+            sc.AddSolidRpcNode();
 
             var sp = sc.BuildServiceProvider();
             var codeGenerator = sp.GetRequiredService<ICodeNamespaceGenerator>();
@@ -33,15 +33,16 @@ namespace SolidRpc.Tests.CodeGenerator
             var codeNamespace = await codeGenerator.CreateCodeNamespace(typeof(INpmGenerator).Assembly.GetName().Name);
             var iNpmGenerator = codeNamespace
                 .Namespaces.Single(o => o.Name == "SolidRpc")
-                .Namespaces.Single(o => o.Name == "NpmGenerator")
+                .Namespaces.Single(o => o.Name == "Abstractions")
                 .Namespaces.Single(o => o.Name == "Services")
+                .Namespaces.Single(o => o.Name == "Code")
                 .Interfaces.Single(o => o.Name == "INpmGenerator");
             Assert.IsNotNull(iNpmGenerator);
 
-            var mCreateCodeNamespace = iNpmGenerator.Methods.Single(o => o.Name == nameof(INpmGenerator.CreateNpm));
-            Assert.AreEqual("assemblyName", mCreateCodeNamespace.Arguments.First().Name);
-            Assert.AreEqual(new string[] { "string" }, mCreateCodeNamespace.Arguments.First().ArgType);
-            Assert.AreEqual(new string[] { "SolidRpc", "NpmGenerator", "Types", "FileContent" }, mCreateCodeNamespace.ReturnType);
+            var mCreateCodeNamespace = iNpmGenerator.Methods.Single(o => o.Name == nameof(INpmGenerator.CreateNpmPackage));
+            Assert.AreEqual("assemblyNames", mCreateCodeNamespace.Arguments.First().Name);
+            Assert.AreEqual(new string[] { "string", "[]" }, mCreateCodeNamespace.Arguments.First().ArgType);
+            Assert.AreEqual(new string[] { "SolidRpc", "Abstractions", "Types", "Code", "NpmPackage", "[]" }, mCreateCodeNamespace.ReturnType);
         }
 
         /// <summary>

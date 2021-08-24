@@ -13,6 +13,8 @@ using System.Text;
 using System.Collections.Generic;
 using SolidRpc.Abstractions.Serialization;
 using System.Runtime.Serialization;
+using SolidRpc.Abstractions.Types.Code;
+using SolidRpc.OpenApi.SwaggerUI.Services;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -42,10 +44,13 @@ namespace SolidRpc.Tests.CodeGenerator
             Task<byte> ProxyByteAsync(byte x, CancellationToken cancellation = default(CancellationToken));
             Task<short> ProxyShortAsync(short x, CancellationToken cancellation = default(CancellationToken));
             Task<int> ProxyIntegerAsync(int x, CancellationToken cancellation = default(CancellationToken));
+            Task<long> ProxyLongAsync(long x, CancellationToken cancellation = default(CancellationToken));
             Task<string> ProxyStringAsync(string x, CancellationToken cancellation = default(CancellationToken));
             Task<decimal> ProxyDecimalAsync(decimal x, CancellationToken cancellation = default(CancellationToken));
             Task<float> ProxyFloatAsync(float x, CancellationToken cancellation = default(CancellationToken));
             Task<double> ProxyDoubleAsync(double x, CancellationToken cancellation = default(CancellationToken));
+            Task<DateTime> ProxyDateTimeAsync(DateTime x, CancellationToken cancellation = default(CancellationToken));
+            Task<DateTimeOffset> ProxyDateTimeOffsetAsync(DateTimeOffset x, CancellationToken cancellation = default(CancellationToken));
             Task<Guid> ProxyGuidAsync(Guid x, CancellationToken cancellation = default(CancellationToken));
             Task<Uri> ProxyUriAsync(Uri x, CancellationToken cancellation = default(CancellationToken));
             Task<ComplexType> ProxyComplexTypeAsync(ComplexType x, CancellationToken cancellation = default(CancellationToken));
@@ -54,10 +59,13 @@ namespace SolidRpc.Tests.CodeGenerator
             Task<byte?> ProxyOByteAsync(byte? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<short?> ProxyOShortAsync(short? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<int?> ProxyOIntegerAsync(int? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<long?> ProxyOLongAsync(long? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<string> ProxyOStringAsync(string x = null, CancellationToken cancellation = default(CancellationToken));
             Task<decimal?> ProxyODecimalAsync(decimal? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<float?> ProxyOFloatAsync(float? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<double?> ProxyODoubleAsync(double? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<DateTime?> ProxyODateTimeAsync(DateTime? x = null, CancellationToken cancellation = default(CancellationToken));
+            Task<DateTimeOffset?> ProxyODateTimeOffsetAsync(DateTimeOffset? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<Guid?> ProxyOGuidAsync(Guid? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<Uri> ProxyOUriAsync(Uri x = null, CancellationToken cancellation = default(CancellationToken));
         }
@@ -74,6 +82,16 @@ namespace SolidRpc.Tests.CodeGenerator
             }
 
             public Task<ComplexType> ProxyComplexTypeAsync(ComplexType x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<DateTime> ProxyDateTimeAsync(DateTime x, CancellationToken cancellation = default)
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<DateTimeOffset> ProxyDateTimeOffsetAsync(DateTimeOffset x, CancellationToken cancellation = default)
             {
                 return Task.FromResult(x);
             }
@@ -103,12 +121,27 @@ namespace SolidRpc.Tests.CodeGenerator
                 return Task.FromResult(x);
             }
 
+            public Task<long> ProxyLongAsync(long x, CancellationToken cancellation = default)
+            {
+                return Task.FromResult(x);
+            }
+
             public Task<bool?> ProxyOBooleanAsync(bool? x = null, CancellationToken cancellation = default(CancellationToken))
             {
                 return Task.FromResult(x);
             }
 
             public Task<byte?> ProxyOByteAsync(byte? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<DateTime?> ProxyODateTimeAsync(DateTime? x, CancellationToken cancellation = default)
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<DateTimeOffset?> ProxyODateTimeOffsetAsync(DateTimeOffset? x, CancellationToken cancellation = default)
             {
                 return Task.FromResult(x);
             }
@@ -134,6 +167,11 @@ namespace SolidRpc.Tests.CodeGenerator
             }
 
             public Task<int?> ProxyOIntegerAsync(int? x = null, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<long?> ProxyOLongAsync(long? x = 0, CancellationToken cancellation = default)
             {
                 return Task.FromResult(x);
             }
@@ -192,6 +230,7 @@ namespace SolidRpc.Tests.CodeGenerator
             base.ConfigureServerServices(serverServices);
             var openApiSpec = serverServices.GetSolidRpcService<IOpenApiParser>().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             serverServices.AddSolidRpcServices();
+            serverServices.AddSolidRpcSwaggerUI();
             serverServices.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestInterfaceImpl), c => { 
                 c.OpenApiSpec = openApiSpec; 
                 return true; 
@@ -202,34 +241,48 @@ namespace SolidRpc.Tests.CodeGenerator
         /// Tests the javascript invocation
         /// </summary>
         [Test]
+        public async Task TestCompile()
+        {
+            using (var ctx = await StartKestrelHostContextAsync())
+            {
+                //await CreatePackage(ctx.ClientServiceProvider, "SolidRpc");
+                await CreatePackage(ctx.ClientServiceProvider, typeof(ITypescriptGenerator).Assembly.GetName().Name);
+                //await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
+            }
+        }
+
+        /// <summary>
+        /// Tests the javascript invocation
+        /// </summary>
+        [Test]
         public async Task TestInvoke()
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
+                var guid = Guid.NewGuid();
+                var uri = new Uri("ws://test.ws/ws");
+                var ct = new ComplexType() { String = "test string", Integer = 123 };
+
+                var dt = DateTime.Now;
+                dt = dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerSecond));
+                var dtu = dt.ToUniversalTime();
+
+                var dto = DateTimeOffset.Now;
+                dto = dto.AddTicks(-(dto.Ticks % TimeSpan.TicksPerSecond));
+                var dtou = dto.ToUniversalTime();
+
                 // make sure that the c# bindings work
                 var ti = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
                 Assert.AreEqual(4711, await ti.ProxyIntegerAsync(4711));
                 Assert.AreEqual("str", await ti.ProxyStringAsync("str"));
                 Assert.AreEqual(1.43m, await ti.ProxyDecimalAsync(1.43m));
+                Assert.AreEqual(dt, await ti.ProxyDateTimeAsync(dt));
+                Assert.AreEqual(dto, await ti.ProxyDateTimeOffsetAsync(dto));
 
                 // now we create typescript & compile
                 var assemblyName = typeof(ITestInterface).Assembly.GetName().Name;
-                var packages = new Dictionary<string, CompiledTs>();
-                await CreatePackage(ctx.ClientServiceProvider, packages, "SolidRpc");
-                await CreatePackage(ctx.ClientServiceProvider, packages, assemblyName);
+                var packages = await CreatePackage(ctx.ClientServiceProvider, assemblyName);
 
-                //var tsg = ctx.ClientServiceProvider.GetRequiredService<ITypescriptGenerator>();
-                //var ts = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
-                /*
-                var ts = GetAssemblyResource($"{nameof(TestInvoke)}.ts");
-                await WritePackageFile("tsconfig.json", NodeModuleRpcResolver.tsconfig);
-                await WritePackageFile("index.ts", ts);
-                var js = await CompileTsAsync(ctx.ClientServiceProvider, packages, ts);
-                await WritePackageFile("index.js", js.Js);
-                */
-                var guid = Guid.NewGuid();
-                var uri = new Uri("ws://test.ws/ws");
-                var ct = new ComplexType() { String = "test string", Integer = 123 };
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().SerializeToString(out string strCt, ct);
 
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)true, "true");
@@ -237,10 +290,13 @@ namespace SolidRpc.Tests.CodeGenerator
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyByteAsync), (byte)17, "17");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyShortAsync), (short)11, "11");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyIntegerAsync), (int)4711, "4711");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyLongAsync), (long)4711, "4711");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyStringAsync), (string)"My string", "\"My string\"");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDecimalAsync), (decimal)1.43m, "1.43");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyFloatAsync), (float)1.43f, "1.43");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDoubleAsync), (double)1.43d, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDateTimeAsync), dt, $"\"{dtu:yyyy-MM-ddTHH:mm:ss.000Z}\"", (i,r) => Assert.AreEqual(dtu, r));
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDateTimeOffsetAsync), dto, $"\"{dtou:yyyy-MM-ddTHH:mm:ss.000Z}\"", (i, r) => Assert.AreEqual(dtou, r));
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyGuidAsync), guid, $"\"{guid}\"");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyUriAsync), uri, $"\"{uri}\"");
 
@@ -251,35 +307,46 @@ namespace SolidRpc.Tests.CodeGenerator
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOByteAsync), (byte)17, "17");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOShortAsync), (short)11, "11");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOIntegerAsync), (int)4711, "4711");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOLongAsync), (long)4711, "4711");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOStringAsync), (string)"My string", "\"My string\"");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), (decimal)1.43m, "1.43");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOFloatAsync), (float)1.43f, "1.43");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODoubleAsync), (double)1.43d, "1.43");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeAsync), dt, $"\"{dtu:yyyy-MM-ddTHH:mm:ss.000Z}\"", (i, r) => Assert.AreEqual(dtu, r));
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeOffsetAsync), dto, $"\"{dtou:yyyy-MM-ddTHH:mm:ss.000Z}\"", (i, r) => Assert.AreEqual(dtou, r));
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOGuidAsync), guid, $"\"{guid}\"");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOUriAsync), uri, $"\"{uri}\"");
             }
 
         }
 
-        private async Task RunTestScriptAsync<T>(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string methodName, T input, string jsonText)
+        private async Task RunTestScriptAsync<T>(IServiceProvider sp, IEnumerable<NpmPackage> packages, string methodName, T input, string jsonText, Action<T,T> comparer = null)
         {
+            if (comparer == null) comparer = (i, r) => Assert.AreEqual(i, r);
             var sf = sp.GetRequiredService<ISerializerFactory>();
             sf.SerializeToString(out string jsInput, input);
             var res = await RunTestScriptNoArgConvAsync<T>(sp, packages, methodName, jsInput, jsonText);
-            Assert.AreEqual(input, res);
+            comparer(input, res);
         }
 
-        private async Task<T> RunTestScriptNoArgConvAsync<T>(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string methodName, string jsInput, string jsonText)
+        private async Task<T> RunTestScriptNoArgConvAsync<T>(IServiceProvider sp, IEnumerable<NpmPackage> packages, string methodName, string jsInput, string jsonText)
         {
 
             var ns = sp.GetRequiredService<INodeService>();
             var js = $@"const x = require(""solidrpc.tests""); (async function(){{
   return await x.TypeScriptTest.TestInterfaceInstance.{methodName}({jsInput}).toPromise();
 }})();";
+            var sep = Path.DirectorySeparatorChar;
+            var inputFiles = packages.SelectMany(p => p.Files.Select(f => new { p.Name, File = f }))
+                .Select(o => new NodeExecutionFile()
+                {
+                    FileName = $"node_modules{sep}{o.Name}{sep}{o.File.FilePath}",
+                    Content = new MemoryStream(Encoding.UTF8.GetBytes(o.File.Content))
+                }).ToList();
             var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
             {
                 Js = js,
-                InputFiles = CreateInputFiles(packages),
+                InputFiles = inputFiles,
                 ModuleId = NodeModuleRpcResolver.GuidModuleId
             });
 
@@ -304,16 +371,19 @@ namespace SolidRpc.Tests.CodeGenerator
             }
         }
 
-        private async Task CreatePackage(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string assemblyName)
+        private async Task<IEnumerable<NpmPackage>> CreatePackage(IServiceProvider sp, string assemblyName)
         {
-            var tsg = sp.GetRequiredService<ITypescriptGenerator>();
-            var ts = await tsg.CreateTypesTsForAssemblyAsync(assemblyName);
-            var js = await CompileTsAsync(sp, packages, ts);
-            packages[assemblyName.ToLower()] = js;
+            var ng = sp.GetRequiredService<INpmGenerator>();
+            var packages = await ng.CreateNpmPackage(new[] { assemblyName });
 
-            await WriteModuleFile(assemblyName.ToLower(), "index.js", js.Js);
-            await WriteModuleFile(assemblyName.ToLower(), "index.d.ts", js.DTs);
-            await WriteModuleFile(assemblyName.ToLower(), "index.ts", ts);
+            foreach(var package in packages)
+            {
+                foreach(var file in package.Files)
+                {
+                    await WriteModuleFile(package.Name, file.FilePath, file.Content);
+                }
+            }
+            return packages;
         }
 
         private Task WriteModuleFile(string packageName, string fileName, string fileContent)
@@ -329,61 +399,6 @@ namespace SolidRpc.Tests.CodeGenerator
             {
                 await fs.WriteAsync(fileContent);
             }
-        }
-
-        private async Task<CompiledTs> CompileTsAsync(IServiceProvider sp, Dictionary<string, CompiledTs> packages, string ts)
-        {
-            var inputFiles = CreateInputFiles(packages).Union(new[] {
-                new NodeExecutionFile()
-                {
-                    FileName = $"ts.ts",
-                    Content = new MemoryStream(Encoding.UTF8.GetBytes(ts))
-                }
-            }).ToList();
-            var sep = Path.DirectorySeparatorChar;
-            var ns = sp.GetRequiredService<INodeService>();
-            var nodeRes = await ns.ExecuteScriptAsync(new NodeExecutionInput()
-            {
-                Js = $"typescript{sep}lib{sep}tsc.js",
-                Args = new string[0],
-                InputFiles = inputFiles,
-                ModuleId = NodeModuleRpcResolver.GuidModuleId
-            });
-
-            if(nodeRes.ExitCode != 0)
-            {
-                throw new Exception("NodeError:" + nodeRes.Out);
-            }
-            return new CompiledTs()
-            {
-                Js = await GetContent(nodeRes.ResultFiles, "ts.js"),
-                DTs = await GetContent(nodeRes.ResultFiles, "ts.d.ts")
-            };
-        }
-
-        private IEnumerable<NodeExecutionFile> CreateInputFiles(Dictionary<string, CompiledTs> packages)
-        {
-            return packages.Select(o => new NodeExecutionFile()
-            {
-                FileName = $"node_modules/{o.Key}/index.js",
-                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.Js))
-            }).Union(packages.Select(o => new NodeExecutionFile()
-            {
-                FileName = $"node_modules/{o.Key}/index.d.ts",
-                Content = new MemoryStream(Encoding.UTF8.GetBytes(o.Value.DTs))
-            })).ToList();
-        }
-
-        private async Task<string> GetContent(IEnumerable<NodeExecutionFile> resultFiles, string fileName)
-        {
-
-            string jsContent;
-            var resultFile = resultFiles.Single(o => o.FileName == fileName);
-            using (var sr = new StreamReader(resultFile.Content))
-            {
-                jsContent = await sr.ReadToEndAsync();
-            }
-            return jsContent;
         }
     }
 }
