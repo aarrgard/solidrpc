@@ -14,6 +14,7 @@ namespace SolidRpc.Node.InternalServices
 {
     public class NodeProcess : INodeProcess
     {
+        private static readonly string ScriptFileName = $"{Guid.NewGuid()}.js";
         private class ExecutionArg
         {
             //public bool UseDebugger { get; set; }
@@ -77,7 +78,7 @@ namespace SolidRpc.Node.InternalServices
         {
             if (Process == null)
             {
-                var scriptFileName = Path.Combine(NodeContext.NodeWorkingDir, $"script.js");
+                var scriptFileName = Path.Combine(NodeContext.NodeWorkingDir, ScriptFileName);
                 using (var sw = File.Open(scriptFileName, FileMode.OpenOrCreate, FileAccess.Write))
                 using (var tw = new StreamWriter(sw))
                 {
@@ -177,6 +178,10 @@ process.stdin.on('data', handleCommand);
             var resultFiles = new List<NodeExecutionFile>();
             foreach (var file in new DirectoryInfo(NodeWorkingDir).GetFiles())
             {
+                if(file.Name == ScriptFileName)
+                {
+                    continue;
+                }
                 var ms = new MemoryStream();
                 using (var fs = file.OpenRead())
                 {

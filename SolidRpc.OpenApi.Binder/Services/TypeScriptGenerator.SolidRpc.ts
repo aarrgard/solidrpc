@@ -109,7 +109,7 @@ export namespace SolidRpcJs {
             if (input && input.toJson) {
                 return input.toJson();
             }
-            return null;
+            return input;
         }
 
         /**

@@ -30,7 +30,8 @@ namespace SolidRpc.Tests.CodeGenerator
             var sp = sc.BuildServiceProvider();
             var codeGenerator = sp.GetRequiredService<ICodeNamespaceGenerator>();
 
-            var codeNamespace = await codeGenerator.CreateCodeNamespace(typeof(INpmGenerator).Assembly.GetName().Name);
+            var assemblyName = typeof(INpmGenerator).Assembly.GetName().Name;
+            var codeNamespace = await codeGenerator.CreateCodeNamespace(assemblyName);
             var iNpmGenerator = codeNamespace
                 .Namespaces.Single(o => o.Name == "SolidRpc")
                 .Namespaces.Single(o => o.Name == "Abstractions")
@@ -43,6 +44,9 @@ namespace SolidRpc.Tests.CodeGenerator
             Assert.AreEqual("assemblyNames", mCreateCodeNamespace.Arguments.First().Name);
             Assert.AreEqual(new string[] { "string", "[]" }, mCreateCodeNamespace.Arguments.First().ArgType);
             Assert.AreEqual(new string[] { "SolidRpc", "Abstractions", "Types", "Code", "NpmPackage", "[]" }, mCreateCodeNamespace.ReturnType);
+
+            var tsGenerator = sp.GetRequiredService<ITypescriptGenerator>();
+            var ts = await tsGenerator.CreateTypesTsForAssemblyAsync(assemblyName);
         }
 
         /// <summary>

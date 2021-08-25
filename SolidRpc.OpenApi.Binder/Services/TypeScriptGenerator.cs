@@ -57,7 +57,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             sb.AppendLine("import { share } from 'rxjs/operators'");
             sb.AppendLine("import { SolidRpcJs } from 'solidrpc';");
 
-
+            if(string.IsNullOrEmpty(codeNamespace.Name) && codeNamespace.Namespaces == null)
+            {
+                return Task.FromResult(sb.ToString());
+            }
             CreateTypesTs(codeNamespace, sb, "", codeNamespace);
             return Task.FromResult(sb.ToString());
         }
@@ -317,6 +320,8 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "number":
                 case "bigint":
                 case "Uint8Array":
+                case "Date":
+                case "Record<string,string>":
                     return $"arr.push(JSON.stringify({varName}))";
                 default:
                     return $"{varName}.toJson(arr)";
@@ -342,6 +347,8 @@ namespace SolidRpc.OpenApi.Binder.Services
                     return $"[true, 'true', 1].some(o => o === {varName})";
                 case "number":
                     return $"Number({varName})";
+                case "Record<string,string>":
+                    return $"{varName} as {jsType}";
                 default:
                     return $"new {jsType}({varName})";
             }
@@ -417,7 +424,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             var descr = (description ?? "")
                 .Replace('\r', '\n')
                 .Replace("\n\n", "\n")
-                .Replace("\n", indentation + " * ")
+                .Replace("\n", "\n" + indentation + " * ")
                 .Trim();
             code.Append(indentation).AppendLine("/**");
             code.Append(indentation).Append(" * ").AppendLine(descr);

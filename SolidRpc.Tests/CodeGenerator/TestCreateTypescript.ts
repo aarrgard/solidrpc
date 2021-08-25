@@ -128,7 +128,7 @@ export namespace Security {
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return data.toString();
+                            return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -152,7 +152,7 @@ export namespace Security {
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return data.toString();
+                            return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -405,7 +405,7 @@ export namespace Security {
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return data.toString();
+                            return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -429,7 +429,7 @@ export namespace Security {
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return data.toString();
+                            return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -756,7 +756,7 @@ export namespace Security {
                         'accessToken': accessToken,
 }, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return data.toString();
+                            return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -780,7 +780,7 @@ export namespace Security {
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
                     return this.request<string>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return data.toString();
+                            return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1384,7 +1384,7 @@ export namespace Security {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginScripts';
                 return this.request<string[]>('get', uri, null, null, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return Array.from(data).map(o => o.toString());
+                        return Array.from(data).map(o => o as string);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
@@ -1473,10 +1473,10 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "name":
-                            if (obj.name) { this.Name = obj.name.toString(); }
+                            if (obj.name) { this.Name = obj.name as string; }
                             break;
                         case "value":
-                            if (obj.value) { this.Value = obj.value.toString(); }
+                            if (obj.value) { this.Value = obj.value as string; }
                             break;
                     }
                 }
@@ -1511,10 +1511,10 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "access_token":
-                            if (obj.access_token) { this.AccessToken = obj.access_token.toString(); }
+                            if (obj.access_token) { this.AccessToken = obj.access_token as string; }
                             break;
                         case "token_type":
-                            if (obj.token_type) { this.TokenType = obj.token_type.toString(); }
+                            if (obj.token_type) { this.TokenType = obj.token_type as string; }
                             break;
                     }
                 }
@@ -1582,10 +1582,10 @@ export namespace Security {
                             if (obj.app_id) { this.AppId = Number(obj.app_id); }
                             break;
                         case "type":
-                            if (obj.type) { this.Type = obj.type.toString(); }
+                            if (obj.type) { this.Type = obj.type as string; }
                             break;
                         case "application":
-                            if (obj.application) { this.Application = obj.application.toString(); }
+                            if (obj.application) { this.Application = obj.application as string; }
                             break;
                         case "data_access_expires_at":
                             if (obj.data_access_expires_at) { this.DataAccessExpiresAt = Number(obj.data_access_expires_at); }
@@ -1600,7 +1600,7 @@ export namespace Security {
                             if (obj.is_valid) { this.IsValid = [true, 'true', 1].some(o => o === obj.is_valid); }
                             break;
                         case "scopes":
-                            if (obj.scopes) { this.Scopes = Array.from(obj.scopes).map(o => o.toString()); }
+                            if (obj.scopes) { this.Scopes = Array.from(obj.scopes).map(o => o as string); }
                             break;
                         case "user_id":
                             if (obj.user_id) { this.UserId = Number(obj.user_id); }
@@ -1622,7 +1622,7 @@ export namespace Security {
                 if(this.Error) { arr.push('"error": '); this.Error.toJson(arr); arr.push(','); } 
                 if(this.ExpiresAt) { arr.push('"expires_at": '); arr.push(JSON.stringify(this.ExpiresAt)); arr.push(','); } 
                 if(this.IsValid) { arr.push('"is_valid": '); arr.push(JSON.stringify(this.IsValid)); arr.push(','); } 
-                if(this.Scopes) { arr.push('"scopes": '); this.Scopes.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.Scopes) { arr.push('"scopes": '); for (let i = 0; i < this.Scopes.length; i++) arr.push(JSON.stringify(this.Scopes[i])); arr.push(',');; arr.push(','); } 
                 if(this.UserId) { arr.push('"user_id": '); arr.push(JSON.stringify(this.UserId)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
@@ -1676,7 +1676,7 @@ export namespace Security {
                             if (obj.code) { this.Code = Number(obj.code); }
                             break;
                         case "message":
-                            if (obj.message) { this.Message = obj.message.toString(); }
+                            if (obj.message) { this.Message = obj.message as string; }
                             break;
                         case "subcode":
                             if (obj.subcode) { this.Subcode = Number(obj.subcode); }
@@ -1719,19 +1719,19 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "name":
-                            if (obj.name) { this.Name = obj.name.toString(); }
+                            if (obj.name) { this.Name = obj.name as string; }
                             break;
                         case "status":
-                            if (obj.status) { this.Status = obj.status.toString(); }
+                            if (obj.status) { this.Status = obj.status as string; }
                             break;
                         case "script":
-                            if (obj.script) { this.Script = Array.from(obj.script).map(o => o.toString()); }
+                            if (obj.script) { this.Script = Array.from(obj.script).map(o => o as string); }
                             break;
                         case "meta":
                             if (obj.meta) { this.Meta = Array.from(obj.meta).map(o => new Security.Types.LoginProviderMeta(o)); }
                             break;
                         case "buttonHtml":
-                            if (obj.buttonHtml) { this.ButtonHtml = obj.buttonHtml.toString(); }
+                            if (obj.buttonHtml) { this.ButtonHtml = obj.buttonHtml as string; }
                             break;
                     }
                 }
@@ -1745,8 +1745,8 @@ export namespace Security {
                 arr.push('{');
                 if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                 if(this.Status) { arr.push('"status": '); arr.push(JSON.stringify(this.Status)); arr.push(','); } 
-                if(this.Script) { arr.push('"script": '); this.Script.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.Meta) { arr.push('"meta": '); this.Meta.forEach(o => o.toJson(arr)); arr.push(','); } 
+                if(this.Script) { arr.push('"script": '); for (let i = 0; i < this.Script.length; i++) arr.push(JSON.stringify(this.Script[i])); arr.push(',');; arr.push(','); } 
+                if(this.Meta) { arr.push('"meta": '); for (let i = 0; i < this.Meta.length; i++) this.Meta[i].toJson(arr); arr.push(',');; arr.push(','); } 
                 if(this.ButtonHtml) { arr.push('"buttonHtml": '); arr.push(JSON.stringify(this.ButtonHtml)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
@@ -1781,10 +1781,10 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "name":
-                            if (obj.name) { this.Name = obj.name.toString(); }
+                            if (obj.name) { this.Name = obj.name as string; }
                             break;
                         case "content":
-                            if (obj.content) { this.Content = obj.content.toString(); }
+                            if (obj.content) { this.Content = obj.content as string; }
                             break;
                     }
                 }
@@ -1819,55 +1819,55 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "issuer":
-                            if (obj.issuer) { this.Issuer = obj.issuer.toString(); }
+                            if (obj.issuer) { this.Issuer = obj.issuer as string; }
                             break;
                         case "authorization_endpoint":
-                            if (obj.authorization_endpoint) { this.AuthorizationEndpoint = obj.authorization_endpoint.toString(); }
+                            if (obj.authorization_endpoint) { this.AuthorizationEndpoint = obj.authorization_endpoint as string; }
                             break;
                         case "token_endpoint":
-                            if (obj.token_endpoint) { this.TokenEndpoint = obj.token_endpoint.toString(); }
+                            if (obj.token_endpoint) { this.TokenEndpoint = obj.token_endpoint as string; }
                             break;
                         case "userinfo_endpoint":
-                            if (obj.userinfo_endpoint) { this.UserinfoEndpoint = obj.userinfo_endpoint.toString(); }
+                            if (obj.userinfo_endpoint) { this.UserinfoEndpoint = obj.userinfo_endpoint as string; }
                             break;
                         case "revocation_endpoint":
-                            if (obj.revocation_endpoint) { this.RevocationEndpoint = obj.revocation_endpoint.toString(); }
+                            if (obj.revocation_endpoint) { this.RevocationEndpoint = obj.revocation_endpoint as string; }
                             break;
                         case "device_authorization_endpoint":
-                            if (obj.device_authorization_endpoint) { this.DeviceAuthorizationEndpoint = obj.device_authorization_endpoint.toString(); }
+                            if (obj.device_authorization_endpoint) { this.DeviceAuthorizationEndpoint = obj.device_authorization_endpoint as string; }
                             break;
                         case "jwks_uri":
-                            if (obj.jwks_uri) { this.JwksUri = obj.jwks_uri.toString(); }
+                            if (obj.jwks_uri) { this.JwksUri = obj.jwks_uri as string; }
                             break;
                         case "scopes_supported":
-                            if (obj.scopes_supported) { this.ScopesSupported = Array.from(obj.scopes_supported).map(o => o.toString()); }
+                            if (obj.scopes_supported) { this.ScopesSupported = Array.from(obj.scopes_supported).map(o => o as string); }
                             break;
                         case "grant_types_supported":
-                            if (obj.grant_types_supported) { this.GrantTypesSupported = Array.from(obj.grant_types_supported).map(o => o.toString()); }
+                            if (obj.grant_types_supported) { this.GrantTypesSupported = Array.from(obj.grant_types_supported).map(o => o as string); }
                             break;
                         case "response_modes_supported":
-                            if (obj.response_modes_supported) { this.ResponseModesSupported = Array.from(obj.response_modes_supported).map(o => o.toString()); }
+                            if (obj.response_modes_supported) { this.ResponseModesSupported = Array.from(obj.response_modes_supported).map(o => o as string); }
                             break;
                         case "subject_types_supported":
-                            if (obj.subject_types_supported) { this.SubjectTypesSupported = Array.from(obj.subject_types_supported).map(o => o.toString()); }
+                            if (obj.subject_types_supported) { this.SubjectTypesSupported = Array.from(obj.subject_types_supported).map(o => o as string); }
                             break;
                         case "id_token_signing_alg_values_supported":
-                            if (obj.id_token_signing_alg_values_supported) { this.IdTokenSigningAlgValuesSupported = Array.from(obj.id_token_signing_alg_values_supported).map(o => o.toString()); }
+                            if (obj.id_token_signing_alg_values_supported) { this.IdTokenSigningAlgValuesSupported = Array.from(obj.id_token_signing_alg_values_supported).map(o => o as string); }
                             break;
                         case "end_session_endpoint":
-                            if (obj.end_session_endpoint) { this.EndSessionEndpoint = obj.end_session_endpoint.toString(); }
+                            if (obj.end_session_endpoint) { this.EndSessionEndpoint = obj.end_session_endpoint as string; }
                             break;
                         case "response_types_supported":
-                            if (obj.response_types_supported) { this.ResponseTypesSupported = Array.from(obj.response_types_supported).map(o => o.toString()); }
+                            if (obj.response_types_supported) { this.ResponseTypesSupported = Array.from(obj.response_types_supported).map(o => o as string); }
                             break;
                         case "claims_supported":
-                            if (obj.claims_supported) { this.ClaimsSupported = Array.from(obj.claims_supported).map(o => o.toString()); }
+                            if (obj.claims_supported) { this.ClaimsSupported = Array.from(obj.claims_supported).map(o => o as string); }
                             break;
                         case "token_endpoint_auth_methods_supported":
-                            if (obj.token_endpoint_auth_methods_supported) { this.TokenEndpointAuthMethodsSupported = Array.from(obj.token_endpoint_auth_methods_supported).map(o => o.toString()); }
+                            if (obj.token_endpoint_auth_methods_supported) { this.TokenEndpointAuthMethodsSupported = Array.from(obj.token_endpoint_auth_methods_supported).map(o => o as string); }
                             break;
                         case "code_challenge_methods_supported":
-                            if (obj.code_challenge_methods_supported) { this.CodeChallengeMethodsSupported = Array.from(obj.code_challenge_methods_supported).map(o => o.toString()); }
+                            if (obj.code_challenge_methods_supported) { this.CodeChallengeMethodsSupported = Array.from(obj.code_challenge_methods_supported).map(o => o as string); }
                             break;
                         case "request_uri_parameter_supported":
                             if (obj.request_uri_parameter_supported) { this.RequestUriParameterSupported = [true, 'true', 1].some(o => o === obj.request_uri_parameter_supported); }
@@ -1879,19 +1879,19 @@ export namespace Security {
                             if (obj.frontchannel_logout_supported) { this.FrontchannelLogoutSupported = [true, 'true', 1].some(o => o === obj.frontchannel_logout_supported); }
                             break;
                         case "rbac_url":
-                            if (obj.rbac_url) { this.RbacUrl = obj.rbac_url.toString(); }
+                            if (obj.rbac_url) { this.RbacUrl = obj.rbac_url as string; }
                             break;
                         case "msgraph_host":
-                            if (obj.msgraph_host) { this.MsgraphHost = obj.msgraph_host.toString(); }
+                            if (obj.msgraph_host) { this.MsgraphHost = obj.msgraph_host as string; }
                             break;
                         case "cloud_graph_host_name":
-                            if (obj.cloud_graph_host_name) { this.CloudGraphHostName = obj.cloud_graph_host_name.toString(); }
+                            if (obj.cloud_graph_host_name) { this.CloudGraphHostName = obj.cloud_graph_host_name as string; }
                             break;
                         case "cloud_instance_name":
-                            if (obj.cloud_instance_name) { this.CloudInstanceName = obj.cloud_instance_name.toString(); }
+                            if (obj.cloud_instance_name) { this.CloudInstanceName = obj.cloud_instance_name as string; }
                             break;
                         case "tenant_region_scope":
-                            if (obj.tenant_region_scope) { this.TenantRegionScope = obj.tenant_region_scope.toString(); }
+                            if (obj.tenant_region_scope) { this.TenantRegionScope = obj.tenant_region_scope as string; }
                             break;
                     }
                 }
@@ -1910,16 +1910,16 @@ export namespace Security {
                 if(this.RevocationEndpoint) { arr.push('"revocation_endpoint": '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
                 if(this.DeviceAuthorizationEndpoint) { arr.push('"device_authorization_endpoint": '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
                 if(this.JwksUri) { arr.push('"jwks_uri": '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
-                if(this.ScopesSupported) { arr.push('"scopes_supported": '); this.ScopesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); this.GrantTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); this.ResponseModesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); this.SubjectTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); this.IdTokenSigningAlgValuesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.ScopesSupported) { arr.push('"scopes_supported": '); for (let i = 0; i < this.ScopesSupported.length; i++) arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); for (let i = 0; i < this.GrantTypesSupported.length; i++) arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); for (let i = 0; i < this.ResponseModesSupported.length; i++) arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); for (let i = 0; i < this.SubjectTypesSupported.length; i++) arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(',');; arr.push(','); } 
                 if(this.EndSessionEndpoint) { arr.push('"end_session_endpoint": '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
-                if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); this.ResponseTypesSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.ClaimsSupported) { arr.push('"claims_supported": '); this.ClaimsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); this.TokenEndpointAuthMethodsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
-                if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); this.CodeChallengeMethodsSupported.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); for (let i = 0; i < this.ResponseTypesSupported.length; i++) arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.ClaimsSupported) { arr.push('"claims_supported": '); for (let i = 0; i < this.ClaimsSupported.length; i++) arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(',');; arr.push(','); } 
+                if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(',');; arr.push(','); } 
                 if(this.RequestUriParameterSupported) { arr.push('"request_uri_parameter_supported": '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
                 if(this.HttpLogoutSupported) { arr.push('"http_logout_supported": '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
                 if(this.FrontchannelLogoutSupported) { arr.push('"frontchannel_logout_supported": '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
@@ -2041,34 +2041,34 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "alg":
-                            if (obj.alg) { this.Alg = obj.alg.toString(); }
+                            if (obj.alg) { this.Alg = obj.alg as string; }
                             break;
                         case "kty":
-                            if (obj.kty) { this.Kty = obj.kty.toString(); }
+                            if (obj.kty) { this.Kty = obj.kty as string; }
                             break;
                         case "use":
-                            if (obj.use) { this.Use = obj.use.toString(); }
+                            if (obj.use) { this.Use = obj.use as string; }
                             break;
                         case "kid":
-                            if (obj.kid) { this.Kid = obj.kid.toString(); }
+                            if (obj.kid) { this.Kid = obj.kid as string; }
                             break;
                         case "x5u":
-                            if (obj.x5u) { this.X5u = obj.x5u.toString(); }
+                            if (obj.x5u) { this.X5u = obj.x5u as string; }
                             break;
                         case "x5t":
-                            if (obj.x5t) { this.X5t = obj.x5t.toString(); }
+                            if (obj.x5t) { this.X5t = obj.x5t as string; }
                             break;
                         case "x5c":
-                            if (obj.x5c) { this.X5c = Array.from(obj.x5c).map(o => o.toString()); }
+                            if (obj.x5c) { this.X5c = Array.from(obj.x5c).map(o => o as string); }
                             break;
                         case "n":
-                            if (obj.n) { this.N = obj.n.toString(); }
+                            if (obj.n) { this.N = obj.n as string; }
                             break;
                         case "e":
-                            if (obj.e) { this.E = obj.e.toString(); }
+                            if (obj.e) { this.E = obj.e as string; }
                             break;
                         case "issuer":
-                            if (obj.issuer) { this.Issuer = obj.issuer.toString(); }
+                            if (obj.issuer) { this.Issuer = obj.issuer as string; }
                             break;
                     }
                 }
@@ -2086,7 +2086,7 @@ export namespace Security {
                 if(this.Kid) { arr.push('"kid": '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
                 if(this.X5u) { arr.push('"x5u": '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
                 if(this.X5t) { arr.push('"x5t": '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
-                if(this.X5c) { arr.push('"x5c": '); this.X5c.forEach(o => arr.push(JSON.stringify(o))); arr.push(','); } 
+                if(this.X5c) { arr.push('"x5c": '); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(',');; arr.push(','); } 
                 if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
                 if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
                 if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
@@ -2155,7 +2155,7 @@ export namespace Security {
                     returnString = true;
                 }
                 arr.push('{');
-                if(this.Keys) { arr.push('"keys": '); this.Keys.forEach(o => o.toJson(arr)); arr.push(','); } 
+                if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) this.Keys[i].toJson(arr); arr.push(',');; arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
@@ -2173,19 +2173,19 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "access_token":
-                            if (obj.access_token) { this.AccessToken = obj.access_token.toString(); }
+                            if (obj.access_token) { this.AccessToken = obj.access_token as string; }
                             break;
                         case "token_type":
-                            if (obj.token_type) { this.TokenType = obj.token_type.toString(); }
+                            if (obj.token_type) { this.TokenType = obj.token_type as string; }
                             break;
                         case "expires_in":
-                            if (obj.expires_in) { this.ExpiresIn = obj.expires_in.toString(); }
+                            if (obj.expires_in) { this.ExpiresIn = obj.expires_in as string; }
                             break;
                         case "refresh_token":
-                            if (obj.refresh_token) { this.RefreshToken = obj.refresh_token.toString(); }
+                            if (obj.refresh_token) { this.RefreshToken = obj.refresh_token as string; }
                             break;
                         case "scope":
-                            if (obj.scope) { this.Scope = obj.scope.toString(); }
+                            if (obj.scope) { this.Scope = obj.scope as string; }
                             break;
                     }
                 }
@@ -2238,13 +2238,13 @@ export namespace Security {
                             if (obj.content) { this.Content = new Uint8Array(obj.content); }
                             break;
                         case "contentType":
-                            if (obj.contentType) { this.ContentType = obj.contentType.toString(); }
+                            if (obj.contentType) { this.ContentType = obj.contentType as string; }
                             break;
                         case "charSet":
-                            if (obj.charSet) { this.CharSet = obj.charSet.toString(); }
+                            if (obj.charSet) { this.CharSet = obj.charSet as string; }
                             break;
                         case "location":
-                            if (obj.location) { this.Location = obj.location.toString(); }
+                            if (obj.location) { this.Location = obj.location as string; }
                             break;
                     }
                 }

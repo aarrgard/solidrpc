@@ -171,13 +171,25 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 return ResolveCodeType(rootNamespace, taskType);
             }
+            if (type.IsNullableType(out Type nullType))
+            {
+                return ResolveCodeType(rootNamespace, nullType).Union(new string[] { "?" }).ToArray();
+            }
+            if (type.IsGenericType)
+            {
+                if(type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                {
+                    var args = type.GetGenericArguments().Select(o => ResolveCodeType(rootNamespace, o)).ToList();
+                    return new string[] { $"Record<{string.Join(",", args.SelectMany(o => o))}>"};
+                }
+            }
             if (type.IsEnumType(out Type enumType))
             {
                 return ResolveCodeType(rootNamespace, enumType).Union(new string[] { "[]" }).ToArray();
             }
-            if (type.IsNullableType(out Type nullType))
+            if (type.IsGenericType)
             {
-                return ResolveCodeType(rootNamespace, nullType).Union(new string[] { "?" }).ToArray();
+                throw new Exception("Cannot handle generic type:" + type.GetGenericTypeDefinition());
             }
             switch (type.FullName)
             {

@@ -75,7 +75,14 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                         // we do not need a configured authority to proxy user
                         break;
                     default:
-                        throw new Exception("No OAuth2 Authority configured.");
+                        if(AuthorityFactory == null)
+                        {
+                            throw new Exception("No OAuth2Factory found - Is the IoC container configured correctly?");
+                        }
+                        else
+                        {
+                            throw new Exception("No OAuth2 Authority configured.");
+                        }
                 }
             }
             RemoteCall = !config.InvocationConfiguration.HasImplementation;

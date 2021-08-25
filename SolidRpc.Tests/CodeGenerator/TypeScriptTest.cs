@@ -54,6 +54,7 @@ namespace SolidRpc.Tests.CodeGenerator
             Task<Guid> ProxyGuidAsync(Guid x, CancellationToken cancellation = default(CancellationToken));
             Task<Uri> ProxyUriAsync(Uri x, CancellationToken cancellation = default(CancellationToken));
             Task<ComplexType> ProxyComplexTypeAsync(ComplexType x, CancellationToken cancellation = default(CancellationToken));
+            Task<IDictionary<string,string>> ProxyDictionaryAsync(IDictionary<string, string> x, CancellationToken cancellation = default(CancellationToken));
 
             Task<bool?> ProxyOBooleanAsync(bool? x = null, CancellationToken cancellation = default(CancellationToken));
             Task<byte?> ProxyOByteAsync(byte? x = null, CancellationToken cancellation = default(CancellationToken));
@@ -97,6 +98,11 @@ namespace SolidRpc.Tests.CodeGenerator
             }
 
             public Task<decimal> ProxyDecimalAsync(decimal x, CancellationToken cancellation = default(CancellationToken))
+            {
+                return Task.FromResult(x);
+            }
+
+            public Task<IDictionary<string, string>> ProxyDictionaryAsync(IDictionary<string, string> x, CancellationToken cancellation = default)
             {
                 return Task.FromResult(x);
             }
@@ -223,6 +229,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 return true;
             });
             clientServices.AddSolidRpcNode();
+            clientServices.AddSolidRpcSwaggerUI();
         }
 
         public override void ConfigureServerServices(IServiceCollection serverServices)
@@ -230,7 +237,6 @@ namespace SolidRpc.Tests.CodeGenerator
             base.ConfigureServerServices(serverServices);
             var openApiSpec = serverServices.GetSolidRpcService<IOpenApiParser>().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             serverServices.AddSolidRpcServices();
-            serverServices.AddSolidRpcSwaggerUI();
             serverServices.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestInterfaceImpl), c => { 
                 c.OpenApiSpec = openApiSpec; 
                 return true; 
@@ -246,8 +252,8 @@ namespace SolidRpc.Tests.CodeGenerator
             using (var ctx = await StartKestrelHostContextAsync())
             {
                 //await CreatePackage(ctx.ClientServiceProvider, "SolidRpc");
+                await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ITypescriptGenerator).Assembly.GetName().Name);
-                //await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
             }
         }
 
@@ -262,7 +268,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 var guid = Guid.NewGuid();
                 var uri = new Uri("ws://test.ws/ws");
                 var ct = new ComplexType() { String = "test string", Integer = 123 };
-
+                var dict = new Dictionary<string, string>() { { "key", "value"} };
                 var dt = DateTime.Now;
                 dt = dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerSecond));
                 var dtu = dt.ToUniversalTime();
@@ -281,6 +287,7 @@ namespace SolidRpc.Tests.CodeGenerator
 
                 // now we create typescript & compile
                 var assemblyName = typeof(ITestInterface).Assembly.GetName().Name;
+                var ts = await ctx.ClientServiceProvider.GetRequiredService<ITypescriptGenerator>().CreateTypesTsForAssemblyAsync(assemblyName);
                 var packages = await CreatePackage(ctx.ClientServiceProvider, assemblyName);
 
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().SerializeToString(out string strCt, ct);
@@ -299,6 +306,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDateTimeOffsetAsync), dto, $"\"{dtou:yyyy-MM-ddTHH:mm:ss.000Z}\"", (i, r) => Assert.AreEqual(dtou, r));
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyGuidAsync), guid, $"\"{guid}\"");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyUriAsync), uri, $"\"{uri}\"");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDictionaryAsync), dict, $"{{\"key\":\"value\"}}");
 
                 await RunTestScriptNoArgConvAsync<ComplexType>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyComplexTypeAsync), $"new x.TypeScriptTest.ComplexType({strCt})", "{\"Integer\":123,\"String\":\"test string\"}");
 

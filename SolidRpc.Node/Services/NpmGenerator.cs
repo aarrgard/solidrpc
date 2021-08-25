@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.Code;
@@ -28,15 +29,15 @@ namespace SolidRpc.Node.Services
 
         public async Task<IEnumerable<NpmPackage>> CreateNpmPackage(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
         {
-            assemblyNames = assemblyNames.Union(new[] { "SolidRpc" }).Distinct().OrderBy(o => o == "SolidRpc" ? 0 : 1);
+            var compileAssemblyNames = assemblyNames.Union(new[] { "SolidRpc" }).Distinct().OrderBy(o => o == "SolidRpc" ? 0 : 1);
             var npmPackages = new List<NpmPackage>();
-            foreach(var assemblyName in assemblyNames)
+            foreach(var assemblyName in compileAssemblyNames)
             {
                 var ts = await TypescriptGenerator.CreateTypesTsForAssemblyAsync(assemblyName);
                 var npmPackage = await CompileTsAsync(npmPackages, assemblyName, ts);
                 npmPackages.Add(npmPackage);
             }
-            return npmPackages;
+            return npmPackages.Where(p => assemblyNames.Any(an => string.Equals(p.Name, an, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         private async Task<NpmPackage> CompileTsAsync(IEnumerable<NpmPackage> packages, string assemblyName, string ts)
@@ -88,9 +89,29 @@ namespace SolidRpc.Node.Services
             }
         }
 
-        public Task<FileContent> CreateNpmZip(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
+        public async Task<FileContent> CreateNpmZip(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var packages = await CreateNpmPackage(assemblyNames, cancellationToken);
+            var ms = new MemoryStream();
+            using (var zo = new ZipOutputStream(ms))
+            {
+                zo.SetLevel(9);
+                foreach (var package in packages)
+                {
+                    foreach (var f in package.Files)
+                    {
+                        var entry = new ZipEntry($"{package.Name}/{f.FilePath}");
+                        zo.PutNextEntry(entry);
+                        var arr = Encoding.UTF8.GetBytes(f.Content);
+                        await zo.WriteAsync(arr, 0, arr.Length);
+                    }
+                }
+            }
+            return new FileContent()
+            {
+                Content = new MemoryStream(ms.ToArray()),
+                ContentType = "application/zip"
+            };
         }
     }
 }
