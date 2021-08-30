@@ -1,21 +1,21 @@
-﻿using NUnit.Framework;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
-using SolidRpc.Abstractions.Services.Code;
-using System;
-using System.Threading;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.Serialization;
+using SolidRpc.Abstractions.Services.Code;
+using SolidRpc.Abstractions.Types.Code;
 using SolidRpc.Node.Services;
 using SolidRpc.Node.Types;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
-using SolidRpc.Abstractions.Serialization;
-using System.Runtime.Serialization;
-using SolidRpc.Abstractions.Types.Code;
 using SolidRpc.OpenApi.SwaggerUI.Services;
-using SolidRpc.Abstractions.OpenApi.Proxy;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -254,7 +254,8 @@ namespace SolidRpc.Tests.CodeGenerator
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
-                //await CreatePackage(ctx.ClientServiceProvider, "SolidRpc");
+                //await CreatePackage(ctx.ClientServiceProvider, "SolidRpcJs");
+                await CreatePackage(ctx.ClientServiceProvider, "SolidRpcNode");
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ITypescriptGenerator).Assembly.GetName().Name);
             }
@@ -346,7 +347,7 @@ namespace SolidRpc.Tests.CodeGenerator
 
             var ns = sp.GetRequiredService<INodeService>();
             var js = $@"const x = require(""solidrpc.tests"");
-const y = require(""solidrpc"");
+const y = require(""solidrpcjs"");
 y.SolidRpcJs.ResetPreFlight();
 y.SolidRpcJs.AddPreFlight((req, cont) => {{ 
     req.headers['Authorization'] = 'Bearer mykey';

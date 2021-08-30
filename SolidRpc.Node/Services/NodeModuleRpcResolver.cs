@@ -26,7 +26,7 @@ namespace SolidRpc.Node.Services
     ""esModuleInterop"": true,
     ""baseUrl"": ""."",
     ""paths"": {{ ""*"": [ ""node_modules/*"",""../{StrModuleId}/node_modules/*"" ] }},
-    ""typeRoots"": [ ""../{StrModuleId}/@types"" ],
+    ""typeRoots"": [ ""../{StrModuleId}/node_modules/@types"" ],
     ""lib"": [ ""es2018"",""es2017"",""es7"",""es6"",""DOM"" ],
     ""declaration"": true
   }}
@@ -49,14 +49,12 @@ namespace SolidRpc.Node.Services
             {
                 tw.Write(@"{
  ""dependencies"": {
+    ""@types/node"": ""^16.7.8"",
+    ""open"": ""^8.2.1"",
     ""axios"": ""^0.21.1"",
     ""cancellationtoken"": ""^2.2.0"",
-    ""qs"": ""^6.10.1"",
     ""rxjs"": ""^7.1.0"",
     ""typescript"": ""^4.3.4""
- },
- ""devDependencies"": {
-    ""@types/qs"": ""^6.9.6""
  }
 }");
             }

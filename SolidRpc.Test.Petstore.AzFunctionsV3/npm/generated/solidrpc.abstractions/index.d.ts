@@ -1,6 +1,6 @@
 import { default as CancellationToken } from 'cancellationtoken';
 import { Observable } from 'rxjs';
-import { SolidRpcJs } from 'solidrpc';
+import { SolidRpcJs } from 'solidrpcjs';
 export declare namespace Abstractions {
     namespace Services {
         namespace Code {
@@ -322,6 +322,69 @@ export declare namespace Abstractions {
          * Instance for the ISolidRpcHost type. Implemented by the SolidRpcHostImpl
          */
         var SolidRpcHostInstance: ISolidRpcHost;
+        /**
+         *
+         */
+        interface ISolidRpcOAuth2 {
+            /**
+             *
+             * @param callbackUri
+             * @param state
+             * @param scopes
+             * @param cancellationToken
+             */
+            GetAuthorizationCodeTokenAsync(callbackUri?: string, state?: string, scopes?: string[], cancellationToken?: CancellationToken): Observable<Abstractions.Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the GetAuthorizationCodeTokenAsync invocations.
+             */
+            GetAuthorizationCodeTokenAsyncObservable: Observable<Abstractions.Types.FileContent>;
+            /**
+             *
+             * @param code
+             * @param state
+             * @param cancellation
+             */
+            TokenCallbackAsync(code?: string, state?: string, cancellation?: CancellationToken): Observable<Abstractions.Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
+             */
+            TokenCallbackAsyncObservable: Observable<Abstractions.Types.FileContent>;
+        }
+        /**
+         *
+         */
+        class SolidRpcOAuth2Impl extends SolidRpcJs.RpcServiceImpl implements ISolidRpcOAuth2 {
+            constructor();
+            /**
+             *
+             * @param callbackUri
+             * @param state
+             * @param scopes
+             * @param cancellationToken
+             */
+            GetAuthorizationCodeTokenAsync(callbackUri?: string, state?: string, scopes?: string[], cancellationToken?: CancellationToken): Observable<Abstractions.Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the GetAuthorizationCodeTokenAsync invocations.
+             */
+            GetAuthorizationCodeTokenAsyncObservable: Observable<Abstractions.Types.FileContent>;
+            private GetAuthorizationCodeTokenAsyncSubject;
+            /**
+             *
+             * @param code
+             * @param state
+             * @param cancellation
+             */
+            TokenCallbackAsync(code?: string, state?: string, cancellation?: CancellationToken): Observable<Abstractions.Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
+             */
+            TokenCallbackAsyncObservable: Observable<Abstractions.Types.FileContent>;
+            private TokenCallbackAsyncSubject;
+        }
+        /**
+         * Instance for the ISolidRpcOAuth2 type. Implemented by the SolidRpcOAuth2Impl
+         */
+        var SolidRpcOAuth2Instance: ISolidRpcOAuth2;
     }
     namespace Types {
         namespace Code {

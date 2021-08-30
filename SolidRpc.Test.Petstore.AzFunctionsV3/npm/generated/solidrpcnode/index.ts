@@ -1,4 +1,4 @@
-﻿import { SolidRpcJs } from 'solidrpcjs';
+import { SolidRpcJs } from 'solidrpcjs';
 import http from 'http';
 import open from 'open';
 

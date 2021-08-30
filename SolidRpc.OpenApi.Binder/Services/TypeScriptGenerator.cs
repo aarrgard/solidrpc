@@ -55,7 +55,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             sb.AppendLine("import { default as CancellationToken } from 'cancellationtoken';");
             sb.AppendLine("import { Observable, Subject } from 'rxjs';");
             sb.AppendLine("import { share } from 'rxjs/operators'");
-            sb.AppendLine("import { SolidRpcJs } from 'solidrpc';");
+            sb.AppendLine("import { SolidRpcJs } from 'solidrpcjs';");
 
             if(string.IsNullOrEmpty(codeNamespace.Name) && codeNamespace.Namespaces == null)
             {

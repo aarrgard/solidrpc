@@ -13,7 +13,7 @@ const download = (url, path, callback) => {
         .pipe(fs.createWriteStream(path))
         .on('close', callback)
 }
-const packages ='SolidRpc,SolidRpc.Abstractions'
+const packages ='SolidRpcJs,SolidRpcNode,SolidRpc.Abstractions'
 const url = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/'+packages
 const path = 'generated';
 const zipFile = path+'/tmp.zip';

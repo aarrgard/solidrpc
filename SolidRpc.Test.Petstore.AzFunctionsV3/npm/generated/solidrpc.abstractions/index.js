@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Abstractions = void 0;
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
-const solidrpc_1 = require("solidrpc");
+const solidrpcjs_1 = require("solidrpcjs");
 var Abstractions;
 (function (Abstractions) {
     let Services;
@@ -13,11 +13,11 @@ var Abstractions;
             /**
              *
              */
-            class CodeNamespaceGeneratorImpl extends solidrpc_1.SolidRpcJs.RpcServiceImpl {
+            class CodeNamespaceGeneratorImpl extends solidrpcjs_1.SolidRpcJs.RpcServiceImpl {
                 constructor() {
                     super();
                     this.CreateCodeNamespaceSubject = new rxjs_1.Subject();
-                    this.CreateCodeNamespaceObservable = this.CreateCodeNamespaceSubject.asObservable().pipe(operators_1.share());
+                    this.CreateCodeNamespaceObservable = this.CreateCodeNamespaceSubject.asObservable().pipe((0, operators_1.share)());
                 }
                 /**
                  *
@@ -27,7 +27,7 @@ var Abstractions;
                 CreateCodeNamespace(assemblyName, cancellationToken) {
                     let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
                     uri = uri.replace('{assemblyName}', this.enocodeUriValue(assemblyName.toString()));
-                    return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                    return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                         if (code == 200) {
                             return new Abstractions.Types.Code.CodeNamespace(data);
                         }
@@ -45,13 +45,13 @@ var Abstractions;
             /**
              *
              */
-            class NpmGeneratorImpl extends solidrpc_1.SolidRpcJs.RpcServiceImpl {
+            class NpmGeneratorImpl extends solidrpcjs_1.SolidRpcJs.RpcServiceImpl {
                 constructor() {
                     super();
                     this.CreateNpmPackageSubject = new rxjs_1.Subject();
-                    this.CreateNpmPackageObservable = this.CreateNpmPackageSubject.asObservable().pipe(operators_1.share());
+                    this.CreateNpmPackageObservable = this.CreateNpmPackageSubject.asObservable().pipe((0, operators_1.share)());
                     this.CreateNpmZipSubject = new rxjs_1.Subject();
-                    this.CreateNpmZipObservable = this.CreateNpmZipSubject.asObservable().pipe(operators_1.share());
+                    this.CreateNpmZipObservable = this.CreateNpmZipSubject.asObservable().pipe((0, operators_1.share)());
                 }
                 /**
                  *
@@ -61,7 +61,7 @@ var Abstractions;
                 CreateNpmPackage(assemblyNames, cancellationToken) {
                     let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
                     uri = uri.replace('{assemblyNames}', this.enocodeUriValue(assemblyNames.toString()));
-                    return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                    return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                         if (code == 200) {
                             return Array.from(data).map(o => new Abstractions.Types.Code.NpmPackage(o));
                         }
@@ -78,7 +78,7 @@ var Abstractions;
                 CreateNpmZip(assemblyNames, cancellationToken) {
                     let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
                     uri = uri.replace('{assemblyNames}', this.enocodeUriValue(assemblyNames.toString()));
-                    return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                    return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                         if (code == 200) {
                             return new Abstractions.Types.FileContent(data);
                         }
@@ -96,13 +96,13 @@ var Abstractions;
             /**
              *
              */
-            class TypescriptGeneratorImpl extends solidrpc_1.SolidRpcJs.RpcServiceImpl {
+            class TypescriptGeneratorImpl extends solidrpcjs_1.SolidRpcJs.RpcServiceImpl {
                 constructor() {
                     super();
                     this.CreateTypesTsForAssemblyAsyncSubject = new rxjs_1.Subject();
-                    this.CreateTypesTsForAssemblyAsyncObservable = this.CreateTypesTsForAssemblyAsyncSubject.asObservable().pipe(operators_1.share());
+                    this.CreateTypesTsForAssemblyAsyncObservable = this.CreateTypesTsForAssemblyAsyncSubject.asObservable().pipe((0, operators_1.share)());
                     this.CreateTypesTsForCodeNamespaceAsyncSubject = new rxjs_1.Subject();
-                    this.CreateTypesTsForCodeNamespaceAsyncObservable = this.CreateTypesTsForCodeNamespaceAsyncSubject.asObservable().pipe(operators_1.share());
+                    this.CreateTypesTsForCodeNamespaceAsyncObservable = this.CreateTypesTsForCodeNamespaceAsyncSubject.asObservable().pipe((0, operators_1.share)());
                 }
                 /**
                  *
@@ -112,7 +112,7 @@ var Abstractions;
                 CreateTypesTsForAssemblyAsync(assemblyName, cancellationToken) {
                     let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
                     uri = uri.replace('{assemblyName}', this.enocodeUriValue(assemblyName.toString()));
-                    return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                    return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                         if (code == 200) {
                             return data;
                         }
@@ -128,7 +128,7 @@ var Abstractions;
                  */
                 CreateTypesTsForCodeNamespaceAsync(codeNamespace, cancellationToken) {
                     let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
-                    return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('post', uri, null, { 'Content-Type': 'application/json' }, this.toJson(codeNamespace)), cancellationToken, function (code, data) {
+                    return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('post', uri, null, { 'Content-Type': 'application/json' }, this.toJson(codeNamespace)), cancellationToken, function (code, data) {
                         if (code == 200) {
                             return data;
                         }
@@ -147,11 +147,11 @@ var Abstractions;
         /**
          *
          */
-        class SolidRpcContentHandlerImpl extends solidrpc_1.SolidRpcJs.RpcServiceImpl {
+        class SolidRpcContentHandlerImpl extends solidrpcjs_1.SolidRpcJs.RpcServiceImpl {
             constructor() {
                 super();
                 this.GetContentSubject = new rxjs_1.Subject();
-                this.GetContentObservable = this.GetContentSubject.asObservable().pipe(operators_1.share());
+                this.GetContentObservable = this.GetContentSubject.asObservable().pipe((0, operators_1.share)());
             }
             /**
              *
@@ -160,7 +160,7 @@ var Abstractions;
              */
             GetContent(path, cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, {
                     'path': path,
                 }, null, null), cancellationToken, function (code, data) {
                     if (code == 200) {
@@ -180,21 +180,21 @@ var Abstractions;
         /**
          *
          */
-        class SolidRpcHostImpl extends solidrpc_1.SolidRpcJs.RpcServiceImpl {
+        class SolidRpcHostImpl extends solidrpcjs_1.SolidRpcJs.RpcServiceImpl {
             constructor() {
                 super();
                 this.GetHostIdSubject = new rxjs_1.Subject();
-                this.GetHostIdObservable = this.GetHostIdSubject.asObservable().pipe(operators_1.share());
+                this.GetHostIdObservable = this.GetHostIdSubject.asObservable().pipe((0, operators_1.share)());
                 this.GetHostInstanceSubject = new rxjs_1.Subject();
-                this.GetHostInstanceObservable = this.GetHostInstanceSubject.asObservable().pipe(operators_1.share());
+                this.GetHostInstanceObservable = this.GetHostInstanceSubject.asObservable().pipe((0, operators_1.share)());
                 this.SyncHostsFromStoreSubject = new rxjs_1.Subject();
-                this.SyncHostsFromStoreObservable = this.SyncHostsFromStoreSubject.asObservable().pipe(operators_1.share());
+                this.SyncHostsFromStoreObservable = this.SyncHostsFromStoreSubject.asObservable().pipe((0, operators_1.share)());
                 this.CheckHostSubject = new rxjs_1.Subject();
-                this.CheckHostObservable = this.CheckHostSubject.asObservable().pipe(operators_1.share());
+                this.CheckHostObservable = this.CheckHostSubject.asObservable().pipe((0, operators_1.share)());
                 this.GetHostConfigurationSubject = new rxjs_1.Subject();
-                this.GetHostConfigurationObservable = this.GetHostConfigurationSubject.asObservable().pipe(operators_1.share());
+                this.GetHostConfigurationObservable = this.GetHostConfigurationSubject.asObservable().pipe((0, operators_1.share)());
                 this.IsAliveSubject = new rxjs_1.Subject();
-                this.IsAliveObservable = this.IsAliveSubject.asObservable().pipe(operators_1.share());
+                this.IsAliveObservable = this.IsAliveSubject.asObservable().pipe((0, operators_1.share)());
             }
             /**
              *
@@ -202,7 +202,7 @@ var Abstractions;
              */
             GetHostId(cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                     if (code == 200) {
                         return data;
                     }
@@ -217,7 +217,7 @@ var Abstractions;
              */
             GetHostInstance(cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                     if (code == 200) {
                         return new Abstractions.Types.SolidRpcHostInstance(data);
                     }
@@ -232,7 +232,7 @@ var Abstractions;
              */
             SyncHostsFromStore(cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                     if (code == 200) {
                         return Array.from(data).map(o => new Abstractions.Types.SolidRpcHostInstance(o));
                     }
@@ -248,7 +248,7 @@ var Abstractions;
              */
             CheckHost(hostInstance, cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('post', uri, null, { 'Content-Type': 'application/json' }, this.toJson(hostInstance)), cancellationToken, function (code, data) {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('post', uri, null, { 'Content-Type': 'application/json' }, this.toJson(hostInstance)), cancellationToken, function (code, data) {
                     if (code == 200) {
                         return new Abstractions.Types.SolidRpcHostInstance(data);
                     }
@@ -263,7 +263,7 @@ var Abstractions;
              */
             GetHostConfiguration(cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                     if (code == 200) {
                         return Array.from(data).map(o => new Abstractions.Types.NameValuePair(o));
                     }
@@ -278,7 +278,7 @@ var Abstractions;
              */
             IsAlive(cancellationToken) {
                 let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
-                return this.request(new solidrpc_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function (code, data) {
                     if (code == 200) {
                         return null;
                     }
@@ -293,6 +293,65 @@ var Abstractions;
          * Instance for the ISolidRpcHost type. Implemented by the SolidRpcHostImpl
          */
         Services.SolidRpcHostInstance = new SolidRpcHostImpl();
+        /**
+         *
+         */
+        class SolidRpcOAuth2Impl extends solidrpcjs_1.SolidRpcJs.RpcServiceImpl {
+            constructor() {
+                super();
+                this.GetAuthorizationCodeTokenAsyncSubject = new rxjs_1.Subject();
+                this.GetAuthorizationCodeTokenAsyncObservable = this.GetAuthorizationCodeTokenAsyncSubject.asObservable().pipe((0, operators_1.share)());
+                this.TokenCallbackAsyncSubject = new rxjs_1.Subject();
+                this.TokenCallbackAsyncObservable = this.TokenCallbackAsyncSubject.asObservable().pipe((0, operators_1.share)());
+            }
+            /**
+             *
+             * @param callbackUri
+             * @param state
+             * @param scopes
+             * @param cancellationToken
+             */
+            GetAuthorizationCodeTokenAsync(callbackUri, state, scopes, cancellationToken) {
+                let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, {
+                    'callbackUri': callbackUri,
+                    'state': state,
+                    'scopes': scopes,
+                }, null, null), cancellationToken, function (code, data) {
+                    if (code == 200) {
+                        return new Abstractions.Types.FileContent(data);
+                    }
+                    else {
+                        throw 'Response code != 200(' + code + ')';
+                    }
+                }, this.GetAuthorizationCodeTokenAsyncSubject);
+            }
+            /**
+             *
+             * @param code
+             * @param state
+             * @param cancellation
+             */
+            TokenCallbackAsync(code, state, cancellation) {
+                let uri = 'http://localhost:7071/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
+                return this.request(new solidrpcjs_1.SolidRpcJs.RpcServiceRequest('get', uri, {
+                    'code': code,
+                    'state': state,
+                }, null, null), cancellation, function (code, data) {
+                    if (code == 200) {
+                        return new Abstractions.Types.FileContent(data);
+                    }
+                    else {
+                        throw 'Response code != 200(' + code + ')';
+                    }
+                }, this.TokenCallbackAsyncSubject);
+            }
+        }
+        Services.SolidRpcOAuth2Impl = SolidRpcOAuth2Impl;
+        /**
+         * Instance for the ISolidRpcOAuth2 type. Implemented by the SolidRpcOAuth2Impl
+         */
+        Services.SolidRpcOAuth2Instance = new SolidRpcOAuth2Impl();
     })(Services = Abstractions.Services || (Abstractions.Services = {}));
     let Types;
     (function (Types) {

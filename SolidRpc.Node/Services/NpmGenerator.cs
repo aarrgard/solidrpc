@@ -29,7 +29,7 @@ namespace SolidRpc.Node.Services
 
         public async Task<IEnumerable<NpmPackage>> CreateNpmPackage(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
         {
-            var compileAssemblyNames = assemblyNames.Union(new[] { "SolidRpc" }).Distinct().OrderBy(o => o == "SolidRpc" ? 0 : 1);
+            var compileAssemblyNames = assemblyNames.Union(new[] { "SolidRpcJs" }).Distinct().OrderBy(o => o == "SolidRpcJs" ? 0 : 1);
             var npmPackages = new List<NpmPackage>();
             foreach(var assemblyName in compileAssemblyNames)
             {

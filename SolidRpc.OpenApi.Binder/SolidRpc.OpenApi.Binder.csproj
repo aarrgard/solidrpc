@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Services\TypeScriptGenerator.SolidRpc.ts" />
+    <EmbeddedResource Include="Services\TypeScriptGenerator.SolidRpcJs.ts" />
+    <EmbeddedResource Include="Services\TypeScriptGenerator.SolidRpcNode.ts" />
   </ItemGroup>
 
   <ItemGroup>
