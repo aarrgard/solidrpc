@@ -6,6 +6,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="npm\node_modules\**" />
+    <EmbeddedResource Remove="npm\node_modules\**" />
+    <None Remove="npm\node_modules\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.4" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
@@ -32,5 +37,8 @@
     <None Update="proxies.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="npm\generated\" />
   </ItemGroup>
 </Project>

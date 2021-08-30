@@ -178,6 +178,34 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_GetAuthorizationCodeTokenAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_GetAuthorizationCodeTokenAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_TokenCallbackAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_TokenCallbackAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Node_Services_INodeService_ExecuteFileAsync_arg0_arg1_arg2
     {
         [FunctionName("Http_SolidRpc_Node_Services_INodeService_ExecuteFileAsync_arg0_arg1_arg2")]

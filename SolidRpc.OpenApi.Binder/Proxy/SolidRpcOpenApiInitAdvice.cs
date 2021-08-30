@@ -34,7 +34,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private ITransport ProxyTransport { get; set; }
         private ITransport InvokerTransport { get; set; }
         private ITransport LocalTransport { get; set; }
-
+        private bool _initialized = false;
         /// <summary>
         /// Confiugures the proxy
         /// </summary>
@@ -53,7 +53,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 return false;
             }
-                 
 
             HasImplementation = config.InvocationConfiguration.HasImplementation;
 
@@ -83,6 +82,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"No invocation transport configured");
             }
 
+            _initialized = true;
+
             return true;
         }
 
@@ -94,6 +95,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
+            if (!_initialized) throw new Exception("Not initialized");
             //
             // setup invocation options
             //

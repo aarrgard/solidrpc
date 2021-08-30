@@ -1,0 +1,15 @@
+{
+  "include": [ "**/*.ts" ],
+  "exclude": [ "node_modules", "dist" ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "strict": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": { "*": [ "node_modules/*","../e29485f2-9392-4d1a-b19a-9b31091c19b4/node_modules/*" ] },
+    "typeRoots": [ "../e29485f2-9392-4d1a-b19a-9b31091c19b4/@types" ],
+    "lib": [ "es2018","es2017","es7","es6","DOM" ],
+    "declaration": true
+  }
+}

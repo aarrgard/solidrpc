@@ -146,6 +146,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
+        public Task<string> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+        {
+            var nvc = new List<KeyValuePair<string, string>>();
+            nvc.Add(new KeyValuePair<string, string>("grant_type", "authorization_code"));
+            nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
+            nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
+            nvc.Add(new KeyValuePair<string, string>("code", code));
+            nvc.Add(new KeyValuePair<string, string>("redirect_uri", redirectUri));
+            return GetJwtAsync(nvc, timeout, cancellationToken);
+        }
+
         private async Task<string> GetJwtAsync(List<KeyValuePair<string, string>> nvc, TimeSpan? timeout, CancellationToken cancellationToken)
         {
             // defalt timeout of 5 minutes...

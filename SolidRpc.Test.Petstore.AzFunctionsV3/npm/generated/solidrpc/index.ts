@@ -1,16 +1,10 @@
-﻿import { default as axios, AxiosRequestConfig, CancelToken, Method } from 'axios';
+import { default as axios, AxiosRequestConfig, CancelToken, Method } from 'axios';
 import { default as CancellationToken } from 'cancellationtoken';
 import { Observable, Subscriber, Subject } from 'rxjs';
 
 export namespace SolidRpcJs {
     // the global namespace
     var rootNS: Namespace;
-
-    /**
-     * The actual transformer that is used to transform uris before invocation.
-     * @param uri the uri to convert
-     */
-    export var uriTransformer = (s: string): string => s;
 
     /** Represents a a namespace */
     export class Namespace {
@@ -85,9 +79,56 @@ export namespace SolidRpcJs {
     /** The root namespace */
     export var rootNamespace = GetRootNamespace();
 
-    /** The default headers */
-    export var defaultHeaders: any = rootNamespace.declareNamespace('SolidRpc').declareVariable('defaultHeaders');
+    /**
+     * Resets the registered callbacks
+     * Use this to modify the uri or headers.
+     * @param uri the uri to convert
+     */
+    export function ResetPreFlight(): void {
+        rootPreFlight = function (req: RpcServiceRequest, cont: () => void): void { cont(); }
+    }
 
+    /**
+     * Use this method to register callbacks prior to sending a request to the service
+     * Use this to modify the uri or headers.
+     * @param uri the uri to convert
+     */
+    export function AddPreFlight(newPreFlight: (req: RpcServiceRequest, cont: () => void) => void): void {
+        var oldPreFlight = rootPreFlight;
+        rootPreFlight = function (req: RpcServiceRequest, cont: () => void): void { oldPreFlight(req, () => { newPreFlight(req, () => cont()); }); }
+    }
+
+    var rootPreFlight: (req: RpcServiceRequest, cont: () => void) => void = function (req: RpcServiceRequest, cont: () => void): void { cont(); }
+
+    /** Represents a service request */
+    export class RpcServiceRequest {
+        constructor(method: string, uri: string, query: any, headers: any, data: any) {
+            this.method = method;
+            this.uri = uri;
+            this.query = query;
+            this.headers = headers;
+            this.data = data;
+            if (this.headers == null) {
+                this.headers = {};
+            }
+        }
+        /** The method - GET, POST, etc */
+        method: string;
+
+        /** The uri */
+        uri: string;
+
+        /** the query */
+        query: any;
+
+        /** the headers */
+        headers: any;
+
+        /** the data */
+        data: any;
+    }
+
+    /** Base class for a service implementation */
     export class RpcServiceImpl {
         /**
          * Encodes the supplied uri value
@@ -122,7 +163,7 @@ export namespace SolidRpcJs {
          * @param cancellationToken
          * @param conv
          */
-        request<T>(method: string, uri: string, query: any, headers: any, data: any, cancellationToken: CancellationToken | undefined, conv: (status: number, body: any) => T, bcast: Subject<T>): Observable<T> {
+        request<T>(req: RpcServiceRequest, cancellationToken: CancellationToken | undefined, conv: (status: number, body: any) => T, bcast: Subject<T>): Observable<T> {
             return Observable.create((subscriber: Subscriber<T>) => {
                 //
                 // setup cancellation token
@@ -138,61 +179,58 @@ export namespace SolidRpcJs {
                 // setup query string
                 //
                 let sQuery = '';
-                for (const property in query) {
-                    sQuery += `&${property}=${this.enocodeUriValue(query[property])}`
+                for (const property in req.query) {
+                    sQuery += `&${property}=${this.enocodeUriValue(req.query[property])}`
                 }
 
                 if (sQuery.length > 0) {
-                    uri = uri + '?' + sQuery.substr(1)
+                    req.uri = req.uri + '?' + sQuery.substr(1)
                 }
 
-                //
-                // add default headers
-                //
-                for (let h in defaultHeaders) {
-                    if (headers == null) headers = {};
-                    headers[h] = defaultHeaders[h];
-                }
+                // transform using registered preflight methods
+                rootPreFlight(req, () => {
 
-                let axiosMethod: Method | undefined = undefined;
-                switch (method) {
-                    case 'get': axiosMethod = 'get'; break; 
-                    case 'delete': axiosMethod = 'delete'; break; 
-                    case 'head': axiosMethod = 'head'; break; 
-                    case 'options': axiosMethod = 'options'; break; 
-                    case 'post': axiosMethod = 'post'; break; 
-                    case 'put': axiosMethod = 'put'; break; 
-                    case 'patch': axiosMethod = 'patch'; break; 
-                    case 'purge': axiosMethod = 'purge'; break; 
-                    case 'link': axiosMethod = 'link'; break; 
-                    case 'unlink': axiosMethod = 'unlink'; break; 
-                }
+                    let axiosMethod: Method | undefined = undefined;
+                    switch (req.method) {
+                        case 'get': axiosMethod = 'get'; break;
+                        case 'delete': axiosMethod = 'delete'; break;
+                        case 'head': axiosMethod = 'head'; break;
+                        case 'options': axiosMethod = 'options'; break;
+                        case 'post': axiosMethod = 'post'; break;
+                        case 'put': axiosMethod = 'put'; break;
+                        case 'patch': axiosMethod = 'patch'; break;
+                        case 'purge': axiosMethod = 'purge'; break;
+                        case 'link': axiosMethod = 'link'; break;
+                        case 'unlink': axiosMethod = 'unlink'; break;
+                    }
 
-                //
-                // send request
-                //
-                let requestConfig: AxiosRequestConfig = {
-                    method: axiosMethod,
-                    url: uri,
-                    headers: headers,
-                    data: data,
-                    cancelToken: cancelToken
-                }
-                axios.request<any>(requestConfig)
-                    .then(resp => {
-                        try {
-                            let converted = conv(resp.status, resp.data);
-                            subscriber.next(converted);
-                            bcast.next(converted);
-                        } catch (err) {
+                    //
+                    // send request
+                    //
+                    let requestConfig: AxiosRequestConfig = {
+                        method: axiosMethod,
+                        url: req.uri,
+                        headers: req.headers,
+                        data: req.data,
+                        cancelToken: cancelToken
+                    }
+                    axios.request<any>(requestConfig)
+                        .then(resp => {
+                            try {
+                                let converted = conv(resp.status, resp.data);
+                                subscriber.next(converted);
+                                bcast.next(converted);
+                            } catch (err) {
+                                subscriber.error(err);
+                            }
+                        }).catch(err => {
                             subscriber.error(err);
-                        }
-                    }).catch(err => {
-                        subscriber.error(err);
-                        bcast.error(err);
-                    }).finally(() => {
-                        subscriber.complete();
-                    });
+                            bcast.error(err);
+                        }).finally(() => {
+                            subscriber.complete();
+                        });
+
+                });
                 return () => { };
             });
         }

@@ -10,7 +10,7 @@ using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Types.Code;
 using SolidRpc.OpenApi.Binder.Services;
 
-[assembly: SolidRpcServiceAttribute(typeof(ITypescriptGenerator), typeof(TypeScriptGenerator), SolidRpcServiceLifetime.Transient)]
+[assembly: SolidRpcService(typeof(ITypescriptGenerator), typeof(TypeScriptGenerator), SolidRpcServiceLifetime.Transient)]
 namespace SolidRpc.OpenApi.Binder.Services
 {
     /// <summary>
@@ -276,7 +276,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                             code.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
                         });
 
-                        code.Append(codeIndentation).AppendLine($"return this.request<{tsReturnType}>('{m.HttpMethod.ToLower()}', uri, {strQueryArgs}, {strHeaderArgs}, {strBodyArgs}, {cancellationTokenArgName}, function(code : number, data : any) {{");
+                        code.Append(codeIndentation).AppendLine($"return this.request<{tsReturnType}>(new SolidRpcJs.RpcServiceRequest('{m.HttpMethod.ToLower()}', uri, {strQueryArgs}, {strHeaderArgs}, {strBodyArgs}), {cancellationTokenArgName}, function(code : number, data : any) {{");
                         {
                             var respIndentation = CreateIndentation(codeIndentation);
                             code.Append(respIndentation).AppendLine($"if(code == 200) {{");

@@ -166,5 +166,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         {
             return AuthorityImpl.GetUserJwtAsync(clientId, clientSecret, username, password, scopes, timeout, cancellationToken);
         }
+
+        public Task<string> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+        {
+            return AuthorityImpl.GetCodeJwtToken(clientId, clientSecret, code, redirectUri, timeout, cancellationToken);
+        }
     }
 }

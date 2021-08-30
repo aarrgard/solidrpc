@@ -88,8 +88,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //c.SetQueueTransport<QueueInvocationHandler>();
             //c.SetQueueTransportInboundHandler("azfunctions");
 
-            var authority = "http://localhost:7071/front";
-            conf.SetOAuth2Security(authority);
+            //conf.SetOAuth2ClientSecurity("http://localhost:7071/front", "swagger-ui", "swagger-ui");
+            conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))
@@ -104,6 +104,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 //}
             }
             if (method.DeclaringType == typeof(ISolidRpcContentHandler))
+            {
+                conf.DisableSecurity();
+                return true;
+            }
+            if (method.DeclaringType == typeof(ISolidRpcOAuth2))
             {
                 conf.DisableSecurity();
                 return true;

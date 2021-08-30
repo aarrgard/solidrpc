@@ -73,5 +73,23 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
             IEnumerable<string> scopes,
             TimeSpan? timeout = null,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns a token from supplied code.
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="code"></param>
+        /// <param name="timeout"></param>
+        /// <param name="redirectUri"></param>
+        /// <param name="cancellationToken"></param>
+        Task<string> GetCodeJwtToken(
+            string clientId,
+            string clientSecret,
+            string code,
+            string redirectUri,
+            TimeSpan? timeout = null, 
+            CancellationToken cancellationToken = default(CancellationToken));
+
     }
 }

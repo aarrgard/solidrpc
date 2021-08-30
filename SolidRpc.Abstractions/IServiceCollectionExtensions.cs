@@ -88,6 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var methods = typeof(ISolidRpcContentHandler).GetMethods()
                 .Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent))
                 .Union(typeof(ISolidRpcHost).GetMethods())
+                .Union(typeof(ISolidRpcOAuth2).GetMethods())
                 .Union(typeof(ICodeNamespaceGenerator).GetMethods())
                 .Union(typeof(ITypescriptGenerator).GetMethods())
                 .Union(typeof(INpmGenerator).GetMethods());

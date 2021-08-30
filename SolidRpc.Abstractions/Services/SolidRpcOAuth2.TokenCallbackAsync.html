@@ -1,0 +1,21 @@
+﻿<html>
+<head>
+    <title>Redirecting...</title>
+</head>
+<body>
+    <script>
+        var accessToken = '{accessToken}';
+        var callback = '{callback}';
+
+        if (accessToken != '') {
+            localStorage.setItem("SolidRpc.OAuth2.AccessToken", accessToken);
+
+            if (callback != '') {
+                document.location.href = callback + '?access_token=' + accessToken;
+            }
+        } else {
+            document.write('Failed to obtain access token!');
+        }
+    </script>
+</body>
+</html>

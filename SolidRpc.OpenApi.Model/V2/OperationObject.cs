@@ -400,7 +400,7 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             int count = 1;
             var newName = name;
-            while (keys.Contains(name))
+            while (keys.Contains(newName))
             {
                 count++;
                 newName = $"{name}{count}";

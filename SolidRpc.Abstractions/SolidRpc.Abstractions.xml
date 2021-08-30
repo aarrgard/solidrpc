@@ -167,6 +167,21 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApiAttribute">
+            <summary>
+            Configures the openapi
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.In">
+            <summary>
+            Where should the parameter be put.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Verbs">
+            <summary>
+            The verbs to use.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
             <summary>
             Interface that can be implemented to resolve the base uri.
@@ -1117,6 +1132,17 @@
             <param name="timeout"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetCodeJwtToken(System.String,System.String,System.String,System.String,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Returns a token from supplied code.
+            </summary>
+            <param name="clientId"></param>
+            <param name="clientSecret"></param>
+            <param name="code"></param>
+            <param name="timeout"></param>
+            <param name="redirectUri"></param>
+            <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory">
             <summary>
@@ -2221,6 +2247,28 @@
             <param name="sessionId"></param>
             <param name="solidRpcCallId"></param>
             <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcOAuth2">
+            <summary>
+            Interfaces that defines the logic for OAuth2 support.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.GetAuthorizationCodeTokenAsync(System.Uri,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            This is the method returns a html page that calls supplied callback
+            after the token callback has been invoked. Use this method to
+            retreive tokens from a standalone node instance.
+            
+            Start a local http server and supply the address to the handler.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.TokenCallbackAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            This is the method that is invoked when a user has been authenticated
+            and a valid token has been retrned
+            </summary>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit">
@@ -3383,6 +3431,16 @@
             </summary>
             <param name="source"></param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2">
+            <summary>
+            Implements the solid authorization logic
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.#ctor(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.Abstractions.Services.ISolidRpcOAuth2},SolidRpc.Abstractions.Serialization.ISerializerFactory)">
+            <summary>
+            Constructs a new instance
+            </summary>
         </member>
         <member name="T:System.TypeExtensions">
             <summary>

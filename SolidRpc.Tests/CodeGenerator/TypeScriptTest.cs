@@ -15,6 +15,7 @@ using SolidRpc.Abstractions.Serialization;
 using System.Runtime.Serialization;
 using SolidRpc.Abstractions.Types.Code;
 using SolidRpc.OpenApi.SwaggerUI.Services;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -222,6 +223,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 .WriteAsJsonString();
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, c => {
                 c.OpenApiSpec = openApiSpec;
+                c.SetSecurityKey("Authorization", "Bearer mykey");
                 return true;
             });
             clientServices.AddSolidRpcBindings(typeof(ITypescriptGenerator), null, c => {
@@ -238,7 +240,8 @@ namespace SolidRpc.Tests.CodeGenerator
             var openApiSpec = serverServices.GetSolidRpcService<IOpenApiParser>().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             serverServices.AddSolidRpcServices();
             serverServices.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestInterfaceImpl), c => { 
-                c.OpenApiSpec = openApiSpec; 
+                c.OpenApiSpec = openApiSpec;
+                c.SetSecurityKey("Authorization", "Bearer mykey");
                 return true; 
             });
         }
@@ -288,6 +291,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 // now we create typescript & compile
                 var assemblyName = typeof(ITestInterface).Assembly.GetName().Name;
                 var ts = await ctx.ClientServiceProvider.GetRequiredService<ITypescriptGenerator>().CreateTypesTsForAssemblyAsync(assemblyName);
+                //await CreatePackage(ctx.ClientServiceProvider, "SolidRpc");
                 var packages = await CreatePackage(ctx.ClientServiceProvider, assemblyName);
 
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().SerializeToString(out string strCt, ct);
@@ -341,7 +345,15 @@ namespace SolidRpc.Tests.CodeGenerator
         {
 
             var ns = sp.GetRequiredService<INodeService>();
-            var js = $@"const x = require(""solidrpc.tests""); (async function(){{
+            var js = $@"const x = require(""solidrpc.tests"");
+const y = require(""solidrpc"");
+y.SolidRpcJs.ResetPreFlight();
+y.SolidRpcJs.AddPreFlight((req, cont) => {{ 
+    req.headers['Authorization'] = 'Bearer mykey';
+    console.log('PreFlight to ' + req.uri);
+    cont();
+}});
+(async function(){{
   return await x.TypeScriptTest.TestInterfaceInstance.{methodName}({jsInput}).toPromise();
 }})();";
             var sep = Path.DirectorySeparatorChar;
@@ -357,8 +369,10 @@ namespace SolidRpc.Tests.CodeGenerator
                 InputFiles = inputFiles,
                 ModuleId = NodeModuleRpcResolver.GuidModuleId
             });
+            if (!string.IsNullOrEmpty(nodeRes.Out)) Console.Write("NodeOut:" + nodeRes.Out);
+            if (!string.IsNullOrEmpty(nodeRes.Err) && nodeRes.ExitCode == 0) Console.Write("NodeErr:" + nodeRes.Err);
 
-            if(nodeRes.ExitCode != 0)
+            if (nodeRes.ExitCode != 0)
             {
                 throw new Exception(nodeRes.Err);
             }

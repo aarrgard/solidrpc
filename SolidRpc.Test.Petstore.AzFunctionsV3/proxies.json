@@ -301,8 +301,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
         "methods": [
-          "POST",
-          "GET"
+          "GET",
+          "POST"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/authorize"
@@ -311,8 +311,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/token",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/token"
@@ -418,6 +418,24 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{arg0}"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync"
     },
     "front/{path}": {
       "matchCondition": {
