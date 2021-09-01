@@ -51,8 +51,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
             services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { 
-                o.OAuthClientId = "testar";
-                o.OAuthClientSecret = "secret";
+                o.OAuthClientId = "swagger-ui";
+                o.OAuthClientSecret = "swagger-ui";
             }, ConfigureAzureFunction);
             services.AddSolidRpcNode(ConfigureAzureFunction);
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));

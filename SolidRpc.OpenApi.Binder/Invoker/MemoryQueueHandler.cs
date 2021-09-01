@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             try
             {
                 Logger.LogInformation("MemoryQueue dispatching message...");
-                return MemoryQueueBus.HandleMessage(transport.QueueName, message);
+                return MemoryQueueBus.HandleMessage(transport.QueueName, message, invocationOptions);
             }
             finally
             {

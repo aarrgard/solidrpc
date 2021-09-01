@@ -90,7 +90,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 return;
             }
             RegisteredQueues.Add(queueTransport.QueueName);
-            MemoryQueueBus.AddHandler(queueTransport.QueueName, msg => MessageHandler(msg, SolidRpcApplication.ShutdownToken));
+            MemoryQueueBus.AddHandler(queueTransport.QueueName, msg => MessageHandler(msg.Message, SolidRpcApplication.ShutdownToken));
         }
 
         private async Task MessageHandler(string msg, CancellationToken cancellationToken)

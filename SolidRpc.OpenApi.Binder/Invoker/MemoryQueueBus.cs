@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SolidRpc.Abstractions.OpenApi.Invoker;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.Binder.Invoker
@@ -9,8 +11,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// </summary>
     public class MemoryQueueBus
     {
-        private IDictionary<string, IList<string>> _messages = new Dictionary<string, IList<string>>();
-        private IDictionary<string, Func<string, Task>> _handlers = new Dictionary<string, Func<string, Task>>();
+        private IDictionary<string, IList<MemoryQueueBusMessage>> _messages = new Dictionary<string, IList<MemoryQueueBusMessage>>();
+        private IDictionary<string, Func<MemoryQueueBusMessage, Task>> _handlers = new Dictionary<string, Func<MemoryQueueBusMessage, Task>>();
 
         /// <summary>
         /// Sends a message to supplied queue
@@ -18,13 +20,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         /// <param name="queueName"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public Task HandleMessage(string queueName, string message)
+        public Task HandleMessage(string queueName, string message, InvocationOptions options)
         {
-            if (_messages.TryGetValue(queueName, out IList<string> messages))
+            if (_messages.TryGetValue(queueName, out IList<MemoryQueueBusMessage> messages))
             {
                 lock (messages)
                 {
-                    messages.Add(message);
+                    messages.Add(new MemoryQueueBusMessage() { Message = message, Options = options});
                 }
                 return Task.CompletedTask;
             }
@@ -34,10 +36,10 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             }
         }
 
-        public void AddHandler(string queueName, Func<string, Task> handler)
+        public void AddHandler(string queueName, Func<MemoryQueueBusMessage, Task> handler)
         {
             _handlers.Add(queueName, handler);
-            _messages.Add(queueName, new List<string>());
+            _messages.Add(queueName, new List<MemoryQueueBusMessage>());
         }
 
         public void RemoveHandler(string queueName)
@@ -52,7 +54,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             foreach(var messageList in _messages)
             {
                 var handler = _handlers[messageList.Key];
-                var messages = new List<string>();
+                var messages = new List<MemoryQueueBusMessage>();
                 lock(messageList.Value)
                 {
                     messages.AddRange(messageList.Value);
@@ -65,6 +67,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 }
             }
             return dispatchedMessages;
+        }
+
+        public IEnumerable<MemoryQueueBusMessage> GetMessages()
+        {
+            return _messages.Values.SelectMany(o => o);
         }
     }
 }

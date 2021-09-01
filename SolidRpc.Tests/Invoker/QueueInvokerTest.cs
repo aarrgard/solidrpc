@@ -93,7 +93,8 @@ namespace SolidRpc.Tests.Invoker
         {
             conf.ProxyTransportType = "MemoryQueue";
             conf.SetHttpTransport(InvocationStrategy.Forward);
-            conf.SetQueueTransport<IMemoryQueueTransport>();
+            var qConf = conf.SetQueueTransport<IMemoryQueueTransport>();
+            qConf.MessagePriority = 2;
             if (addInboundHandler)
             {
                 conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
@@ -176,10 +177,9 @@ namespace SolidRpc.Tests.Invoker
                 }
 
                 // wait for the handler queues to complete
-                var tasks = ctx.ServerServiceProvider.GetRequiredService<IEnumerable<IMethodBindingHandler>>().Select(o => o.FlushQueuesAsync());
-                await Task.WhenAll(tasks);
-
-                await MemoryQueueBus.DispatchAllMessagesAsync();
+                MemoryQueueBus.GetMessages().All(o => o.Options.Priority == 2);
+                var numDispatched = await MemoryQueueBus.DispatchAllMessagesAsync();
+                Assert.AreEqual(count, numDispatched);
 
                 Assert.AreEqual(count, _doYInvocations);
                 for (int i = 0; i < count; i++)
@@ -188,8 +188,9 @@ namespace SolidRpc.Tests.Invoker
                 }
 
                 // wait for the handler queues to complete
-                tasks = ctx.ServerServiceProvider.GetRequiredService<IEnumerable<IMethodBindingHandler>>().Select(o => o.FlushQueuesAsync());
-                await Task.WhenAll(tasks);
+                MemoryQueueBus.GetMessages().All(o => o.Options.Priority == 2);
+                numDispatched = await MemoryQueueBus.DispatchAllMessagesAsync();
+                Assert.AreEqual(count, numDispatched);
 
                 Assert.AreEqual(count * 2, _doYInvocations);
             }
@@ -210,6 +211,7 @@ namespace SolidRpc.Tests.Invoker
 
                 await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
 
+                MemoryQueueBus.GetMessages().All(o => o.Options.Priority == 2);
                 await MemoryQueueBus.DispatchAllMessagesAsync();
 
                 Assert.AreEqual(1, _doYInvocations);
