@@ -205,6 +205,9 @@ namespace SolidRpc.Tests.Security
                 o.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = true;
                 return true;
             });
+
+
+            serverServices.AddSolidRpcServices();
         }
 
         /// <summary>

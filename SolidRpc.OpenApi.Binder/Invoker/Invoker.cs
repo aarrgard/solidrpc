@@ -4,7 +4,9 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -74,6 +76,25 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             var req = new SolidHttpRequest();
             await methodBinding.BindArgumentsAsync(req, args, operationAddress);
+
+            //
+            // if we have an authorized user and the url requires authentication - add it.
+            //
+            var currentPrincipal = ServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal;
+            if((currentPrincipal?.Identity?.IsAuthenticated) ?? false)
+            {
+                var accessToken = currentPrincipal.Claims.Where(o => o.Type == "accesstoken").Select(o => o.Value).FirstOrDefault();
+                if(accessToken != null)
+                {
+                    // add access_token if resource is protected
+                    var oauthConf = methodBinding.GetSolidProxyConfig<ISecurityOAuth2Config>();
+                    if (oauthConf.RedirectUnauthorizedIdentity)
+                    {
+                        req.Query = req.Query.Union(new[] { new SolidHttpRequestDataString("text/plain", "access_token", accessToken) }).ToList();
+                    }
+                }
+            }
+
             return req.CreateUri(includeQueryString);
         }
 
