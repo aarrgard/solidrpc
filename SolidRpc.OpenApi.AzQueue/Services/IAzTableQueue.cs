@@ -77,6 +77,13 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        Task SendTestMessageUsingProxyAsync(Stream payload, int messageCount = 1, bool raiseException = false, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Sends a test message.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task SendTestMessageAsync(Stream payload, int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

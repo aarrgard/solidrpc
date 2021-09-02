@@ -53,6 +53,10 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="postInvokeCallback"></param>
         public InvocationOptions(string transportType, int priority, string continuationToken = null, Func<IHttpRequest, Task> preInvokeCallback = null, Func<IHttpResponse, Task> postInvokeCallback = null)
         {
+            if (priority <= 0)
+            {
+                priority = MessagePriorityNormal;
+            }
             TransportType = transportType;
             Priority = priority;
             ContinuationToken = continuationToken;

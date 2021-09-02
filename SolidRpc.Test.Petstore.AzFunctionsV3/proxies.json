@@ -301,8 +301,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/authorize"
@@ -436,6 +436,15 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync"
     },
     "front/{path}": {
       "matchCondition": {

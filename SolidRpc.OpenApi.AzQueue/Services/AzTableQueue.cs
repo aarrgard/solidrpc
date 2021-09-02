@@ -30,6 +30,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             IServiceProvider serviceProvider,
             AzTableHandler queueHandler,
             IMethodInvoker methodInvoker,
+            IAzTableQueue proxy,
             IInvoker<IAzTableQueue> invoker,
             ISolidRpcApplication solidRpcApplication)
         {
@@ -40,6 +41,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             Invoker = invoker;
+            Proxy = proxy;
             SolidRpcApplication = solidRpcApplication;
         }
 
@@ -50,6 +52,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         private AzTableHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IInvoker<IAzTableQueue> Invoker { get; }
+        private IAzTableQueue Proxy { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
 
         public Task DoScheduledScanAsync(CancellationToken cancellationToken = default)
@@ -142,13 +145,26 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             return QueueHandler.UpdateSettings(settings, cancellationToken);
         }
 
+        public async Task SendTestMessageUsingProxyAsync(Stream payload, int messageCount = 1, bool raiseException = false, CancellationToken cancellationToken = default)
+        {
+            var ms = new MemoryStream();
+            await payload.CopyToAsync(ms);
+
+            var tasks = new List<Task>();
+            for (int i = 0; i < messageCount; i++)
+            {
+                await Proxy.ProcessTestMessage(new MemoryStream(ms.ToArray()), raiseException, cancellationToken);
+            }
+            await Task.WhenAll(tasks);
+        }
+
         public async Task SendTestMessageAsync(Stream payload, int messageCount = 1, bool raiseException = false, int messagePriority = 5, CancellationToken cancellationToken = default)
         {
             var ms = new MemoryStream();
             await payload.CopyToAsync(ms);
 
             var tasks = new List<Task>();
-            for(int i = 0; i < messageCount; i++)
+            for (int i = 0; i < messageCount; i++)
             {
                 tasks.Add(Invoker.InvokeAsync(o => o.ProcessTestMessage(new MemoryStream(ms.ToArray()), raiseException, cancellationToken), opt => opt.SetTransport(AzTableHandler.TransportType).SetPriority(messagePriority)));
             }

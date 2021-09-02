@@ -170,7 +170,9 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
         protected override async Task InvokeAsync(IMethodBinding methodBinding, IAzTableTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message, cancellationToken);
-            var msg = new TableMessageEntity(transport.QueueName, invocationOptions.Priority, message);
+            var priority = invocationOptions.Priority;
+            if (priority <= 0) priority = 1;
+            var msg = new TableMessageEntity(transport.QueueName, priority, message);
             var tc = CloudQueueStore.GetCloudTable(transport.ConnectionName);
             await tc.ExecuteAsync(TableOperation.Insert(msg), TableRequestOptions, OperationContext, cancellationToken);
             if (Logger.IsEnabled(LogLevel.Trace))

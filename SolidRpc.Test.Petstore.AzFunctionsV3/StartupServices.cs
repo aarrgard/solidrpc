@@ -125,7 +125,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                     case nameof(IAzTableQueue.ProcessTestMessage):
                         conf.ProxyTransportType = AzTableHandler.TransportType;
                         conf.SetHttpTransport(InvocationStrategy.Forward);
-                        conf.SetQueueTransport<IAzTableTransport>(InvocationStrategy.Invoke, "AzureWebJobsStorage");
+                        var t = conf.SetQueueTransport<IAzTableTransport>(InvocationStrategy.Invoke, "AzureWebJobsStorage");
+                        t.MessagePriority = 3;
                         break;
                 }
             }

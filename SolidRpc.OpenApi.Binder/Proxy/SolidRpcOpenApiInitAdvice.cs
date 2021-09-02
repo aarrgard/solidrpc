@@ -116,11 +116,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     transport = InvokerTransport;
                 }
 
-                var messagePriority = transport.MessagePriority;
-                if(messagePriority == 0)
-                {
-                    messagePriority = InvocationOptions.MessagePriorityNormal;
-                }
                 invocationOptions = new InvocationOptions(transport.GetTransportType(), transport.MessagePriority, null, transport.PreInvokeCallback, transport.PostInvokeCallback);
             }
 

@@ -72,17 +72,18 @@ namespace SolidRpc.OpenApi.Binder
 
             // Configure transports
             var handlers = ServiceProvider.GetRequiredService<IEnumerable<ITransportHandler>>();
-            methodBindings.ToList().ForEach(methodBinding =>
+
+            var configuredBinding = new List<IMethodBinding>();
+            foreach (var methodBinding in methodBindings)
             {
-                transports.ToList().ForEach(t =>
+                foreach(var transport in transports)
                 {
-                    var handlerType = typeof(ITransportHandler<>).MakeGenericType(t.GetTransportInterface());
+                    var handlerType = typeof(ITransportHandler<>).MakeGenericType(transport.GetTransportInterface());
                     var h = handlers.Where(o => handlerType.IsAssignableFrom(o.GetType())).FirstOrDefault();
                     var configMethod = h.GetType().GetMethod("Configure");
-                    configMethod.Invoke(h, new object[] { methodBinding, t });
-                });
-                
-            });
+                    configMethod.Invoke(h, new object[] { methodBinding, transport });
+                }
+            }
 
             return methodBindings;
         }
