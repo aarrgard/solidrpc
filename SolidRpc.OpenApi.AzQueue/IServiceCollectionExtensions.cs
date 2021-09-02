@@ -22,16 +22,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 if (conf.Methods.First().Name == nameof(IAzTableQueue.ProcessMessageAsync))
                 {
-                    conf.ProxyTransportType = AzQueueHandler.TransportType;
-                    conf.SetHttpTransport(InvocationStrategy.Forward);
-                    conf.SetQueueTransport<IAzQueueTransport>(InvocationStrategy.Invoke, connectionName);
-                    conf.SetQueueTransportInboundHandler<IAzQueueTransport>(inboundHandler);
+                    conf.SetProxyTransportType<IAzQueueTransport>();
+                    conf.SetInvokerTransport<IHttpTransport, IAzQueueTransport>();
+                    conf.ConfigureTransport<IAzQueueTransport>()
+                        .SetConnectionName(connectionName)
+                        .SetInboundHandler(inboundHandler);
                 }
                 
                 if (conf.Methods.First().Name == nameof(IAzTableQueue.ProcessTestMessage))
                 {
-                    conf.SetHttpTransport(InvocationStrategy.Forward);
-                    conf.SetQueueTransport<IAzTableTransport>(InvocationStrategy.Invoke, connectionName);
+                    conf.SetInvokerTransport<IHttpTransport, IAzQueueTransport>();
+                    conf.ConfigureTransport<IAzTableTransport>().SetConnectionName(connectionName);
                 }
 
                 return configurator?.Invoke(conf) ?? true;

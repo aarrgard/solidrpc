@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Http;
 using Microsoft.AspNetCore.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 
 namespace SolidRpc.Tests.Invoker
 {
@@ -105,8 +106,8 @@ namespace SolidRpc.Tests.Invoker
             clientServices.AddSolidRpcBindings(typeof(ITestInterface), null, conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
-                conf.AddHttpTransportPreInvokeCallback(PreInvokeCallback);
-                conf.AddHttpTransportPostInvokeCallback(PostInvokeCallback);
+                conf.ConfigureTransport<IHttpTransport>().AddHttpTransportPreInvokeCallback(PreInvokeCallback);
+                conf.ConfigureTransport<IHttpTransport>().AddHttpTransportPostInvokeCallback(PostInvokeCallback);
                 return true;
             });
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.Test.Petstore.Services;
 using SolidRpc.Test.Petstore.Types;
@@ -140,7 +141,8 @@ namespace SolidRpc.Tests
             services.AddSolidRpcSingletonServices();
             services.AddSolidRpcBindings(typeof(IPet), typeof(PetImpl), (c) =>
             {
-                c.SetMethodAddressTransformer(GetBaseUrl);
+                c.ConfigureTransport<IHttpTransport>()
+                    .SetMethodAddressTransformer(GetBaseUrl);
                 return true;
             });
 
@@ -181,6 +183,7 @@ namespace SolidRpc.Tests
                 .SetGenerator<SolidProxy.GeneratorCastle.SolidProxyCastleGenerator>()
                 .ConfigureInterfaceAssembly(typeof(IPet).Assembly)
                 .ConfigureAdvice<ISolidRpcOpenApiConfig>()
+                .ConfigureTransport<IHttpTransport>()
                 .SetMethodAddressTransformer(GetBaseUrl);
 
             var cb = sc.GetSolidConfigurationBuilder();

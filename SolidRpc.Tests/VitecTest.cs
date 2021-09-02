@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Transport;
 
 namespace SolidRpc.Tests
 {
@@ -118,7 +119,9 @@ namespace SolidRpc.Tests
 
             sc.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "none", config =>
             {
-                config.SetQueueTransport<IAzTableTransport>(Abstractions.OpenApi.Transport.InvocationStrategy.Invoke, "AzureWebJobsStorage", "rdbms");
+                config.ConfigureTransport<IAzTableTransport>()
+                    .SetConnectionName("AzureWebJobsStorage")
+                    .SetQueueName("rdbms");
                 return true;
             });
             //sc.AddVitecBackendServiceProvider();

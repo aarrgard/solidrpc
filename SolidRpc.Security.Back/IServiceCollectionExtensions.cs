@@ -2,6 +2,7 @@
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Security.Back.Services;
 using SolidRpc.Security.Back.Services.Facebook;
 using SolidRpc.Security.Back.Services.Google;
@@ -149,7 +150,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSolidRpcBindings(typeof(IGoogleLocal), typeof(GoogleLocal));
             services.AddSolidRpcBindings(typeof(IGoogleRemote), null, (c) =>
             {
-                c.SetMethodAddressTransformer(GoogleBaseApiResolver);
+                c.ConfigureTransport<IHttpTransport>().SetMethodAddressTransformer(GoogleBaseApiResolver);
                 return true;
             });
             services.AddTransient<ILoginProvider>(sp => sp.GetRequiredService<GoogleLocal>());

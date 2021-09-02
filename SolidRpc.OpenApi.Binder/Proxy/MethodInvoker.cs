@@ -181,12 +181,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.GetTransportType()))}).");
             }
 
-            if (transport.InvocationStrategy == InvocationStrategy.Forward)
+            var invokerTransport = transport.InvokerTransport;
+            if (!string.IsNullOrEmpty(invokerTransport))
             {
                 //
                 // switch invocation source
                 //
-                var invokeTransport = selectedBinding.Transports.First(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+                var invokeTransport = selectedBinding.Transports.First(o => o.GetTransportType() == invokerTransport);
+                if(invokerTransport == null)
+                {
+                    throw new Exception($"The transport {transport.GetTransportType()} cannot forward to transport {invokeTransport.GetTransportType()} since it is not configured");
+
+                }
                 if (Logger.IsEnabled(LogLevel.Trace))
                 {
                     Logger.LogTrace($"Forwarding call from transport {transport.GetTransportType()} to transport {invokeTransport.GetTransportType()}");

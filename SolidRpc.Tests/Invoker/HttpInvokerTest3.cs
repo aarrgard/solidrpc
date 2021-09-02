@@ -151,11 +151,11 @@ namespace SolidRpc.Tests.Invoker
                 .WriteAsJsonString();
             clientServices.AddSolidRpcBindings(typeof(ITestInterfaceBack), null, conf =>
             {
-                conf.ProxyTransportType = MemoryQueueHandler.TransportType;
                 conf.OpenApiSpec = openApiSpec;
-                conf.SetHttpTransport(InvocationStrategy.Invoke);
-                conf.SetQueueTransport<IMemoryQueueTransport>(InvocationStrategy.Forward);
-                conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
+                conf.SetProxyTransportType<IMemoryQueueTransport>();
+                conf.SetInvokerTransport<IMemoryQueueTransport, IHttpTransport>();
+                conf.ConfigureTransport<IMemoryQueueTransport>()
+                    .SetInboundHandler("generic");
                 return true;
             });
 

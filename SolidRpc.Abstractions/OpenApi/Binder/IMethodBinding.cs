@@ -42,7 +42,7 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         bool IsEnabled { get; }
 
         /// <summary>
-        /// Returns the configured transports
+        /// Returns the configured transports orderd by the invocation ordinal.
         /// </summary>
         IEnumerable<ITransport> Transports { get; }
 

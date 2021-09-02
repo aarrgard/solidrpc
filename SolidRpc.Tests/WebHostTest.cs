@@ -10,6 +10,7 @@ using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.Binder.Proxy;
@@ -510,7 +511,8 @@ namespace SolidRpc.Tests
                         .ConfigureInterface<T>()
                         .ConfigureAdvice<ISolidRpcOpenApiConfig>();
                     conf.OpenApiSpec = config;
-                    conf.SetMethodAddressTransformer(GetBaseUrl);
+                    conf.ConfigureTransport<IHttpTransport>()
+                        .SetMethodAddressTransformer(GetBaseUrl);
 
                     clientServices.GetSolidConfigurationBuilder().AddAdviceDependency(typeof(LoggingAdvice<,,>), typeof(SolidRpcOpenApiInitAdvice<,,>));
                     clientServices.GetSolidConfigurationBuilder().AddAdvice(adviceType: typeof(SolidRpcOpenApiInitAdvice<,,>));

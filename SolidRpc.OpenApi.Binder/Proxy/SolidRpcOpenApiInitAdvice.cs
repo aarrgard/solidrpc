@@ -56,7 +56,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             HasImplementation = config.InvocationConfiguration.HasImplementation;
 
-            var transports = MethodBinding.Transports.ToList();
+            var transports = MethodBinding.Transports;
             //
             // Determine transport type. If not explititly set use Http
             // if no implementation exists.
@@ -64,7 +64,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             var proxyTransportType = config.ProxyTransportType;
             if (HasImplementation)
             {
-                LocalTransport = transports.FirstOrDefault(o => o.GetTransportType() == "Local");
+                LocalTransport = transports.OfType<ILocalTransport>().FirstOrDefault();
                 if(LocalTransport == null)
                 {
                     throw new Exception("Local implementation exists but no local transport configured.");
@@ -76,7 +76,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // Get invoker transport + handler
             //
-            InvokerTransport = transports.FirstOrDefault(o => o.InvocationStrategy == InvocationStrategy.Invoke);
+            InvokerTransport = transports.FirstOrDefault();
             if (InvokerTransport == null)
             {
                 throw new Exception($"No invocation transport configured");

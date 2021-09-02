@@ -44,7 +44,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             if(!configs.Any())
             {
                 var hc = config.InvocationConfiguration.ConfigureAdvice<IHttpTransport>();
-                hc.InvocationStrategy = InvocationStrategy.Invoke;
                 hc.MessagePriority = InvocationOptions.MessagePriorityNormal;
 
                 configs = new[] { hc }; 
@@ -54,7 +53,6 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
                 if(!configs.Any(o => o.GetTransportType() == "Local"))
                 {
                     var lc = config.InvocationConfiguration.ConfigureAdvice<ILocalTransport>();
-                    lc.InvocationStrategy = InvocationStrategy.Invoke;
                     lc.MessagePriority = InvocationOptions.MessagePriorityNormal;
                     configs = configs.Union(new[] { lc });
                 }
@@ -63,86 +61,42 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             return configs;
         }
 
+
+
         /// <summary>
-        /// Activates the http transport
+        /// Configures the forwarding transport used in the invoker.
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="invocationStrategy"></param>
-        public static IHttpTransport SetHttpTransport(
-            this ISolidRpcOpenApiConfig config, 
-            InvocationStrategy? invocationStrategy = null)
+        public static TTransport ConfigureTransport<TTransport>(
+            this ISolidRpcOpenApiConfig config) where TTransport : ITransport
         {
-            var c = config.GetAdviceConfig<IHttpTransport>();
-            c.InvocationStrategy = invocationStrategy ?? c.InvocationStrategy;
-            return c;
+            return config.GetAdviceConfig<TTransport>();
         }
 
         /// <summary>
-        /// Sets the method address transformer on the transports
+        /// Configures the ProxyTransport type.
         /// </summary>
+        /// <typeparam name="TTransport"></typeparam>
         /// <param name="config"></param>
-        /// <param name="methodAddressTransformer"></param>
-        public static IHttpTransport SetMethodAddressTransformer(this ISolidRpcOpenApiConfig config, MethodAddressTransformer methodAddressTransformer)
-        {
-            var c = config.GetAdviceConfig<IHttpTransport>();
-            c.MethodAddressTransformer = methodAddressTransformer ?? c.MethodAddressTransformer;
-            return c;
-        }
-
-        /// <summary>
-        /// Sets the pre invoke callback on the http transport
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="preInvokeCallback"></param>
-        public static IHttpTransport AddHttpTransportPreInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpRequest, Task> preInvokeCallback)
-        {
-            var c = config.GetAdviceConfig<IHttpTransport>();
-            c.PreInvokeCallback = preInvokeCallback ?? c.PreInvokeCallback;
-            return c;
-        }
-
-        /// <summary>
-        /// Sets the pre invoke callback on the http transport
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="postInvokeCallback"></param>
-        public static IHttpTransport AddHttpTransportPostInvokeCallback(this ISolidRpcOpenApiConfig config, Func<IHttpResponse, Task> postInvokeCallback)
-        {
-            var c = config.GetAdviceConfig<IHttpTransport>();
-            c.PostInvokeCallback = postInvokeCallback ?? c.PostInvokeCallback;
-            return c;
-        }
-
-        /// <summary>
-        /// Sets the queue transport options
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="config"></param>
-        /// <param name="invocationStrategy"></param>
-        /// <param name="connectionName"></param>
-        /// <param name="queueName"></param>
         /// <returns></returns>
-        public static T SetQueueTransport<T>(this ISolidRpcOpenApiConfig config, InvocationStrategy? invocationStrategy = null, string connectionName = null, string queueName = null) where T : IQueueTransport
+        public static TTransport SetProxyTransportType<TTransport>(
+            this ISolidRpcOpenApiConfig config) where TTransport : ITransport
         {
-            var c = config.GetAdviceConfig<T>();
-            c.InvocationStrategy = invocationStrategy ?? c.InvocationStrategy;
-            c.ConnectionName = connectionName ?? c.ConnectionName;
-            c.QueueName = queueName ?? c.QueueName;
-            return c;
+            var transport = config.GetAdviceConfig<TTransport>();
+            config.ProxyTransportType = transport.GetTransportType();
+            return transport;
         }
 
+        
         /// <summary>
-        /// Sets the inbound handler.
+        /// Configures the forwarding transport used in the invoker.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="config"></param>
-        /// <param name="inboundHandler"></param>
-        /// <returns></returns>
-
-        public static T SetQueueTransportInboundHandler<T>(this ISolidRpcOpenApiConfig config, string inboundHandler) where T : IQueueTransport
+        public static TFrom SetInvokerTransport<TFrom, TTo>(
+            this ISolidRpcOpenApiConfig config) where TFrom:ITransport where TTo:ITransport
         {
-            var c = config.GetAdviceConfig<T>();
-            c.InboundHandler = inboundHandler;
+            var c = config.ConfigureTransport<TFrom>();
+            c.InvokerTransport = ITransportExtensions.GetTransportType(typeof(TTo));
             return c;
         }
 

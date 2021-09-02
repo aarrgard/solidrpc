@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 namespace SolidRpc.Abstractions.OpenApi.Transport
 {
     /// <summary>
-    /// Base definitions for a transport
+    /// Base definition for a transport
     /// </summary>
     public interface ITransport
     {
         /// <summary>
+        /// The transport that we use when the invoker receives
+        /// a call on this transport.
+        /// </summary>
+        string InvokerTransport { get; set; }
+
+        /// <summary>
         /// The operation address
         /// </summary>
         Uri OperationAddress { get; set; }
-
-        /// <summary>
-        /// The invocation strategy to use when handling calls
-        /// on this transport.
-        /// </summary>
-        InvocationStrategy InvocationStrategy { get; set; }
 
         /// <summary>
         /// The message priority
@@ -80,5 +80,59 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
             return GetTransportType(GetTransportInterface(transport));
         }
 
+        /// <summary>
+        /// Returns the ordinal for supplied transport
+        /// </summary>
+        /// <param name="transport"></param>
+        /// <returns></returns>
+        public static int GetInvocationOrdinal(this ITransport transport)
+        {
+            if(!string.IsNullOrEmpty(transport.InvokerTransport))
+            {
+                return 1000;
+            }
+            if (typeof(ILocalTransport).IsAssignableFrom(transport.GetType()))
+            {
+                return 0;
+            }
+            if (typeof(IHttpTransport).IsAssignableFrom(transport.GetType()))
+            {
+                return 1;
+            }
+            return 2;
+        }
+
+        /// <summary>
+        /// Sets the pre invoke callback on the http transport
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="priority"></param>
+        public static TTransport SetMessagePriority<TTransport>(this TTransport t, int priority) where TTransport : ITransport
+        {
+            t.MessagePriority = priority;
+            return t;
+        }
+
+        /// <summary>
+        /// Sets the pre invoke callback on the http transport
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="preInvokeCallback"></param>
+        public static TTransport AddHttpTransportPreInvokeCallback<TTransport>(this TTransport t, Func<IHttpRequest, Task> preInvokeCallback) where TTransport : ITransport
+        {
+            t.PreInvokeCallback = preInvokeCallback ?? t.PreInvokeCallback;
+            return t;
+        }
+
+        /// <summary>
+        /// Sets the pre invoke callback on the http transport
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="postInvokeCallback"></param>
+        public static TTransport AddHttpTransportPostInvokeCallback<TTransport>(this TTransport t, Func<IHttpResponse, Task> postInvokeCallback) where TTransport:ITransport
+        {
+            t.PostInvokeCallback = postInvokeCallback ?? t.PostInvokeCallback;
+            return t;
+        }
     }
 }

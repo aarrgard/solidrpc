@@ -67,9 +67,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public virtual Task<object> InvokeMethodAsync(IMethodBinding methodBinding, object proxy, MethodInfo mi, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
-            var transport = methodBinding?.Transports
-                    .OrderBy(o => o.InvocationStrategy)
-                    .FirstOrDefault();
+            var transport = methodBinding?.Transports.FirstOrDefault();
             var transformedOptions = new InvocationOptions(transport.GetTransportType() ?? "Local", InvocationOptions.MessagePriorityNormal, null, transport?.PreInvokeCallback, transport?.PostInvokeCallback);
             transformedOptions = invocationOptions?.Invoke(transformedOptions) ?? transformedOptions;
 

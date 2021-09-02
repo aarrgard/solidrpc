@@ -26,4 +26,21 @@ namespace SolidRpc.Abstractions.OpenApi.Transport
         /// </summary>
         MethodAddressTransformer MethodAddressTransformer { get; set; }
     }
+
+    /// <summary>
+    /// Extension methods for the transport
+    /// </summary>
+    public static class IHttpTransportExtensions
+    {
+        /// <summary>
+        /// Sets the method address transformer on the transports
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="methodAddressTransformer"></param>
+        public static IHttpTransport SetMethodAddressTransformer(this IHttpTransport t, MethodAddressTransformer methodAddressTransformer)
+        {
+            t.MethodAddressTransformer = methodAddressTransformer ?? t.MethodAddressTransformer;
+            return t;
+        }
+    }
 }

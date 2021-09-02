@@ -188,7 +188,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             CodeDocMethod = codeDocMethod ?? throw new ArgumentNullException(nameof(codeDocMethod));
             OperationObject = operationObject ?? throw new ArgumentNullException(nameof(operationObject));
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
-            Transports = transports;
+            Transports = transports.OrderBy(o => o.GetInvocationOrdinal()).ToArray();
             SerializerFactory = MethodBinder.ServiceProvider.GetRequiredService<ISerializerFactory>();
         }
 

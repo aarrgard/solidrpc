@@ -3,6 +3,7 @@ using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Services.RateLimit;
@@ -539,7 +540,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     if (!val.EndsWith("/")) val = $"{val}/";
                     var baseUrl = new Uri(val);
-                    openApiProxyConfig.SetMethodAddressTransformer((sp, url, mi) => {
+                    openApiProxyConfig.ConfigureTransport<IHttpTransport>()
+                        .SetMethodAddressTransformer((sp, url, mi) => {
                         if(mi == null) return new Uri(baseUrl, url.AbsolutePath.Substring(1));
                         return url;
                     });

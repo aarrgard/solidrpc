@@ -91,13 +91,12 @@ namespace SolidRpc.Tests.Invoker
 
         private void ConfigureQueueTransport(ISolidRpcOpenApiConfig conf, bool addInboundHandler)
         {
-            conf.ProxyTransportType = "MemoryQueue";
-            conf.SetHttpTransport(InvocationStrategy.Forward);
-            var qConf = conf.SetQueueTransport<IMemoryQueueTransport>();
-            qConf.MessagePriority = 2;
+            conf.SetProxyTransportType<IMemoryQueueTransport>();
+            conf.SetInvokerTransport<IHttpTransport, IMemoryQueueTransport>();
+            var t = conf.ConfigureTransport<IMemoryQueueTransport>().SetMessagePriority(2);
             if (addInboundHandler)
             {
-                conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
+                t.SetInboundHandler("generic");
             }
         }
 

@@ -156,10 +156,10 @@ namespace SolidRpc.Tests.Invoker
             var openApiSpec = sc.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             sc.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
             {
-                conf.ProxyTransportType = MemoryQueueHandler.TransportType;
                 conf.OpenApiSpec = openApiSpec;
-                var c = conf.SetQueueTransport<IMemoryQueueTransport>(InvocationStrategy.Invoke);
-                conf.SetQueueTransportInboundHandler<IMemoryQueueTransport>("generic");
+                conf.SetProxyTransportType<IMemoryQueueTransport>();
+                conf.ConfigureTransport<IMemoryQueueTransport>()
+                    .SetInboundHandler("generic");
                 return true;
             });
 
