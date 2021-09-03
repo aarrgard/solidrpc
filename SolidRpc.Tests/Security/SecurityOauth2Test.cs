@@ -166,6 +166,7 @@ namespace SolidRpc.Tests.Security
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetClientEnabledResource))
             {
                 conf.SetOAuth2ClientSecurity(baseAddress.ToString(), "clientid", "secret");
+                conf.DisableSecurity();
             }
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetUserEnabledResource))
             {
@@ -189,7 +190,7 @@ namespace SolidRpc.Tests.Security
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {
                 o.OpenApiSpec = openApi;
-                o.SetOAuth2Security(serverServices.GetSolidRpcService<Uri>().ToString());
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
                 return true;
             });
             serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
