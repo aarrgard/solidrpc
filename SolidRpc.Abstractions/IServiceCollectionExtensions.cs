@@ -99,17 +99,22 @@ namespace Microsoft.Extensions.DependencyInjection
             methods.ToList().ForEach(m =>
             {
                 services.AddSolidRpcBinding(m, (c) => {
-                    
                     c.OpenApiSpec = solidRpcHostSpec;
 
+
                     //
-                    // disable security for content handler
+                    // disable security for content handler & token callback
                     //
                     var method = c.Methods.Single();
-                    if(method.DeclaringType == typeof(ISolidRpcContentHandler))
+                    if (method.DeclaringType == typeof(ISolidRpcContentHandler))
                     {
                         c.DisableSecurity();
                     }
+                    if(method.DeclaringType == typeof(ISolidRpcOAuth2))
+                    {
+                        c.DisableSecurity();
+                    }
+
                     return configurator?.Invoke(c) ?? false;
                 });
             });

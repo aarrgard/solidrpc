@@ -18,6 +18,7 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Http;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace SolidRpc.Tests.Security
 {
@@ -188,16 +189,13 @@ namespace SolidRpc.Tests.Security
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {
                 o.OpenApiSpec = openApi;
-                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
+                o.SetOAuth2Security(serverServices.GetSolidRpcService<Uri>().ToString());
                 return true;
             });
             serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
             {
                 o.OpenApiSpec = openApi;
-                var oauth2Config = o.GetAdviceConfig<ISecurityOAuth2Config>();
-                oauth2Config.OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
-                oauth2Config.OAuth2ClientId = "clientid";
-                oauth2Config.OAuth2ClientSecret = "secret";
+                var oauth2Config = o.SetOAuth2ClientSecurity(serverServices.GetSolidRpcService<Uri>().ToString(), "clientid", "secret");
                 if (o.Methods.Single().Name == nameof(IOAuth2ProtectedService.GetProtectedResourceWithRedirect))
                 {
                     oauth2Config.RedirectUnauthorizedIdentity = true;
@@ -207,7 +205,15 @@ namespace SolidRpc.Tests.Security
             });
 
 
-            serverServices.AddSolidRpcServices();
+            serverServices.AddSolidRpcServices(c =>
+            {
+                if(c.Methods.Single().DeclaringType == typeof(ISolidRpcOAuth2))
+                {
+                    c.SetOAuth2ClientSecurity(serverServices.GetSolidRpcService<Uri>().ToString(), "clientid", "secret");
+                    c.DisableSecurity();
+                }
+                return true;
+            });
         }
 
         /// <summary>
@@ -496,21 +502,27 @@ namespace SolidRpc.Tests.Security
 
                 // fetch token
                 resp = await httpClient.GetAsync(resp.Headers.Location);
+                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+
+                // continue on to the OAuth server
+                var content = await resp.Content.ReadAsStringAsync();
+                var re = new Regex("'([^']+)'");
+                var strUri = re.Match(content).Groups[1].Value;
+                resp = await httpClient.GetAsync(new Uri(strUri));
+
                 Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
-
-                // return to original path - first returns redirect + set-cookie
-                Assert.IsTrue(resp.Headers.Location.ToString().StartsWith(uri.ToString()));
-                resp = await httpClient.GetAsync(resp.Headers.Location);
-                Assert.AreEqual(HttpStatusCode.Redirect, resp.StatusCode);
-
                 resp = await httpClient.GetAsync(resp.Headers.Location);
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
 
-                // now the cookie should do the "trick"
-                resp = await httpClient.GetAsync(uri);
+                // now go back to the original page
+                content = await resp.Content.ReadAsStringAsync();
+                re = new Regex("accessToken = '([^']+)';");
+                var accessToken = re.Match(content).Groups[1].Value;
+                re = new Regex("callback = '([^']+)';");
+                var callback = re.Match(content).Groups[1].Value;
+
+                resp = await httpClient.GetAsync(new Uri($"{callback}?access_token={accessToken}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
-
-
             }
         }
 

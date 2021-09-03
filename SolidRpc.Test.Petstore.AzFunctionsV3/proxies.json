@@ -311,8 +311,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/token",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/token"

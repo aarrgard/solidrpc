@@ -28,6 +28,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// <param name="methodBinderStore"></param>
         /// <param name="contentHandler"></param>
         /// <param name="invoker"></param>
+        /// <param name="authorityFactory"></param>
         public SwaggerUI(
             SwaggerOptions swaggerOptions, 
             IMethodBinderStore methodBinderStore,
