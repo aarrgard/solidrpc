@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SolidProxy.GeneratorCastle;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
@@ -30,11 +31,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV1
             return null;
         }
 
-        public override void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services, Func<ISolidRpcOpenApiConfig, bool> config)
         {
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             base.ConfigureServices(services);
-            services.AddSolidRpcSwaggerUI(o => { }, ConfigureAzureFunction);
+            services.AddSolidRpcSwaggerUI(o => { }, config);
             //services.AddPetstore();
             //services.AddSolidRpcSecurityFrontend();
             //services.AddSolidRpcSecurityBackend((sp, c) => {

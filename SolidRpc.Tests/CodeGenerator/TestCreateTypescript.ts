@@ -15,22 +15,22 @@ export namespace Security {
                  */
                 LoginProvider(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.LoginProvider>;
+                ): Observable<Types.LoginProvider>;
                 /**
                  * This observable is hot and monitors all the responses from the LoginProvider invocations.
                  */
-                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                LoginProviderObservable : Observable<Types.LoginProvider>;
                 /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent>;
+                ): Observable<Types.WebContent>;
                 /**
                  * This observable is hot and monitors all the responses from the LoginScript invocations.
                  */
-                LoginScriptObservable : Observable<Security.Types.WebContent>;
+                LoginScriptObservable : Observable<Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -64,9 +64,9 @@ export namespace Security {
             export class FacebookLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IFacebookLocal {
                 constructor() {
                     super();
-                    this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
+                    this.LoginProviderSubject = new Subject<Types.LoginProvider>();
                     this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
-                    this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                    this.LoginScriptSubject = new Subject<Types.WebContent>();
                     this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
                     this.LoggedInSubject = new Subject<string>();
                     this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
@@ -79,11 +79,11 @@ export namespace Security {
                  */
                 LoginProvider(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.LoginProvider> {
+                ): Observable<Types.LoginProvider> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoginProvider';
-                    return this.request<Security.Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.LoginProvider(data);
+                            return new Types.LoginProvider(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -92,19 +92,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the LoginProvider invocations.
                  */
-                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
-                private LoginProviderSubject : Subject<Security.Types.LoginProvider>;
+                LoginProviderObservable : Observable<Types.LoginProvider>;
+                private LoginProviderSubject : Subject<Types.LoginProvider>;
                 /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent> {
+                ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoginScript';
-                    return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.WebContent(data);
+                            return new Types.WebContent(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -113,8 +113,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the LoginScript invocations.
                  */
-                LoginScriptObservable : Observable<Security.Types.WebContent>;
-                private LoginScriptSubject : Subject<Security.Types.WebContent>;
+                LoginScriptObservable : Observable<Types.WebContent>;
+                private LoginScriptSubject : Subject<Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -184,11 +184,11 @@ export namespace Security {
                     clientSecret : string,
                     grantType : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.FacebookAccessToken>;
+                ): Observable<Types.FacebookAccessToken>;
                 /**
                  * This observable is hot and monitors all the responses from the GetAccessToken invocations.
                  */
-                GetAccessTokenObservable : Observable<Security.Types.FacebookAccessToken>;
+                GetAccessTokenObservable : Observable<Types.FacebookAccessToken>;
                 /**
                  * Returns information about supplied access token
                  * @param inputToken 
@@ -199,11 +199,11 @@ export namespace Security {
                     inputToken : string,
                     accessToken : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.FacebookDebugToken>;
+                ): Observable<Types.FacebookDebugToken>;
                 /**
                  * This observable is hot and monitors all the responses from the GetDebugToken invocations.
                  */
-                GetDebugTokenObservable : Observable<Security.Types.FacebookDebugToken>;
+                GetDebugTokenObservable : Observable<Types.FacebookDebugToken>;
             }
             /**
              * Defines logic @ facebook
@@ -211,9 +211,9 @@ export namespace Security {
             export class FacebookRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IFacebookRemote {
                 constructor() {
                     super();
-                    this.GetAccessTokenSubject = new Subject<Security.Types.FacebookAccessToken>();
+                    this.GetAccessTokenSubject = new Subject<Types.FacebookAccessToken>();
                     this.GetAccessTokenObservable = this.GetAccessTokenSubject.asObservable().pipe(share());
-                    this.GetDebugTokenSubject = new Subject<Security.Types.FacebookDebugToken>();
+                    this.GetDebugTokenSubject = new Subject<Types.FacebookDebugToken>();
                     this.GetDebugTokenObservable = this.GetDebugTokenSubject.asObservable().pipe(share());
                 }
                 /**
@@ -228,15 +228,15 @@ export namespace Security {
                     clientSecret : string,
                     grantType : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.FacebookAccessToken> {
+                ): Observable<Types.FacebookAccessToken> {
                     let uri = 'https://graph.facebook.com/oauth/access_token';
-                    return this.request<Security.Types.FacebookAccessToken>(new SolidRpcJs.RpcServiceRequest('get', uri, {
+                    return this.request<Types.FacebookAccessToken>(new SolidRpcJs.RpcServiceRequest('get', uri, {
                         'client_id': clientId,
                         'client_secret': clientSecret,
                         'grant_type': grantType,
 }, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.FacebookAccessToken(data);
+                            return new Types.FacebookAccessToken(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -245,8 +245,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the GetAccessToken invocations.
                  */
-                GetAccessTokenObservable : Observable<Security.Types.FacebookAccessToken>;
-                private GetAccessTokenSubject : Subject<Security.Types.FacebookAccessToken>;
+                GetAccessTokenObservable : Observable<Types.FacebookAccessToken>;
+                private GetAccessTokenSubject : Subject<Types.FacebookAccessToken>;
                 /**
                  * Returns information about supplied access token
                  * @param inputToken 
@@ -257,14 +257,14 @@ export namespace Security {
                     inputToken : string,
                     accessToken : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.FacebookDebugToken> {
+                ): Observable<Types.FacebookDebugToken> {
                     let uri = 'https://graph.facebook.com/v4.0/debug_token';
-                    return this.request<Security.Types.FacebookDebugToken>(new SolidRpcJs.RpcServiceRequest('get', uri, {
+                    return this.request<Types.FacebookDebugToken>(new SolidRpcJs.RpcServiceRequest('get', uri, {
                         'input_token': inputToken,
                         'access_token': accessToken,
 }, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.FacebookDebugToken(data);
+                            return new Types.FacebookDebugToken(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -273,8 +273,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the GetDebugToken invocations.
                  */
-                GetDebugTokenObservable : Observable<Security.Types.FacebookDebugToken>;
-                private GetDebugTokenSubject : Subject<Security.Types.FacebookDebugToken>;
+                GetDebugTokenObservable : Observable<Types.FacebookDebugToken>;
+                private GetDebugTokenSubject : Subject<Types.FacebookDebugToken>;
             }
             /**
              * Instance for the IFacebookRemote type. Implemented by the FacebookRemoteImpl
@@ -292,22 +292,22 @@ export namespace Security {
                  */
                 LoginProvider(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.LoginProvider>;
+                ): Observable<Types.LoginProvider>;
                 /**
                  * This observable is hot and monitors all the responses from the LoginProvider invocations.
                  */
-                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                LoginProviderObservable : Observable<Types.LoginProvider>;
                 /**
                  * Returns the script to embed to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent>;
+                ): Observable<Types.WebContent>;
                 /**
                  * This observable is hot and monitors all the responses from the LoginScript invocations.
                  */
-                LoginScriptObservable : Observable<Security.Types.WebContent>;
+                LoginScriptObservable : Observable<Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -341,9 +341,9 @@ export namespace Security {
             export class GoogleLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IGoogleLocal {
                 constructor() {
                     super();
-                    this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
+                    this.LoginProviderSubject = new Subject<Types.LoginProvider>();
                     this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
-                    this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                    this.LoginScriptSubject = new Subject<Types.WebContent>();
                     this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
                     this.LoggedInSubject = new Subject<string>();
                     this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
@@ -356,11 +356,11 @@ export namespace Security {
                  */
                 LoginProvider(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.LoginProvider> {
+                ): Observable<Types.LoginProvider> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoginProvider';
-                    return this.request<Security.Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.LoginProvider(data);
+                            return new Types.LoginProvider(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -369,19 +369,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the LoginProvider invocations.
                  */
-                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
-                private LoginProviderSubject : Subject<Security.Types.LoginProvider>;
+                LoginProviderObservable : Observable<Types.LoginProvider>;
+                private LoginProviderSubject : Subject<Types.LoginProvider>;
                 /**
                  * Returns the script to embed to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent> {
+                ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoginScript';
-                    return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.WebContent(data);
+                            return new Types.WebContent(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -390,8 +390,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the LoginScript invocations.
                  */
-                LoginScriptObservable : Observable<Security.Types.WebContent>;
-                private LoginScriptSubject : Subject<Security.Types.WebContent>;
+                LoginScriptObservable : Observable<Types.WebContent>;
+                private LoginScriptSubject : Subject<Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -492,22 +492,22 @@ export namespace Security {
                  */
                 OpenIdConfiguration(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDConnnectDiscovery>;
+                ): Observable<Types.OpenIDConnnectDiscovery>;
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
                  */
-                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the openid keys used for signing.
                  * @param cancellationToken 
                  */
                 OpenIdKeys(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDKeys>;
+                ): Observable<Types.OpenIDKeys>;
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
                  */
-                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
+                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
             }
             /**
              * Defines access to the google oauth implementation
@@ -517,9 +517,9 @@ export namespace Security {
                     super();
                     this.AuthorizeSubject = new Subject<void>();
                     this.AuthorizeObservable = this.AuthorizeSubject.asObservable().pipe(share());
-                    this.OpenIdConfigurationSubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                    this.OpenIdConfigurationSubject = new Subject<Types.OpenIDConnnectDiscovery>();
                     this.OpenIdConfigurationObservable = this.OpenIdConfigurationSubject.asObservable().pipe(share());
-                    this.OpenIdKeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                    this.OpenIdKeysSubject = new Subject<Types.OpenIDKeys>();
                     this.OpenIdKeysObservable = this.OpenIdKeysSubject.asObservable().pipe(share());
                 }
                 /**
@@ -589,11 +589,11 @@ export namespace Security {
                  */
                 OpenIdConfiguration(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDConnnectDiscovery> {
+                ): Observable<Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://accounts.google.com/.well-known/openid-configuration';
-                    return this.request<Security.Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.OpenIDConnnectDiscovery(data);
+                            return new Types.OpenIDConnnectDiscovery(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -602,19 +602,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
                  */
-                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
-                private OpenIdConfigurationSubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
+                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
+                private OpenIdConfigurationSubject : Subject<Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the openid keys used for signing.
                  * @param cancellationToken 
                  */
                 OpenIdKeys(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDKeys> {
+                ): Observable<Types.OpenIDKeys> {
                     let uri = 'https://accounts.google.com/.well-known/openid-keys';
-                    return this.request<Security.Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.OpenIDKeys(data);
+                            return new Types.OpenIDKeys(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -623,8 +623,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
                  */
-                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
-                private OpenIdKeysSubject : Subject<Security.Types.OpenIDKeys>;
+                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
+                private OpenIdKeysSubject : Subject<Types.OpenIDKeys>;
             }
             /**
              * Instance for the IGoogleRemote type. Implemented by the GoogleRemoteImpl
@@ -642,22 +642,22 @@ export namespace Security {
                  */
                 LoginProvider(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.LoginProvider>;
+                ): Observable<Types.LoginProvider>;
                 /**
                  * This observable is hot and monitors all the responses from the LoginProvider invocations.
                  */
-                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
+                LoginProviderObservable : Observable<Types.LoginProvider>;
                 /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent>;
+                ): Observable<Types.WebContent>;
                 /**
                  * This observable is hot and monitors all the responses from the LoginScript invocations.
                  */
-                LoginScriptObservable : Observable<Security.Types.WebContent>;
+                LoginScriptObservable : Observable<Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -691,9 +691,9 @@ export namespace Security {
             export class MicrosoftLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IMicrosoftLocal {
                 constructor() {
                     super();
-                    this.LoginProviderSubject = new Subject<Security.Types.LoginProvider>();
+                    this.LoginProviderSubject = new Subject<Types.LoginProvider>();
                     this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
-                    this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                    this.LoginScriptSubject = new Subject<Types.WebContent>();
                     this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
                     this.LoggedInSubject = new Subject<string>();
                     this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
@@ -706,11 +706,11 @@ export namespace Security {
                  */
                 LoginProvider(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.LoginProvider> {
+                ): Observable<Types.LoginProvider> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoginProvider';
-                    return this.request<Security.Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.LoginProvider(data);
+                            return new Types.LoginProvider(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -719,19 +719,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the LoginProvider invocations.
                  */
-                LoginProviderObservable : Observable<Security.Types.LoginProvider>;
-                private LoginProviderSubject : Subject<Security.Types.LoginProvider>;
+                LoginProviderObservable : Observable<Types.LoginProvider>;
+                private LoginProviderSubject : Subject<Types.LoginProvider>;
                 /**
                  * Returns the script to embedd to enable login
                  * @param cancellationToken 
                  */
                 LoginScript(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent> {
+                ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoginScript';
-                    return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.WebContent(data);
+                            return new Types.WebContent(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -740,8 +740,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the LoginScript invocations.
                  */
-                LoginScriptObservable : Observable<Security.Types.WebContent>;
-                private LoginScriptSubject : Subject<Security.Types.WebContent>;
+                LoginScriptObservable : Observable<Types.WebContent>;
+                private LoginScriptSubject : Subject<Types.WebContent>;
                 /**
                  * Callback when a user has logged in successfully.
                  * @param accessToken The the access token for the logged in user
@@ -843,11 +843,11 @@ export namespace Security {
                 OpenIdConfiguration(
                     tenant : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDConnnectDiscovery>;
+                ): Observable<Types.OpenIDConnnectDiscovery>;
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
                  */
-                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the openid keys used for signing.
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
@@ -856,11 +856,11 @@ export namespace Security {
                 OpenIdKeys(
                     tenant : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDKeys>;
+                ): Observable<Types.OpenIDKeys>;
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
                  */
-                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
+                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
             }
             /**
              * Defines access to the microsoft oauth implementation
@@ -870,9 +870,9 @@ export namespace Security {
                     super();
                     this.AuthorizeSubject = new Subject<void>();
                     this.AuthorizeObservable = this.AuthorizeSubject.asObservable().pipe(share());
-                    this.OpenIdConfigurationSubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                    this.OpenIdConfigurationSubject = new Subject<Types.OpenIDConnnectDiscovery>();
                     this.OpenIdConfigurationObservable = this.OpenIdConfigurationSubject.asObservable().pipe(share());
-                    this.OpenIdKeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                    this.OpenIdKeysSubject = new Subject<Types.OpenIDKeys>();
                     this.OpenIdKeysObservable = this.OpenIdKeysSubject.asObservable().pipe(share());
                 }
                 /**
@@ -941,12 +941,12 @@ export namespace Security {
                 OpenIdConfiguration(
                     tenant : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDConnnectDiscovery> {
+                ): Observable<Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration';
                     uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    return this.request<Security.Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.OpenIDConnnectDiscovery(data);
+                            return new Types.OpenIDConnnectDiscovery(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -955,8 +955,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
                  */
-                OpenIdConfigurationObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
-                private OpenIdConfigurationSubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
+                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
+                private OpenIdConfigurationSubject : Subject<Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the openid keys used for signing.
                  * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
@@ -965,12 +965,12 @@ export namespace Security {
                 OpenIdKeys(
                     tenant : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDKeys> {
+                ): Observable<Types.OpenIDKeys> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys';
                     uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    return this.request<Security.Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.OpenIDKeys(data);
+                            return new Types.OpenIDKeys(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -979,8 +979,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
                  */
-                OpenIdKeysObservable : Observable<Security.Types.OpenIDKeys>;
-                private OpenIdKeysSubject : Subject<Security.Types.OpenIDKeys>;
+                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
+                private OpenIdKeysSubject : Subject<Types.OpenIDKeys>;
             }
             /**
              * Instance for the IMicrosoftRemote type. Implemented by the MicrosoftRemoteImpl
@@ -998,33 +998,33 @@ export namespace Security {
                  */
                 OAuth2Discovery(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDConnnectDiscovery>;
+                ): Observable<Types.OpenIDConnnectDiscovery>;
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
                  */
-                OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
+                OAuth2DiscoveryObservable : Observable<Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the keys
                  * @param cancellationToken 
                  */
                 OAuth2Keys(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDKeys>;
+                ): Observable<Types.OpenIDKeys>;
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
                  */
-                OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
+                OAuth2KeysObservable : Observable<Types.OpenIDKeys>;
                 /**
                  * authenticates a user
                  * @param cancellationToken 
                  */
                 OAuth2TokenGet(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.TokenResponse>;
+                ): Observable<Types.TokenResponse>;
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
                  */
-                OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
+                OAuth2TokenGetObservable : Observable<Types.TokenResponse>;
                 /**
                  * authenticates a user
                  * @param grantType 
@@ -1051,11 +1051,11 @@ export namespace Security {
                     codeVerifier? : string,
                     refreshToken? : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.TokenResponse>;
+                ): Observable<Types.TokenResponse>;
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
                  */
-                OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
+                OAuth2TokenPostObservable : Observable<Types.TokenResponse>;
                 /**
                  * authorizes a user
                  * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
@@ -1072,22 +1072,22 @@ export namespace Security {
                     redirectUri? : string,
                     state? : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent>;
+                ): Observable<Types.WebContent>;
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
                  */
-                OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
+                OAuth2AuthorizeGetObservable : Observable<Types.WebContent>;
                 /**
                  * authorizes a user
                  * @param cancellationToken 
                  */
                 OAuth2AuthorizePost(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent>;
+                ): Observable<Types.WebContent>;
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
                  */
-                OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
+                OAuth2AuthorizePostObservable : Observable<Types.WebContent>;
             }
             /**
              * Defines logic for the oidc server
@@ -1095,17 +1095,17 @@ export namespace Security {
             export class OidcServerImpl  extends SolidRpcJs.RpcServiceImpl implements IOidcServer {
                 constructor() {
                     super();
-                    this.OAuth2DiscoverySubject = new Subject<Security.Types.OpenIDConnnectDiscovery>();
+                    this.OAuth2DiscoverySubject = new Subject<Types.OpenIDConnnectDiscovery>();
                     this.OAuth2DiscoveryObservable = this.OAuth2DiscoverySubject.asObservable().pipe(share());
-                    this.OAuth2KeysSubject = new Subject<Security.Types.OpenIDKeys>();
+                    this.OAuth2KeysSubject = new Subject<Types.OpenIDKeys>();
                     this.OAuth2KeysObservable = this.OAuth2KeysSubject.asObservable().pipe(share());
-                    this.OAuth2TokenGetSubject = new Subject<Security.Types.TokenResponse>();
+                    this.OAuth2TokenGetSubject = new Subject<Types.TokenResponse>();
                     this.OAuth2TokenGetObservable = this.OAuth2TokenGetSubject.asObservable().pipe(share());
-                    this.OAuth2TokenPostSubject = new Subject<Security.Types.TokenResponse>();
+                    this.OAuth2TokenPostSubject = new Subject<Types.TokenResponse>();
                     this.OAuth2TokenPostObservable = this.OAuth2TokenPostSubject.asObservable().pipe(share());
-                    this.OAuth2AuthorizeGetSubject = new Subject<Security.Types.WebContent>();
+                    this.OAuth2AuthorizeGetSubject = new Subject<Types.WebContent>();
                     this.OAuth2AuthorizeGetObservable = this.OAuth2AuthorizeGetSubject.asObservable().pipe(share());
-                    this.OAuth2AuthorizePostSubject = new Subject<Security.Types.WebContent>();
+                    this.OAuth2AuthorizePostSubject = new Subject<Types.WebContent>();
                     this.OAuth2AuthorizePostObservable = this.OAuth2AuthorizePostSubject.asObservable().pipe(share());
                 }
                 /**
@@ -1114,11 +1114,11 @@ export namespace Security {
                  */
                 OAuth2Discovery(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDConnnectDiscovery> {
+                ): Observable<Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/discovery';
-                    return this.request<Security.Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.OpenIDConnnectDiscovery(data);
+                            return new Types.OpenIDConnnectDiscovery(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1127,19 +1127,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
                  */
-                OAuth2DiscoveryObservable : Observable<Security.Types.OpenIDConnnectDiscovery>;
-                private OAuth2DiscoverySubject : Subject<Security.Types.OpenIDConnnectDiscovery>;
+                OAuth2DiscoveryObservable : Observable<Types.OpenIDConnnectDiscovery>;
+                private OAuth2DiscoverySubject : Subject<Types.OpenIDConnnectDiscovery>;
                 /**
                  * Returns the keys
                  * @param cancellationToken 
                  */
                 OAuth2Keys(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.OpenIDKeys> {
+                ): Observable<Types.OpenIDKeys> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/keys';
-                    return this.request<Security.Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.OpenIDKeys(data);
+                            return new Types.OpenIDKeys(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1148,19 +1148,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
                  */
-                OAuth2KeysObservable : Observable<Security.Types.OpenIDKeys>;
-                private OAuth2KeysSubject : Subject<Security.Types.OpenIDKeys>;
+                OAuth2KeysObservable : Observable<Types.OpenIDKeys>;
+                private OAuth2KeysSubject : Subject<Types.OpenIDKeys>;
                 /**
                  * authenticates a user
                  * @param cancellationToken 
                  */
                 OAuth2TokenGet(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.TokenResponse> {
+                ): Observable<Types.TokenResponse> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
-                    return this.request<Security.Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.TokenResponse(data);
+                            return new Types.TokenResponse(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1169,8 +1169,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
                  */
-                OAuth2TokenGetObservable : Observable<Security.Types.TokenResponse>;
-                private OAuth2TokenGetSubject : Subject<Security.Types.TokenResponse>;
+                OAuth2TokenGetObservable : Observable<Types.TokenResponse>;
+                private OAuth2TokenGetSubject : Subject<Types.TokenResponse>;
                 /**
                  * authenticates a user
                  * @param grantType 
@@ -1197,11 +1197,11 @@ export namespace Security {
                     codeVerifier? : string,
                     refreshToken? : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.TokenResponse> {
+                ): Observable<Types.TokenResponse> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
-                    return this.request<Security.Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.TokenResponse(data);
+                            return new Types.TokenResponse(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1210,8 +1210,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
                  */
-                OAuth2TokenPostObservable : Observable<Security.Types.TokenResponse>;
-                private OAuth2TokenPostSubject : Subject<Security.Types.TokenResponse>;
+                OAuth2TokenPostObservable : Observable<Types.TokenResponse>;
+                private OAuth2TokenPostSubject : Subject<Types.TokenResponse>;
                 /**
                  * authorizes a user
                  * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
@@ -1228,9 +1228,9 @@ export namespace Security {
                     redirectUri? : string,
                     state? : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent> {
+                ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
-                    return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, {
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, {
                         'scope': scope,
                         'response_type': responseType,
                         'client_id': clientId,
@@ -1238,7 +1238,7 @@ export namespace Security {
                         'state': state,
 }, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.WebContent(data);
+                            return new Types.WebContent(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1247,19 +1247,19 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
                  */
-                OAuth2AuthorizeGetObservable : Observable<Security.Types.WebContent>;
-                private OAuth2AuthorizeGetSubject : Subject<Security.Types.WebContent>;
+                OAuth2AuthorizeGetObservable : Observable<Types.WebContent>;
+                private OAuth2AuthorizeGetSubject : Subject<Types.WebContent>;
                 /**
                  * authorizes a user
                  * @param cancellationToken 
                  */
                 OAuth2AuthorizePost(
                     cancellationToken? : CancellationToken
-                ): Observable<Security.Types.WebContent> {
+                ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
-                    return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('post', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('post', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Security.Types.WebContent(data);
+                            return new Types.WebContent(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
@@ -1268,8 +1268,8 @@ export namespace Security {
                 /**
                  * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
                  */
-                OAuth2AuthorizePostObservable : Observable<Security.Types.WebContent>;
-                private OAuth2AuthorizePostSubject : Subject<Security.Types.WebContent>;
+                OAuth2AuthorizePostObservable : Observable<Types.WebContent>;
+                private OAuth2AuthorizePostSubject : Subject<Types.WebContent>;
             }
             /**
              * Instance for the IOidcServer type. Implemented by the OidcServerImpl
@@ -1286,11 +1286,11 @@ export namespace Security {
              */
             LoginPage(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent>;
+            ): Observable<Types.WebContent>;
             /**
              * This observable is hot and monitors all the responses from the LoginPage invocations.
              */
-            LoginPageObservable : Observable<Security.Types.WebContent>;
+            LoginPageObservable : Observable<Types.WebContent>;
             /**
              * Returns the script paths to use for logging in.
              * @param cancellationToken 
@@ -1308,33 +1308,33 @@ export namespace Security {
              */
             LoginScript(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent>;
+            ): Observable<Types.WebContent>;
             /**
              * This observable is hot and monitors all the responses from the LoginScript invocations.
              */
-            LoginScriptObservable : Observable<Security.Types.WebContent>;
+            LoginScriptObservable : Observable<Types.WebContent>;
             /**
              * Returns the status at each login provider
              * @param cancellationToken 
              */
             LoginProviders(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.LoginProvider[]>;
+            ): Observable<Types.LoginProvider[]>;
             /**
              * This observable is hot and monitors all the responses from the LoginProviders invocations.
              */
-            LoginProvidersObservable : Observable<Security.Types.LoginProvider[]>;
+            LoginProvidersObservable : Observable<Types.LoginProvider[]>;
             /**
              * Returns the current profile claims
              * @param cancellationToken 
              */
             Profile(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.Claim[]>;
+            ): Observable<Types.Claim[]>;
             /**
              * This observable is hot and monitors all the responses from the Profile invocations.
              */
-            ProfileObservable : Observable<Security.Types.Claim[]>;
+            ProfileObservable : Observable<Types.Claim[]>;
         }
         /**
          * Defines logic for solid rpc security
@@ -1342,15 +1342,15 @@ export namespace Security {
         export class SolidRpcSecurityImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcSecurity {
             constructor() {
                 super();
-                this.LoginPageSubject = new Subject<Security.Types.WebContent>();
+                this.LoginPageSubject = new Subject<Types.WebContent>();
                 this.LoginPageObservable = this.LoginPageSubject.asObservable().pipe(share());
                 this.LoginScriptsSubject = new Subject<string[]>();
                 this.LoginScriptsObservable = this.LoginScriptsSubject.asObservable().pipe(share());
-                this.LoginScriptSubject = new Subject<Security.Types.WebContent>();
+                this.LoginScriptSubject = new Subject<Types.WebContent>();
                 this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
-                this.LoginProvidersSubject = new Subject<Security.Types.LoginProvider[]>();
+                this.LoginProvidersSubject = new Subject<Types.LoginProvider[]>();
                 this.LoginProvidersObservable = this.LoginProvidersSubject.asObservable().pipe(share());
-                this.ProfileSubject = new Subject<Security.Types.Claim[]>();
+                this.ProfileSubject = new Subject<Types.Claim[]>();
                 this.ProfileObservable = this.ProfileSubject.asObservable().pipe(share());
             }
             /**
@@ -1359,11 +1359,11 @@ export namespace Security {
              */
             LoginPage(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent> {
+            ): Observable<Types.WebContent> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginPage';
-                return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return new Security.Types.WebContent(data);
+                        return new Types.WebContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
@@ -1372,8 +1372,8 @@ export namespace Security {
             /**
              * This observable is hot and monitors all the responses from the LoginPage invocations.
              */
-            LoginPageObservable : Observable<Security.Types.WebContent>;
-            private LoginPageSubject : Subject<Security.Types.WebContent>;
+            LoginPageObservable : Observable<Types.WebContent>;
+            private LoginPageSubject : Subject<Types.WebContent>;
             /**
              * Returns the script paths to use for logging in.
              * @param cancellationToken 
@@ -1401,11 +1401,11 @@ export namespace Security {
              */
             LoginScript(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.WebContent> {
+            ): Observable<Types.WebContent> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginScript';
-                return this.request<Security.Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return new Security.Types.WebContent(data);
+                        return new Types.WebContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
@@ -1414,19 +1414,19 @@ export namespace Security {
             /**
              * This observable is hot and monitors all the responses from the LoginScript invocations.
              */
-            LoginScriptObservable : Observable<Security.Types.WebContent>;
-            private LoginScriptSubject : Subject<Security.Types.WebContent>;
+            LoginScriptObservable : Observable<Types.WebContent>;
+            private LoginScriptSubject : Subject<Types.WebContent>;
             /**
              * Returns the status at each login provider
              * @param cancellationToken 
              */
             LoginProviders(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.LoginProvider[]> {
+            ): Observable<Types.LoginProvider[]> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginProviders';
-                return this.request<Security.Types.LoginProvider[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                return this.request<Types.LoginProvider[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return Array.from(data).map(o => new Security.Types.LoginProvider(o));
+                        return Array.from(data).map(o => new Types.LoginProvider(o));
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
@@ -1435,19 +1435,19 @@ export namespace Security {
             /**
              * This observable is hot and monitors all the responses from the LoginProviders invocations.
              */
-            LoginProvidersObservable : Observable<Security.Types.LoginProvider[]>;
-            private LoginProvidersSubject : Subject<Security.Types.LoginProvider[]>;
+            LoginProvidersObservable : Observable<Types.LoginProvider[]>;
+            private LoginProvidersSubject : Subject<Types.LoginProvider[]>;
             /**
              * Returns the current profile claims
              * @param cancellationToken 
              */
             Profile(
                 cancellationToken? : CancellationToken
-            ): Observable<Security.Types.Claim[]> {
+            ): Observable<Types.Claim[]> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/Profile';
-                return this.request<Security.Types.Claim[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                return this.request<Types.Claim[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return Array.from(data).map(o => new Security.Types.Claim(o));
+                        return Array.from(data).map(o => new Types.Claim(o));
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
@@ -1456,8 +1456,8 @@ export namespace Security {
             /**
              * This observable is hot and monitors all the responses from the Profile invocations.
              */
-            ProfileObservable : Observable<Security.Types.Claim[]>;
-            private ProfileSubject : Subject<Security.Types.Claim[]>;
+            ProfileObservable : Observable<Types.Claim[]>;
+            private ProfileSubject : Subject<Types.Claim[]>;
         }
         /**
          * Instance for the ISolidRpcSecurity type. Implemented by the SolidRpcSecurityImpl
@@ -1549,7 +1549,7 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "data":
-                            if (obj.data) { this.Data = new Security.Types.FacebookDebugTokenData(obj.data); }
+                            if (obj.data) { this.Data = new FacebookDebugTokenData(obj.data); }
                             break;
                     }
                 }
@@ -1569,7 +1569,7 @@ export namespace Security {
             /**
              * 
              */
-            Data: Security.Types.FacebookDebugTokenData | null = null;
+            Data: FacebookDebugTokenData | null = null;
         }
         /**
          * 
@@ -1591,7 +1591,7 @@ export namespace Security {
                             if (obj.data_access_expires_at) { this.DataAccessExpiresAt = Number(obj.data_access_expires_at); }
                             break;
                         case "error":
-                            if (obj.error) { this.Error = new Security.Types.FacebookDebugTokenDataError(obj.error); }
+                            if (obj.error) { this.Error = new FacebookDebugTokenDataError(obj.error); }
                             break;
                         case "expires_at":
                             if (obj.expires_at) { this.ExpiresAt = Number(obj.expires_at); }
@@ -1647,7 +1647,7 @@ export namespace Security {
             /**
              * 
              */
-            Error: Security.Types.FacebookDebugTokenDataError | null = null;
+            Error: FacebookDebugTokenDataError | null = null;
             /**
              * 
              */
@@ -1728,7 +1728,7 @@ export namespace Security {
                             if (obj.script) { this.Script = Array.from(obj.script).map(o => o as string); }
                             break;
                         case "meta":
-                            if (obj.meta) { this.Meta = Array.from(obj.meta).map(o => new Security.Types.LoginProviderMeta(o)); }
+                            if (obj.meta) { this.Meta = Array.from(obj.meta).map(o => new LoginProviderMeta(o)); }
                             break;
                         case "buttonHtml":
                             if (obj.buttonHtml) { this.ButtonHtml = obj.buttonHtml as string; }
@@ -1767,7 +1767,7 @@ export namespace Security {
             /**
              * The script uris
              */
-            Meta: Security.Types.LoginProviderMeta[] | null = null;
+            Meta: LoginProviderMeta[] | null = null;
             /**
              * The html for the login button
              */
@@ -2143,7 +2143,7 @@ export namespace Security {
                 for(let prop in obj) {
                     switch(prop) {
                         case "keys":
-                            if (obj.keys) { this.Keys = Array.from(obj.keys).map(o => new Security.Types.OpenIDKey(o)); }
+                            if (obj.keys) { this.Keys = Array.from(obj.keys).map(o => new OpenIDKey(o)); }
                             break;
                     }
                 }
@@ -2163,7 +2163,7 @@ export namespace Security {
             /**
              * 
              */
-            Keys: Security.Types.OpenIDKey[] | null = null;
+            Keys: OpenIDKey[] | null = null;
         }
         /**
          * success

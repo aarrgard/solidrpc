@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -23,10 +24,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 {
     public class StartupServices : StartupSolidRpcServices
     {
-        public override void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services, Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
+            var settings = services.GetSolidRpcService<IConfiguration>();
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            base.ConfigureServices(services);
+            base.ConfigureServices(services, c => ConfigureAzureFunction(c, settings));
             var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
             if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
 
@@ -46,21 +48,20 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                     conf.ConfigureTransport<IAzTableTransport>().SetConnectionName("AzureWebJobsStorage");
                 }
 
-                return ConfigureAzureFunction(conf);
+                return ConfigureAzureFunction(conf, settings);
             });
 
-            services.AddSolidRpcServices(ConfigureAzureFunction);
             services.AddSolidRpcSwaggerUI(o => { 
                 o.OAuthClientId = "swagger-ui";
                 o.OAuthClientSecret = "swagger-ui";
-            }, ConfigureAzureFunction);
-            services.AddSolidRpcNode(ConfigureAzureFunction);
+            }, c => ConfigureAzureFunction(c,settings));
+            services.AddSolidRpcNode(c => ConfigureAzureFunction(c, settings));
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
             services.AddSolidRpcOAuth2Local(baseAddress, conf => { conf.CreateSigningKey(); });
-            services.AddSolidRpcSecurityBackend((sp, conf) => { }, ConfigureAzureFunction);
+            services.AddSolidRpcSecurityBackend((sp, conf) => { }, c => ConfigureAzureFunction(c, settings));
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<ITestInterface>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
@@ -76,7 +77,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             }, true);
         }
 
-        protected override bool ConfigureAzureFunction(ISolidRpcOpenApiConfig conf)
+        protected bool ConfigureAzureFunction(ISolidRpcOpenApiConfig conf, IConfiguration config)
         {
             //
             // enable anonyous access to the swagger methods and static content.

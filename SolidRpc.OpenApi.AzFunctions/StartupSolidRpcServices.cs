@@ -22,8 +22,10 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// Configures the services.
         /// </summary>
         /// <param name="services"></param>
-        public virtual void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services, Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
+            if (configurator == null) configurator = ConfigureAzureFunction;
+
             s_assemblies = new[] {
                 Assembly.Load("Microsoft.IdentityModel.Tokens"),
                 Assembly.Load("System.IdentityModel.Tokens.Jwt"),
@@ -67,7 +69,7 @@ namespace SolidRpc.OpenApi.AzFunctions
             services.AddHttpClient();
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
-            services.AddSolidRpcServices(ConfigureAzureFunction);
+            services.AddSolidRpcServices(configurator);
         }
 
         /// <summary>

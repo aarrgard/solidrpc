@@ -72,7 +72,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 Name = type.Name,
                 Description = CodeDocRepository.GetClassDoc(type).Summary
             };
-            ns.Types = nsTypes.Union(new[] { codeType }).ToArray();
+            ns.Types = nsTypes.Concat(new[] { codeType }).ToArray();
 
             codeType.Properties = type.GetProperties().Select(o => CreateCodeTypeProperty(rootNamespace, o)).ToArray();
 
@@ -103,7 +103,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                     {
                         Name = subNsName
                     };
-                    ns.Namespaces = nsNamespaces.Union(new[] { subNs }).ToArray();
+                    ns.Namespaces = nsNamespaces.Concat(new[] { subNs }).ToArray();
                 }
                 ns = subNs;
             });
@@ -121,7 +121,7 @@ namespace SolidRpc.OpenApi.Binder.Services
 
             var ns = GetNamespace(rootNamespace, interfaze.FullName);
             var nsInterfaces = ns.Interfaces ?? new CodeInterface[0];
-            ns.Interfaces = nsInterfaces.Union(new[] { ci }).ToArray();
+            ns.Interfaces = nsInterfaces.Concat(new[] { ci }).ToArray();
         }
 
         private CodeMethod CreateCodeMethod(CodeNamespace rootNamespace, MethodInfo mi)
@@ -133,7 +133,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 throw new Exception("No http transport configured for method - cannot create");
             }
-            return new CodeMethod()
+            var cm = new CodeMethod()
             {
                 Description = CodeDocRepository.GetMethodDoc(mi).Summary,
                 Name = mi.Name,
@@ -143,6 +143,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 HttpBaseAddress = httpTransport.BaseAddress,
                 HttpPath = httpTransport.Path
             };
+            return cm;
         }
 
         private CodeMethodArg CreateCodeMethodArg(CodeNamespace rootNamespace, IMethodArgument arg)
@@ -173,7 +174,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             }
             if (type.IsNullableType(out Type nullType))
             {
-                return ResolveCodeType(rootNamespace, nullType).Union(new string[] { "?" }).ToArray();
+                return ResolveCodeType(rootNamespace, nullType).Concat(new string[] { "?" }).ToArray();
             }
             if (type.IsGenericType)
             {
@@ -185,7 +186,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             }
             if (type.IsEnumType(out Type enumType))
             {
-                return ResolveCodeType(rootNamespace, enumType).Union(new string[] { "[]" }).ToArray();
+                return ResolveCodeType(rootNamespace, enumType).Concat(new string[] { "[]" }).ToArray();
             }
             if (type.IsGenericType)
             {
@@ -220,7 +221,8 @@ namespace SolidRpc.OpenApi.Binder.Services
                     {
 
                     }
-                    return type.FullName.Split('.').SelectMany(o => o.Split('+'));
+                    var codeType = type.FullName.Split('.').SelectMany(o => o.Split('+'));
+                    return codeType;
             }
         }
     }

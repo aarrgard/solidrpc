@@ -995,7 +995,7 @@
             Base class to configure the solid rpc services
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the services.
             </summary>

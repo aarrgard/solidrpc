@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +23,13 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
         {
             ServiceConfigs.ToList()
                 .SelectMany(o => o.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-                .Where(o => o.GetParameters().Length == 1)
+                .Where(o => o.GetParameters().Length == 2)
                 .Where(o => typeof(IServiceCollection).IsAssignableFrom(o.GetParameters()[0].ParameterType))
                 .ToList().ForEach(o =>
                 {
                     var target = Activator.CreateInstance(o.DeclaringType);
-                    var del = (Action<IServiceCollection>)o.CreateDelegate(typeof(Action<IServiceCollection>), target);
-                    del(services);
+                    var del = (Action<IServiceCollection, Func<ISolidRpcOpenApiConfig, bool>>)o.CreateDelegate(typeof(Action<IServiceCollection, Func<ISolidRpcOpenApiConfig, bool>>), target);
+                    del(services, null);
                 });
         }
 

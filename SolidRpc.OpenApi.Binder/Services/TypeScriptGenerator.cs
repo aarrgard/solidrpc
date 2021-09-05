@@ -18,6 +18,18 @@ namespace SolidRpc.OpenApi.Binder.Services
     /// </summary>
     public class TypeScriptGenerator : ITypescriptGenerator
     {
+        private class RootNamespace
+        {
+            public RootNamespace(IEnumerable<string> name, CodeNamespace codeNamespace)
+
+            {
+                Name = name;
+                CodeNamespace = codeNamespace;
+            }
+            public IEnumerable<string> Name { get; }
+            public CodeNamespace CodeNamespace { get; }
+        }
+
         public TypeScriptGenerator(ICodeNamespaceGenerator codeGenerator)
         {
             CodeGenerator = codeGenerator;
@@ -50,7 +62,6 @@ namespace SolidRpc.OpenApi.Binder.Services
         /// <returns></returns>
         public Task<string> CreateTypesTsForCodeNamespaceAsync(CodeNamespace codeNamespace, CancellationToken cancellationToken = default(CancellationToken))
         {
-            codeNamespace = FindRootNamespace(codeNamespace);
             var sb = new StringBuilder();
             sb.AppendLine("import { default as CancellationToken } from 'cancellationtoken';");
             sb.AppendLine("import { Observable, Subject } from 'rxjs';");
@@ -61,49 +72,65 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 return Task.FromResult(sb.ToString());
             }
-            CreateTypesTs(codeNamespace, sb, "", codeNamespace);
+            var rootNamespace = FindRootNamespace(new string[0], codeNamespace);
+            CreateTypesTs(rootNamespace, new [] { rootNamespace.CodeNamespace.Name }, sb, "");
             return Task.FromResult(sb.ToString());
         }
 
-        private CodeNamespace FindRootNamespace(CodeNamespace codeNamespace)
+        private RootNamespace FindRootNamespace(IEnumerable<string> parent, CodeNamespace codeNamespace)
         {
             if (codeNamespace.Types != null && codeNamespace.Types.Any())
             {
-                return codeNamespace;
+                return new RootNamespace(parent, codeNamespace);
             }
             if (codeNamespace.Interfaces != null && codeNamespace.Interfaces.Any())
             {
-                return codeNamespace;
+                return new RootNamespace(parent, codeNamespace);
             }
             if (codeNamespace.Namespaces != null && codeNamespace.Namespaces.Count() == 1)
             {
-                return FindRootNamespace(codeNamespace.Namespaces.First());
+                return FindRootNamespace(parent.Concat(new[] { codeNamespace.Name }).Where(o => o != null), codeNamespace.Namespaces.First());
+            }
+            return new RootNamespace(parent, codeNamespace);
+        }
+
+        private CodeNamespace GetCodeNamespace(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName)
+        {
+            var codeNamespace = rootNamespace.CodeNamespace;
+            if(codeNamespace.Name != codeNamespaceName.First())
+            {
+                throw new Exception("Code namespace does not begin with root namespace name");
+            }
+            foreach (var ns in codeNamespaceName.Skip(1))
+            {
+                codeNamespace = codeNamespace.Namespaces.Where(o => o.Name == ns).Single();
             }
             return codeNamespace;
         }
 
-        private void CreateTypesTs(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeNamespace codeNamespace)
+        private void CreateTypesTs(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, StringBuilder code, string indentation)
         {
+            var codeNamespace = GetCodeNamespace(rootNamespace, codeNamespaceName);
             code.Append(indentation).AppendLine($"export namespace {codeNamespace.Name} {{");
             var nsIndentation = CreateIndentation(indentation);
             (codeNamespace.Namespaces ?? new CodeNamespace[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
-                CreateTypesTs(rootNamespace, code, nsIndentation, o);
+                CreateTypesTs(rootNamespace, codeNamespaceName.Concat(new[] { o.Name }).ToList(), code, nsIndentation); ;
             });
             (codeNamespace.Types ?? new CodeType[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
-                CreateTypesTsClass(rootNamespace, code, nsIndentation, o);
+                CreateTypesTsClass(rootNamespace, codeNamespaceName, o, code, nsIndentation);
             });
             (codeNamespace.Interfaces ?? new CodeInterface[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
-                CreateTypesTsInterface(rootNamespace, code, nsIndentation, o);
-                CreateTypesTsClass(rootNamespace, code, nsIndentation, o);
-                CreateTypesTsInstance(rootNamespace, code, nsIndentation, o);
+                CreateTypesTsInterface(rootNamespace, codeNamespaceName, o, code, nsIndentation);
+                CreateTypesTsClass(rootNamespace, codeNamespaceName, o, code, nsIndentation);
+                CreateTypesTsInstance(rootNamespace, codeNamespaceName, o, code, nsIndentation);
             });
             code.Append(indentation).AppendLine($"}}");
         }
 
-        private void CreateTypesTsInstance(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeInterface interfaze)
+        private void CreateTypesTsInstance(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
         {
             var className = CreateClassName(interfaze.Name);
             var instanceName = className;
@@ -125,13 +152,13 @@ namespace SolidRpc.OpenApi.Binder.Services
             return $"{typeName}Impl";
         }
 
-        private void CreateTypesTsInterface(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeInterface interfaze)
+        private void CreateTypesTsInterface(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
         {
             CreteJsComment(code, indentation, interfaze.Description);
             code.Append(indentation).AppendLine($"export interface {interfaze.Name} {{");
             var interfazeIndentation = CreateIndentation(indentation);
             (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
-                var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
+                var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
                 CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
                 code.Append(interfazeIndentation).Append($"{m.Name}(");
                 bool firstArg = true;
@@ -140,7 +167,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                     var argumentIndentation = CreateIndentation(interfazeIndentation);
                     code.AppendLine(firstArg ? "" : ",");
                     firstArg = false;
-                    code.Append(argumentIndentation).Append($"{a.Name}{(a.Optional ? "?" : "")} : {CreateTypescriptType(rootNamespace, a.ArgType)}");
+                    code.Append(argumentIndentation).Append($"{a.Name}{(a.Optional ? "?" : "")} : {CreateTypescriptType(rootNamespace, codeNamespaceName, a.ArgType)}");
                 });
                 if (!firstArg)
                 {
@@ -157,7 +184,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             code.Append(indentation).AppendLine($"}}");
         }
 
-        private void CreateTypesTsClass(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeInterface interfaze)
+        private void CreateTypesTsClass(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
         {
             var className = interfaze.Name;
             if(className.StartsWith("I"))
@@ -178,7 +205,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                     code.Append(ctorIndentation).AppendLine($"super();");
                     (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m =>
                     {
-                        var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
+                        var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
                         code.Append(ctorIndentation).AppendLine($"this.{m.Name}Subject = new Subject<{tsReturnType}>();");
                         code.Append(ctorIndentation).AppendLine($"this.{m.Name}Observable = this.{m.Name}Subject.asObservable().pipe(share());");
                     });
@@ -189,7 +216,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 // methods
                 //
                 (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
-                    var tsReturnType = CreateTypescriptType(rootNamespace, m.ReturnType);
+                    var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
                     CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
                     code.Append(interfazeIndentation).Append($"{m.Name}(");
                     string cancellationTokenArgName = "null";
@@ -199,7 +226,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                         var argumentIndentation = CreateIndentation(interfazeIndentation);
                         code.AppendLine(firstArg ? "" : ",");
                         firstArg = false;
-                        var tsArgType = CreateTypescriptType(rootNamespace, a.ArgType);
+                        var tsArgType = CreateTypescriptType(rootNamespace, codeNamespaceName, a.ArgType);
                         if(tsArgType == "CancellationToken")
                         {
                             cancellationTokenArgName = a.Name;
@@ -281,7 +308,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                             var respIndentation = CreateIndentation(codeIndentation);
                             code.Append(respIndentation).AppendLine($"if(code == 200) {{");
                             
-                            code.Append(CreateIndentation(respIndentation)).AppendLine($"return {CreateJson2JsConverter(rootNamespace, m.ReturnType, "data")};");
+                            code.Append(CreateIndentation(respIndentation)).AppendLine($"return {CreateJson2JsConverter(rootNamespace, codeNamespaceName, m.ReturnType, "data")};");
                             code.Append(respIndentation).AppendLine($"}} else {{");
                             code.Append(CreateIndentation(respIndentation)).AppendLine($"throw 'Response code != 200('+code+')';");
                             code.Append(respIndentation).AppendLine($"}}");
@@ -304,13 +331,13 @@ namespace SolidRpc.OpenApi.Binder.Services
             code.Append(indentation).AppendLine($"}}");
         }
 
-        private string CreateJs2JsonConverter(CodeNamespace rootNamespace, IEnumerable<string> type, string varName)
+        private string CreateJs2JsonConverter(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, IEnumerable<string> type, string varName)
         {
             if (type.LastOrDefault() == "[]")
             {
-                return $"for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(',');";
+                return $"for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(',');";
             }
-            var jsType = CreateTypescriptType(rootNamespace, type);
+            var jsType = CreateTypescriptType(rootNamespace, codeNamespaceName, type);
             switch (jsType)
             {
                 case "void":
@@ -330,13 +357,13 @@ namespace SolidRpc.OpenApi.Binder.Services
 
         }
 
-        private string CreateJson2JsConverter(CodeNamespace rootNamespace, IEnumerable<string> type, string varName)
+        private string CreateJson2JsConverter(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, IEnumerable<string> type, string varName)
         {
             if(type.LastOrDefault() == "[]")
             {
-                return $"Array.from({varName}).map(o => {CreateJson2JsConverter(rootNamespace, type.Reverse().Skip(1).Reverse(), "o")})";
+                return $"Array.from({varName}).map(o => {CreateJson2JsConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), "o")})";
             }
-            var jsType = CreateTypescriptType(rootNamespace, type);
+            var jsType = CreateTypescriptType(rootNamespace, codeNamespaceName, type);
             switch (jsType)
             {
                 case "void":
@@ -360,7 +387,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             return $"{indentation}    ";
         }
 
-        private void CreateTypesTsClass(CodeNamespace rootNamespace, StringBuilder code, string indentation, CodeType type)
+        private void CreateTypesTsClass(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeType type, StringBuilder code, string indentation)
         {
             CreteJsComment(code, indentation, type.Description);
             code.Append(indentation).AppendLine($"export class {type.Name} {{");
@@ -378,7 +405,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                             (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
                                 code.Append(switchIndentation).AppendLine($"case \"{o.HttpName}\":");
                                 var src = $"obj.{o.HttpName}";
-                                src = CreateJson2JsConverter(rootNamespace, o.PropertyType, src);
+                                src = CreateJson2JsConverter(rootNamespace, codeNamespaceName, o.PropertyType, src);
                                 var caseIndentation = CreateIndentation(switchIndentation);
                                 code.Append(caseIndentation).AppendLine($"if (obj.{o.HttpName}) {{ this.{o.Name} = {src}; }}");
                                 code.Append(caseIndentation).AppendLine($"break;");
@@ -401,7 +428,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                     code.Append(asIndentation).AppendLine($"}}");
                     code.Append(asIndentation).AppendLine($"arr.push('{{');");
                     (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
-                        var jsonify = CreateJs2JsonConverter(rootNamespace, o.PropertyType, $"this.{o.Name}");
+                        var jsonify = CreateJs2JsonConverter(rootNamespace, codeNamespaceName, o.PropertyType, $"this.{o.Name}");
                         code.Append(asIndentation).AppendLine($"if(this.{o.Name}) {{ arr.push('\"{o.HttpName}\": '); {jsonify}; arr.push(','); }} ");
                     });
                     code.Append(asIndentation).AppendLine($"if(arr[arr.length-1] == ',') arr[arr.length-1] = '}}'; else arr.push('}}');");
@@ -413,7 +440,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 // params
                 (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
                     CreteJsComment(code, classIndentation, o.Description);
-                    code.Append(classIndentation).AppendLine($"{o.Name}: {CreateTypescriptType(rootNamespace, o.PropertyType)} | null = null;");
+                    code.Append(classIndentation).AppendLine($"{o.Name}: {CreateTypescriptType(rootNamespace, codeNamespaceName, o.PropertyType)} | null = null;");
                 });
             }
             code.Append(indentation).AppendLine($"}}");
@@ -438,59 +465,108 @@ namespace SolidRpc.OpenApi.Binder.Services
             code.Append(indentation).AppendLine(" */");
         }
 
-        private string CreateTypescriptType(CodeNamespace rootNamespace, IEnumerable<string> type)
+        private string CreateTypescriptType(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, IEnumerable<string> type)
         {
             if(!type.Any())
             {
                 return "void";
             }
-            if (type.Last() == "[]")
+            var typeName = type.Last();
+            if (typeName == "[]")
             {
-                return CreateTypescriptType(rootNamespace, type.Reverse().Skip(1).Reverse()) + "[]";
+                return CreateTypescriptType(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse()) + "[]";
             }
-            if (type.Last() == "?")
+            if (typeName == "?")
             {
-                return CreateTypescriptType(rootNamespace, type.Reverse().Skip(1).Reverse());
+                return CreateTypescriptType(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse());
             }
             if (type.Count() == 1)
             {
-                if(type.First() == "Uri")
+                if(typeName == "Uri")
                 {
                     return "string";
                 }
+                return type.First();
             }
-            // locate type from root namespace
-            var newType = type;
-            while(newType.Any() && FindType(rootNamespace, newType) == null)
-            {
-                newType = newType.Skip(1);
-            }
-            if(FindType(rootNamespace, newType) != null)
-            {
-                type = newType.ToArray();
-            }
-            
-            return string.Join(".", type);
+
+            var retVal = string.Join(".", FindType(rootNamespace, codeNamespaceName, type));
+            return retVal;
         }
 
-        private CodeType FindType(CodeNamespace cns, IEnumerable<string> type)
+        private IEnumerable<string> FindType(RootNamespace rns, IEnumerable<string> codeNamespaceName, IEnumerable<string> type)
         {
-            if(cns.Name != type.FirstOrDefault())
+            // remove root namespace from type name
+            foreach(var name in rns.Name)
             {
-                return null;
+                if(type.FirstOrDefault() == name)
+                {
+                    type = type.Skip(1);
+                }
+                else
+                {
+                    throw new Exception("Type does not belong to package.");
+                }
             }
-            type = type.Skip(1);
-            if(type.Count() == 1)
+
+            var codeNamespace = rns.CodeNamespace;
+            if (codeNamespace.Name != type.First())
             {
-                return (cns.Types ?? new CodeType[0]).FirstOrDefault(o => o.Name == type.First());
+                throw new Exception("code namespace is not correct.");
             }
-            var subCns = (cns.Namespaces ?? new CodeNamespace[0]).FirstOrDefault(o => o.Name == type.FirstOrDefault());
-            if(subCns == null)
+
+            // remove namespaces that the type and calling type have in common
+            while (codeNamespaceName.FirstOrDefault() == type.FirstOrDefault())
             {
-                return null;
+                codeNamespaceName = codeNamespaceName.Skip(1);
+                type = type.Skip(1);
+                if(codeNamespaceName.Any())
+                {
+                    codeNamespace = GetCodeNamespace(codeNamespace.Namespaces, type.First());
+                }
             }
-            return FindType(subCns, type);
+            return FindType(codeNamespace, type);
         }
 
+        private CodeNamespace GetCodeNamespace(IEnumerable<CodeNamespace> cns, string name)
+        {
+            var namespaces = cns ?? new CodeNamespace[0];
+            var subCns = namespaces.FirstOrDefault(o => o.Name == name);
+            if (subCns == null)
+            {
+                throw new Exception($"Cannot find namespace: {name} among namespaces {string.Join(",", namespaces.Select(o => o.Name))}");
+            }
+            return subCns;
+        }
+
+        private IEnumerable<string> FindType(CodeNamespace cns, IEnumerable<string> type)
+        {
+            if (type.Count() == 1)
+            {
+                var codeType = (cns.Types ?? new CodeType[0]).FirstOrDefault(o => o.Name == type.First());
+                if (codeType == null)
+                {
+                    throw new Exception("cannot find code type:" + type.First());
+                }
+                return type;
+            } 
+            else
+            {
+                if (cns.Name != type.First())
+                {
+                    throw new Exception($"Namespace name({cns.Name}) is not first type name({type.First()}).");
+                }
+                type = type.Skip(1);
+
+                if(type.Count() == 1)
+                {
+                    return new[] { cns.Name }.Concat(FindType(cns, type));
+                }
+                else
+                {
+                    var subCns = GetCodeNamespace(cns.Namespaces, type.First());
+                    return new[] { cns.Name }.Concat(FindType(subCns, type));
+                }
+            }
+        }
     }
 }

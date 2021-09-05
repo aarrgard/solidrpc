@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
@@ -24,7 +25,7 @@ namespace SolidRpc.OpenApi.Binder.Services
     /// Implements the solid authorization logic
     /// </summary>
     public class SolidRpcOAuth2 : ISolidRpcOAuth2
-    {   
+    {
         private class State
         {
             public string ClientState { get; set; }
@@ -35,7 +36,7 @@ namespace SolidRpc.OpenApi.Binder.Services
         /// Constructs a new instance
         /// </summary>
         public SolidRpcOAuth2(
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             IInvoker<ISolidRpcOAuth2> invoker,
             ISerializerFactory serializationFactory)
         {
@@ -48,7 +49,13 @@ namespace SolidRpc.OpenApi.Binder.Services
         private IInvoker<ISolidRpcOAuth2> Invoker { get; }
         private ISerializerFactory SerializationFactory { get; }
 
-        private IEnumerable<string> AllowedHosts => new string[] { "192.168.1.1", "localhost" };
+        private IEnumerable<string> AllowedHosts {
+            get
+            {
+                var baseAddr = ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress;
+                return new string[] { "192.168.1.1", "localhost", baseAddr.Host.Split(':').First() };
+            }
+        }
 
         public async Task<FileContent> GetAuthorizationCodeTokenAsync(
             Uri callbackUri = null, 
@@ -63,7 +70,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             var host = callbackUri.Host.Split(':').First();
             if (!AllowedHosts.Contains(host))
             {
-                throw new ArgumentException("Host not allowed:" + host);
+                throw new ArgumentException($"Host not allowed({host}). Allowed hosts are {string.Join(",", AllowedHosts)}");
             }
 
             var conf = GetOAuth2Conf();

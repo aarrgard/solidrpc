@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
@@ -258,6 +259,25 @@ namespace SolidRpc.Tests.CodeGenerator
                 await CreatePackage(ctx.ClientServiceProvider, "SolidRpcNode");
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ITypescriptGenerator).Assembly.GetName().Name);
+            }
+        }
+
+        /// <summary>
+        /// Tests the javascript invocation
+        /// </summary>
+        [Test]
+        public async Task TestCompileEoBankId()
+        {
+            using (var ctx = CreateKestrelHostContext(ss => {
+                ss.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
+                ss.AddSolidRpcBindings(typeof(EO.BankId.Services.IOidc));
+            }, cs => {
+                cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
+                cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IOidc));
+            }))
+            {
+                await ctx.StartAsync();
+                await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.Services.IBankId).Assembly.GetName().Name);
             }
         }
 
