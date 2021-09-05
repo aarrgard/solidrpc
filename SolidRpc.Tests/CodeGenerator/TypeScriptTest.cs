@@ -265,7 +265,7 @@ namespace SolidRpc.Tests.CodeGenerator
         /// <summary>
         /// Tests the javascript invocation
         /// </summary>
-        [Test]
+        [Test, Ignore("Check!")]
         public async Task TestCompileEoBankId()
         {
             using (var ctx = CreateKestrelHostContext(ss => {
