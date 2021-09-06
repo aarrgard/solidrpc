@@ -212,5 +212,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             return httpInvoker.InvokeAsync(o => o.GetHostInstance(cancellationToken));
 
         }
+
+        public Task<Uri> BaseAddress(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress);
+        }
     }
 }

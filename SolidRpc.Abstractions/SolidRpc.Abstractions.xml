@@ -2209,6 +2209,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.BaseAddress(System.Threading.CancellationToken)">
+            <summary>
+            Returns the base url for this host
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHostStore">
             <summary>
             The host store is responsible for storing persistent information about 

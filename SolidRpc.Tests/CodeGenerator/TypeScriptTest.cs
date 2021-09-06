@@ -365,7 +365,7 @@ namespace SolidRpc.Tests.CodeGenerator
         private async Task<T> RunTestScriptNoArgConvAsync<T>(IServiceProvider sp, IEnumerable<NpmPackage> packages, string methodName, string jsInput, string jsonText)
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(new TimeSpan(0, 0, 10));
+            cts.CancelAfter(new TimeSpan(0, 0, 30));
 
             var ns = sp.GetRequiredService<INodeService>();
             var js = $@"const x = require(""solidrpc.tests"");
@@ -419,7 +419,7 @@ y.SolidRpcJs.AddPreFlight((req, cont) => {{
         private async Task<IEnumerable<NpmPackage>> CreatePackage(IServiceProvider sp, string assemblyName)
         {
             var cts = new CancellationTokenSource();
-            cts.CancelAfter(new TimeSpan(0, 0, 30));
+            cts.CancelAfter(new TimeSpan(0, 1, 0));
 
             var ng = sp.GetRequiredService<INpmGenerator>();
             var packages = await ng.CreateNpmPackage(new[] { assemblyName }, cts.Token);

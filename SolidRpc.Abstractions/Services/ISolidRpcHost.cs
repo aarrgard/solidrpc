@@ -62,5 +62,13 @@ namespace SolidRpc.Abstractions.Services
         /// <returns></returns>
         [Security(nameof(SolidRpcHostPermission))]
         Task IsAlive(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the base url for this host
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<Uri> BaseAddress(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
