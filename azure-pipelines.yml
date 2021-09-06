@@ -70,7 +70,7 @@ steps:
   inputs:
     command: test
     projects: '$(projectFolder)/**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --blame-hang-timeout 240s'
 
 
 #
