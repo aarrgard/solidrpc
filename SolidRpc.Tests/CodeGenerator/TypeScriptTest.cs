@@ -373,7 +373,12 @@ const y = require(""solidrpcjs"");
 y.SolidRpcJs.ResetPreFlight();
 y.SolidRpcJs.AddPreFlight((req, cont) => {{ 
     req.headers['Authorization'] = 'Bearer mykey';
-    console.log('PreFlight to ' + req.uri);
+
+    console.log(req.method + ':ing data @ ' + req.uri);
+    if (req.query) {{ Object.keys(req.query).forEach(k => console.log(' Query  - ' + k + ':' + req.query[k])); }}
+    if (req.headers) {{ Object.keys(req.headers).forEach(k => console.log(' Header - ' + k + ':' + req.headers[k])); }}
+    if (req.data) {{ console.log('Data - ' + req.data); }}
+
     cont();
 }});
 (async function(){{

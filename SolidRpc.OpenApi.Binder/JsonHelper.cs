@@ -44,6 +44,11 @@ namespace SolidRpc.OpenApi.Binder
         /// <returns></returns>
         public static object Deserialize(Stream stream, Type objectType, Encoding encoding = null)
         {
+            long initialPosition = -1;
+            if(stream.CanSeek)
+            {
+                initialPosition = stream.Position;
+            }
             StreamReader sr;
             if (encoding == null)
             {
@@ -57,7 +62,25 @@ namespace SolidRpc.OpenApi.Binder
             {
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    return s_serializer.Deserialize(reader, objectType);
+                    try
+                    {
+                        return s_serializer.Deserialize(reader, objectType);
+                    }
+                    catch (Exception e)
+                    {
+                        if (initialPosition > -1)
+                        {
+                            stream.Position = initialPosition;
+                        }
+                        var json = "";
+                        using (var esr = new StreamReader(stream))
+                        {
+                            var buf = new char[50];
+                            var read = esr.ReadBlock(buf, 0, buf.Length);
+                            json = new string(buf, 0, read);
+                        }
+                        throw new Exception("Cannot read json stream:" + json, e);
+                    }
                 }
             }
         }

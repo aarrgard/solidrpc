@@ -7,6 +7,8 @@ using SolidRpc.Abstractions.Types;
 using Microsoft.Extensions.Primitives;
 using System.Runtime.Serialization;
 using System.Linq;
+using SolidRpc.OpenApi.Binder;
+using System.Text;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -255,6 +257,24 @@ namespace SolidRpc.Tests.Serialization
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
             TestSerializeDeserialize(serFact, new Uri("ws://test.ws/ws"), str => Assert.AreEqual("\"ws://test.ws/ws\"", str));
+        }
+
+        /// <summary>
+        /// Tests the uri type
+        /// </summary>
+        [Test]
+        public void TestNoJson()
+        {
+            try
+            {
+                var s = new MemoryStream(Encoding.UTF8.GetBytes("[Not json]"));
+                var i = JsonHelper.Deserialize<int>(s);
+                Assert.Fail();
+            }
+            catch(Exception e)
+            {
+                Assert.AreEqual("Cannot read json stream:[Not json]", e.Message);
+            }
         }
     }
 }
