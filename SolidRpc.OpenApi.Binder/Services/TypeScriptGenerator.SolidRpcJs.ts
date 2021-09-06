@@ -150,7 +150,7 @@ export namespace SolidRpcJs {
             if (input && input.toJson) {
                 return input.toJson();
             }
-            return input;
+            return JSON.stringify(input);
         }
 
         /**
@@ -212,7 +212,12 @@ export namespace SolidRpcJs {
                         url: req.uri,
                         headers: req.headers,
                         data: req.data,
-                        cancelToken: cancelToken
+                        cancelToken: cancelToken,
+                        transformRequest: [
+                            (data, headers) => {
+                                return data;
+                            },
+                        ]
                     }
                     axios.request<any>(requestConfig)
                         .then(resp => {
