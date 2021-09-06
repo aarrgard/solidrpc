@@ -262,24 +262,24 @@ namespace SolidRpc.Tests.CodeGenerator
             }
         }
 
-        /// <summary>
-        /// Tests the javascript invocation
-        /// </summary>
-        [Test, Ignore("Check!")]
-        public async Task TestCompileEoBankId()
-        {
-            using (var ctx = CreateKestrelHostContext(ss => {
-                ss.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
-                ss.AddSolidRpcBindings(typeof(EO.BankId.Services.IOidc));
-            }, cs => {
-                cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
-                cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IOidc));
-            }))
-            {
-                await ctx.StartAsync();
-                await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.Services.IBankId).Assembly.GetName().Name);
-            }
-        }
+        ///// <summary>
+        ///// Tests the javascript invocation
+        ///// </summary>
+        //[Test]
+        //public async Task TestCompileEoBankId()
+        //{
+        //    using (var ctx = CreateKestrelHostContext(ss => {
+        //        ss.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
+        //        ss.AddSolidRpcBindings(typeof(EO.BankId.Services.IOidc));
+        //    }, cs => {
+        //        cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
+        //        cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IOidc));
+        //    }))
+        //    {
+        //        await ctx.StartAsync();
+        //        await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.Services.IBankId).Assembly.GetName().Name);
+        //    }
+        //}
 
         /// <summary>
         /// Tests the javascript invocation

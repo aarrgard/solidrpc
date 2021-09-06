@@ -89,12 +89,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="EO.BankId">
-      <HintPath>ExternalLib\EO.BankId.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.local.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
