@@ -72,6 +72,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         IEnumerable<IMethodArgument> Arguments { get; }
 
         /// <summary>
+        /// Creates a uri with the path and query arguments from the supplied request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Uri BindUri(IHttpRequest request);
+
+        /// <summary>
         /// Binds the arguments to the supplied request according to
         /// the swagger spec.
         /// </summary>

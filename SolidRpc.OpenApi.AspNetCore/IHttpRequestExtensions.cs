@@ -73,7 +73,6 @@ namespace SolidRpc.OpenApi.Binder.Http
                     headerList.Add(new SolidHttpRequestDataString("text/plain", h.Key, sv));
                 }
             }
-            headerList.Add(new SolidHttpRequestDataString("text/plain", "X-Orig-Uri", target.CreateUri(true).ToString()));
             target.Headers = headerList;
 
             if(source.ContentType != null)

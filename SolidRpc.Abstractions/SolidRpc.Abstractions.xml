@@ -393,6 +393,13 @@
             All the arguments.
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.BindUri(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
+            <summary>
+            Creates a uri with the path and query arguments from the supplied request.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding.BindArgumentsAsync(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Object[],System.Uri)">
             <summary>
             Binds the arguments to the supplied request according to

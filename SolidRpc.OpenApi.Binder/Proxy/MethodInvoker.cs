@@ -27,6 +27,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     {
         public const string RequestHeaderPrefixInInvocation = "http_req_";
         public const string RequestHeaderContinuationTokenInInvocation = "http_req_X-SolidRpc-ContinuationToken";
+        public const string RequestHeaderMethodUri = "http_req_X-SolidRpc-MethodUri";
         public const string ResponseHeaderPrefixInInvocation = "http_resp_";
 
         private class PathSegment
@@ -180,6 +181,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.GetTransportType()))}).");
             }
+            invocationValues.Add(RequestHeaderMethodUri, selectedBinding.BindUri(request));
 
             var invokerTransport = transport.InvokerTransport;
             if (!string.IsNullOrEmpty(invokerTransport))

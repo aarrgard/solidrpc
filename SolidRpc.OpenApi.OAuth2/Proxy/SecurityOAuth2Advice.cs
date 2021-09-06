@@ -189,7 +189,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         {
             if(RedirectUnauthorizedIdentity)
             {
-                var redirectUri = new Uri(invocation.GetValue<StringValues>($"{MethodInvoker.RequestHeaderPrefixInInvocation}x-orig-uri").ToString());
+                var redirectUri = new Uri(invocation.GetValue<Uri>(MethodInvoker.RequestHeaderMethodUri).ToString());
                 //
                 // try to fetch token from query
                 //

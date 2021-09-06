@@ -356,9 +356,29 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public string Path => OperationObject.GetPath()?.Substring(1);
 
-        public async Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride)
+        public Uri BindUri(IHttpRequest request)
         {
-            if(args.Length != Arguments.Length)
+            var ub = new UriBuilder();
+            ub.Scheme = request.Scheme;
+            ub.Host = request.GetHost();
+            var port = request.GetPort();
+            if(port != null)
+            {
+                ub.Port = port.Value;
+            }
+            ub.Path = request.Path;
+            ub.Query = string.Join("&",request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
+            return ub.Uri;
+        }
+
+        public Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride)
+        {
+            return BindArgumentsAsync(request, args, addressOverride, new[] { "path", "query" });
+        }
+
+        private async Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride, IEnumerable<string> locations)
+        {
+            if (args.Length != Arguments.Length)
             {
                 throw new ArgumentException($"Number of supplied arguments({args.Length}) does not match number of arguments in method({Arguments.Length}).");
             }
@@ -366,7 +386,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 addressOverride = OperationAddress;
             }
-
 
             //
             // bind arguments
