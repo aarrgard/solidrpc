@@ -23,7 +23,6 @@ namespace SolidRpc.Tests.CodeGenerator
     /// <summary>
     /// Tests the node services
     /// </summary>
-    [Ignore("Not working on devops")]
     public class TypeScriptTest : WebHostTest
     {
         public class CompiledTs
@@ -365,6 +364,8 @@ namespace SolidRpc.Tests.CodeGenerator
 
         private async Task<T> RunTestScriptNoArgConvAsync<T>(IServiceProvider sp, IEnumerable<NpmPackage> packages, string methodName, string jsInput, string jsonText)
         {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(new TimeSpan(0, 0, 10));
 
             var ns = sp.GetRequiredService<INodeService>();
             var js = $@"const x = require(""solidrpc.tests"");
@@ -390,7 +391,7 @@ y.SolidRpcJs.AddPreFlight((req, cont) => {{
                 Js = js,
                 InputFiles = inputFiles,
                 ModuleId = NodeModuleRpcResolver.GuidModuleId
-            });
+            }, cts.Token);
             if (!string.IsNullOrEmpty(nodeRes.Out)) Console.Write("NodeOut:" + nodeRes.Out);
             if (!string.IsNullOrEmpty(nodeRes.Err) && nodeRes.ExitCode == 0) Console.Write("NodeErr:" + nodeRes.Err);
 
@@ -417,8 +418,11 @@ y.SolidRpcJs.AddPreFlight((req, cont) => {{
 
         private async Task<IEnumerable<NpmPackage>> CreatePackage(IServiceProvider sp, string assemblyName)
         {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(new TimeSpan(0, 0, 30));
+
             var ng = sp.GetRequiredService<INpmGenerator>();
-            var packages = await ng.CreateNpmPackage(new[] { assemblyName });
+            var packages = await ng.CreateNpmPackage(new[] { assemblyName }, cts.Token);
 
             foreach(var package in packages)
             {

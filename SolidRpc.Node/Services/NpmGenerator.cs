@@ -33,14 +33,14 @@ namespace SolidRpc.Node.Services
             var npmPackages = new List<NpmPackage>();
             foreach(var assemblyName in compileAssemblyNames)
             {
-                var ts = await TypescriptGenerator.CreateTypesTsForAssemblyAsync(assemblyName);
-                var npmPackage = await CompileTsAsync(npmPackages, assemblyName, ts);
+                var ts = await TypescriptGenerator.CreateTypesTsForAssemblyAsync(assemblyName, cancellationToken);
+                var npmPackage = await CompileTsAsync(npmPackages, assemblyName, ts, cancellationToken);
                 npmPackages.Add(npmPackage);
             }
             return npmPackages.Where(p => assemblyNames.Any(an => string.Equals(p.Name, an, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        private async Task<NpmPackage> CompileTsAsync(IEnumerable<NpmPackage> packages, string assemblyName, string ts)
+        private async Task<NpmPackage> CompileTsAsync(IEnumerable<NpmPackage> packages, string assemblyName, string ts, CancellationToken cancellationToken)
         {
             var sep = Path.DirectorySeparatorChar;
             var inputFiles = packages.SelectMany(p => p.Files.Select(f => new { p.Name, File = f }))
@@ -61,7 +61,7 @@ namespace SolidRpc.Node.Services
                 Args = new string[0],
                 InputFiles = inputFiles,
                 ModuleId = NodeModuleRpcResolver.GuidModuleId
-            });
+            }, cancellationToken);
 
             if (nodeRes.ExitCode != 0)
             {
