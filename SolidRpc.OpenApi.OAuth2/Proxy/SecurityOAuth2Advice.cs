@@ -46,11 +46,9 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             AuthorityFactory = serviceProvider.GetService<IAuthorityFactory>();
-            AuthInvoker = serviceProvider.GetService<IInvoker<ISolidRpcOAuth2>>();
         }
         private ILogger Logger { get; }
         private IAuthorityFactory AuthorityFactory { get; }
-        private IInvoker<ISolidRpcOAuth2> AuthInvoker { get; }
         private bool RemoteCall { get; set; }
         private IAuthority Authority { get; set; }
         private string ClientId { get; set; }
@@ -199,7 +197,8 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     return accessToken;
                 }
-                var uri = await AuthInvoker.GetUriAsync(o => o.GetAuthorizationCodeTokenAsync(redirectUri, null, null, invocation.CancellationToken));
+                var authInvoker = invocation.ServiceProvider.GetService<IInvoker<ISolidRpcOAuth2>>();
+                var uri = await authInvoker.GetUriAsync(o => o.GetAuthorizationCodeTokenAsync(redirectUri, null, null, invocation.CancellationToken));
                 throw new FoundException(uri);
             }
             return null;
