@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.ApplicationInsights;
+using System;
 using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
