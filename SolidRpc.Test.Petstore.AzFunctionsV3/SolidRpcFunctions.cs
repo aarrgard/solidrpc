@@ -94,6 +94,20 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_ISolidRpcHost_CheckHost
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHost_CheckHost")]

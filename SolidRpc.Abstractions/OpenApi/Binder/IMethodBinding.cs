@@ -75,8 +75,9 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// Creates a uri with the path and query arguments from the supplied request.
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="addressOverride"></param>
         /// <returns></returns>
-        Uri BindUri(IHttpRequest request);
+        Uri BindUri(IHttpRequest request, Uri addressOverride = null);
 
         /// <summary>
         /// Binds the arguments to the supplied request according to

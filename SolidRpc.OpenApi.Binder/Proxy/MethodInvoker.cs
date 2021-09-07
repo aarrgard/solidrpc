@@ -181,7 +181,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.GetTransportType()))}).");
             }
-            invocationValues.Add(RequestHeaderMethodUri, selectedBinding.BindUri(request));
+            invocationValues.Add(RequestHeaderMethodUri, selectedBinding.BindUri(request, transport.OperationAddress));
 
             var invokerTransport = transport.InvokerTransport;
             if (!string.IsNullOrEmpty(invokerTransport))
@@ -286,8 +286,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
                 catch (Exception ex)
                 {
-                    // handle exception
-                    Logger.LogError(ex, "Service returned an exception - sending to client");
+                    // Only log error if this is a non http service code...
+                    if(!ex.Data.Contains("HttpStatusCode"))
+                    {
+                        Logger.LogError(ex, "Service returned an exception - sending to client");
+                    }
                     await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
                 }
 

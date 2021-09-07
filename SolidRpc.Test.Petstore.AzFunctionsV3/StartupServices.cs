@@ -32,7 +32,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
             if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
 
-            //services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
+            services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
 
             services.AddSolidRpcOAuth2();
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);

@@ -354,21 +354,45 @@ namespace SolidRpc.OpenApi.Binder.V2
             }
         }
 
-        public string Path => OperationObject.GetPath()?.Substring(1);
-
-        public Uri BindUri(IHttpRequest request)
+        public Uri BindUri(IHttpRequest request, Uri addressOverride = null)
         {
-            var ub = new UriBuilder();
-            ub.Scheme = request.Scheme;
-            ub.Host = request.GetHost();
-            var port = request.GetPort();
-            if(port != null)
+            if(addressOverride == null)
             {
-                ub.Port = port.Value;
+                var ub = new UriBuilder();
+                ub.Scheme = request.Scheme;
+                ub.Host = request.GetHost();
+                var port = request.GetPort();
+                if (port != null)
+                {
+                    ub.Port = port.Value;
+                }
+                ub.Path = request.Path;
+                ub.Query = string.Join("&", request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
+                return ub.Uri;
             }
-            ub.Path = request.Path;
-            ub.Query = string.Join("&",request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
-            return ub.Uri;
+            else
+            {
+                var ub = new UriBuilder(addressOverride);
+                // replace all the path segments in path from request
+                ub.Path = ReplaceData(ub.Path, request.PathData);
+                ub.Query = string.Join("&", request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
+                return ub.Uri;
+            }
+        }
+
+        private string ReplaceData(string path, IEnumerable<IHttpRequestData> pathData)
+        {
+            var parts = path.Split('/');
+            for(int i = 0; i < parts.Length; i++)
+            {
+                var part = parts[i];
+                if(part.StartsWith("{") && part.EndsWith("}"))
+                {
+                    var name = part.Substring(1, part.Length - 2);
+                    parts[i] = pathData.Where(o => o.Name == name).Select(o => o.GetStringValue()).FirstOrDefault();
+                }
+            }
+            return string.Join("/", parts);
         }
 
         public Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride)

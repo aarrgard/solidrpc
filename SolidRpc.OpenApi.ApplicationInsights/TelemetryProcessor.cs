@@ -1,0 +1,47 @@
+﻿using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+
+namespace SolidRpc.OpenApi.ApplicationInsights
+{
+    public class TelemetryProcessor : ITelemetryProcessor
+    {
+        private ITelemetryProcessor Next { get; set; }
+
+        // next will point to the next TelemetryProcessor in the chain.
+        public TelemetryProcessor(ITelemetryProcessor next)
+        {
+            Next = next;
+        }
+
+        public void Process(ITelemetry item)
+        {
+            if (item is TraceTelemetry traceItem)
+            {
+                if(traceItem.Extension is TelemetryExtension)
+                {
+                    Next.Process(item);
+                }
+            }
+            if (item is ExceptionTelemetry excpetionItem)
+            {
+                Next.Process(item);
+            }
+            if (item is RequestTelemetry requestItem)
+            {
+                Next.Process(item);
+            }
+
+            // do not send this telemetry
+        }
+
+        // Example: replace with your own criteria.
+        private bool OKtoSend(ITelemetry item)
+        {
+            var dependency = item as DependencyTelemetry;
+            if (dependency == null) return true;
+
+            return dependency.Success != true;
+        }
+    }
+}

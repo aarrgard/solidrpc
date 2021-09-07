@@ -446,6 +446,15 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync"
     },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

@@ -38,7 +38,10 @@ namespace SolidRpc.OpenApi.Binder.Logging
         {
             logScope.ParentScope = CurrentLogScope.Value;
             CurrentLogScope.Value = logScope;
-            if (logScope.IsActivatorScope) InvocationScopeCreated(logScope.ActivatorPropertyValue);
+            if (logScope.IsActivatorScope)
+            {
+                InvocationScopeCreated(logScope.ActivatorPropertyValue);
+            }
         }
 
         internal void Pop(LogScope logScope)
@@ -48,7 +51,10 @@ namespace SolidRpc.OpenApi.Binder.Logging
                 throw new Exception();
             }
             CurrentLogScope.Value = logScope.ParentScope;
-            if (logScope.IsActivatorScope) InvocationScopeDisposed(logScope.ActivatorPropertyValue);
+            if (logScope.IsActivatorScope)
+            {
+                InvocationScopeDisposed(logScope.ActivatorPropertyValue);
+            }
         }
 
         /// <summary>
