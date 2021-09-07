@@ -1,12 +1,11 @@
 ﻿using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.ApplicationInsights;
 using System.Threading.Tasks;
 
-namespace System
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Extension methods for the service provider.
@@ -25,7 +24,7 @@ namespace System
             var instrumentationKey = conf["APPINSIGHTS_INSTRUMENTATIONKEY"];
             if(string.IsNullOrEmpty(instrumentationKey))
             {
-                throw new Exception("No instrumentation key specified.");
+                throw new Exception("No APPINSIGHTS_INSTRUMENTATIONKEY key specified.");
             }
 
             services.AddApplicationInsightsTelemetry(instrumentationKey);
