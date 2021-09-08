@@ -154,6 +154,20 @@ export namespace SolidRpcJs {
         }
 
         /**
+         * invokes the specified function if supplied argument has a value.
+         * @param input the value to check for null
+         * @param onnotnull the function that converts non null values
+         */
+        ifnotnull<T>(input: any, onnotnull: (input: any) => T): T | null {
+            if (input) {
+                return onnotnull(input);
+            }
+            else {
+                return input;
+            }
+        }
+
+        /**
          * Performs the underlying request
          * @param method
          * @param uri

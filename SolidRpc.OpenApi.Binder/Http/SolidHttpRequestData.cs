@@ -312,7 +312,17 @@ namespace SolidRpc.OpenApi.Binder.Http
                                 };
                             };
                         case SystemUri:
-                            return (_) => _ == null ? null : new Uri(_.GetStringValue());
+                            return (_) =>
+                            {
+                                if (Uri.TryCreate(_?.GetStringValue(), UriKind.RelativeOrAbsolute, out Uri parsed))
+                                {
+                                    return parsed;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            };
                         case SystemString:
                             return (_) => _?.GetStringValue();
                         default:
