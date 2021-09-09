@@ -250,14 +250,14 @@ namespace SolidRpc.OpenApi.Binder.Services
                         var queryArgs = m.Arguments.Where(o => o.HttpLocation == "query").ToList();
                         queryArgs.ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"if({o.HttpName}){{query['{o.HttpName}']={o.Name}}};");
+                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.HttpName}, x => {{ query['{o.HttpName}'] = x; }});");
                         });
 
                         code.Append(codeIndentation).AppendLine($"let headers: {{ [index: string]: any }} = {{}};");
                         var headerArgs = m.Arguments.Where(o => o.HttpLocation == "header").ToList();
                         headerArgs.ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"if({o.HttpName}){{headers['{o.HttpName}']={o.Name}}};");
+                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.HttpName}, x => {{ headers['{o.HttpName}'] = x; }});");
                         });
 
                         var strBodyArgs = new StringBuilder();
@@ -286,7 +286,6 @@ namespace SolidRpc.OpenApi.Binder.Services
                             code.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
                         });
 
-                        code.Append(codeIndentation).AppendLine($"let ifnotnull = this.ifnotnull;");
                         code.Append(codeIndentation).AppendLine($"return this.request<{tsReturnType}>(new SolidRpcJs.RpcServiceRequest('{m.HttpMethod.ToLower()}', uri, query, headers, {strBodyArgs}), {cancellationTokenArgName}, function(code : number, data : any) {{");
                         {
                             var respIndentation = CreateIndentation(codeIndentation);
@@ -321,6 +320,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 return $"for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(',');";
             }
+            if (type.LastOrDefault() == "?")
+            {
+                return CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), varName);
+            }
             var jsType = CreateTypescriptType(rootNamespace, codeNamespaceName, type);
             switch (jsType)
             {
@@ -335,7 +338,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "Record<string,string>":
                     return $"arr.push(JSON.stringify({varName}))";
                 default:
-                    return $"{varName}.toJson(arr)";
+                    return $"if({varName}) {{{varName}.toJson(arr)}}";
             }
             throw new NotImplementedException();
 
@@ -350,7 +353,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             if (type.LastOrDefault() == "?")
             {
                 var notNullType = CreateTypescriptType(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse());
-                return $"ifnotnull<{notNullType}>({varName}, (notnull) => {CreateJson2JsConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), "notnull")})";
+                return $"SolidRpcJs.ifnotnull<{notNullType}>({varName}, (notnull) => {CreateJson2JsConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), "notnull")})";
             }
             var jsType = CreateTypescriptType(rootNamespace, codeNamespaceName, type);
             switch (jsType)

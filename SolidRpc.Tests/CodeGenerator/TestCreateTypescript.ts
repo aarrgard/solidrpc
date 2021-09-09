@@ -81,7 +81,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.LoginProvider> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoginProvider';
-                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.LoginProvider(data);
                         } else {
@@ -102,7 +104,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoginScript';
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.WebContent(data);
                         } else {
@@ -126,7 +130,9 @@ export namespace Security {
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoggedIn/{accessToken}';
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -150,7 +156,9 @@ export namespace Security {
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoggedOut/{accessToken}';
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -230,11 +238,12 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.FacebookAccessToken> {
                     let uri = 'https://graph.facebook.com/oauth/access_token';
-                    return this.request<Types.FacebookAccessToken>(new SolidRpcJs.RpcServiceRequest('get', uri, {
-                        'client_id': clientId,
-                        'client_secret': clientSecret,
-                        'grant_type': grantType,
-}, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
+                    SolidRpcJs.ifnotnull(client_secret, x => { query['client_secret'] = x; });
+                    SolidRpcJs.ifnotnull(grant_type, x => { query['grant_type'] = x; });
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.FacebookAccessToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.FacebookAccessToken(data);
                         } else {
@@ -259,10 +268,11 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.FacebookDebugToken> {
                     let uri = 'https://graph.facebook.com/v4.0/debug_token';
-                    return this.request<Types.FacebookDebugToken>(new SolidRpcJs.RpcServiceRequest('get', uri, {
-                        'input_token': inputToken,
-                        'access_token': accessToken,
-}, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    SolidRpcJs.ifnotnull(input_token, x => { query['input_token'] = x; });
+                    SolidRpcJs.ifnotnull(access_token, x => { query['access_token'] = x; });
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.FacebookDebugToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.FacebookDebugToken(data);
                         } else {
@@ -358,7 +368,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.LoginProvider> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoginProvider';
-                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.LoginProvider(data);
                         } else {
@@ -379,7 +391,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoginScript';
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.WebContent(data);
                         } else {
@@ -403,7 +417,9 @@ export namespace Security {
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoggedIn/{accessToken}';
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -427,7 +443,9 @@ export namespace Security {
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoggedOut/{accessToken}';
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -556,21 +574,22 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<void> {
                     let uri = 'https://accounts.google.com/o/oauth2/v2/auth';
-                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, {
-                        'client_id': clientId,
-                        'response_type': responseType,
-                        'scope': scope,
-                        'nounce': nounce,
-                        'redirect_uri': redirectUri,
-                        'state': state,
-                        'prompt': prompt,
-                        'display': display,
-                        'login_hint': loginHint,
-                        'include_granted_scopes': includeGrantedScopes,
-                        'access_type': accessType,
-                        'openid.realm': openidRealm,
-                        'hd': hd,
-}, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
+                    SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
+                    SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
+                    SolidRpcJs.ifnotnull(nounce, x => { query['nounce'] = x; });
+                    SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
+                    SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                    SolidRpcJs.ifnotnull(prompt, x => { query['prompt'] = x; });
+                    SolidRpcJs.ifnotnull(display, x => { query['display'] = x; });
+                    SolidRpcJs.ifnotnull(login_hint, x => { query['login_hint'] = x; });
+                    SolidRpcJs.ifnotnull(include_granted_scopes, x => { query['include_granted_scopes'] = x; });
+                    SolidRpcJs.ifnotnull(access_type, x => { query['access_type'] = x; });
+                    SolidRpcJs.ifnotnull(openid.realm, x => { query['openid.realm'] = x; });
+                    SolidRpcJs.ifnotnull(hd, x => { query['hd'] = x; });
+                    let headers: { [index: string]: any } = {};
+                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return null;
                         } else {
@@ -591,7 +610,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://accounts.google.com/.well-known/openid-configuration';
-                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.OpenIDConnnectDiscovery(data);
                         } else {
@@ -612,7 +633,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.OpenIDKeys> {
                     let uri = 'https://accounts.google.com/.well-known/openid-keys';
-                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.OpenIDKeys(data);
                         } else {
@@ -708,7 +731,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.LoginProvider> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoginProvider';
-                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.LoginProvider(data);
                         } else {
@@ -729,7 +754,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoginScript';
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.WebContent(data);
                         } else {
@@ -752,9 +779,10 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoggedIn';
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, {
-                        'accessToken': accessToken,
-}, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    SolidRpcJs.ifnotnull(accessToken, x => { query['accessToken'] = x; });
+                    let headers: { [index: string]: any } = {};
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -778,7 +806,9 @@ export namespace Security {
                 ): Observable<string> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoggedOut/{accessToken}';
                     uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -908,19 +938,20 @@ export namespace Security {
                 ): Observable<void> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/oauth2/authorize';
                     uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, {
-                        'client_id': clientId,
-                        'response_type': responseType,
-                        'redirect_uri': redirectUri,
-                        'response_mode': responseMode,
-                        'scope': scope,
-                        'state': state,
-                        'nounce': nounce,
-                        'resource': resource,
-                        'prompt': prompt,
-                        'login_hint': loginHint,
-                        'domain_hint': domainHint,
-}, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
+                    SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
+                    SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
+                    SolidRpcJs.ifnotnull(response_mode, x => { query['response_mode'] = x; });
+                    SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
+                    SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                    SolidRpcJs.ifnotnull(nounce, x => { query['nounce'] = x; });
+                    SolidRpcJs.ifnotnull(resource, x => { query['resource'] = x; });
+                    SolidRpcJs.ifnotnull(prompt, x => { query['prompt'] = x; });
+                    SolidRpcJs.ifnotnull(login_hint, x => { query['login_hint'] = x; });
+                    SolidRpcJs.ifnotnull(domain_hint, x => { query['domain_hint'] = x; });
+                    let headers: { [index: string]: any } = {};
+                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return null;
                         } else {
@@ -944,7 +975,9 @@ export namespace Security {
                 ): Observable<Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration';
                     uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.OpenIDConnnectDiscovery(data);
                         } else {
@@ -968,7 +1001,9 @@ export namespace Security {
                 ): Observable<Types.OpenIDKeys> {
                     let uri = 'https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys';
                     uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.OpenIDKeys(data);
                         } else {
@@ -1116,7 +1151,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.OpenIDConnnectDiscovery> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/discovery';
-                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.OpenIDConnnectDiscovery(data);
                         } else {
@@ -1137,7 +1174,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.OpenIDKeys> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/keys';
-                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.OpenIDKeys(data);
                         } else {
@@ -1158,7 +1197,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.TokenResponse> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
-                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.TokenResponse(data);
                         } else {
@@ -1199,7 +1240,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.TokenResponse> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
-                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.TokenResponse(data);
                         } else {
@@ -1230,13 +1273,14 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, {
-                        'scope': scope,
-                        'response_type': responseType,
-                        'client_id': clientId,
-                        'redirect_uri': redirectUri,
-                        'state': state,
-}, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
+                    SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
+                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
+                    SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
+                    SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.WebContent(data);
                         } else {
@@ -1257,7 +1301,9 @@ export namespace Security {
                     cancellationToken? : CancellationToken
                 ): Observable<Types.WebContent> {
                     let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('post', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.WebContent(data);
                         } else {
@@ -1361,7 +1407,9 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Types.WebContent> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginPage';
-                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.WebContent(data);
                     } else {
@@ -1382,7 +1430,9 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<string[]> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginScripts';
-                return this.request<string[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<string[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => o as string);
                     } else {
@@ -1403,7 +1453,9 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Types.WebContent> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginScript';
-                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.WebContent(data);
                     } else {
@@ -1424,7 +1476,9 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Types.LoginProvider[]> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/LoginProviders';
-                return this.request<Types.LoginProvider[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.LoginProvider[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.LoginProvider(o));
                     } else {
@@ -1445,7 +1499,9 @@ export namespace Security {
                 cancellationToken? : CancellationToken
             ): Observable<Types.Claim[]> {
                 let uri = 'https://localhost/SolidRpc/Security/Services/Profile';
-                return this.request<Types.Claim[]>(new SolidRpcJs.RpcServiceRequest('get', uri, null, null, null), cancellationToken, function(code : number, data : any) {
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.Claim[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.Claim(o));
                     } else {
@@ -1561,7 +1617,7 @@ export namespace Security {
                     returnString = true;
                 }
                 arr.push('{');
-                if(this.Data) { arr.push('"data": '); this.Data.toJson(arr); arr.push(','); } 
+                if(this.Data) { arr.push('"data": '); if(this.Data) {this.Data.toJson(arr)}; arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
@@ -1619,7 +1675,7 @@ export namespace Security {
                 if(this.Type) { arr.push('"type": '); arr.push(JSON.stringify(this.Type)); arr.push(','); } 
                 if(this.Application) { arr.push('"application": '); arr.push(JSON.stringify(this.Application)); arr.push(','); } 
                 if(this.DataAccessExpiresAt) { arr.push('"data_access_expires_at": '); arr.push(JSON.stringify(this.DataAccessExpiresAt)); arr.push(','); } 
-                if(this.Error) { arr.push('"error": '); this.Error.toJson(arr); arr.push(','); } 
+                if(this.Error) { arr.push('"error": '); if(this.Error) {this.Error.toJson(arr)}; arr.push(','); } 
                 if(this.ExpiresAt) { arr.push('"expires_at": '); arr.push(JSON.stringify(this.ExpiresAt)); arr.push(','); } 
                 if(this.IsValid) { arr.push('"is_valid": '); arr.push(JSON.stringify(this.IsValid)); arr.push(','); } 
                 if(this.Scopes) { arr.push('"scopes": '); for (let i = 0; i < this.Scopes.length; i++) arr.push(JSON.stringify(this.Scopes[i])); arr.push(',');; arr.push(','); } 
@@ -1746,7 +1802,7 @@ export namespace Security {
                 if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                 if(this.Status) { arr.push('"status": '); arr.push(JSON.stringify(this.Status)); arr.push(','); } 
                 if(this.Script) { arr.push('"script": '); for (let i = 0; i < this.Script.length; i++) arr.push(JSON.stringify(this.Script[i])); arr.push(',');; arr.push(','); } 
-                if(this.Meta) { arr.push('"meta": '); for (let i = 0; i < this.Meta.length; i++) this.Meta[i].toJson(arr); arr.push(',');; arr.push(','); } 
+                if(this.Meta) { arr.push('"meta": '); for (let i = 0; i < this.Meta.length; i++) if(this.Meta[i]) {this.Meta[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                 if(this.ButtonHtml) { arr.push('"buttonHtml": '); arr.push(JSON.stringify(this.ButtonHtml)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
@@ -2155,7 +2211,7 @@ export namespace Security {
                     returnString = true;
                 }
                 arr.push('{');
-                if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) this.Keys[i].toJson(arr); arr.push(',');; arr.push(','); } 
+                if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;

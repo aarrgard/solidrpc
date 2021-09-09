@@ -255,7 +255,7 @@ namespace SolidRpc.Tests.CodeGenerator
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
-                //await CreatePackage(ctx.ClientServiceProvider, "SolidRpcJs");
+                await CreatePackage(ctx.ClientServiceProvider, "SolidRpcJs");
                 await CreatePackage(ctx.ClientServiceProvider, "SolidRpcNode");
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ITypescriptGenerator).Assembly.GetName().Name);
@@ -318,19 +318,19 @@ namespace SolidRpc.Tests.CodeGenerator
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().SerializeToString(out string strCt, ct);
 
                 // invoke without args
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), "", "null", (i,r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOByteAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOShortAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOIntegerAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOLongAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOStringAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOFloatAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeOffsetAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOGuidAsync), "", "null", (i, r) => { });
-                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOUriAsync), "", "null", (i, r) => { });
+                await RunTestScriptNoArgConvAsync<bool?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<byte?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOByteAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<short?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOShortAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<int?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOIntegerAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<long?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOLongAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<string?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOStringAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<decimal?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<float?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOFloatAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<double?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<DateTime?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<DateTimeOffset?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeOffsetAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<Guid?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOGuidAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<Uri?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOUriAsync), "", "null");
 
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)true, "true");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)false, "false");
@@ -351,7 +351,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 await RunTestScriptNoArgConvAsync<ComplexType>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyComplexTypeAsync), $"new x.TypeScriptTest.ComplexType({strCt})", "{\"Integer\":123,\"String\":\"test string\"}");
 
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)true, "true");
-                //await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)false, "true");
+                await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)false, "false");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOByteAsync), (byte)17, "17");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOShortAsync), (short)11, "11");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOIntegerAsync), (int)4711, "4711");
@@ -386,8 +386,8 @@ namespace SolidRpc.Tests.CodeGenerator
             var ns = sp.GetRequiredService<INodeService>();
             var js = $@"const x = require(""solidrpc.tests"");
 const y = require(""solidrpcjs"");
-y.SolidRpcJs.ResetPreFlight();
-y.SolidRpcJs.AddPreFlight((req, cont) => {{ 
+y.SolidRpcJs.resetPreFlight();
+y.SolidRpcJs.addPreFlight((req, cont) => {{ 
     req.headers['Authorization'] = 'Bearer mykey';
 
     console.log(req.method + ':ing data @ ' + req.uri);

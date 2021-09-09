@@ -80,11 +80,22 @@ export namespace SolidRpcJs {
     export var rootNamespace = GetRootNamespace();
 
     /**
+     * invokes the specified function if supplied argument has a value.
+     * @param input the value to check for null
+     * @param onnotnull the function that converts non null values
+     */
+    export function ifnotnull<T>(input: any, onnotnull: (input: any) => T): T | null {
+        if (input === null) return null;
+        if (input === undefined) return null;
+        return onnotnull(input);
+    }
+
+    /**
      * Resets the registered callbacks
      * Use this to modify the uri or headers.
      * @param uri the uri to convert
      */
-    export function ResetPreFlight(): void {
+    export function resetPreFlight(): void {
         rootPreFlight = function (req: RpcServiceRequest, cont: () => void): void { cont(); }
     }
 
@@ -93,7 +104,7 @@ export namespace SolidRpcJs {
      * Use this to modify the uri or headers.
      * @param uri the uri to convert
      */
-    export function AddPreFlight(newPreFlight: (req: RpcServiceRequest, cont: () => void) => void): void {
+    export function addPreFlight(newPreFlight: (req: RpcServiceRequest, cont: () => void) => void): void {
         var oldPreFlight = rootPreFlight;
         rootPreFlight = function (req: RpcServiceRequest, cont: () => void): void { oldPreFlight(req, () => { newPreFlight(req, () => cont()); }); }
     }
@@ -151,20 +162,6 @@ export namespace SolidRpcJs {
                 return input.toJson();
             }
             return JSON.stringify(input);
-        }
-
-        /**
-         * invokes the specified function if supplied argument has a value.
-         * @param input the value to check for null
-         * @param onnotnull the function that converts non null values
-         */
-        ifnotnull<T>(input: any, onnotnull: (input: any) => T): T | null {
-            if (input) {
-                return onnotnull(input);
-            }
-            else {
-                return input;
-            }
         }
 
         /**
@@ -240,9 +237,11 @@ export namespace SolidRpcJs {
                                 subscriber.next(converted);
                                 bcast.next(converted);
                             } catch (err) {
+                                console.error('err:'+err);
                                 subscriber.error(err);
                             }
                         }).catch(err => {
+                            console.error('err:' + err);
                             subscriber.error(err);
                             bcast.error(err);
                         }).finally(() => {
