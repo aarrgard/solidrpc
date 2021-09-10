@@ -143,7 +143,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 ReturnType = ResolveCodeType(rootNamespace, mi.ReturnType),
                 HttpMethod = methodBinding.Method,
                 HttpBaseAddress = new Uri(hostUri),
-                HttpPath = httpTransport.BaseAddress.AbsolutePath + httpTransport.Path
+                HttpPath = httpTransport.BaseAddress.AbsolutePath.Substring(1) + httpTransport.Path
             };
             return cm;
         }
