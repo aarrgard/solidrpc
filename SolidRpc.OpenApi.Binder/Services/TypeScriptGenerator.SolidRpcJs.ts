@@ -60,6 +60,24 @@ export namespace SolidRpcJs {
             }
             return x;
         }
+        /** The string value for supplied key */
+        getStringValue(key: string, defaultValue: string): string {
+            let wrk: Namespace | null = this;
+            let val = (wrk as any)[key];
+            wrk = wrk.parent;
+            while (val === undefined && wrk != null) {
+                val = (wrk as any)[key];
+                wrk = wrk.parent;
+            }
+            if (val !== undefined) {
+                return val;
+            }
+            return defaultValue;
+        }
+        /** The string value for supplied key */
+        setStringValue(key: string, value: string) {
+            (this as any)[key] = value;
+        }
     }
 
     function GetRootNamespace(): Namespace {
@@ -76,6 +94,7 @@ export namespace SolidRpcJs {
         }
         return rootNS;
     }
+
     /** The root namespace */
     export var rootNamespace = GetRootNamespace();
 
@@ -84,11 +103,35 @@ export namespace SolidRpcJs {
      * @param input the value to check for null
      * @param onnotnull the function that converts non null values
      */
+    export function ifnull(input: any, onnull: () => void, onnotnull: (input: any) => void)  {
+        if (input === null) { onnull(); return; }
+        if (input === undefined) { onnull(); return; }
+        return onnotnull(input);
+    }
+
+    /**
+      * invokes the specified function if supplied argument has a value.
+      * @param input the value to check for null
+      * @param onnotnull the function that converts non null values
+      */
     export function ifnotnull<T>(input: any, onnotnull: (input: any) => T): T | null {
         if (input === null) return null;
         if (input === undefined) return null;
         return onnotnull(input);
     }
+
+     /**
+     * Encodes the supplied uri value
+     * @param input the value to encode
+     */
+    export function encodeUriValue(input: string): string {
+        input = encodeURI(input);
+        input = input.replace(/\//g, '%2F');
+        input = input.replace(/:/g, '%3a');
+        input = input.replace(/\+/g, '%2b');
+        return input;
+    }
+
 
     /**
      * Resets the registered callbacks
@@ -145,18 +188,6 @@ export namespace SolidRpcJs {
          * Encodes the supplied uri value
          * @param input the value to encode
          */
-        enocodeUriValue(input: string): string {
-            input = encodeURI(input);
-            input = input.replace(/\//g, '%2F');
-            input = input.replace(/:/g, '%3a');
-            input = input.replace(/\+/g, '%2b');
-            return input;
-        }
-
-        /**
-         * Encodes the supplied uri value
-         * @param input the value to encode
-         */
         toJson(input: any): string | null {
             if (input && input.toJson) {
                 return input.toJson();
@@ -191,7 +222,7 @@ export namespace SolidRpcJs {
                 //
                 let sQuery = '';
                 for (const property in req.query) {
-                    sQuery += `&${property}=${this.enocodeUriValue(req.query[property])}`
+                    sQuery += `&${property}=${SolidRpcJs.encodeUriValue(req.query[property])}`
                 }
 
                 if (sQuery.length > 0) {

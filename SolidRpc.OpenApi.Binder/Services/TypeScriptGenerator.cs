@@ -196,6 +196,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             code.Append(indentation).AppendLine($"export class {className}  extends SolidRpcJs.RpcServiceImpl implements {interfaze.Name} {{");
             {
                 var interfazeIndentation = CreateIndentation(indentation);
+                code.Append(interfazeIndentation).AppendLine($"private Namespace: SolidRpcJs.Namespace;");
                 //
                 // constructor
                 //
@@ -203,6 +204,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 {
                     var ctorIndentation = CreateIndentation(interfazeIndentation);
                     code.Append(ctorIndentation).AppendLine($"super();");
+                    code.Append(ctorIndentation).AppendLine($"this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('{string.Join(".", rootNamespace.Name.Concat(codeNamespaceName).Concat(new[] { interfaze.Name }))}');");
                     (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m =>
                     {
                         var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
@@ -240,10 +242,10 @@ namespace SolidRpc.OpenApi.Binder.Services
                     code.AppendLine($"): Observable<{tsReturnType}> {{");
                     {
                         var codeIndentation = CreateIndentation(interfazeIndentation);
-                        code.Append(codeIndentation).AppendLine($"let uri = '{m.HttpBaseAddress}{m.HttpPath}';");
+                        code.Append(codeIndentation).AppendLine($"let uri = this.Namespace.getStringValue('baseUri','{m.HttpBaseAddress}') + '{m.HttpPath}';");
                         m.Arguments.Where(o => o.HttpLocation == "path").ToList().ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"uri = uri.replace('{{{o.Name}}}', this.enocodeUriValue({o.Name}.toString()));");
+                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnull({o.Name}, () => {{ uri = uri.replace('{{{o.Name}}}', ''); }}, nn =>  {{ uri = uri.replace('{{{o.Name}}}', SolidRpcJs.encodeUriValue(nn.toString())); }});");
                         });
 
                         code.Append(codeIndentation).AppendLine($"let query: {{ [index: string]: any }} = {{}};");

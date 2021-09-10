@@ -37,7 +37,7 @@ function startHttpServerIfNotStarted(httpSrvPort: number) {
 }
 
 export namespace SolidRpcNode {
-    export function addOAuth2PreFlightCallback(srvBaseUrl: string) {
+    export function addOAuth2PreFlightCallback() {
         SolidRpcJs.addPreFlight((req: SolidRpcJs.RpcServiceRequest, cont: () => void) => {
             let setAccessTokenAndContinue = () => {
                 req.headers['Authorization'] = 'Bearer ' + accessToken;
@@ -49,7 +49,7 @@ export namespace SolidRpcNode {
                 startHttpServerIfNotStarted(httpSrvPort);
                 let callbackUri: string = 'http%3A%2F%2Flocalhost%3A' + httpSrvPort + '%2Ftest';
                 let state = 'my state 2';
-                open(srvBaseUrl + '/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync?callbackUri=' + callbackUri + '&state=' + encodeURIComponent(state));
+                open(SolidRpcJs.rootNamespace.getStringValue('baseUri', '') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync?callbackUri=' + callbackUri + '&state=' + encodeURIComponent(state));
             } else {
                 setAccessTokenAndContinue();
             }

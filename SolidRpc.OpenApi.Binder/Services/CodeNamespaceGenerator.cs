@@ -133,6 +133,8 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 throw new Exception("No http transport configured for method - cannot create");
             }
+            var hostUri = httpTransport.BaseAddress.ToString();
+            hostUri = hostUri.Substring(0, hostUri.IndexOf('/', "https://".Length));
             var cm = new CodeMethod()
             {
                 Description = CodeDocRepository.GetMethodDoc(mi).Summary,
@@ -140,8 +142,8 @@ namespace SolidRpc.OpenApi.Binder.Services
                 Arguments = methodBinding.Arguments.Select(o => CreateCodeMethodArg(rootNamespace, o)).ToList(),
                 ReturnType = ResolveCodeType(rootNamespace, mi.ReturnType),
                 HttpMethod = methodBinding.Method,
-                HttpBaseAddress = httpTransport.BaseAddress,
-                HttpPath = httpTransport.Path
+                HttpBaseAddress = new Uri(hostUri),
+                HttpPath = httpTransport.BaseAddress.AbsolutePath + httpTransport.Path
             };
             return cm;
         }
