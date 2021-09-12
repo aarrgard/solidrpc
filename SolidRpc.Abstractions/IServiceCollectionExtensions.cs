@@ -20,6 +20,92 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+
+        private class DummyServiceProvider : IServiceProvider
+        {
+            public DummyServiceProvider(IServiceCollection services)
+            {
+                Services = services;
+            }
+
+            private IServiceCollection Services { get; }
+
+            public object GetService(Type serviceType)
+            {
+                return GetService(Services, serviceType, false);
+            }
+
+            public static object GetService(IServiceCollection services, Type serviceType, bool mustExist)
+            {
+                if(serviceType == typeof(IServiceProvider))
+                {
+                    return new DummyServiceProvider(services);
+                }
+                var serviceProspects = services.Where(o => o.ServiceType == serviceType);
+                ServiceDescriptor service;
+                if (serviceProspects.Count() != 1)
+                {
+                    service = serviceProspects.FirstOrDefault();
+                }
+                else
+                {
+                    service = serviceProspects.FirstOrDefault();
+                }
+                if (service == null)
+                {
+                    if (mustExist)
+                    {
+                        throw new Exception($"Cannot find singleton service for {serviceType}.");
+                    }
+                    return DefaultValue(serviceType);
+                }
+                if (service.ImplementationInstance != null)
+                {
+                    return service.ImplementationInstance;
+                }
+                if (service.ImplementationType != null)
+                {
+                    var args = service.ImplementationType.GetConstructors().First()
+                        .GetParameters().Select(o => o.ParameterType)
+                        .Select(o => services.GetSolidRpcService(o, true))
+                        .ToArray();
+                    var impl = Activator.CreateInstance(service.ImplementationType, args); // create before remove...
+                    services.Remove(service);
+                    service = new ServiceDescriptor(serviceType, impl);
+                    services.Add(service);
+                    return service.ImplementationInstance;
+                }
+                if (service.ImplementationFactory != null)
+                {
+                    return service.ImplementationFactory(null);
+                }
+                var proxiedType = typeof(ISolidProxied<>).MakeGenericType(serviceType);
+                var proxied = services.SingleOrDefault(o => o.ServiceType == proxiedType);
+                if (proxied != null)
+                {
+                    if (proxied.ImplementationInstance != null)
+                    {
+                        throw new Exception();
+                        //return ((ISolidProxied)proxied.ImplementationInstance).Service;
+                    }
+                    else if (proxied.ImplementationFactory != null)
+                    {
+                        throw new Exception();
+                        //return ((ISolidProxied)proxied.ImplementationFactory(new DummyServiceProvider())).Service;
+                    }
+                    else
+                    {
+                        throw new Exception("!!!");
+                    }
+                }
+                if (mustExist)
+                {
+                    throw new Exception($"Cannot find singleton service for {serviceType}.");
+                }
+                return DefaultValue(serviceType);
+            }
+        }
+
         private interface IServicesAdded { }
         private class ServicesAddedImplementation : IServicesAdded { }
         private class ServiceProviderForServiceCollection : IServiceProvider
@@ -68,13 +154,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        private class DummyServiceProvider : IServiceProvider
-        {
-            public object GetService(Type serviceType)
-            {
-                throw new NotImplementedException();
-            }
-        }
         private static ICollection<Assembly> s_LoadedAssemblies;
 
         /// <summary>
@@ -149,68 +228,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static object GetSolidRpcService(this IServiceCollection services, Type serviceType, bool mustExist = true)
         {
-            var serviceProspects = services.Where(o => o.ServiceType == serviceType);
-            ServiceDescriptor service;
-            if(serviceProspects.Count() != 1)
-            {
-                service = serviceProspects.FirstOrDefault();
-            }
-            else
-            {
-                service = serviceProspects.FirstOrDefault();
-            }
-            if (service == null)
-            {
-                if(mustExist)
-                {
-                    throw new Exception($"Cannot find singleton service for {serviceType}.");
-                }
-                return DefaultValue(serviceType);
-            }
-            if (service.ImplementationInstance != null)
-            {
-                return service.ImplementationInstance;
-            }
-            if (service.ImplementationType != null)
-            {
-                var args = service.ImplementationType.GetConstructors().First()
-                    .GetParameters().Select(o => o.ParameterType)
-                    .Select(o => services.GetSolidRpcService(o, true))
-                    .ToArray();
-                var impl = Activator.CreateInstance(service.ImplementationType, args); // create before remove...
-                services.Remove(service);
-                service = new ServiceDescriptor(serviceType, impl);
-                services.Add(service);
-                return service.ImplementationInstance;
-            }
-            if (service.ImplementationFactory != null)
-            {
-                return service.ImplementationFactory(null);
-            }
-            var proxiedType = typeof(ISolidProxied<>).MakeGenericType(serviceType);
-            var proxied = services.SingleOrDefault(o => o.ServiceType == proxiedType);
-            if(proxied != null)
-            {
-                if (proxied.ImplementationInstance != null)
-                {
-                    throw new Exception();
-                    //return ((ISolidProxied)proxied.ImplementationInstance).Service;
-                }
-                else if (proxied.ImplementationFactory != null)
-                {
-                    throw new Exception();
-                    //return ((ISolidProxied)proxied.ImplementationFactory(new DummyServiceProvider())).Service;
-                }
-                else
-                {
-                    throw new Exception("!!!");
-                }
-            }
-            if(mustExist)
-            {
-                throw new Exception($"Cannot find singleton service for {serviceType}.");
-            }
-            return DefaultValue(serviceType);
+            return DummyServiceProvider.GetService(services, serviceType, mustExist);
         }
 
         private static object DefaultValue(Type serviceType)

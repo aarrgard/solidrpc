@@ -7,8 +7,10 @@ using SolidRpc.Abstractions.Types.OAuth2;
 using SolidRpc.OpenApi.OAuth2.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -31,7 +33,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
 
         public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
         {
-            var authorizationEndpoint = await Invoker.GetUriAsync(o => o.AuthorizeAsync(null, null, null, null, null, cancellationToken), false);
+            var authorizationEndpoint = await Invoker.GetUriAsync(o => o.AuthorizeAsync(null, null, null, null, null, null, null, cancellationToken), false);
             var tokenEndpoint = await Invoker.GetUriAsync(o => o.GetTokenAsync(null, null, null, null, null, null, null, null, null, null, cancellationToken), false);
             var jwksUri = await Invoker.GetUriAsync(o => o.GetKeysAsync(cancellationToken), false);
             return new OpenIDConnectDiscovery()
@@ -49,19 +51,69 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             return new OpenIDKeys() { Keys = keys.ToArray() };
         }
 
-        public async Task<FileContent> AuthorizeAsync(IEnumerable<string> scope, string responseType, string clientId, string redirectUri = null, string state = null, CancellationToken cancellationToken = default)
+        public async Task<FileContent> AuthorizeAsync(
+            IEnumerable<string> scope,
+            string responseType, 
+            string clientId, 
+            string redirectUri = null, 
+            string state = null, 
+            string responseMode = null, 
+            string nonce = null,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(redirectUri)) throw new ArgumentNullException(nameof(redirectUri));
             if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
             if (string.IsNullOrEmpty(responseType)) throw new ArgumentNullException(nameof(responseType));
-            var ci = new ClaimsIdentity(new[] { new Claim("AllowedPath", "/*") });
+
+            var claims = new List<Claim>();
+            claims.Add(new Claim("iss", LocalAuthority.Authority));
+            claims.Add(new Claim("aud", clientId));
+            claims.Add(new Claim("sub", Guid.NewGuid().ToString()));
+            claims.Add(new Claim("AllowedPath", "/*"));
+            if(nonce != null)
+            {
+                claims.Add(new Claim("nonce", nonce));
+            }
+            var ci = new ClaimsIdentity(claims);
             var idToken = await LocalAuthority.CreateAccessTokenAsync(ci, null, cancellationToken);
             var session_state = $"&session_state={Guid.NewGuid()}";
-            state = string.IsNullOrEmpty(state) ? "" : $"&state={HttpUtility.UrlEncode(state)}";
-            return new FileContent()
+
+            if(string.Equals(responseMode, "form_post"))
             {
-                Location = $"{redirectUri}?{responseType}={idToken.AccessToken}{session_state}{state}"
-            };
+                var enc = Encoding.UTF8;
+                return new FileContent()
+                {
+                    ContentType = $"text/html",
+                    CharSet = enc.HeaderName,
+                    Content = new MemoryStream(enc.GetBytes($@"<html>
+<head>
+    <title>Submit This Form</title>
+</head>
+    <body onload='javascript:document.forms[0].submit()'>
+    <form method='post' action='{redirectUri}'>
+      <input type='hidden' name='state' value='{state}' /><input type='hidden' name='id_token' value='{idToken.AccessToken}'/>
+    </form>
+    </body>
+</html>"))
+                };
+            }
+
+            //
+            // query
+            //
+            state = string.IsNullOrEmpty(state) ? "" : $"&state={HttpUtility.UrlEncode(state)}";
+            switch (responseType)
+            {
+                case "id_token":
+                case "code":
+                    return new FileContent()
+                    {
+                        Location = $"{redirectUri}?{responseType}={idToken.AccessToken}{session_state}{state}"
+                    };
+                default:
+                    throw new Exception("Cannot handle response type:" + responseType);
+
+            }
         }
 
         public Task<TokenResponse> GetTokenAsync(string grantType = null, string clientId = null, string clientSecret = null, string username = null, string password = null, IEnumerable<string> scope = null, string code = null, string redirectUri = null, string codeVerifier = null, string refreshToken = null, CancellationToken cancellationToken = default)

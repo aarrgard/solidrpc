@@ -62,6 +62,8 @@ namespace SolidRpc.Abstractions.Services
         /// <param name="clientId">REQUIRED. OAuth 2.0 Client Identifier valid at the Authorization Server.</param>
         /// <param name="redirectUri">REQUIRED. Redirection URI to which the response will be sent. This URI MUST exactly match one of the Redirection URI values for the Client pre-registered at the OpenID Provider, with the matching performed as described in Section 6.2.1 of [RFC3986] (Simple String Comparison). When using this flow, the Redirection URI SHOULD use the https scheme; however, it MAY use the http scheme, provided that the Client Type is confidential, as defined in Section 2.1 of OAuth 2.0, and provided the OP allows the use of http Redirection URIs in this case. The Redirection URI MAY use an alternate scheme, such as one that is intended to identify a callback into a native application.</param>
         /// <param name="state">RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.</param>
+        /// <param name="responseMode">The Response Mode determines how the Authorization Server returns result parameters from the Authorization Endpoint. Non-default modes are specified using the response_mode request parameter. If response_mode is not present in a request, the default Response Mode mechanism specified by the Response Type is used.</param>
+        /// <param name="nonce"></param>
         /// <param name="cancellationToken"></param>
         Task<FileContent> AuthorizeAsync(
             [OpenApi(Name = "scope", In = "query")] IEnumerable<string> scope,
@@ -69,6 +71,8 @@ namespace SolidRpc.Abstractions.Services
             [OpenApi(Name = "client_id", In = "query")] string clientId,
             [OpenApi(Name = "redirect_uri", In = "query")] string redirectUri = default(string),
             [OpenApi(Name = "state", In = "query")] string state = default(string),
+            [OpenApi(Name = "response_mode", In = "query")] string responseMode = default(string),
+            [OpenApi(Name = "nonce", In = "query")] string nonce = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }
