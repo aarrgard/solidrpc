@@ -25,6 +25,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             actions[timerId] = action;
         }
 
+        /// <summary>
+        /// Returns the actio for supplied timer
+        /// </summary>
+        /// <param name="timerId"></param>
+        /// <returns></returns>
         public Func<IServiceProvider, CancellationToken, Task> GetTimerAction(string timerId)
         {
             return actions[timerId];

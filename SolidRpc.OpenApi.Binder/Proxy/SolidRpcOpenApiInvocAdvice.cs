@@ -47,10 +47,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // get binding
             //
+            var transports = config.GetTransports().ToList();
             MethodBinding = MethodBinderStore.CreateMethodBindings(
                 config.OpenApiSpec,
                 config.InvocationConfiguration.MethodInfo,
-                config.GetTransports()
+                transports
             ).FirstOrDefault();
             if (MethodBinding == null)
             {

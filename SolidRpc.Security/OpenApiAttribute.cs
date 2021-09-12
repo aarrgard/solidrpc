@@ -1,17 +1,12 @@
 ﻿using System;
 
-namespace SolidRpc.Abstractions
+namespace SolidRpc.Security
 {
     /// <summary>
     /// Configures the openapi
     /// </summary>
     public class OpenApiAttribute : Attribute
     {
-        /// <summary>
-        /// The name of the method or parameter
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// Where should the parameter be put.
         /// </summary>
@@ -26,10 +21,5 @@ namespace SolidRpc.Abstractions
         /// The path to bind.
         /// </summary>
         public string Path { get; set; }
-
-        /// <summary>
-        /// The separator to use in lists
-        /// </summary>
-        public string CollectionFormat { get; set; }
     }
 }

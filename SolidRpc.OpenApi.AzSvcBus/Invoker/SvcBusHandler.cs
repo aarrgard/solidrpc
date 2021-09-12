@@ -1,11 +1,10 @@
 ﻿using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzSvcBus.Invoker;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;

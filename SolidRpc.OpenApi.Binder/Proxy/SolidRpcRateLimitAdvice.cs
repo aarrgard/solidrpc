@@ -6,6 +6,7 @@ using SolidRpc.Abstractions.Services.RateLimit;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.InternalServices;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {

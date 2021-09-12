@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidProxy.Core.Configuration.Runtime;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
@@ -16,6 +17,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 [assembly: SolidRpc.Abstractions.SolidRpcService(typeof(IMethodBinderStore), typeof(MethodBinderStore))]
 namespace SolidRpc.OpenApi.Binder
@@ -27,7 +29,12 @@ namespace SolidRpc.OpenApi.Binder
     {
         private object _mutext = new object();
 
-        public MethodBinderStore(ILogger<MethodBinderStore> logger, IServiceProvider serviceProvider, ISolidProxyConfigurationStore configStore, IOpenApiParser openApiParser)
+        public MethodBinderStore(
+            ILogger<MethodBinderStore> logger, 
+            IServiceProvider serviceProvider, 
+            ISolidProxyConfigurationStore configStore, 
+            IOpenApiParser openApiParser,
+            ISolidRpcApplication solidRpcApplication)
         {
             Logger = logger;
             Bindings = new ConcurrentDictionary<string, IMethodBinder>();
@@ -37,6 +44,10 @@ namespace SolidRpc.OpenApi.Binder
             ConfigStore = configStore;
             OpenApiParser = openApiParser;
             ServiceProvider = serviceProvider;
+            solidRpcApplication.AddStartupCallback(() => {
+                var dummy = MethodBinders;
+                return Task.CompletedTask;
+            });
         }
         private ConcurrentDictionary<string, IMethodBinder> Bindings { get; }
         private ConcurrentDictionary<string, IOpenApiSpec> ParsedSpecs { get; }

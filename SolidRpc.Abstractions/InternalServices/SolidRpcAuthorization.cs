@@ -1,9 +1,9 @@
 ﻿using SolidRpc.Abstractions;
-using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.InternalServices;
 using System.Security.Claims;
 
-[assembly: SolidRpcServiceAttribute(typeof(ISolidRpcAuthorization), typeof(SolidRpcAuthorization), SolidRpcServiceLifetime.Scoped)]
-namespace SolidRpc.Abstractions.Services
+[assembly: SolidRpcService(typeof(ISolidRpcAuthorization), typeof(SolidRpcAuthorization), SolidRpcServiceLifetime.Scoped)]
+namespace SolidRpc.Abstractions.InternalServices
 {
     /// <summary>
     /// Implements the solid authorization logic

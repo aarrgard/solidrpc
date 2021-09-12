@@ -1,11 +1,9 @@
 using SolidProxy.Core.Configuration;
-using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {

@@ -11,7 +11,6 @@ using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
-using SolidRpc.Security.Services.Oidc;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using SolidRpc.Test.Petstore.AzFunctionsV3;
 using System;
@@ -28,9 +27,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         {
             var settings = services.GetSolidRpcService<IConfiguration>();
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            base.ConfigureServices(services, c => ConfigureAzureFunction(c, settings));
-            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
-            if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
+
+            base.ConfigureServices(services, c => ConfigureAzureFunction(services, c));
 
             services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
 
@@ -40,28 +38,19 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.AddSolidRpcBindings(typeof(ITestInterface).Assembly, typeof(TestImplementation).Assembly, conf =>
             {
                 conf.OpenApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
-
-                conf.SetOAuth2Security(baseAddress);
-                if (conf.Methods.First().Name == nameof(ITestInterface.MyFunc))
-                {
-                    conf.SetInvokerTransport<IHttpTransport,IAzTableTransport>();
-                    conf.ConfigureTransport<IAzTableTransport>().SetConnectionName("AzureWebJobsStorage");
-                }
-
-                return ConfigureAzureFunction(conf, settings);
+                return ConfigureAzureFunction(services, conf);
             });
 
-            services.AddSolidRpcSwaggerUI(o => { 
+            services.AddSolidRpcSwaggerUI(o => {
                 o.OAuthClientId = "swagger-ui";
                 o.OAuthClientSecret = "swagger-ui";
-            }, c => ConfigureAzureFunction(c,settings));
-            services.AddSolidRpcNode(c => ConfigureAzureFunction(c, settings));
+            }, c => ConfigureAzureFunction(services, c));
+            services.AddSolidRpcNode(c => ConfigureAzureFunction(services, c));
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
-            services.AddSolidRpcOAuth2Local(baseAddress, conf => { conf.CreateSigningKey(); });
-            services.AddSolidRpcSecurityBackend((sp, conf) => { }, c => ConfigureAzureFunction(c, settings));
+            services.AddSolidRpcOAuth2Local(GetOAuth2Issuer(services), conf => { conf.CreateSigningKey(); });
             services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<ITestInterface>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
@@ -77,20 +66,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             }, true);
         }
 
-        protected bool ConfigureAzureFunction(ISolidRpcOpenApiConfig conf, IConfiguration config)
+        protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
-            //
-            // enable anonyous access to the swagger methods and static content.
-            //
 
-            //c.GetAdviceConfig<ISolidRpcRateLimitConfig>().ResourceName = c.Methods.First().DeclaringType.Assembly.GetName().Name;
-
-            //c.SetHttpTransport();
-            //c.SetQueueTransport<QueueInvocationHandler>();
-            //c.SetQueueTransportInboundHandler("azfunctions");
-
-            //conf.SetOAuth2ClientSecurity("http://localhost:7071/front", "swagger-ui", "swagger-ui");
-            conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
+            conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
+            //conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))
@@ -102,9 +82,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                     case nameof(ISwaggerUI.GetOauth2RedirectHtml):
                         conf.DisableSecurity();
                         break;
-                    case nameof(ISwaggerUI.GetSwaggerUrls):
-                    case nameof(ISwaggerUI.GetIndexHtml):
-                    case nameof(ISwaggerUI.GetOpenApiSpec):
+                    default:
                         conf.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
                         break;
                 }
@@ -119,7 +97,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 conf.DisableSecurity();
                 return true;
             }
-            if (method.DeclaringType == typeof(IOidcServer))
+            if (method.DeclaringType == typeof(ISolidRpcOidc))
             {
                 conf.DisableSecurity();
                 return true;
@@ -138,6 +116,15 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             }
             var res = base.ConfigureAzureFunction(conf);
             return true;
+        }
+
+        private string GetOAuth2Issuer(IServiceCollection services)
+        {
+
+            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
+            if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
+            var oauth2Issuer = $"{baseAddress}/SolidRpc/Abstractions";
+            return oauth2Issuer;
         }
     }
 }

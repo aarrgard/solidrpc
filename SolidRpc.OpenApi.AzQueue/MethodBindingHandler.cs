@@ -5,11 +5,10 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzQueue;
 using SolidRpc.OpenApi.AzQueue.Invoker;
@@ -76,7 +75,6 @@ namespace SolidRpc.OpenApi.AzQueue
         /// <param name="binding"></param>
         public void BindingCreated(IMethodBinding binding)
         {
-
             //
             // start all the queues
             //

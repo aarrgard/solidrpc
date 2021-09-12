@@ -23,8 +23,9 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
-            services.AddSolidRpcOAuth2Local(services.GetSolidRpcService<Uri>().ToString());
-            services.AddSolidRpcSecurityBackend();
+            var issuer = new Uri(services.GetSolidRpcService<Uri>(), "SolidRpc/Abstractions");
+            services.AddSolidRpcOAuth2Local(issuer.ToString());
+            services.AddSolidRpcServices(o => true);
         }
 
         /// <summary>
@@ -37,8 +38,7 @@ namespace SolidRpc.Tests.Security
             {
                 await ctx.StartAsync();
 
-                var af = ctx.ServerServiceProvider.GetRequiredService<IAuthorityFactory>();
-                var a = af.GetLocalAuthority(ctx.BaseAddress.ToString());
+                var a = ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>();
                 a.CreateSigningKey();
 
                 var claimsIdentity = new ClaimsIdentity(new[] {
@@ -63,8 +63,7 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
 
-                var af = ctx.ServerServiceProvider.GetRequiredService<IAuthorityFactory>();
-                var a = af.GetLocalAuthority(ctx.BaseAddress.ToString());
+                var a = ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>();
 
                 X509Certificate2 cert;
                 using (var certStream = GetManifestResource(nameof(TestLocalAuthority2) + ".pfx"))

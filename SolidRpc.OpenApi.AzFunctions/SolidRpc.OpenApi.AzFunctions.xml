@@ -51,6 +51,14 @@
             Represents a function
             </summary>
         </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.FunctionDef.CreateFunctionName(System.String,System.String)">
+            <summary>
+            Creates a safe name for supplied function
+            </summary>
+            <param name="protocol"></param>
+            <param name="functionName"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.FunctionDef.#ctor(SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler,System.String,System.String,System.String)">
             <summary>
             Constructs a new instance
@@ -989,6 +997,13 @@
             </summary>
             <param name="timerId"></param>
             <param name="action"></param>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.TimerStore.GetTimerAction(System.String)">
+            <summary>
+            Returns the actio for supplied timer
+            </summary>
+            <param name="timerId"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices">
             <summary>

@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace SolidRpc.Abstractions.Services
+namespace SolidRpc.Abstractions.InternalServices
 {
     /// <summary>
     /// Implements the logic for authorization

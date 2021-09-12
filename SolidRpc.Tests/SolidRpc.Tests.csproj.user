@@ -3,9 +3,4 @@
   <PropertyGroup>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="CodeGenerator\TypeScriptTest.TestInvoke.ts">
-      <SubType>Code</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>

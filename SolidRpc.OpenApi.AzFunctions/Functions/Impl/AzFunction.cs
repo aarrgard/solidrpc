@@ -112,31 +112,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             return sw.ToString();
         }
 
-        private string ReadFunctionJson()
-        {
-            return ReadFunctionJson(new FileInfo(Path.Combine(FunctionHandler.BaseDirs.First().FullName, Name, "function.json")));
-        }
-
-        private string ReadFunctionJson(FileInfo fi)
-        {
-            if(!fi.Exists)
-            {
-                return "";
-            }
-            using (var tr = fi.OpenText())
-            {
-                return tr.ReadToEnd();
-            }
-        }
-
-        private void WriteFunctionJson(FileInfo fi)
-        {
-            using (var tw = fi.CreateText())
-            {
-                tw.Write(SerializeFunctionJson(Function));
-            }
-        }
-
         /// <summary>
         /// Deletes the function
         /// </summary>

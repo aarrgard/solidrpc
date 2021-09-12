@@ -24,7 +24,6 @@
     <ProjectReference Include="..\SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.OAuth2\SolidRpc.OpenApi.OAuth2.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
-    <ProjectReference Include="..\SolidRpc.Security.Back\SolidRpc.Security.Back.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore.Impl\SolidRpc.Test.Petstore.Impl.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Vitec.Impl\SolidRpc.Test.Vitec.Impl.csproj" />

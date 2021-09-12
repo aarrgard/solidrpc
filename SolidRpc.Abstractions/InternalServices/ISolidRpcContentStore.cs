@@ -1,11 +1,8 @@
-﻿using SolidRpc.Abstractions.Types;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Abstractions.Services
+namespace SolidRpc.Abstractions.InternalServices
 {
     /// <summary>
     /// The implementation of this interface is a singleton service

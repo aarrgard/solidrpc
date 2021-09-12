@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
 using SolidRpc.Abstractions;
-using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.OpenApi.AspNetCore.Services;
 
 [assembly: SolidRpcService(typeof(ISolidRpcContentStore), typeof(SolidRpcContentStore))]

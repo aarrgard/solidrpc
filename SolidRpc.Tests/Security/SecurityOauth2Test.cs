@@ -12,13 +12,12 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Security.Principal;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
-using IdentityModel;
 using System.Security.Claims;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Http;
 using System.Net;
 using System.Text.RegularExpressions;
+using SolidRpc.Abstractions.InternalServices;
 
 namespace SolidRpc.Tests.Security
 {
@@ -165,7 +164,7 @@ namespace SolidRpc.Tests.Security
 
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetClientEnabledResource))
             {
-                conf.SetOAuth2ClientSecurity(baseAddress.ToString(), "clientid", "secret");
+                conf.SetOAuth2ClientSecurity(GetIssuer(baseAddress), "clientid", "secret");
                 conf.DisableSecurity();
             }
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetUserEnabledResource))
@@ -184,19 +183,18 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureServerServices(IServiceCollection serverServices)
         {
             base.ConfigureServerServices(serverServices);
-            serverServices.AddSolidRpcOAuth2Local(serverServices.GetSolidRpcService<Uri>().ToString(), o => o.CreateSigningKey());
-            serverServices.AddSolidRpcSecurityBackend();
+            serverServices.AddSolidRpcOAuth2Local(GetIssuer(serverServices.GetSolidRpcService<Uri>()).ToString(), o => o.CreateSigningKey());
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {
                 o.OpenApiSpec = openApi;
-                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = serverServices.GetSolidRpcService<Uri>().ToString();
+                o.GetAdviceConfig<ISecurityOAuth2Config>().OAuth2Authority = GetIssuer(serverServices.GetSolidRpcService<Uri>());
                 return true;
             });
             serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
             {
                 o.OpenApiSpec = openApi;
-                var oauth2Config = o.SetOAuth2ClientSecurity(serverServices.GetSolidRpcService<Uri>().ToString(), "clientid", "secret");
+                var oauth2Config = o.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), "clientid", "secret");
                 if (o.Methods.Single().Name == nameof(IOAuth2ProtectedService.GetProtectedResourceWithRedirect))
                 {
                     oauth2Config.RedirectUnauthorizedIdentity = true;
@@ -210,7 +208,7 @@ namespace SolidRpc.Tests.Security
             {
                 if(c.Methods.Single().DeclaringType == typeof(ISolidRpcOAuth2))
                 {
-                    c.SetOAuth2ClientSecurity(serverServices.GetSolidRpcService<Uri>().ToString(), "clientid", "secret");
+                    c.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), "clientid", "secret");
                     c.DisableSecurity();
                 }
                 return true;
@@ -229,11 +227,10 @@ namespace SolidRpc.Tests.Security
 
                 var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = clientFactory.CreateClient();
-                var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
                 Assert.IsFalse(res.IsError);
 
-                var issuer = ctx.BaseAddress.ToString();
-                Assert.AreEqual(issuer, res.Issuer);
+                Assert.AreEqual(GetIssuer(ctx.BaseAddress), res.Issuer);
                 Assert.AreEqual(1, res.KeySet.Keys.Count);
             }
         }
@@ -249,11 +246,11 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
                 var authFactory = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>();
-                var authority = authFactory.GetAuthority(ctx.BaseAddress.ToString());
+                var authority = authFactory.GetAuthority(GetIssuer(ctx.BaseAddress));
                 var doc = await authority.GetDiscoveryDocumentAsync();
                 var keys = await authority.GetSigningKeysAsync();
 
-                Assert.AreEqual(ctx.BaseAddress, doc.Issuer);
+                Assert.AreEqual(GetIssuer(ctx.BaseAddress), doc.Issuer);
                 Assert.AreEqual(1, keys.Count());
             }
         }
@@ -270,10 +267,7 @@ namespace SolidRpc.Tests.Security
 
                 var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = clientFactory.CreateClient();
-                var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
-
-                var x = await httpClient.GetStringAsync($"{ctx.BaseAddress}SolidRpc/Security/Services/Oidc/keys");
-
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
                 // authenticate client
                 var response = await httpClient.RequestTokenAsync(new TokenRequest
@@ -296,6 +290,11 @@ namespace SolidRpc.Tests.Security
             }
         }
 
+        private string GetIssuer(Uri baseAddress)
+        {
+            return new Uri(baseAddress, "SolidRpc/Abstractions").ToString();
+        }
+
         /// <summary>
         /// Tests the web host
         /// </summary>
@@ -308,7 +307,7 @@ namespace SolidRpc.Tests.Security
 
                 var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = clientFactory.CreateClient();
-                var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
                 // authenticate client
                 var response = await httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
@@ -336,7 +335,7 @@ namespace SolidRpc.Tests.Security
 
                 var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = clientFactory.CreateClient();
-                var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
                 // authenticate client
                 var response = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
@@ -367,7 +366,11 @@ namespace SolidRpc.Tests.Security
 
                 var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = clientFactory.CreateClient();
-                var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
+
+                var authResp = await httpClient.GetAsync($"{res.AuthorizeEndpoint}?redirect_uri=http://test.test/test&client_id=y&response_type=code");
+                Assert.AreEqual(HttpStatusCode.Found, authResp.StatusCode);
+                var code = authResp.Headers.Location.Query.Split('?')[1].Split('&').Where(o => o.StartsWith("code=")).Single().Split('=')[1];
 
                 // authenticate client
                 var response = await httpClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
@@ -377,7 +380,7 @@ namespace SolidRpc.Tests.Security
                     ClientId = "client",
                     ClientSecret = "secret",
 
-                    Code = "my code",
+                    Code = code,
                     RedirectUri = "https://app.com/callback",
 
                     // optional PKCE parameter
@@ -400,7 +403,7 @@ namespace SolidRpc.Tests.Security
 
                 var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = clientFactory.CreateClient();
-                var res = await httpClient.GetDiscoveryDocumentAsync(ctx.BaseAddress.ToString());
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
                 // authenticate client
                 var response = await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
@@ -435,7 +438,7 @@ namespace SolidRpc.Tests.Security
                 var res = await protectedService.GetClientEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
 
-                var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(ctx.BaseAddress.ToString());
+                var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(GetIssuer(ctx.BaseAddress));
 
                 //
                 // Test user as user principal

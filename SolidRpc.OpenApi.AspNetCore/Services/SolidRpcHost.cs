@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
@@ -213,6 +214,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
         }
 
+        /// <summary>
+        /// Returns the base address
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<Uri> BaseAddress(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress);

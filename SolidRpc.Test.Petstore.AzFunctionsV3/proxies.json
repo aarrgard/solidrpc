@@ -301,8 +301,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/authorize",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/authorize"
@@ -311,8 +311,8 @@
       "matchCondition": {
         "route": "/front/SolidRpc/Security/Services/Oidc/token",
         "methods": [
-          "GET",
-          "POST"
+          "POST",
+          "GET"
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Security/Services/Oidc/token"
@@ -454,6 +454,42 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync",
+        "methods": [
+          "POST"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync"
+    },
+    "SolidRpc/Abstractions/.well-known/openid-configuration": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/.well-known/openid-configuration",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/.well-known/openid-configuration"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync"
     },
     "front/{path}": {
       "matchCondition": {

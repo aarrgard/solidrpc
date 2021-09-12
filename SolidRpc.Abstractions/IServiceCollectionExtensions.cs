@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
@@ -88,11 +89,12 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var methods = typeof(ISolidRpcContentHandler).GetMethods()
                 .Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent))
-                .Union(typeof(ISolidRpcHost).GetMethods())
-                .Union(typeof(ISolidRpcOAuth2).GetMethods())
-                .Union(typeof(ICodeNamespaceGenerator).GetMethods())
-                .Union(typeof(ITypescriptGenerator).GetMethods())
-                .Union(typeof(INpmGenerator).GetMethods());
+                .Concat(typeof(ISolidRpcHost).GetMethods())
+                .Concat(typeof(ISolidRpcOAuth2).GetMethods())
+                .Concat(typeof(ISolidRpcOidc).GetMethods())
+                .Concat(typeof(ICodeNamespaceGenerator).GetMethods())
+                .Concat(typeof(ITypescriptGenerator).GetMethods())
+                .Concat(typeof(INpmGenerator).GetMethods());
 
             var openApiParser = services.GetSolidRpcOpenApiParser();
             var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
@@ -110,7 +112,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         c.DisableSecurity();
                     }
-                    if(method.DeclaringType == typeof(ISolidRpcOAuth2))
+                    if (method.DeclaringType == typeof(ISolidRpcOAuth2))
+                    {
+                        c.DisableSecurity();
+                    }
+                    if (method.DeclaringType == typeof(ISolidRpcOidc))
                     {
                         c.DisableSecurity();
                     }

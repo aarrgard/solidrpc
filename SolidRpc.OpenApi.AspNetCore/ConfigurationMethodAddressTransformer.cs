@@ -39,40 +39,52 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// Constructs a new instance of the uri transformer.
         /// </summary>
-        /// <param name="configuration"></param>
-        public ConfigurationMethodAddressTransformer(IConfiguration configuration)
+        /// <param name="serviceProvider"></param>
+        public ConfigurationMethodAddressTransformer(IServiceProvider serviceProvider)
         {
-            Scheme = configuration[ConfigScheme];
-            Host = HostString.FromUriComponent(configuration[ConfigHost]);
-            PathPrefix = configuration[ConfigPathPrefix];
-
-            if (string.IsNullOrEmpty(Host.Host))
+            var baseAddress = (Uri)serviceProvider.GetService(typeof(Uri));
+            var configuration = (IConfiguration)serviceProvider.GetService(typeof(IConfiguration));
+            if (baseAddress != null)
             {
-                var hostConfigSettings = configuration[ConfigHostSettings] ?? "urls,WEBSITE_HOSTNAME";
-                if (!string.IsNullOrEmpty(hostConfigSettings))
+                Scheme = baseAddress.Scheme;
+                Host = new HostString(baseAddress.Host, baseAddress.Port);
+                PathPrefix = baseAddress.AbsolutePath;
+                if (PathPrefix.EndsWith("/")) PathPrefix = PathPrefix.Substring(0, PathPrefix.Length - 1);
+            }
+            else
+            {
+                Scheme = configuration[ConfigScheme];
+                Host = HostString.FromUriComponent(configuration[ConfigHost]);
+                PathPrefix = configuration[ConfigPathPrefix];
+
+                if (string.IsNullOrEmpty(Host.Host))
                 {
-                    foreach(var hostConfigSetting in hostConfigSettings.Split(','))
+                    var hostConfigSettings = configuration[ConfigHostSettings] ?? "urls,WEBSITE_HOSTNAME";
+                    if (!string.IsNullOrEmpty(hostConfigSettings))
                     {
-                        if (!string.IsNullOrEmpty(configuration[hostConfigSetting]))
+                        foreach (var hostConfigSetting in hostConfigSettings.Split(','))
                         {
-                            var hostString = configuration[hostConfigSetting]
-                                .Split(';')
-                                .OrderBy(o => o.StartsWith("https") ? 0 : 1)
-                                .First();
-                            if(hostString.StartsWith("http"))
+                            if (!string.IsNullOrEmpty(configuration[hostConfigSetting]))
                             {
-                                if(!Uri.TryCreate(hostString, UriKind.RelativeOrAbsolute, out Uri uri))
+                                var hostString = configuration[hostConfigSetting]
+                                    .Split(';')
+                                    .OrderBy(o => o.StartsWith("https") ? 0 : 1)
+                                    .First();
+                                if (hostString.StartsWith("http"))
                                 {
-                                    throw new Exception($"Cannot parse uri:{hostString}");
+                                    if (!Uri.TryCreate(hostString, UriKind.RelativeOrAbsolute, out Uri uri))
+                                    {
+                                        throw new Exception($"Cannot parse uri:{hostString}");
+                                    }
+                                    Scheme = uri.Scheme;
+                                    Host = new HostString(uri.Host, uri.Port);
                                 }
-                                Scheme = uri.Scheme;
-                                Host = new HostString(uri.Host, uri.Port);
+                                else
+                                {
+                                    Host = HostString.FromUriComponent(hostString);
+                                }
+                                break;
                             }
-                            else
-                            {
-                                Host = HostString.FromUriComponent(hostString);
-                            }
-                            break;
                         }
                     }
                 }
@@ -102,7 +114,7 @@ namespace SolidRpc.OpenApi.Binder
             //
             if(methodInfo != null)
             {
-                return uri;
+                return uri ?? throw new Exception("Uri is null!");
             }
             var newUri = new UriBuilder(uri);
             if (!string.IsNullOrEmpty(Scheme))
@@ -129,7 +141,7 @@ namespace SolidRpc.OpenApi.Binder
             {
                 newUri.Path = $"{PathPrefix}{newUri.Path}";
             }
-            return newUri.Uri;
+            return newUri.Uri ?? throw new Exception("Uri is null!");
         }
     }
 }

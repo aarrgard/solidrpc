@@ -4,6 +4,26 @@
         <name>SolidRpc.Security</name>
     </assembly>
     <members>
+        <member name="T:SolidRpc.Security.OpenApiAttribute">
+            <summary>
+            Configures the openapi
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.OpenApiAttribute.In">
+            <summary>
+            Where should the parameter be put.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.OpenApiAttribute.Verbs">
+            <summary>
+            The verbs to use.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Security.OpenApiAttribute.Path">
+            <summary>
+            The path to bind.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Security.Security.SecurityAttribute">
             <summary>
             The security attribute defines what permissions that are required to

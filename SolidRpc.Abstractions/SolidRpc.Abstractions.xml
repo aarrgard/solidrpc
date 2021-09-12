@@ -4,172 +4,187 @@
         <name>SolidRpc.Abstractions</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication">
             <summary>
-            Extension methods for the solidrpc logic
+            Implements some basic features of the application
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``2(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.HostId">
             <summary>
-            Adds the service if type is missing in the collection.
+            The host id - unique for each IoC container setup.
             </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-            <param name="services"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.ShutdownToken">
+            <summary>
+            Returns a token that will be cancelled when the application shuts down.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
+            <summary>
+            Adds a startup task that we should wait for before starting to interact with the application.
+            </summary>
+            <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="startupCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="shutdownCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.WaitForStartupTasks">
+            <summary>
+            Ensures that all the startup tasks have completed.
+            </summary>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,``0})">
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.StopApplication">
             <summary>
-            Adds the factory if it is missing.
+            Stops this application
             </summary>
-            <typeparam name="T1"></typeparam>
-            <param name="services"></param>
-            <param name="factory"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization">
+            <summary>
+            Implements the logic for authorization
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.CurrentPrincipal">
+            <summary>
+            Gets / sets the current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.ClientId">
+            <summary>
+            Returns the "client_id" claim from current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.SessionId">
+            <summary>
+            Returns the "session_id" claim from current principal
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore">
+            <summary>
+            The implementation of this interface is a singleton service
+            that provides access to static content. 
+            
+            Static resources may be configured(added) during setup of the IoC container.
+            
+            If no path prefix is specified all the registered paths for the assembly are used at
+            runtime to determine if the content should be delivered.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.String)">
+            <summary>
+            Adds a content mapping. 
+            </summary>
+            <param name="contentAssembly">The assebly that contains the content</param>
+            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+            <param name="pathPrefix">The absolute path to use to obtain the content.</param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.Reflection.Assembly)">
+            <summary>
+            Adds a content mapping. 
+            </summary>
+            <param name="contentAssembly">The assebly that contains the content</param>
+            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+            <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddMapping(System.String,System.Func{System.IServiceProvider,System.Threading.Tasks.Task{System.Uri}},System.Boolean)">
+            <summary>
+            Use this method to expose a static path to a dynamic resource.
+            </summary>
+            <param name="path"></param>
+            <param name="mapping"></param>
+            <param name="isRedirect"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcApplication">
+            <summary>
+            Implements the solid application logic
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.ShutdownToken">
+            <summary>
+            Returns the shutdown token
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.HostId">
+            <summary>
+            The host id
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="shutdownCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a startup callback
+            </summary>
+            <param name="startupCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
+            <summary>
+            Adds a startup task
+            </summary>
+            <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.Dispose">
+            <summary>
+            Dispses the application
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.StopApplication">
+            <summary>
+            Stops the application
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.WaitForStartupTasks">
+            <summary>
+            Invoked to wait for all the startup tasks to complete.
+            </summary>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+        <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization">
             <summary>
-            Adds the rpc services
+            Implements the solid authorization logic
             </summary>
-            <param name="services"></param>
-            <param name="configurator"></param>
-            <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean)">
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.#ctor">
             <summary>
-            Returns the service provider for specified service.
+            Constructs a new instance
             </summary>
-            <typeparam name="TService"></typeparam>
-            <param name="services"></param>
-            <param name="mustExist"></param>
-            <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Boolean)">
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.CurrentPrincipal">
             <summary>
-            Returns the service provider for specified service.
+            The current principal
             </summary>
-            <param name="services"></param>
-            <param name="serviceType"></param>
-            <param name="mustExist"></param>
-            <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type)">
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.ClientId">
             <summary>
-            Registers a singleton service provider.
+            The client id
             </summary>
-            <param name="services"></param>
-            <param name="serviceType"></param>
-            <param name="implType"></param>
-            <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.SessionId">
             <summary>
-            Adds the singleton services
+            The session id.
             </summary>
-            <param name="services"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcContentStore(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
-            <summary>
-            Returns the static content provider.
-            </summary>
-            <param name="services"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcOpenApiParser(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
-            <summary>
-            Returns the static content provider.
-            </summary>
-            <param name="services"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Configures all the interfaces in supplied assembly
-            </summary>
-            <param name="sc"></param>
-            <param name="interfaceAssembly"></param>
-            <param name="implementationAssembly"></param>
-            <param name="configurator"></param>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Configures the supplied type so that it is exposed in the binder.
-            </summary>
-            <param name="sc"></param>
-            <param name="interfaze"></param>
-            <param name="impl"></param>
-            <param name="configurator"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Configures the supplied type so that it is exposed in the binder.
-            </summary>
-            <param name="sc"></param>
-            <param name="impl"></param>
-            <param name="configurator"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Configures the suppllied method so that it is exposed through the .net core http binding.
-            </summary>
-            <param name="sc"></param>
-            <param name="mi"></param>
-            <param name="configurator"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcSecurityKeyFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
-            <summary>
-            Sets the security key in supplied proxy config by getting the values from the configuration
-            </summary>
-            <param name="sc"></param>
-            <param name="openApiProxyConfig"></param>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
-            <summary>
-            Sets the base url in supplied proxy config by getting the values from the configuration
-            </summary>
-            <param name="sc"></param>
-            <param name="openApiProxyConfig"></param>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlInConfig``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Uri)">
-            <summary>
-            Adds the base url of the service to the configuration
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="sc"></param>
-            <param name="baseUri"></param>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetConfigurationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder},System.Func{Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfigurationSource})">
-            <summary>
-            Returns the configuration builder
-            </summary>
-            <param name="services"></param>
-            <param name="ctor"></param>
-            <param name="createSource"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.BuildConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder})">
-            <summary>
-            Returns the configuration builder
-            </summary>
-            <param name="services"></param>
-            <param name="ctor"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimit(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
-            <summary>
-            Returns the configuration builder
-            </summary>
-            <param name="services"></param>
-            <param name="configurator"></param>
-            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApiAttribute">
             <summary>
             Configures the openapi
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Name">
+            <summary>
+            The name of the method or parameter
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApiAttribute.In">
@@ -180,6 +195,16 @@
         <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Verbs">
             <summary>
             The verbs to use.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Path">
+            <summary>
+            The path to bind.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.CollectionFormat">
+            <summary>
+            The separator to use in lists
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
@@ -1984,70 +2009,6 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcApplication">
-            <summary>
-            Implements some basic features of the application
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.HostId">
-            <summary>
-            The host id - unique for each IoC container setup.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcApplication.ShutdownToken">
-            <summary>
-            Returns a token that will be cancelled when the application shuts down.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
-            <summary>
-            Adds a startup task that we should wait for before starting to interact with the application.
-            </summary>
-            <param name="startupTask"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a shutdown callback
-            </summary>
-            <param name="startupCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a shutdown callback
-            </summary>
-            <param name="shutdownCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.WaitForStartupTasks">
-            <summary>
-            Ensures that all the startup tasks have completed.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcApplication.StopApplication">
-            <summary>
-            Stops this application
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcAuthorization">
-            <summary>
-            Implements the logic for authorization
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcAuthorization.CurrentPrincipal">
-            <summary>
-            Gets / sets the current principal
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcAuthorization.ClientId">
-            <summary>
-            Returns the "client_id" claim from current principal
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcAuthorization.SessionId">
-            <summary>
-            Returns the "session_id" claim from current principal
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -2076,41 +2037,6 @@
             <summary>
             Returns all the path mappings.
             </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentStore">
-            <summary>
-            The implementation of this interface is a singleton service
-            that provides access to static content. 
-            
-            Static resources may be configured(added) during setup of the IoC container.
-            
-            If no path prefix is specified all the registered paths for the assembly are used at
-            runtime to determine if the content should be delivered.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.String)">
-            <summary>
-            Adds a content mapping. 
-            </summary>
-            <param name="contentAssembly">The assebly that contains the content</param>
-            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
-            <param name="pathPrefix">The absolute path to use to obtain the content.</param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.Reflection.Assembly)">
-            <summary>
-            Adds a content mapping. 
-            </summary>
-            <param name="contentAssembly">The assebly that contains the content</param>
-            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
-            <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentStore.AddMapping(System.String,System.Func{System.IServiceProvider,System.Threading.Tasks.Task{System.Uri}},System.Boolean)">
-            <summary>
-            Use this method to expose a static path to a dynamic resource.
-            </summary>
-            <param name="path"></param>
-            <param name="mapping"></param>
-            <param name="isRedirect"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken">
             <summary>
@@ -2311,9 +2237,53 @@
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.TokenCallbackAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             This is the method that is invoked when a user has been authenticated
-            and a valid token has been retrned
+            and a valid token is supplied.
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcOidc">
+            <summary>
+            Implements logic for the oidc server
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOidc.GetDiscoveryDocumentAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns the /.well-known/openid-configuration file
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOidc.GetKeysAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns the keys
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOidc.GetTokenAsync(System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            authenticates a user
+            </summary>
+            <param name="grantType">The the grant type</param>
+            <param name="clientId">The the client id</param>
+            <param name="clientSecret">The client secret</param>
+            <param name="username">The user name</param>
+            <param name="password">The the user password</param>
+            <param name="scope">The the scopes</param>
+            <param name="code">The the code</param>
+            <param name="redirectUri">The the redirect uri</param>
+            <param name="codeVerifier">The the code verifier</param>
+            <param name="refreshToken">The the refresh token</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOidc.AuthorizeAsync(System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            authorizes a user
+            </summary>
+            <param name="scope">REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.</param>
+            <param name="responseType">REQUIRED. OAuth 2.0 Response Type value that determines the authorization processing flow to be used, including what parameters are returned from the endpoints used. When using the Authorization Code Flow, this value is code.</param>
+            <param name="clientId">REQUIRED. OAuth 2.0 Client Identifier valid at the Authorization Server.</param>
+            <param name="redirectUri">REQUIRED. Redirection URI to which the response will be sent. This URI MUST exactly match one of the Redirection URI values for the Client pre-registered at the OpenID Provider, with the matching performed as described in Section 6.2.1 of [RFC3986] (Simple String Comparison). When using this flow, the Redirection URI SHOULD use the https scheme; however, it MAY use the http scheme, provided that the Client Type is confidential, as defined in Section 2.1 of OAuth 2.0, and provided the OP allows the use of http Redirection URIs in this case. The Redirection URI MAY use an alternate scheme, such as one that is intended to identify a callback into a native application.</param>
+            <param name="state">RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.</param>
+            <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit">
             <summary>
@@ -2360,80 +2330,6 @@
             <param name="setting"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.SolidRpcApplication">
-            <summary>
-            Implements the solid application logic
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.SolidRpcApplication.ShutdownToken">
-            <summary>
-            Returns the shutdown token
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.SolidRpcApplication.HostId">
-            <summary>
-            The host id
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a shutdown callback
-            </summary>
-            <param name="shutdownCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a startup callback
-            </summary>
-            <param name="startupCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
-            <summary>
-            Adds a startup task
-            </summary>
-            <param name="startupTask"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.Dispose">
-            <summary>
-            Dispses the application
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.StopApplication">
-            <summary>
-            Stops the application
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcApplication.WaitForStartupTasks">
-            <summary>
-            Invoked to wait for all the startup tasks to complete.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.SolidRpcAuthorization">
-            <summary>
-            Implements the solid authorization logic
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.SolidRpcAuthorization.#ctor">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.CurrentPrincipal">
-            <summary>
-            The current principal
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.ClientId">
-            <summary>
-            The client id
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.SolidRpcAuthorization.SessionId">
-            <summary>
-            The session id.
-            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcConstants">
             <summary>
@@ -3485,6 +3381,169 @@
             <summary>
             Constructs a new instance
             </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+            <summary>
+            Extension methods for the solidrpc logic
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``2(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the service if type is missing in the collection.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,``0})">
+            <summary>
+            Adds the factory if it is missing.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <param name="services"></param>
+            <param name="factory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Adds the rpc services
+            </summary>
+            <param name="services"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean)">
+            <summary>
+            Returns the service provider for specified service.
+            </summary>
+            <typeparam name="TService"></typeparam>
+            <param name="services"></param>
+            <param name="mustExist"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Boolean)">
+            <summary>
+            Returns the service provider for specified service.
+            </summary>
+            <param name="services"></param>
+            <param name="serviceType"></param>
+            <param name="mustExist"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RegisterSingletonService(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type)">
+            <summary>
+            Registers a singleton service provider.
+            </summary>
+            <param name="services"></param>
+            <param name="serviceType"></param>
+            <param name="implType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the singleton services
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcContentStore(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Returns the static content provider.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcOpenApiParser(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Returns the static content provider.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Reflection.Assembly,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures all the interfaces in supplied assembly
+            </summary>
+            <param name="sc"></param>
+            <param name="interfaceAssembly"></param>
+            <param name="implementationAssembly"></param>
+            <param name="configurator"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Type,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="interfaze"></param>
+            <param name="impl"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcSingletonBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,``0,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="impl"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcBinding(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.MethodInfo,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures the suppllied method so that it is exposed through the .net core http binding.
+            </summary>
+            <param name="sc"></param>
+            <param name="mi"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcSecurityKeyFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the security key in supplied proxy config by getting the values from the configuration
+            </summary>
+            <param name="sc"></param>
+            <param name="openApiProxyConfig"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the base url in supplied proxy config by getting the values from the configuration
+            </summary>
+            <param name="sc"></param>
+            <param name="openApiProxyConfig"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlInConfig``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Uri)">
+            <summary>
+            Adds the base url of the service to the configuration
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sc"></param>
+            <param name="baseUri"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetConfigurationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder},System.Func{Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfigurationSource})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <param name="ctor"></param>
+            <param name="createSource"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.BuildConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <param name="ctor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRateLimit(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Returns the configuration builder
+            </summary>
+            <param name="services"></param>
+            <param name="configurator"></param>
+            <returns></returns>
         </member>
         <member name="T:System.TypeExtensions">
             <summary>

@@ -9,6 +9,53 @@ namespace SolidRpc.OpenApi.AzFunctions
     public class FunctionDef
     {
         /// <summary>
+        /// Creates a safe name for supplied function
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="functionName"></param>
+        /// <returns></returns>
+        public static string CreateFunctionName(string protocol, string functionName)
+        {
+            int argCount = 0;
+            var sb = new StringBuilder();
+            sb.Append(protocol.Substring(0, 1).ToUpper());
+            sb.Append(protocol.Substring(1).ToLower());
+            int level = 0;
+            foreach (var c in functionName)
+            {
+                switch (c)
+                {
+                    case '{':
+                        sb.Append($"arg{argCount++}");
+                        level++;
+                        break;
+                    case '}':
+                        level--;
+                        break;
+                    case '-':
+                    case '.':
+                    case '/':
+                        if(sb.Length == 0)
+                        {
+                            sb.Append('_');
+                        }
+                        if (sb[sb.Length-1] != '_')
+                        {
+                            sb.Append('_');
+                        }
+                        break;
+                    default:
+                        if (level == 0)
+                        {
+                            sb.Append(c);
+                        }
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// Constructs a new instance
         /// </summary>
         /// <param name="functionHandler"></param>
@@ -19,7 +66,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         {
             FunctionHandler = functionHandler;
             Protocol = protocol;
-            FunctionName = CreateFunctionName(openApiPath);
+            FunctionName = CreateFunctionName(protocol, openApiPath);
             var (pathWithNoArgNames, pathWithArgNames) = FixupPath(path);
             Path = pathWithNoArgNames;
             PathWithArgNames = pathWithArgNames;
@@ -62,38 +109,6 @@ namespace SolidRpc.OpenApi.AzFunctions
             }
 
             return (pathWithNoArgNames.ToString(), pathWithArgNames.ToString());
-        }
-        private string CreateFunctionName(string functionName)
-        {
-            int argCount = 0;
-            var sb = new StringBuilder();
-            sb.Append(Protocol.Substring(0, 1).ToUpper());
-            sb.Append(Protocol.Substring(1).ToLower());
-            int level = 0;
-            foreach (var c in functionName)
-            {
-                switch (c)
-                {
-                    case '{':
-                        sb.Append($"arg{argCount++}");
-                        level++;
-                        break;
-                    case '}':
-                        level--;
-                        break;
-                    case '.':
-                    case '/':
-                        sb.Append('_');
-                        break;
-                    default:
-                        if (level == 0)
-                        {
-                            sb.Append(c);
-                        }
-                        break;
-                }
-            }
-            return sb.ToString();
         }
         /// <summary>
         /// The function handler

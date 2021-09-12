@@ -220,6 +220,62 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_AuthorizeAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_AuthorizeAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_GetKeysAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_GetKeysAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_GetTokenAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_GetTokenAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_well_known_openid_configuration
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_well_known_openid_configuration")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/.well-known/openid-configuration")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Node_Services_INodeService_ExecuteFileAsync_arg0_arg1_arg2
     {
         [FunctionName("Http_SolidRpc_Node_Services_INodeService_ExecuteFileAsync_arg0_arg1_arg2")]

@@ -25,6 +25,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Bindings
                 .SelectMany(o => o.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                 .Where(o => o.GetParameters().Length == 2)
                 .Where(o => typeof(IServiceCollection).IsAssignableFrom(o.GetParameters()[0].ParameterType))
+                .Where(o => typeof(Func<ISolidRpcOpenApiConfig, bool>).IsAssignableFrom(o.GetParameters()[1].ParameterType))
                 .ToList().ForEach(o =>
                 {
                     var target = Activator.CreateInstance(o.DeclaringType);

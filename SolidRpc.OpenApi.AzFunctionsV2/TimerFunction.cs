@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.OpenApi.AzFunctions.Services;
 using System;
 using System.Threading;
@@ -26,6 +27,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         {
             return AzFunction.DoRun(async () =>
             {
+                await serviceProvider.GetRequiredService<ISolidRpcApplication>().WaitForStartupTasks();
                 var ts = serviceProvider.GetRequiredService<ITimerStore>();
                 var action = ts.GetTimerAction(timerId);
                 await action.Invoke(serviceProvider, cancellationToken);

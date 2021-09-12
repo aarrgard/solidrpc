@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using SolidRpc.Security.Services;
 using SolidRpc.Abstractions.Services.Code;
+using SolidRpc.Abstractions.Services;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -59,32 +59,21 @@ namespace SolidRpc.Tests.CodeGenerator
             sc.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
             sc.AddLogging(ConfigureLogging);
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcBindings(typeof(ISolidRpcSecurity), null);
             sc.AddHttpClient();
+            sc.AddSolidRpcServices();
             sc.AddSolidRpcNode();
-            sc.AddSolidRpcOAuth2Local("http://localhost", _ => { });
-            sc.AddSolidRpcSecurityBackend();
-            sc.AddSolidRpcSecurityBackendMicrosoft((o, opts) =>
-            {
-            });
-            sc.AddSolidRpcSecurityBackendGoogle((o, opts) =>
-            {
-            });
-            sc.AddSolidRpcSecurityBackendFacebook((o, opts) =>
-            {
-            });
 
             var sp = sc.BuildServiceProvider();
             var tsGenerator = sp.GetRequiredService<ITypescriptGenerator>();
 
-            var ts = await tsGenerator.CreateTypesTsForAssemblyAsync(typeof(ISolidRpcSecurity).Assembly.GetName().Name);
+            var ts = await tsGenerator.CreateTypesTsForAssemblyAsync(typeof(ISolidRpcOidc).Assembly.GetName().Name);
             //using (var fs = new FileInfo(@"C:\Development\github\solidrpc\SolidRpc.Tests\NpmGenerator\src\types.ts").CreateText())
             //{
             //    fs.Write(ts);
             //}
             var tsTemplate = GetManifestResourceAsString("TestCreateTypescript.ts");
 
-            Assert.AreEqual(tsTemplate, ts);
+            Assert.AreEqual(tsTemplate.Replace("\r\n","\n"), ts.Replace("\r\n", "\n"));
         }
     }
 }

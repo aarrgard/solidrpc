@@ -5,8 +5,8 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.Abstractions.Services;
 using System.Security.Principal;
+using SolidRpc.Abstractions.InternalServices;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {

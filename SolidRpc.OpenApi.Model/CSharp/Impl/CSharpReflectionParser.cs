@@ -36,6 +36,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 cSharpMethod.AddMember(cSharpMethodParameter);
             });
 
+            AddAttributes(cSharpMethod, method.CustomAttributes);
             cSharpType.AddMember(cSharpMethod);
             return cSharpMethod;
         }

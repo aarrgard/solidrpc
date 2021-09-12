@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 [assembly: SolidRpcService(typeof(ISolidRpcOAuth2), typeof(SolidRpcOAuth2), SolidRpcServiceLifetime.Transient)]
 namespace SolidRpc.OpenApi.Binder.Services
@@ -52,8 +53,16 @@ namespace SolidRpc.OpenApi.Binder.Services
         private IEnumerable<string> AllowedHosts {
             get
             {
-                var baseAddr = ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress;
-                return new string[] { "192.168.1.1", "localhost", baseAddr.Host.Split(':').First() };
+                var addrs = new HashSet<string>();
+                addrs.Add("127.0.0.1");
+                addrs.Add("localhost");
+                var mat = (IMethodAddressTransformer)ServiceProvider.GetRequiredService(typeof(IMethodAddressTransformer));
+                if(mat != null)
+                {
+                    var baseAddr = ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress;
+                    addrs.Add(baseAddr.Host.Split(':').First());
+                }
+                return addrs;
             }
         }
 
@@ -88,10 +97,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             return await CreateContent(nameof(GetAuthorizationCodeTokenAsync), new Dictionary<string, string>()
             {
                 { "authorizationEndpoint", $"{doc.AuthorizationEndpoint}"},
-                { "client_id", conf.OAuth2ClientId},
-                { "state", Convert.ToBase64String(statems.ToArray())},
-                { "scope", string.Join("%20", scopes)},
-                { "redirect_uri", redirectUri.ToString()}
+                { "client_id", HttpUtility.UrlEncode(conf.OAuth2ClientId)},
+                { "state", HttpUtility.UrlEncode(Convert.ToBase64String(statems.ToArray()))},
+                { "scope", HttpUtility.UrlEncode(string.Join(" ", scopes)) },
+                { "redirect_uri", HttpUtility.UrlEncode(redirectUri.ToString())}
             });
         }
 

@@ -15,6 +15,7 @@ using System.Security.Principal;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.InternalServices;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {

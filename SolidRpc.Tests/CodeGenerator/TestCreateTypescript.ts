@@ -2,134 +2,225 @@
 import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators'
 import { SolidRpcJs } from 'solidrpcjs';
-export namespace Security {
+export namespace Abstractions {
     export namespace Services {
-        export namespace Facebook {
+        export namespace Code {
             /**
-             * Defines logic for the callback from facebook
+             * instance responsible for generating code structures
              */
-            export interface IFacebookLocal {
+            export interface ICodeNamespaceGenerator {
                 /**
-                 * Returns the login provider information
+                 * Creates a code namespace for supplied assembly name
+                 * @param assemblyName 
                  * @param cancellationToken 
                  */
-                LoginProvider(
+                CreateCodeNamespace(
+                    assemblyName : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Types.LoginProvider>;
+                ): Observable<Types.Code.CodeNamespace>;
                 /**
-                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 * This observable is hot and monitors all the responses from the CreateCodeNamespace invocations.
                  */
-                LoginProviderObservable : Observable<Types.LoginProvider>;
-                /**
-                 * Returns the script to embedd to enable login
-                 * @param cancellationToken 
-                 */
-                LoginScript(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoginScript invocations.
-                 */
-                LoginScriptObservable : Observable<Types.WebContent>;
-                /**
-                 * Callback when a user has logged in successfully.
-                 * @param accessToken The the access token for the logged in user
-                 * @param cancellationToken 
-                 */
-                LoggedIn(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
-                 */
-                LoggedInObservable : Observable<string>;
-                /**
-                 * Callback when a user has logged out successfully.
-                 * @param accessToken The the access token for the logged out in user
-                 * @param cancellationToken 
-                 */
-                LoggedOut(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
-                 */
-                LoggedOutObservable : Observable<string>;
+                CreateCodeNamespaceObservable : Observable<Types.Code.CodeNamespace>;
             }
             /**
-             * Defines logic for the callback from facebook
+             * instance responsible for generating code structures
              */
-            export class FacebookLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IFacebookLocal {
+            export class CodeNamespaceGeneratorImpl  extends SolidRpcJs.RpcServiceImpl implements ICodeNamespaceGenerator {
+                private Namespace: SolidRpcJs.Namespace;
                 constructor() {
                     super();
-                    this.LoginProviderSubject = new Subject<Types.LoginProvider>();
-                    this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
-                    this.LoginScriptSubject = new Subject<Types.WebContent>();
-                    this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
-                    this.LoggedInSubject = new Subject<string>();
-                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
-                    this.LoggedOutSubject = new Subject<string>();
-                    this.LoggedOutObservable = this.LoggedOutSubject.asObservable().pipe(share());
+                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator');
+                    this.CreateCodeNamespaceSubject = new Subject<Types.Code.CodeNamespace>();
+                    this.CreateCodeNamespaceObservable = this.CreateCodeNamespaceSubject.asObservable().pipe(share());
                 }
                 /**
-                 * Returns the login provider information
+                 * Creates a code namespace for supplied assembly name
+                 * @param assemblyName 
                  * @param cancellationToken 
                  */
-                LoginProvider(
+                CreateCodeNamespace(
+                    assemblyName : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Types.LoginProvider> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoginProvider';
+                ): Observable<Types.Code.CodeNamespace> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
+                    SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.Code.CodeNamespace>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Types.LoginProvider(data);
+                            return new Types.Code.CodeNamespace(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.LoginProviderSubject);
+                    }, this.CreateCodeNamespaceSubject);
                 }
                 /**
-                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
+                 * This observable is hot and monitors all the responses from the CreateCodeNamespace invocations.
                  */
-                LoginProviderObservable : Observable<Types.LoginProvider>;
-                private LoginProviderSubject : Subject<Types.LoginProvider>;
+                CreateCodeNamespaceObservable : Observable<Types.Code.CodeNamespace>;
+                private CreateCodeNamespaceSubject : Subject<Types.Code.CodeNamespace>;
+            }
+            /**
+             * Instance for the ICodeNamespaceGenerator type. Implemented by the CodeNamespaceGeneratorImpl
+             */
+            export var CodeNamespaceGeneratorInstance : ICodeNamespaceGenerator = new CodeNamespaceGeneratorImpl();
+            /**
+             * The npm generator
+             */
+            export interface INpmGenerator {
                 /**
-                 * Returns the script to embedd to enable login
+                 * Returns the files that should be stored in the node_modules directory
+                 * @param assemblyNames The name of the assemblies to create an npm package for.
                  * @param cancellationToken 
                  */
-                LoginScript(
+                CreateNpmPackage(
+                    assemblyNames : string[],
                     cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoginScript';
+                ): Observable<Types.Code.NpmPackage[]>;
+                /**
+                 * This observable is hot and monitors all the responses from the CreateNpmPackage invocations.
+                 */
+                CreateNpmPackageObservable : Observable<Types.Code.NpmPackage[]>;
+                /**
+                 * Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
+                 * @param assemblyNames The name of the assembly to create an npm package for.
+                 * @param cancellationToken 
+                 */
+                CreateNpmZip(
+                    assemblyNames : string[],
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.FileContent>;
+                /**
+                 * This observable is hot and monitors all the responses from the CreateNpmZip invocations.
+                 */
+                CreateNpmZipObservable : Observable<Types.FileContent>;
+            }
+            /**
+             * The npm generator
+             */
+            export class NpmGeneratorImpl  extends SolidRpcJs.RpcServiceImpl implements INpmGenerator {
+                private Namespace: SolidRpcJs.Namespace;
+                constructor() {
+                    super();
+                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
+                    this.CreateNpmPackageSubject = new Subject<Types.Code.NpmPackage[]>();
+                    this.CreateNpmPackageObservable = this.CreateNpmPackageSubject.asObservable().pipe(share());
+                    this.CreateNpmZipSubject = new Subject<Types.FileContent>();
+                    this.CreateNpmZipObservable = this.CreateNpmZipSubject.asObservable().pipe(share());
+                }
+                /**
+                 * Returns the files that should be stored in the node_modules directory
+                 * @param assemblyNames The name of the assemblies to create an npm package for.
+                 * @param cancellationToken 
+                 */
+                CreateNpmPackage(
+                    assemblyNames : string[],
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.Code.NpmPackage[]> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
+                    SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return this.request<Types.Code.NpmPackage[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
-                            return new Types.WebContent(data);
+                            return Array.from(data).map(o => new Types.Code.NpmPackage(o));
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.LoginScriptSubject);
+                    }, this.CreateNpmPackageSubject);
                 }
                 /**
-                 * This observable is hot and monitors all the responses from the LoginScript invocations.
+                 * This observable is hot and monitors all the responses from the CreateNpmPackage invocations.
                  */
-                LoginScriptObservable : Observable<Types.WebContent>;
-                private LoginScriptSubject : Subject<Types.WebContent>;
+                CreateNpmPackageObservable : Observable<Types.Code.NpmPackage[]>;
+                private CreateNpmPackageSubject : Subject<Types.Code.NpmPackage[]>;
                 /**
-                 * Callback when a user has logged in successfully.
-                 * @param accessToken The the access token for the logged in user
+                 * Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
+                 * @param assemblyNames The name of the assembly to create an npm package for.
                  * @param cancellationToken 
                  */
-                LoggedIn(
-                    accessToken : string,
+                CreateNpmZip(
+                    assemblyNames : string[],
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.FileContent> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
+                    SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return new Types.FileContent(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.CreateNpmZipSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the CreateNpmZip invocations.
+                 */
+                CreateNpmZipObservable : Observable<Types.FileContent>;
+                private CreateNpmZipSubject : Subject<Types.FileContent>;
+            }
+            /**
+             * Instance for the INpmGenerator type. Implemented by the NpmGeneratorImpl
+             */
+            export var NpmGeneratorInstance : INpmGenerator = new NpmGeneratorImpl();
+            /**
+             * instance responsible for generating code structures
+             */
+            export interface ITypescriptGenerator {
+                /**
+                 * Creates a types.ts file from supplied assembly name
+                 * @param assemblyName 
+                 * @param cancellationToken 
+                 */
+                CreateTypesTsForAssemblyAsync(
+                    assemblyName : string,
+                    cancellationToken? : CancellationToken
+                ): Observable<string>;
+                /**
+                 * This observable is hot and monitors all the responses from the CreateTypesTsForAssemblyAsync invocations.
+                 */
+                CreateTypesTsForAssemblyAsyncObservable : Observable<string>;
+                /**
+                 * Creates a types.ts file from supplied code namespace
+                 * @param codeNamespace 
+                 * @param cancellationToken 
+                 */
+                CreateTypesTsForCodeNamespaceAsync(
+                    codeNamespace : Types.Code.CodeNamespace,
+                    cancellationToken? : CancellationToken
+                ): Observable<string>;
+                /**
+                 * This observable is hot and monitors all the responses from the CreateTypesTsForCodeNamespaceAsync invocations.
+                 */
+                CreateTypesTsForCodeNamespaceAsyncObservable : Observable<string>;
+            }
+            /**
+             * instance responsible for generating code structures
+             */
+            export class TypescriptGeneratorImpl  extends SolidRpcJs.RpcServiceImpl implements ITypescriptGenerator {
+                private Namespace: SolidRpcJs.Namespace;
+                constructor() {
+                    super();
+                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
+                    this.CreateTypesTsForAssemblyAsyncSubject = new Subject<string>();
+                    this.CreateTypesTsForAssemblyAsyncObservable = this.CreateTypesTsForAssemblyAsyncSubject.asObservable().pipe(share());
+                    this.CreateTypesTsForCodeNamespaceAsyncSubject = new Subject<string>();
+                    this.CreateTypesTsForCodeNamespaceAsyncObservable = this.CreateTypesTsForCodeNamespaceAsyncSubject.asObservable().pipe(share());
+                }
+                /**
+                 * Creates a types.ts file from supplied assembly name
+                 * @param assemblyName 
+                 * @param cancellationToken 
+                 */
+                CreateTypesTsForAssemblyAsync(
+                    assemblyName : string,
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoggedIn/{accessToken}';
-                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
+                    SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
@@ -138,1401 +229,1630 @@ export namespace Security {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.LoggedInSubject);
+                    }, this.CreateTypesTsForAssemblyAsyncSubject);
                 }
                 /**
-                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
+                 * This observable is hot and monitors all the responses from the CreateTypesTsForAssemblyAsync invocations.
                  */
-                LoggedInObservable : Observable<string>;
-                private LoggedInSubject : Subject<string>;
+                CreateTypesTsForAssemblyAsyncObservable : Observable<string>;
+                private CreateTypesTsForAssemblyAsyncSubject : Subject<string>;
                 /**
-                 * Callback when a user has logged out successfully.
-                 * @param accessToken The the access token for the logged out in user
+                 * Creates a types.ts file from supplied code namespace
+                 * @param codeNamespace 
                  * @param cancellationToken 
                  */
-                LoggedOut(
-                    accessToken : string,
+                CreateTypesTsForCodeNamespaceAsync(
+                    codeNamespace : Types.Code.CodeNamespace,
                     cancellationToken? : CancellationToken
                 ): Observable<string> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Facebook/LoggedOut/{accessToken}';
-                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    headers['Content-Type']='application/json';
+                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(codeNamespace)), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.LoggedOutSubject);
+                    }, this.CreateTypesTsForCodeNamespaceAsyncSubject);
                 }
                 /**
-                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
+                 * This observable is hot and monitors all the responses from the CreateTypesTsForCodeNamespaceAsync invocations.
                  */
-                LoggedOutObservable : Observable<string>;
-                private LoggedOutSubject : Subject<string>;
+                CreateTypesTsForCodeNamespaceAsyncObservable : Observable<string>;
+                private CreateTypesTsForCodeNamespaceAsyncSubject : Subject<string>;
             }
             /**
-             * Instance for the IFacebookLocal type. Implemented by the FacebookLocalImpl
+             * Instance for the ITypescriptGenerator type. Implemented by the TypescriptGeneratorImpl
              */
-            export var FacebookLocalInstance : IFacebookLocal = new FacebookLocalImpl();
-            /**
-             * Defines logic @ facebook
-             */
-            export interface IFacebookRemote {
-                /**
-                 * Obtains an access token for the application
-                 * @param clientId 
-                 * @param clientSecret 
-                 * @param grantType 
-                 * @param cancellationToken 
-                 */
-                GetAccessToken(
-                    clientId : string,
-                    clientSecret : string,
-                    grantType : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.FacebookAccessToken>;
-                /**
-                 * This observable is hot and monitors all the responses from the GetAccessToken invocations.
-                 */
-                GetAccessTokenObservable : Observable<Types.FacebookAccessToken>;
-                /**
-                 * Returns information about supplied access token
-                 * @param inputToken 
-                 * @param accessToken 
-                 * @param cancellationToken 
-                 */
-                GetDebugToken(
-                    inputToken : string,
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.FacebookDebugToken>;
-                /**
-                 * This observable is hot and monitors all the responses from the GetDebugToken invocations.
-                 */
-                GetDebugTokenObservable : Observable<Types.FacebookDebugToken>;
-            }
-            /**
-             * Defines logic @ facebook
-             */
-            export class FacebookRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IFacebookRemote {
-                constructor() {
-                    super();
-                    this.GetAccessTokenSubject = new Subject<Types.FacebookAccessToken>();
-                    this.GetAccessTokenObservable = this.GetAccessTokenSubject.asObservable().pipe(share());
-                    this.GetDebugTokenSubject = new Subject<Types.FacebookDebugToken>();
-                    this.GetDebugTokenObservable = this.GetDebugTokenSubject.asObservable().pipe(share());
-                }
-                /**
-                 * Obtains an access token for the application
-                 * @param clientId 
-                 * @param clientSecret 
-                 * @param grantType 
-                 * @param cancellationToken 
-                 */
-                GetAccessToken(
-                    clientId : string,
-                    clientSecret : string,
-                    grantType : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.FacebookAccessToken> {
-                    let uri = 'https://graph.facebook.com/oauth/access_token';
-                    let query: { [index: string]: any } = {};
-                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
-                    SolidRpcJs.ifnotnull(client_secret, x => { query['client_secret'] = x; });
-                    SolidRpcJs.ifnotnull(grant_type, x => { query['grant_type'] = x; });
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.FacebookAccessToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.FacebookAccessToken(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.GetAccessTokenSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the GetAccessToken invocations.
-                 */
-                GetAccessTokenObservable : Observable<Types.FacebookAccessToken>;
-                private GetAccessTokenSubject : Subject<Types.FacebookAccessToken>;
-                /**
-                 * Returns information about supplied access token
-                 * @param inputToken 
-                 * @param accessToken 
-                 * @param cancellationToken 
-                 */
-                GetDebugToken(
-                    inputToken : string,
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.FacebookDebugToken> {
-                    let uri = 'https://graph.facebook.com/v4.0/debug_token';
-                    let query: { [index: string]: any } = {};
-                    SolidRpcJs.ifnotnull(input_token, x => { query['input_token'] = x; });
-                    SolidRpcJs.ifnotnull(access_token, x => { query['access_token'] = x; });
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.FacebookDebugToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.FacebookDebugToken(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.GetDebugTokenSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the GetDebugToken invocations.
-                 */
-                GetDebugTokenObservable : Observable<Types.FacebookDebugToken>;
-                private GetDebugTokenSubject : Subject<Types.FacebookDebugToken>;
-            }
-            /**
-             * Instance for the IFacebookRemote type. Implemented by the FacebookRemoteImpl
-             */
-            export var FacebookRemoteInstance : IFacebookRemote = new FacebookRemoteImpl();
-        }
-        export namespace Google {
-            /**
-             * Defines logic for the callback from google
-             */
-            export interface IGoogleLocal {
-                /**
-                 * Returns the login provider information
-                 * @param cancellationToken 
-                 */
-                LoginProvider(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.LoginProvider>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
-                 */
-                LoginProviderObservable : Observable<Types.LoginProvider>;
-                /**
-                 * Returns the script to embed to enable login
-                 * @param cancellationToken 
-                 */
-                LoginScript(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoginScript invocations.
-                 */
-                LoginScriptObservable : Observable<Types.WebContent>;
-                /**
-                 * Callback when a user has logged in successfully.
-                 * @param accessToken The the access token for the logged in user
-                 * @param cancellationToken 
-                 */
-                LoggedIn(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
-                 */
-                LoggedInObservable : Observable<string>;
-                /**
-                 * Callback when a user has logged out successfully.
-                 * @param accessToken The the access token for the logged out in user
-                 * @param cancellationToken 
-                 */
-                LoggedOut(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
-                 */
-                LoggedOutObservable : Observable<string>;
-            }
-            /**
-             * Defines logic for the callback from google
-             */
-            export class GoogleLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IGoogleLocal {
-                constructor() {
-                    super();
-                    this.LoginProviderSubject = new Subject<Types.LoginProvider>();
-                    this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
-                    this.LoginScriptSubject = new Subject<Types.WebContent>();
-                    this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
-                    this.LoggedInSubject = new Subject<string>();
-                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
-                    this.LoggedOutSubject = new Subject<string>();
-                    this.LoggedOutObservable = this.LoggedOutSubject.asObservable().pipe(share());
-                }
-                /**
-                 * Returns the login provider information
-                 * @param cancellationToken 
-                 */
-                LoginProvider(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.LoginProvider> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoginProvider';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.LoginProvider(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoginProviderSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
-                 */
-                LoginProviderObservable : Observable<Types.LoginProvider>;
-                private LoginProviderSubject : Subject<Types.LoginProvider>;
-                /**
-                 * Returns the script to embed to enable login
-                 * @param cancellationToken 
-                 */
-                LoginScript(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoginScript';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.WebContent(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoginScriptSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoginScript invocations.
-                 */
-                LoginScriptObservable : Observable<Types.WebContent>;
-                private LoginScriptSubject : Subject<Types.WebContent>;
-                /**
-                 * Callback when a user has logged in successfully.
-                 * @param accessToken The the access token for the logged in user
-                 * @param cancellationToken 
-                 */
-                LoggedIn(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoggedIn/{accessToken}';
-                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return data as string;
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoggedInSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
-                 */
-                LoggedInObservable : Observable<string>;
-                private LoggedInSubject : Subject<string>;
-                /**
-                 * Callback when a user has logged out successfully.
-                 * @param accessToken The the access token for the logged out in user
-                 * @param cancellationToken 
-                 */
-                LoggedOut(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Google/LoggedOut/{accessToken}';
-                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return data as string;
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoggedOutSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
-                 */
-                LoggedOutObservable : Observable<string>;
-                private LoggedOutSubject : Subject<string>;
-            }
-            /**
-             * Instance for the IGoogleLocal type. Implemented by the GoogleLocalImpl
-             */
-            export var GoogleLocalInstance : IGoogleLocal = new GoogleLocalImpl();
-            /**
-             * Defines access to the google oauth implementation
-             */
-            export interface IGoogleRemote {
-                /**
-                 * Authorizes a user @ google
-                 * @param clientId 
-                 * @param responseType 
-                 * @param scope The client ID string that you obtain from the API Console, as described in Obtain OAuth 2.0 credentials.
-                 * @param nounce A random value generated by your app that enables replay protection.
-                 * @param redirectUri 
-                 * @param state An opaque string that is round-tripped in the protocol; that is to say, it is returned as a URI parameter in the Basic flow, and in the URI #fragment in the Implicit flow. The state can be useful for correlating requests and responses. Because your redirect_uri can be guessed, using a state value can increase your assurance that an incoming connection is the result of an authentication request. If you generate a random string or encode the hash of some client state (e.g., a cookie) in this state variable, you can validate the response to additionally ensure that the request and response originated in the same browser. This provides protection against attacks such as cross-site request forgery.
-                 * @param prompt 
-                 * @param display An ASCII string value for specifying how the authorization server displays the authentication and consent user interface pages. The following values are specified, and accepted by the Google servers, but do not have any effect on its behavior: page, popup, touch, and wap.
-                 * @param loginHint 
-                 * @param includeGrantedScopes 
-                 * @param accessType 
-                 * @param openidRealm 
-                 * @param hd The hd (hosted domain) parameter streamlines the login process for G Suite hosted accounts. By including the domain of the G Suite user (for example, mycollege.edu), you can indicate that the account selection UI should be optimized for accounts at that domain. To optimize for G Suite accounts generally instead of just one domain, use an asterisk: hd=*. Don't rely on this UI optimization to control who can access your app, as client-side requests can be modified. Be sure to validate that the returned ID token has an hd claim value that matches what you expect (e.g. mycolledge.edu). Unlike the request parameter, the ID token claim is contained within a security token from Google, so the value can be trusted.
-                 * @param cancellationToken 
-                 */
-                Authorize(
-                    clientId : string,
-                    responseType : string[],
-                    scope : string[],
-                    nounce : string,
-                    redirectUri : string,
-                    state? : string,
-                    prompt? : string,
-                    display? : string,
-                    loginHint? : string,
-                    includeGrantedScopes? : boolean,
-                    accessType? : string,
-                    openidRealm? : string,
-                    hd? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<void>;
-                /**
-                 * This observable is hot and monitors all the responses from the Authorize invocations.
-                 */
-                AuthorizeObservable : Observable<void>;
-                /**
-                 * Returns the openid configuration
-                 * @param cancellationToken 
-                 */
-                OpenIdConfiguration(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
-                 */
-                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * Returns the openid keys used for signing.
-                 * @param cancellationToken 
-                 */
-                OpenIdKeys(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDKeys>;
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
-                 */
-                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
-            }
-            /**
-             * Defines access to the google oauth implementation
-             */
-            export class GoogleRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IGoogleRemote {
-                constructor() {
-                    super();
-                    this.AuthorizeSubject = new Subject<void>();
-                    this.AuthorizeObservable = this.AuthorizeSubject.asObservable().pipe(share());
-                    this.OpenIdConfigurationSubject = new Subject<Types.OpenIDConnnectDiscovery>();
-                    this.OpenIdConfigurationObservable = this.OpenIdConfigurationSubject.asObservable().pipe(share());
-                    this.OpenIdKeysSubject = new Subject<Types.OpenIDKeys>();
-                    this.OpenIdKeysObservable = this.OpenIdKeysSubject.asObservable().pipe(share());
-                }
-                /**
-                 * Authorizes a user @ google
-                 * @param clientId 
-                 * @param responseType 
-                 * @param scope The client ID string that you obtain from the API Console, as described in Obtain OAuth 2.0 credentials.
-                 * @param nounce A random value generated by your app that enables replay protection.
-                 * @param redirectUri 
-                 * @param state An opaque string that is round-tripped in the protocol; that is to say, it is returned as a URI parameter in the Basic flow, and in the URI #fragment in the Implicit flow. The state can be useful for correlating requests and responses. Because your redirect_uri can be guessed, using a state value can increase your assurance that an incoming connection is the result of an authentication request. If you generate a random string or encode the hash of some client state (e.g., a cookie) in this state variable, you can validate the response to additionally ensure that the request and response originated in the same browser. This provides protection against attacks such as cross-site request forgery.
-                 * @param prompt 
-                 * @param display An ASCII string value for specifying how the authorization server displays the authentication and consent user interface pages. The following values are specified, and accepted by the Google servers, but do not have any effect on its behavior: page, popup, touch, and wap.
-                 * @param loginHint 
-                 * @param includeGrantedScopes 
-                 * @param accessType 
-                 * @param openidRealm 
-                 * @param hd The hd (hosted domain) parameter streamlines the login process for G Suite hosted accounts. By including the domain of the G Suite user (for example, mycollege.edu), you can indicate that the account selection UI should be optimized for accounts at that domain. To optimize for G Suite accounts generally instead of just one domain, use an asterisk: hd=*. Don't rely on this UI optimization to control who can access your app, as client-side requests can be modified. Be sure to validate that the returned ID token has an hd claim value that matches what you expect (e.g. mycolledge.edu). Unlike the request parameter, the ID token claim is contained within a security token from Google, so the value can be trusted.
-                 * @param cancellationToken 
-                 */
-                Authorize(
-                    clientId : string,
-                    responseType : string[],
-                    scope : string[],
-                    nounce : string,
-                    redirectUri : string,
-                    state? : string,
-                    prompt? : string,
-                    display? : string,
-                    loginHint? : string,
-                    includeGrantedScopes? : boolean,
-                    accessType? : string,
-                    openidRealm? : string,
-                    hd? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<void> {
-                    let uri = 'https://accounts.google.com/o/oauth2/v2/auth';
-                    let query: { [index: string]: any } = {};
-                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
-                    SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
-                    SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
-                    SolidRpcJs.ifnotnull(nounce, x => { query['nounce'] = x; });
-                    SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
-                    SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
-                    SolidRpcJs.ifnotnull(prompt, x => { query['prompt'] = x; });
-                    SolidRpcJs.ifnotnull(display, x => { query['display'] = x; });
-                    SolidRpcJs.ifnotnull(login_hint, x => { query['login_hint'] = x; });
-                    SolidRpcJs.ifnotnull(include_granted_scopes, x => { query['include_granted_scopes'] = x; });
-                    SolidRpcJs.ifnotnull(access_type, x => { query['access_type'] = x; });
-                    SolidRpcJs.ifnotnull(openid.realm, x => { query['openid.realm'] = x; });
-                    SolidRpcJs.ifnotnull(hd, x => { query['hd'] = x; });
-                    let headers: { [index: string]: any } = {};
-                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return null;
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.AuthorizeSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the Authorize invocations.
-                 */
-                AuthorizeObservable : Observable<void>;
-                private AuthorizeSubject : Subject<void>;
-                /**
-                 * Returns the openid configuration
-                 * @param cancellationToken 
-                 */
-                OpenIdConfiguration(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDConnnectDiscovery> {
-                    let uri = 'https://accounts.google.com/.well-known/openid-configuration';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.OpenIDConnnectDiscovery(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OpenIdConfigurationSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
-                 */
-                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
-                private OpenIdConfigurationSubject : Subject<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * Returns the openid keys used for signing.
-                 * @param cancellationToken 
-                 */
-                OpenIdKeys(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDKeys> {
-                    let uri = 'https://accounts.google.com/.well-known/openid-keys';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.OpenIDKeys(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OpenIdKeysSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
-                 */
-                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
-                private OpenIdKeysSubject : Subject<Types.OpenIDKeys>;
-            }
-            /**
-             * Instance for the IGoogleRemote type. Implemented by the GoogleRemoteImpl
-             */
-            export var GoogleRemoteInstance : IGoogleRemote = new GoogleRemoteImpl();
-        }
-        export namespace Microsoft {
-            /**
-             * Defines logic for the callback from microsoft
-             */
-            export interface IMicrosoftLocal {
-                /**
-                 * Returns the login provider information
-                 * @param cancellationToken 
-                 */
-                LoginProvider(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.LoginProvider>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
-                 */
-                LoginProviderObservable : Observable<Types.LoginProvider>;
-                /**
-                 * Returns the script to embedd to enable login
-                 * @param cancellationToken 
-                 */
-                LoginScript(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoginScript invocations.
-                 */
-                LoginScriptObservable : Observable<Types.WebContent>;
-                /**
-                 * Callback when a user has logged in successfully.
-                 * @param accessToken The the access token for the logged in user
-                 * @param cancellationToken 
-                 */
-                LoggedIn(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
-                 */
-                LoggedInObservable : Observable<string>;
-                /**
-                 * Callback when a user has logged out successfully.
-                 * @param accessToken The the access token for the logged out user
-                 * @param cancellationToken 
-                 */
-                LoggedOut(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
-                 */
-                LoggedOutObservable : Observable<string>;
-            }
-            /**
-             * Defines logic for the callback from microsoft
-             */
-            export class MicrosoftLocalImpl  extends SolidRpcJs.RpcServiceImpl implements IMicrosoftLocal {
-                constructor() {
-                    super();
-                    this.LoginProviderSubject = new Subject<Types.LoginProvider>();
-                    this.LoginProviderObservable = this.LoginProviderSubject.asObservable().pipe(share());
-                    this.LoginScriptSubject = new Subject<Types.WebContent>();
-                    this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
-                    this.LoggedInSubject = new Subject<string>();
-                    this.LoggedInObservable = this.LoggedInSubject.asObservable().pipe(share());
-                    this.LoggedOutSubject = new Subject<string>();
-                    this.LoggedOutObservable = this.LoggedOutSubject.asObservable().pipe(share());
-                }
-                /**
-                 * Returns the login provider information
-                 * @param cancellationToken 
-                 */
-                LoginProvider(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.LoginProvider> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoginProvider';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.LoginProvider>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.LoginProvider(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoginProviderSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoginProvider invocations.
-                 */
-                LoginProviderObservable : Observable<Types.LoginProvider>;
-                private LoginProviderSubject : Subject<Types.LoginProvider>;
-                /**
-                 * Returns the script to embedd to enable login
-                 * @param cancellationToken 
-                 */
-                LoginScript(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoginScript';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.WebContent(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoginScriptSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoginScript invocations.
-                 */
-                LoginScriptObservable : Observable<Types.WebContent>;
-                private LoginScriptSubject : Subject<Types.WebContent>;
-                /**
-                 * Callback when a user has logged in successfully.
-                 * @param accessToken The the access token for the logged in user
-                 * @param cancellationToken 
-                 */
-                LoggedIn(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoggedIn';
-                    let query: { [index: string]: any } = {};
-                    SolidRpcJs.ifnotnull(accessToken, x => { query['accessToken'] = x; });
-                    let headers: { [index: string]: any } = {};
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return data as string;
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoggedInSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedIn invocations.
-                 */
-                LoggedInObservable : Observable<string>;
-                private LoggedInSubject : Subject<string>;
-                /**
-                 * Callback when a user has logged out successfully.
-                 * @param accessToken The the access token for the logged out user
-                 * @param cancellationToken 
-                 */
-                LoggedOut(
-                    accessToken : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Microsoft/LoggedOut/{accessToken}';
-                    uri = uri.replace('{accessToken}', this.enocodeUriValue(accessToken.toString()));
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return data as string;
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.LoggedOutSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the LoggedOut invocations.
-                 */
-                LoggedOutObservable : Observable<string>;
-                private LoggedOutSubject : Subject<string>;
-            }
-            /**
-             * Instance for the IMicrosoftLocal type. Implemented by the MicrosoftLocalImpl
-             */
-            export var MicrosoftLocalInstance : IMicrosoftLocal = new MicrosoftLocalImpl();
-            /**
-             * Defines access to the microsoft oauth implementation
-             */
-            export interface IMicrosoftRemote {
-                /**
-                 * When your web app needs to authenticate the user, it can direct the user to the /authorize endpoint. This request is similar to the first leg of the OAuth 2.0 authorization code flow, with these important distinctions:
-                 * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
-                 * @param clientId 
-                 * @param responseType 
-                 * @param redirectUri 
-                 * @param responseMode 
-                 * @param scope The redirect URI of your app, where authentication responses can be sent and received by your app. It must exactly match one of the redirect URIs you registered in the portal, except that it must be URL encoded. If not present, the endpoint will pick one registered redirect_uri at random to send the user back to.
-                 * @param state A value included in the request, generated by the app, that will be included in the resulting id_token value as a claim. The app can verify this value to mitigate token replay attacks. The value typically is a randomized, unique string that can be used to identify the origin o
-                 * @param nounce A value included in the request, generated by the app, that will be included in the resulting id_token value as a claim. The app can verify this value to mitigate token replay attacks. The value typically is a randomized, unique string that can be used to identify the origin o
-                 * @param resource The App ID URI of the target web API (secured resource). To find the App ID URI, in the Azure Portal, click Azure Active Directory, click Application registrations, open the application's Settings page, then click Properties. It may also be an external resource like https://graph.microsoft.com. This is required in one of either the authorization or token requests. To ensure fewer authentication prompts place it in the authorization request to ensure consent is received from the user.
-                 * @param prompt Indicates the type of user interaction that is required. The only valid values at this time are login, none, and consent. The prompt=login claim forces the user to enter their credentials on that request, which negates single sign-on. The prompt=none claim is the opposite. This claim ensures that the user isn't presented with any interactive prompt at. If the request can't be completed silently via single sign-on, the Microsoft identity platform endpoint returns an error. The prompt=consent claim triggers the OAuth consent dialog after the user signs in. The dialog asks the user to grant permissions to the app.
-                 * @param loginHint 
-                 * @param domainHint 
-                 * @param cancellationToken 
-                 */
-                Authorize(
-                    tenant : string,
-                    clientId : string,
-                    responseType : string[],
-                    redirectUri : string,
-                    responseMode : string,
-                    scope : string[],
-                    state : string,
-                    nounce : string,
-                    resource? : string,
-                    prompt? : string,
-                    loginHint? : string,
-                    domainHint? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<void>;
-                /**
-                 * This observable is hot and monitors all the responses from the Authorize invocations.
-                 */
-                AuthorizeObservable : Observable<void>;
-                /**
-                 * Returns the openid configuration
-                 * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
-                 * @param cancellationToken 
-                 */
-                OpenIdConfiguration(
-                    tenant : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
-                 */
-                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * Returns the openid keys used for signing.
-                 * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
-                 * @param cancellationToken 
-                 */
-                OpenIdKeys(
-                    tenant : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDKeys>;
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
-                 */
-                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
-            }
-            /**
-             * Defines access to the microsoft oauth implementation
-             */
-            export class MicrosoftRemoteImpl  extends SolidRpcJs.RpcServiceImpl implements IMicrosoftRemote {
-                constructor() {
-                    super();
-                    this.AuthorizeSubject = new Subject<void>();
-                    this.AuthorizeObservable = this.AuthorizeSubject.asObservable().pipe(share());
-                    this.OpenIdConfigurationSubject = new Subject<Types.OpenIDConnnectDiscovery>();
-                    this.OpenIdConfigurationObservable = this.OpenIdConfigurationSubject.asObservable().pipe(share());
-                    this.OpenIdKeysSubject = new Subject<Types.OpenIDKeys>();
-                    this.OpenIdKeysObservable = this.OpenIdKeysSubject.asObservable().pipe(share());
-                }
-                /**
-                 * When your web app needs to authenticate the user, it can direct the user to the /authorize endpoint. This request is similar to the first leg of the OAuth 2.0 authorization code flow, with these important distinctions:
-                 * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
-                 * @param clientId 
-                 * @param responseType 
-                 * @param redirectUri 
-                 * @param responseMode 
-                 * @param scope The redirect URI of your app, where authentication responses can be sent and received by your app. It must exactly match one of the redirect URIs you registered in the portal, except that it must be URL encoded. If not present, the endpoint will pick one registered redirect_uri at random to send the user back to.
-                 * @param state A value included in the request, generated by the app, that will be included in the resulting id_token value as a claim. The app can verify this value to mitigate token replay attacks. The value typically is a randomized, unique string that can be used to identify the origin o
-                 * @param nounce A value included in the request, generated by the app, that will be included in the resulting id_token value as a claim. The app can verify this value to mitigate token replay attacks. The value typically is a randomized, unique string that can be used to identify the origin o
-                 * @param resource The App ID URI of the target web API (secured resource). To find the App ID URI, in the Azure Portal, click Azure Active Directory, click Application registrations, open the application's Settings page, then click Properties. It may also be an external resource like https://graph.microsoft.com. This is required in one of either the authorization or token requests. To ensure fewer authentication prompts place it in the authorization request to ensure consent is received from the user.
-                 * @param prompt Indicates the type of user interaction that is required. The only valid values at this time are login, none, and consent. The prompt=login claim forces the user to enter their credentials on that request, which negates single sign-on. The prompt=none claim is the opposite. This claim ensures that the user isn't presented with any interactive prompt at. If the request can't be completed silently via single sign-on, the Microsoft identity platform endpoint returns an error. The prompt=consent claim triggers the OAuth consent dialog after the user signs in. The dialog asks the user to grant permissions to the app.
-                 * @param loginHint 
-                 * @param domainHint 
-                 * @param cancellationToken 
-                 */
-                Authorize(
-                    tenant : string,
-                    clientId : string,
-                    responseType : string[],
-                    redirectUri : string,
-                    responseMode : string,
-                    scope : string[],
-                    state : string,
-                    nounce : string,
-                    resource? : string,
-                    prompt? : string,
-                    loginHint? : string,
-                    domainHint? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<void> {
-                    let uri = 'https://login.microsoftonline.com/{tenant}/oauth2/authorize';
-                    uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    let query: { [index: string]: any } = {};
-                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
-                    SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
-                    SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
-                    SolidRpcJs.ifnotnull(response_mode, x => { query['response_mode'] = x; });
-                    SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
-                    SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
-                    SolidRpcJs.ifnotnull(nounce, x => { query['nounce'] = x; });
-                    SolidRpcJs.ifnotnull(resource, x => { query['resource'] = x; });
-                    SolidRpcJs.ifnotnull(prompt, x => { query['prompt'] = x; });
-                    SolidRpcJs.ifnotnull(login_hint, x => { query['login_hint'] = x; });
-                    SolidRpcJs.ifnotnull(domain_hint, x => { query['domain_hint'] = x; });
-                    let headers: { [index: string]: any } = {};
-                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return null;
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.AuthorizeSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the Authorize invocations.
-                 */
-                AuthorizeObservable : Observable<void>;
-                private AuthorizeSubject : Subject<void>;
-                /**
-                 * Returns the openid configuration
-                 * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
-                 * @param cancellationToken 
-                 */
-                OpenIdConfiguration(
-                    tenant : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDConnnectDiscovery> {
-                    let uri = 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration';
-                    uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.OpenIDConnnectDiscovery(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OpenIdConfigurationSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdConfiguration invocations.
-                 */
-                OpenIdConfigurationObservable : Observable<Types.OpenIDConnnectDiscovery>;
-                private OpenIdConfigurationSubject : Subject<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * Returns the openid keys used for signing.
-                 * @param tenant You can use the {tenant} value in the path of the request to control who can sign in to the application. The allowed values are common, organizations, consumers, and tenant identifiers
-                 * @param cancellationToken 
-                 */
-                OpenIdKeys(
-                    tenant : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDKeys> {
-                    let uri = 'https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys';
-                    uri = uri.replace('{tenant}', this.enocodeUriValue(tenant.toString()));
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.OpenIDKeys(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OpenIdKeysSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OpenIdKeys invocations.
-                 */
-                OpenIdKeysObservable : Observable<Types.OpenIDKeys>;
-                private OpenIdKeysSubject : Subject<Types.OpenIDKeys>;
-            }
-            /**
-             * Instance for the IMicrosoftRemote type. Implemented by the MicrosoftRemoteImpl
-             */
-            export var MicrosoftRemoteInstance : IMicrosoftRemote = new MicrosoftRemoteImpl();
-        }
-        export namespace Oidc {
-            /**
-             * Defines logic for the oidc server
-             */
-            export interface IOidcServer {
-                /**
-                 * Returns the /.well-known/openid-configuration file
-                 * @param cancellationToken 
-                 */
-                OAuth2Discovery(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
-                 */
-                OAuth2DiscoveryObservable : Observable<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * Returns the keys
-                 * @param cancellationToken 
-                 */
-                OAuth2Keys(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDKeys>;
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
-                 */
-                OAuth2KeysObservable : Observable<Types.OpenIDKeys>;
-                /**
-                 * authenticates a user
-                 * @param cancellationToken 
-                 */
-                OAuth2TokenGet(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.TokenResponse>;
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
-                 */
-                OAuth2TokenGetObservable : Observable<Types.TokenResponse>;
-                /**
-                 * authenticates a user
-                 * @param grantType 
-                 * @param clientId 
-                 * @param clientSecret 
-                 * @param username The user name
-                 * @param password The the user password
-                 * @param scope The the scopes
-                 * @param code The the code
-                 * @param redirectUri 
-                 * @param codeVerifier 
-                 * @param refreshToken 
-                 * @param cancellationToken 
-                 */
-                OAuth2TokenPost(
-                    grantType? : string,
-                    clientId? : string,
-                    clientSecret? : string,
-                    username? : string,
-                    password? : string,
-                    scope? : string[],
-                    code? : string,
-                    redirectUri? : string,
-                    codeVerifier? : string,
-                    refreshToken? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.TokenResponse>;
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
-                 */
-                OAuth2TokenPostObservable : Observable<Types.TokenResponse>;
-                /**
-                 * authorizes a user
-                 * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
-                 * @param responseType 
-                 * @param clientId 
-                 * @param redirectUri 
-                 * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
-                 * @param cancellationToken 
-                 */
-                OAuth2AuthorizeGet(
-                    scope : string[],
-                    responseType : string,
-                    clientId : string,
-                    redirectUri? : string,
-                    state? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent>;
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
-                 */
-                OAuth2AuthorizeGetObservable : Observable<Types.WebContent>;
-                /**
-                 * authorizes a user
-                 * @param cancellationToken 
-                 */
-                OAuth2AuthorizePost(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent>;
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
-                 */
-                OAuth2AuthorizePostObservable : Observable<Types.WebContent>;
-            }
-            /**
-             * Defines logic for the oidc server
-             */
-            export class OidcServerImpl  extends SolidRpcJs.RpcServiceImpl implements IOidcServer {
-                constructor() {
-                    super();
-                    this.OAuth2DiscoverySubject = new Subject<Types.OpenIDConnnectDiscovery>();
-                    this.OAuth2DiscoveryObservable = this.OAuth2DiscoverySubject.asObservable().pipe(share());
-                    this.OAuth2KeysSubject = new Subject<Types.OpenIDKeys>();
-                    this.OAuth2KeysObservable = this.OAuth2KeysSubject.asObservable().pipe(share());
-                    this.OAuth2TokenGetSubject = new Subject<Types.TokenResponse>();
-                    this.OAuth2TokenGetObservable = this.OAuth2TokenGetSubject.asObservable().pipe(share());
-                    this.OAuth2TokenPostSubject = new Subject<Types.TokenResponse>();
-                    this.OAuth2TokenPostObservable = this.OAuth2TokenPostSubject.asObservable().pipe(share());
-                    this.OAuth2AuthorizeGetSubject = new Subject<Types.WebContent>();
-                    this.OAuth2AuthorizeGetObservable = this.OAuth2AuthorizeGetSubject.asObservable().pipe(share());
-                    this.OAuth2AuthorizePostSubject = new Subject<Types.WebContent>();
-                    this.OAuth2AuthorizePostObservable = this.OAuth2AuthorizePostSubject.asObservable().pipe(share());
-                }
-                /**
-                 * Returns the /.well-known/openid-configuration file
-                 * @param cancellationToken 
-                 */
-                OAuth2Discovery(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDConnnectDiscovery> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/discovery';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.OpenIDConnnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.OpenIDConnnectDiscovery(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OAuth2DiscoverySubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2Discovery invocations.
-                 */
-                OAuth2DiscoveryObservable : Observable<Types.OpenIDConnnectDiscovery>;
-                private OAuth2DiscoverySubject : Subject<Types.OpenIDConnnectDiscovery>;
-                /**
-                 * Returns the keys
-                 * @param cancellationToken 
-                 */
-                OAuth2Keys(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.OpenIDKeys> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/keys';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.OpenIDKeys(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OAuth2KeysSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2Keys invocations.
-                 */
-                OAuth2KeysObservable : Observable<Types.OpenIDKeys>;
-                private OAuth2KeysSubject : Subject<Types.OpenIDKeys>;
-                /**
-                 * authenticates a user
-                 * @param cancellationToken 
-                 */
-                OAuth2TokenGet(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.TokenResponse> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.TokenResponse(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OAuth2TokenGetSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2TokenGet invocations.
-                 */
-                OAuth2TokenGetObservable : Observable<Types.TokenResponse>;
-                private OAuth2TokenGetSubject : Subject<Types.TokenResponse>;
-                /**
-                 * authenticates a user
-                 * @param grantType 
-                 * @param clientId 
-                 * @param clientSecret 
-                 * @param username The user name
-                 * @param password The the user password
-                 * @param scope The the scopes
-                 * @param code The the code
-                 * @param redirectUri 
-                 * @param codeVerifier 
-                 * @param refreshToken 
-                 * @param cancellationToken 
-                 */
-                OAuth2TokenPost(
-                    grantType? : string,
-                    clientId? : string,
-                    clientSecret? : string,
-                    username? : string,
-                    password? : string,
-                    scope? : string[],
-                    code? : string,
-                    redirectUri? : string,
-                    codeVerifier? : string,
-                    refreshToken? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.TokenResponse> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/token';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.TokenResponse(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OAuth2TokenPostSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2TokenPost invocations.
-                 */
-                OAuth2TokenPostObservable : Observable<Types.TokenResponse>;
-                private OAuth2TokenPostSubject : Subject<Types.TokenResponse>;
-                /**
-                 * authorizes a user
-                 * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
-                 * @param responseType 
-                 * @param clientId 
-                 * @param redirectUri 
-                 * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
-                 * @param cancellationToken 
-                 */
-                OAuth2AuthorizeGet(
-                    scope : string[],
-                    responseType : string,
-                    clientId : string,
-                    redirectUri? : string,
-                    state? : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
-                    let query: { [index: string]: any } = {};
-                    SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
-                    SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
-                    SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
-                    SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
-                    SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.WebContent(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OAuth2AuthorizeGetSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2AuthorizeGet invocations.
-                 */
-                OAuth2AuthorizeGetObservable : Observable<Types.WebContent>;
-                private OAuth2AuthorizeGetSubject : Subject<Types.WebContent>;
-                /**
-                 * authorizes a user
-                 * @param cancellationToken 
-                 */
-                OAuth2AuthorizePost(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.WebContent> {
-                    let uri = 'https://localhost/SolidRpc/Security/Services/Oidc/authorize';
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.WebContent(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.OAuth2AuthorizePostSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the OAuth2AuthorizePost invocations.
-                 */
-                OAuth2AuthorizePostObservable : Observable<Types.WebContent>;
-                private OAuth2AuthorizePostSubject : Subject<Types.WebContent>;
-            }
-            /**
-             * Instance for the IOidcServer type. Implemented by the OidcServerImpl
-             */
-            export var OidcServerInstance : IOidcServer = new OidcServerImpl();
+            export var TypescriptGeneratorInstance : ITypescriptGenerator = new TypescriptGeneratorImpl();
         }
         /**
-         * Defines logic for solid rpc security
+         * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
+         *             
+         *             This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.
          */
-        export interface ISolidRpcSecurity {
+        export interface ISolidRpcContentHandler {
             /**
-             * Returns the login page
+             * Returns the content for supplied path.
+             *             
+             *             Note that the path is marked as optional(default value set). This is so that the parameter
+             *             is placed in the query string instead of path.
+             * @param path The path to get the content for
              * @param cancellationToken 
              */
-            LoginPage(
+            GetContent(
+                path? : string,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.WebContent>;
+            ): Observable<Types.FileContent>;
             /**
-             * This observable is hot and monitors all the responses from the LoginPage invocations.
+             * This observable is hot and monitors all the responses from the GetContent invocations.
              */
-            LoginPageObservable : Observable<Types.WebContent>;
-            /**
-             * Returns the script paths to use for logging in.
-             * @param cancellationToken 
-             */
-            LoginScripts(
-                cancellationToken? : CancellationToken
-            ): Observable<string[]>;
-            /**
-             * This observable is hot and monitors all the responses from the LoginScripts invocations.
-             */
-            LoginScriptsObservable : Observable<string[]>;
-            /**
-             * Returns the script to embedd to enable login
-             * @param cancellationToken 
-             */
-            LoginScript(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.WebContent>;
-            /**
-             * This observable is hot and monitors all the responses from the LoginScript invocations.
-             */
-            LoginScriptObservable : Observable<Types.WebContent>;
-            /**
-             * Returns the status at each login provider
-             * @param cancellationToken 
-             */
-            LoginProviders(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.LoginProvider[]>;
-            /**
-             * This observable is hot and monitors all the responses from the LoginProviders invocations.
-             */
-            LoginProvidersObservable : Observable<Types.LoginProvider[]>;
-            /**
-             * Returns the current profile claims
-             * @param cancellationToken 
-             */
-            Profile(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.Claim[]>;
-            /**
-             * This observable is hot and monitors all the responses from the Profile invocations.
-             */
-            ProfileObservable : Observable<Types.Claim[]>;
+            GetContentObservable : Observable<Types.FileContent>;
         }
         /**
-         * Defines logic for solid rpc security
+         * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
+         *             
+         *             This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.
          */
-        export class SolidRpcSecurityImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcSecurity {
+        export class SolidRpcContentHandlerImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcContentHandler {
+            private Namespace: SolidRpcJs.Namespace;
             constructor() {
                 super();
-                this.LoginPageSubject = new Subject<Types.WebContent>();
-                this.LoginPageObservable = this.LoginPageSubject.asObservable().pipe(share());
-                this.LoginScriptsSubject = new Subject<string[]>();
-                this.LoginScriptsObservable = this.LoginScriptsSubject.asObservable().pipe(share());
-                this.LoginScriptSubject = new Subject<Types.WebContent>();
-                this.LoginScriptObservable = this.LoginScriptSubject.asObservable().pipe(share());
-                this.LoginProvidersSubject = new Subject<Types.LoginProvider[]>();
-                this.LoginProvidersObservable = this.LoginProvidersSubject.asObservable().pipe(share());
-                this.ProfileSubject = new Subject<Types.Claim[]>();
-                this.ProfileObservable = this.ProfileSubject.asObservable().pipe(share());
+                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                this.GetContentSubject = new Subject<Types.FileContent>();
+                this.GetContentObservable = this.GetContentSubject.asObservable().pipe(share());
             }
             /**
-             * Returns the login page
+             * Returns the content for supplied path.
+             *             
+             *             Note that the path is marked as optional(default value set). This is so that the parameter
+             *             is placed in the query string instead of path.
+             * @param path The path to get the content for
              * @param cancellationToken 
              */
-            LoginPage(
+            GetContent(
+                path? : string,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.WebContent> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/LoginPage';
+            ): Observable<Types.FileContent> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
                 let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(path, x => { query['path'] = x; });
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return new Types.WebContent(data);
+                        return new Types.FileContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.LoginPageSubject);
+                }, this.GetContentSubject);
             }
             /**
-             * This observable is hot and monitors all the responses from the LoginPage invocations.
+             * This observable is hot and monitors all the responses from the GetContent invocations.
              */
-            LoginPageObservable : Observable<Types.WebContent>;
-            private LoginPageSubject : Subject<Types.WebContent>;
-            /**
-             * Returns the script paths to use for logging in.
-             * @param cancellationToken 
-             */
-            LoginScripts(
-                cancellationToken? : CancellationToken
-            ): Observable<string[]> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/LoginScripts';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                return this.request<string[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return Array.from(data).map(o => o as string);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.LoginScriptsSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the LoginScripts invocations.
-             */
-            LoginScriptsObservable : Observable<string[]>;
-            private LoginScriptsSubject : Subject<string[]>;
-            /**
-             * Returns the script to embedd to enable login
-             * @param cancellationToken 
-             */
-            LoginScript(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.WebContent> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/LoginScript';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                return this.request<Types.WebContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return new Types.WebContent(data);
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.LoginScriptSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the LoginScript invocations.
-             */
-            LoginScriptObservable : Observable<Types.WebContent>;
-            private LoginScriptSubject : Subject<Types.WebContent>;
-            /**
-             * Returns the status at each login provider
-             * @param cancellationToken 
-             */
-            LoginProviders(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.LoginProvider[]> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/LoginProviders';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                return this.request<Types.LoginProvider[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return Array.from(data).map(o => new Types.LoginProvider(o));
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.LoginProvidersSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the LoginProviders invocations.
-             */
-            LoginProvidersObservable : Observable<Types.LoginProvider[]>;
-            private LoginProvidersSubject : Subject<Types.LoginProvider[]>;
-            /**
-             * Returns the current profile claims
-             * @param cancellationToken 
-             */
-            Profile(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.Claim[]> {
-                let uri = 'https://localhost/SolidRpc/Security/Services/Profile';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                return this.request<Types.Claim[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return Array.from(data).map(o => new Types.Claim(o));
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.ProfileSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the Profile invocations.
-             */
-            ProfileObservable : Observable<Types.Claim[]>;
-            private ProfileSubject : Subject<Types.Claim[]>;
+            GetContentObservable : Observable<Types.FileContent>;
+            private GetContentSubject : Subject<Types.FileContent>;
         }
         /**
-         * Instance for the ISolidRpcSecurity type. Implemented by the SolidRpcSecurityImpl
+         * Instance for the ISolidRpcContentHandler type. Implemented by the SolidRpcContentHandlerImpl
          */
-        export var SolidRpcSecurityInstance : ISolidRpcSecurity = new SolidRpcSecurityImpl();
+        export var SolidRpcContentHandlerInstance : ISolidRpcContentHandler = new SolidRpcContentHandlerImpl();
+        /**
+         * Represents a solid rpc host.
+         */
+        export interface ISolidRpcHost {
+            /**
+             * Returns the id of this host
+             * @param cancellationToken 
+             */
+            GetHostId(
+                cancellationToken? : CancellationToken
+            ): Observable<string>;
+            /**
+             * This observable is hot and monitors all the responses from the GetHostId invocations.
+             */
+            GetHostIdObservable : Observable<string>;
+            /**
+             * Returns the id of this host. This method can be used to determine if a host is up and running by
+             *             comparing the returned value with the instance that we want to send to. If a host goes down it is 
+             *             removed from the router and another instance probably responds to the call.
+             * @param cancellationToken 
+             */
+            GetHostInstance(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance>;
+            /**
+             * This observable is hot and monitors all the responses from the GetHostInstance invocations.
+             */
+            GetHostInstanceObservable : Observable<Types.SolidRpcHostInstance>;
+            /**
+             * This method is invoked on all the hosts in a store when a new host is available.
+             * @param cancellationToken 
+             */
+            SyncHostsFromStore(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance[]>;
+            /**
+             * This observable is hot and monitors all the responses from the SyncHostsFromStore invocations.
+             */
+            SyncHostsFromStoreObservable : Observable<Types.SolidRpcHostInstance[]>;
+            /**
+             * Invokes the "GetHostInstance" targeted for supplied instance and resturns the result
+             * @param hostInstance 
+             * @param cancellationToken 
+             */
+            CheckHost(
+                hostInstance : Types.SolidRpcHostInstance,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance>;
+            /**
+             * This observable is hot and monitors all the responses from the CheckHost invocations.
+             */
+            CheckHostObservable : Observable<Types.SolidRpcHostInstance>;
+            /**
+             * Returns the host configuration.
+             * @param cancellationToken 
+             */
+            GetHostConfiguration(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.NameValuePair[]>;
+            /**
+             * This observable is hot and monitors all the responses from the GetHostConfiguration invocations.
+             */
+            GetHostConfigurationObservable : Observable<Types.NameValuePair[]>;
+            /**
+             * Function that determines if the host is alive.
+             * @param cancellationToken 
+             */
+            IsAlive(
+                cancellationToken? : CancellationToken
+            ): Observable<void>;
+            /**
+             * This observable is hot and monitors all the responses from the IsAlive invocations.
+             */
+            IsAliveObservable : Observable<void>;
+            /**
+             * Returns the base url for this host
+             * @param cancellationToken 
+             */
+            BaseAddress(
+                cancellationToken? : CancellationToken
+            ): Observable<string>;
+            /**
+             * This observable is hot and monitors all the responses from the BaseAddress invocations.
+             */
+            BaseAddressObservable : Observable<string>;
+        }
+        /**
+         * Represents a solid rpc host.
+         */
+        export class SolidRpcHostImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcHost {
+            private Namespace: SolidRpcJs.Namespace;
+            constructor() {
+                super();
+                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                this.GetHostIdSubject = new Subject<string>();
+                this.GetHostIdObservable = this.GetHostIdSubject.asObservable().pipe(share());
+                this.GetHostInstanceSubject = new Subject<Types.SolidRpcHostInstance>();
+                this.GetHostInstanceObservable = this.GetHostInstanceSubject.asObservable().pipe(share());
+                this.SyncHostsFromStoreSubject = new Subject<Types.SolidRpcHostInstance[]>();
+                this.SyncHostsFromStoreObservable = this.SyncHostsFromStoreSubject.asObservable().pipe(share());
+                this.CheckHostSubject = new Subject<Types.SolidRpcHostInstance>();
+                this.CheckHostObservable = this.CheckHostSubject.asObservable().pipe(share());
+                this.GetHostConfigurationSubject = new Subject<Types.NameValuePair[]>();
+                this.GetHostConfigurationObservable = this.GetHostConfigurationSubject.asObservable().pipe(share());
+                this.IsAliveSubject = new Subject<void>();
+                this.IsAliveObservable = this.IsAliveSubject.asObservable().pipe(share());
+                this.BaseAddressSubject = new Subject<string>();
+                this.BaseAddressObservable = this.BaseAddressSubject.asObservable().pipe(share());
+            }
+            /**
+             * Returns the id of this host
+             * @param cancellationToken 
+             */
+            GetHostId(
+                cancellationToken? : CancellationToken
+            ): Observable<string> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return data as string;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetHostIdSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetHostId invocations.
+             */
+            GetHostIdObservable : Observable<string>;
+            private GetHostIdSubject : Subject<string>;
+            /**
+             * Returns the id of this host. This method can be used to determine if a host is up and running by
+             *             comparing the returned value with the instance that we want to send to. If a host goes down it is 
+             *             removed from the router and another instance probably responds to the call.
+             * @param cancellationToken 
+             */
+            GetHostInstance(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.SolidRpcHostInstance>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.SolidRpcHostInstance(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetHostInstanceSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetHostInstance invocations.
+             */
+            GetHostInstanceObservable : Observable<Types.SolidRpcHostInstance>;
+            private GetHostInstanceSubject : Subject<Types.SolidRpcHostInstance>;
+            /**
+             * This method is invoked on all the hosts in a store when a new host is available.
+             * @param cancellationToken 
+             */
+            SyncHostsFromStore(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance[]> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.SolidRpcHostInstance[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return Array.from(data).map(o => new Types.SolidRpcHostInstance(o));
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.SyncHostsFromStoreSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the SyncHostsFromStore invocations.
+             */
+            SyncHostsFromStoreObservable : Observable<Types.SolidRpcHostInstance[]>;
+            private SyncHostsFromStoreSubject : Subject<Types.SolidRpcHostInstance[]>;
+            /**
+             * Invokes the "GetHostInstance" targeted for supplied instance and resturns the result
+             * @param hostInstance 
+             * @param cancellationToken 
+             */
+            CheckHost(
+                hostInstance : Types.SolidRpcHostInstance,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                headers['Content-Type']='application/json';
+                return this.request<Types.SolidRpcHostInstance>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(hostInstance)), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.SolidRpcHostInstance(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.CheckHostSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the CheckHost invocations.
+             */
+            CheckHostObservable : Observable<Types.SolidRpcHostInstance>;
+            private CheckHostSubject : Subject<Types.SolidRpcHostInstance>;
+            /**
+             * Returns the host configuration.
+             * @param cancellationToken 
+             */
+            GetHostConfiguration(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.NameValuePair[]> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.NameValuePair[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return Array.from(data).map(o => new Types.NameValuePair(o));
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetHostConfigurationSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetHostConfiguration invocations.
+             */
+            GetHostConfigurationObservable : Observable<Types.NameValuePair[]>;
+            private GetHostConfigurationSubject : Subject<Types.NameValuePair[]>;
+            /**
+             * Function that determines if the host is alive.
+             * @param cancellationToken 
+             */
+            IsAlive(
+                cancellationToken? : CancellationToken
+            ): Observable<void> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.IsAliveSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the IsAlive invocations.
+             */
+            IsAliveObservable : Observable<void>;
+            private IsAliveSubject : Subject<void>;
+            /**
+             * Returns the base url for this host
+             * @param cancellationToken 
+             */
+            BaseAddress(
+                cancellationToken? : CancellationToken
+            ): Observable<string> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return data as string;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.BaseAddressSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the BaseAddress invocations.
+             */
+            BaseAddressObservable : Observable<string>;
+            private BaseAddressSubject : Subject<string>;
+        }
+        /**
+         * Instance for the ISolidRpcHost type. Implemented by the SolidRpcHostImpl
+         */
+        export var SolidRpcHostInstance : ISolidRpcHost = new SolidRpcHostImpl();
+        /**
+         * Interfaces that defines the logic for OAuth2 support.
+         */
+        export interface ISolidRpcOAuth2 {
+            /**
+             * This is the method returns a html page that calls supplied callback
+             *             after the token callback has been invoked. Use this method to
+             *             retreive tokens from a standalone node instance.
+             *             
+             *             Start a local http server and supply the address to the handler.
+             * @param callbackUri 
+             * @param state 
+             * @param scopes 
+             * @param cancellationToken 
+             */
+            GetAuthorizationCodeTokenAsync(
+                callbackUri? : string,
+                state? : string,
+                scopes? : string[],
+                cancellationToken? : CancellationToken
+            ): Observable<Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the GetAuthorizationCodeTokenAsync invocations.
+             */
+            GetAuthorizationCodeTokenAsyncObservable : Observable<Types.FileContent>;
+            /**
+             * This is the method that is invoked when a user has been authenticated
+             *             and a valid token is supplied.
+             * @param code 
+             * @param state 
+             * @param cancellation 
+             */
+            TokenCallbackAsync(
+                code? : string,
+                state? : string,
+                cancellation? : CancellationToken
+            ): Observable<Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
+             */
+            TokenCallbackAsyncObservable : Observable<Types.FileContent>;
+        }
+        /**
+         * Interfaces that defines the logic for OAuth2 support.
+         */
+        export class SolidRpcOAuth2Impl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcOAuth2 {
+            private Namespace: SolidRpcJs.Namespace;
+            constructor() {
+                super();
+                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                this.GetAuthorizationCodeTokenAsyncSubject = new Subject<Types.FileContent>();
+                this.GetAuthorizationCodeTokenAsyncObservable = this.GetAuthorizationCodeTokenAsyncSubject.asObservable().pipe(share());
+                this.TokenCallbackAsyncSubject = new Subject<Types.FileContent>();
+                this.TokenCallbackAsyncObservable = this.TokenCallbackAsyncSubject.asObservable().pipe(share());
+            }
+            /**
+             * This is the method returns a html page that calls supplied callback
+             *             after the token callback has been invoked. Use this method to
+             *             retreive tokens from a standalone node instance.
+             *             
+             *             Start a local http server and supply the address to the handler.
+             * @param callbackUri 
+             * @param state 
+             * @param scopes 
+             * @param cancellationToken 
+             */
+            GetAuthorizationCodeTokenAsync(
+                callbackUri? : string,
+                state? : string,
+                scopes? : string[],
+                cancellationToken? : CancellationToken
+            ): Observable<Types.FileContent> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
+                SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                SolidRpcJs.ifnotnull(scopes, x => { query['scopes'] = x; });
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetAuthorizationCodeTokenAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetAuthorizationCodeTokenAsync invocations.
+             */
+            GetAuthorizationCodeTokenAsyncObservable : Observable<Types.FileContent>;
+            private GetAuthorizationCodeTokenAsyncSubject : Subject<Types.FileContent>;
+            /**
+             * This is the method that is invoked when a user has been authenticated
+             *             and a valid token is supplied.
+             * @param code 
+             * @param state 
+             * @param cancellation 
+             */
+            TokenCallbackAsync(
+                code? : string,
+                state? : string,
+                cancellation? : CancellationToken
+            ): Observable<Types.FileContent> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(code, x => { query['code'] = x; });
+                SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellation, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.TokenCallbackAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
+             */
+            TokenCallbackAsyncObservable : Observable<Types.FileContent>;
+            private TokenCallbackAsyncSubject : Subject<Types.FileContent>;
+        }
+        /**
+         * Instance for the ISolidRpcOAuth2 type. Implemented by the SolidRpcOAuth2Impl
+         */
+        export var SolidRpcOAuth2Instance : ISolidRpcOAuth2 = new SolidRpcOAuth2Impl();
+        /**
+         * Implements logic for the oidc server
+         */
+        export interface ISolidRpcOidc {
+            /**
+             * Returns the /.well-known/openid-configuration file
+             * @param cancellationToken 
+             */
+            GetDiscoveryDocumentAsync(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.OAuth2.OpenIDConnectDiscovery>;
+            /**
+             * This observable is hot and monitors all the responses from the GetDiscoveryDocumentAsync invocations.
+             */
+            GetDiscoveryDocumentAsyncObservable : Observable<Types.OAuth2.OpenIDConnectDiscovery>;
+            /**
+             * Returns the keys
+             * @param cancellationToken 
+             */
+            GetKeysAsync(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.OAuth2.OpenIDKeys>;
+            /**
+             * This observable is hot and monitors all the responses from the GetKeysAsync invocations.
+             */
+            GetKeysAsyncObservable : Observable<Types.OAuth2.OpenIDKeys>;
+            /**
+             * authenticates a user
+             * @param grantType 
+             * @param clientId 
+             * @param clientSecret 
+             * @param username The user name
+             * @param password The the user password
+             * @param scope The the scopes
+             * @param code The the code
+             * @param redirectUri 
+             * @param codeVerifier 
+             * @param refreshToken 
+             * @param cancellationToken 
+             */
+            GetTokenAsync(
+                grantType? : string,
+                clientId? : string,
+                clientSecret? : string,
+                username? : string,
+                password? : string,
+                scope? : string[],
+                code? : string,
+                redirectUri? : string,
+                codeVerifier? : string,
+                refreshToken? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.OAuth2.TokenResponse>;
+            /**
+             * This observable is hot and monitors all the responses from the GetTokenAsync invocations.
+             */
+            GetTokenAsyncObservable : Observable<Types.OAuth2.TokenResponse>;
+            /**
+             * authorizes a user
+             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
+             * @param responseType 
+             * @param clientId 
+             * @param redirectUri 
+             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+             * @param cancellationToken 
+             */
+            AuthorizeAsync(
+                scope : string[],
+                responseType : string,
+                clientId : string,
+                redirectUri? : string,
+                state? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.FileContent>;
+            /**
+             * This observable is hot and monitors all the responses from the AuthorizeAsync invocations.
+             */
+            AuthorizeAsyncObservable : Observable<Types.FileContent>;
+        }
+        /**
+         * Implements logic for the oidc server
+         */
+        export class SolidRpcOidcImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcOidc {
+            private Namespace: SolidRpcJs.Namespace;
+            constructor() {
+                super();
+                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                this.GetDiscoveryDocumentAsyncSubject = new Subject<Types.OAuth2.OpenIDConnectDiscovery>();
+                this.GetDiscoveryDocumentAsyncObservable = this.GetDiscoveryDocumentAsyncSubject.asObservable().pipe(share());
+                this.GetKeysAsyncSubject = new Subject<Types.OAuth2.OpenIDKeys>();
+                this.GetKeysAsyncObservable = this.GetKeysAsyncSubject.asObservable().pipe(share());
+                this.GetTokenAsyncSubject = new Subject<Types.OAuth2.TokenResponse>();
+                this.GetTokenAsyncObservable = this.GetTokenAsyncSubject.asObservable().pipe(share());
+                this.AuthorizeAsyncSubject = new Subject<Types.FileContent>();
+                this.AuthorizeAsyncObservable = this.AuthorizeAsyncSubject.asObservable().pipe(share());
+            }
+            /**
+             * Returns the /.well-known/openid-configuration file
+             * @param cancellationToken 
+             */
+            GetDiscoveryDocumentAsync(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.OAuth2.OpenIDConnectDiscovery> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.OAuth2.OpenIDConnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.OAuth2.OpenIDConnectDiscovery(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetDiscoveryDocumentAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetDiscoveryDocumentAsync invocations.
+             */
+            GetDiscoveryDocumentAsyncObservable : Observable<Types.OAuth2.OpenIDConnectDiscovery>;
+            private GetDiscoveryDocumentAsyncSubject : Subject<Types.OAuth2.OpenIDConnectDiscovery>;
+            /**
+             * Returns the keys
+             * @param cancellationToken 
+             */
+            GetKeysAsync(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.OAuth2.OpenIDKeys> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.OAuth2.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.OAuth2.OpenIDKeys(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetKeysAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetKeysAsync invocations.
+             */
+            GetKeysAsyncObservable : Observable<Types.OAuth2.OpenIDKeys>;
+            private GetKeysAsyncSubject : Subject<Types.OAuth2.OpenIDKeys>;
+            /**
+             * authenticates a user
+             * @param grantType 
+             * @param clientId 
+             * @param clientSecret 
+             * @param username The user name
+             * @param password The the user password
+             * @param scope The the scopes
+             * @param code The the code
+             * @param redirectUri 
+             * @param codeVerifier 
+             * @param refreshToken 
+             * @param cancellationToken 
+             */
+            GetTokenAsync(
+                grantType? : string,
+                clientId? : string,
+                clientSecret? : string,
+                username? : string,
+                password? : string,
+                scope? : string[],
+                code? : string,
+                redirectUri? : string,
+                codeVerifier? : string,
+                refreshToken? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.OAuth2.TokenResponse> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.OAuth2.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.OAuth2.TokenResponse(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetTokenAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetTokenAsync invocations.
+             */
+            GetTokenAsyncObservable : Observable<Types.OAuth2.TokenResponse>;
+            private GetTokenAsyncSubject : Subject<Types.OAuth2.TokenResponse>;
+            /**
+             * authorizes a user
+             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
+             * @param responseType 
+             * @param clientId 
+             * @param redirectUri 
+             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+             * @param cancellationToken 
+             */
+            AuthorizeAsync(
+                scope : string[],
+                responseType : string,
+                clientId : string,
+                redirectUri? : string,
+                state? : string,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.FileContent> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
+                SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
+                SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
+                SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
+                SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.AuthorizeAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the AuthorizeAsync invocations.
+             */
+            AuthorizeAsyncObservable : Observable<Types.FileContent>;
+            private AuthorizeAsyncSubject : Subject<Types.FileContent>;
+        }
+        /**
+         * Instance for the ISolidRpcOidc type. Implemented by the SolidRpcOidcImpl
+         */
+        export var SolidRpcOidcInstance : ISolidRpcOidc = new SolidRpcOidcImpl();
     }
     export namespace Types {
+        export namespace Code {
+            /**
+             * Represents an interface
+             */
+            export class CodeInterface {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "description":
+                                if (obj.description) { this.Description = obj.description as string; }
+                                break;
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "methods":
+                                if (obj.methods) { this.Methods = Array.from(obj.methods).map(o => new CodeMethod(o)); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.Methods) { arr.push('"methods": '); for (let i = 0; i < this.Methods.length; i++) if(this.Methods[i]) {this.Methods[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The description of this interface
+                 */
+                Description: string | null = null;
+                /**
+                 * The name of this interface
+                 */
+                Name: string | null = null;
+                /**
+                 * The methods in the interface
+                 */
+                Methods: CodeMethod[] | null = null;
+            }
+            /**
+             * Represents a method
+             */
+            export class CodeMethod {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "description":
+                                if (obj.description) { this.Description = obj.description as string; }
+                                break;
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "arguments":
+                                if (obj.arguments) { this.Arguments = Array.from(obj.arguments).map(o => new CodeMethodArg(o)); }
+                                break;
+                            case "returnType":
+                                if (obj.returnType) { this.ReturnType = Array.from(obj.returnType).map(o => o as string); }
+                                break;
+                            case "httpMethod":
+                                if (obj.httpMethod) { this.HttpMethod = obj.httpMethod as string; }
+                                break;
+                            case "httpBaseAddress":
+                                if (obj.httpBaseAddress) { this.HttpBaseAddress = obj.httpBaseAddress as string; }
+                                break;
+                            case "httpPath":
+                                if (obj.httpPath) { this.HttpPath = obj.httpPath as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.Arguments) { arr.push('"arguments": '); for (let i = 0; i < this.Arguments.length; i++) if(this.Arguments[i]) {this.Arguments[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.ReturnType) { arr.push('"returnType": '); for (let i = 0; i < this.ReturnType.length; i++) arr.push(JSON.stringify(this.ReturnType[i])); arr.push(',');; arr.push(','); } 
+                    if(this.HttpMethod) { arr.push('"httpMethod": '); arr.push(JSON.stringify(this.HttpMethod)); arr.push(','); } 
+                    if(this.HttpBaseAddress) { arr.push('"httpBaseAddress": '); arr.push(JSON.stringify(this.HttpBaseAddress)); arr.push(','); } 
+                    if(this.HttpPath) { arr.push('"httpPath": '); arr.push(JSON.stringify(this.HttpPath)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * A description of the the method
+                 */
+                Description: string | null = null;
+                /**
+                 * The name of this method
+                 */
+                Name: string | null = null;
+                /**
+                 * The method arguments
+                 */
+                Arguments: CodeMethodArg[] | null = null;
+                /**
+                 * The return type of the method(fully qualified)
+                 */
+                ReturnType: string[] | null = null;
+                /**
+                 * The http method(GET,POST,etc.)
+                 */
+                HttpMethod: string | null = null;
+                /**
+                 * The base address to this method
+                 */
+                HttpBaseAddress: string | null = null;
+                /**
+                 * The http path relative to the base address
+                 */
+                HttpPath: string | null = null;
+            }
+            /**
+             * Represents a method argument
+             */
+            export class CodeMethodArg {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "description":
+                                if (obj.description) { this.Description = obj.description as string; }
+                                break;
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "argType":
+                                if (obj.argType) { this.ArgType = Array.from(obj.argType).map(o => o as string); }
+                                break;
+                            case "optional":
+                                if (obj.optional) { this.Optional = [true, 'true', 1].some(o => o === obj.optional); }
+                                break;
+                            case "httpName":
+                                if (obj.httpName) { this.HttpName = obj.httpName as string; }
+                                break;
+                            case "httpLocation":
+                                if (obj.httpLocation) { this.HttpLocation = obj.httpLocation as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.ArgType) { arr.push('"argType": '); for (let i = 0; i < this.ArgType.length; i++) arr.push(JSON.stringify(this.ArgType[i])); arr.push(',');; arr.push(','); } 
+                    if(this.Optional) { arr.push('"optional": '); arr.push(JSON.stringify(this.Optional)); arr.push(','); } 
+                    if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
+                    if(this.HttpLocation) { arr.push('"httpLocation": '); arr.push(JSON.stringify(this.HttpLocation)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * A description of the the argument
+                 */
+                Description: string | null = null;
+                /**
+                 * The name of the argument
+                 */
+                Name: string | null = null;
+                /**
+                 * The argument type(fully qualified)
+                 */
+                ArgType: string[] | null = null;
+                /**
+                 * Specifies if this argument is optional(not required)
+                 */
+                Optional: boolean | null = null;
+                /**
+                 * The name of the argument in the http protocol.
+                 */
+                HttpName: string | null = null;
+                /**
+                 * The location of the argument('path', 'query', 'header', 'body', 'body-inline')
+                 */
+                HttpLocation: string | null = null;
+            }
+            /**
+             * represents a namespace
+             */
+            export class CodeNamespace {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "namespaces":
+                                if (obj.namespaces) { this.Namespaces = Array.from(obj.namespaces).map(o => new CodeNamespace(o)); }
+                                break;
+                            case "interfaces":
+                                if (obj.interfaces) { this.Interfaces = Array.from(obj.interfaces).map(o => new CodeInterface(o)); }
+                                break;
+                            case "types":
+                                if (obj.types) { this.Types = Array.from(obj.types).map(o => new CodeType(o)); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.Namespaces) { arr.push('"namespaces": '); for (let i = 0; i < this.Namespaces.length; i++) if(this.Namespaces[i]) {this.Namespaces[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Interfaces) { arr.push('"interfaces": '); for (let i = 0; i < this.Interfaces.length; i++) if(this.Interfaces[i]) {this.Interfaces[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Types) { arr.push('"types": '); for (let i = 0; i < this.Types.length; i++) if(this.Types[i]) {this.Types[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The name of this namespace part(not fully qualified).
+                 */
+                Name: string | null = null;
+                /**
+                 * The namespaces within this namespace
+                 */
+                Namespaces: CodeNamespace[] | null = null;
+                /**
+                 * The interfaces within this namespace
+                 */
+                Interfaces: CodeInterface[] | null = null;
+                /**
+                 * The types within this namespace
+                 */
+                Types: CodeType[] | null = null;
+            }
+            /**
+             * Represents a type
+             */
+            export class CodeType {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "description":
+                                if (obj.description) { this.Description = obj.description as string; }
+                                break;
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "extends":
+                                if (obj.extends) { this.Extends = Array.from(obj.extends).map(o => o as string); }
+                                break;
+                            case "properties":
+                                if (obj.properties) { this.Properties = Array.from(obj.properties).map(o => new CodeTypeProperty(o)); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.Extends) { arr.push('"extends": '); for (let i = 0; i < this.Extends.length; i++) arr.push(JSON.stringify(this.Extends[i])); arr.push(',');; arr.push(','); } 
+                    if(this.Properties) { arr.push('"properties": '); for (let i = 0; i < this.Properties.length; i++) if(this.Properties[i]) {this.Properties[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * A description of the the type
+                 */
+                Description: string | null = null;
+                /**
+                 * The name of the type
+                 */
+                Name: string | null = null;
+                /**
+                 * The type that this type extends
+                 */
+                Extends: string[] | null = null;
+                /**
+                 * The method arguments
+                 */
+                Properties: CodeTypeProperty[] | null = null;
+            }
+            /**
+             * Represents a property in a type
+             */
+            export class CodeTypeProperty {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "description":
+                                if (obj.description) { this.Description = obj.description as string; }
+                                break;
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "propertyType":
+                                if (obj.propertyType) { this.PropertyType = Array.from(obj.propertyType).map(o => o as string); }
+                                break;
+                            case "httpName":
+                                if (obj.httpName) { this.HttpName = obj.httpName as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.PropertyType) { arr.push('"propertyType": '); for (let i = 0; i < this.PropertyType.length; i++) arr.push(JSON.stringify(this.PropertyType[i])); arr.push(',');; arr.push(','); } 
+                    if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * A description of the the property
+                 */
+                Description: string | null = null;
+                /**
+                 * The name of the property
+                 */
+                Name: string | null = null;
+                /**
+                 * The property type(fully qualified)
+                 */
+                PropertyType: string[] | null = null;
+                /**
+                 * The name of the property in the http protocol.
+                 */
+                HttpName: string | null = null;
+            }
+            /**
+             * successful operation
+             */
+            export class NpmPackage {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "name":
+                                if (obj.name) { this.Name = obj.name as string; }
+                                break;
+                            case "files":
+                                if (obj.files) { this.Files = Array.from(obj.files).map(o => new NpmPackageFile(o)); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                    if(this.Files) { arr.push('"files": '); for (let i = 0; i < this.Files.length; i++) if(this.Files[i]) {this.Files[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The package name(folder name)
+                 */
+                Name: string | null = null;
+                /**
+                 * The files within the package
+                 */
+                Files: NpmPackageFile[] | null = null;
+            }
+            /**
+             * 
+             */
+            export class NpmPackageFile {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "filePath":
+                                if (obj.filePath) { this.FilePath = obj.filePath as string; }
+                                break;
+                            case "content":
+                                if (obj.content) { this.Content = obj.content as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.FilePath) { arr.push('"filePath": '); arr.push(JSON.stringify(this.FilePath)); arr.push(','); } 
+                    if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The file path within the package
+                 */
+                FilePath: string | null = null;
+                /**
+                 * The file content(binary content not supported)
+                 */
+                Content: string | null = null;
+            }
+        }
+        export namespace OAuth2 {
+            /**
+             * Represents a discovery document.
+             */
+            export class OpenIDConnectDiscovery {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "issuer":
+                                if (obj.issuer) { this.Issuer = obj.issuer as string; }
+                                break;
+                            case "authorization_endpoint":
+                                if (obj.authorization_endpoint) { this.AuthorizationEndpoint = obj.authorization_endpoint as string; }
+                                break;
+                            case "token_endpoint":
+                                if (obj.token_endpoint) { this.TokenEndpoint = obj.token_endpoint as string; }
+                                break;
+                            case "userinfo_endpoint":
+                                if (obj.userinfo_endpoint) { this.UserinfoEndpoint = obj.userinfo_endpoint as string; }
+                                break;
+                            case "revocation_endpoint":
+                                if (obj.revocation_endpoint) { this.RevocationEndpoint = obj.revocation_endpoint as string; }
+                                break;
+                            case "device_authorization_endpoint":
+                                if (obj.device_authorization_endpoint) { this.DeviceAuthorizationEndpoint = obj.device_authorization_endpoint as string; }
+                                break;
+                            case "jwks_uri":
+                                if (obj.jwks_uri) { this.JwksUri = obj.jwks_uri as string; }
+                                break;
+                            case "scopes_supported":
+                                if (obj.scopes_supported) { this.ScopesSupported = Array.from(obj.scopes_supported).map(o => o as string); }
+                                break;
+                            case "grant_types_supported":
+                                if (obj.grant_types_supported) { this.GrantTypesSupported = Array.from(obj.grant_types_supported).map(o => o as string); }
+                                break;
+                            case "response_modes_supported":
+                                if (obj.response_modes_supported) { this.ResponseModesSupported = Array.from(obj.response_modes_supported).map(o => o as string); }
+                                break;
+                            case "subject_types_supported":
+                                if (obj.subject_types_supported) { this.SubjectTypesSupported = Array.from(obj.subject_types_supported).map(o => o as string); }
+                                break;
+                            case "id_token_signing_alg_values_supported":
+                                if (obj.id_token_signing_alg_values_supported) { this.IdTokenSigningAlgValuesSupported = Array.from(obj.id_token_signing_alg_values_supported).map(o => o as string); }
+                                break;
+                            case "end_session_endpoint":
+                                if (obj.end_session_endpoint) { this.EndSessionEndpoint = obj.end_session_endpoint as string; }
+                                break;
+                            case "response_types_supported":
+                                if (obj.response_types_supported) { this.ResponseTypesSupported = Array.from(obj.response_types_supported).map(o => o as string); }
+                                break;
+                            case "claims_supported":
+                                if (obj.claims_supported) { this.ClaimsSupported = Array.from(obj.claims_supported).map(o => o as string); }
+                                break;
+                            case "token_endpoint_auth_methods_supported":
+                                if (obj.token_endpoint_auth_methods_supported) { this.TokenEndpointAuthMethodsSupported = Array.from(obj.token_endpoint_auth_methods_supported).map(o => o as string); }
+                                break;
+                            case "code_challenge_methods_supported":
+                                if (obj.code_challenge_methods_supported) { this.CodeChallengeMethodsSupported = Array.from(obj.code_challenge_methods_supported).map(o => o as string); }
+                                break;
+                            case "request_uri_parameter_supported":
+                                if (obj.request_uri_parameter_supported) { this.RequestUriParameterSupported = [true, 'true', 1].some(o => o === obj.request_uri_parameter_supported); }
+                                break;
+                            case "http_logout_supported":
+                                if (obj.http_logout_supported) { this.HttpLogoutSupported = [true, 'true', 1].some(o => o === obj.http_logout_supported); }
+                                break;
+                            case "frontchannel_logout_supported":
+                                if (obj.frontchannel_logout_supported) { this.FrontchannelLogoutSupported = [true, 'true', 1].some(o => o === obj.frontchannel_logout_supported); }
+                                break;
+                            case "rbac_url":
+                                if (obj.rbac_url) { this.RbacUrl = obj.rbac_url as string; }
+                                break;
+                            case "msgraph_host":
+                                if (obj.msgraph_host) { this.MsgraphHost = obj.msgraph_host as string; }
+                                break;
+                            case "cloud_graph_host_name":
+                                if (obj.cloud_graph_host_name) { this.CloudGraphHostName = obj.cloud_graph_host_name as string; }
+                                break;
+                            case "cloud_instance_name":
+                                if (obj.cloud_instance_name) { this.CloudInstanceName = obj.cloud_instance_name as string; }
+                                break;
+                            case "tenant_region_scope":
+                                if (obj.tenant_region_scope) { this.TenantRegionScope = obj.tenant_region_scope as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
+                    if(this.AuthorizationEndpoint) { arr.push('"authorization_endpoint": '); arr.push(JSON.stringify(this.AuthorizationEndpoint)); arr.push(','); } 
+                    if(this.TokenEndpoint) { arr.push('"token_endpoint": '); arr.push(JSON.stringify(this.TokenEndpoint)); arr.push(','); } 
+                    if(this.UserinfoEndpoint) { arr.push('"userinfo_endpoint": '); arr.push(JSON.stringify(this.UserinfoEndpoint)); arr.push(','); } 
+                    if(this.RevocationEndpoint) { arr.push('"revocation_endpoint": '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
+                    if(this.DeviceAuthorizationEndpoint) { arr.push('"device_authorization_endpoint": '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
+                    if(this.JwksUri) { arr.push('"jwks_uri": '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
+                    if(this.ScopesSupported) { arr.push('"scopes_supported": '); for (let i = 0; i < this.ScopesSupported.length; i++) arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); for (let i = 0; i < this.GrantTypesSupported.length; i++) arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); for (let i = 0; i < this.ResponseModesSupported.length; i++) arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); for (let i = 0; i < this.SubjectTypesSupported.length; i++) arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.EndSessionEndpoint) { arr.push('"end_session_endpoint": '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
+                    if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); for (let i = 0; i < this.ResponseTypesSupported.length; i++) arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.ClaimsSupported) { arr.push('"claims_supported": '); for (let i = 0; i < this.ClaimsSupported.length; i++) arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.RequestUriParameterSupported) { arr.push('"request_uri_parameter_supported": '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
+                    if(this.HttpLogoutSupported) { arr.push('"http_logout_supported": '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
+                    if(this.FrontchannelLogoutSupported) { arr.push('"frontchannel_logout_supported": '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
+                    if(this.RbacUrl) { arr.push('"rbac_url": '); arr.push(JSON.stringify(this.RbacUrl)); arr.push(','); } 
+                    if(this.MsgraphHost) { arr.push('"msgraph_host": '); arr.push(JSON.stringify(this.MsgraphHost)); arr.push(','); } 
+                    if(this.CloudGraphHostName) { arr.push('"cloud_graph_host_name": '); arr.push(JSON.stringify(this.CloudGraphHostName)); arr.push(','); } 
+                    if(this.CloudInstanceName) { arr.push('"cloud_instance_name": '); arr.push(JSON.stringify(this.CloudInstanceName)); arr.push(','); } 
+                    if(this.TenantRegionScope) { arr.push('"tenant_region_scope": '); arr.push(JSON.stringify(this.TenantRegionScope)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
+                 */
+                Issuer: string | null = null;
+                /**
+                 * REQUIRED. URL of the OP's OAuth 2.0 Authorization Endpoint [OpenID.Core].
+                 */
+                AuthorizationEndpoint: string | null = null;
+                /**
+                 * URL of the OP's OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
+                 */
+                TokenEndpoint: string | null = null;
+                /**
+                 * RECOMMENDED. URL of the OP's UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
+                 */
+                UserinfoEndpoint: string | null = null;
+                /**
+                 * 
+                 */
+                RevocationEndpoint: string | null = null;
+                /**
+                 * OPTIONAL. URL of the authorization server's device authorization endpoint defined in Section 3.1.
+                 */
+                DeviceAuthorizationEndpoint: string | null = null;
+                /**
+                 * REQUIRED. URL of the OP's JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server's encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key's intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
+                 */
+                JwksUri: string | null = null;
+                /**
+                 * RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
+                 */
+                ScopesSupported: string[] | null = null;
+                /**
+                 * OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is ["authorization_code", "implicit"]"
+                 */
+                GrantTypesSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                ResponseModesSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                SubjectTypesSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                IdTokenSigningAlgValuesSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                EndSessionEndpoint: string | null = null;
+                /**
+                 * REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
+                 */
+                ResponseTypesSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                ClaimsSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                TokenEndpointAuthMethodsSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                CodeChallengeMethodsSupported: string[] | null = null;
+                /**
+                 * 
+                 */
+                RequestUriParameterSupported: boolean | null = null;
+                /**
+                 * 
+                 */
+                HttpLogoutSupported: boolean | null = null;
+                /**
+                 * 
+                 */
+                FrontchannelLogoutSupported: boolean | null = null;
+                /**
+                 * 
+                 */
+                RbacUrl: string | null = null;
+                /**
+                 * 
+                 */
+                MsgraphHost: string | null = null;
+                /**
+                 * 
+                 */
+                CloudGraphHostName: string | null = null;
+                /**
+                 * 
+                 */
+                CloudInstanceName: string | null = null;
+                /**
+                 * 
+                 */
+                TenantRegionScope: string | null = null;
+            }
+            /**
+             * Represents a key
+             */
+            export class OpenIDKey {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "alg":
+                                if (obj.alg) { this.Alg = obj.alg as string; }
+                                break;
+                            case "kty":
+                                if (obj.kty) { this.Kty = obj.kty as string; }
+                                break;
+                            case "use":
+                                if (obj.use) { this.Use = obj.use as string; }
+                                break;
+                            case "kid":
+                                if (obj.kid) { this.Kid = obj.kid as string; }
+                                break;
+                            case "x5u":
+                                if (obj.x5u) { this.X5u = obj.x5u as string; }
+                                break;
+                            case "x5t":
+                                if (obj.x5t) { this.X5t = obj.x5t as string; }
+                                break;
+                            case "x5c":
+                                if (obj.x5c) { this.X5c = Array.from(obj.x5c).map(o => o as string); }
+                                break;
+                            case "n":
+                                if (obj.n) { this.N = obj.n as string; }
+                                break;
+                            case "e":
+                                if (obj.e) { this.E = obj.e as string; }
+                                break;
+                            case "issuer":
+                                if (obj.issuer) { this.Issuer = obj.issuer as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Alg) { arr.push('"alg": '); arr.push(JSON.stringify(this.Alg)); arr.push(','); } 
+                    if(this.Kty) { arr.push('"kty": '); arr.push(JSON.stringify(this.Kty)); arr.push(','); } 
+                    if(this.Use) { arr.push('"use": '); arr.push(JSON.stringify(this.Use)); arr.push(','); } 
+                    if(this.Kid) { arr.push('"kid": '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
+                    if(this.X5u) { arr.push('"x5u": '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
+                    if(this.X5t) { arr.push('"x5t": '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
+                    if(this.X5c) { arr.push('"x5c": '); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(',');; arr.push(','); } 
+                    if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
+                    if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
+                    if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * (Algorithm) Parameter
+                 */
+                Alg: string | null = null;
+                /**
+                 * (Key Type) Parameter
+                 */
+                Kty: string | null = null;
+                /**
+                 * (Public Key Use) Parameter
+                 */
+                Use: string | null = null;
+                /**
+                 * (Key ID) Parameter
+                 */
+                Kid: string | null = null;
+                /**
+                 * (X.509 URL) Parameter
+                 */
+                X5u: string | null = null;
+                /**
+                 * (X.509 Certificate SHA-1 Thumbprint) Parameter
+                 */
+                X5t: string | null = null;
+                /**
+                 * (X.509 Certificate Chain) Parameter
+                 */
+                X5c: string[] | null = null;
+                /**
+                 * 
+                 */
+                N: string | null = null;
+                /**
+                 * 
+                 */
+                E: string | null = null;
+                /**
+                 * 
+                 */
+                Issuer: string | null = null;
+            }
+            /**
+             * Represents a set of keys
+             */
+            export class OpenIDKeys {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "keys":
+                                if (obj.keys) { this.Keys = Array.from(obj.keys).map(o => new OpenIDKey(o)); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The keys
+                 */
+                Keys: OpenIDKey[] | null = null;
+            }
+            /**
+             * The response from a token request
+             */
+            export class TokenResponse {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "access_token":
+                                if (obj.access_token) { this.AccessToken = obj.access_token as string; }
+                                break;
+                            case "token_type":
+                                if (obj.token_type) { this.TokenType = obj.token_type as string; }
+                                break;
+                            case "expires_in":
+                                if (obj.expires_in) { this.ExpiresIn = obj.expires_in as string; }
+                                break;
+                            case "refresh_token":
+                                if (obj.refresh_token) { this.RefreshToken = obj.refresh_token as string; }
+                                break;
+                            case "scope":
+                                if (obj.scope) { this.Scope = obj.scope as string; }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.AccessToken) { arr.push('"access_token": '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
+                    if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
+                    if(this.ExpiresIn) { arr.push('"expires_in": '); arr.push(JSON.stringify(this.ExpiresIn)); arr.push(','); } 
+                    if(this.RefreshToken) { arr.push('"refresh_token": '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
+                    if(this.Scope) { arr.push('"scope": '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * REQUIRED.  The access token issued by the authorization server.
+                 */
+                AccessToken: string | null = null;
+                /**
+                 * REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive.
+                 */
+                TokenType: string | null = null;
+                /**
+                 * RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value '3600' denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value.
+                 */
+                ExpiresIn: string | null = null;
+                /**
+                 * OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6.
+                 */
+                RefreshToken: string | null = null;
+                /**
+                 * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
+                 */
+                Scope: string | null = null;
+            }
+        }
         /**
-         * 
+         * Represents a file content
          */
-        export class Claim {
+        export class FileContent {
             constructor(obj?: any) {
                 for(let prop in obj) {
                     switch(prop) {
-                        case "name":
-                            if (obj.name) { this.Name = obj.name as string; }
+                        case "Content":
+                            if (obj.Content) { this.Content = new Uint8Array(obj.Content); }
                             break;
-                        case "value":
-                            if (obj.value) { this.Value = obj.value as string; }
+                        case "CharSet":
+                            if (obj.CharSet) { this.CharSet = obj.CharSet as string; }
+                            break;
+                        case "ContentType":
+                            if (obj.ContentType) { this.ContentType = obj.ContentType as string; }
+                            break;
+                        case "FileName":
+                            if (obj.FileName) { this.FileName = obj.FileName as string; }
+                            break;
+                        case "LastModified":
+                            if (obj.LastModified) { this.LastModified = SolidRpcJs.ifnotnull<Date>(obj.LastModified, (notnull) => new Date(notnull)); }
+                            break;
+                        case "Location":
+                            if (obj.Location) { this.Location = obj.Location as string; }
+                            break;
+                        case "ETag":
+                            if (obj.ETag) { this.ETag = obj.ETag as string; }
                             break;
                     }
                 }
@@ -1544,33 +1864,105 @@ export namespace Security {
                     returnString = true;
                 }
                 arr.push('{');
-                if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                if(this.Value) { arr.push('"value": '); arr.push(JSON.stringify(this.Value)); arr.push(','); } 
+                if(this.Content) { arr.push('"Content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
+                if(this.CharSet) { arr.push('"CharSet": '); arr.push(JSON.stringify(this.CharSet)); arr.push(','); } 
+                if(this.ContentType) { arr.push('"ContentType": '); arr.push(JSON.stringify(this.ContentType)); arr.push(','); } 
+                if(this.FileName) { arr.push('"FileName": '); arr.push(JSON.stringify(this.FileName)); arr.push(','); } 
+                if(this.LastModified) { arr.push('"LastModified": '); arr.push(JSON.stringify(this.LastModified)); arr.push(','); } 
+                if(this.Location) { arr.push('"Location": '); arr.push(JSON.stringify(this.Location)); arr.push(','); } 
+                if(this.ETag) { arr.push('"ETag": '); arr.push(JSON.stringify(this.ETag)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
             /**
-             * The name of the claim
+             * The file content.
+             */
+            Content: Uint8Array | null = null;
+            /**
+             * The content charset
+             */
+            CharSet: string | null = null;
+            /**
+             * The content type.
+             */
+            ContentType: string | null = null;
+            /**
+             * The file name
+             */
+            FileName: string | null = null;
+            /**
+             * The last modified date of the resource.
+             */
+            LastModified: Date|null | null = null;
+            /**
+             * The location of the content
+             */
+            Location: string | null = null;
+            /**
+             * The ETag.
+             */
+            ETag: string | null = null;
+        }
+        /**
+         * Represents a name/value pair
+         */
+        export class NameValuePair {
+            constructor(obj?: any) {
+                for(let prop in obj) {
+                    switch(prop) {
+                        case "Name":
+                            if (obj.Name) { this.Name = obj.Name as string; }
+                            break;
+                        case "Value":
+                            if (obj.Value) { this.Value = obj.Value as string; }
+                            break;
+                    }
+                }
+            }
+            toJson(arr: string[] | null): string | null {
+                let returnString = false
+                if(arr == null) {
+                    arr = [];
+                    returnString = true;
+                }
+                arr.push('{');
+                if(this.Name) { arr.push('"Name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
+                if(this.Value) { arr.push('"Value": '); arr.push(JSON.stringify(this.Value)); arr.push(','); } 
+                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                if(returnString) return arr.join("");
+                return null;
+            }
+            /**
+             * The name
              */
             Name: string | null = null;
             /**
-             * The value of the claim
+             * The value
              */
             Value: string | null = null;
         }
         /**
-         * success
+         * Represents a solid rpc host.
          */
-        export class FacebookAccessToken {
+        export class SolidRpcHostInstance {
             constructor(obj?: any) {
                 for(let prop in obj) {
                     switch(prop) {
-                        case "access_token":
-                            if (obj.access_token) { this.AccessToken = obj.access_token as string; }
+                        case "HostId":
+                            if (obj.HostId) { this.HostId = obj.HostId as string; }
                             break;
-                        case "token_type":
-                            if (obj.token_type) { this.TokenType = obj.token_type as string; }
+                        case "Started":
+                            if (obj.Started) { this.Started = new Date(obj.Started); }
+                            break;
+                        case "LastAlive":
+                            if (obj.LastAlive) { this.LastAlive = new Date(obj.LastAlive); }
+                            break;
+                        case "BaseAddress":
+                            if (obj.BaseAddress) { this.BaseAddress = obj.BaseAddress as string; }
+                            break;
+                        case "HttpCookies":
+                            if (obj.HttpCookies) { this.HttpCookies = obj.HttpCookies as Record<string,string>; }
                             break;
                     }
                 }
@@ -1582,760 +1974,37 @@ export namespace Security {
                     returnString = true;
                 }
                 arr.push('{');
-                if(this.AccessToken) { arr.push('"access_token": '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
-                if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
+                if(this.HostId) { arr.push('"HostId": '); arr.push(JSON.stringify(this.HostId)); arr.push(','); } 
+                if(this.Started) { arr.push('"Started": '); arr.push(JSON.stringify(this.Started)); arr.push(','); } 
+                if(this.LastAlive) { arr.push('"LastAlive": '); arr.push(JSON.stringify(this.LastAlive)); arr.push(','); } 
+                if(this.BaseAddress) { arr.push('"BaseAddress": '); arr.push(JSON.stringify(this.BaseAddress)); arr.push(','); } 
+                if(this.HttpCookies) { arr.push('"HttpCookies": '); arr.push(JSON.stringify(this.HttpCookies)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 if(returnString) return arr.join("");
                 return null;
             }
             /**
-             * 
+             * The unique id of this host. This id is regenerated every time a 
+             *             new memory context is created
              */
-            AccessToken: string | null = null;
+            HostId: string | null = null;
             /**
-             * 
+             * The time this host was started.
              */
-            TokenType: string | null = null;
-        }
-        /**
-         * success
-         */
-        export class FacebookDebugToken {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "data":
-                            if (obj.data) { this.Data = new FacebookDebugTokenData(obj.data); }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Data) { arr.push('"data": '); if(this.Data) {this.Data.toJson(arr)}; arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
+            Started: Date | null = null;
             /**
-             * 
+             * The last time this host was alive. This field is set(and returned) when a client
+             *             invokes the ISolidRpcHost.GetHostInstance.
              */
-            Data: FacebookDebugTokenData | null = null;
-        }
-        /**
-         * 
-         */
-        export class FacebookDebugTokenData {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "app_id":
-                            if (obj.app_id) { this.AppId = Number(obj.app_id); }
-                            break;
-                        case "type":
-                            if (obj.type) { this.Type = obj.type as string; }
-                            break;
-                        case "application":
-                            if (obj.application) { this.Application = obj.application as string; }
-                            break;
-                        case "data_access_expires_at":
-                            if (obj.data_access_expires_at) { this.DataAccessExpiresAt = Number(obj.data_access_expires_at); }
-                            break;
-                        case "error":
-                            if (obj.error) { this.Error = new FacebookDebugTokenDataError(obj.error); }
-                            break;
-                        case "expires_at":
-                            if (obj.expires_at) { this.ExpiresAt = Number(obj.expires_at); }
-                            break;
-                        case "is_valid":
-                            if (obj.is_valid) { this.IsValid = [true, 'true', 1].some(o => o === obj.is_valid); }
-                            break;
-                        case "scopes":
-                            if (obj.scopes) { this.Scopes = Array.from(obj.scopes).map(o => o as string); }
-                            break;
-                        case "user_id":
-                            if (obj.user_id) { this.UserId = Number(obj.user_id); }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.AppId) { arr.push('"app_id": '); arr.push(JSON.stringify(this.AppId)); arr.push(','); } 
-                if(this.Type) { arr.push('"type": '); arr.push(JSON.stringify(this.Type)); arr.push(','); } 
-                if(this.Application) { arr.push('"application": '); arr.push(JSON.stringify(this.Application)); arr.push(','); } 
-                if(this.DataAccessExpiresAt) { arr.push('"data_access_expires_at": '); arr.push(JSON.stringify(this.DataAccessExpiresAt)); arr.push(','); } 
-                if(this.Error) { arr.push('"error": '); if(this.Error) {this.Error.toJson(arr)}; arr.push(','); } 
-                if(this.ExpiresAt) { arr.push('"expires_at": '); arr.push(JSON.stringify(this.ExpiresAt)); arr.push(','); } 
-                if(this.IsValid) { arr.push('"is_valid": '); arr.push(JSON.stringify(this.IsValid)); arr.push(','); } 
-                if(this.Scopes) { arr.push('"scopes": '); for (let i = 0; i < this.Scopes.length; i++) arr.push(JSON.stringify(this.Scopes[i])); arr.push(',');; arr.push(','); } 
-                if(this.UserId) { arr.push('"user_id": '); arr.push(JSON.stringify(this.UserId)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
+            LastAlive: Date | null = null;
             /**
-             * 
+             * The base address of this host
              */
-            AppId: number | null = null;
+            BaseAddress: string | null = null;
             /**
-             * 
+             * The cookie to set in order to reach this host
              */
-            Type: string | null = null;
-            /**
-             * 
-             */
-            Application: string | null = null;
-            /**
-             * 
-             */
-            DataAccessExpiresAt: number | null = null;
-            /**
-             * 
-             */
-            Error: FacebookDebugTokenDataError | null = null;
-            /**
-             * 
-             */
-            ExpiresAt: number | null = null;
-            /**
-             * 
-             */
-            IsValid: boolean | null = null;
-            /**
-             * 
-             */
-            Scopes: string[] | null = null;
-            /**
-             * 
-             */
-            UserId: number | null = null;
-        }
-        /**
-         * 
-         */
-        export class FacebookDebugTokenDataError {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "code":
-                            if (obj.code) { this.Code = Number(obj.code); }
-                            break;
-                        case "message":
-                            if (obj.message) { this.Message = obj.message as string; }
-                            break;
-                        case "subcode":
-                            if (obj.subcode) { this.Subcode = Number(obj.subcode); }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Code) { arr.push('"code": '); arr.push(JSON.stringify(this.Code)); arr.push(','); } 
-                if(this.Message) { arr.push('"message": '); arr.push(JSON.stringify(this.Message)); arr.push(','); } 
-                if(this.Subcode) { arr.push('"subcode": '); arr.push(JSON.stringify(this.Subcode)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * 
-             */
-            Code: number | null = null;
-            /**
-             * 
-             */
-            Message: string | null = null;
-            /**
-             * 
-             */
-            Subcode: number | null = null;
-        }
-        /**
-         * success
-         */
-        export class LoginProvider {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "name":
-                            if (obj.name) { this.Name = obj.name as string; }
-                            break;
-                        case "status":
-                            if (obj.status) { this.Status = obj.status as string; }
-                            break;
-                        case "script":
-                            if (obj.script) { this.Script = Array.from(obj.script).map(o => o as string); }
-                            break;
-                        case "meta":
-                            if (obj.meta) { this.Meta = Array.from(obj.meta).map(o => new LoginProviderMeta(o)); }
-                            break;
-                        case "buttonHtml":
-                            if (obj.buttonHtml) { this.ButtonHtml = obj.buttonHtml as string; }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                if(this.Status) { arr.push('"status": '); arr.push(JSON.stringify(this.Status)); arr.push(','); } 
-                if(this.Script) { arr.push('"script": '); for (let i = 0; i < this.Script.length; i++) arr.push(JSON.stringify(this.Script[i])); arr.push(',');; arr.push(','); } 
-                if(this.Meta) { arr.push('"meta": '); for (let i = 0; i < this.Meta.length; i++) if(this.Meta[i]) {this.Meta[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
-                if(this.ButtonHtml) { arr.push('"buttonHtml": '); arr.push(JSON.stringify(this.ButtonHtml)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * The name of the provider
-             */
-            Name: string | null = null;
-            /**
-             * The user status @ the provider. LoggedIn or NotLoggedIn
-             */
-            Status: string | null = null;
-            /**
-             * The script uris
-             */
-            Script: string[] | null = null;
-            /**
-             * The script uris
-             */
-            Meta: LoginProviderMeta[] | null = null;
-            /**
-             * The html for the login button
-             */
-            ButtonHtml: string | null = null;
-        }
-        /**
-         * 
-         */
-        export class LoginProviderMeta {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "name":
-                            if (obj.name) { this.Name = obj.name as string; }
-                            break;
-                        case "content":
-                            if (obj.content) { this.Content = obj.content as string; }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * The name of the meta data
-             */
-            Name: string | null = null;
-            /**
-             * The content of the meta data
-             */
-            Content: string | null = null;
-        }
-        /**
-         * success
-         */
-        export class OpenIDConnnectDiscovery {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "issuer":
-                            if (obj.issuer) { this.Issuer = obj.issuer as string; }
-                            break;
-                        case "authorization_endpoint":
-                            if (obj.authorization_endpoint) { this.AuthorizationEndpoint = obj.authorization_endpoint as string; }
-                            break;
-                        case "token_endpoint":
-                            if (obj.token_endpoint) { this.TokenEndpoint = obj.token_endpoint as string; }
-                            break;
-                        case "userinfo_endpoint":
-                            if (obj.userinfo_endpoint) { this.UserinfoEndpoint = obj.userinfo_endpoint as string; }
-                            break;
-                        case "revocation_endpoint":
-                            if (obj.revocation_endpoint) { this.RevocationEndpoint = obj.revocation_endpoint as string; }
-                            break;
-                        case "device_authorization_endpoint":
-                            if (obj.device_authorization_endpoint) { this.DeviceAuthorizationEndpoint = obj.device_authorization_endpoint as string; }
-                            break;
-                        case "jwks_uri":
-                            if (obj.jwks_uri) { this.JwksUri = obj.jwks_uri as string; }
-                            break;
-                        case "scopes_supported":
-                            if (obj.scopes_supported) { this.ScopesSupported = Array.from(obj.scopes_supported).map(o => o as string); }
-                            break;
-                        case "grant_types_supported":
-                            if (obj.grant_types_supported) { this.GrantTypesSupported = Array.from(obj.grant_types_supported).map(o => o as string); }
-                            break;
-                        case "response_modes_supported":
-                            if (obj.response_modes_supported) { this.ResponseModesSupported = Array.from(obj.response_modes_supported).map(o => o as string); }
-                            break;
-                        case "subject_types_supported":
-                            if (obj.subject_types_supported) { this.SubjectTypesSupported = Array.from(obj.subject_types_supported).map(o => o as string); }
-                            break;
-                        case "id_token_signing_alg_values_supported":
-                            if (obj.id_token_signing_alg_values_supported) { this.IdTokenSigningAlgValuesSupported = Array.from(obj.id_token_signing_alg_values_supported).map(o => o as string); }
-                            break;
-                        case "end_session_endpoint":
-                            if (obj.end_session_endpoint) { this.EndSessionEndpoint = obj.end_session_endpoint as string; }
-                            break;
-                        case "response_types_supported":
-                            if (obj.response_types_supported) { this.ResponseTypesSupported = Array.from(obj.response_types_supported).map(o => o as string); }
-                            break;
-                        case "claims_supported":
-                            if (obj.claims_supported) { this.ClaimsSupported = Array.from(obj.claims_supported).map(o => o as string); }
-                            break;
-                        case "token_endpoint_auth_methods_supported":
-                            if (obj.token_endpoint_auth_methods_supported) { this.TokenEndpointAuthMethodsSupported = Array.from(obj.token_endpoint_auth_methods_supported).map(o => o as string); }
-                            break;
-                        case "code_challenge_methods_supported":
-                            if (obj.code_challenge_methods_supported) { this.CodeChallengeMethodsSupported = Array.from(obj.code_challenge_methods_supported).map(o => o as string); }
-                            break;
-                        case "request_uri_parameter_supported":
-                            if (obj.request_uri_parameter_supported) { this.RequestUriParameterSupported = [true, 'true', 1].some(o => o === obj.request_uri_parameter_supported); }
-                            break;
-                        case "http_logout_supported":
-                            if (obj.http_logout_supported) { this.HttpLogoutSupported = [true, 'true', 1].some(o => o === obj.http_logout_supported); }
-                            break;
-                        case "frontchannel_logout_supported":
-                            if (obj.frontchannel_logout_supported) { this.FrontchannelLogoutSupported = [true, 'true', 1].some(o => o === obj.frontchannel_logout_supported); }
-                            break;
-                        case "rbac_url":
-                            if (obj.rbac_url) { this.RbacUrl = obj.rbac_url as string; }
-                            break;
-                        case "msgraph_host":
-                            if (obj.msgraph_host) { this.MsgraphHost = obj.msgraph_host as string; }
-                            break;
-                        case "cloud_graph_host_name":
-                            if (obj.cloud_graph_host_name) { this.CloudGraphHostName = obj.cloud_graph_host_name as string; }
-                            break;
-                        case "cloud_instance_name":
-                            if (obj.cloud_instance_name) { this.CloudInstanceName = obj.cloud_instance_name as string; }
-                            break;
-                        case "tenant_region_scope":
-                            if (obj.tenant_region_scope) { this.TenantRegionScope = obj.tenant_region_scope as string; }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
-                if(this.AuthorizationEndpoint) { arr.push('"authorization_endpoint": '); arr.push(JSON.stringify(this.AuthorizationEndpoint)); arr.push(','); } 
-                if(this.TokenEndpoint) { arr.push('"token_endpoint": '); arr.push(JSON.stringify(this.TokenEndpoint)); arr.push(','); } 
-                if(this.UserinfoEndpoint) { arr.push('"userinfo_endpoint": '); arr.push(JSON.stringify(this.UserinfoEndpoint)); arr.push(','); } 
-                if(this.RevocationEndpoint) { arr.push('"revocation_endpoint": '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
-                if(this.DeviceAuthorizationEndpoint) { arr.push('"device_authorization_endpoint": '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
-                if(this.JwksUri) { arr.push('"jwks_uri": '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
-                if(this.ScopesSupported) { arr.push('"scopes_supported": '); for (let i = 0; i < this.ScopesSupported.length; i++) arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); for (let i = 0; i < this.GrantTypesSupported.length; i++) arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); for (let i = 0; i < this.ResponseModesSupported.length; i++) arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); for (let i = 0; i < this.SubjectTypesSupported.length; i++) arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.EndSessionEndpoint) { arr.push('"end_session_endpoint": '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
-                if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); for (let i = 0; i < this.ResponseTypesSupported.length; i++) arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.ClaimsSupported) { arr.push('"claims_supported": '); for (let i = 0; i < this.ClaimsSupported.length; i++) arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(',');; arr.push(','); } 
-                if(this.RequestUriParameterSupported) { arr.push('"request_uri_parameter_supported": '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
-                if(this.HttpLogoutSupported) { arr.push('"http_logout_supported": '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
-                if(this.FrontchannelLogoutSupported) { arr.push('"frontchannel_logout_supported": '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
-                if(this.RbacUrl) { arr.push('"rbac_url": '); arr.push(JSON.stringify(this.RbacUrl)); arr.push(','); } 
-                if(this.MsgraphHost) { arr.push('"msgraph_host": '); arr.push(JSON.stringify(this.MsgraphHost)); arr.push(','); } 
-                if(this.CloudGraphHostName) { arr.push('"cloud_graph_host_name": '); arr.push(JSON.stringify(this.CloudGraphHostName)); arr.push(','); } 
-                if(this.CloudInstanceName) { arr.push('"cloud_instance_name": '); arr.push(JSON.stringify(this.CloudInstanceName)); arr.push(','); } 
-                if(this.TenantRegionScope) { arr.push('"tenant_region_scope": '); arr.push(JSON.stringify(this.TenantRegionScope)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
-             */
-            Issuer: string | null = null;
-            /**
-             * REQUIRED. URL of the OP's OAuth 2.0 Authorization Endpoint [OpenID.Core].
-             */
-            AuthorizationEndpoint: string | null = null;
-            /**
-             * URL of the OP's OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used.
-             */
-            TokenEndpoint: string | null = null;
-            /**
-             * RECOMMENDED. URL of the OP's UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components.
-             */
-            UserinfoEndpoint: string | null = null;
-            /**
-             * 
-             */
-            RevocationEndpoint: string | null = null;
-            /**
-             * OPTIONAL. URL of the authorization server's device authorization endpoint defined in Section 3.1.
-             */
-            DeviceAuthorizationEndpoint: string | null = null;
-            /**
-             * REQUIRED. URL of the OP's JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server's encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key's intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate.
-             */
-            JwksUri: string | null = null;
-            /**
-             * RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.
-             */
-            ScopesSupported: string[] | null = null;
-            /**
-             * OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is ["authorization_code", "implicit"]"
-             */
-            GrantTypesSupported: string[] | null = null;
-            /**
-             * 
-             */
-            ResponseModesSupported: string[] | null = null;
-            /**
-             * 
-             */
-            SubjectTypesSupported: string[] | null = null;
-            /**
-             * 
-             */
-            IdTokenSigningAlgValuesSupported: string[] | null = null;
-            /**
-             * 
-             */
-            EndSessionEndpoint: string | null = null;
-            /**
-             * REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.
-             */
-            ResponseTypesSupported: string[] | null = null;
-            /**
-             * 
-             */
-            ClaimsSupported: string[] | null = null;
-            /**
-             * 
-             */
-            TokenEndpointAuthMethodsSupported: string[] | null = null;
-            /**
-             * 
-             */
-            CodeChallengeMethodsSupported: string[] | null = null;
-            /**
-             * 
-             */
-            RequestUriParameterSupported: boolean | null = null;
-            /**
-             * 
-             */
-            HttpLogoutSupported: boolean | null = null;
-            /**
-             * 
-             */
-            FrontchannelLogoutSupported: boolean | null = null;
-            /**
-             * 
-             */
-            RbacUrl: string | null = null;
-            /**
-             * 
-             */
-            MsgraphHost: string | null = null;
-            /**
-             * 
-             */
-            CloudGraphHostName: string | null = null;
-            /**
-             * 
-             */
-            CloudInstanceName: string | null = null;
-            /**
-             * 
-             */
-            TenantRegionScope: string | null = null;
-        }
-        /**
-         * 
-         */
-        export class OpenIDKey {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "alg":
-                            if (obj.alg) { this.Alg = obj.alg as string; }
-                            break;
-                        case "kty":
-                            if (obj.kty) { this.Kty = obj.kty as string; }
-                            break;
-                        case "use":
-                            if (obj.use) { this.Use = obj.use as string; }
-                            break;
-                        case "kid":
-                            if (obj.kid) { this.Kid = obj.kid as string; }
-                            break;
-                        case "x5u":
-                            if (obj.x5u) { this.X5u = obj.x5u as string; }
-                            break;
-                        case "x5t":
-                            if (obj.x5t) { this.X5t = obj.x5t as string; }
-                            break;
-                        case "x5c":
-                            if (obj.x5c) { this.X5c = Array.from(obj.x5c).map(o => o as string); }
-                            break;
-                        case "n":
-                            if (obj.n) { this.N = obj.n as string; }
-                            break;
-                        case "e":
-                            if (obj.e) { this.E = obj.e as string; }
-                            break;
-                        case "issuer":
-                            if (obj.issuer) { this.Issuer = obj.issuer as string; }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Alg) { arr.push('"alg": '); arr.push(JSON.stringify(this.Alg)); arr.push(','); } 
-                if(this.Kty) { arr.push('"kty": '); arr.push(JSON.stringify(this.Kty)); arr.push(','); } 
-                if(this.Use) { arr.push('"use": '); arr.push(JSON.stringify(this.Use)); arr.push(','); } 
-                if(this.Kid) { arr.push('"kid": '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
-                if(this.X5u) { arr.push('"x5u": '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
-                if(this.X5t) { arr.push('"x5t": '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
-                if(this.X5c) { arr.push('"x5c": '); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(',');; arr.push(','); } 
-                if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
-                if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
-                if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * (Algorithm) Parameter
-             */
-            Alg: string | null = null;
-            /**
-             * (Key Type) Parameter
-             */
-            Kty: string | null = null;
-            /**
-             * (Public Key Use) Parameter
-             */
-            Use: string | null = null;
-            /**
-             * (Key ID) Parameter
-             */
-            Kid: string | null = null;
-            /**
-             * (X.509 URL) Parameter
-             */
-            X5u: string | null = null;
-            /**
-             * (X.509 Certificate SHA-1 Thumbprint) Parameter
-             */
-            X5t: string | null = null;
-            /**
-             * (X.509 Certificate Chain) Parameter
-             */
-            X5c: string[] | null = null;
-            /**
-             * 
-             */
-            N: string | null = null;
-            /**
-             * 
-             */
-            E: string | null = null;
-            /**
-             * 
-             */
-            Issuer: string | null = null;
-        }
-        /**
-         * success
-         */
-        export class OpenIDKeys {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "keys":
-                            if (obj.keys) { this.Keys = Array.from(obj.keys).map(o => new OpenIDKey(o)); }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * 
-             */
-            Keys: OpenIDKey[] | null = null;
-        }
-        /**
-         * success
-         */
-        export class TokenResponse {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "access_token":
-                            if (obj.access_token) { this.AccessToken = obj.access_token as string; }
-                            break;
-                        case "token_type":
-                            if (obj.token_type) { this.TokenType = obj.token_type as string; }
-                            break;
-                        case "expires_in":
-                            if (obj.expires_in) { this.ExpiresIn = obj.expires_in as string; }
-                            break;
-                        case "refresh_token":
-                            if (obj.refresh_token) { this.RefreshToken = obj.refresh_token as string; }
-                            break;
-                        case "scope":
-                            if (obj.scope) { this.Scope = obj.scope as string; }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.AccessToken) { arr.push('"access_token": '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
-                if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
-                if(this.ExpiresIn) { arr.push('"expires_in": '); arr.push(JSON.stringify(this.ExpiresIn)); arr.push(','); } 
-                if(this.RefreshToken) { arr.push('"refresh_token": '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
-                if(this.Scope) { arr.push('"scope": '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * REQUIRED.  The access token issued by the authorization server.
-             */
-            AccessToken: string | null = null;
-            /**
-             * REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive.
-             */
-            TokenType: string | null = null;
-            /**
-             * RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value '3600' denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value.
-             */
-            ExpiresIn: string | null = null;
-            /**
-             * OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6.
-             */
-            RefreshToken: string | null = null;
-            /**
-             * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
-             */
-            Scope: string | null = null;
-        }
-        /**
-         * success
-         */
-        export class WebContent {
-            constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "content":
-                            if (obj.content) { this.Content = new Uint8Array(obj.content); }
-                            break;
-                        case "contentType":
-                            if (obj.contentType) { this.ContentType = obj.contentType as string; }
-                            break;
-                        case "charSet":
-                            if (obj.charSet) { this.CharSet = obj.charSet as string; }
-                            break;
-                        case "location":
-                            if (obj.location) { this.Location = obj.location as string; }
-                            break;
-                    }
-                }
-            }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
-                arr.push('{');
-                if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
-                if(this.ContentType) { arr.push('"contentType": '); arr.push(JSON.stringify(this.ContentType)); arr.push(','); } 
-                if(this.CharSet) { arr.push('"charSet": '); arr.push(JSON.stringify(this.CharSet)); arr.push(','); } 
-                if(this.Location) { arr.push('"location": '); arr.push(JSON.stringify(this.Location)); arr.push(','); } 
-                if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
-            }
-            /**
-             * The content
-             */
-            Content: Uint8Array | null = null;
-            /**
-             * The content type
-             */
-            ContentType: string | null = null;
-            /**
-             * The charset - set if content is text
-             */
-            CharSet: string | null = null;
-            /**
-             * The location of the data.
-             */
-            Location: string | null = null;
+            HttpCookies: Record<string,string> | null = null;
         }
     }
 }

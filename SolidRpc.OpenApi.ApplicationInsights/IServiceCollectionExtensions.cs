@@ -1,7 +1,7 @@
 ﻿using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.OpenApi.ApplicationInsights;
 using System;
 using System.Threading.Tasks;

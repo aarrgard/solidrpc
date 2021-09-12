@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Serialization;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;

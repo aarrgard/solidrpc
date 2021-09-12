@@ -27,7 +27,7 @@ namespace SolidRpc.Abstractions.Services
 
         /// <summary>
         /// This is the method that is invoked when a user has been authenticated
-        /// and a valid token has been retrned
+        /// and a valid token is supplied.
         /// </summary>
         /// <returns></returns>
         Task<FileContent> TokenCallbackAsync(string code = null, string state = null, CancellationToken cancellation = default);

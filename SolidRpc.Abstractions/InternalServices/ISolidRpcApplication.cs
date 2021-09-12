@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Abstractions.Services
+namespace SolidRpc.Abstractions.InternalServices
 {
     /// <summary>
     /// Implements some basic features of the application

@@ -96,7 +96,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddAzFunctionTimer<TService>(this IServiceCollection services, Expression<Func<TService, Task>> invocation, string schedule, bool runOnStartup = false) where TService : class
         {
             var mi = GetMethodInfo(invocation);
-            var functionName = $"Timer_{typeof(TService).FullName}.{mi.Name}_{mi.GetParameters().Length}".Replace(".", "_");
+            var functionName = FunctionDef.CreateFunctionName("Timer", $".{typeof(TService).FullName}.{mi.Name}_{mi.GetParameters().Length}");
             var funcHandler = services.GetAzFunctionHandler();
             var azFunc = funcHandler.GetFunctions().SingleOrDefault(o => o.Name == functionName);
 

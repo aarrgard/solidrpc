@@ -1,5 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.OAuth2;
-using SolidRpc.Abstractions.Services;
+﻿using SolidRpc.Abstractions.InternalServices;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 using System;
 using System.Security.Claims;

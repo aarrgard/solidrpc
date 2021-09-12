@@ -1,13 +1,13 @@
 ﻿using SolidRpc.Abstractions;
-using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.InternalServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcServiceAttribute(typeof(ISolidRpcApplication), typeof(SolidRpcApplication), SolidRpcServiceLifetime.Singleton)]
-namespace SolidRpc.Abstractions.Services
+[assembly: SolidRpcService(typeof(ISolidRpcApplication), typeof(SolidRpcApplication), SolidRpcServiceLifetime.Singleton)]
+namespace SolidRpc.Abstractions.InternalServices
 {
     /// <summary>
     /// Implements the solid application logic

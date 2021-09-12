@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="CodeGenerator\TypeScriptTest.TestInvoke.ts" />
     <EmbeddedResource Include="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
     <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />
@@ -74,8 +73,6 @@
     <ProjectReference Include="..\SolidRpc.OpenApi.Model\SolidRpc.OpenApi.Model.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.OAuth2\SolidRpc.OpenApi.OAuth2.csproj" />
     <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
-    <ProjectReference Include="..\SolidRpc.Security.Back\SolidRpc.Security.Back.csproj" />
-    <ProjectReference Include="..\SolidRpc.Security\SolidRpc.Security.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
   </ItemGroup>
 
