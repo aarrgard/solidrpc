@@ -227,10 +227,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 c.SetSecurityKey("Authorization", "Bearer mykey");
                 return true;
             });
-            clientServices.AddSolidRpcBindings(typeof(ITypescriptGenerator), null, c => {
-                c.OpenApiSpec = openApiSpec;
-                return true;
-            });
+            clientServices.AddSolidRpcServices(o => true);
             clientServices.AddSolidRpcNode();
             clientServices.AddSolidRpcSwaggerUI();
         }

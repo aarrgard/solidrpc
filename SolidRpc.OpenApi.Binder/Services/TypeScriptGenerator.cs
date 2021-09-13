@@ -252,14 +252,14 @@ namespace SolidRpc.OpenApi.Binder.Services
                         var queryArgs = m.Arguments.Where(o => o.HttpLocation == "query").ToList();
                         queryArgs.ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.HttpName}, x => {{ query['{o.HttpName}'] = x; }});");
+                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.Name}, x => {{ query['{o.HttpName}'] = x; }});");
                         });
 
                         code.Append(codeIndentation).AppendLine($"let headers: {{ [index: string]: any }} = {{}};");
                         var headerArgs = m.Arguments.Where(o => o.HttpLocation == "header").ToList();
                         headerArgs.ForEach(o =>
                         {
-                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.HttpName}, x => {{ headers['{o.HttpName}'] = x; }});");
+                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.Name}, x => {{ headers['{o.HttpName}'] = x; }});");
                         });
 
                         var strBodyArgs = new StringBuilder();
