@@ -57,6 +57,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             HasImplementation = config.InvocationConfiguration.HasImplementation;
 
             var transports = MethodBinding.Transports;
+
             //
             // Determine transport type. If not explititly set use Http
             // if no implementation exists.

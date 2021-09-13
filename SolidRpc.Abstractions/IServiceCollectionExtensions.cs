@@ -442,9 +442,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configurator"></param>
         /// <returns></returns>
         public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcBindings(
-            this IServiceCollection sc, 
-            Type interfaze, 
-            Type impl = null, 
+            this IServiceCollection sc,
+            Type interfaze,
+            Type impl = null,
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
             //
@@ -459,6 +459,35 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 return new ISolidRpcOpenApiConfig[0];
             }
+
+            return interfaze.GetMethods()
+                .Select(m => sc.AddSolidRpcBinding(m, configurator))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Configures the supplied type so that it is exposed in the binder.
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="interfaze"></param>
+        /// <param name="configurator"></param>
+        /// <returns></returns>
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcRemoteBindings(
+            this IServiceCollection sc,
+            Type interfaze,
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
+        {
+            sc.AddSolidRpcSingletonServices();
+
+            //
+            // make sure that the type is registered
+            //
+            var services = sc.Where(o => o.ServiceType == interfaze);
+            if (!services.Any(o => o.ImplementationType == interfaze))
+            {
+                sc.AddTransient(interfaze, interfaze);
+            }
+            services.Where(o => o.ImplementationType != interfaze).ToList().ForEach(o => sc.Remove(o));
 
             return interfaze.GetMethods()
                 .Select(m => sc.AddSolidRpcBinding(m, configurator))

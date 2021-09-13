@@ -1,9 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
+using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
+using SolidRpc.Abstractions.Types.OAuth2;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -89,6 +95,33 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        public class TestOidc : ISolidRpcOidc
+        {
+            public Task<FileContent> AuthorizeAsync([OpenApi(Name = "scope", In = "query")] IEnumerable<string> scope, [OpenApi(Name = "response_type", In = "query")] string responseType, [OpenApi(Name = "client_id", In = "query")] string clientId, [OpenApi(Name = "redirect_uri", In = "query")] string redirectUri = null, [OpenApi(Name = "state", In = "query")] string state = null, [OpenApi(Name = "response_mode", In = "query")] string responseMode = null, [OpenApi(Name = "nonce", In = "query")] string nonce = null, CancellationToken cancellationToken = default)
+            {
+                return Task.FromResult(new FileContent()
+                {
+                    ContentType = "text/plain",
+                    Content = new MemoryStream(Encoding.UTF8.GetBytes("Authenticated"))
+                });
+            }
+
+            public Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<OpenIDKeys> GetKeysAsync(CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<TokenResponse> GetTokenAsync([OpenApi(Name = "grant_type", In = "formData")] string grantType = null, [OpenApi(Name = "client_id", In = "formData")] string clientId = null, [OpenApi(Name = "client_secret", In = "formData")] string clientSecret = null, [OpenApi(Name = "username", In = "formData")] string username = null, [OpenApi(Name = "password", In = "formData")] string password = null, [OpenApi(Name = "scope", In = "formData", CollectionFormat = "ssv")] IEnumerable<string> scope = null, [OpenApi(Name = "code", In = "formData")] string code = null, [OpenApi(Name = "redirect_uri", In = "formData")] string redirectUri = null, [OpenApi(Name = "code_verifier", In = "formData")] string codeVerifier = null, [OpenApi(Name = "refresh_token", In = "formData")] string refreshToken = null, CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         /// <summary>
         /// Configures the server services
         /// </summary>
@@ -103,7 +136,9 @@ namespace SolidRpc.Tests.Invoker
                 conf.SetSecurityKey(SecKey.ToString(), SecKey.ToString());
                 return true;
             });
-
+            services.AddSolidRpcOAuth2Local(services.GetSolidRpcService<Uri>().ToString());
+            services.AddTransient<ISolidRpcOidc, TestOidc>();
+            services.AddSolidRpcServices(o => true);
         }
 
         /// <summary>
@@ -113,6 +148,9 @@ namespace SolidRpc.Tests.Invoker
         /// <param name="baseAddress"></param>
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
+            //
+            // test interface
+            //
             var openApiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
                 .SetBaseAddress(baseAddress)
@@ -124,6 +162,19 @@ namespace SolidRpc.Tests.Invoker
                 return true;
             });
 
+            //
+            // oidc interface
+            //
+            openApiSpec = clientServices.GetSolidRpcOpenApiParser()
+                .CreateSpecification(typeof(ISolidRpcOidc))
+                .SetBaseAddress(baseAddress)
+                .WriteAsJsonString();
+            clientServices.AddSolidRpcRemoteBindings(typeof(ISolidRpcOidc), conf =>
+            {
+                conf.SetProxyTransportType<IHttpTransport>();
+                conf.OpenApiSpec = openApiSpec;
+                return true;
+            });
             base.ConfigureClientServices(clientServices, baseAddress);
         }
 
@@ -151,6 +202,24 @@ namespace SolidRpc.Tests.Invoker
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
                 var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => opt);
                 Assert.AreEqual(4711, res);
+            }
+        }
+
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestHttpInvokerCusomOidcImplementation()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var oidc = ctx.ClientServiceProvider.GetRequiredService<ISolidRpcOidc>();
+                var res = await oidc.AuthorizeAsync(null, null, null, null, null, null, null, CancellationToken.None);
+
+                Assert.AreEqual("text/plain", res.ContentType);
             }
         }
 

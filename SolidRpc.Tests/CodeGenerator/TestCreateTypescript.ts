@@ -808,6 +808,8 @@ export namespace Abstractions {
              * @param clientId 
              * @param redirectUri 
              * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+             * @param responseMode 
+             * @param nonce 
              * @param cancellationToken 
              */
             AuthorizeAsync(
@@ -816,6 +818,8 @@ export namespace Abstractions {
                 clientId : string,
                 redirectUri? : string,
                 state? : string,
+                responseMode? : string,
+                nonce? : string,
                 cancellationToken? : CancellationToken
             ): Observable<Types.FileContent>;
             /**
@@ -936,6 +940,8 @@ export namespace Abstractions {
              * @param clientId 
              * @param redirectUri 
              * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
+             * @param responseMode 
+             * @param nonce 
              * @param cancellationToken 
              */
             AuthorizeAsync(
@@ -944,6 +950,8 @@ export namespace Abstractions {
                 clientId : string,
                 redirectUri? : string,
                 state? : string,
+                responseMode? : string,
+                nonce? : string,
                 cancellationToken? : CancellationToken
             ): Observable<Types.FileContent> {
                 let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
@@ -953,6 +961,8 @@ export namespace Abstractions {
                 SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
                 SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                SolidRpcJs.ifnotnull(response_mode, x => { query['response_mode'] = x; });
+                SolidRpcJs.ifnotnull(nonce, x => { query['nonce'] = x; });
                 let headers: { [index: string]: any } = {};
                 return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
