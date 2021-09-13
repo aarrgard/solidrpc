@@ -1,0 +1,1789 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SolidRpc.Abstractions",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Abstractions",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}": {
+      "get": {
+        "tags": [
+          "Code.ICodeNamespaceGenerator"
+        ],
+        "description": "Creates a code namespace for supplied assembly name",
+        "operationId": "Get#SolidRpc#Abstractions#Services#Code#ICodeNamespaceGenerator#CreateCodeNamespace#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "assemblyName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "represents a namespace",
+            "schema": {
+              "$ref": "#/definitions/Code.CodeNamespace"
+            }
+          }
+        }
+      }
+    },
+    "/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}": {
+      "get": {
+        "tags": [
+          "Code.INpmGenerator"
+        ],
+        "description": "Returns the files that should be stored in the node_modules directory",
+        "operationId": "Get#SolidRpc#Abstractions#Services#Code#INpmGenerator#CreateNpmPackage#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "assemblyNames",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "description": "The name of the assemblies to create an npm package for.",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Code.NpmPackage"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}": {
+      "get": {
+        "tags": [
+          "Code.INpmGenerator"
+        ],
+        "description": "Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#Code#INpmGenerator#CreateNpmZip#1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "assemblyNames",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "description": "The name of the assembly to create an npm package for.",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}": {
+      "get": {
+        "tags": [
+          "Code.ITypescriptGenerator"
+        ],
+        "description": "Creates a types.ts file from supplied assembly name",
+        "operationId": "Get#SolidRpc#Abstractions#Services#Code#ITypescriptGenerator#CreateTypesTsForAssemblyAsync#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "assemblyName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync": {
+      "post": {
+        "tags": [
+          "Code.ITypescriptGenerator"
+        ],
+        "description": "Creates a types.ts file from supplied code namespace",
+        "operationId": "Post#SolidRpc#Abstractions#Services#Code#ITypescriptGenerator#CreateTypesTsForCodeNamespaceAsync",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "codeNamespace",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Code.CodeNamespace"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcContentHandler/GetContent": {
+      "get": {
+        "tags": [
+          "ISolidRpcContentHandler"
+        ],
+        "description": "Returns the content for supplied path.\r\n\r\nNote that the path is marked as optional(default value set). This is so that the parameter\r\nis placed in the query string instead of path.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetContent",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The path to get the content for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}": {
+      "get": {
+        "tags": [
+          "ISolidRpcContentHandler"
+        ],
+        "description": "Returns all the path mappings.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetPathMappingsAsync#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "redirects",
+            "in": "path",
+            "required": true,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NameValuePair"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/BaseAddress": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the base url for this host",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#BaseAddress",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/CheckHost": {
+      "post": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Invokes the \"GetHostInstance\" targeted for supplied instance and resturns the result",
+        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcHost#CheckHost",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "hostInstance",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolidRpcHostInstance"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a solid rpc host.",
+            "schema": {
+              "$ref": "#/definitions/SolidRpcHostInstance"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/GetHostConfiguration": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the host configuration.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostConfiguration",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NameValuePair"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/GetHostId": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the id of this host",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostId",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/GetHostInstance": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the id of this host. This method can be used to determine if a host is up and running by\r\ncomparing the returned value with the instance that we want to send to. If a host goes down it is\r\nremoved from the router and another instance probably responds to the call.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostInstance",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a solid rpc host.",
+            "schema": {
+              "$ref": "#/definitions/SolidRpcHostInstance"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/IsAlive": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Function that determines if the host is alive.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#IsAlive",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/SyncHostsFromStore": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "This method is invoked on all the hosts in a store when a new host is available.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#SyncHostsFromStore",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SolidRpcHostInstance"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHostStore/AddHostInstanceAsync": {
+      "post": {
+        "tags": [
+          "ISolidRpcHostStore"
+        ],
+        "description": "Adds a host instance to the host store.",
+        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcHostStore#AddHostInstanceAsync",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "hostInstance",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolidRpcHostInstance"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHostStore/ListHostInstancesAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcHostStore"
+        ],
+        "description": "Lists the stored host instances",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHostStore#ListHostInstancesAsync",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SolidRpcHostInstance"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHostStore/RemoveHostInstanceAsync": {
+      "post": {
+        "tags": [
+          "ISolidRpcHostStore"
+        ],
+        "description": "Removes a host instance from the store.",
+        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcHostStore#RemoveHostInstanceAsync",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "hostInstance",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SolidRpcHostInstance"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcMethodStore/GetHttpRequestAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcMethodStore"
+        ],
+        "description": "Returns the http requests for the current user.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#GetHttpRequestAsync",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "takeCount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HttpRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcMethodStore/GetHttpRequestsAsync/{sessionId}": {
+      "get": {
+        "tags": [
+          "ISolidRpcMethodStore"
+        ],
+        "description": "Returns the next http requests for supplied session",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#GetHttpRequestsAsync#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "takeCount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HttpRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcMethodStore/RemoveHttpRequestAsync/{solidRpcCallId}": {
+      "get": {
+        "tags": [
+          "ISolidRpcMethodStore"
+        ],
+        "description": "Returns the http request for the current user.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#RemoveHttpRequestAsync#1",
+        "parameters": [
+          {
+            "name": "solidRpcCallId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcMethodStore/RemoveHttpRequestAsync/{sessionId}/{solidRpcCallId}": {
+      "get": {
+        "tags": [
+          "ISolidRpcMethodStore"
+        ],
+        "description": "Removes the http request",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#RemoveHttpRequestAsync#2",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "solidRpcCallId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOAuth2"
+        ],
+        "description": "This is the method returns a html page that calls supplied callback\r\nafter the token callback has been invoked. Use this method to\r\nretreive tokens from a standalone node instance.\r\n\r\nStart a local http server and supply the address to the handler.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#GetAuthorizationCodeTokenAsync",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "callbackUri",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "scopes",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOAuth2/TokenCallbackAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOAuth2"
+        ],
+        "description": "This is the method that is invoked when a user has been authenticated\r\nand a valid token is supplied.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#TokenCallbackAsync",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOidc/AuthorizeAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOidc"
+        ],
+        "description": "authorizes a user",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#AuthorizeAsync",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "description": "REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "response_type",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "REQUIRED. OAuth 2.0 Response Type value that determines the authorization processing flow to be used, including what parameters are returned from the endpoints used. When using the Authorization Code Flow, this value is code."
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "REQUIRED. OAuth 2.0 Client Identifier valid at the Authorization Server."
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "REQUIRED. Redirection URI to which the response will be sent. This URI MUST exactly match one of the Redirection URI values for the Client pre-registered at the OpenID Provider, with the matching performed as described in Section 6.2.1 of [RFC3986] (Simple String Comparison). When using this flow, the Redirection URI SHOULD use the https scheme; however, it MAY use the http scheme, provided that the Client Type is confidential, as defined in Section 2.1 of OAuth 2.0, and provided the OP allows the use of http Redirection URIs in this case. The Redirection URI MAY use an alternate scheme, such as one that is intended to identify a callback into a native application."
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie."
+          },
+          {
+            "name": "response_mode",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The Response Mode determines how the Authorization Server returns result parameters from the Authorization Endpoint. Non-default modes are specified using the response_mode request parameter. If response_mode is not present in a request, the default Response Mode mechanism specified by the Response Type is used."
+          },
+          {
+            "name": "nonce",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/openid-configuration": {
+      "get": {
+        "tags": [
+          "ISolidRpcOidc"
+        ],
+        "description": "Returns the /.well-known/openid-configuration file",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#GetDiscoveryDocumentAsync",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a discovery document.",
+            "schema": {
+              "$ref": "#/definitions/OAuth2.OpenIDConnectDiscovery"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOidc/GetKeysAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOidc"
+        ],
+        "description": "Returns the keys",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#GetKeysAsync",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents a set of keys",
+            "schema": {
+              "$ref": "#/definitions/OAuth2.OpenIDKeys"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOidc/GetTokenAsync": {
+      "post": {
+        "tags": [
+          "ISolidRpcOidc"
+        ],
+        "description": "authenticates a user",
+        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcOidc#GetTokenAsync",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the grant type"
+          },
+          {
+            "name": "client_id",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the client id"
+          },
+          {
+            "name": "client_secret",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The client secret"
+          },
+          {
+            "name": "username",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The user name"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the user password"
+          },
+          {
+            "name": "scope",
+            "in": "formData",
+            "required": false,
+            "type": "array",
+            "description": "The the scopes",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "ssv"
+          },
+          {
+            "name": "code",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the code"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the redirect uri"
+          },
+          {
+            "name": "code_verifier",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the code verifier"
+          },
+          {
+            "name": "refresh_token",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "The the refresh token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response from a token request",
+            "schema": {
+              "$ref": "#/definitions/OAuth2.TokenResponse"
+            }
+          }
+        }
+      }
+    },
+    "/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync": {
+      "get": {
+        "tags": [
+          "RateLimit.ISolidRpcRateLimit"
+        ],
+        "description": "Returns the rate limit settings",
+        "operationId": "Get#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#GetRateLimitSettingsAsync",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RateLimit.RateLimitSetting"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}": {
+      "get": {
+        "tags": [
+          "RateLimit.ISolidRpcRateLimit"
+        ],
+        "description": "Returns the rate limit token.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#GetRateLimitTokenAsync#2",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "timeout",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "time-span",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token returned from a resource request",
+            "schema": {
+              "$ref": "#/definitions/RateLimit.RateLimitToken"
+            }
+          }
+        }
+      }
+    },
+    "/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}": {
+      "get": {
+        "tags": [
+          "RateLimit.ISolidRpcRateLimit"
+        ],
+        "description": "Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#GetSingeltonTokenAsync#2",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "timeout",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "time-span",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token returned from a resource request",
+            "schema": {
+              "$ref": "#/definitions/RateLimit.RateLimitToken"
+            }
+          }
+        }
+      }
+    },
+    "/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync": {
+      "post": {
+        "tags": [
+          "RateLimit.ISolidRpcRateLimit"
+        ],
+        "description": "Returns a rate limit token.",
+        "operationId": "Post#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#ReturnRateLimitTokenAsync",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "rateLimitToken",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RateLimit.RateLimitToken"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting": {
+      "post": {
+        "tags": [
+          "RateLimit.ISolidRpcRateLimit"
+        ],
+        "description": "Updates the rate limit settings",
+        "operationId": "Post#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#UpdateRateLimitSetting",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "setting",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RateLimit.RateLimitSetting"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Code.CodeNamespace": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of this namespace part(not fully qualified)."
+        },
+        "namespaces": {
+          "type": "array",
+          "description": "The namespaces within this namespace",
+          "items": {
+            "$ref": "#/definitions/Code.CodeNamespace"
+          }
+        },
+        "interfaces": {
+          "type": "array",
+          "description": "The interfaces within this namespace",
+          "items": {
+            "$ref": "#/definitions/Code.CodeInterface"
+          }
+        },
+        "types": {
+          "type": "array",
+          "description": "The types within this namespace",
+          "items": {
+            "$ref": "#/definitions/Code.CodeType"
+          }
+        }
+      },
+      "type": "object",
+      "description": "represents a namespace"
+    },
+    "Code.CodeInterface": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "The description of this interface"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of this interface"
+        },
+        "methods": {
+          "type": "array",
+          "description": "The methods in the interface",
+          "items": {
+            "$ref": "#/definitions/Code.CodeMethod"
+          }
+        }
+      },
+      "type": "object",
+      "description": "Represents an interface"
+    },
+    "Code.CodeMethod": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A description of the the method"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of this method"
+        },
+        "arguments": {
+          "type": "array",
+          "description": "The method arguments",
+          "items": {
+            "$ref": "#/definitions/Code.CodeMethodArg"
+          }
+        },
+        "returnType": {
+          "type": "array",
+          "description": "The return type of the method(fully qualified)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "httpMethod": {
+          "type": "string",
+          "description": "The http method(GET,POST,etc.)"
+        },
+        "httpBaseAddress": {
+          "type": "string",
+          "format": "uri",
+          "description": "The base address to this method"
+        },
+        "httpPath": {
+          "type": "string",
+          "description": "The http path relative to the base address"
+        }
+      },
+      "type": "object",
+      "description": "Represents a method"
+    },
+    "Code.CodeMethodArg": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A description of the the argument"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the argument"
+        },
+        "argType": {
+          "type": "array",
+          "description": "The argument type(fully qualified)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "boolean",
+          "description": "Specifies if this argument is optional(not required)"
+        },
+        "httpName": {
+          "type": "string",
+          "description": "The name of the argument in the http protocol."
+        },
+        "httpLocation": {
+          "type": "string",
+          "description": "The location of the argument(&#39;path&#39;, &#39;query&#39;, &#39;header&#39;, &#39;body&#39;, &#39;body-inline&#39;)"
+        }
+      },
+      "type": "object",
+      "description": "Represents a method argument"
+    },
+    "Code.CodeType": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A description of the the type"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the type"
+        },
+        "extends": {
+          "type": "array",
+          "description": "The type that this type extends",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "array",
+          "description": "The method arguments",
+          "items": {
+            "$ref": "#/definitions/Code.CodeTypeProperty"
+          }
+        }
+      },
+      "type": "object",
+      "description": "Represents a type"
+    },
+    "Code.CodeTypeProperty": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A description of the the property"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the property"
+        },
+        "propertyType": {
+          "type": "array",
+          "description": "The property type(fully qualified)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "httpName": {
+          "type": "string",
+          "description": "The name of the property in the http protocol."
+        }
+      },
+      "type": "object",
+      "description": "Represents a property in a type"
+    },
+    "Code.NpmPackage": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The package name(folder name)"
+        },
+        "files": {
+          "type": "array",
+          "description": "The files within the package",
+          "items": {
+            "$ref": "#/definitions/Code.NpmPackageFile"
+          }
+        }
+      },
+      "type": "object",
+      "description": "successful operation"
+    },
+    "Code.NpmPackageFile": {
+      "properties": {
+        "filePath": {
+          "type": "string",
+          "description": "The file path within the package"
+        },
+        "content": {
+          "type": "string",
+          "description": "The file content(binary content not supported)"
+        }
+      },
+      "type": "object",
+      "description": ""
+    },
+    "NameValuePair": {
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "The name"
+        },
+        "Value": {
+          "type": "string",
+          "description": "The value"
+        }
+      },
+      "type": "object",
+      "description": "Represents a name/value pair"
+    },
+    "SolidRpcHostInstance": {
+      "properties": {
+        "HostId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique id of this host. This id is regenerated every time a\r\nnew memory context is created"
+        },
+        "Started": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time this host was started."
+        },
+        "LastAlive": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time this host was alive. This field is set(and returned) when a client\r\ninvokes the ISolidRpcHost.GetHostInstance."
+        },
+        "BaseAddress": {
+          "type": "string",
+          "format": "uri",
+          "description": "The base address of this host"
+        },
+        "HttpCookies": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object",
+          "description": "The cookie to set in order to reach this host"
+        }
+      },
+      "type": "object",
+      "description": "Represents a solid rpc host."
+    },
+    "HttpRequest": {
+      "properties": {
+        "Method": {
+          "type": "string",
+          "description": "The method(GET,POST,PUT,etc)"
+        },
+        "Uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "The uri"
+        },
+        "Headers": {
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "description": "The headers"
+        },
+        "Body": {
+          "type": "string",
+          "format": "binary",
+          "description": "The body."
+        }
+      },
+      "type": "object",
+      "description": "Represents a HttpRequest. We can use this type to create dynamic invocation\r\nhandlers that intercepts all the data sent to it."
+    },
+    "OAuth2.OpenIDConnectDiscovery": {
+      "properties": {
+        "issuer": {
+          "type": "string",
+          "description": "REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer."
+        },
+        "authorization_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "REQUIRED. URL of the OP&#39;s OAuth 2.0 Authorization Endpoint [OpenID.Core]."
+        },
+        "token_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the OP&#39;s OAuth 2.0 Token Endpoint [OpenID.Core]. This is REQUIRED unless only the Implicit Flow is used."
+        },
+        "userinfo_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "RECOMMENDED. URL of the OP&#39;s UserInfo Endpoint [OpenID.Core]. This URL MUST use the https scheme and MAY contain port, path, and query parameter components."
+        },
+        "revocation_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": ""
+        },
+        "device_authorization_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "OPTIONAL. URL of the authorization server&#39;s device authorization endpoint defined in Section 3.1."
+        },
+        "jwks_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "REQUIRED. URL of the OP&#39;s JSON Web Key Set [JWK] document. This contains the signing key(s) the RP uses to validate signatures from the OP. The JWK Set MAY also contain the Server&#39;s encryption key(s), which are used by RPs to encrypt requests to the Server. When both signing and encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced JWK Set to indicate each key&#39;s intended usage. Although some algorithms allow the same key to be used for both signatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used to provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST match those in the certificate."
+        },
+        "scopes_supported": {
+          "type": "array",
+          "description": "RECOMMENDED. JSON array containing a list of the OAuth 2.0 [RFC6749] scope values that this server supports. The server MUST support the openid scope value. Servers MAY choose not to advertise some supported scope values even when this parameter is used, although those defined in [OpenID.Core] SHOULD be listed, if supported.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "grant_types_supported": {
+          "type": "array",
+          "description": "OPTIONAL. JSON array containing a list of the OAuth 2.0 Grant Type values that this OP supports. Dynamic OpenID Providers MUST support the authorization_code and implicit Grant Type values and MAY support other Grant Types. If omitted, the default value is [&quot;authorization_code&quot;, &quot;implicit&quot;]&quot;",
+          "items": {
+            "type": "string"
+          }
+        },
+        "response_modes_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subject_types_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id_token_signing_alg_values_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "end_session_endpoint": {
+          "type": "string",
+          "description": ""
+        },
+        "response_types_supported": {
+          "type": "array",
+          "description": "REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claims_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_endpoint_auth_methods_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code_challenge_methods_supported": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string"
+          }
+        },
+        "request_uri_parameter_supported": {
+          "type": "boolean",
+          "description": ""
+        },
+        "http_logout_supported": {
+          "type": "boolean",
+          "description": ""
+        },
+        "frontchannel_logout_supported": {
+          "type": "boolean",
+          "description": ""
+        },
+        "rbac_url": {
+          "type": "string",
+          "format": "uri",
+          "description": ""
+        },
+        "msgraph_host": {
+          "type": "string",
+          "description": ""
+        },
+        "cloud_graph_host_name": {
+          "type": "string",
+          "description": ""
+        },
+        "cloud_instance_name": {
+          "type": "string",
+          "description": ""
+        },
+        "tenant_region_scope": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "type": "object",
+      "description": "Represents a discovery document."
+    },
+    "OAuth2.OpenIDKeys": {
+      "properties": {
+        "keys": {
+          "type": "array",
+          "description": "The keys",
+          "items": {
+            "$ref": "#/definitions/OAuth2.OpenIDKey"
+          }
+        }
+      },
+      "type": "object",
+      "description": "Represents a set of keys"
+    },
+    "OAuth2.OpenIDKey": {
+      "properties": {
+        "alg": {
+          "type": "string",
+          "description": "(Algorithm) Parameter"
+        },
+        "kty": {
+          "type": "string",
+          "description": "(Key Type) Parameter"
+        },
+        "use": {
+          "type": "string",
+          "description": "(Public Key Use) Parameter"
+        },
+        "kid": {
+          "type": "string",
+          "description": "(Key ID) Parameter"
+        },
+        "x5u": {
+          "type": "string",
+          "format": "uri",
+          "description": "(X.509 URL) Parameter"
+        },
+        "x5t": {
+          "type": "string",
+          "description": "(X.509 Certificate SHA-1 Thumbprint) Parameter"
+        },
+        "x5c": {
+          "type": "array",
+          "description": "(X.509 Certificate Chain) Parameter",
+          "items": {
+            "type": "string"
+          }
+        },
+        "n": {
+          "type": "string",
+          "description": ""
+        },
+        "e": {
+          "type": "string",
+          "description": ""
+        },
+        "issuer": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "type": "object",
+      "description": "Represents a key"
+    },
+    "OAuth2.TokenResponse": {
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "description": "REQUIRED.  The access token issued by the authorization server."
+        },
+        "token_type": {
+          "type": "string",
+          "description": "REQUIRED.  The type of the token issued as described in Section 7.1.  Value is case insensitive."
+        },
+        "expires_in": {
+          "type": "string",
+          "description": "RECOMMENDED.  The lifetime in seconds of the access token.  For example, the value &#39;3600&#39; denotes that the access token will expire in one hour from the time the response was generated. If omitted, the authorization server SHOULD provide the expiration time via other means or document the default value."
+        },
+        "refresh_token": {
+          "type": "string",
+          "description": "OPTIONAL.  The refresh token, which can be used to obtain new access tokens using the same authorization grant as describedin Section 6."
+        },
+        "scope": {
+          "type": "string",
+          "description": "OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3."
+        }
+      },
+      "type": "object",
+      "description": "The response from a token request"
+    },
+    "RateLimit.RateLimitSetting": {
+      "properties": {
+        "ResourceName": {
+          "type": "string",
+          "description": "The name of the resource."
+        },
+        "MaxConcurrentCalls": {
+          "type": "integer",
+          "format": "int32",
+          "description": "If set specifies the maximum number of concurrent calls\r\nthere can be to the resource"
+        }
+      },
+      "type": "object",
+      "description": "Specifies the rate limit settings for the specified resource"
+    },
+    "RateLimit.RateLimitToken": {
+      "properties": {
+        "ResourceName": {
+          "type": "string",
+          "description": "The name of the resource."
+        },
+        "Id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique id of this token. This guid may be empty if no token\r\nwas issued from the service."
+        },
+        "Expires": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time when the token expires"
+        }
+      },
+      "type": "object",
+      "description": "Token returned from a resource request"
+    }
+  },
+  "tags": [
+    {
+      "name": "Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.IServicesAdded",
+      "description": ""
+    },
+    {
+      "name": "InternalServices.ISolidRpcApplication",
+      "description": "Implements some basic features of the application"
+    },
+    {
+      "name": "InternalServices.ISolidRpcAuthorization",
+      "description": "Implements the logic for authorization"
+    },
+    {
+      "name": "InternalServices.ISolidRpcContentStore",
+      "description": "The implementation of this interface is a singleton service\r\nthat provides access to static content.\r\n\r\nStatic resources may be configured(added) during setup of the IoC container.\r\n\r\nIf no path prefix is specified all the registered paths for the assembly are used at\r\nruntime to determine if the content should be delivered."
+    },
+    {
+      "name": "InternalServices.ISolidRpcContinuationToken",
+      "description": "Represents a continuation token."
+    },
+    {
+      "name": "OpenApi.Binder.IMethodAddressTransformer",
+      "description": "Interface that can be implemented to resolve the base uri."
+    },
+    {
+      "name": "OpenApi.Binder.IMethodArgument",
+      "description": "Represents a method argument."
+    },
+    {
+      "name": "OpenApi.Binder.IMethodBinder",
+      "description": "The method binder is responsible for binding MethodInfo structures to a swagger spec."
+    },
+    {
+      "name": "OpenApi.Binder.IMethodBinderStore",
+      "description": "A store that contains bindings for an assebly and open api configuration."
+    },
+    {
+      "name": "OpenApi.Binder.IMethodBinding",
+      "description": "Represents the method info structure in a swagger specification."
+    },
+    {
+      "name": "OpenApi.Binder.IMethodBindingHandler",
+      "description": "Interface that can be implemted in order to receive callbacks when a method binding has been created."
+    },
+    {
+      "name": "OpenApi.Http.IHttpRequest",
+      "description": "Interface that we use to access the data in the Http request"
+    },
+    {
+      "name": "OpenApi.Http.IHttpRequestData",
+      "description": "Represents some request data."
+    },
+    {
+      "name": "OpenApi.Http.IHttpResponse",
+      "description": "Interface that we use to access the data in the Http response"
+    },
+    {
+      "name": "OpenApi.Http.IMethodInvoker",
+      "description": "Interface that exposes functionality to invoke a method in an IoC container."
+    },
+    {
+      "name": "OpenApi.Invoker.IInvoker",
+      "description": "Base interface for the invokers"
+    },
+    {
+      "name": "OpenApi.Invoker.ITransportHandler",
+      "description": "Represents a transport handler for supplied configuration"
+    },
+    {
+      "name": "OpenApi.Model.IOpenApiModelBase",
+      "description": "Represents a model object"
+    },
+    {
+      "name": "OpenApi.Model.IOpenApiOperation",
+      "description": "Represents an operation."
+    },
+    {
+      "name": "OpenApi.Model.IOpenApiParser",
+      "description": "Interface used to handle open api specs"
+    },
+    {
+      "name": "OpenApi.Model.IOpenApiSpec",
+      "description": "Interface implemented by the SwaggerObject structures in the model."
+    },
+    {
+      "name": "OpenApi.Model.IOpenApiSpecResolver",
+      "description": "This interface defines the logic assocated\r\nwith resolving referenced specifications."
+    },
+    {
+      "name": "OpenApi.OAuth2.IAuthority",
+      "description": "Represents an authority"
+    },
+    {
+      "name": "OpenApi.OAuth2.IAuthorityFactory",
+      "description": "Interface that provides access to an authority factory"
+    },
+    {
+      "name": "OpenApi.OAuth2.IAuthorityLocal",
+      "description": "Represents additional functionality for a local\r\nauthority."
+    },
+    {
+      "name": "OpenApi.OAuth2.IAuthorityTokenChecks",
+      "description": "Configures the token checks to perform"
+    },
+    {
+      "name": "OpenApi.Proxy.ISecurityKeyConfig",
+      "description": "Configures a security key."
+    },
+    {
+      "name": "OpenApi.Proxy.ISecurityOAuth2Config",
+      "description": "Configures the OAuth2 security"
+    },
+    {
+      "name": "OpenApi.Proxy.ISecurityPathClaimConfig",
+      "description": "Configures the required security claim neede to\r\ninvoke the operation."
+    },
+    {
+      "name": "OpenApi.Proxy.ISolidAzureFunctionConfig",
+      "description": "Interface used to determine how the azure function\r\nsettings should be."
+    },
+    {
+      "name": "OpenApi.Proxy.ISolidRpcOpenApiConfig",
+      "description": "Configures the bindings for the rpc proxy."
+    },
+    {
+      "name": "OpenApi.Proxy.ISolidRpcRateLimitConfig",
+      "description": "Interface used to configure the rate limits for an invocation"
+    },
+    {
+      "name": "OpenApi.Transport.IHttpTransport",
+      "description": "Represents the settings for the http transport"
+    },
+    {
+      "name": "OpenApi.Transport.ILocalTransport",
+      "description": "Represents the settings for the local transport"
+    },
+    {
+      "name": "OpenApi.Transport.IQueueTransport",
+      "description": "Represents the settings for the queue transport"
+    },
+    {
+      "name": "OpenApi.Transport.ITransport",
+      "description": "Base definition for a transport"
+    },
+    {
+      "name": "Serialization.ISerializer",
+      "description": "Defines the logic to serialize object into a wire format\r\nsuch as xml or json."
+    },
+    {
+      "name": "Serialization.ISerializerFactory",
+      "description": "Implements logic to create seralizers."
+    },
+    {
+      "name": "Code.ICodeNamespaceGenerator",
+      "description": "instance responsible for generating code structures"
+    },
+    {
+      "name": "Code.INpmGenerator",
+      "description": "The npm generator"
+    },
+    {
+      "name": "Code.ITypescriptGenerator",
+      "description": "instance responsible for generating code structures"
+    },
+    {
+      "name": "ISolidRpcContentHandler",
+      "description": "The content handler uses the ISolidRpcContentStore to deliver static or proxied content.\r\n\r\nThis handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler."
+    },
+    {
+      "name": "ISolidRpcHost",
+      "description": "Represents a solid rpc host."
+    },
+    {
+      "name": "ISolidRpcHostStore",
+      "description": "The host store is responsible for storing persistent information about\r\na host in a cluster. Usually hosts are placed behind a load balancer that\r\ncan route to a specific host based on some cookie or header information."
+    },
+    {
+      "name": "ISolidRpcMethodStore",
+      "description": "Implements the logic to get and store invocations for a user/session"
+    },
+    {
+      "name": "ISolidRpcOAuth2",
+      "description": "Interfaces that defines the logic for OAuth2 support."
+    },
+    {
+      "name": "ISolidRpcOidc",
+      "description": "Implements logic for the oidc server"
+    },
+    {
+      "name": "RateLimit.ISolidRpcRateLimit",
+      "description": "Service that we can invoke to throttle requests."
+    }
+  ]
+}

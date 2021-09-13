@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions.Types;
-using SolidRpc.OpenApi.SwaggerUI.Types;
+﻿using SolidRpc.OpenApi.SwaggerUI.Types;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

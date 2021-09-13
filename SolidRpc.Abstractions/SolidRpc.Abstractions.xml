@@ -103,6 +103,61 @@
             <param name="mapping"></param>
             <param name="isRedirect"></param>
         </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken">
+            <summary>
+            Represents a continuation token.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.Token">
+            <summary>
+            The continuation token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.GetToken``1">
+            <summary>
+            Returns the token
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.SetToken``1(``0)">
+            <summary>
+            Returns the token
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions">
+            <summary>
+            Extension methods for the token
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.ContinuationToken">
+            <summary>
+            The continuation token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.GetHttpHeaderName(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
+            <summary>
+            Returns the http header name for the continuation token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.PushToken(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
+            <summary>
+            Pushes the token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.LoadToken(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
+            <summary>
+            Pushes the token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcApplication">
             <summary>
             Implements the solid application logic
@@ -2037,61 +2092,6 @@
             <summary>
             Returns all the path mappings.
             </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken">
-            <summary>
-            Represents a continuation token.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken.Token">
-            <summary>
-            The continuation token
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken.GetToken``1">
-            <summary>
-            Returns the token
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationToken.SetToken``1(``0)">
-            <summary>
-            Returns the token
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions">
-            <summary>
-            Extension methods for the token
-            </summary>
-        </member>
-        <member name="F:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.ContinuationToken">
-            <summary>
-            The continuation token
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.GetHttpHeaderName(SolidRpc.Abstractions.Services.ISolidRpcContinuationToken)">
-            <summary>
-            Returns the http header name for the continuation token
-            </summary>
-            <param name="continuationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.PushToken(SolidRpc.Abstractions.Services.ISolidRpcContinuationToken)">
-            <summary>
-            Pushes the token
-            </summary>
-            <param name="continuationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContinuationTokenExtensions.LoadToken(SolidRpc.Abstractions.Services.ISolidRpcContinuationToken)">
-            <summary>
-            Pushes the token
-            </summary>
-            <param name="continuationToken"></param>
-            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
             <summary>

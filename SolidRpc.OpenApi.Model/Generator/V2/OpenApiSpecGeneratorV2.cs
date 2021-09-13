@@ -91,8 +91,12 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
 
         private PathsObject CreatePaths(ICSharpRepository cSharpRepository, SwaggerObject swaggerObject)
         {
+            var namespacePrefix = Settings.ProjectNamespace;
+            if (!string.IsNullOrEmpty(Settings.ServiceNamespace)) namespacePrefix += ("." + Settings.ServiceNamespace);
             var paths = new PathsObject(swaggerObject);
-            GetInterfaces(cSharpRepository).SelectMany(o => o.Methods)
+            GetInterfaces(cSharpRepository)
+                .Where(o => o.Namespace.FullName.StartsWith(namespacePrefix))
+                .SelectMany(o => o.Methods)
                 .OrderBy(o => o.FullName)
                 .ToList().ForEach(m =>
             {

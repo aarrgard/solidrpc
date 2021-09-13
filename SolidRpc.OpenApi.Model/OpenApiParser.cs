@@ -59,7 +59,9 @@ namespace SolidRpc.OpenApi.Model
                 BasePath = methods.Select(o => "/" + o.DeclaringType.Assembly.GetName().Name.Replace('.', '/')).FirstOrDefault() ?? null,
                 Version = methods.Select(o => o.DeclaringType.Assembly.GetName().Version.ToString()).FirstOrDefault() ?? "0.0.0.0",
                 Title = methods.Select(o => o.DeclaringType.Assembly.GetName().Name).FirstOrDefault() ?? "OpenApi",
-                Description = $"This OpenApi specification was generated from compiled code on {Environment.MachineName} {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}"
+                Description = $"This OpenApi specification was generated from compiled code on {Environment.MachineName} {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}",
+                ProjectNamespace = "",
+                ServiceNamespace = ""
             }).CreateSwaggerSpec(new OpenApiSpecResolverDummy(this), cSharpRepository);
         }
 

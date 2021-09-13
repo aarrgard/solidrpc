@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="$(AssemblyName).json" />
+    <EmbeddedResource Include="$(AssemblyName).xml" />
     <EmbeddedResource Include="www\**\*" />
   </ItemGroup>
 
@@ -27,13 +29,5 @@
   <ItemGroup>
     <Folder Include="www\" />
   </ItemGroup>
-
-  <!--<ItemGroup>
-    <DotNetCliToolReference Include="SolidRpc.Swagger.DotNetTool" Version="1.0.0-build035" />
-  </ItemGroup>
-
-  <Target Name="SwaggerGenerator" BeforeTargets="Compile">
-    <Exec Command="dotnet solidrpc-swaggergen -swagger2code petstore.json" WorkingDirectory="$(ProjectDir)" />
-  </Target>-->
 
 </Project>

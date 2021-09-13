@@ -27,15 +27,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 optionsConfigurator?.Invoke(options);
                 return options;
             });
-            var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ISwaggerUI));
-            var strOpenApiSpec = openApiSpec.WriteAsJsonString();
 
-            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), (c) =>
-            {
-                c.OpenApiSpec = strOpenApiSpec;
-                c.GetAdviceConfig<ISecurityKeyConfig>().SecurityKey = null; // do not apply the security key on the swagger resources.
-                return apiConfigurator?.Invoke(c) ?? true;
-            }); 
+            services.AddSolidRpcBindings(typeof(ISwaggerUI), typeof(SwaggerUI), c => { return apiConfigurator?.Invoke(c) ?? true; }); 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", typeof(ISwaggerUI).Assembly);
             return services;
         }

@@ -124,6 +124,46 @@
             The oauth client secret
             </summary>
         </member>
+        <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.FileContent">
+            <summary>
+            Represents a file content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.Content">
+            <summary>
+            The file content.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.CharSet">
+            <summary>
+            The content charset
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.ContentType">
+            <summary>
+            The content type.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.FileName">
+            <summary>
+            The file name
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.LastModified">
+            <summary>
+            The last modified date of the resource.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.Location">
+            <summary>
+            The location of the content
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.SwaggerUI.Types.FileContent.ETag">
+            <summary>
+            The ETag.
+            </summary>
+        </member>
         <member name="T:SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl">
             <summary>
             Represent a swagger url

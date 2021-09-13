@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Security.Claims;
 using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
@@ -97,6 +101,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
         private void LoadSystemTypes()
         {
+            GetClass(typeof(object), "Type");
             GetClass(typeof(object), "object");
             GetClass(typeof(void), "void");
             GetClass(typeof(bool), "bool");
@@ -114,6 +119,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             LoadSystemTypes(typeof(Guid).Assembly);
             LoadSystemTypes(typeof(StringValues).Assembly);
             LoadSystemTypes(typeof(DataMemberAttribute).Assembly);
+            LoadSystemTypes(typeof(ClaimsPrincipal).Assembly);
+            LoadSystemTypes(typeof(IServiceProvider).Assembly);
+            LoadSystemTypes(typeof(Expression<>).Assembly);
+            LoadSystemTypes(typeof(IConfiguration).Assembly);
+            LoadSystemTypes(typeof(IServiceCollection).Assembly);
         }
 
         private void LoadSystemTypes(Assembly assembly)

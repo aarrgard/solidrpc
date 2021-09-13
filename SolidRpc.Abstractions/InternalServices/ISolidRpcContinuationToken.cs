@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SolidRpc.Abstractions.Services
+namespace SolidRpc.Abstractions.InternalServices
 {
     /// <summary>
     /// Represents a continuation token.

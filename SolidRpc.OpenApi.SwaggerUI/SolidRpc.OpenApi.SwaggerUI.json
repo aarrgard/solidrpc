@@ -1,0 +1,161 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SolidRpc.OpenApi.SwaggerUI",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/OpenApi/SwaggerUI",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/ISwaggerUI/GetIndexHtml": {
+      "get": {
+        "tags": [
+          "ISwaggerUI"
+        ],
+        "description": "Returns the index.html file.",
+        "operationId": "Get#SolidRpc#OpenApi#SwaggerUI#Services#ISwaggerUI#GetIndexHtml",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "onlyImplemented",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISwaggerUI/GetOauth2RedirectHtml": {
+      "get": {
+        "tags": [
+          "ISwaggerUI"
+        ],
+        "description": "Returns the oauth2-redirect file",
+        "operationId": "Get#SolidRpc#OpenApi#SwaggerUI#Services#ISwaggerUI#GetOauth2RedirectHtml",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISwaggerUI/GetOpenApiSpec/{assemblyName}/{openApiSpecResolverAddress}": {
+      "get": {
+        "tags": [
+          "ISwaggerUI"
+        ],
+        "description": "Returns the openapi spec for supplied assembly name.",
+        "operationId": "Get#SolidRpc#OpenApi#SwaggerUI#Services#ISwaggerUI#GetOpenApiSpec#2",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "assemblyName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "openApiSpecResolverAddress",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the openapi resource"
+          },
+          {
+            "name": "onlyImplemented",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISwaggerUI/GetSwaggerUrls": {
+      "get": {
+        "tags": [
+          "ISwaggerUI"
+        ],
+        "description": "Returns the swagger urls.",
+        "operationId": "Get#SolidRpc#OpenApi#SwaggerUI#Services#ISwaggerUI#GetSwaggerUrls",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "onlyImplemented",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SwaggerUrl"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SwaggerUrl": {
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "The name of the url"
+        },
+        "Url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The url"
+        }
+      },
+      "type": "object",
+      "description": "Represent a swagger url"
+    }
+  },
+  "tags": [
+    {
+      "name": "ISwaggerUI",
+      "description": "The swagger config"
+    }
+  ]
+}

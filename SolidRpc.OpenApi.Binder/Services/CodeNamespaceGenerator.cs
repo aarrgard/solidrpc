@@ -198,9 +198,13 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 case "System.Boolean":
                     return new string[] { "boolean" };
+                case "System.Object":
+                    return new string[] { "object" };
                 case "System.Guid":
                 case "System.String":
                     return new string[] { "string" };
+                case "System.String[]":
+                    return new string[] { "string" , "[]"};
                 case "System.Byte":
                 case "System.Int16":
                 case "System.Int32":
@@ -215,6 +219,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                     return new string[] { "CancellationToken" };
                 case "System.Uri":
                     return new string[] { "Uri" };
+                case "System.TimeSpan":
                 case "System.DateTime":
                 case "System.DateTimeOffset":
                     return new string[] { "Date" };

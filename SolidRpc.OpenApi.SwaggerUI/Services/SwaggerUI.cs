@@ -11,7 +11,6 @@ using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.SwaggerUI.Types;
 
 namespace SolidRpc.OpenApi.SwaggerUI.Services
@@ -190,13 +189,13 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     .Select(o => o.Assembly).FirstOrDefault();
                 if (assembly == null)
                 {
-                    throw new FileContentNotFoundException("Assembly not part of any bindings.");
+                    throw new SolidRpc.Abstractions.Types.FileContentNotFoundException("Assembly not part of any bindings.");
                 }
 
                 var openApiSpecResolver = MethodBinderStore.GetOpenApiSpecResolver(assembly);
                 if (!openApiSpecResolver.TryResolveApiSpec(openApiSpecResolverAddress, out openApiSpec))
                 {
-                    throw new FileContentNotFoundException("Cannot find open api spec in assembly.");
+                    throw new SolidRpc.Abstractions.Types.FileContentNotFoundException("Cannot find open api spec in assembly.");
                 }
             }
 
@@ -221,7 +220,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     var indexHtmlContent = await ContentHandler.GetContent(indexHtmlPath.AbsolutePath);
                     openApiSpec.SetExternalDoc("Navigate to the site", indexHtmlPath);
                 }
-                catch(FileContentNotFoundException)
+                catch(SolidRpc.Abstractions.Types.FileContentNotFoundException)
                 {
                     
                 }

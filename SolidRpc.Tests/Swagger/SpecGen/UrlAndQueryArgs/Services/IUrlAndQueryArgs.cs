@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services
+namespace SolidRpc.Tests.Swagger.SpecGen.UrlAndQueryArgs.Services
 {
     /// <summary>
     /// Tests method with one complex type

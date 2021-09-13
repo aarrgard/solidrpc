@@ -1,6 +1,6 @@
 ﻿using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.Serialization;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Services;
 using System;
 using System.Text;

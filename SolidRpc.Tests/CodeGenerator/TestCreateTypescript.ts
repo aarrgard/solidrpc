@@ -268,6 +268,237 @@ export namespace Abstractions {
              */
             export var TypescriptGeneratorInstance : ITypescriptGenerator = new TypescriptGeneratorImpl();
         }
+        export namespace RateLimit {
+            /**
+             * Service that we can invoke to throttle requests.
+             */
+            export interface ISolidRpcRateLimit {
+                /**
+                 * Returns the rate limit token.
+                 * @param resourceName 
+                 * @param timeout 
+                 * @param cancellationToken 
+                 */
+                GetRateLimitTokenAsync(
+                    resourceName : string,
+                    timeout : Date,
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.RateLimit.RateLimitToken>;
+                /**
+                 * This observable is hot and monitors all the responses from the GetRateLimitTokenAsync invocations.
+                 */
+                GetRateLimitTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
+                /**
+                 * Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.
+                 * @param resourceName 
+                 * @param timeout 
+                 * @param cancellationToken 
+                 */
+                GetSingeltonTokenAsync(
+                    resourceName : string,
+                    timeout : Date,
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.RateLimit.RateLimitToken>;
+                /**
+                 * This observable is hot and monitors all the responses from the GetSingeltonTokenAsync invocations.
+                 */
+                GetSingeltonTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
+                /**
+                 * Returns a rate limit token.
+                 * @param rateLimitToken 
+                 * @param cancellationToken 
+                 */
+                ReturnRateLimitTokenAsync(
+                    rateLimitToken : Types.RateLimit.RateLimitToken,
+                    cancellationToken? : CancellationToken
+                ): Observable<void>;
+                /**
+                 * This observable is hot and monitors all the responses from the ReturnRateLimitTokenAsync invocations.
+                 */
+                ReturnRateLimitTokenAsyncObservable : Observable<void>;
+                /**
+                 * Returns the rate limit settings
+                 * @param cancellationToken 
+                 */
+                GetRateLimitSettingsAsync(
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.RateLimit.RateLimitSetting[]>;
+                /**
+                 * This observable is hot and monitors all the responses from the GetRateLimitSettingsAsync invocations.
+                 */
+                GetRateLimitSettingsAsyncObservable : Observable<Types.RateLimit.RateLimitSetting[]>;
+                /**
+                 * Updates the rate limit settings
+                 * @param setting 
+                 * @param cancellationToken 
+                 */
+                UpdateRateLimitSetting(
+                    setting : Types.RateLimit.RateLimitSetting,
+                    cancellationToken? : CancellationToken
+                ): Observable<void>;
+                /**
+                 * This observable is hot and monitors all the responses from the UpdateRateLimitSetting invocations.
+                 */
+                UpdateRateLimitSettingObservable : Observable<void>;
+            }
+            /**
+             * Service that we can invoke to throttle requests.
+             */
+            export class SolidRpcRateLimitImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcRateLimit {
+                private Namespace: SolidRpcJs.Namespace;
+                constructor() {
+                    super();
+                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    this.GetRateLimitTokenAsyncSubject = new Subject<Types.RateLimit.RateLimitToken>();
+                    this.GetRateLimitTokenAsyncObservable = this.GetRateLimitTokenAsyncSubject.asObservable().pipe(share());
+                    this.GetSingeltonTokenAsyncSubject = new Subject<Types.RateLimit.RateLimitToken>();
+                    this.GetSingeltonTokenAsyncObservable = this.GetSingeltonTokenAsyncSubject.asObservable().pipe(share());
+                    this.ReturnRateLimitTokenAsyncSubject = new Subject<void>();
+                    this.ReturnRateLimitTokenAsyncObservable = this.ReturnRateLimitTokenAsyncSubject.asObservable().pipe(share());
+                    this.GetRateLimitSettingsAsyncSubject = new Subject<Types.RateLimit.RateLimitSetting[]>();
+                    this.GetRateLimitSettingsAsyncObservable = this.GetRateLimitSettingsAsyncSubject.asObservable().pipe(share());
+                    this.UpdateRateLimitSettingSubject = new Subject<void>();
+                    this.UpdateRateLimitSettingObservable = this.UpdateRateLimitSettingSubject.asObservable().pipe(share());
+                }
+                /**
+                 * Returns the rate limit token.
+                 * @param resourceName 
+                 * @param timeout 
+                 * @param cancellationToken 
+                 */
+                GetRateLimitTokenAsync(
+                    resourceName : string,
+                    timeout : Date,
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.RateLimit.RateLimitToken> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
+                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.RateLimit.RateLimitToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return new Types.RateLimit.RateLimitToken(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.GetRateLimitTokenAsyncSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the GetRateLimitTokenAsync invocations.
+                 */
+                GetRateLimitTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
+                private GetRateLimitTokenAsyncSubject : Subject<Types.RateLimit.RateLimitToken>;
+                /**
+                 * Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.
+                 * @param resourceName 
+                 * @param timeout 
+                 * @param cancellationToken 
+                 */
+                GetSingeltonTokenAsync(
+                    resourceName : string,
+                    timeout : Date,
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.RateLimit.RateLimitToken> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
+                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.RateLimit.RateLimitToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return new Types.RateLimit.RateLimitToken(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.GetSingeltonTokenAsyncSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the GetSingeltonTokenAsync invocations.
+                 */
+                GetSingeltonTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
+                private GetSingeltonTokenAsyncSubject : Subject<Types.RateLimit.RateLimitToken>;
+                /**
+                 * Returns a rate limit token.
+                 * @param rateLimitToken 
+                 * @param cancellationToken 
+                 */
+                ReturnRateLimitTokenAsync(
+                    rateLimitToken : Types.RateLimit.RateLimitToken,
+                    cancellationToken? : CancellationToken
+                ): Observable<void> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    headers['Content-Type']='application/json';
+                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(rateLimitToken)), cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return null;
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.ReturnRateLimitTokenAsyncSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the ReturnRateLimitTokenAsync invocations.
+                 */
+                ReturnRateLimitTokenAsyncObservable : Observable<void>;
+                private ReturnRateLimitTokenAsyncSubject : Subject<void>;
+                /**
+                 * Returns the rate limit settings
+                 * @param cancellationToken 
+                 */
+                GetRateLimitSettingsAsync(
+                    cancellationToken? : CancellationToken
+                ): Observable<Types.RateLimit.RateLimitSetting[]> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return this.request<Types.RateLimit.RateLimitSetting[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return Array.from(data).map(o => new Types.RateLimit.RateLimitSetting(o));
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.GetRateLimitSettingsAsyncSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the GetRateLimitSettingsAsync invocations.
+                 */
+                GetRateLimitSettingsAsyncObservable : Observable<Types.RateLimit.RateLimitSetting[]>;
+                private GetRateLimitSettingsAsyncSubject : Subject<Types.RateLimit.RateLimitSetting[]>;
+                /**
+                 * Updates the rate limit settings
+                 * @param setting 
+                 * @param cancellationToken 
+                 */
+                UpdateRateLimitSetting(
+                    setting : Types.RateLimit.RateLimitSetting,
+                    cancellationToken? : CancellationToken
+                ): Observable<void> {
+                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    headers['Content-Type']='application/json';
+                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(setting)), cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return null;
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, this.UpdateRateLimitSettingSubject);
+                }
+                /**
+                 * This observable is hot and monitors all the responses from the UpdateRateLimitSetting invocations.
+                 */
+                UpdateRateLimitSettingObservable : Observable<void>;
+                private UpdateRateLimitSettingSubject : Subject<void>;
+            }
+            /**
+             * Instance for the ISolidRpcRateLimit type. Implemented by the SolidRpcRateLimitImpl
+             */
+            export var SolidRpcRateLimitInstance : ISolidRpcRateLimit = new SolidRpcRateLimitImpl();
+        }
         /**
          * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
          *             
@@ -290,6 +521,19 @@ export namespace Abstractions {
              * This observable is hot and monitors all the responses from the GetContent invocations.
              */
             GetContentObservable : Observable<Types.FileContent>;
+            /**
+             * Returns all the path mappings.
+             * @param redirects 
+             * @param cancellationToken 
+             */
+            GetPathMappingsAsync(
+                redirects : boolean,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.NameValuePair[]>;
+            /**
+             * This observable is hot and monitors all the responses from the GetPathMappingsAsync invocations.
+             */
+            GetPathMappingsAsyncObservable : Observable<Types.NameValuePair[]>;
         }
         /**
          * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -303,6 +547,8 @@ export namespace Abstractions {
                 this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
                 this.GetContentSubject = new Subject<Types.FileContent>();
                 this.GetContentObservable = this.GetContentSubject.asObservable().pipe(share());
+                this.GetPathMappingsAsyncSubject = new Subject<Types.NameValuePair[]>();
+                this.GetPathMappingsAsyncObservable = this.GetPathMappingsAsyncSubject.asObservable().pipe(share());
             }
             /**
              * Returns the content for supplied path.
@@ -333,6 +579,32 @@ export namespace Abstractions {
              */
             GetContentObservable : Observable<Types.FileContent>;
             private GetContentSubject : Subject<Types.FileContent>;
+            /**
+             * Returns all the path mappings.
+             * @param redirects 
+             * @param cancellationToken 
+             */
+            GetPathMappingsAsync(
+                redirects : boolean,
+                cancellationToken? : CancellationToken
+            ): Observable<Types.NameValuePair[]> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
+                SolidRpcJs.ifnull(redirects, () => { uri = uri.replace('{redirects}', ''); }, nn =>  { uri = uri.replace('{redirects}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.NameValuePair[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return Array.from(data).map(o => new Types.NameValuePair(o));
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.GetPathMappingsAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the GetPathMappingsAsync invocations.
+             */
+            GetPathMappingsAsyncObservable : Observable<Types.NameValuePair[]>;
+            private GetPathMappingsAsyncSubject : Subject<Types.NameValuePair[]>;
         }
         /**
          * Instance for the ISolidRpcContentHandler type. Implemented by the SolidRpcContentHandlerImpl
@@ -618,6 +890,147 @@ export namespace Abstractions {
          * Instance for the ISolidRpcHost type. Implemented by the SolidRpcHostImpl
          */
         export var SolidRpcHostInstance : ISolidRpcHost = new SolidRpcHostImpl();
+        /**
+         * The host store is responsible for storing persistent information about 
+         *             a host in a cluster. Usually hosts are placed behind a load balancer that
+         *             can route to a specific host based on some cookie or header information.
+         */
+        export interface ISolidRpcHostStore {
+            /**
+             * Adds a host instance to the host store.
+             * @param hostInstance 
+             * @param cancellationToken 
+             */
+            AddHostInstanceAsync(
+                hostInstance : Types.SolidRpcHostInstance,
+                cancellationToken? : CancellationToken
+            ): Observable<void>;
+            /**
+             * This observable is hot and monitors all the responses from the AddHostInstanceAsync invocations.
+             */
+            AddHostInstanceAsyncObservable : Observable<void>;
+            /**
+             * Removes a host instance from the store.
+             * @param hostInstance 
+             * @param cancellationToken 
+             */
+            RemoveHostInstanceAsync(
+                hostInstance : Types.SolidRpcHostInstance,
+                cancellationToken? : CancellationToken
+            ): Observable<void>;
+            /**
+             * This observable is hot and monitors all the responses from the RemoveHostInstanceAsync invocations.
+             */
+            RemoveHostInstanceAsyncObservable : Observable<void>;
+            /**
+             * Lists the stored host instances
+             * @param cancellationToken 
+             */
+            ListHostInstancesAsync(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance[]>;
+            /**
+             * This observable is hot and monitors all the responses from the ListHostInstancesAsync invocations.
+             */
+            ListHostInstancesAsyncObservable : Observable<Types.SolidRpcHostInstance[]>;
+        }
+        /**
+         * The host store is responsible for storing persistent information about 
+         *             a host in a cluster. Usually hosts are placed behind a load balancer that
+         *             can route to a specific host based on some cookie or header information.
+         */
+        export class SolidRpcHostStoreImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcHostStore {
+            private Namespace: SolidRpcJs.Namespace;
+            constructor() {
+                super();
+                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                this.AddHostInstanceAsyncSubject = new Subject<void>();
+                this.AddHostInstanceAsyncObservable = this.AddHostInstanceAsyncSubject.asObservable().pipe(share());
+                this.RemoveHostInstanceAsyncSubject = new Subject<void>();
+                this.RemoveHostInstanceAsyncObservable = this.RemoveHostInstanceAsyncSubject.asObservable().pipe(share());
+                this.ListHostInstancesAsyncSubject = new Subject<Types.SolidRpcHostInstance[]>();
+                this.ListHostInstancesAsyncObservable = this.ListHostInstancesAsyncSubject.asObservable().pipe(share());
+            }
+            /**
+             * Adds a host instance to the host store.
+             * @param hostInstance 
+             * @param cancellationToken 
+             */
+            AddHostInstanceAsync(
+                hostInstance : Types.SolidRpcHostInstance,
+                cancellationToken? : CancellationToken
+            ): Observable<void> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                headers['Content-Type']='application/json';
+                return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(hostInstance)), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.AddHostInstanceAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the AddHostInstanceAsync invocations.
+             */
+            AddHostInstanceAsyncObservable : Observable<void>;
+            private AddHostInstanceAsyncSubject : Subject<void>;
+            /**
+             * Removes a host instance from the store.
+             * @param hostInstance 
+             * @param cancellationToken 
+             */
+            RemoveHostInstanceAsync(
+                hostInstance : Types.SolidRpcHostInstance,
+                cancellationToken? : CancellationToken
+            ): Observable<void> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                headers['Content-Type']='application/json';
+                return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(hostInstance)), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.RemoveHostInstanceAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the RemoveHostInstanceAsync invocations.
+             */
+            RemoveHostInstanceAsyncObservable : Observable<void>;
+            private RemoveHostInstanceAsyncSubject : Subject<void>;
+            /**
+             * Lists the stored host instances
+             * @param cancellationToken 
+             */
+            ListHostInstancesAsync(
+                cancellationToken? : CancellationToken
+            ): Observable<Types.SolidRpcHostInstance[]> {
+                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return this.request<Types.SolidRpcHostInstance[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return Array.from(data).map(o => new Types.SolidRpcHostInstance(o));
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, this.ListHostInstancesAsyncSubject);
+            }
+            /**
+             * This observable is hot and monitors all the responses from the ListHostInstancesAsync invocations.
+             */
+            ListHostInstancesAsyncObservable : Observable<Types.SolidRpcHostInstance[]>;
+            private ListHostInstancesAsyncSubject : Subject<Types.SolidRpcHostInstance[]>;
+        }
+        /**
+         * Instance for the ISolidRpcHostStore type. Implemented by the SolidRpcHostStoreImpl
+         */
+        export var SolidRpcHostStoreInstance : ISolidRpcHostStore = new SolidRpcHostStoreImpl();
         /**
          * Interfaces that defines the logic for OAuth2 support.
          */
@@ -1834,6 +2247,94 @@ export namespace Abstractions {
                  * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
                  */
                 Scope: string | null = null;
+            }
+        }
+        export namespace RateLimit {
+            /**
+             * Specifies the rate limit settings for the specified resource
+             */
+            export class RateLimitSetting {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "ResourceName":
+                                if (obj.ResourceName) { this.ResourceName = obj.ResourceName as string; }
+                                break;
+                            case "MaxConcurrentCalls":
+                                if (obj.MaxConcurrentCalls) { this.MaxConcurrentCalls = SolidRpcJs.ifnotnull<number>(obj.MaxConcurrentCalls, (notnull) => Number(notnull)); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.ResourceName) { arr.push('"ResourceName": '); arr.push(JSON.stringify(this.ResourceName)); arr.push(','); } 
+                    if(this.MaxConcurrentCalls) { arr.push('"MaxConcurrentCalls": '); arr.push(JSON.stringify(this.MaxConcurrentCalls)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The name of the resource.
+                 */
+                ResourceName: string | null = null;
+                /**
+                 * If set specifies the maximum number of concurrent calls
+                 *             there can be to the resource
+                 */
+                MaxConcurrentCalls: number|null | null = null;
+            }
+            /**
+             * Token returned from a resource request
+             */
+            export class RateLimitToken {
+                constructor(obj?: any) {
+                    for(let prop in obj) {
+                        switch(prop) {
+                            case "ResourceName":
+                                if (obj.ResourceName) { this.ResourceName = obj.ResourceName as string; }
+                                break;
+                            case "Id":
+                                if (obj.Id) { this.Id = obj.Id as string; }
+                                break;
+                            case "Expires":
+                                if (obj.Expires) { this.Expires = new Date(obj.Expires); }
+                                break;
+                        }
+                    }
+                }
+                toJson(arr: string[] | null): string | null {
+                    let returnString = false
+                    if(arr == null) {
+                        arr = [];
+                        returnString = true;
+                    }
+                    arr.push('{');
+                    if(this.ResourceName) { arr.push('"ResourceName": '); arr.push(JSON.stringify(this.ResourceName)); arr.push(','); } 
+                    if(this.Id) { arr.push('"Id": '); arr.push(JSON.stringify(this.Id)); arr.push(','); } 
+                    if(this.Expires) { arr.push('"Expires": '); arr.push(JSON.stringify(this.Expires)); arr.push(','); } 
+                    if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
+                    if(returnString) return arr.join("");
+                    return null;
+                }
+                /**
+                 * The name of the resource.
+                 */
+                ResourceName: string | null = null;
+                /**
+                 * The unique id of this token. This guid may be empty if no token
+                 *             was issued from the service.
+                 */
+                Id: string | null = null;
+                /**
+                 * The time when the token expires
+                 */
+                Expires: Date | null = null;
             }
         }
         /**

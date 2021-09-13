@@ -153,20 +153,29 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
         private void Sweap2(MemberDeclarationSyntax member)
         {
-            if (member is MethodDeclarationSyntax mds)
+            try
             {
-                CreateCSharpMethod(mds);
-                return;
-            }
-            if (member is PropertyDeclarationSyntax pds)
+                if (member is MethodDeclarationSyntax mds)
+                {
+                    CreateCSharpMethod(mds);
+                    return;
+                }
+                if (member is PropertyDeclarationSyntax pds)
+                {
+                    CreateCSharpProperty(pds);
+                    return;
+                }
+                if (member is EnumMemberDeclarationSyntax emds)
+                {
+                    CreateCSharpEnumValue(emds);
+                    return;
+                }
+            } 
+            catch(Exception e)
             {
-                CreateCSharpProperty(pds);
-                return;
-            }
-            if (member is EnumMemberDeclarationSyntax emds)
-            {
-                CreateCSharpEnumValue(emds);
-                return;
+                // eat it or throw it?
+                // throw e
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -272,6 +281,13 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 case SyntaxKind.ArrayInitializerExpression:
                     var i = (InitializerExpressionSyntax)expression;
                     return i.ChildNodes().Select(o => (string)CreateValue(o)).ToArray();
+                case SyntaxKind.InvocationExpression:
+                    var expr = (InvocationExpressionSyntax)expression;
+                    if(expr.Expression.ToString() == "nameof")
+                    {
+                        return expr.ArgumentList.Arguments[0].ToString();
+                    }
+                    throw new ArgumentException("Cannot create value from:" + expression.ToString());
                 default:
                     throw new ArgumentException("Cannot create value from:" + expression.ToString());
             }

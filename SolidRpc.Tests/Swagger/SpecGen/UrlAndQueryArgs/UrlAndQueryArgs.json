@@ -10,13 +10,13 @@
     "https"
   ],
   "paths": {
-    "/SolidRpc/Tests/Swagger/SpecGen/TestUrlAndQueryArgs/Services/IUrlAndQueryArgs/DoSometingAsync/{urlArg}": {
+    "/Services/IUrlAndQueryArgs/DoSometingAsync/{urlArg}": {
       "get": {
         "tags": [
-          "SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services.IUrlAndQueryArgs"
+          "IUrlAndQueryArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#TestUrlAndQueryArgs#Services#IUrlAndQueryArgs#DoSometingAsync#1",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#UrlAndQueryArgs#Services#IUrlAndQueryArgs#DoSometingAsync#1",
         "parameters": [
           {
             "name": "urlArg",
@@ -43,7 +43,7 @@
   },
   "tags": [
     {
-      "name": "SolidRpc.Tests.Swagger.SpecGen.TestUrlAndQueryArgs.Services.IUrlAndQueryArgs",
+      "name": "IUrlAndQueryArgs",
       "description": "Tests method with one complex type"
     }
   ]

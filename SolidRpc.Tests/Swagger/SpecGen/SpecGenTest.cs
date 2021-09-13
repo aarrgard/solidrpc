@@ -3,8 +3,10 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
+using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,11 +52,35 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             path = Path.Combine(path, "SpecGen");
             var dir = new DirectoryInfo(path);
             Assert.IsTrue(dir.Exists);
-            foreach(var subDir in dir.GetDirectories())
+            foreach (var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "OAuth2") continue;
                 CreateSpec(subDir.Name, true);
             }
+        }
+
+        /// <summary>
+        /// Tests generating swagger file from code
+        /// </summary>
+        [Test]
+        public void TestCreateOpenApiSpec()
+        {
+            CreateOpenApiSpec(typeof(ISolidRpcOAuth2).Assembly);
+            CreateOpenApiSpec(typeof(ISwaggerUI).Assembly);
+        }
+
+        private void CreateOpenApiSpec(Assembly assembly)
+        {
+            var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
+            path = Path.Combine(path, "..");
+            path = Path.Combine(path, assembly.GetName().Name);
+            var dir = new DirectoryInfo(path);
+            Assert.IsTrue(dir.Exists);
+            Program.MainWithExeptions(new[] {
+                "-code2openapi",
+                "-d", path,
+                "-BasePath", $".{assembly.GetName().Name}".Replace(".","/"),
+                $"{assembly.GetName().Name}.json"}).Wait();
         }
 
         private void CreateSpec(string folderName, bool onlyCompare)
@@ -798,10 +825,10 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             {
                 var config = ReadOpenApiConfiguration(nameof(TestUrlAndQueryArgs).Substring(4));
 
-                var moq = new Mock<TestUrlAndQueryArgs.Services.IUrlAndQueryArgs>(MockBehavior.Strict);
+                var moq = new Mock<UrlAndQueryArgs.Services.IUrlAndQueryArgs>(MockBehavior.Strict);
                 ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
-                var proxy = ctx.ClientServiceProvider.GetRequiredService<TestUrlAndQueryArgs.Services.IUrlAndQueryArgs>();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlAndQueryArgs.Services.IUrlAndQueryArgs>();
 
                 var stringCheck1 = "one/one";
                 var stringCheck2 = "one+one";

@@ -166,43 +166,18 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services, 
             Func<ISolidRpcOpenApiConfig, bool> configurator = null)
         {
-            var methods = typeof(ISolidRpcContentHandler).GetMethods()
-                .Where(o => o.Name == nameof(ISolidRpcContentHandler.GetContent))
-                .Concat(typeof(ISolidRpcHost).GetMethods())
-                .Concat(typeof(ISolidRpcOAuth2).GetMethods())
-                .Concat(typeof(ISolidRpcOidc).GetMethods())
-                .Concat(typeof(ICodeNamespaceGenerator).GetMethods())
-                .Concat(typeof(ITypescriptGenerator).GetMethods())
-                .Concat(typeof(INpmGenerator).GetMethods());
+            services.AddSolidRpcSingletonServices();
 
-            var openApiParser = services.GetSolidRpcOpenApiParser();
-            var solidRpcHostSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
-            methods.ToList().ForEach(m =>
-            {
-                services.AddSolidRpcBinding(m, (c) => {
-                    c.OpenApiSpec = solidRpcHostSpec;
-
-
-                    //
-                    // disable security for content handler & token callback
-                    //
-                    var method = c.Methods.Single();
-                    if (method.DeclaringType == typeof(ISolidRpcContentHandler))
-                    {
-                        c.DisableSecurity();
-                    }
-                    if (method.DeclaringType == typeof(ISolidRpcOAuth2))
-                    {
-                        c.DisableSecurity();
-                    }
-                    if (method.DeclaringType == typeof(ISolidRpcOidc))
-                    {
-                        c.DisableSecurity();
-                    }
-
-                    return configurator?.Invoke(c) ?? false;
+            typeof(ISolidRpcContentHandler).Assembly
+                .GetTypes()
+                .Where(o => o.IsInterface)
+                .Where(o => !o.IsGenericType)
+                .Where(o => o.Namespace.StartsWith(typeof(ISolidRpcContentHandler).Namespace))
+                .ToList().ForEach(i =>
+                {
+                    if (i == typeof(ISolidRpcMethodStore)) return;
+                    services.AddSolidRpcBindings(i, null, configurator);
                 });
-            });
 
             return services;
         }
@@ -461,6 +436,8 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             return interfaze.GetMethods()
+                .Where(o => !o.Name.StartsWith("get_"))
+                .Where(o => !o.Name.StartsWith("set_"))
                 .Select(m => sc.AddSolidRpcBinding(m, configurator))
                 .ToList();
         }
