@@ -324,9 +324,13 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if (!_isLocal.HasValue)
                 {
-                    var proxy = (ISolidProxy)MethodBinder.ServiceProvider.GetService(MethodInfo.DeclaringType);
-                    var advicePipeline = proxy.GetInvocationAdvices(MethodInfo);
-                    _isLocal = advicePipeline.OfType<SolidProxyInvocationImplAdvice>().Any();
+                    var ssf = MethodBinder.ServiceProvider.GetRequiredService<IServiceScopeFactory>();
+                    using (var scope = ssf.CreateScope())
+                    {
+                        var proxy = (ISolidProxy)scope.ServiceProvider.GetService(MethodInfo.DeclaringType);
+                        var advicePipeline = proxy.GetInvocationAdvices(MethodInfo);
+                        _isLocal = advicePipeline.OfType<SolidProxyInvocationImplAdvice>().Any();
+                    }
                 }
                 return _isLocal.Value;
             }
@@ -339,15 +343,19 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if (!_isEnabled.HasValue)
                 {
-                    var proxy = (ISolidProxy)MethodBinder.ServiceProvider.GetService(MethodInfo.DeclaringType);
-                    var invocationConfig = proxy.GetInvocations().Where(o => o.SolidProxyInvocationConfiguration.MethodInfo == MethodInfo).Single().SolidProxyInvocationConfiguration;
-                    if (!invocationConfig.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+                    var ssf = MethodBinder.ServiceProvider.GetRequiredService<IServiceScopeFactory>();
+                    using (var scope = ssf.CreateScope())
                     {
-                        _isEnabled = false;
-                    }
-                    else
-                    {
-                        _isEnabled = invocationConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>().Enabled;
+                        var proxy = (ISolidProxy)scope.ServiceProvider.GetService(MethodInfo.DeclaringType);
+                        var invocationConfig = proxy.GetInvocations().Where(o => o.SolidProxyInvocationConfiguration.MethodInfo == MethodInfo).Single().SolidProxyInvocationConfiguration;
+                        if (!invocationConfig.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
+                        {
+                            _isEnabled = false;
+                        }
+                        else
+                        {
+                            _isEnabled = invocationConfig.ConfigureAdvice<ISolidRpcOpenApiConfig>().Enabled;
+                        }
                     }
                 }
                 return _isEnabled.Value;

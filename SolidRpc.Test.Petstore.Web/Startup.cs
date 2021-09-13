@@ -23,7 +23,7 @@ namespace SolidRpc.Test.PetstoreWeb
             });
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             services.AddHttpClient();
-            //services.AddSolidRpcServices(o => true);
+            services.AddSolidRpcServices(o => true);
             services.AddSolidRpcRateLimitMemory();
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "generic");
             services.AddSolidRpcSwaggerUI(conf =>

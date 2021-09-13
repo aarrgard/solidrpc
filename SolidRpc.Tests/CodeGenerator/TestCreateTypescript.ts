@@ -957,11 +957,11 @@ export namespace Abstractions {
                 let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
-                SolidRpcJs.ifnotnull(response_type, x => { query['response_type'] = x; });
-                SolidRpcJs.ifnotnull(client_id, x => { query['client_id'] = x; });
-                SolidRpcJs.ifnotnull(redirect_uri, x => { query['redirect_uri'] = x; });
+                SolidRpcJs.ifnotnull(responseType, x => { query['response_type'] = x; });
+                SolidRpcJs.ifnotnull(clientId, x => { query['client_id'] = x; });
+                SolidRpcJs.ifnotnull(redirectUri, x => { query['redirect_uri'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
-                SolidRpcJs.ifnotnull(response_mode, x => { query['response_mode'] = x; });
+                SolidRpcJs.ifnotnull(responseMode, x => { query['response_mode'] = x; });
                 SolidRpcJs.ifnotnull(nonce, x => { query['nonce'] = x; });
                 let headers: { [index: string]: any } = {};
                 return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
