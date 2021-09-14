@@ -88,7 +88,8 @@ namespace SolidRpc.Tests.RateLimit
             sc.AddLogging(ConfigureLogging);
             sc.AddHttpClient();
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
-            sc.AddSolidRpcServices();
+            sc.AddSolidRpcRemoteBindings<ISolidRpcRateLimit>();
+            sc.AddSolidRpcRemoteBindings<ISolidRpcHost>();
             var sp = sc.BuildServiceProvider();
 
             var rlinvoker = sp.GetRequiredService<IInvoker<ISolidRpcRateLimit>>();
