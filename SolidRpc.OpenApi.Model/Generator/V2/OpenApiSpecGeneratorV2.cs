@@ -61,6 +61,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             var namespacePrefix = Settings.ProjectNamespace;
             if (!string.IsNullOrEmpty(Settings.ServiceNamespace)) namespacePrefix += ("." + Settings.ServiceNamespace);
             var interfaces = GetInterfaces(cSharpRepository)
+                .Where(o => !o.IsGenericType)
                 .Where(o => o.Namespace.FullName.StartsWith(namespacePrefix));
 
             var swaggerObject = new SwaggerObject((ModelBase)openApiSpecResolver)
