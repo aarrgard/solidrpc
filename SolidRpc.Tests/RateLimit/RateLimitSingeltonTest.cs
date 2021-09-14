@@ -28,7 +28,7 @@ namespace SolidRpc.Tests.RateLimit
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             base.ConfigureClientServices(clientServices, baseAddress);
-            clientServices.AddSolidRpcRateLimit();
+            clientServices.AddSolidRpcRemoteBindings<ISolidRpcRateLimit>();
         }
         /// <summary>
         /// 
@@ -38,7 +38,7 @@ namespace SolidRpc.Tests.RateLimit
         public override void ConfigureServerServices(IServiceCollection services)
         {
             base.ConfigureServerServices(services);
-            services.AddSolidRpcRateLimitMemory();
+            services.AddSolidRpcServices(o => true);
         }
 
         /// <summary>
@@ -89,7 +89,6 @@ namespace SolidRpc.Tests.RateLimit
             sc.AddHttpClient();
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcServices();
-            sc.AddSolidRpcRateLimit();
             var sp = sc.BuildServiceProvider();
 
             var rlinvoker = sp.GetRequiredService<IInvoker<ISolidRpcRateLimit>>();

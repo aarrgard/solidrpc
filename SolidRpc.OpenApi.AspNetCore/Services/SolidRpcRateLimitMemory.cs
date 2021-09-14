@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.Services.RateLimit;
 using SolidRpc.Abstractions.Types.RateLimit;
+using SolidRpc.OpenApi.AspNetCore.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+[assembly: SolidRpcService(typeof(ISolidRpcRateLimit), typeof(SolidRpcRateLimitMemory), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>

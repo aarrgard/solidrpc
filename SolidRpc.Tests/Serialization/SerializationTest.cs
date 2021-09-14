@@ -44,6 +44,11 @@ namespace SolidRpc.Tests.Serialization
                 }
                 return false;
             }
+
+            public override int GetHashCode()
+            {
+                return 0;
+            }
         }
 
 

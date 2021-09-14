@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Services;
@@ -18,19 +19,33 @@ using System.Web;
 [assembly: SolidRpcService(typeof(ISolidRpcOidc), typeof(SolidRpcOidcImpl), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.OAuth2.Services
 {
+    /// <summary>
+    /// Implements an Oidc server
+    /// </summary>
     public class SolidRpcOidcImpl : ISolidRpcOidc
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="invoker"></param>
+        /// <param name="serviceProvider"></param>
         public SolidRpcOidcImpl(
             IInvoker<ISolidRpcOidc> invoker,
-            IAuthorityLocal localAuthority)
+            IServiceProvider serviceProvider)
         {
-            LocalAuthority = localAuthority;
+            ServiceProvider = serviceProvider;
             Invoker = invoker;
         }
 
-        private IAuthorityLocal LocalAuthority { get; }
+        private IServiceProvider ServiceProvider { get; }
         private IInvoker<ISolidRpcOidc> Invoker { get; }
+        private IAuthorityLocal LocalAuthority => ServiceProvider.GetRequiredService<IAuthorityLocal>();
 
+        /// <summary>
+        /// Returns the discovery document
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
         {
             var authorizationEndpoint = await Invoker.GetUriAsync(o => o.AuthorizeAsync(null, null, null, null, null, null, null, cancellationToken), false);
@@ -45,12 +60,29 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             };
         }
 
+        /// <summary>
+        /// Get keys
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<OpenIDKeys> GetKeysAsync(CancellationToken cancellationToken = default)
         {
             var keys = await LocalAuthority.GetSigningKeysAsync(cancellationToken);
             return new OpenIDKeys() { Keys = keys.ToArray() };
         }
 
+        /// <summary>
+        /// Authorizes a client or user
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="responseType"></param>
+        /// <param name="clientId"></param>
+        /// <param name="redirectUri"></param>
+        /// <param name="state"></param>
+        /// <param name="responseMode"></param>
+        /// <param name="nonce"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<FileContent> AuthorizeAsync(
             IEnumerable<string> scope,
             string responseType, 
@@ -115,7 +147,21 @@ namespace SolidRpc.OpenApi.OAuth2.Services
 
             }
         }
-
+        /// <summary>
+        /// REturns the token
+        /// </summary>
+        /// <param name="grantType"></param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="scope"></param>
+        /// <param name="code"></param>
+        /// <param name="redirectUri"></param>
+        /// <param name="codeVerifier"></param>
+        /// <param name="refreshToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<TokenResponse> GetTokenAsync(string grantType = null, string clientId = null, string clientSecret = null, string username = null, string password = null, IEnumerable<string> scope = null, string code = null, string redirectUri = null, string codeVerifier = null, string refreshToken = null, CancellationToken cancellationToken = default)
         {
             switch (grantType)

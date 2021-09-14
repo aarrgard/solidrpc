@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.OpenApi.Binder.Proxy;
+using SolidRpc.Abstractions.Services.RateLimit;
 
 namespace SolidRpc.Tests.RateLimit
 {
@@ -67,7 +68,7 @@ namespace SolidRpc.Tests.RateLimit
                 .AddAdviceDependency(typeof(SolidRpcRateLimitAdvice<,,>), typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             base.ConfigureClientServices(clientServices, baseAddress);
-            clientServices.AddSolidRpcRateLimit();
+            clientServices.AddSolidRpcRemoteBindings<ISolidRpcRateLimit>();
 
             var apiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
@@ -101,7 +102,7 @@ namespace SolidRpc.Tests.RateLimit
                });
 
             base.ConfigureServerServices(services);
-            services.AddSolidRpcRateLimitMemory();
+            services.AddSolidRpcServices(o => true);
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             services.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>

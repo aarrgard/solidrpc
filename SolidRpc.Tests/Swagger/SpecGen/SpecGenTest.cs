@@ -27,6 +27,31 @@ namespace SolidRpc.Tests.Swagger.SpecGen
     /// </summary>
     public class SpecGenTest : WebHostTest
     {
+
+        /// <summary>
+        /// Tests generating swagger file from code
+        /// </summary>
+        [Test]
+        public void TestCreateOpenApiSpec()
+        {
+            CreateOpenApiSpec(typeof(ISolidRpcOAuth2).Assembly);
+            CreateOpenApiSpec(typeof(ISwaggerUI).Assembly);
+        }
+
+        private void CreateOpenApiSpec(Assembly assembly)
+        {
+            var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
+            path = Path.Combine(path, "..");
+            path = Path.Combine(path, assembly.GetName().Name);
+            var dir = new DirectoryInfo(path);
+            Assert.IsTrue(dir.Exists);
+            Program.MainWithExeptions(new[] {
+                "-code2openapi",
+                "-d", path,
+                "-BasePath", $".{assembly.GetName().Name}".Replace(".","/"),
+                $"{assembly.GetName().Name}.json"}).Wait();
+        }
+
         /// <summary>
         /// Returns the spec folder
         /// </summary>
@@ -57,30 +82,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 //if (subDir.Name != "OAuth2") continue;
                 CreateSpec(subDir.Name, true);
             }
-        }
-
-        /// <summary>
-        /// Tests generating swagger file from code
-        /// </summary>
-        [Test]
-        public void TestCreateOpenApiSpec()
-        {
-            CreateOpenApiSpec(typeof(ISolidRpcOAuth2).Assembly);
-            CreateOpenApiSpec(typeof(ISwaggerUI).Assembly);
-        }
-
-        private void CreateOpenApiSpec(Assembly assembly)
-        {
-            var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
-            path = Path.Combine(path, "..");
-            path = Path.Combine(path, assembly.GetName().Name);
-            var dir = new DirectoryInfo(path);
-            Assert.IsTrue(dir.Exists);
-            Program.MainWithExeptions(new[] {
-                "-code2openapi",
-                "-d", path,
-                "-BasePath", $".{assembly.GetName().Name}".Replace(".","/"),
-                $"{assembly.GetName().Name}.json"}).Wait();
         }
 
         private void CreateSpec(string folderName, bool onlyCompare)

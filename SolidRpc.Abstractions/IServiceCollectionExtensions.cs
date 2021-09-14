@@ -6,7 +6,6 @@ using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Services.RateLimit;
 using System;
 using System.Collections.Generic;
@@ -176,7 +175,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ToList().ForEach(i =>
                 {
                     if (i == typeof(ISolidRpcMethodStore)) return;
-                    services.AddSolidRpcBindings(i, null, configurator);
+                    var configs = services.AddSolidRpcBindings(i, null, configurator);
+                    if(!configs.Any())
+                    {
+                        throw new Exception("Failed to configure interface!");
+                    }
                 });
 
             return services;
@@ -441,6 +444,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Select(m => sc.AddSolidRpcBinding(m, configurator))
                 .ToList();
         }
+        /// <summary>
+        /// Configures the supplied type so that it is exposed in the binder.
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="configurator"></param>
+        /// <returns></returns>
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcRemoteBindings<T>(
+            this IServiceCollection sc,
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
+        {
+            return sc.AddSolidRpcRemoteBindings(typeof(T), configurator);
+        }
 
         /// <summary>
         /// Configures the supplied type so that it is exposed in the binder.
@@ -687,32 +702,5 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(configuration);
             return configuration;
         }
-
-        /// <summary>
-        /// Returns the configuration builder
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configurator"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddSolidRpcRateLimit(
-            this IServiceCollection services,
-            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
-        {
-            var methods = typeof(ISolidRpcRateLimit).GetMethods();
-            var openApiParser = services.GetSolidRpcOpenApiParser();
-            var openApiSpec = openApiParser.CreateSpecification(methods.ToArray()).WriteAsJsonString();
-
-            services.AddSolidRpcBindings(typeof(ISolidRpcRateLimit), null, conf =>
-            {
-                conf.OpenApiSpec = openApiSpec;
-
-                // disable the implementation - if any..
-                conf.GetAdviceConfig<ISolidProxyInvocationImplAdviceConfig>().Enabled = false;
-
-                return configurator?.Invoke(conf) ?? true;
-            });
-
-            return services;
-        }
-     }
+    }
 }

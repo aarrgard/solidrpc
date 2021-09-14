@@ -88,8 +88,6 @@ namespace SolidRpc.Tests.RateLimit
                 
             base.ConfigureServerServices(services);
 
-            services.AddSolidRpcRateLimitMemory();
-
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             services.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>
             {

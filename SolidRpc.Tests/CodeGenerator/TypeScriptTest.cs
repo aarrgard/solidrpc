@@ -317,14 +317,14 @@ namespace SolidRpc.Tests.CodeGenerator
                 await RunTestScriptNoArgConvAsync<short?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOShortAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<int?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOIntegerAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<long?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOLongAsync), "", "null");
-                await RunTestScriptNoArgConvAsync<string?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOStringAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<string>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOStringAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<decimal?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<float?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOFloatAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<double?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODecimalAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<DateTime?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<DateTimeOffset?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyODateTimeOffsetAsync), "", "null");
                 await RunTestScriptNoArgConvAsync<Guid?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOGuidAsync), "", "null");
-                await RunTestScriptNoArgConvAsync<Uri?>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOUriAsync), "", "null");
+                await RunTestScriptNoArgConvAsync<Uri>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOUriAsync), "", "null");
 
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)true, "true");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyBooleanAsync), (bool)false, "false");

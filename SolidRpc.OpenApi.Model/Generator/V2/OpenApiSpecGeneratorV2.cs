@@ -57,6 +57,12 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         /// <returns></returns>
         public override IOpenApiSpec CreateSwaggerSpec(IOpenApiSpecResolver openApiSpecResolver, ICSharpRepository cSharpRepository)
         {
+
+            var namespacePrefix = Settings.ProjectNamespace;
+            if (!string.IsNullOrEmpty(Settings.ServiceNamespace)) namespacePrefix += ("." + Settings.ServiceNamespace);
+            var interfaces = GetInterfaces(cSharpRepository)
+                .Where(o => o.Namespace.FullName.StartsWith(namespacePrefix));
+
             var swaggerObject = new SwaggerObject((ModelBase)openApiSpecResolver)
             {
                 Swagger = "2.0",
@@ -65,7 +71,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             };
             swaggerObject.Schemes = new [] { "https" };
             swaggerObject.SetOpenApiSpecResolver(openApiSpecResolver, "");
-            swaggerObject.Paths = CreatePaths(cSharpRepository, swaggerObject);
+            swaggerObject.Paths = CreatePaths(cSharpRepository, interfaces, swaggerObject);
             swaggerObject.Info = new InfoObject(swaggerObject)
             {
                 Title = Settings.Title ?? "OpenApi",
@@ -74,9 +80,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             };
             swaggerObject.Info.License = CreateLicense(swaggerObject.Info);
             swaggerObject.Info.Contact = CreateContact(swaggerObject.Info);
-            swaggerObject.Tags = GetInterfaces(cSharpRepository)
-                .Where(o => !o.IsGenericType)
-                .Select(o => CreateTag(swaggerObject, o)).ToList();
+            swaggerObject.Tags = interfaces.Select(o => CreateTag(swaggerObject, o)).ToList();
             return swaggerObject;
         }
 
@@ -89,14 +93,10 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             };
         }
 
-        private PathsObject CreatePaths(ICSharpRepository cSharpRepository, SwaggerObject swaggerObject)
+        private PathsObject CreatePaths(ICSharpRepository cSharpRepository, IEnumerable<ICSharpInterface> interfaces, SwaggerObject swaggerObject)
         {
-            var namespacePrefix = Settings.ProjectNamespace;
-            if (!string.IsNullOrEmpty(Settings.ServiceNamespace)) namespacePrefix += ("." + Settings.ServiceNamespace);
             var paths = new PathsObject(swaggerObject);
-            GetInterfaces(cSharpRepository)
-                .Where(o => o.Namespace.FullName.StartsWith(namespacePrefix))
-                .SelectMany(o => o.Methods)
+            interfaces.SelectMany(o => o.Methods)
                 .OrderBy(o => o.FullName)
                 .ToList().ForEach(m =>
             {

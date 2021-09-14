@@ -286,9 +286,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 catch (Exception ex)
                 {
                     // Only log error if this is a non http service code...
-                    if(!ex.Data.Contains("HttpStatusCode"))
+                    var httpStatusCode = ex.Data["HttpStatusCode"];
+                    if (httpStatusCode == null)
                     {
                         Logger.LogError(ex, "Service returned an exception - sending to client");
+                    }
+                    else 
+                    {
+                        Logger.LogInformation($"Service returned an exception with http status {httpStatusCode}:{ex.Message}");
                     }
                     await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
                 }

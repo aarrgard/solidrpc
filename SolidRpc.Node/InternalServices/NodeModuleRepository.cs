@@ -88,7 +88,7 @@ namespace SolidRpc.Node.InternalServices
             }
             return modules;
         }
-        private async Task<IEnumerable<NodePackage>> GetPackagesAsync(string path, CancellationToken cancellationToken)
+        private Task<IEnumerable<NodePackage>> GetPackagesAsync(string path, CancellationToken cancellationToken)
         {
             var packages = new List<NodePackage>();
             var dir = new DirectoryInfo(path);
@@ -102,7 +102,7 @@ namespace SolidRpc.Node.InternalServices
                     packages.Add(new NodePackage() { Name = packageInfo.Name, Version = packageInfo.Version });
                 }
             }
-            return packages;
+            return Task.FromResult(packages.AsEnumerable());
         }
 
         public Task<INodeModuleResolver> GetNodeModuleResolverAsync(Guid moduleId, CancellationToken cancellationToken = default)

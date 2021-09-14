@@ -161,16 +161,16 @@ process.stdin.on('data', handleCommand);
             }
         }
 
-        private async Task<NodeExecutionOutput> CreateOutputAsync(string result)
+        private Task<NodeExecutionOutput> CreateOutputAsync(string result)
         {
-            return new NodeExecutionOutput()
+            return Task.FromResult(new NodeExecutionOutput()
             {
                 ExitCode = Process.HasExited ? Process.ExitCode : 0,
                 Result = result,
                 Err = StdErr.ToString(),
                 Out = StdOut.ToString(),
                 ResultFiles = GetResultFiles()
-            };
+            });
         }
 
         private IEnumerable<NodeExecutionFile> GetResultFiles()
