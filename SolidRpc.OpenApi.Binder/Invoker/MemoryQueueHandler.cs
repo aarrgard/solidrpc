@@ -17,27 +17,26 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     public class MemoryQueueHandler : QueueHandler<IMemoryQueueTransport>
     {
         public MemoryQueueHandler(
-            ILogger<QueueHandler<IMemoryQueueTransport>> logger, 
-            IServiceProvider serviceProvider, 
+            ILogger<QueueHandler<IMemoryQueueTransport>> logger,
+            IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory, 
             ISolidRpcApplication solidRpcApplication) 
-            : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
+            : base(logger, methodBinderStore, serializerFactory, solidRpcApplication)
         {
         }
-
-        private MemoryQueueBus MemoryQueueBus => ServiceProvider.GetRequiredService<MemoryQueueBus>();
 
         public override void Configure(IMethodBinding methodBinding, IMemoryQueueTransport transport)
         {
             base.Configure(methodBinding, transport);
         }
 
-        protected override Task InvokeAsync(IMethodBinding methodBinding, IMemoryQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IMemoryQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             try
             {
                 Logger.LogInformation("MemoryQueue dispatching message...");
-                return MemoryQueueBus.HandleMessage(transport.QueueName, message, invocationOptions);
+                var memoryQueueBus = serviceProvider.GetRequiredService<MemoryQueueBus>();
+                return memoryQueueBus.HandleMessage(transport.QueueName, message, invocationOptions);
             }
             finally
             {

@@ -126,7 +126,7 @@ namespace SolidRpc.Tests.Invoker
             try
             {
                 // This shold not work
-                await ((ISolidProxy)proxy).InvokeAsync(this, typeof(ITestInterface).GetMethod(nameof(ITestInterface.DoXAsync)), null, null);
+                await ((ISolidProxy)proxy).InvokeAsync(sp, this, typeof(ITestInterface).GetMethod(nameof(ITestInterface.DoXAsync)), null, null);
                 Assert.Fail();
             }
             catch (UnauthorizedException)

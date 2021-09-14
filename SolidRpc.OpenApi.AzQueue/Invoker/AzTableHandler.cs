@@ -122,13 +122,13 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
 
         public AzTableHandler(
-            ILogger<QueueHandler<IAzTableTransport>> logger, 
-            IServiceProvider serviceProvider, 
+            ILogger<QueueHandler<IAzTableTransport>> logger,
+            IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
             ISolidRpcApplication solidRpcApplication,
             IServiceScopeFactory serviceScopeFactory) 
-            : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
+            : base(logger, methodBinderStore, serializerFactory, solidRpcApplication)
         {
             CloudQueueStore = cloudQueueStore;
             Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
@@ -168,7 +168,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
         }
 
-        protected override async Task InvokeAsync(IMethodBinding methodBinding, IAzTableTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IAzTableTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message, cancellationToken);
             var priority = invocationOptions.Priority;

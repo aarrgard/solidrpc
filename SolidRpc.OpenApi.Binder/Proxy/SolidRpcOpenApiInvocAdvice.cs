@@ -101,7 +101,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
 
                 var transport = MethodBinding.Transports.Single(o => o.GetTransportType() == invocationOptions.TransportType);
-                return handler.InvokeAsync<TAdvice>(MethodBinding, transport, invocation.Arguments, invocationOptions);
+                return handler.InvokeAsync<TAdvice>(invocation.ServiceProvider, MethodBinding, transport, invocation.Arguments, invocationOptions);
             }
 
         }

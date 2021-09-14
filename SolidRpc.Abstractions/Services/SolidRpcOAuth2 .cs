@@ -66,6 +66,14 @@ namespace SolidRpc.OpenApi.Binder.Services
             }
         }
 
+        /// <summary>
+        /// Returns the authorization code token
+        /// </summary>
+        /// <param name="callbackUri"></param>
+        /// <param name="state"></param>
+        /// <param name="scopes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<FileContent> GetAuthorizationCodeTokenAsync(
             Uri callbackUri = null, 
             string state = null,
@@ -130,6 +138,13 @@ namespace SolidRpc.OpenApi.Binder.Services
             return await GetAuthority(conf).GetDiscoveryDocumentAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// The token callvack
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="state"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<FileContent> TokenCallbackAsync(
             string code = null,
             string state = null, 

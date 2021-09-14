@@ -79,10 +79,10 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public QueueHandler(
             ILogger<QueueHandler<TTransport>> logger, 
-            IServiceProvider serviceProvider, 
+            IMethodBinderStore methodBinderStore, 
             ISerializerFactory serializerFactory,
             ISolidRpcApplication solidRpcApplication)
-            :base(logger, serviceProvider)
+            :base(logger, methodBinderStore)
         {
             SerializerFactory = serializerFactory;
             SolidRpcApplication = solidRpcApplication;
@@ -104,7 +104,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             base.Configure(methodBinding, transport);
         }
 
-        public override async Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, TTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, TTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             var httpReqData = new HttpRequest();
             await httpReq.CopyToAsync(httpReqData);
@@ -114,7 +114,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             await SolidRpcApplication.WaitForStartupTasks();
 
-            await InvokeAsync(methodBinding, transport, message, invocationOptions, cancellationToken);
+            await InvokeAsync(serviceProvider, methodBinding, transport, message, invocationOptions, cancellationToken);
 
             return new SolidHttpResponse()
             {
@@ -122,6 +122,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             };
         }
 
-        protected abstract Task InvokeAsync(IMethodBinding methodBinding, TTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken);
+        protected abstract Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, TTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken);
     }
 }

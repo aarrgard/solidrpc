@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the method
         /// </summary>
+        /// <param name="serviceProvider"></param>
         /// <param name="methodBinding"></param>
         /// <param name="transport"></param>
         /// <param name="httpReq"></param>
@@ -28,6 +30,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IHttpResponse> InvokeAsync(
+            IServiceProvider serviceProvider,
             IMethodBinding methodBinding, 
             ITransport transport, 
             IHttpRequest httpReq, 
@@ -38,6 +41,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Invokes the supplied method
         /// </summary>
+        /// <param name="serviceProvider"></param>
         /// <param name="methodBinding"></param>
         /// <param name="target"></param>
         /// <param name="mi"></param>
@@ -45,9 +49,8 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="invocationOptions"></param>
         /// <returns></returns>
         Task<object> InvokeAsync(
+            IServiceProvider serviceProvider,
             IMethodBinding methodBinding,
-            object target,
-            MethodInfo mi,
             object[] args,
             InvocationOptions invocationOptions);
 
@@ -55,12 +58,14 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// Sends the httpRequest representing the call.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="serviceProvider"></param>
         /// <param name="methodBinding"></param>
         /// <param name="transport"></param>
         /// <param name="args"></param>
         /// <param name="invocationOptions"></param>
         /// <returns></returns>
         Task<T> InvokeAsync<T>(
+            IServiceProvider serviceProvider,
             IMethodBinding methodBinding, 
             ITransport transport, 
             object[] args,
