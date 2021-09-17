@@ -22,12 +22,12 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// </summary>
     public class HttpHandler : TransportHandler<IHttpTransport>
     {
-        public HttpHandler(ILogger<HttpHandler> logger, IServiceProvider serviceProvider)
-            :base(logger, serviceProvider)
+        public HttpHandler(
+            ILogger<HttpHandler> logger,
+            IMethodBinderStore methodBinderStore)
+            :base(logger, methodBinderStore)
         {
         }
-
-        public IHttpClientFactory HttpClientFactory => ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
         public override void Configure(IMethodBinding methodBinding, IHttpTransport transport)
         {
@@ -68,14 +68,15 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return address;
         }
 
-        public override async Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, IHttpTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IHttpTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
             if (Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Getting http client for '{httpClientName}'");
             }
-            var httpClient = HttpClientFactory.CreateClient(httpClientName);
+            var factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            var httpClient = factory.CreateClient(httpClientName);
 
             var httpClientReq = new HttpRequestMessage();
             httpReq.CopyTo(httpClientReq);

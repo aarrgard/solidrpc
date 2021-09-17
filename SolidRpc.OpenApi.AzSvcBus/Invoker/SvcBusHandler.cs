@@ -18,18 +18,18 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
     public class SvcBusHandler : QueueHandler<ISvcBusTransport>
     {
         public SvcBusHandler(ILogger<QueueHandler<ISvcBusTransport>> logger,
-            IServiceProvider serviceProvider,
+            IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory,
             IQueueClientStore queueClientStore,
             ISolidRpcApplication solidRpcApplication) 
-            : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
+            : base(logger, methodBinderStore, serializerFactory, solidRpcApplication)
         {
             QueueClientStore = queueClientStore;
         }
 
         private IQueueClientStore QueueClientStore { get; }
 
-        protected override Task InvokeAsync(IMethodBinding methodBinding, ISvcBusTransport queueTransport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ISvcBusTransport queueTransport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             // dispatch message
             var msg = new Message(Encoding.UTF8.GetBytes(message));

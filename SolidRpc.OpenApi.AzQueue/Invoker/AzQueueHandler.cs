@@ -21,12 +21,12 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
     public class AzQueueHandler : QueueHandler<IAzQueueTransport>
     {
         public AzQueueHandler(
-            ILogger<QueueHandler<IAzQueueTransport>> logger, 
-            IServiceProvider serviceProvider, 
+            ILogger<QueueHandler<IAzQueueTransport>> logger,
+            IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory,
             ICloudQueueStore cloudQueueStore,
             ISolidRpcApplication solidRpcApplication) 
-            : base(logger, serviceProvider, serializerFactory, solidRpcApplication)
+            : base(logger, methodBinderStore, serializerFactory, solidRpcApplication)
         {
             CloudQueueStore = cloudQueueStore;
         }
@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             base.Configure(methodBinding, transport);
         }
 
-        protected override async Task InvokeAsync(IMethodBinding methodBinding, IAzQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IAzQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message);
             var msg = new CloudQueueMessage(message);

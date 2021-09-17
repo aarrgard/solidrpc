@@ -21,7 +21,69 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 {
     public class Invoker<TObj> : IInvoker<TObj> where TObj:class
     {
-        private static readonly IEnumerable<IHttpRequestData> EmptyCookieList = new IHttpRequestData[0];
+        private class DummyMethodBinding : IMethodBinding
+        {
+            public DummyMethodBinding(MethodInfo mi)
+            {
+                MethodInfo = mi;
+            }
+
+            public IMethodBinder MethodBinder => throw new NotImplementedException();
+
+            public MethodInfo MethodInfo { get; }
+
+            public bool IsLocal => throw new NotImplementedException();
+
+            public bool IsEnabled => throw new NotImplementedException();
+
+            public IEnumerable<ITransport> Transports => new ITransport[0];
+
+            public string OperationId => throw new NotImplementedException();
+
+            public string Method => throw new NotImplementedException();
+
+            public string LocalPath => throw new NotImplementedException();
+
+            public string RelativePath => throw new NotImplementedException();
+
+            public IEnumerable<IMethodArgument> Arguments => throw new NotImplementedException();
+
+            public Task BindArgumentsAsync(IHttpRequest request, object[] args, Uri addressOverride = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task BindResponseAsync(IHttpResponse response, object obj, Type objType)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Uri BindUri(IHttpRequest request, Uri addressOverride = null)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<object[]> ExtractArgumentsAsync(IHttpRequest request)
+            {
+                throw new NotImplementedException();
+            }
+
+            public T ExtractResponse<T>(IHttpResponse response)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object ExtractResponse(Type responseType, IHttpResponse response)
+            {
+                throw new NotImplementedException();
+            }
+
+            T IMethodBinding.GetSolidProxyConfig<T>()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public Invoker(
             ILogger<Invoker<TObj>> logger, 
             Invokers invokers,
@@ -107,9 +169,8 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public TResult InvokeAsync<TResult>(Expression<Func<TObj, TResult>> func, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
             var (mi, args) = GetMethodInfo(func);
-            var mb = Invokers.MethodBinderStore.GetMethodBinding(mi);
-            var svc = ServiceProvider.GetRequiredService<TObj>();
-            var res = Invokers.GetCachedInvoker<TResult>()(mb, svc, mi, args, invocationOptions);
+            var mb = Invokers.MethodBinderStore.GetMethodBinding(mi) ?? new DummyMethodBinding(mi);
+            var res = Invokers.GetCachedInvoker<TResult>()(ServiceProvider, mb, args, invocationOptions);
             return (TResult)res;
         }
 
@@ -132,8 +193,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public Task<object> InvokeAsync(MethodInfo mi, IEnumerable<object> args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
             var mb = GetMethodBinding(mi);
-            var target = ServiceProvider.GetRequiredService<TObj>();
-            return Invokers.InvokeMethodAsync(mb, target, mi, args.ToArray(), invocationOptions);
+            return Invokers.InvokeMethodAsync(ServiceProvider, mb, args.ToArray(), invocationOptions);
         }
     }
 }

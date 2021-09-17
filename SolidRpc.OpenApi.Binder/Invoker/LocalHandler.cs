@@ -7,7 +7,6 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,31 +18,22 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// </summary>
     public class LocalHandler : TransportHandler<ILocalTransport>
     {
-        public LocalHandler(ILogger<LocalHandler> logger, IServiceProvider serviceProvider)
-            :base(logger, serviceProvider)
+        public LocalHandler(ILogger<LocalHandler> logger, IMethodBinderStore methodBinderStore)
+            :base(logger, methodBinderStore)
         {
         }
-        public override Task<object> InvokeAsync(IMethodBinding mb, object target, MethodInfo mi, object[] args, InvocationOptions invocationOptions)
+        public override Task<object> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding mb, object[] args, InvocationOptions invocationOptions)
         {
-            if (target == null)
-            {
-                throw new Exception("Cannot find service:" + mi.DeclaringType.FullName);
-            }
+            var mi = mb.MethodInfo;
+            var target = serviceProvider.GetService(mi.DeclaringType);
             var proxy = target as ISolidProxy;
             if (proxy == null)
             {
                 // the service is not proxied - invoke directly
-                return HandleResponse(mi.Invoke(target, args));
+                return HandleResponse(mb.MethodInfo.Invoke(target, args));
             }
 
-            var methodBinding = MethodBinderStore.GetMethodBinding(mi);
-            if (methodBinding == null)
-            {
-                // service does not have a openapi specification - invoke directly
-                return HandleResponse(mi.Invoke(target, args));
-            }
-
-            return HandleResponse(proxy.Invoke(this, mi, args));
+            return HandleResponse(proxy.Invoke(serviceProvider, this, mb.MethodInfo, args));
         }
 
         private async Task<object> HandleResponse(object res)
@@ -57,7 +47,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return res;
         }
 
-        public override Task<IHttpResponse> InvokeAsync(IMethodBinding methodBinding, ILocalTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ILocalTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

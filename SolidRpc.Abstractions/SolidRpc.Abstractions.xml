@@ -937,10 +937,11 @@
             The transport type that this handler uses.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,System.Threading.CancellationToken)">
             <summary>
             Invokes the method
             </summary>
+            <param name="serviceProvider"></param>
             <param name="methodBinding"></param>
             <param name="transport"></param>
             <param name="httpReq"></param>
@@ -948,10 +949,11 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Object,System.Reflection.MethodInfo,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Invokes the supplied method
             </summary>
+            <param name="serviceProvider"></param>
             <param name="methodBinding"></param>
             <param name="target"></param>
             <param name="mi"></param>
@@ -959,11 +961,12 @@
             <param name="invocationOptions"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync``1(SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync``1(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
             <summary>
             Sends the httpRequest representing the call.
             </summary>
             <typeparam name="T"></typeparam>
+            <param name="serviceProvider"></param>
             <param name="methodBinding"></param>
             <param name="transport"></param>
             <param name="args"></param>
@@ -1957,6 +1960,11 @@
         <member name="T:SolidRpc.Abstractions.Serialization.SerializerSettings">
             <summary>
             Represents the serializer settings
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Serialization.SerializerSettings.Default">
+            <summary>
+            The default serializer settings
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.Serialization.SerializerSettings.#ctor(System.String,System.Text.Encoding,System.TimeZoneInfo,System.Boolean)">
@@ -3433,6 +3441,25 @@
             <summary>
             Constructs a new instance
             </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.GetAuthorizationCodeTokenAsync(System.Uri,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Returns the authorization code token
+            </summary>
+            <param name="callbackUri"></param>
+            <param name="state"></param>
+            <param name="scopes"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.TokenCallbackAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            The token callvack
+            </summary>
+            <param name="code"></param>
+            <param name="state"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>

@@ -18,7 +18,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// </summary>
     public class Invokers
     {
-        private ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object>> CachedInvokers = new ConcurrentDictionary<Type, Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object>>();
+        private ConcurrentDictionary<Type, Func<IServiceProvider, IMethodBinding, object[], Func<InvocationOptions, InvocationOptions>, object>> CachedInvokers = new ConcurrentDictionary<Type, Func<IServiceProvider, IMethodBinding, object[], Func<InvocationOptions, InvocationOptions>, object>>();
         public Invokers(
             IMethodBinderStore methodBinderStore,
             IEnumerable<ITransportHandler> handlers)
@@ -29,12 +29,12 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         public IMethodBinderStore MethodBinderStore { get; }
         public IEnumerable<ITransportHandler> Handlers { get; }
 
-        public Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object> GetCachedInvoker<TResult>()
+        public Func<IServiceProvider, IMethodBinding, object[], Func<InvocationOptions, InvocationOptions>, object> GetCachedInvoker<TResult>()
         {
             return CachedInvokers.GetOrAdd(typeof(TResult), CreateInvoker<TResult>);
         }
 
-        public Func<IMethodBinding, object, MethodInfo, object[], Func<InvocationOptions, InvocationOptions>, object> CreateInvoker<TResult>(Type t)
+        public Func<IServiceProvider, IMethodBinding, object[], Func<InvocationOptions, InvocationOptions>, object> CreateInvoker<TResult>(Type t)
         {
             if (t.IsTaskType(out Type taskType))
             {
@@ -47,16 +47,16 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                     .Where(o => o.IsGenericMethod)
                     .Single();
                 gmi = gmi.MakeGenericMethod(taskType);
-                return (methodBinding, proxy, mi, args, opts) =>
+                return (serviceProvider, methodBinding, args, opts) =>
                 {
-                    var taskRes = InvokeMethodAsync(methodBinding, proxy, mi, args, opts);
+                    var taskRes = InvokeMethodAsync(serviceProvider, methodBinding,  args, opts);
                     var res = gmi.Invoke(this, new object[] { taskRes });
                     return res;
                 };
             }
-            return (methodBinding, proxy, mi, args, opts) =>
+            return (sp, methodBinding, args, opts) =>
             {
-                return InvokeMethodAsync(methodBinding, proxy, mi, args, opts).Result;
+                return InvokeMethodAsync(sp, methodBinding, args, opts).Result;
             };
         }
 
@@ -65,7 +65,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return (TResult)(await result);
         }
 
-        public virtual Task<object> InvokeMethodAsync(IMethodBinding methodBinding, object proxy, MethodInfo mi, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions)
+        public virtual Task<object> InvokeMethodAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions)
         {
             var transport = methodBinding?.Transports.FirstOrDefault();
             var transformedOptions = new InvocationOptions(transport.GetTransportType() ?? "Local", InvocationOptions.MessagePriorityNormal, null, transport?.PreInvokeCallback, transport?.PostInvokeCallback);
@@ -74,7 +74,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var transportType = transformedOptions.TransportType;
             var handler = Handlers.FirstOrDefault(o => o.TransportType == transportType);
             if (handler == null) throw new Exception($"Transport {transportType} not configured.");
-            return handler.InvokeAsync(methodBinding, proxy, mi, args, transformedOptions);
+            return handler.InvokeAsync(serviceProvider, methodBinding, args, transformedOptions);
         }
     }
 }

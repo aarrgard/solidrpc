@@ -8,6 +8,9 @@ namespace SolidRpc.Abstractions.Serialization
     /// </summary>
     public class SerializerSettings
     {
+        /// <summary>
+        /// The default serializer settings
+        /// </summary>
         public static readonly SerializerSettings Default = new SerializerSettings("application/json", null, TimeZoneInfo.Local, false);
 
         /// <summary>
