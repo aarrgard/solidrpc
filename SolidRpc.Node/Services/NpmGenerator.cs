@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.Code;
@@ -18,29 +19,36 @@ namespace SolidRpc.Node.Services
 {
     public class NpmGenerator : INpmGenerator
     {
-        public NpmGenerator(ITypescriptGenerator typescriptGenerator, INodeService nodeService)
+        public NpmGenerator(ITypescriptGenerator typescriptGenerator, INodeService nodeService, ISerializerFactory serializerFactory)
         {
             TypescriptGenerator = typescriptGenerator;
             NodeService = nodeService;
+            SerializerFactory = serializerFactory;
         }
 
         private ITypescriptGenerator TypescriptGenerator { get; }
         private INodeService NodeService { get; }
+        private ISerializerFactory SerializerFactory { get; }
 
         public async Task<IEnumerable<NpmPackage>> CreateNpmPackage(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
         {
             var compileAssemblyNames = assemblyNames.Union(new[] { "SolidRpcJs" }).Distinct().OrderBy(o => o == "SolidRpcJs" ? 0 : 1);
             var npmPackages = new List<NpmPackage>();
+            var npmPackagesToReturn = new HashSet<string>();
             foreach(var assemblyName in compileAssemblyNames)
             {
                 var ts = await TypescriptGenerator.CreateTypesTsForAssemblyAsync(assemblyName, cancellationToken);
-                var npmPackage = await CompileTsAsync(npmPackages, assemblyName, ts, cancellationToken);
+                var npmPackage = await CompileTsAsync(npmPackages, assemblyName, "1.0.0.0", ts, cancellationToken);
                 npmPackages.Add(npmPackage);
+                if(assemblyNames.Contains(assemblyName))
+                {
+                    npmPackagesToReturn.Add(npmPackage.Name);
+                }
             }
-            return npmPackages.Where(p => assemblyNames.Any(an => string.Equals(p.Name, an, StringComparison.InvariantCultureIgnoreCase)));
+            return npmPackages.Where(p => npmPackagesToReturn.Contains(p.Name));
         }
 
-        private async Task<NpmPackage> CompileTsAsync(IEnumerable<NpmPackage> packages, string assemblyName, string ts, CancellationToken cancellationToken)
+        private async Task<NpmPackage> CompileTsAsync(IEnumerable<NpmPackage> packages, string assemblyName, string version, string ts, CancellationToken cancellationToken)
         {
             var sep = Path.DirectorySeparatorChar;
             var inputFiles = packages.SelectMany(p => p.Files.Select(f => new { p.Name, File = f }))
@@ -68,17 +76,38 @@ namespace SolidRpc.Node.Services
                 throw new Exception("NodeError:" + nodeRes.Out);
             }
 
+            var packageName = assemblyName.ToLower().Replace('.', '-');
             var files = new List<NpmPackageFile>();
             foreach(var resFile in nodeRes.ResultFiles)
             {
-                var content = await ReadContent(resFile.Content);
+                var content = TransformFileContent(packageName, version, packages.Select(o => o.Name), resFile.FileName, await ReadContent(resFile.Content));
                 files.Add(new NpmPackageFile() { Content = content, FilePath = resFile.FileName });
             }
             return new NpmPackage()
             {
-                Name = assemblyName.ToLower(),
+                Name = packageName,
                 Files = files
             };
+        }
+
+        private string TransformFileContent(string packageName, string version, IEnumerable<string> packageNames, string fileName, string content)
+        {
+            if(fileName != "package.json")
+            {
+                return content;
+            }
+            SerializerFactory.DeserializeFromString(content, out NpmPackageJson pj);
+            pj.Name = packageName;
+            pj.Version = version;
+            pj.Main = "index.js";
+            pj.Types = "index.ts";
+            pj.License = "ISC";
+            packageNames.ToList().ForEach(o =>
+            {
+                pj.Dependencies[o] = $"file:../{o}";
+            });
+            SerializerFactory.SerializeToString(out content, pj);
+            return content;
         }
 
         private async Task<string> ReadContent(Stream content)

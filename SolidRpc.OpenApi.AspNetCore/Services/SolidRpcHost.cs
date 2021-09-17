@@ -9,13 +9,12 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(ISolidRpcHost), typeof(SolidRpcHost))]
+[assembly: SolidRpcService(typeof(ISolidRpcHost), typeof(SolidRpcHost), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.AspNetCore.Services
 {
     /// <summary>
@@ -28,26 +27,13 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="serviceProvider"></param>
-        /// <param name="configuration"></param>
         public SolidRpcHost(
             ILogger<SolidRpcHost> logger,
-            IServiceProvider serviceProvider,
-            IConfiguration configuration)
+            IServiceProvider serviceProvider)
         {
-            Started = DateTimeOffset.Now;
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(configuration));
-            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            HostChecks = new ConcurrentDictionary<Guid, Task>();
-            //HttpCookies = new Dictionary<string, string>()
-            //{
-            //    { "MyCookie", Guid.NewGuid().ToString() }
-            //};
-            HostStores = serviceProvider.GetRequiredService<IEnumerable<ISolidRpcHostStore>>();
-            SolidRpcApplication = serviceProvider.GetRequiredService<ISolidRpcApplication>();
-            MethodAddressResolver = ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
-            RegisterHost();
-        }
+            ServiceProvider = serviceProvider;
+         }
 
         /// <summary>
         /// The logger
@@ -62,28 +48,24 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// The configuration
         /// </summary>
-        protected IConfiguration Configuration { get; }
+        protected IConfiguration Configuration => ServiceProvider.GetRequiredService<IConfiguration>();
 
         /// <summary>
         /// The application
         /// </summary>
-        protected ISolidRpcApplication SolidRpcApplication { get; }
-        private IMethodAddressTransformer MethodAddressResolver { get; }
+        protected ISolidRpcApplication SolidRpcApplication => ServiceProvider.GetRequiredService<ISolidRpcApplication>();
 
-        /// <summary>
-        /// The start time
-        /// </summary>
-        protected DateTimeOffset Started { get; }
-
-        /// <summary>
-        /// Checks the hosts
-        /// </summary>
-        protected ConcurrentDictionary<Guid, Task> HostChecks { get; }
+        private IMethodAddressTransformer MethodAddressResolver => ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
 
         /// <summary>
         /// The host stores
         /// </summary>
-        protected IEnumerable<ISolidRpcHostStore> HostStores { get; }
+        protected IEnumerable<ISolidRpcHostStore> HostStores => ServiceProvider.GetRequiredService<IEnumerable<ISolidRpcHostStore>>();
+
+        ///// <summary>
+        ///// Checks the hosts
+        ///// </summary>
+        //protected ConcurrentDictionary<Guid, Task> HostChecks { get; }
 
         /// <summary>
         /// The cookies
@@ -119,7 +101,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 var removeTasks = HostStores.Select(o => o.RemoveHostInstanceAsync(hostInstance, cancellationToken));
                 await Task.WhenAll(removeTasks);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.LogError(e, "Failed to shutdown host gracefully.");
             }
@@ -184,9 +166,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             return Task.FromResult(new SolidRpcHostInstance()
             {
                 HostId = SolidRpcApplication.HostId,
-                Started = Started,
+                Started = SolidRpcApplication.Started,
                 LastAlive = DateTimeOffset.Now,
-                HttpCookies = HttpCookies,
+                HttpCookies = new Dictionary<string, string>(),
                 BaseAddress = MethodAddressResolver.BaseAddress
             });
         }

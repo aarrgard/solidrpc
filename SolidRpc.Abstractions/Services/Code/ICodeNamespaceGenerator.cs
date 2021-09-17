@@ -16,7 +16,7 @@ namespace SolidRpc.Abstractions.Services.Code
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<CodeNamespace> CreateCodeNamespace(
-            string assemblyName, 
+            string assemblyName,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

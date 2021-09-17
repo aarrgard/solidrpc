@@ -14,6 +14,11 @@
             The host id - unique for each IoC container setup.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.Started">
+            <summary>
+            The datetime when this application was started.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.ShutdownToken">
             <summary>
             Returns a token that will be cancelled when the application shuts down.
@@ -171,6 +176,11 @@
         <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.HostId">
             <summary>
             The host id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.Started">
+            <summary>
+            The startup time
             </summary>
         </member>
         <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
@@ -2610,6 +2620,46 @@
         <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageFile.Content">
             <summary>
             The file content(binary content not supported)
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.Code.NpmPackageJson">
+            <summary>
+            Represents a package.json file
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Name">
+            <summary>
+            The name of the package
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Version">
+            <summary>
+            The version of the package
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Description">
+            <summary>
+            The description of the package
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Main">
+            <summary>
+            The main entry
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Types">
+            <summary>
+            The types entry
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.License">
+            <summary>
+            The license
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Dependencies">
+            <summary>
+            The dependencies
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContent">

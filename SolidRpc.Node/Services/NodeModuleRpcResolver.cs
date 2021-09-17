@@ -28,7 +28,8 @@ namespace SolidRpc.Node.Services
     ""paths"": {{ ""*"": [ ""node_modules/*"",""../{StrModuleId}/node_modules/*"" ] }},
     ""typeRoots"": [ ""../{StrModuleId}/node_modules/@types"" ],
     ""lib"": [ ""es2018"",""es2017"",""es7"",""es6"",""DOM"" ],
-    ""declaration"": true
+    ""declaration"": true,
+    ""sourceMap"": true
   }}
 }}";
 
@@ -38,9 +39,11 @@ namespace SolidRpc.Node.Services
         }
         public Guid ModuleId => GuidModuleId;
         private INodeService NodeService { get; }
+        private DirectoryInfo BaseDir { get; set; }
 
         public async Task ExplodeNodeModulesAsync(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
         {
+            BaseDir = directoryInfo;
             var explodedFile = new FileInfo(Path.Combine(directoryInfo.FullName, "exploded"));
             if (explodedFile.Exists) return;
 
@@ -73,7 +76,7 @@ namespace SolidRpc.Node.Services
         public async Task SetupWorkDirAsync(string nodeModulesDir, string workDir, CancellationToken cancellationToken = default)
         {
             var tsconfigFile = new FileInfo(Path.Combine(workDir, "tsconfig.json"));
-            if(!tsconfigFile.Exists)
+            if (!tsconfigFile.Exists)
             {
                 using (var w = tsconfigFile.CreateText())
                 {
@@ -81,6 +84,10 @@ namespace SolidRpc.Node.Services
                 }
             }
 
+            // copy package.json file
+            var packageFile = new FileInfo(Path.Combine(workDir, "package.json"));
+            var srcPackageFile = new FileInfo(Path.Combine(BaseDir.FullName, "package.json"));
+            srcPackageFile.CopyTo(packageFile.FullName, true);
         }
     }
 }

@@ -15,6 +15,11 @@ namespace SolidRpc.Abstractions.InternalServices
         Guid HostId { get; }
 
         /// <summary>
+        /// The datetime when this application was started.
+        /// </summary>
+        DateTimeOffset Started { get; }
+
+        /// <summary>
         /// Returns a token that will be cancelled when the application shuts down.
         /// </summary>
         CancellationToken ShutdownToken { get; }

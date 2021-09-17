@@ -42,7 +42,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             ISolidProxyConfigurationStore configurationStore,
             ISolidRpcContentHandler contentHandler,
             IAzFunctionHandler functionHandler)
-            : base(logger, serviceProvider, configuration)
+            : base(logger, serviceProvider)
         {
             MethodBinderStore = methodBinderStore;
             ContentHandler = contentHandler;

@@ -9,9 +9,9 @@ namespace SolidRpc.Abstractions.Types.Code
         /// <summary>
         /// The name of this namespace part(not fully qualified).
         /// </summary>
-        [DataMember(Name="name")]
+        [DataMember(Name = "name")]
         public string Name { get; set; }
-    
+
         /// <summary>
         /// The namespaces within this namespace
         /// </summary>

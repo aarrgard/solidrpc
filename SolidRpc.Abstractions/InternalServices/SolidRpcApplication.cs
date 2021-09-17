@@ -19,6 +19,7 @@ namespace SolidRpc.Abstractions.InternalServices
         private IList<Func<Task>> _startupCallbacks = new List<Func<Task>>();
         private IList<Func<Task>> _shutdownCallbacks = new List<Func<Task>>();
         private Guid _hostId = Guid.NewGuid();
+        private DateTimeOffset _started = DateTimeOffset.Now;
 
         /// <summary>
         /// Returns the shutdown token
@@ -29,6 +30,11 @@ namespace SolidRpc.Abstractions.InternalServices
         /// The host id
         /// </summary>
         public Guid HostId => _hostId;
+
+        /// <summary>
+        /// The startup time
+        /// </summary>
+        public DateTimeOffset Started => _started;
 
         /// <summary>
         /// Adds a shutdown callback
