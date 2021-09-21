@@ -147,7 +147,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 Arguments = methodBinding.Arguments.Select(o => CreateCodeMethodArg(rootNamespace, o)).ToList(),
                 ReturnType = ResolveCodeType(rootNamespace, mi.ReturnType),
                 HttpMethod = methodBinding.Method,
-                HttpBaseAddress = new Uri(hostUrl.Substring(0, hostUrl.Length - methodBinding.LocalPath.Length)+1),
+                HttpBaseAddress = new Uri(hostUrl.Substring(0, hostUrl.Length - methodBinding.LocalPath.Length + 1)),
                 HttpPath = methodBinding.LocalPath.Substring(1)
             };
             return cm;
