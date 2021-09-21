@@ -180,7 +180,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 SerializerFactory.DeserializeFromStream(s, out result);
             }
 
-            if(string.IsNullOrEmpty(result.AccessToken))
+            if(string.IsNullOrEmpty(result?.AccessToken))
             {
                 return null;
             }

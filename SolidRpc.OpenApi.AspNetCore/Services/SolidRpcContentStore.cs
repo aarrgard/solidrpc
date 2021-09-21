@@ -137,10 +137,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         /// <param name="contentAssembly"></param>
         /// <param name="assemblyRelativeName"></param>
-        /// <param name="absolutePath"></param>
-        public void AddContent(Assembly contentAssembly, string assemblyRelativeName, string absolutePath)
+        /// <param name="pathPrefix"></param>
+        public void AddContent(Assembly contentAssembly, string assemblyRelativeName, string pathPrefix)
         {
-            AddContentInternal(contentAssembly, assemblyRelativeName, null, absolutePath);
+            AddContentInternal(contentAssembly, assemblyRelativeName, null, pathPrefix);
         }
 
         /// <summary>
@@ -154,12 +154,12 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             AddContentInternal(contentAssembly, assemblyRelativeName, apiAssembly, null);
         }
 
-        private void AddContentInternal(Assembly assembly, string assemblyRelativeName, Assembly apiAssembly, string absolutePath)
+        private void AddContentInternal(Assembly assembly, string assemblyRelativeName, Assembly apiAssembly, string pathPrefix)
         {
             //
             // avoid duplicate registrations
             //
-            var regKey = $"{assembly.GetName().Name}:{assemblyRelativeName}:{apiAssembly?.GetName()?.Name}:{absolutePath}";
+            var regKey = $"{assembly.GetName().Name}:{assemblyRelativeName}:{apiAssembly?.GetName()?.Name}:{pathPrefix}";
             if (Registrations.Contains(regKey))
             {
                 return;
@@ -185,7 +185,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 {
                     contentType = "application/octet-stream";
                 }
-                StaticContents.Add(new StaticContent(assembly, resourceName, pathName.ToLower(), absolutePath, apiAssembly, contentType));
+                StaticContents.Add(new StaticContent(assembly, resourceName, pathName.ToLower(), pathPrefix, apiAssembly, contentType));
             }
         }
 

@@ -165,10 +165,20 @@ namespace SolidRpc.OpenApi.Binder.Services
                 null,
                 cancellationToken);
 
+            var callback = statestruct.Callback?.ToString() ?? "";
+            if(callback.IndexOf('?') > 0)
+            {
+                callback = $"{callback}&access_token={code}";
+            }
+            else
+            {
+                callback = $"{callback}?access_token={code}";
+            }
+
             return await CreateContent(nameof(TokenCallbackAsync), new Dictionary<string, string>()
             {
                 { "accessToken", token},
-                { "callback", statestruct.Callback?.ToString() ?? "" }
+                { "callback", callback }
            }); ;
         }
 

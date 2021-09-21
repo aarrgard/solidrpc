@@ -94,6 +94,20 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetPathMappingsAsync_arg0
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetPathMappingsAsync_arg0")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{arg0}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress")]
@@ -192,6 +206,48 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcHostStore_AddHostInstanceAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHostStore_AddHostInstanceAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcHostStore_ListHostInstancesAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHostStore_ListHostInstancesAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcHostStore_RemoveHostInstanceAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHostStore_RemoveHostInstanceAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_GetAuthorizationCodeTokenAsync
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_GetAuthorizationCodeTokenAsync")]
@@ -253,6 +309,76 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_GetTokenAsync")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetRateLimitSettingsAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetRateLimitSettingsAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetRateLimitTokenAsync_arg0_arg1
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetRateLimitTokenAsync_arg0_arg1")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetSingeltonTokenAsync_arg0_arg1
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetSingeltonTokenAsync_arg0_arg1")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_ReturnRateLimitTokenAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_ReturnRateLimitTokenAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_UpdateRateLimitSetting
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_UpdateRateLimitSetting")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

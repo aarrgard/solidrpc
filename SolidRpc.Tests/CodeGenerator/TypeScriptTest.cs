@@ -378,7 +378,7 @@ namespace SolidRpc.Tests.CodeGenerator
             cts.CancelAfter(new TimeSpan(0, 0, 30));
 
             var ns = sp.GetRequiredService<INodeService>();
-            var js = $@"const x = require(""solidrpc.tests"");
+            var js = $@"const x = require(""solidrpc-tests"");
 const y = require(""solidrpcjs"");
 y.SolidRpcJs.resetPreFlight();
 y.SolidRpcJs.addPreFlight((req, cont) => {{ 

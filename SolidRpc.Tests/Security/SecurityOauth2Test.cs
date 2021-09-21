@@ -525,7 +525,7 @@ namespace SolidRpc.Tests.Security
                 re = new Regex("callback = '([^']+)';");
                 var callback = re.Match(content).Groups[1].Value;
 
-                resp = await httpClient.GetAsync(new Uri($"{callback}?access_token={accessToken}"));
+                resp = await httpClient.GetAsync(new Uri($"{callback}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
             }
         }

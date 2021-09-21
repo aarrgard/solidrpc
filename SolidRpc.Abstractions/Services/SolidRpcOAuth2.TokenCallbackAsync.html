@@ -11,7 +11,7 @@
             localStorage.setItem("SolidRpc.OAuth2.AccessToken", accessToken);
 
             if (callback != '') {
-                document.location.href = callback + '?access_token=' + accessToken;
+                document.location.href = callback;
             }
         } else {
             document.write('Failed to obtain access token!');
