@@ -8,548 +8,310 @@ export namespace Abstractions {
             /**
              * instance responsible for generating code structures
              */
-            export interface ICodeNamespaceGenerator {
-                /**
-                 * Creates a code namespace for supplied assembly name
-                 * @param assemblyName 
-                 * @param cancellationToken 
-                 */
-                CreateCodeNamespace(
-                    assemblyName : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.Code.CodeNamespace>;
+            export namespace ICodeNamespaceGenerator {
+                let CreateCodeNamespaceSubject = new Subject<Types.Code.CodeNamespace>();
                 /**
                  * This observable is hot and monitors all the responses from the CreateCodeNamespace invocations.
                  */
-                CreateCodeNamespaceObservable : Observable<Types.Code.CodeNamespace>;
-            }
-            /**
-             * instance responsible for generating code structures
-             */
-            export class CodeNamespaceGeneratorImpl  extends SolidRpcJs.RpcServiceImpl implements ICodeNamespaceGenerator {
-                private Namespace: SolidRpcJs.Namespace;
-                constructor() {
-                    super();
-                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator');
-                    this.CreateCodeNamespaceSubject = new Subject<Types.Code.CodeNamespace>();
-                    this.CreateCodeNamespaceObservable = this.CreateCodeNamespaceSubject.asObservable().pipe(share());
-                }
+                export var CreateCodeNamespaceObservable = CreateCodeNamespaceSubject.asObservable().pipe(share());
                 /**
                  * Creates a code namespace for supplied assembly name
                  * @param assemblyName 
                  * @param cancellationToken 
                  */
-                CreateCodeNamespace(
+                export function CreateCodeNamespace(
                     assemblyName : string,
                     cancellationToken? : CancellationToken
-                ): Observable<Types.Code.CodeNamespace> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
+                ): SolidRpcJs.RpcServiceRequestTyped<Types.Code.CodeNamespace> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
                     SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<Types.Code.CodeNamespace>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.Code.CodeNamespace>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.Code.CodeNamespace(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.CreateCodeNamespaceSubject);
+                    }, CreateCodeNamespaceSubject);
                 }
-                /**
-                 * This observable is hot and monitors all the responses from the CreateCodeNamespace invocations.
-                 */
-                CreateCodeNamespaceObservable : Observable<Types.Code.CodeNamespace>;
-                private CreateCodeNamespaceSubject : Subject<Types.Code.CodeNamespace>;
-            }
-            /**
-             * Instance for the ICodeNamespaceGenerator type. Implemented by the CodeNamespaceGeneratorImpl
-             */
-            export var CodeNamespaceGeneratorInstance : ICodeNamespaceGenerator = new CodeNamespaceGeneratorImpl();
+                }
             /**
              * The npm generator
              */
-            export interface INpmGenerator {
-                /**
-                 * Returns the files that should be stored in the node_modules directory
-                 * @param assemblyNames The name of the assemblies to create an npm package for.
-                 * @param cancellationToken 
-                 */
-                CreateNpmPackage(
-                    assemblyNames : string[],
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.Code.NpmPackage[]>;
+            export namespace INpmGenerator {
+                let CreateNpmPackageSubject = new Subject<Types.Code.NpmPackage[]>();
                 /**
                  * This observable is hot and monitors all the responses from the CreateNpmPackage invocations.
                  */
-                CreateNpmPackageObservable : Observable<Types.Code.NpmPackage[]>;
-                /**
-                 * Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
-                 * @param assemblyNames The name of the assembly to create an npm package for.
-                 * @param cancellationToken 
-                 */
-                CreateNpmZip(
-                    assemblyNames : string[],
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.FileContent>;
-                /**
-                 * This observable is hot and monitors all the responses from the CreateNpmZip invocations.
-                 */
-                CreateNpmZipObservable : Observable<Types.FileContent>;
-            }
-            /**
-             * The npm generator
-             */
-            export class NpmGeneratorImpl  extends SolidRpcJs.RpcServiceImpl implements INpmGenerator {
-                private Namespace: SolidRpcJs.Namespace;
-                constructor() {
-                    super();
-                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
-                    this.CreateNpmPackageSubject = new Subject<Types.Code.NpmPackage[]>();
-                    this.CreateNpmPackageObservable = this.CreateNpmPackageSubject.asObservable().pipe(share());
-                    this.CreateNpmZipSubject = new Subject<Types.FileContent>();
-                    this.CreateNpmZipObservable = this.CreateNpmZipSubject.asObservable().pipe(share());
-                }
+                export var CreateNpmPackageObservable = CreateNpmPackageSubject.asObservable().pipe(share());
                 /**
                  * Returns the files that should be stored in the node_modules directory
                  * @param assemblyNames The name of the assemblies to create an npm package for.
                  * @param cancellationToken 
                  */
-                CreateNpmPackage(
+                export function CreateNpmPackage(
                     assemblyNames : string[],
                     cancellationToken? : CancellationToken
-                ): Observable<Types.Code.NpmPackage[]> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
+                ): SolidRpcJs.RpcServiceRequestTyped<Types.Code.NpmPackage[]> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
                     SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<Types.Code.NpmPackage[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.Code.NpmPackage[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return Array.from(data).map(o => new Types.Code.NpmPackage(o));
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.CreateNpmPackageSubject);
+                    }, CreateNpmPackageSubject);
                 }
+                let CreateNpmZipSubject = new Subject<Types.FileContent>();
                 /**
-                 * This observable is hot and monitors all the responses from the CreateNpmPackage invocations.
+                 * This observable is hot and monitors all the responses from the CreateNpmZip invocations.
                  */
-                CreateNpmPackageObservable : Observable<Types.Code.NpmPackage[]>;
-                private CreateNpmPackageSubject : Subject<Types.Code.NpmPackage[]>;
+                export var CreateNpmZipObservable = CreateNpmZipSubject.asObservable().pipe(share());
                 /**
                  * Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
                  * @param assemblyNames The name of the assembly to create an npm package for.
                  * @param cancellationToken 
                  */
-                CreateNpmZip(
+                export function CreateNpmZip(
                     assemblyNames : string[],
                     cancellationToken? : CancellationToken
-                ): Observable<Types.FileContent> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
+                ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
                     SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.FileContent(data);
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.CreateNpmZipSubject);
+                    }, CreateNpmZipSubject);
                 }
-                /**
-                 * This observable is hot and monitors all the responses from the CreateNpmZip invocations.
-                 */
-                CreateNpmZipObservable : Observable<Types.FileContent>;
-                private CreateNpmZipSubject : Subject<Types.FileContent>;
-            }
-            /**
-             * Instance for the INpmGenerator type. Implemented by the NpmGeneratorImpl
-             */
-            export var NpmGeneratorInstance : INpmGenerator = new NpmGeneratorImpl();
+                }
             /**
              * instance responsible for generating code structures
              */
-            export interface ITypescriptGenerator {
-                /**
-                 * Creates a types.ts file from supplied assembly name
-                 * @param assemblyName 
-                 * @param cancellationToken 
-                 */
-                CreateTypesTsForAssemblyAsync(
-                    assemblyName : string,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
+            export namespace ITypescriptGenerator {
+                let CreateTypesTsForAssemblyAsyncSubject = new Subject<string>();
                 /**
                  * This observable is hot and monitors all the responses from the CreateTypesTsForAssemblyAsync invocations.
                  */
-                CreateTypesTsForAssemblyAsyncObservable : Observable<string>;
-                /**
-                 * Creates a types.ts file from supplied code namespace
-                 * @param codeNamespace 
-                 * @param cancellationToken 
-                 */
-                CreateTypesTsForCodeNamespaceAsync(
-                    codeNamespace : Types.Code.CodeNamespace,
-                    cancellationToken? : CancellationToken
-                ): Observable<string>;
-                /**
-                 * This observable is hot and monitors all the responses from the CreateTypesTsForCodeNamespaceAsync invocations.
-                 */
-                CreateTypesTsForCodeNamespaceAsyncObservable : Observable<string>;
-            }
-            /**
-             * instance responsible for generating code structures
-             */
-            export class TypescriptGeneratorImpl  extends SolidRpcJs.RpcServiceImpl implements ITypescriptGenerator {
-                private Namespace: SolidRpcJs.Namespace;
-                constructor() {
-                    super();
-                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
-                    this.CreateTypesTsForAssemblyAsyncSubject = new Subject<string>();
-                    this.CreateTypesTsForAssemblyAsyncObservable = this.CreateTypesTsForAssemblyAsyncSubject.asObservable().pipe(share());
-                    this.CreateTypesTsForCodeNamespaceAsyncSubject = new Subject<string>();
-                    this.CreateTypesTsForCodeNamespaceAsyncObservable = this.CreateTypesTsForCodeNamespaceAsyncSubject.asObservable().pipe(share());
-                }
+                export var CreateTypesTsForAssemblyAsyncObservable = CreateTypesTsForAssemblyAsyncSubject.asObservable().pipe(share());
                 /**
                  * Creates a types.ts file from supplied assembly name
                  * @param assemblyName 
                  * @param cancellationToken 
                  */
-                CreateTypesTsForAssemblyAsync(
+                export function CreateTypesTsForAssemblyAsync(
                     assemblyName : string,
                     cancellationToken? : CancellationToken
-                ): Observable<string> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
+                ): SolidRpcJs.RpcServiceRequestTyped<string> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
                     SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.CreateTypesTsForAssemblyAsyncSubject);
+                    }, CreateTypesTsForAssemblyAsyncSubject);
                 }
+                let CreateTypesTsForCodeNamespaceAsyncSubject = new Subject<string>();
                 /**
-                 * This observable is hot and monitors all the responses from the CreateTypesTsForAssemblyAsync invocations.
+                 * This observable is hot and monitors all the responses from the CreateTypesTsForCodeNamespaceAsync invocations.
                  */
-                CreateTypesTsForAssemblyAsyncObservable : Observable<string>;
-                private CreateTypesTsForAssemblyAsyncSubject : Subject<string>;
+                export var CreateTypesTsForCodeNamespaceAsyncObservable = CreateTypesTsForCodeNamespaceAsyncSubject.asObservable().pipe(share());
                 /**
                  * Creates a types.ts file from supplied code namespace
                  * @param codeNamespace 
                  * @param cancellationToken 
                  */
-                CreateTypesTsForCodeNamespaceAsync(
+                export function CreateTypesTsForCodeNamespaceAsync(
                     codeNamespace : Types.Code.CodeNamespace,
                     cancellationToken? : CancellationToken
-                ): Observable<string> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
+                ): SolidRpcJs.RpcServiceRequestTyped<string> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
-                    return this.request<string>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(codeNamespace)), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<string>('post', uri, query, headers, SolidRpcJs.toJson(codeNamespace), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.CreateTypesTsForCodeNamespaceAsyncSubject);
+                    }, CreateTypesTsForCodeNamespaceAsyncSubject);
                 }
-                /**
-                 * This observable is hot and monitors all the responses from the CreateTypesTsForCodeNamespaceAsync invocations.
-                 */
-                CreateTypesTsForCodeNamespaceAsyncObservable : Observable<string>;
-                private CreateTypesTsForCodeNamespaceAsyncSubject : Subject<string>;
-            }
-            /**
-             * Instance for the ITypescriptGenerator type. Implemented by the TypescriptGeneratorImpl
-             */
-            export var TypescriptGeneratorInstance : ITypescriptGenerator = new TypescriptGeneratorImpl();
+                }
         }
         export namespace RateLimit {
             /**
              * Service that we can invoke to throttle requests.
              */
-            export interface ISolidRpcRateLimit {
+            export namespace ISolidRpcRateLimit {
+                let GetRateLimitTokenAsyncSubject = new Subject<Types.RateLimit.RateLimitToken>();
+                /**
+                 * This observable is hot and monitors all the responses from the GetRateLimitTokenAsync invocations.
+                 */
+                export var GetRateLimitTokenAsyncObservable = GetRateLimitTokenAsyncSubject.asObservable().pipe(share());
                 /**
                  * Returns the rate limit token.
                  * @param resourceName 
                  * @param timeout 
                  * @param cancellationToken 
                  */
-                GetRateLimitTokenAsync(
+                export function GetRateLimitTokenAsync(
                     resourceName : string,
                     timeout : Date,
                     cancellationToken? : CancellationToken
-                ): Observable<Types.RateLimit.RateLimitToken>;
+                ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
+                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return new Types.RateLimit.RateLimitToken(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, GetRateLimitTokenAsyncSubject);
+                }
+                let GetSingeltonTokenAsyncSubject = new Subject<Types.RateLimit.RateLimitToken>();
                 /**
-                 * This observable is hot and monitors all the responses from the GetRateLimitTokenAsync invocations.
+                 * This observable is hot and monitors all the responses from the GetSingeltonTokenAsync invocations.
                  */
-                GetRateLimitTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
+                export var GetSingeltonTokenAsyncObservable = GetSingeltonTokenAsyncSubject.asObservable().pipe(share());
                 /**
                  * Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.
                  * @param resourceName 
                  * @param timeout 
                  * @param cancellationToken 
                  */
-                GetSingeltonTokenAsync(
+                export function GetSingeltonTokenAsync(
                     resourceName : string,
                     timeout : Date,
                     cancellationToken? : CancellationToken
-                ): Observable<Types.RateLimit.RateLimitToken>;
-                /**
-                 * This observable is hot and monitors all the responses from the GetSingeltonTokenAsync invocations.
-                 */
-                GetSingeltonTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
-                /**
-                 * Returns a rate limit token.
-                 * @param rateLimitToken 
-                 * @param cancellationToken 
-                 */
-                ReturnRateLimitTokenAsync(
-                    rateLimitToken : Types.RateLimit.RateLimitToken,
-                    cancellationToken? : CancellationToken
-                ): Observable<void>;
+                ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
+                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let query: { [index: string]: any } = {};
+                    let headers: { [index: string]: any } = {};
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                        if(code == 200) {
+                            return new Types.RateLimit.RateLimitToken(data);
+                        } else {
+                            throw 'Response code != 200('+code+')';
+                        }
+                    }, GetSingeltonTokenAsyncSubject);
+                }
+                let ReturnRateLimitTokenAsyncSubject = new Subject<void>();
                 /**
                  * This observable is hot and monitors all the responses from the ReturnRateLimitTokenAsync invocations.
                  */
-                ReturnRateLimitTokenAsyncObservable : Observable<void>;
-                /**
-                 * Returns the rate limit settings
-                 * @param cancellationToken 
-                 */
-                GetRateLimitSettingsAsync(
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.RateLimit.RateLimitSetting[]>;
-                /**
-                 * This observable is hot and monitors all the responses from the GetRateLimitSettingsAsync invocations.
-                 */
-                GetRateLimitSettingsAsyncObservable : Observable<Types.RateLimit.RateLimitSetting[]>;
-                /**
-                 * Updates the rate limit settings
-                 * @param setting 
-                 * @param cancellationToken 
-                 */
-                UpdateRateLimitSetting(
-                    setting : Types.RateLimit.RateLimitSetting,
-                    cancellationToken? : CancellationToken
-                ): Observable<void>;
-                /**
-                 * This observable is hot and monitors all the responses from the UpdateRateLimitSetting invocations.
-                 */
-                UpdateRateLimitSettingObservable : Observable<void>;
-            }
-            /**
-             * Service that we can invoke to throttle requests.
-             */
-            export class SolidRpcRateLimitImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcRateLimit {
-                private Namespace: SolidRpcJs.Namespace;
-                constructor() {
-                    super();
-                    this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    this.GetRateLimitTokenAsyncSubject = new Subject<Types.RateLimit.RateLimitToken>();
-                    this.GetRateLimitTokenAsyncObservable = this.GetRateLimitTokenAsyncSubject.asObservable().pipe(share());
-                    this.GetSingeltonTokenAsyncSubject = new Subject<Types.RateLimit.RateLimitToken>();
-                    this.GetSingeltonTokenAsyncObservable = this.GetSingeltonTokenAsyncSubject.asObservable().pipe(share());
-                    this.ReturnRateLimitTokenAsyncSubject = new Subject<void>();
-                    this.ReturnRateLimitTokenAsyncObservable = this.ReturnRateLimitTokenAsyncSubject.asObservable().pipe(share());
-                    this.GetRateLimitSettingsAsyncSubject = new Subject<Types.RateLimit.RateLimitSetting[]>();
-                    this.GetRateLimitSettingsAsyncObservable = this.GetRateLimitSettingsAsyncSubject.asObservable().pipe(share());
-                    this.UpdateRateLimitSettingSubject = new Subject<void>();
-                    this.UpdateRateLimitSettingObservable = this.UpdateRateLimitSettingSubject.asObservable().pipe(share());
-                }
-                /**
-                 * Returns the rate limit token.
-                 * @param resourceName 
-                 * @param timeout 
-                 * @param cancellationToken 
-                 */
-                GetRateLimitTokenAsync(
-                    resourceName : string,
-                    timeout : Date,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.RateLimit.RateLimitToken> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
-                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.RateLimit.RateLimitToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.RateLimit.RateLimitToken(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.GetRateLimitTokenAsyncSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the GetRateLimitTokenAsync invocations.
-                 */
-                GetRateLimitTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
-                private GetRateLimitTokenAsyncSubject : Subject<Types.RateLimit.RateLimitToken>;
-                /**
-                 * Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.
-                 * @param resourceName 
-                 * @param timeout 
-                 * @param cancellationToken 
-                 */
-                GetSingeltonTokenAsync(
-                    resourceName : string,
-                    timeout : Date,
-                    cancellationToken? : CancellationToken
-                ): Observable<Types.RateLimit.RateLimitToken> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
-                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                    let query: { [index: string]: any } = {};
-                    let headers: { [index: string]: any } = {};
-                    return this.request<Types.RateLimit.RateLimitToken>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                        if(code == 200) {
-                            return new Types.RateLimit.RateLimitToken(data);
-                        } else {
-                            throw 'Response code != 200('+code+')';
-                        }
-                    }, this.GetSingeltonTokenAsyncSubject);
-                }
-                /**
-                 * This observable is hot and monitors all the responses from the GetSingeltonTokenAsync invocations.
-                 */
-                GetSingeltonTokenAsyncObservable : Observable<Types.RateLimit.RateLimitToken>;
-                private GetSingeltonTokenAsyncSubject : Subject<Types.RateLimit.RateLimitToken>;
+                export var ReturnRateLimitTokenAsyncObservable = ReturnRateLimitTokenAsyncSubject.asObservable().pipe(share());
                 /**
                  * Returns a rate limit token.
                  * @param rateLimitToken 
                  * @param cancellationToken 
                  */
-                ReturnRateLimitTokenAsync(
+                export function ReturnRateLimitTokenAsync(
                     rateLimitToken : Types.RateLimit.RateLimitToken,
                     cancellationToken? : CancellationToken
-                ): Observable<void> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
+                ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
-                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(rateLimitToken)), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(rateLimitToken), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return null;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.ReturnRateLimitTokenAsyncSubject);
+                    }, ReturnRateLimitTokenAsyncSubject);
                 }
+                let GetRateLimitSettingsAsyncSubject = new Subject<Types.RateLimit.RateLimitSetting[]>();
                 /**
-                 * This observable is hot and monitors all the responses from the ReturnRateLimitTokenAsync invocations.
+                 * This observable is hot and monitors all the responses from the GetRateLimitSettingsAsync invocations.
                  */
-                ReturnRateLimitTokenAsyncObservable : Observable<void>;
-                private ReturnRateLimitTokenAsyncSubject : Subject<void>;
+                export var GetRateLimitSettingsAsyncObservable = GetRateLimitSettingsAsyncSubject.asObservable().pipe(share());
                 /**
                  * Returns the rate limit settings
                  * @param cancellationToken 
                  */
-                GetRateLimitSettingsAsync(
+                export function GetRateLimitSettingsAsync(
                     cancellationToken? : CancellationToken
-                ): Observable<Types.RateLimit.RateLimitSetting[]> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
+                ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return this.request<Types.RateLimit.RateLimitSetting[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return Array.from(data).map(o => new Types.RateLimit.RateLimitSetting(o));
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.GetRateLimitSettingsAsyncSubject);
+                    }, GetRateLimitSettingsAsyncSubject);
                 }
+                let UpdateRateLimitSettingSubject = new Subject<void>();
                 /**
-                 * This observable is hot and monitors all the responses from the GetRateLimitSettingsAsync invocations.
+                 * This observable is hot and monitors all the responses from the UpdateRateLimitSetting invocations.
                  */
-                GetRateLimitSettingsAsyncObservable : Observable<Types.RateLimit.RateLimitSetting[]>;
-                private GetRateLimitSettingsAsyncSubject : Subject<Types.RateLimit.RateLimitSetting[]>;
+                export var UpdateRateLimitSettingObservable = UpdateRateLimitSettingSubject.asObservable().pipe(share());
                 /**
                  * Updates the rate limit settings
                  * @param setting 
                  * @param cancellationToken 
                  */
-                UpdateRateLimitSetting(
+                export function UpdateRateLimitSetting(
                     setting : Types.RateLimit.RateLimitSetting,
                     cancellationToken? : CancellationToken
-                ): Observable<void> {
-                    let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
+                ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
-                    return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(setting)), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(setting), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return null;
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, this.UpdateRateLimitSettingSubject);
+                    }, UpdateRateLimitSettingSubject);
                 }
-                /**
-                 * This observable is hot and monitors all the responses from the UpdateRateLimitSetting invocations.
-                 */
-                UpdateRateLimitSettingObservable : Observable<void>;
-                private UpdateRateLimitSettingSubject : Subject<void>;
-            }
-            /**
-             * Instance for the ISolidRpcRateLimit type. Implemented by the SolidRpcRateLimitImpl
-             */
-            export var SolidRpcRateLimitInstance : ISolidRpcRateLimit = new SolidRpcRateLimitImpl();
+                }
         }
         /**
          * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
          *             
          *             This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.
          */
-        export interface ISolidRpcContentHandler {
-            /**
-             * Returns the content for supplied path.
-             *             
-             *             Note that the path is marked as optional(default value set). This is so that the parameter
-             *             is placed in the query string instead of path.
-             * @param path The path to get the content for
-             * @param cancellationToken 
-             */
-            GetContent(
-                path? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Types.FileContent>;
+        export namespace ISolidRpcContentHandler {
+            let GetContentSubject = new Subject<Types.FileContent>();
             /**
              * This observable is hot and monitors all the responses from the GetContent invocations.
              */
-            GetContentObservable : Observable<Types.FileContent>;
-            /**
-             * Returns all the path mappings.
-             * @param redirects 
-             * @param cancellationToken 
-             */
-            GetPathMappingsAsync(
-                redirects : boolean,
-                cancellationToken? : CancellationToken
-            ): Observable<Types.NameValuePair[]>;
-            /**
-             * This observable is hot and monitors all the responses from the GetPathMappingsAsync invocations.
-             */
-            GetPathMappingsAsyncObservable : Observable<Types.NameValuePair[]>;
-        }
-        /**
-         * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
-         *             
-         *             This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.
-         */
-        export class SolidRpcContentHandlerImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcContentHandler {
-            private Namespace: SolidRpcJs.Namespace;
-            constructor() {
-                super();
-                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                this.GetContentSubject = new Subject<Types.FileContent>();
-                this.GetContentObservable = this.GetContentSubject.asObservable().pipe(share());
-                this.GetPathMappingsAsyncSubject = new Subject<Types.NameValuePair[]>();
-                this.GetPathMappingsAsyncObservable = this.GetPathMappingsAsyncSubject.asObservable().pipe(share());
-            }
+            export var GetContentObservable = GetContentSubject.asObservable().pipe(share());
             /**
              * Returns the content for supplied path.
              *             
@@ -558,534 +320,323 @@ export namespace Abstractions {
              * @param path The path to get the content for
              * @param cancellationToken 
              */
-            GetContent(
+            export function GetContent(
                 path? : string,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.FileContent> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(path, x => { query['path'] = x; });
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetContentSubject);
+                }, GetContentSubject);
             }
+            let GetPathMappingsAsyncSubject = new Subject<Types.NameValuePair[]>();
             /**
-             * This observable is hot and monitors all the responses from the GetContent invocations.
+             * This observable is hot and monitors all the responses from the GetPathMappingsAsync invocations.
              */
-            GetContentObservable : Observable<Types.FileContent>;
-            private GetContentSubject : Subject<Types.FileContent>;
+            export var GetPathMappingsAsyncObservable = GetPathMappingsAsyncSubject.asObservable().pipe(share());
             /**
              * Returns all the path mappings.
              * @param redirects 
              * @param cancellationToken 
              */
-            GetPathMappingsAsync(
+            export function GetPathMappingsAsync(
                 redirects : boolean,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.NameValuePair[]> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
                 SolidRpcJs.ifnull(redirects, () => { uri = uri.replace('{redirects}', ''); }, nn =>  { uri = uri.replace('{redirects}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.NameValuePair[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.NameValuePair(o));
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetPathMappingsAsyncSubject);
+                }, GetPathMappingsAsyncSubject);
             }
-            /**
-             * This observable is hot and monitors all the responses from the GetPathMappingsAsync invocations.
-             */
-            GetPathMappingsAsyncObservable : Observable<Types.NameValuePair[]>;
-            private GetPathMappingsAsyncSubject : Subject<Types.NameValuePair[]>;
-        }
-        /**
-         * Instance for the ISolidRpcContentHandler type. Implemented by the SolidRpcContentHandlerImpl
-         */
-        export var SolidRpcContentHandlerInstance : ISolidRpcContentHandler = new SolidRpcContentHandlerImpl();
+            }
         /**
          * Represents a solid rpc host.
          */
-        export interface ISolidRpcHost {
+        export namespace ISolidRpcHost {
+            let GetHostIdSubject = new Subject<string>();
+            /**
+             * This observable is hot and monitors all the responses from the GetHostId invocations.
+             */
+            export var GetHostIdObservable = GetHostIdSubject.asObservable().pipe(share());
             /**
              * Returns the id of this host
              * @param cancellationToken 
              */
-            GetHostId(
+            export function GetHostId(
                 cancellationToken? : CancellationToken
-            ): Observable<string>;
+            ): SolidRpcJs.RpcServiceRequestTyped<string> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return data as string;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, GetHostIdSubject);
+            }
+            let GetHostInstanceSubject = new Subject<Types.SolidRpcHostInstance>();
             /**
-             * This observable is hot and monitors all the responses from the GetHostId invocations.
+             * This observable is hot and monitors all the responses from the GetHostInstance invocations.
              */
-            GetHostIdObservable : Observable<string>;
+            export var GetHostInstanceObservable = GetHostInstanceSubject.asObservable().pipe(share());
             /**
              * Returns the id of this host. This method can be used to determine if a host is up and running by
              *             comparing the returned value with the instance that we want to send to. If a host goes down it is 
              *             removed from the router and another instance probably responds to the call.
              * @param cancellationToken 
              */
-            GetHostInstance(
+            export function GetHostInstance(
                 cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance>;
-            /**
-             * This observable is hot and monitors all the responses from the GetHostInstance invocations.
-             */
-            GetHostInstanceObservable : Observable<Types.SolidRpcHostInstance>;
-            /**
-             * This method is invoked on all the hosts in a store when a new host is available.
-             * @param cancellationToken 
-             */
-            SyncHostsFromStore(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance[]>;
-            /**
-             * This observable is hot and monitors all the responses from the SyncHostsFromStore invocations.
-             */
-            SyncHostsFromStoreObservable : Observable<Types.SolidRpcHostInstance[]>;
-            /**
-             * Invokes the "GetHostInstance" targeted for supplied instance and resturns the result
-             * @param hostInstance 
-             * @param cancellationToken 
-             */
-            CheckHost(
-                hostInstance : Types.SolidRpcHostInstance,
-                cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance>;
-            /**
-             * This observable is hot and monitors all the responses from the CheckHost invocations.
-             */
-            CheckHostObservable : Observable<Types.SolidRpcHostInstance>;
-            /**
-             * Returns the host configuration.
-             * @param cancellationToken 
-             */
-            GetHostConfiguration(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.NameValuePair[]>;
-            /**
-             * This observable is hot and monitors all the responses from the GetHostConfiguration invocations.
-             */
-            GetHostConfigurationObservable : Observable<Types.NameValuePair[]>;
-            /**
-             * Function that determines if the host is alive.
-             * @param cancellationToken 
-             */
-            IsAlive(
-                cancellationToken? : CancellationToken
-            ): Observable<void>;
-            /**
-             * This observable is hot and monitors all the responses from the IsAlive invocations.
-             */
-            IsAliveObservable : Observable<void>;
-            /**
-             * Returns the base url for this host
-             * @param cancellationToken 
-             */
-            BaseAddress(
-                cancellationToken? : CancellationToken
-            ): Observable<string>;
-            /**
-             * This observable is hot and monitors all the responses from the BaseAddress invocations.
-             */
-            BaseAddressObservable : Observable<string>;
-        }
-        /**
-         * Represents a solid rpc host.
-         */
-        export class SolidRpcHostImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcHost {
-            private Namespace: SolidRpcJs.Namespace;
-            constructor() {
-                super();
-                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                this.GetHostIdSubject = new Subject<string>();
-                this.GetHostIdObservable = this.GetHostIdSubject.asObservable().pipe(share());
-                this.GetHostInstanceSubject = new Subject<Types.SolidRpcHostInstance>();
-                this.GetHostInstanceObservable = this.GetHostInstanceSubject.asObservable().pipe(share());
-                this.SyncHostsFromStoreSubject = new Subject<Types.SolidRpcHostInstance[]>();
-                this.SyncHostsFromStoreObservable = this.SyncHostsFromStoreSubject.asObservable().pipe(share());
-                this.CheckHostSubject = new Subject<Types.SolidRpcHostInstance>();
-                this.CheckHostObservable = this.CheckHostSubject.asObservable().pipe(share());
-                this.GetHostConfigurationSubject = new Subject<Types.NameValuePair[]>();
-                this.GetHostConfigurationObservable = this.GetHostConfigurationSubject.asObservable().pipe(share());
-                this.IsAliveSubject = new Subject<void>();
-                this.IsAliveObservable = this.IsAliveSubject.asObservable().pipe(share());
-                this.BaseAddressSubject = new Subject<string>();
-                this.BaseAddressObservable = this.BaseAddressSubject.asObservable().pipe(share());
-            }
-            /**
-             * Returns the id of this host
-             * @param cancellationToken 
-             */
-            GetHostId(
-                cancellationToken? : CancellationToken
-            ): Observable<string> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return data as string;
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.GetHostIdSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the GetHostId invocations.
-             */
-            GetHostIdObservable : Observable<string>;
-            private GetHostIdSubject : Subject<string>;
-            /**
-             * Returns the id of this host. This method can be used to determine if a host is up and running by
-             *             comparing the returned value with the instance that we want to send to. If a host goes down it is 
-             *             removed from the router and another instance probably responds to the call.
-             * @param cancellationToken 
-             */
-            GetHostInstance(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                return this.request<Types.SolidRpcHostInstance>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.SolidRpcHostInstance(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetHostInstanceSubject);
+                }, GetHostInstanceSubject);
             }
+            let SyncHostsFromStoreSubject = new Subject<Types.SolidRpcHostInstance[]>();
             /**
-             * This observable is hot and monitors all the responses from the GetHostInstance invocations.
+             * This observable is hot and monitors all the responses from the SyncHostsFromStore invocations.
              */
-            GetHostInstanceObservable : Observable<Types.SolidRpcHostInstance>;
-            private GetHostInstanceSubject : Subject<Types.SolidRpcHostInstance>;
+            export var SyncHostsFromStoreObservable = SyncHostsFromStoreSubject.asObservable().pipe(share());
             /**
              * This method is invoked on all the hosts in a store when a new host is available.
              * @param cancellationToken 
              */
-            SyncHostsFromStore(
+            export function SyncHostsFromStore(
                 cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance[]> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.SolidRpcHostInstance[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.SolidRpcHostInstance(o));
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.SyncHostsFromStoreSubject);
+                }, SyncHostsFromStoreSubject);
             }
+            let CheckHostSubject = new Subject<Types.SolidRpcHostInstance>();
             /**
-             * This observable is hot and monitors all the responses from the SyncHostsFromStore invocations.
+             * This observable is hot and monitors all the responses from the CheckHost invocations.
              */
-            SyncHostsFromStoreObservable : Observable<Types.SolidRpcHostInstance[]>;
-            private SyncHostsFromStoreSubject : Subject<Types.SolidRpcHostInstance[]>;
+            export var CheckHostObservable = CheckHostSubject.asObservable().pipe(share());
             /**
              * Invokes the "GetHostInstance" targeted for supplied instance and resturns the result
              * @param hostInstance 
              * @param cancellationToken 
              */
-            CheckHost(
+            export function CheckHost(
                 hostInstance : Types.SolidRpcHostInstance,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
-                return this.request<Types.SolidRpcHostInstance>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(hostInstance)), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('post', uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.SolidRpcHostInstance(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.CheckHostSubject);
+                }, CheckHostSubject);
             }
+            let GetHostConfigurationSubject = new Subject<Types.NameValuePair[]>();
             /**
-             * This observable is hot and monitors all the responses from the CheckHost invocations.
+             * This observable is hot and monitors all the responses from the GetHostConfiguration invocations.
              */
-            CheckHostObservable : Observable<Types.SolidRpcHostInstance>;
-            private CheckHostSubject : Subject<Types.SolidRpcHostInstance>;
+            export var GetHostConfigurationObservable = GetHostConfigurationSubject.asObservable().pipe(share());
             /**
              * Returns the host configuration.
              * @param cancellationToken 
              */
-            GetHostConfiguration(
+            export function GetHostConfiguration(
                 cancellationToken? : CancellationToken
-            ): Observable<Types.NameValuePair[]> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.NameValuePair[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.NameValuePair(o));
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetHostConfigurationSubject);
+                }, GetHostConfigurationSubject);
             }
+            let IsAliveSubject = new Subject<void>();
             /**
-             * This observable is hot and monitors all the responses from the GetHostConfiguration invocations.
+             * This observable is hot and monitors all the responses from the IsAlive invocations.
              */
-            GetHostConfigurationObservable : Observable<Types.NameValuePair[]>;
-            private GetHostConfigurationSubject : Subject<Types.NameValuePair[]>;
+            export var IsAliveObservable = IsAliveSubject.asObservable().pipe(share());
             /**
              * Function that determines if the host is alive.
              * @param cancellationToken 
              */
-            IsAlive(
+            export function IsAlive(
                 cancellationToken? : CancellationToken
-            ): Observable<void> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
+            ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<void>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return null;
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.IsAliveSubject);
+                }, IsAliveSubject);
             }
+            let BaseAddressSubject = new Subject<string>();
             /**
-             * This observable is hot and monitors all the responses from the IsAlive invocations.
+             * This observable is hot and monitors all the responses from the BaseAddress invocations.
              */
-            IsAliveObservable : Observable<void>;
-            private IsAliveSubject : Subject<void>;
+            export var BaseAddressObservable = BaseAddressSubject.asObservable().pipe(share());
             /**
              * Returns the base url for this host
              * @param cancellationToken 
              */
-            BaseAddress(
+            export function BaseAddress(
                 cancellationToken? : CancellationToken
-            ): Observable<string> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
+            ): SolidRpcJs.RpcServiceRequestTyped<string> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<string>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return data as string;
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.BaseAddressSubject);
+                }, BaseAddressSubject);
             }
-            /**
-             * This observable is hot and monitors all the responses from the BaseAddress invocations.
-             */
-            BaseAddressObservable : Observable<string>;
-            private BaseAddressSubject : Subject<string>;
-        }
-        /**
-         * Instance for the ISolidRpcHost type. Implemented by the SolidRpcHostImpl
-         */
-        export var SolidRpcHostInstance : ISolidRpcHost = new SolidRpcHostImpl();
+            }
         /**
          * The host store is responsible for storing persistent information about 
          *             a host in a cluster. Usually hosts are placed behind a load balancer that
          *             can route to a specific host based on some cookie or header information.
          */
-        export interface ISolidRpcHostStore {
+        export namespace ISolidRpcHostStore {
+            let AddHostInstanceAsyncSubject = new Subject<void>();
+            /**
+             * This observable is hot and monitors all the responses from the AddHostInstanceAsync invocations.
+             */
+            export var AddHostInstanceAsyncObservable = AddHostInstanceAsyncSubject.asObservable().pipe(share());
             /**
              * Adds a host instance to the host store.
              * @param hostInstance 
              * @param cancellationToken 
              */
-            AddHostInstanceAsync(
+            export function AddHostInstanceAsync(
                 hostInstance : Types.SolidRpcHostInstance,
                 cancellationToken? : CancellationToken
-            ): Observable<void>;
+            ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                headers['Content-Type']='application/json';
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, AddHostInstanceAsyncSubject);
+            }
+            let RemoveHostInstanceAsyncSubject = new Subject<void>();
             /**
-             * This observable is hot and monitors all the responses from the AddHostInstanceAsync invocations.
+             * This observable is hot and monitors all the responses from the RemoveHostInstanceAsync invocations.
              */
-            AddHostInstanceAsyncObservable : Observable<void>;
+            export var RemoveHostInstanceAsyncObservable = RemoveHostInstanceAsyncSubject.asObservable().pipe(share());
             /**
              * Removes a host instance from the store.
              * @param hostInstance 
              * @param cancellationToken 
              */
-            RemoveHostInstanceAsync(
+            export function RemoveHostInstanceAsync(
                 hostInstance : Types.SolidRpcHostInstance,
                 cancellationToken? : CancellationToken
-            ): Observable<void>;
-            /**
-             * This observable is hot and monitors all the responses from the RemoveHostInstanceAsync invocations.
-             */
-            RemoveHostInstanceAsyncObservable : Observable<void>;
-            /**
-             * Lists the stored host instances
-             * @param cancellationToken 
-             */
-            ListHostInstancesAsync(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance[]>;
+            ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                headers['Content-Type']='application/json';
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, RemoveHostInstanceAsyncSubject);
+            }
+            let ListHostInstancesAsyncSubject = new Subject<Types.SolidRpcHostInstance[]>();
             /**
              * This observable is hot and monitors all the responses from the ListHostInstancesAsync invocations.
              */
-            ListHostInstancesAsyncObservable : Observable<Types.SolidRpcHostInstance[]>;
-        }
-        /**
-         * The host store is responsible for storing persistent information about 
-         *             a host in a cluster. Usually hosts are placed behind a load balancer that
-         *             can route to a specific host based on some cookie or header information.
-         */
-        export class SolidRpcHostStoreImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcHostStore {
-            private Namespace: SolidRpcJs.Namespace;
-            constructor() {
-                super();
-                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                this.AddHostInstanceAsyncSubject = new Subject<void>();
-                this.AddHostInstanceAsyncObservable = this.AddHostInstanceAsyncSubject.asObservable().pipe(share());
-                this.RemoveHostInstanceAsyncSubject = new Subject<void>();
-                this.RemoveHostInstanceAsyncObservable = this.RemoveHostInstanceAsyncSubject.asObservable().pipe(share());
-                this.ListHostInstancesAsyncSubject = new Subject<Types.SolidRpcHostInstance[]>();
-                this.ListHostInstancesAsyncObservable = this.ListHostInstancesAsyncSubject.asObservable().pipe(share());
-            }
-            /**
-             * Adds a host instance to the host store.
-             * @param hostInstance 
-             * @param cancellationToken 
-             */
-            AddHostInstanceAsync(
-                hostInstance : Types.SolidRpcHostInstance,
-                cancellationToken? : CancellationToken
-            ): Observable<void> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                headers['Content-Type']='application/json';
-                return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(hostInstance)), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return null;
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.AddHostInstanceAsyncSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the AddHostInstanceAsync invocations.
-             */
-            AddHostInstanceAsyncObservable : Observable<void>;
-            private AddHostInstanceAsyncSubject : Subject<void>;
-            /**
-             * Removes a host instance from the store.
-             * @param hostInstance 
-             * @param cancellationToken 
-             */
-            RemoveHostInstanceAsync(
-                hostInstance : Types.SolidRpcHostInstance,
-                cancellationToken? : CancellationToken
-            ): Observable<void> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
-                let query: { [index: string]: any } = {};
-                let headers: { [index: string]: any } = {};
-                headers['Content-Type']='application/json';
-                return this.request<void>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, this.toJson(hostInstance)), cancellationToken, function(code : number, data : any) {
-                    if(code == 200) {
-                        return null;
-                    } else {
-                        throw 'Response code != 200('+code+')';
-                    }
-                }, this.RemoveHostInstanceAsyncSubject);
-            }
-            /**
-             * This observable is hot and monitors all the responses from the RemoveHostInstanceAsync invocations.
-             */
-            RemoveHostInstanceAsyncObservable : Observable<void>;
-            private RemoveHostInstanceAsyncSubject : Subject<void>;
+            export var ListHostInstancesAsyncObservable = ListHostInstancesAsyncSubject.asObservable().pipe(share());
             /**
              * Lists the stored host instances
              * @param cancellationToken 
              */
-            ListHostInstancesAsync(
+            export function ListHostInstancesAsync(
                 cancellationToken? : CancellationToken
-            ): Observable<Types.SolidRpcHostInstance[]> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.SolidRpcHostInstance[]>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.SolidRpcHostInstance(o));
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.ListHostInstancesAsyncSubject);
+                }, ListHostInstancesAsyncSubject);
             }
-            /**
-             * This observable is hot and monitors all the responses from the ListHostInstancesAsync invocations.
-             */
-            ListHostInstancesAsyncObservable : Observable<Types.SolidRpcHostInstance[]>;
-            private ListHostInstancesAsyncSubject : Subject<Types.SolidRpcHostInstance[]>;
-        }
-        /**
-         * Instance for the ISolidRpcHostStore type. Implemented by the SolidRpcHostStoreImpl
-         */
-        export var SolidRpcHostStoreInstance : ISolidRpcHostStore = new SolidRpcHostStoreImpl();
+            }
         /**
          * Interfaces that defines the logic for OAuth2 support.
          */
-        export interface ISolidRpcOAuth2 {
-            /**
-             * This is the method returns a html page that calls supplied callback
-             *             after the token callback has been invoked. Use this method to
-             *             retreive tokens from a standalone node instance.
-             *             
-             *             Start a local http server and supply the address to the handler.
-             * @param callbackUri 
-             * @param state 
-             * @param scopes 
-             * @param cancellationToken 
-             */
-            GetAuthorizationCodeTokenAsync(
-                callbackUri? : string,
-                state? : string,
-                scopes? : string[],
-                cancellationToken? : CancellationToken
-            ): Observable<Types.FileContent>;
+        export namespace ISolidRpcOAuth2 {
+            let GetAuthorizationCodeTokenAsyncSubject = new Subject<Types.FileContent>();
             /**
              * This observable is hot and monitors all the responses from the GetAuthorizationCodeTokenAsync invocations.
              */
-            GetAuthorizationCodeTokenAsyncObservable : Observable<Types.FileContent>;
-            /**
-             * This is the method that is invoked when a user has been authenticated
-             *             and a valid token is supplied.
-             * @param code 
-             * @param state 
-             * @param cancellation 
-             */
-            TokenCallbackAsync(
-                code? : string,
-                state? : string,
-                cancellation? : CancellationToken
-            ): Observable<Types.FileContent>;
-            /**
-             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
-             */
-            TokenCallbackAsyncObservable : Observable<Types.FileContent>;
-        }
-        /**
-         * Interfaces that defines the logic for OAuth2 support.
-         */
-        export class SolidRpcOAuth2Impl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcOAuth2 {
-            private Namespace: SolidRpcJs.Namespace;
-            constructor() {
-                super();
-                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                this.GetAuthorizationCodeTokenAsyncSubject = new Subject<Types.FileContent>();
-                this.GetAuthorizationCodeTokenAsyncObservable = this.GetAuthorizationCodeTokenAsyncSubject.asObservable().pipe(share());
-                this.TokenCallbackAsyncSubject = new Subject<Types.FileContent>();
-                this.TokenCallbackAsyncObservable = this.TokenCallbackAsyncSubject.asObservable().pipe(share());
-            }
+            export var GetAuthorizationCodeTokenAsyncObservable = GetAuthorizationCodeTokenAsyncSubject.asObservable().pipe(share());
             /**
              * This is the method returns a html page that calls supplied callback
              *             after the token callback has been invoked. Use this method to
@@ -1097,31 +648,32 @@ export namespace Abstractions {
              * @param scopes 
              * @param cancellationToken 
              */
-            GetAuthorizationCodeTokenAsync(
+            export function GetAuthorizationCodeTokenAsync(
                 callbackUri? : string,
                 state? : string,
                 scopes? : string[],
                 cancellationToken? : CancellationToken
-            ): Observable<Types.FileContent> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
                 SolidRpcJs.ifnotnull(scopes, x => { query['scopes'] = x; });
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetAuthorizationCodeTokenAsyncSubject);
+                }, GetAuthorizationCodeTokenAsyncSubject);
             }
+            let TokenCallbackAsyncSubject = new Subject<Types.FileContent>();
             /**
-             * This observable is hot and monitors all the responses from the GetAuthorizationCodeTokenAsync invocations.
+             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
              */
-            GetAuthorizationCodeTokenAsyncObservable : Observable<Types.FileContent>;
-            private GetAuthorizationCodeTokenAsyncSubject : Subject<Types.FileContent>;
+            export var TokenCallbackAsyncObservable = TokenCallbackAsyncSubject.asObservable().pipe(share());
             /**
              * This is the method that is invoked when a user has been authenticated
              *             and a valid token is supplied.
@@ -1129,180 +681,83 @@ export namespace Abstractions {
              * @param state 
              * @param cancellation 
              */
-            TokenCallbackAsync(
+            export function TokenCallbackAsync(
                 code? : string,
                 state? : string,
                 cancellation? : CancellationToken
-            ): Observable<Types.FileContent> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(code, x => { query['code'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellation, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.TokenCallbackAsyncSubject);
+                }, TokenCallbackAsyncSubject);
             }
-            /**
-             * This observable is hot and monitors all the responses from the TokenCallbackAsync invocations.
-             */
-            TokenCallbackAsyncObservable : Observable<Types.FileContent>;
-            private TokenCallbackAsyncSubject : Subject<Types.FileContent>;
-        }
-        /**
-         * Instance for the ISolidRpcOAuth2 type. Implemented by the SolidRpcOAuth2Impl
-         */
-        export var SolidRpcOAuth2Instance : ISolidRpcOAuth2 = new SolidRpcOAuth2Impl();
+            }
         /**
          * Implements logic for the oidc server
          */
-        export interface ISolidRpcOidc {
-            /**
-             * Returns the /.well-known/openid-configuration file
-             * @param cancellationToken 
-             */
-            GetDiscoveryDocumentAsync(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.OAuth2.OpenIDConnectDiscovery>;
+        export namespace ISolidRpcOidc {
+            let GetDiscoveryDocumentAsyncSubject = new Subject<Types.OAuth2.OpenIDConnectDiscovery>();
             /**
              * This observable is hot and monitors all the responses from the GetDiscoveryDocumentAsync invocations.
              */
-            GetDiscoveryDocumentAsyncObservable : Observable<Types.OAuth2.OpenIDConnectDiscovery>;
-            /**
-             * Returns the keys
-             * @param cancellationToken 
-             */
-            GetKeysAsync(
-                cancellationToken? : CancellationToken
-            ): Observable<Types.OAuth2.OpenIDKeys>;
-            /**
-             * This observable is hot and monitors all the responses from the GetKeysAsync invocations.
-             */
-            GetKeysAsyncObservable : Observable<Types.OAuth2.OpenIDKeys>;
-            /**
-             * authenticates a user
-             * @param grantType 
-             * @param clientId 
-             * @param clientSecret 
-             * @param username The user name
-             * @param password The the user password
-             * @param scope The the scopes
-             * @param code The the code
-             * @param redirectUri 
-             * @param codeVerifier 
-             * @param refreshToken 
-             * @param cancellationToken 
-             */
-            GetTokenAsync(
-                grantType? : string,
-                clientId? : string,
-                clientSecret? : string,
-                username? : string,
-                password? : string,
-                scope? : string[],
-                code? : string,
-                redirectUri? : string,
-                codeVerifier? : string,
-                refreshToken? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Types.OAuth2.TokenResponse>;
-            /**
-             * This observable is hot and monitors all the responses from the GetTokenAsync invocations.
-             */
-            GetTokenAsyncObservable : Observable<Types.OAuth2.TokenResponse>;
-            /**
-             * authorizes a user
-             * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
-             * @param responseType 
-             * @param clientId 
-             * @param redirectUri 
-             * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
-             * @param responseMode 
-             * @param nonce 
-             * @param cancellationToken 
-             */
-            AuthorizeAsync(
-                scope : string[],
-                responseType : string,
-                clientId : string,
-                redirectUri? : string,
-                state? : string,
-                responseMode? : string,
-                nonce? : string,
-                cancellationToken? : CancellationToken
-            ): Observable<Types.FileContent>;
-            /**
-             * This observable is hot and monitors all the responses from the AuthorizeAsync invocations.
-             */
-            AuthorizeAsyncObservable : Observable<Types.FileContent>;
-        }
-        /**
-         * Implements logic for the oidc server
-         */
-        export class SolidRpcOidcImpl  extends SolidRpcJs.RpcServiceImpl implements ISolidRpcOidc {
-            private Namespace: SolidRpcJs.Namespace;
-            constructor() {
-                super();
-                this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                this.GetDiscoveryDocumentAsyncSubject = new Subject<Types.OAuth2.OpenIDConnectDiscovery>();
-                this.GetDiscoveryDocumentAsyncObservable = this.GetDiscoveryDocumentAsyncSubject.asObservable().pipe(share());
-                this.GetKeysAsyncSubject = new Subject<Types.OAuth2.OpenIDKeys>();
-                this.GetKeysAsyncObservable = this.GetKeysAsyncSubject.asObservable().pipe(share());
-                this.GetTokenAsyncSubject = new Subject<Types.OAuth2.TokenResponse>();
-                this.GetTokenAsyncObservable = this.GetTokenAsyncSubject.asObservable().pipe(share());
-                this.AuthorizeAsyncSubject = new Subject<Types.FileContent>();
-                this.AuthorizeAsyncObservable = this.AuthorizeAsyncSubject.asObservable().pipe(share());
-            }
+            export var GetDiscoveryDocumentAsyncObservable = GetDiscoveryDocumentAsyncSubject.asObservable().pipe(share());
             /**
              * Returns the /.well-known/openid-configuration file
              * @param cancellationToken 
              */
-            GetDiscoveryDocumentAsync(
+            export function GetDiscoveryDocumentAsync(
                 cancellationToken? : CancellationToken
-            ): Observable<Types.OAuth2.OpenIDConnectDiscovery> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.OAuth2.OpenIDConnectDiscovery>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.OAuth2.OpenIDConnectDiscovery(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetDiscoveryDocumentAsyncSubject);
+                }, GetDiscoveryDocumentAsyncSubject);
             }
+            let GetKeysAsyncSubject = new Subject<Types.OAuth2.OpenIDKeys>();
             /**
-             * This observable is hot and monitors all the responses from the GetDiscoveryDocumentAsync invocations.
+             * This observable is hot and monitors all the responses from the GetKeysAsync invocations.
              */
-            GetDiscoveryDocumentAsyncObservable : Observable<Types.OAuth2.OpenIDConnectDiscovery>;
-            private GetDiscoveryDocumentAsyncSubject : Subject<Types.OAuth2.OpenIDConnectDiscovery>;
+            export var GetKeysAsyncObservable = GetKeysAsyncSubject.asObservable().pipe(share());
             /**
              * Returns the keys
              * @param cancellationToken 
              */
-            GetKeysAsync(
+            export function GetKeysAsync(
                 cancellationToken? : CancellationToken
-            ): Observable<Types.OAuth2.OpenIDKeys> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.OAuth2.OpenIDKeys>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.OAuth2.OpenIDKeys(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetKeysAsyncSubject);
+                }, GetKeysAsyncSubject);
             }
+            let GetTokenAsyncSubject = new Subject<Types.OAuth2.TokenResponse>();
             /**
-             * This observable is hot and monitors all the responses from the GetKeysAsync invocations.
+             * This observable is hot and monitors all the responses from the GetTokenAsync invocations.
              */
-            GetKeysAsyncObservable : Observable<Types.OAuth2.OpenIDKeys>;
-            private GetKeysAsyncSubject : Subject<Types.OAuth2.OpenIDKeys>;
+            export var GetTokenAsyncObservable = GetTokenAsyncSubject.asObservable().pipe(share());
             /**
              * authenticates a user
              * @param grantType 
@@ -1317,7 +772,7 @@ export namespace Abstractions {
              * @param refreshToken 
              * @param cancellationToken 
              */
-            GetTokenAsync(
+            export function GetTokenAsync(
                 grantType? : string,
                 clientId? : string,
                 clientSecret? : string,
@@ -1329,23 +784,24 @@ export namespace Abstractions {
                 codeVerifier? : string,
                 refreshToken? : string,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.OAuth2.TokenResponse> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.OAuth2.TokenResponse>(new SolidRpcJs.RpcServiceRequest('post', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse>('post', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.OAuth2.TokenResponse(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.GetTokenAsyncSubject);
+                }, GetTokenAsyncSubject);
             }
+            let AuthorizeAsyncSubject = new Subject<Types.FileContent>();
             /**
-             * This observable is hot and monitors all the responses from the GetTokenAsync invocations.
+             * This observable is hot and monitors all the responses from the AuthorizeAsync invocations.
              */
-            GetTokenAsyncObservable : Observable<Types.OAuth2.TokenResponse>;
-            private GetTokenAsyncSubject : Subject<Types.OAuth2.TokenResponse>;
+            export var AuthorizeAsyncObservable = AuthorizeAsyncSubject.asObservable().pipe(share());
             /**
              * authorizes a user
              * @param scope REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored. See Sections 5.4 and 11 for additional scope values defined by this specification.
@@ -1357,7 +813,7 @@ export namespace Abstractions {
              * @param nonce 
              * @param cancellationToken 
              */
-            AuthorizeAsync(
+            export function AuthorizeAsync(
                 scope : string[],
                 responseType : string,
                 clientId : string,
@@ -1366,8 +822,9 @@ export namespace Abstractions {
                 responseMode? : string,
                 nonce? : string,
                 cancellationToken? : CancellationToken
-            ): Observable<Types.FileContent> {
-                let uri = this.Namespace.getStringValue('baseUri','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
                 SolidRpcJs.ifnotnull(responseType, x => { query['response_type'] = x; });
@@ -1377,24 +834,15 @@ export namespace Abstractions {
                 SolidRpcJs.ifnotnull(responseMode, x => { query['response_mode'] = x; });
                 SolidRpcJs.ifnotnull(nonce, x => { query['nonce'] = x; });
                 let headers: { [index: string]: any } = {};
-                return this.request<Types.FileContent>(new SolidRpcJs.RpcServiceRequest('get', uri, query, headers, null), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, this.AuthorizeAsyncSubject);
+                }, AuthorizeAsyncSubject);
             }
-            /**
-             * This observable is hot and monitors all the responses from the AuthorizeAsync invocations.
-             */
-            AuthorizeAsyncObservable : Observable<Types.FileContent>;
-            private AuthorizeAsyncSubject : Subject<Types.FileContent>;
-        }
-        /**
-         * Instance for the ISolidRpcOidc type. Implemented by the SolidRpcOidcImpl
-         */
-        export var SolidRpcOidcInstance : ISolidRpcOidc = new SolidRpcOidcImpl();
+            }
     }
     export namespace Types {
         export namespace Code {

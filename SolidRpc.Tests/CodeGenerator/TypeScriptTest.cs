@@ -378,7 +378,8 @@ namespace SolidRpc.Tests.CodeGenerator
             cts.CancelAfter(new TimeSpan(0, 0, 30));
 
             var ns = sp.GetRequiredService<INodeService>();
-            var js = $@"const x = require(""solidrpc-tests"");
+            var js = $@"
+const x = require(""solidrpc-tests"");
 const y = require(""solidrpcjs"");
 y.SolidRpcJs.resetPreFlight();
 y.SolidRpcJs.addPreFlight((req, cont) => {{ 
@@ -392,7 +393,10 @@ y.SolidRpcJs.addPreFlight((req, cont) => {{
     cont();
 }});
 (async function(){{
-  return await x.TypeScriptTest.TestInterfaceInstance.{methodName}({jsInput}).toPromise();
+  console.log('Invoking...');
+  let res = await x.TypeScriptTest.ITestInterface.{methodName}({jsInput}).invoke().toPromise();
+  console.log('...done');
+  return res;
 }})();";
             var sep = Path.DirectorySeparatorChar;
             var inputFiles = packages.SelectMany(p => p.Files.Select(f => new { p.Name, File = f }))
@@ -451,7 +455,7 @@ y.SolidRpcJs.addPreFlight((req, cont) => {{
 
         private Task WriteModuleFile(string packageName, string fileName, string fileContent)
         {
-            return WritePackageFile($"node_modules\\{packageName}\\{fileName}", fileContent);
+            return WritePackageFile($"generated\\{packageName}\\{fileName}", fileContent);
         }
 
         private async Task WritePackageFile(string fileName, string fileContent)

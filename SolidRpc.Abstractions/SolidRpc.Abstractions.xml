@@ -3614,7 +3614,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="sc"></param>
-            <param name="baseUri"></param>
+            <param name="baseUrl"></param>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetConfigurationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder},System.Func{Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfigurationSource})">
             <summary>

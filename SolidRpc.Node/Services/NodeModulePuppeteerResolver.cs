@@ -13,7 +13,7 @@ namespace SolidRpc.Node.Services
     /// </summary>
     public class NodeModulePuppeteerResolver : INodeModuleResolver
     {
-        public const string StrModuleId = "b0b6eacc-2766-47ac-9b48-68e68645314b";
+        public const string StrModuleId = "4d449642-73e1-449a-9178-23c310708fbb";
         public static readonly Guid GuidModuleId = Guid.Parse(StrModuleId);
 
         public NodeModulePuppeteerResolver(INodeService nodeService)
@@ -30,7 +30,7 @@ namespace SolidRpc.Node.Services
             {
                 tw.Write(@"{
 ""dependencies"": {
-    ""puppeteer"": ""^9.1.1""
+    ""puppeteer"": ""^10.2.0""
   }
 }");
             }

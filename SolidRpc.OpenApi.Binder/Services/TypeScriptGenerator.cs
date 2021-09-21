@@ -123,65 +123,112 @@ namespace SolidRpc.OpenApi.Binder.Services
             });
             (codeNamespace.Interfaces ?? new CodeInterface[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
-                CreateTypesTsInterface(rootNamespace, codeNamespaceName, o, code, nsIndentation);
-                CreateTypesTsClass(rootNamespace, codeNamespaceName, o, code, nsIndentation);
-                CreateTypesTsInstance(rootNamespace, codeNamespaceName, o, code, nsIndentation);
+                CreateTypesTsFunctions(rootNamespace, codeNamespaceName, o, code, nsIndentation);
+                //CreateTypesTsClass(rootNamespace, codeNamespaceName, o, code, nsIndentation);
             });
             code.Append(indentation).AppendLine($"}}");
         }
 
-        private void CreateTypesTsInstance(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
-        {
-            var className = CreateClassName(interfaze.Name);
-            var instanceName = className;
-            if(instanceName.EndsWith("Impl"))
-            {
-                instanceName = instanceName.Substring(0, instanceName.Length - "Impl".Length);
-            }
-            instanceName = instanceName + "Instance";
-            CreteJsComment(code, indentation, $"Instance for the {interfaze.Name} type. Implemented by the {className}");
-            code.Append(indentation).AppendLine($"export var {instanceName} : {interfaze.Name} = new {className}();");
-        }
-
-        private string CreateClassName(string typeName)
-        {
-            if (typeName.StartsWith("I"))
-            {
-                typeName = typeName.Substring(1);
-            }
-            return $"{typeName}Impl";
-        }
-
-        private void CreateTypesTsInterface(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
+        private void CreateTypesTsFunctions(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
         {
             CreteJsComment(code, indentation, interfaze.Description);
-            code.Append(indentation).AppendLine($"export interface {interfaze.Name} {{");
+            code.Append(indentation).AppendLine($"export namespace {interfaze.Name} {{");
             var interfazeIndentation = CreateIndentation(indentation);
             (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
+
                 var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
+                code.Append(interfazeIndentation).AppendLine($"let {m.Name}Subject = new Subject<{tsReturnType}>();");
+                CreteJsComment(code, interfazeIndentation, $"This observable is hot and monitors all the responses from the {m.Name} invocations.");
+                code.Append(interfazeIndentation).AppendLine($"export var {m.Name}Observable = {m.Name}Subject.asObservable().pipe(share());");
+
                 CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
-                code.Append(interfazeIndentation).Append($"{m.Name}(");
+                code.Append(interfazeIndentation).Append($"export function {m.Name}(");
                 bool firstArg = true;
+                string cancellationTokenArgName = "null";
                 (m.Arguments ?? new CodeMethodArg[0]).ToList().ForEach(a =>
                 {
                     var argumentIndentation = CreateIndentation(interfazeIndentation);
                     code.AppendLine(firstArg ? "" : ",");
                     firstArg = false;
                     code.Append(argumentIndentation).Append($"{a.Name}{(a.Optional ? "?" : "")} : {CreateTypescriptType(rootNamespace, codeNamespaceName, a.ArgType)}");
+                    var tsArgType = CreateTypescriptType(rootNamespace, codeNamespaceName, a.ArgType);
+                    if (tsArgType == "CancellationToken")
+                    {
+                        cancellationTokenArgName = a.Name;
+                    }
                 });
                 if (!firstArg)
                 {
                     code.AppendLine().Append(interfazeIndentation);
                 }
-                code.AppendLine($"): Observable<{tsReturnType}>;");
+                code.AppendLine($"): SolidRpcJs.RpcServiceRequestTyped<{tsReturnType}> {{");
 
-                //
-                // hot observable
-                //
-                CreteJsComment(code, interfazeIndentation, $"This observable is hot and monitors all the responses from the {m.Name} invocations.");
-                code.Append(interfazeIndentation).AppendLine($"{m.Name}Observable : Observable<{tsReturnType}>;");
+                {
+                    var codeIndentation = CreateIndentation(interfazeIndentation);
+                    code.Append(codeIndentation).AppendLine($"let ns = SolidRpcJs.rootNamespace.declareNamespace('{string.Join(".", rootNamespace.Name.Concat(codeNamespaceName).Concat(new[] { interfaze.Name }))}');");
+                    code.Append(codeIndentation).AppendLine($"let uri = ns.getStringValue('baseUrl','{m.HttpBaseAddress}') + '{m.HttpPath}';");
+                    m.Arguments.Where(o => o.HttpLocation == "path").ToList().ForEach(o =>
+                    {
+                        code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnull({o.Name}, () => {{ uri = uri.replace('{{{o.Name}}}', ''); }}, nn =>  {{ uri = uri.replace('{{{o.Name}}}', SolidRpcJs.encodeUriValue(nn.toString())); }});");
+                    });
+
+                    code.Append(codeIndentation).AppendLine($"let query: {{ [index: string]: any }} = {{}};");
+                    var queryArgs = m.Arguments.Where(o => o.HttpLocation == "query").ToList();
+                    queryArgs.ForEach(o =>
+                    {
+                        code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.Name}, x => {{ query['{o.HttpName}'] = x; }});");
+                    });
+
+                    code.Append(codeIndentation).AppendLine($"let headers: {{ [index: string]: any }} = {{}};");
+                    var headerArgs = m.Arguments.Where(o => o.HttpLocation == "header").ToList();
+                    headerArgs.ForEach(o =>
+                    {
+                        code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.Name}, x => {{ headers['{o.HttpName}'] = x; }});");
+                    });
+
+                    var strBodyArgs = new StringBuilder();
+                    var bodyInlineArgs = m.Arguments.Where(o => o.HttpLocation == "body-inline").ToList();
+                    var bodyArgs = m.Arguments.Where(o => o.HttpLocation == "body").ToList();
+                    if (bodyInlineArgs.Any())
+                    {
+                        strBodyArgs.Append("{");
+                        bodyInlineArgs.ForEach(o =>
+                        {
+                            strBodyArgs.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
+                        });
+                        strBodyArgs.Append("}");
+                    }
+                    else if (bodyArgs.Any())
+                    {
+                        code.Append(codeIndentation).AppendLine($"headers['Content-Type']='application/json';");
+                        strBodyArgs.Append($"SolidRpcJs.toJson({bodyArgs.First().Name})");
+                    }
+                    else
+                    {
+                        strBodyArgs.Append("null");
+                    }
+                    m.Arguments.Where(o => o.HttpLocation == "body-inline").ToList().ForEach(o =>
+                    {
+                        code.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
+                    });
+
+                    code.Append(codeIndentation).AppendLine($"return new SolidRpcJs.RpcServiceRequestTyped<{tsReturnType}>('{m.HttpMethod.ToLower()}', uri, query, headers, {strBodyArgs}, {cancellationTokenArgName}, function(code : number, data : any) {{");
+                    {
+                        var respIndentation = CreateIndentation(codeIndentation);
+                        code.Append(respIndentation).AppendLine($"if(code == 200) {{");
+
+                        code.Append(CreateIndentation(respIndentation)).AppendLine($"return {CreateJson2JsConverter(rootNamespace, codeNamespaceName, m.ReturnType, "data")};");
+                        code.Append(respIndentation).AppendLine($"}} else {{");
+                        code.Append(CreateIndentation(respIndentation)).AppendLine($"throw 'Response code != 200('+code+')';");
+                        code.Append(respIndentation).AppendLine($"}}");
+
+                    }
+                    code.Append(codeIndentation).AppendLine($"}}, {m.Name}Subject);");
+                    code.Append(interfazeIndentation).AppendLine($"}}");
+                }
             });
-            code.Append(indentation).AppendLine($"}}");
+
+            code.Append(interfazeIndentation).AppendLine($"}}");
         }
 
         private void CreateTypesTsClass(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
@@ -240,69 +287,6 @@ namespace SolidRpc.OpenApi.Binder.Services
                         code.AppendLine().Append(interfazeIndentation);
                     }
                     code.AppendLine($"): Observable<{tsReturnType}> {{");
-                    {
-                        var codeIndentation = CreateIndentation(interfazeIndentation);
-                        code.Append(codeIndentation).AppendLine($"let uri = this.Namespace.getStringValue('baseUri','{m.HttpBaseAddress}') + '{m.HttpPath}';");
-                        m.Arguments.Where(o => o.HttpLocation == "path").ToList().ForEach(o =>
-                        {
-                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnull({o.Name}, () => {{ uri = uri.replace('{{{o.Name}}}', ''); }}, nn =>  {{ uri = uri.replace('{{{o.Name}}}', SolidRpcJs.encodeUriValue(nn.toString())); }});");
-                        });
-
-                        code.Append(codeIndentation).AppendLine($"let query: {{ [index: string]: any }} = {{}};");
-                        var queryArgs = m.Arguments.Where(o => o.HttpLocation == "query").ToList();
-                        queryArgs.ForEach(o =>
-                        {
-                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.Name}, x => {{ query['{o.HttpName}'] = x; }});");
-                        });
-
-                        code.Append(codeIndentation).AppendLine($"let headers: {{ [index: string]: any }} = {{}};");
-                        var headerArgs = m.Arguments.Where(o => o.HttpLocation == "header").ToList();
-                        headerArgs.ForEach(o =>
-                        {
-                            code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnotnull({o.Name}, x => {{ headers['{o.HttpName}'] = x; }});");
-                        });
-
-                        var strBodyArgs = new StringBuilder();
-                        var bodyInlineArgs = m.Arguments.Where(o => o.HttpLocation == "body-inline").ToList();
-                        var bodyArgs = m.Arguments.Where(o => o.HttpLocation == "body").ToList();
-                        if (bodyInlineArgs.Any())
-                        {
-                            strBodyArgs.Append("{");
-                            bodyInlineArgs.ForEach(o =>
-                            {
-                                strBodyArgs.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
-                            });
-                            strBodyArgs.Append("}");
-                        }
-                        else if (bodyArgs.Any())
-                        {
-                            code.Append(codeIndentation).AppendLine($"headers['Content-Type']='application/json';");
-                            strBodyArgs.Append($"this.toJson({bodyArgs.First().Name})");
-                        }
-                        else
-                        {
-                            strBodyArgs.Append("null");
-                        }
-                        m.Arguments.Where(o => o.HttpLocation == "body-inline").ToList().ForEach(o =>
-                        {
-                            code.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
-                        });
-
-                        code.Append(codeIndentation).AppendLine($"return this.request<{tsReturnType}>(new SolidRpcJs.RpcServiceRequest('{m.HttpMethod.ToLower()}', uri, query, headers, {strBodyArgs}), {cancellationTokenArgName}, function(code : number, data : any) {{");
-                        {
-                            var respIndentation = CreateIndentation(codeIndentation);
-                            code.Append(respIndentation).AppendLine($"if(code == 200) {{");
-                            
-                            code.Append(CreateIndentation(respIndentation)).AppendLine($"return {CreateJson2JsConverter(rootNamespace, codeNamespaceName, m.ReturnType, "data")};");
-                            code.Append(respIndentation).AppendLine($"}} else {{");
-                            code.Append(CreateIndentation(respIndentation)).AppendLine($"throw 'Response code != 200('+code+')';");
-                            code.Append(respIndentation).AppendLine($"}}");
-
-                        }
-                        code.Append(codeIndentation).AppendLine($"}}, this.{m.Name}Subject);");
-
-                        code.Append(interfazeIndentation).AppendLine($"}}");
-                    }
 
                     //
                     // hot observable

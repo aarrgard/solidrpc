@@ -1,4 +1,5 @@
 ﻿import { SolidRpcJs } from 'solidrpcjs';
+import { Abstractions } from 'solidrpc-abstractions';
 import http from 'http';
 import open from 'open';
 
@@ -37,6 +38,9 @@ function startHttpServerIfNotStarted(httpSrvPort: number) {
 }
 
 export namespace SolidRpcNode {
+    /**
+     * Adds the preflight callbacks that the node process can intercept
+     */
     export function addOAuth2PreFlightCallback() {
         SolidRpcJs.addPreFlight((req: SolidRpcJs.RpcServiceRequest, cont: () => void) => {
             let setAccessTokenAndContinue = () => {
@@ -47,9 +51,10 @@ export namespace SolidRpcNode {
                 globalCont = setAccessTokenAndContinue
                 let httpSrvPort = 3341;
                 startHttpServerIfNotStarted(httpSrvPort);
-                let callbackUri: string = 'http%3A%2F%2Flocalhost%3A' + httpSrvPort + '%2Ftest';
+                let callbackUri = 'http://localhost:' + httpSrvPort + '/test';
                 let state = 'my state 2';
-                open(SolidRpcJs.rootNamespace.getStringValue('baseUri', '') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync?callbackUri=' + callbackUri + '&state=' + encodeURIComponent(state));
+                let req = Abstractions.Services.ISolidRpcOAuth2.GetAuthorizationCodeTokenAsync(callbackUri, state);
+                open(req.getUrl());
             } else {
                 setAccessTokenAndContinue();
             }

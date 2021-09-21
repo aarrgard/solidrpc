@@ -88,15 +88,19 @@ function solidRpcSendResponse(resp) {
     console.log(JSON.stringify({Id: id, Result: JSON.stringify(resp)}));
 }
 function handleCommand(chunk) {
-    var x = JSON.parse(chunk);
-    id = x.Id;
-    var r = eval(x.Script);
-    if(typeof(r) === 'object') {
-       r.then(o => {
-           solidRpcSendResponse(o);
-       });
-    } else {
-       solidRpcSendResponse(r);
+    try {
+        var x = JSON.parse(chunk);
+        id = x.Id;
+        var r = eval(x.Script);
+        if(typeof(r) === 'object') {
+           r.then(o => {
+               solidRpcSendResponse(o);
+           });
+        } else {
+           solidRpcSendResponse(r);
+        }
+    } catch(err) {
+        solidRpcSendResponse(null);
     }
 }
 process.stdin.resume();

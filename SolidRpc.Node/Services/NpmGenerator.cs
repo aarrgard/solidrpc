@@ -32,7 +32,14 @@ namespace SolidRpc.Node.Services
 
         public async Task<IEnumerable<NpmPackage>> CreateNpmPackage(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
         {
-            var compileAssemblyNames = assemblyNames.Union(new[] { "SolidRpcJs" }).Distinct().OrderBy(o => o == "SolidRpcJs" ? 0 : 1);
+            if(assemblyNames.Any(o => o == "SolidRpcNode"))
+            {
+                assemblyNames = assemblyNames.Union(new[] { "SolidRpc.Abstractions" });
+            }
+            assemblyNames = assemblyNames.Union(new[] { "SolidRpcJs" });
+            var ordinals = new List<string>() { "SolidRpcJs", "SolidRpc.Abstractions", "SolidRpcNode" };
+            ordinals.AddRange(assemblyNames);
+            var compileAssemblyNames = assemblyNames.OrderBy(o => ordinals.IndexOf(o));
             var npmPackages = new List<NpmPackage>();
             var npmPackagesToReturn = new HashSet<string>();
             foreach(var assemblyName in compileAssemblyNames)
@@ -100,7 +107,7 @@ namespace SolidRpc.Node.Services
             pj.Name = packageName;
             pj.Version = version;
             pj.Main = "index.js";
-            pj.Types = "index.ts";
+            pj.Types = "index.d.ts";
             pj.License = "ISC";
             packageNames.ToList().ForEach(o =>
             {

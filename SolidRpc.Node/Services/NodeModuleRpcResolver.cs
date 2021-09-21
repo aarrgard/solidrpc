@@ -20,6 +20,7 @@ namespace SolidRpc.Node.Services
   ""include"": [ ""**/*.ts"" ],
   ""exclude"": [ ""node_modules"", ""dist"" ],
   ""compilerOptions"": {{
+    ""types"": [""node""],
     ""module"": ""commonjs"",
     ""target"": ""es6"",
     ""strict"": true,

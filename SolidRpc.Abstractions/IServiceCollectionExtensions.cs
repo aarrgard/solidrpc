@@ -605,11 +605,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sc"></param>
-        /// <param name="baseUri"></param>
-        public static void SetSolidRpcBaseUrlInConfig<T>(this IServiceCollection sc, Uri baseUri)
+        /// <param name="baseUrl"></param>
+        public static void SetSolidRpcBaseUrlInConfig<T>(this IServiceCollection sc, Uri baseUrl)
         {
             var cb = sc.GetConfigurationBuilder();
-            cb.Add(new PropertiesConfigurationSource() { { $"{typeof(T).FullName.Replace(".", ":")}:BaseUrl", baseUri.ToString() } });
+            cb.Add(new PropertiesConfigurationSource() { { $"{typeof(T).FullName.Replace(".", ":")}:BaseUrl", baseUrl.ToString() } });
             sc.BuildConfiguration();
         }
 

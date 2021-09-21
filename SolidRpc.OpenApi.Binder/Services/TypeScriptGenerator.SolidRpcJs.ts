@@ -132,6 +132,16 @@ export namespace SolidRpcJs {
         return input;
     }
 
+    /**
+     * Encodes the supplied uri value
+     * @param input the value to encode
+     */
+    export function toJson(input: any): string | null {
+        if (input && input.toJson) {
+            return input.toJson();
+        }
+        return JSON.stringify(input);
+    }
 
     /**
      * Resets the registered callbacks
@@ -156,21 +166,19 @@ export namespace SolidRpcJs {
 
     /** Represents a service request */
     export class RpcServiceRequest {
-        constructor(method: string, uri: string, query: any, headers: any, data: any) {
+        constructor(method: string, url: string, query: any, headers: any, data: any) {
             this.method = method;
-            this.uri = uri;
+            this.url = url;
             this.query = query;
             this.headers = headers;
             this.data = data;
-            if (this.headers == null) {
-                this.headers = {};
-            }
         }
+
         /** The method - GET, POST, etc */
         method: string;
 
         /** The uri */
-        uri: string;
+        url: string;
 
         /** the query */
         query: any;
@@ -180,60 +188,63 @@ export namespace SolidRpcJs {
 
         /** the data */
         data: any;
-    }
 
-    /** Base class for a service implementation */
-    export class RpcServiceImpl {
-        /**
-         * Encodes the supplied uri value
-         * @param input the value to encode
-         */
-        toJson(input: any): string | null {
-            if (input && input.toJson) {
-                return input.toJson();
+        /** returns the url(with query string) */
+        getUrl(): string {
+            //
+            // setup query string
+            //
+            let sQuery = '';
+            for (const property in this.query) {
+                sQuery += `&${property}=${SolidRpcJs.encodeUriValue(this.query[property])}`
             }
-            return JSON.stringify(input);
-        }
 
-        /**
-         * Performs the underlying request
-         * @param method
-         * @param uri
-         * @param query
-         * @param headers
-         * @param body
-         * @param cancellationToken
-         * @param conv
-         */
-        request<T>(req: RpcServiceRequest, cancellationToken: CancellationToken | undefined, conv: (status: number, body: any) => T, bcast: Subject<T>): Observable<T> {
+            if (sQuery.length > 0) {
+                return this.url + '?' + sQuery.substr(1)
+            }
+
+            return this.url;
+        }
+   }
+
+    /** Represents a service request */
+    export class RpcServiceRequestTyped<T> extends RpcServiceRequest {
+        constructor(method: string, uri: string, query: any, headers: any, data: any, cancellationToken: CancellationToken | undefined, conv: (status: number, body: any) => T, bcast: Subject<T>) {
+            super(method, uri, query, headers, data);
+            this.cancellationToken = cancellationToken;
+            this.conv = conv;
+            this.bcast = bcast;
+            if (this.headers == null) {
+                this.headers = {};
+            }
+        }
+        /** the cancellation token */
+        cancellationToken: CancellationToken | undefined;
+
+        /** the converter*/
+        conv: (status: number, body: any) => T;
+
+        /** the broadcast subject*/
+        bcast: Subject<T>;
+
+        /** invokes the request */
+        invoke(): Observable<T> {
             return Observable.create((subscriber: Subscriber<T>) => {
                 //
                 // setup cancellation token
                 //
                 let cancelToken: CancelToken;
                 let source = axios.CancelToken.source();
-                if (cancellationToken) {
-                    cancellationToken.onCancelled(reason => { source.cancel(reason); });
+                if (this.cancellationToken) {
+                    this.cancellationToken.onCancelled(reason => { source.cancel(reason); });
                 }
                 cancelToken = source.token;
 
-                //
-                // setup query string
-                //
-                let sQuery = '';
-                for (const property in req.query) {
-                    sQuery += `&${property}=${SolidRpcJs.encodeUriValue(req.query[property])}`
-                }
-
-                if (sQuery.length > 0) {
-                    req.uri = req.uri + '?' + sQuery.substr(1)
-                }
-
                 // transform using registered preflight methods
-                rootPreFlight(req, () => {
+                rootPreFlight(this, () => {
 
                     let axiosMethod: Method | undefined = undefined;
-                    switch (req.method) {
+                    switch (this.method) {
                         case 'get': axiosMethod = 'get'; break;
                         case 'delete': axiosMethod = 'delete'; break;
                         case 'head': axiosMethod = 'head'; break;
@@ -251,9 +262,9 @@ export namespace SolidRpcJs {
                     //
                     let requestConfig: AxiosRequestConfig = {
                         method: axiosMethod,
-                        url: req.uri,
-                        headers: req.headers,
-                        data: req.data,
+                        url: this.getUrl(),
+                        headers: this.headers,
+                        data: this.data,
                         cancelToken: cancelToken,
                         transformRequest: [
                             (data, headers) => {
@@ -264,17 +275,17 @@ export namespace SolidRpcJs {
                     axios.request<any>(requestConfig)
                         .then(resp => {
                             try {
-                                let converted = conv(resp.status, resp.data);
+                                let converted = this.conv(resp.status, resp.data);
                                 subscriber.next(converted);
-                                bcast.next(converted);
+                                this.bcast.next(converted);
                             } catch (err) {
-                                console.error('err:'+err);
+                                console.error('err:' + err);
                                 subscriber.error(err);
                             }
                         }).catch(err => {
                             console.error('err:' + err);
                             subscriber.error(err);
-                            bcast.error(err);
+                            this.bcast.error(err);
                         }).finally(() => {
                             subscriber.complete();
                         });
@@ -282,6 +293,7 @@ export namespace SolidRpcJs {
                 });
                 return () => { };
             });
+
         }
-    };
+    }
 };
