@@ -24,7 +24,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.Code.CodeNamespace> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
                     SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
@@ -56,7 +56,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.Code.NpmPackage[]> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
                     SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
@@ -83,7 +83,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
                     SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
@@ -115,7 +115,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<string> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
                     SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
@@ -142,7 +142,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<string> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
@@ -178,7 +178,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
                     SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
@@ -208,7 +208,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
                     SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
@@ -236,7 +236,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<void> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
@@ -261,7 +261,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -287,7 +287,7 @@ export namespace Abstractions {
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<void> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
@@ -325,7 +325,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(path, x => { query['path'] = x; });
                 let headers: { [index: string]: any } = {};
@@ -352,7 +352,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
                 SolidRpcJs.ifnull(redirects, () => { uri = uri.replace('{redirects}', ''); }, nn =>  { uri = uri.replace('{redirects}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
@@ -382,7 +382,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<string> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -408,7 +408,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -432,7 +432,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -458,7 +458,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
@@ -483,7 +483,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -507,7 +507,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<void>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -531,7 +531,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<string> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -564,7 +564,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
@@ -591,7 +591,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
@@ -616,7 +616,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -655,7 +655,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
@@ -687,7 +687,7 @@ export namespace Abstractions {
                 cancellation? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(code, x => { query['code'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
@@ -718,7 +718,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -742,7 +742,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -786,7 +786,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse>('post', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -824,7 +824,7 @@ export namespace Abstractions {
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost1/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
                 SolidRpcJs.ifnotnull(responseType, x => { query['response_type'] = x; });
