@@ -168,11 +168,11 @@ namespace SolidRpc.OpenApi.Binder.Services
             var callback = statestruct.Callback?.ToString() ?? "";
             if(callback.IndexOf('?') > 0)
             {
-                callback = $"{callback}&access_token={code}";
+                callback = $"{callback}&access_token={token}";
             }
             else
             {
-                callback = $"{callback}?access_token={code}";
+                callback = $"{callback}?access_token={token}";
             }
 
             return await CreateContent(nameof(TokenCallbackAsync), new Dictionary<string, string>()

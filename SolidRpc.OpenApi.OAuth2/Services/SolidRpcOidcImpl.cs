@@ -140,7 +140,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
                 case "code":
                     return new FileContent()
                     {
-                        Location = $"{redirectUri}?{responseType}={idToken.AccessToken}{session_state}{state}"
+                        Location = $"{redirectUri}?code=code:{idToken.AccessToken}{session_state}{state}"
                     };
                 default:
                     throw new Exception("Cannot handle response type:" + responseType);
@@ -232,6 +232,11 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         }
         private async Task<TokenResponse> GetTokenAsyncAuthorizationCode(string clientId, string clientSecret, string code, string redirectUri, string codeVerifier, CancellationToken cancellationToken)
         {
+            if(code == null ||!code.StartsWith("code:"))
+            {
+                throw new Exception("Not a code:" + code);
+            }
+            code = code.Substring("code:".Length);
             var prin = await LocalAuthority.GetPrincipalAsync(code, null, cancellationToken);
             var accessToken = await LocalAuthority.CreateAccessTokenAsync((ClaimsIdentity)prin.Identity, null, cancellationToken);
             return new TokenResponse()
