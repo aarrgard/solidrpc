@@ -138,7 +138,9 @@ export namespace SolidRpcJs {
      */
     export function toJson(input: any): string | null {
         if (input && input.toJson) {
-            return input.toJson();
+            let arr : string[] = [];
+            input.toJson(arr);
+            return arr.join("");
         }
         return JSON.stringify(input);
     }

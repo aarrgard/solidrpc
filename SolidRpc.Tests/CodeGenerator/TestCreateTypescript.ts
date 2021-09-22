@@ -68,23 +68,20 @@ export namespace Abstractions {
                         }
                     }, CreateNpmPackageSubject);
                 }
-                let CreateNpmZipSubject = new Subject<Types.FileContent>();
+                let CreateInitialZipSubject = new Subject<Types.FileContent>();
                 /**
-                 * This observable is hot and monitors all the responses from the CreateNpmZip invocations.
+                 * This observable is hot and monitors all the responses from the CreateInitialZip invocations.
                  */
-                export var CreateNpmZipObservable = CreateNpmZipSubject.asObservable().pipe(share());
+                export var CreateInitialZipObservable = CreateInitialZipSubject.asObservable().pipe(share());
                 /**
-                 * Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
-                 * @param assemblyNames The name of the assembly to create an npm package for.
+                 * Returns a zip containing the code to get started
                  * @param cancellationToken 
                  */
-                export function CreateNpmZip(
-                    assemblyNames : string[],
+                export function CreateInitialZip(
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                     let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}';
-                    SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
@@ -93,7 +90,7 @@ export namespace Abstractions {
                         } else {
                             throw 'Response code != 200('+code+')';
                         }
-                    }, CreateNpmZipSubject);
+                    }, CreateInitialZipSubject);
                 }
                 }
             /**
@@ -851,33 +848,16 @@ export namespace Abstractions {
              */
             export class CodeInterface {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "description":
-                                if (obj.description) { this.Description = obj.description as string; }
-                                break;
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "methods":
-                                if (obj.methods) { this.Methods = Array.from(obj.methods).map(o => new CodeMethod(o)); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.description, val => { this.Description = val as string; });
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.methods, val => { this.Methods = Array.from(val).map(o => new CodeMethod(o)); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                     if(this.Methods) { arr.push('"methods": '); for (let i = 0; i < this.Methods.length; i++) if(this.Methods[i]) {this.Methods[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The description of this interface
@@ -897,38 +877,15 @@ export namespace Abstractions {
              */
             export class CodeMethod {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "description":
-                                if (obj.description) { this.Description = obj.description as string; }
-                                break;
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "arguments":
-                                if (obj.arguments) { this.Arguments = Array.from(obj.arguments).map(o => new CodeMethodArg(o)); }
-                                break;
-                            case "returnType":
-                                if (obj.returnType) { this.ReturnType = Array.from(obj.returnType).map(o => o as string); }
-                                break;
-                            case "httpMethod":
-                                if (obj.httpMethod) { this.HttpMethod = obj.httpMethod as string; }
-                                break;
-                            case "httpBaseAddress":
-                                if (obj.httpBaseAddress) { this.HttpBaseAddress = obj.httpBaseAddress as string; }
-                                break;
-                            case "httpPath":
-                                if (obj.httpPath) { this.HttpPath = obj.httpPath as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.description, val => { this.Description = val as string; });
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.arguments, val => { this.Arguments = Array.from(val).map(o => new CodeMethodArg(o)); });
+                    SolidRpcJs.ifnotnull(obj.returnType, val => { this.ReturnType = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.httpMethod, val => { this.HttpMethod = val as string; });
+                    SolidRpcJs.ifnotnull(obj.httpBaseAddress, val => { this.HttpBaseAddress = val as string; });
+                    SolidRpcJs.ifnotnull(obj.httpPath, val => { this.HttpPath = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
@@ -938,8 +895,6 @@ export namespace Abstractions {
                     if(this.HttpBaseAddress) { arr.push('"httpBaseAddress": '); arr.push(JSON.stringify(this.HttpBaseAddress)); arr.push(','); } 
                     if(this.HttpPath) { arr.push('"httpPath": '); arr.push(JSON.stringify(this.HttpPath)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * A description of the the method
@@ -975,35 +930,14 @@ export namespace Abstractions {
              */
             export class CodeMethodArg {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "description":
-                                if (obj.description) { this.Description = obj.description as string; }
-                                break;
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "argType":
-                                if (obj.argType) { this.ArgType = Array.from(obj.argType).map(o => o as string); }
-                                break;
-                            case "optional":
-                                if (obj.optional) { this.Optional = [true, 'true', 1].some(o => o === obj.optional); }
-                                break;
-                            case "httpName":
-                                if (obj.httpName) { this.HttpName = obj.httpName as string; }
-                                break;
-                            case "httpLocation":
-                                if (obj.httpLocation) { this.HttpLocation = obj.httpLocation as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.description, val => { this.Description = val as string; });
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.argType, val => { this.ArgType = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.optional, val => { this.Optional = [true, 'true', 1].some(o => o === val); });
+                    SolidRpcJs.ifnotnull(obj.httpName, val => { this.HttpName = val as string; });
+                    SolidRpcJs.ifnotnull(obj.httpLocation, val => { this.HttpLocation = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
@@ -1012,8 +946,6 @@ export namespace Abstractions {
                     if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
                     if(this.HttpLocation) { arr.push('"httpLocation": '); arr.push(JSON.stringify(this.HttpLocation)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * A description of the the argument
@@ -1045,37 +977,18 @@ export namespace Abstractions {
              */
             export class CodeNamespace {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "namespaces":
-                                if (obj.namespaces) { this.Namespaces = Array.from(obj.namespaces).map(o => new CodeNamespace(o)); }
-                                break;
-                            case "interfaces":
-                                if (obj.interfaces) { this.Interfaces = Array.from(obj.interfaces).map(o => new CodeInterface(o)); }
-                                break;
-                            case "types":
-                                if (obj.types) { this.Types = Array.from(obj.types).map(o => new CodeType(o)); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.namespaces, val => { this.Namespaces = Array.from(val).map(o => new CodeNamespace(o)); });
+                    SolidRpcJs.ifnotnull(obj.interfaces, val => { this.Interfaces = Array.from(val).map(o => new CodeInterface(o)); });
+                    SolidRpcJs.ifnotnull(obj.types, val => { this.Types = Array.from(val).map(o => new CodeType(o)); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                     if(this.Namespaces) { arr.push('"namespaces": '); for (let i = 0; i < this.Namespaces.length; i++) if(this.Namespaces[i]) {this.Namespaces[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(this.Interfaces) { arr.push('"interfaces": '); for (let i = 0; i < this.Interfaces.length; i++) if(this.Interfaces[i]) {this.Interfaces[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(this.Types) { arr.push('"types": '); for (let i = 0; i < this.Types.length; i++) if(this.Types[i]) {this.Types[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The name of this namespace part(not fully qualified).
@@ -1099,37 +1012,18 @@ export namespace Abstractions {
              */
             export class CodeType {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "description":
-                                if (obj.description) { this.Description = obj.description as string; }
-                                break;
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "extends":
-                                if (obj.extends) { this.Extends = Array.from(obj.extends).map(o => o as string); }
-                                break;
-                            case "properties":
-                                if (obj.properties) { this.Properties = Array.from(obj.properties).map(o => new CodeTypeProperty(o)); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.description, val => { this.Description = val as string; });
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.extends, val => { this.Extends = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.properties, val => { this.Properties = Array.from(val).map(o => new CodeTypeProperty(o)); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                     if(this.Extends) { arr.push('"extends": '); for (let i = 0; i < this.Extends.length; i++) arr.push(JSON.stringify(this.Extends[i])); arr.push(',');; arr.push(','); } 
                     if(this.Properties) { arr.push('"properties": '); for (let i = 0; i < this.Properties.length; i++) if(this.Properties[i]) {this.Properties[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * A description of the the type
@@ -1153,37 +1047,18 @@ export namespace Abstractions {
              */
             export class CodeTypeProperty {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "description":
-                                if (obj.description) { this.Description = obj.description as string; }
-                                break;
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "propertyType":
-                                if (obj.propertyType) { this.PropertyType = Array.from(obj.propertyType).map(o => o as string); }
-                                break;
-                            case "httpName":
-                                if (obj.httpName) { this.HttpName = obj.httpName as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.description, val => { this.Description = val as string; });
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.propertyType, val => { this.PropertyType = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.httpName, val => { this.HttpName = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                     if(this.PropertyType) { arr.push('"propertyType": '); for (let i = 0; i < this.PropertyType.length; i++) arr.push(JSON.stringify(this.PropertyType[i])); arr.push(',');; arr.push(','); } 
                     if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * A description of the the property
@@ -1207,29 +1082,14 @@ export namespace Abstractions {
              */
             export class NpmPackage {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "name":
-                                if (obj.name) { this.Name = obj.name as string; }
-                                break;
-                            case "files":
-                                if (obj.files) { this.Files = Array.from(obj.files).map(o => new NpmPackageFile(o)); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.name, val => { this.Name = val as string; });
+                    SolidRpcJs.ifnotnull(obj.files, val => { this.Files = Array.from(val).map(o => new NpmPackageFile(o)); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                     if(this.Files) { arr.push('"files": '); for (let i = 0; i < this.Files.length; i++) if(this.Files[i]) {this.Files[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The package name(folder name)
@@ -1245,29 +1105,14 @@ export namespace Abstractions {
              */
             export class NpmPackageFile {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "filePath":
-                                if (obj.filePath) { this.FilePath = obj.filePath as string; }
-                                break;
-                            case "content":
-                                if (obj.content) { this.Content = obj.content as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.filePath, val => { this.FilePath = val as string; });
+                    SolidRpcJs.ifnotnull(obj.content, val => { this.Content = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.FilePath) { arr.push('"filePath": '); arr.push(JSON.stringify(this.FilePath)); arr.push(','); } 
                     if(this.Content) { arr.push('"content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The file path within the package
@@ -1285,92 +1130,33 @@ export namespace Abstractions {
              */
             export class OpenIDConnectDiscovery {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "issuer":
-                                if (obj.issuer) { this.Issuer = obj.issuer as string; }
-                                break;
-                            case "authorization_endpoint":
-                                if (obj.authorization_endpoint) { this.AuthorizationEndpoint = obj.authorization_endpoint as string; }
-                                break;
-                            case "token_endpoint":
-                                if (obj.token_endpoint) { this.TokenEndpoint = obj.token_endpoint as string; }
-                                break;
-                            case "userinfo_endpoint":
-                                if (obj.userinfo_endpoint) { this.UserinfoEndpoint = obj.userinfo_endpoint as string; }
-                                break;
-                            case "revocation_endpoint":
-                                if (obj.revocation_endpoint) { this.RevocationEndpoint = obj.revocation_endpoint as string; }
-                                break;
-                            case "device_authorization_endpoint":
-                                if (obj.device_authorization_endpoint) { this.DeviceAuthorizationEndpoint = obj.device_authorization_endpoint as string; }
-                                break;
-                            case "jwks_uri":
-                                if (obj.jwks_uri) { this.JwksUri = obj.jwks_uri as string; }
-                                break;
-                            case "scopes_supported":
-                                if (obj.scopes_supported) { this.ScopesSupported = Array.from(obj.scopes_supported).map(o => o as string); }
-                                break;
-                            case "grant_types_supported":
-                                if (obj.grant_types_supported) { this.GrantTypesSupported = Array.from(obj.grant_types_supported).map(o => o as string); }
-                                break;
-                            case "response_modes_supported":
-                                if (obj.response_modes_supported) { this.ResponseModesSupported = Array.from(obj.response_modes_supported).map(o => o as string); }
-                                break;
-                            case "subject_types_supported":
-                                if (obj.subject_types_supported) { this.SubjectTypesSupported = Array.from(obj.subject_types_supported).map(o => o as string); }
-                                break;
-                            case "id_token_signing_alg_values_supported":
-                                if (obj.id_token_signing_alg_values_supported) { this.IdTokenSigningAlgValuesSupported = Array.from(obj.id_token_signing_alg_values_supported).map(o => o as string); }
-                                break;
-                            case "end_session_endpoint":
-                                if (obj.end_session_endpoint) { this.EndSessionEndpoint = obj.end_session_endpoint as string; }
-                                break;
-                            case "response_types_supported":
-                                if (obj.response_types_supported) { this.ResponseTypesSupported = Array.from(obj.response_types_supported).map(o => o as string); }
-                                break;
-                            case "claims_supported":
-                                if (obj.claims_supported) { this.ClaimsSupported = Array.from(obj.claims_supported).map(o => o as string); }
-                                break;
-                            case "token_endpoint_auth_methods_supported":
-                                if (obj.token_endpoint_auth_methods_supported) { this.TokenEndpointAuthMethodsSupported = Array.from(obj.token_endpoint_auth_methods_supported).map(o => o as string); }
-                                break;
-                            case "code_challenge_methods_supported":
-                                if (obj.code_challenge_methods_supported) { this.CodeChallengeMethodsSupported = Array.from(obj.code_challenge_methods_supported).map(o => o as string); }
-                                break;
-                            case "request_uri_parameter_supported":
-                                if (obj.request_uri_parameter_supported) { this.RequestUriParameterSupported = [true, 'true', 1].some(o => o === obj.request_uri_parameter_supported); }
-                                break;
-                            case "http_logout_supported":
-                                if (obj.http_logout_supported) { this.HttpLogoutSupported = [true, 'true', 1].some(o => o === obj.http_logout_supported); }
-                                break;
-                            case "frontchannel_logout_supported":
-                                if (obj.frontchannel_logout_supported) { this.FrontchannelLogoutSupported = [true, 'true', 1].some(o => o === obj.frontchannel_logout_supported); }
-                                break;
-                            case "rbac_url":
-                                if (obj.rbac_url) { this.RbacUrl = obj.rbac_url as string; }
-                                break;
-                            case "msgraph_host":
-                                if (obj.msgraph_host) { this.MsgraphHost = obj.msgraph_host as string; }
-                                break;
-                            case "cloud_graph_host_name":
-                                if (obj.cloud_graph_host_name) { this.CloudGraphHostName = obj.cloud_graph_host_name as string; }
-                                break;
-                            case "cloud_instance_name":
-                                if (obj.cloud_instance_name) { this.CloudInstanceName = obj.cloud_instance_name as string; }
-                                break;
-                            case "tenant_region_scope":
-                                if (obj.tenant_region_scope) { this.TenantRegionScope = obj.tenant_region_scope as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.issuer, val => { this.Issuer = val as string; });
+                    SolidRpcJs.ifnotnull(obj.authorization_endpoint, val => { this.AuthorizationEndpoint = val as string; });
+                    SolidRpcJs.ifnotnull(obj.token_endpoint, val => { this.TokenEndpoint = val as string; });
+                    SolidRpcJs.ifnotnull(obj.userinfo_endpoint, val => { this.UserinfoEndpoint = val as string; });
+                    SolidRpcJs.ifnotnull(obj.revocation_endpoint, val => { this.RevocationEndpoint = val as string; });
+                    SolidRpcJs.ifnotnull(obj.device_authorization_endpoint, val => { this.DeviceAuthorizationEndpoint = val as string; });
+                    SolidRpcJs.ifnotnull(obj.jwks_uri, val => { this.JwksUri = val as string; });
+                    SolidRpcJs.ifnotnull(obj.scopes_supported, val => { this.ScopesSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.grant_types_supported, val => { this.GrantTypesSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.response_modes_supported, val => { this.ResponseModesSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.subject_types_supported, val => { this.SubjectTypesSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.id_token_signing_alg_values_supported, val => { this.IdTokenSigningAlgValuesSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.end_session_endpoint, val => { this.EndSessionEndpoint = val as string; });
+                    SolidRpcJs.ifnotnull(obj.response_types_supported, val => { this.ResponseTypesSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.claims_supported, val => { this.ClaimsSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.token_endpoint_auth_methods_supported, val => { this.TokenEndpointAuthMethodsSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.code_challenge_methods_supported, val => { this.CodeChallengeMethodsSupported = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.request_uri_parameter_supported, val => { this.RequestUriParameterSupported = [true, 'true', 1].some(o => o === val); });
+                    SolidRpcJs.ifnotnull(obj.http_logout_supported, val => { this.HttpLogoutSupported = [true, 'true', 1].some(o => o === val); });
+                    SolidRpcJs.ifnotnull(obj.frontchannel_logout_supported, val => { this.FrontchannelLogoutSupported = [true, 'true', 1].some(o => o === val); });
+                    SolidRpcJs.ifnotnull(obj.rbac_url, val => { this.RbacUrl = val as string; });
+                    SolidRpcJs.ifnotnull(obj.msgraph_host, val => { this.MsgraphHost = val as string; });
+                    SolidRpcJs.ifnotnull(obj.cloud_graph_host_name, val => { this.CloudGraphHostName = val as string; });
+                    SolidRpcJs.ifnotnull(obj.cloud_instance_name, val => { this.CloudInstanceName = val as string; });
+                    SolidRpcJs.ifnotnull(obj.tenant_region_scope, val => { this.TenantRegionScope = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
                     if(this.AuthorizationEndpoint) { arr.push('"authorization_endpoint": '); arr.push(JSON.stringify(this.AuthorizationEndpoint)); arr.push(','); } 
@@ -1398,8 +1184,6 @@ export namespace Abstractions {
                     if(this.CloudInstanceName) { arr.push('"cloud_instance_name": '); arr.push(JSON.stringify(this.CloudInstanceName)); arr.push(','); } 
                     if(this.TenantRegionScope) { arr.push('"tenant_region_scope": '); arr.push(JSON.stringify(this.TenantRegionScope)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer.
@@ -1507,47 +1291,18 @@ export namespace Abstractions {
              */
             export class OpenIDKey {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "alg":
-                                if (obj.alg) { this.Alg = obj.alg as string; }
-                                break;
-                            case "kty":
-                                if (obj.kty) { this.Kty = obj.kty as string; }
-                                break;
-                            case "use":
-                                if (obj.use) { this.Use = obj.use as string; }
-                                break;
-                            case "kid":
-                                if (obj.kid) { this.Kid = obj.kid as string; }
-                                break;
-                            case "x5u":
-                                if (obj.x5u) { this.X5u = obj.x5u as string; }
-                                break;
-                            case "x5t":
-                                if (obj.x5t) { this.X5t = obj.x5t as string; }
-                                break;
-                            case "x5c":
-                                if (obj.x5c) { this.X5c = Array.from(obj.x5c).map(o => o as string); }
-                                break;
-                            case "n":
-                                if (obj.n) { this.N = obj.n as string; }
-                                break;
-                            case "e":
-                                if (obj.e) { this.E = obj.e as string; }
-                                break;
-                            case "issuer":
-                                if (obj.issuer) { this.Issuer = obj.issuer as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.alg, val => { this.Alg = val as string; });
+                    SolidRpcJs.ifnotnull(obj.kty, val => { this.Kty = val as string; });
+                    SolidRpcJs.ifnotnull(obj.use, val => { this.Use = val as string; });
+                    SolidRpcJs.ifnotnull(obj.kid, val => { this.Kid = val as string; });
+                    SolidRpcJs.ifnotnull(obj.x5u, val => { this.X5u = val as string; });
+                    SolidRpcJs.ifnotnull(obj.x5t, val => { this.X5t = val as string; });
+                    SolidRpcJs.ifnotnull(obj.x5c, val => { this.X5c = Array.from(val).map(o => o as string); });
+                    SolidRpcJs.ifnotnull(obj.n, val => { this.N = val as string; });
+                    SolidRpcJs.ifnotnull(obj.e, val => { this.E = val as string; });
+                    SolidRpcJs.ifnotnull(obj.issuer, val => { this.Issuer = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Alg) { arr.push('"alg": '); arr.push(JSON.stringify(this.Alg)); arr.push(','); } 
                     if(this.Kty) { arr.push('"kty": '); arr.push(JSON.stringify(this.Kty)); arr.push(','); } 
@@ -1560,8 +1315,6 @@ export namespace Abstractions {
                     if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
                     if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * (Algorithm) Parameter
@@ -1609,25 +1362,12 @@ export namespace Abstractions {
              */
             export class OpenIDKeys {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "keys":
-                                if (obj.keys) { this.Keys = Array.from(obj.keys).map(o => new OpenIDKey(o)); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.keys, val => { this.Keys = Array.from(val).map(o => new OpenIDKey(o)); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The keys
@@ -1639,32 +1379,13 @@ export namespace Abstractions {
              */
             export class TokenResponse {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "access_token":
-                                if (obj.access_token) { this.AccessToken = obj.access_token as string; }
-                                break;
-                            case "token_type":
-                                if (obj.token_type) { this.TokenType = obj.token_type as string; }
-                                break;
-                            case "expires_in":
-                                if (obj.expires_in) { this.ExpiresIn = obj.expires_in as string; }
-                                break;
-                            case "refresh_token":
-                                if (obj.refresh_token) { this.RefreshToken = obj.refresh_token as string; }
-                                break;
-                            case "scope":
-                                if (obj.scope) { this.Scope = obj.scope as string; }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.access_token, val => { this.AccessToken = val as string; });
+                    SolidRpcJs.ifnotnull(obj.token_type, val => { this.TokenType = val as string; });
+                    SolidRpcJs.ifnotnull(obj.expires_in, val => { this.ExpiresIn = val as string; });
+                    SolidRpcJs.ifnotnull(obj.refresh_token, val => { this.RefreshToken = val as string; });
+                    SolidRpcJs.ifnotnull(obj.scope, val => { this.Scope = val as string; });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.AccessToken) { arr.push('"access_token": '); arr.push(JSON.stringify(this.AccessToken)); arr.push(','); } 
                     if(this.TokenType) { arr.push('"token_type": '); arr.push(JSON.stringify(this.TokenType)); arr.push(','); } 
@@ -1672,8 +1393,6 @@ export namespace Abstractions {
                     if(this.RefreshToken) { arr.push('"refresh_token": '); arr.push(JSON.stringify(this.RefreshToken)); arr.push(','); } 
                     if(this.Scope) { arr.push('"scope": '); arr.push(JSON.stringify(this.Scope)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * REQUIRED.  The access token issued by the authorization server.
@@ -1703,29 +1422,14 @@ export namespace Abstractions {
              */
             export class RateLimitSetting {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "ResourceName":
-                                if (obj.ResourceName) { this.ResourceName = obj.ResourceName as string; }
-                                break;
-                            case "MaxConcurrentCalls":
-                                if (obj.MaxConcurrentCalls) { this.MaxConcurrentCalls = SolidRpcJs.ifnotnull<number>(obj.MaxConcurrentCalls, (notnull) => Number(notnull)); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.ResourceName, val => { this.ResourceName = val as string; });
+                    SolidRpcJs.ifnotnull(obj.MaxConcurrentCalls, val => { this.MaxConcurrentCalls = SolidRpcJs.ifnotnull<number>(val, (notnull) => Number(notnull)); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.ResourceName) { arr.push('"ResourceName": '); arr.push(JSON.stringify(this.ResourceName)); arr.push(','); } 
                     if(this.MaxConcurrentCalls) { arr.push('"MaxConcurrentCalls": '); arr.push(JSON.stringify(this.MaxConcurrentCalls)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The name of the resource.
@@ -1742,33 +1446,16 @@ export namespace Abstractions {
              */
             export class RateLimitToken {
                 constructor(obj?: any) {
-                    for(let prop in obj) {
-                        switch(prop) {
-                            case "ResourceName":
-                                if (obj.ResourceName) { this.ResourceName = obj.ResourceName as string; }
-                                break;
-                            case "Id":
-                                if (obj.Id) { this.Id = obj.Id as string; }
-                                break;
-                            case "Expires":
-                                if (obj.Expires) { this.Expires = new Date(obj.Expires); }
-                                break;
-                        }
-                    }
+                    SolidRpcJs.ifnotnull(obj.ResourceName, val => { this.ResourceName = val as string; });
+                    SolidRpcJs.ifnotnull(obj.Id, val => { this.Id = val as string; });
+                    SolidRpcJs.ifnotnull(obj.Expires, val => { this.Expires = new Date(val); });
                 }
-                toJson(arr: string[] | null): string | null {
-                    let returnString = false
-                    if(arr == null) {
-                        arr = [];
-                        returnString = true;
-                    }
+                toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.ResourceName) { arr.push('"ResourceName": '); arr.push(JSON.stringify(this.ResourceName)); arr.push(','); } 
                     if(this.Id) { arr.push('"Id": '); arr.push(JSON.stringify(this.Id)); arr.push(','); } 
                     if(this.Expires) { arr.push('"Expires": '); arr.push(JSON.stringify(this.Expires)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                    if(returnString) return arr.join("");
-                    return null;
                 }
                 /**
                  * The name of the resource.
@@ -1790,38 +1477,15 @@ export namespace Abstractions {
          */
         export class FileContent {
             constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "Content":
-                            if (obj.Content) { this.Content = new Uint8Array(obj.Content); }
-                            break;
-                        case "CharSet":
-                            if (obj.CharSet) { this.CharSet = obj.CharSet as string; }
-                            break;
-                        case "ContentType":
-                            if (obj.ContentType) { this.ContentType = obj.ContentType as string; }
-                            break;
-                        case "FileName":
-                            if (obj.FileName) { this.FileName = obj.FileName as string; }
-                            break;
-                        case "LastModified":
-                            if (obj.LastModified) { this.LastModified = SolidRpcJs.ifnotnull<Date>(obj.LastModified, (notnull) => new Date(notnull)); }
-                            break;
-                        case "Location":
-                            if (obj.Location) { this.Location = obj.Location as string; }
-                            break;
-                        case "ETag":
-                            if (obj.ETag) { this.ETag = obj.ETag as string; }
-                            break;
-                    }
-                }
+                SolidRpcJs.ifnotnull(obj.Content, val => { this.Content = new Uint8Array(val); });
+                SolidRpcJs.ifnotnull(obj.CharSet, val => { this.CharSet = val as string; });
+                SolidRpcJs.ifnotnull(obj.ContentType, val => { this.ContentType = val as string; });
+                SolidRpcJs.ifnotnull(obj.FileName, val => { this.FileName = val as string; });
+                SolidRpcJs.ifnotnull(obj.LastModified, val => { this.LastModified = SolidRpcJs.ifnotnull<Date>(val, (notnull) => new Date(notnull)); });
+                SolidRpcJs.ifnotnull(obj.Location, val => { this.Location = val as string; });
+                SolidRpcJs.ifnotnull(obj.ETag, val => { this.ETag = val as string; });
             }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
+            toJson(arr: string[]): void {
                 arr.push('{');
                 if(this.Content) { arr.push('"Content": '); arr.push(JSON.stringify(this.Content)); arr.push(','); } 
                 if(this.CharSet) { arr.push('"CharSet": '); arr.push(JSON.stringify(this.CharSet)); arr.push(','); } 
@@ -1831,8 +1495,6 @@ export namespace Abstractions {
                 if(this.Location) { arr.push('"Location": '); arr.push(JSON.stringify(this.Location)); arr.push(','); } 
                 if(this.ETag) { arr.push('"ETag": '); arr.push(JSON.stringify(this.ETag)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
             }
             /**
              * The file content.
@@ -1868,29 +1530,14 @@ export namespace Abstractions {
          */
         export class NameValuePair {
             constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "Name":
-                            if (obj.Name) { this.Name = obj.Name as string; }
-                            break;
-                        case "Value":
-                            if (obj.Value) { this.Value = obj.Value as string; }
-                            break;
-                    }
-                }
+                SolidRpcJs.ifnotnull(obj.Name, val => { this.Name = val as string; });
+                SolidRpcJs.ifnotnull(obj.Value, val => { this.Value = val as string; });
             }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
+            toJson(arr: string[]): void {
                 arr.push('{');
                 if(this.Name) { arr.push('"Name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
                 if(this.Value) { arr.push('"Value": '); arr.push(JSON.stringify(this.Value)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
             }
             /**
              * The name
@@ -1906,32 +1553,13 @@ export namespace Abstractions {
          */
         export class SolidRpcHostInstance {
             constructor(obj?: any) {
-                for(let prop in obj) {
-                    switch(prop) {
-                        case "HostId":
-                            if (obj.HostId) { this.HostId = obj.HostId as string; }
-                            break;
-                        case "Started":
-                            if (obj.Started) { this.Started = new Date(obj.Started); }
-                            break;
-                        case "LastAlive":
-                            if (obj.LastAlive) { this.LastAlive = new Date(obj.LastAlive); }
-                            break;
-                        case "BaseAddress":
-                            if (obj.BaseAddress) { this.BaseAddress = obj.BaseAddress as string; }
-                            break;
-                        case "HttpCookies":
-                            if (obj.HttpCookies) { this.HttpCookies = obj.HttpCookies as Record<string,string>; }
-                            break;
-                    }
-                }
+                SolidRpcJs.ifnotnull(obj.HostId, val => { this.HostId = val as string; });
+                SolidRpcJs.ifnotnull(obj.Started, val => { this.Started = new Date(val); });
+                SolidRpcJs.ifnotnull(obj.LastAlive, val => { this.LastAlive = new Date(val); });
+                SolidRpcJs.ifnotnull(obj.BaseAddress, val => { this.BaseAddress = val as string; });
+                SolidRpcJs.ifnotnull(obj.HttpCookies, val => { this.HttpCookies = val as Record<string,string>; });
             }
-            toJson(arr: string[] | null): string | null {
-                let returnString = false
-                if(arr == null) {
-                    arr = [];
-                    returnString = true;
-                }
+            toJson(arr: string[]): void {
                 arr.push('{');
                 if(this.HostId) { arr.push('"HostId": '); arr.push(JSON.stringify(this.HostId)); arr.push(','); } 
                 if(this.Started) { arr.push('"Started": '); arr.push(JSON.stringify(this.Started)); arr.push(','); } 
@@ -1939,8 +1567,6 @@ export namespace Abstractions {
                 if(this.BaseAddress) { arr.push('"BaseAddress": '); arr.push(JSON.stringify(this.BaseAddress)); arr.push(','); } 
                 if(this.HttpCookies) { arr.push('"HttpCookies": '); arr.push(JSON.stringify(this.HttpCookies)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
-                if(returnString) return arr.join("");
-                return null;
             }
             /**
              * The unique id of this host. This id is regenerated every time a 

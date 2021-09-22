@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions;
+using SolidRpc.Node.InternalServices;
 using SolidRpc.Node.Services;
 using System;
 using System.IO;

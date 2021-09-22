@@ -2,11 +2,21 @@
 import { Abstractions } from 'solidrpc-abstractions';
 import http from 'http';
 import open from 'open';
+import fs from 'fs';
+import net from 'net';
 
 let accessToken: string | null = null;
 let globalCont = function () { };
 let httpSrv: http.Server;
+const sockets = new Set<net.Socket>();
 
+function close() {
+    for (const socket of sockets) {
+        socket.destroy();
+        sockets.delete(socket);
+    }
+    httpSrv.close();
+};
 function getParameterByName(url: string | undefined, name: string): string | null {
     if (url == undefined) return null;
     var match = RegExp('[?&]' + name + '=([^&]*)')
@@ -29,7 +39,16 @@ function startHttpServerIfNotStarted(httpSrvPort: number) {
 
             // get the access token
             accessToken = getParameterByName(req.url, 'access_token');
+
+            close();
             globalCont();
+        });
+
+        httpSrv.on('connection', (socket) => {
+            sockets.add(socket);
+            httpSrv.once('close', () => {
+                sockets.delete(socket);
+            });
         });
 
         // Start the server on port 3000
@@ -59,6 +78,29 @@ export namespace SolidRpcNode {
                 setAccessTokenAndContinue();
             }
         });
+    }
 
+    /**
+     * Generates the packages
+     * @param packageNames the packages to generate
+     */
+    export function generatePackages(packageNames: string[]) {
+        Abstractions.Services.Code.INpmGenerator.CreateNpmPackage(packageNames).invoke().subscribe(packages => {
+            packages.forEach(p => {
+                console.log(p.Name);
+                let packageDir = 'generated/' + p.Name;
+                if (!fs.existsSync(packageDir)) {
+                    fs.mkdir(packageDir, err => { if (err) throw err; });
+                }
+                if (p.Files != null) {
+                    p.Files.forEach(file => {
+                        if (file.Content == null) file.Content = '';
+                        let fileName = packageDir + '/' + file.FilePath;
+                        console.log('writing to file ' + fileName)
+                        fs.writeFile(fileName, file.Content, err => { if (err) throw err; })
+                    })
+                }
+            });
+        });
     }
 };

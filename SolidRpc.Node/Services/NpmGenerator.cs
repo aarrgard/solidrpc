@@ -106,6 +106,7 @@ namespace SolidRpc.Node.Services
             SerializerFactory.DeserializeFromString(content, out NpmPackageJson pj);
             pj.Name = packageName;
             pj.Version = version;
+            pj.Description = "";
             pj.Main = "index.js";
             pj.Types = "index.d.ts";
             pj.License = "ISC";
@@ -125,21 +126,50 @@ namespace SolidRpc.Node.Services
             }
         }
 
-        public async Task<FileContent> CreateNpmZip(IEnumerable<string> assemblyNames, CancellationToken cancellationToken = default)
+        public async Task<FileContent> CreateInitialZip(CancellationToken cancellationToken = default)
         {
-            var packages = await CreateNpmPackage(assemblyNames, cancellationToken);
+            var packages = await CreateNpmPackage(new[] { "SolidRpcNode" }, cancellationToken);
+
+            // create package.json file
+            var packageJson = new NpmPackageJson()
+            {
+                Name = "initial",
+                Version = "1.0.0",
+                Main = "index.js",
+                Types = "index.d.js",
+                Description = "",
+                License = "ISC",
+                Scripts = new Dictionary<string, string>()
+                {
+                    { "test", "echo \"Error: no test specified\" && exit 1" },
+                    { "generate", "node generate.js && npm install" }
+                }
+            };
+
+            packages.Select(o => o.Name).ToList().ForEach(o => {
+                packageJson.Dependencies[o] = $"file:generated/{o}"; 
+            });
+
             var ms = new MemoryStream();
             using (var zo = new ZipOutputStream(ms))
             {
                 zo.SetLevel(9);
+                SerializerFactory.SerializeToString(out string str, packageJson);
+                await AddZipEntry(zo, "package.json", str);
+
+                await AddZipEntry(zo, "generate.js", @"const sjs = require('solidrpcjs')
+const snode = require('solidrpcnode')
+sjs.SolidRpcJs.rootNamespace.setStringValue('baseUrl', 'http://localhost:7071/front/')
+let packageNames = ['SolidRpcNode'];
+snode.SolidRpcNode.addOAuth2PreFlightCallback();
+snode.SolidRpcNode.generatePackages(packageNames);");
+
+
                 foreach (var package in packages)
                 {
                     foreach (var f in package.Files)
                     {
-                        var entry = new ZipEntry($"{package.Name}/{f.FilePath}");
-                        zo.PutNextEntry(entry);
-                        var arr = Encoding.UTF8.GetBytes(f.Content);
-                        await zo.WriteAsync(arr, 0, arr.Length);
+                        await AddZipEntry(zo, $"generated/{package.Name}/{f.FilePath}", f.Content);
                     }
                 }
             }
@@ -148,6 +178,14 @@ namespace SolidRpc.Node.Services
                 Content = new MemoryStream(ms.ToArray()),
                 ContentType = "application/zip"
             };
+        }
+
+        private Task AddZipEntry(ZipOutputStream zo, string fileName, string str)
+        {
+            var entry = new ZipEntry(fileName);
+            zo.PutNextEntry(entry);
+            var arr = Encoding.UTF8.GetBytes(str);
+            return zo.WriteAsync(arr, 0, arr.Length);
         }
     }
 }

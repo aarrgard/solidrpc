@@ -39,6 +39,26 @@
         }
       }
     },
+    "/Services/Code/INpmGenerator/CreateInitialZip": {
+      "get": {
+        "tags": [
+          "Code.INpmGenerator"
+        ],
+        "description": "Returns a zip containing the code to get started",
+        "operationId": "Get#SolidRpc#Abstractions#Services#Code#INpmGenerator#CreateInitialZip",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}": {
       "get": {
         "tags": [
@@ -70,39 +90,6 @@
               "items": {
                 "$ref": "#/definitions/Code.NpmPackage"
               }
-            }
-          }
-        }
-      }
-    },
-    "/Services/Code/INpmGenerator/CreateNpmZip/{assemblyNames}": {
-      "get": {
-        "tags": [
-          "Code.INpmGenerator"
-        ],
-        "description": "Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#Code#INpmGenerator#CreateNpmZip#1",
-        "produces": [
-          "*/*"
-        ],
-        "parameters": [
-          {
-            "name": "assemblyNames",
-            "in": "path",
-            "required": true,
-            "type": "array",
-            "description": "The name of the assembly to create an npm package for.",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "csv"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The response type",
-            "schema": {
-              "type": "file"
             }
           }
         }

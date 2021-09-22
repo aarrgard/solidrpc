@@ -252,7 +252,7 @@ namespace SolidRpc.Tests.CodeGenerator
         {
             using (var ctx = await StartKestrelHostContextAsync())
             {
-                await CreatePackage(ctx.ClientServiceProvider, "SolidRpcJs");
+                //await CreatePackage(ctx.ClientServiceProvider, "SolidRpcJs");
                 await CreatePackage(ctx.ClientServiceProvider, "SolidRpcNode");
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ISwaggerUI).Assembly.GetName().Name);
                 await CreatePackage(ctx.ClientServiceProvider, typeof(ITypescriptGenerator).Assembly.GetName().Name);

@@ -1,13 +1,13 @@
 ﻿using SolidRpc.Abstractions;
+using SolidRpc.Node.InternalServices;
 using SolidRpc.Node.Services;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 [assembly: SolidRpcService(typeof(INodeModuleResolver), typeof(NodeModuleDefaultResolver), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
-namespace SolidRpc.Node.Services
+namespace SolidRpc.Node.InternalServices
 {
     /// <summary>
     /// Implements the node service.
