@@ -100,7 +100,7 @@ function handleCommand(chunk) {
            solidRpcSendResponse(r);
         }
     } catch(err) {
-        solidRpcSendResponse(null);
+        solidRpcSendResponse(err);
     }
 }
 process.stdin.resume();

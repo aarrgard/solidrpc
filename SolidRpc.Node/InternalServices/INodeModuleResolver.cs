@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SolidRpc.Node.Services
+namespace SolidRpc.Node.InternalServices
 {
     /// <summary>
     /// Interface that can be implemented in order to provide 

@@ -2054,11 +2054,10 @@
             <param name="assemblyNames">The name of the assemblies to create an npm package for.</param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:SolidRpc.Abstractions.Services.Code.INpmGenerator.CreateNpmZip(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.Services.Code.INpmGenerator.CreateInitialZip(System.Threading.CancellationToken)">
             <summary>
-            Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
+            Returns a zip containing the code to get started
             </summary>
-            <param name="assemblyNames">The name of the assembly to create an npm package for.</param>
             <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.Code.ITypescriptGenerator">
@@ -2635,6 +2634,11 @@
             Represents a package.json file
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.Types.Code.NpmPackageJson.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Name">
             <summary>
             The name of the package
@@ -2668,6 +2672,11 @@
         <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Dependencies">
             <summary>
             The dependencies
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.Code.NpmPackageJson.Scripts">
+            <summary>
+            The scripts
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContent">

@@ -318,15 +318,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}"
     },
-    "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{arg0}": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{arg0}",
-        "methods": [
-          "GET"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{arg0}"
-    },
     "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync": {
       "matchCondition": {
         "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync",
@@ -479,6 +470,15 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync"
+    },
+    "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip"
     },
     "front/{path}": {
       "matchCondition": {

@@ -24,11 +24,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_arg0
+    public class Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateInitialZip
     {
-        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_arg0")]
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateInitialZip")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -38,11 +38,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmZip_arg0
+    public class Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_arg0
     {
-        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmZip_arg0")]
+        [FunctionName("Http_SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_arg0")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmZip/{arg0}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

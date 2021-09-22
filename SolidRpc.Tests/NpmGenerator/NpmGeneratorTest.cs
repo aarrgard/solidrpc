@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using SolidProxy.GeneratorCastle;
@@ -8,8 +7,7 @@ using System.Threading;
 using SolidRpc.Node.Services;
 using System;
 using SolidRpc.Node.Types;
-using SolidRpc.Abstractions.Services.Code;
-using SolidRpc.Abstractions.Types.Code;
+using SolidRpc.Node.InternalServices;
 
 namespace SolidRpc.Tests.NpmGenerator
 {

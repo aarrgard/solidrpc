@@ -11,6 +11,14 @@ namespace SolidRpc.Abstractions.Types.Code
     public class NpmPackageJson
     {
         /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        public NpmPackageJson()
+        {
+            Dependencies = new Dictionary<string, string>();
+        }
+
+        /// <summary>
         /// The name of the package
         /// </summary>
         [DataMember(Name = "name")]
@@ -51,5 +59,11 @@ namespace SolidRpc.Abstractions.Types.Code
         /// </summary>
         [DataMember(Name = "dependencies")]
         public IDictionary<string, string> Dependencies { get; set; }
+
+        /// <summary>
+        /// The scripts
+        /// </summary>
+        [DataMember(Name = "scripts")]
+        public Dictionary<string, string> Scripts { get; set; }
     }
 }

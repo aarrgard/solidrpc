@@ -20,13 +20,10 @@ namespace SolidRpc.Abstractions.Services.Code
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Returns a zip containing the npm packages. This zip can be exploded in the node_modules directory.
+        /// Returns a zip containing the code to get started
         /// </summary>
-        /// <param name="assemblyNames">The name of the assembly to create an npm package for.</param>
         /// <param name="cancellationToken"></param>
-        Task<FileContent> CreateNpmZip(
-            IEnumerable<string> assemblyNames,
-            CancellationToken cancellationToken = default(CancellationToken));
+        Task<FileContent> CreateInitialZip(CancellationToken cancellationToken = default(CancellationToken));
     
     }
 }
