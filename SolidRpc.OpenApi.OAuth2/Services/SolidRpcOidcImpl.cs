@@ -110,6 +110,8 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             var idToken = await LocalAuthority.CreateAccessTokenAsync(ci, null, cancellationToken);
             var session_state = $"&session_state={Guid.NewGuid()}";
 
+            var accessToken = idToken.AccessToken;
+
             if(string.Equals(responseMode, "form_post"))
             {
                 var enc = Encoding.UTF8;
@@ -123,7 +125,8 @@ namespace SolidRpc.OpenApi.OAuth2.Services
 </head>
     <body onload='javascript:document.forms[0].submit()'>
     <form method='post' action='{redirectUri}'>
-      <input type='hidden' name='state' value='{state}' /><input type='hidden' name='id_token' value='{idToken.AccessToken}'/>
+      <input type='hidden' name='state' value='{state}' />
+      <input type='hidden' name='{responseType}' value='{accessToken}'/>
     </form>
     </body>
 </html>"))
@@ -140,7 +143,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
                 case "code":
                     return new FileContent()
                     {
-                        Location = $"{redirectUri}?code=code:{idToken.AccessToken}{session_state}{state}"
+                        Location = $"{redirectUri}?{responseType}={accessToken}{session_state}{state}"
                     };
                 default:
                     throw new Exception("Cannot handle response type:" + responseType);
