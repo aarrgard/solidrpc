@@ -374,44 +374,23 @@ namespace SolidRpc.OpenApi.Binder.Services
                 code.Append(classIndentation).AppendLine($"constructor(obj?: any) {{");
                 {
                     var ctorIndentation = CreateIndentation(classIndentation);
-                    code.Append(ctorIndentation).AppendLine($"for(let prop in obj) {{");
-                    {
-                        var forIndentation = CreateIndentation(ctorIndentation);
-                        code.Append(forIndentation).AppendLine($"switch(prop) {{");
-                        {
-                            var switchIndentation = CreateIndentation(forIndentation);
-                            (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
-                                code.Append(switchIndentation).AppendLine($"case \"{o.HttpName}\":");
-                                var src = $"obj.{o.HttpName}";
-                                src = CreateJson2JsConverter(rootNamespace, codeNamespaceName, o.PropertyType, src);
-                                var caseIndentation = CreateIndentation(switchIndentation);
-                                code.Append(caseIndentation).AppendLine($"if (obj.{o.HttpName}) {{ this.{o.Name} = {src}; }}");
-                                code.Append(caseIndentation).AppendLine($"break;");
-                            });
-                        }
-                        code.Append(forIndentation).AppendLine($"}}");
-                    }
-                    code.Append(ctorIndentation).AppendLine($"}}");
+                    (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
+                        var conv = CreateJson2JsConverter(rootNamespace, codeNamespaceName, o.PropertyType, "val");
+                        code.Append(ctorIndentation).AppendLine($"SolidRpcJs.ifnotnull(obj.{o.HttpName}, val => {{ this.{o.Name} = {conv}; }});");
+                    });
                 }
                 code.Append(classIndentation).AppendLine($"}}");
 
                 // asJson
-                code.Append(classIndentation).AppendLine($"toJson(arr: string[] | null): string | null {{");
+                code.Append(classIndentation).AppendLine($"toJson(arr: string[]): void {{");
                 {
                     var asIndentation = CreateIndentation(classIndentation);
-                    code.Append(asIndentation).AppendLine($"let returnString = false");
-                    code.Append(asIndentation).AppendLine($"if(arr == null) {{");
-                    code.Append(CreateIndentation(asIndentation)).AppendLine($"arr = [];");
-                    code.Append(CreateIndentation(asIndentation)).AppendLine($"returnString = true;");
-                    code.Append(asIndentation).AppendLine($"}}");
                     code.Append(asIndentation).AppendLine($"arr.push('{{');");
                     (type.Properties ?? new CodeTypeProperty[0]).ToList().ForEach(o => {
                         var jsonify = CreateJs2JsonConverter(rootNamespace, codeNamespaceName, o.PropertyType, $"this.{o.Name}");
                         code.Append(asIndentation).AppendLine($"if(this.{o.Name}) {{ arr.push('\"{o.HttpName}\": '); {jsonify}; arr.push(','); }} ");
                     });
                     code.Append(asIndentation).AppendLine($"if(arr[arr.length-1] == ',') arr[arr.length-1] = '}}'; else arr.push('}}');");
-                    code.Append(asIndentation).AppendLine($"if(returnString) return arr.join(\"\");");
-                    code.Append(asIndentation).AppendLine($"return null;");
                 }
                 code.Append(classIndentation).AppendLine($"}}");
 

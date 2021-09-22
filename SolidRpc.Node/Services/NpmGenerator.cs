@@ -160,9 +160,9 @@ namespace SolidRpc.Node.Services
                 await AddZipEntry(zo, "generate.js", @"const sjs = require('solidrpcjs')
 const snode = require('solidrpcnode')
 sjs.SolidRpcJs.rootNamespace.setStringValue('baseUrl', 'http://localhost:7071/front/')
-let packageNames = ['SolidRpcJs', 'SolidRpcNode', 'EO.BankId'];
+let packageNames = ['SolidRpcNode'];
 snode.SolidRpcNode.addOAuth2PreFlightCallback();
-snode.SolidRpcNode.generatePackages(packageNames); ");
+snode.SolidRpcNode.generatePackages(packageNames);");
 
 
                 foreach (var package in packages)
