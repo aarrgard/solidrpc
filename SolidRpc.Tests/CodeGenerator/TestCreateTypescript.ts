@@ -807,7 +807,7 @@ export namespace Abstractions {
              * @param redirectUri 
              * @param state RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.
              * @param responseMode 
-             * @param nonce 
+             * @param nonce OPTIONAL. String value used to associate a Client session with an ID Token, and to mitigate replay attacks. The value is passed through unmodified from the Authentication Request to the ID Token. Sufficient entropy MUST be present in the nonce values used to prevent attackers from guessing values. For implementation notes, see Section 15.5.2.
              * @param cancellationToken 
              */
             export function AuthorizeAsync(
