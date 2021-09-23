@@ -111,8 +111,9 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             var session_state = $"&session_state={Guid.NewGuid()}";
 
             var accessToken = idToken.AccessToken;
+            if (responseType == "code") accessToken = $"code:{accessToken}";
 
-            if(string.Equals(responseMode, "form_post"))
+            if (string.Equals(responseMode, "form_post"))
             {
                 var enc = Encoding.UTF8;
                 return new FileContent()
