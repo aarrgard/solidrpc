@@ -34,12 +34,12 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// Creates the jwt token from supplied claims
         /// </summary>
         /// <param name="claimsIdentity"></param>
-        /// <param name="expiryTime"></param>
+        /// <param name="expires"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<TokenResponse> CreateAccessTokenAsync(
             ClaimsIdentity claimsIdentity, 
-            TimeSpan? expiryTime = null, 
+            DateTimeOffset? expires = null, 
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -1283,12 +1283,12 @@
             The signing key
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateAccessTokenAsync(System.Security.Claims.ClaimsIdentity,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateAccessTokenAsync(System.Security.Claims.ClaimsIdentity,System.Nullable{System.DateTimeOffset},System.Threading.CancellationToken)">
             <summary>
             Creates the jwt token from supplied claims
             </summary>
             <param name="claimsIdentity"></param>
-            <param name="expiryTime"></param>
+            <param name="expires"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

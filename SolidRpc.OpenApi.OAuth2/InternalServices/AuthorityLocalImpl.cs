@@ -1,12 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
-using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -56,14 +54,15 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// Creates the access token
         /// </summary>
         /// <param name="claimsIdentity"></param>
-        /// <param name="expiryTime"></param>
+        /// <param name="expires"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TokenResponse> CreateAccessTokenAsync(ClaimsIdentity claimsIdentity, TimeSpan? expiryTime = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<TokenResponse> CreateAccessTokenAsync(ClaimsIdentity claimsIdentity, DateTimeOffset? expires = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if(expiryTime == null)
+            var issuedAt = DateTimeOffset.UtcNow;
+            if (expires == null)
             {
-                expiryTime = TimeSpan.FromHours(1);
+                expires = issuedAt.AddHours(1);
             }
             if(_privateKey == null)
             {
@@ -75,13 +74,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 throw new Exception("Private signing key not part o public keys");
             }
 
-            var issuedAt = DateTime.UtcNow;
             var signingCredentials = new SigningCredentials(_privateKey, SecurityAlgorithms.RsaSha512Signature);
             var securityTokenDescriptor = new SecurityTokenDescriptor()
             {
                 Issuer = Authority,
-                Expires = issuedAt.Add(expiryTime.Value),
-                IssuedAt = issuedAt,
+                Expires = expires.Value.UtcDateTime,
+                IssuedAt = issuedAt.UtcDateTime,
                 Subject = claimsIdentity,
                 SigningCredentials = signingCredentials,
                 //EncryptingCredentials = encryptingCredentials,
