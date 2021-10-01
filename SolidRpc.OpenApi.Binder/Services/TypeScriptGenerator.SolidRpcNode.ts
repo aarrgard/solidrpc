@@ -5,6 +5,8 @@ import open from 'open';
 import fs from 'fs';
 import net from 'net';
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 let accessToken: string | null = null;
 let globalCont = function () { };
 let httpSrv: http.Server;

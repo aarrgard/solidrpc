@@ -134,10 +134,15 @@ namespace SolidRpc.OpenApi.Binder.Services
                 throw new Exception("No http transport configured for method - cannot create");
             }
             
+
             var hostUrl = httpTransport.OperationAddress.ToString();
-            if(!hostUrl.EndsWith(methodBinding.LocalPath))
+            var httpBaseAddress = hostUrl.Substring(0, hostUrl.IndexOf('/', "https://".Length));
+            var httpPath = hostUrl.Substring(httpBaseAddress.Length);
+
+            if (hostUrl.EndsWith(methodBinding.LocalPath))
             {
-                throw new Exception("Http transport address does not end with openapi adress");
+                httpBaseAddress = hostUrl.Substring(0, hostUrl.Length - methodBinding.LocalPath.Length + 1);
+                httpPath = methodBinding.LocalPath.Substring(1);
             }
 
             var cm = new CodeMethod()
@@ -147,8 +152,8 @@ namespace SolidRpc.OpenApi.Binder.Services
                 Arguments = methodBinding.Arguments.Select(o => CreateCodeMethodArg(rootNamespace, o)).ToList(),
                 ReturnType = ResolveCodeType(rootNamespace, mi.ReturnType),
                 HttpMethod = methodBinding.Method,
-                HttpBaseAddress = new Uri(hostUrl.Substring(0, hostUrl.Length - methodBinding.LocalPath.Length + 1)),
-                HttpPath = methodBinding.LocalPath.Substring(1)
+                HttpBaseAddress = new Uri(httpBaseAddress),
+                HttpPath = httpPath
             };
             return cm;
         }
