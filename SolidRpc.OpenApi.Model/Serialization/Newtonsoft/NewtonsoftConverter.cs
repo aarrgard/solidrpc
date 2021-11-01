@@ -14,12 +14,39 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
     /// <typeparam name="T"></typeparam>
     public class NewtonsoftConverter<T> : JsonConverter
     {
+        private static IEnumerable<PropertyInfo> s_cachedProperties;
+
+        private class PropertyMetaData
+        {
+            private object _defaultValue;
+
+            public PropertyMetaData(PropertyInfo propertyInfo)
+            {
+                PropertyInfo = propertyInfo;
+                ValueGetter = typeof(NewtonsoftConverter<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Single(o => o.Name == nameof(Deserialize))
+                    .MakeGenericMethod(PropertyInfo.PropertyType);
+            }
+            public MethodInfo ValueGetter { get; }
+            public PropertyInfo PropertyInfo { get; }
+            public object DefaultValue { 
+                get
+                {
+                    if(_defaultValue == null)
+                    {
+                        _defaultValue = PropertyInfo.GetValue(Activator.CreateInstance(PropertyInfo.DeclaringType));
+                    }
+                    return _defaultValue;
+                }
+            }
+        }
+
         /// <summary>
         /// constructs a new instance
         /// </summary>
         public NewtonsoftConverter()
         {
-            ReadPropertyHandler = new ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>>();
+            ReadPropertyHandler = new ConcurrentDictionary<string, Func<JsonReader, object, JsonSerializer, object>>();
             DynamicType = GetDynamicType(typeof(T));
             PropertyWriters = CreatePropertyWriters();
             Constructor = CreateConstructor();
@@ -98,13 +125,18 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 
         private IEnumerable<PropertyInfo> GetProperties()
         {
-            return typeof(T)
-                .GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance)
-                .Where(o => o.CanRead)
-                .Where(o => o.GetMethod.GetParameters().Length == 0)
-                .Where(o => o.CanWrite)
-                .Where(o => o.SetMethod.GetParameters().Length == 1)
-                .ToList();
+            if(s_cachedProperties == null)
+            {
+                s_cachedProperties = typeof(T).Assembly.GetTypes()
+                    .Where(o => typeof(T).IsAssignableFrom(o))
+                    .SelectMany(o => o.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance))
+                    .Where(o => o.CanRead)
+                    .Where(o => o.GetMethod.GetParameters().Length == 0)
+                    .Where(o => o.CanWrite)
+                    .Where(o => o.SetMethod.GetParameters().Length == 1)
+                    .ToList();
+            }
+            return s_cachedProperties;
         }
 
         private void WriteDictionaryData<Tp>(JsonWriter writer, object o, JsonSerializer serializer)
@@ -143,7 +175,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             return null;
         }
 
-        private ConcurrentDictionary<string, Action<JsonReader, object, JsonSerializer>> ReadPropertyHandler { get; }
+        private ConcurrentDictionary<string, Func<JsonReader, object, JsonSerializer, object>> ReadPropertyHandler { get; }
         private IEnumerable<Action<JsonWriter, object, JsonSerializer>> PropertyWriters { get; }
         private Func<T> Constructor { get; }
         private Type DynamicType { get; }
@@ -158,7 +190,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             return typeof(T) == objectType;
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object value, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null)
             {
@@ -169,23 +201,22 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 throw new Exception("Not start of object");
             }
             reader.Read();
-            if(existingValue == null)
+            if(value == null)
             {
-                existingValue = Constructor();
+                value = Constructor();
             }
             while (reader.TokenType == JsonToken.PropertyName)
             {
                 var propertyName = (string)reader.Value;
                 reader.Read();
-                ReadPropertyHandler.GetOrAdd(propertyName, CreateReadPropertyHandler).Invoke(reader, existingValue, serializer);
+                value = ReadPropertyHandler.GetOrAdd(propertyName, CreateReadPropertyHandler).Invoke(reader, value, serializer);
                 reader.Read();
             }
             if (reader.TokenType != JsonToken.EndObject)
             {
                 throw new Exception("Not end of object");
             }
-            //reader.Read();
-            return existingValue;
+            return value;
         }
 
         private object Deserialize<Tp>(JsonReader r, object parent, JsonSerializer s, Action<object, object> setParent)
@@ -202,29 +233,54 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             }
        }
 
-        private Action<JsonReader, object, JsonSerializer> CreateReadPropertyHandler(string propertyName)
+        private Func<JsonReader, object, JsonSerializer, object> CreateReadPropertyHandler(string propertyName)
         {
-            var props = GetProperties()
+            var propertyMetaData = GetProperties()
                 .Where(o => {
                     var propName = o.GetCustomAttribute<DataMemberAttribute>()?.Name ?? o.Name;
                     return string.Equals(propName, propertyName, StringComparison.InvariantCultureIgnoreCase);
-                }).ToList();
+                })
+                .Select(o => new PropertyMetaData(o))
+                .ToList();
 
-            if(props.Count == 1)
+
+            if(propertyMetaData.Count == 1)
             {
-                var prop = props.First();
-                var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Single(o => o.Name == nameof(Deserialize))
-                    .MakeGenericMethod(prop.PropertyType);
+                var prop = propertyMetaData.Single().PropertyInfo;
+                var m = propertyMetaData.Single().ValueGetter;
                 var sp = CreateSetParent(prop.PropertyType);
                 return (r, o, s) =>
                 {
                     var val = m.Invoke(this, new[] { r, o, s, sp});
                     prop.SetValue(o, val);
+                    return o;
                 };
             }
+            if (propertyMetaData.Count > 1)
+            {
+                bool upcast = propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
+                return (r, o, s) =>
+                {
+                    var pmd = propertyMetaData.FirstOrDefault(x => x.PropertyInfo.DeclaringType == o.GetType());
+                    var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
+                    var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
+                    pmd.PropertyInfo.SetValue(o, val);
 
-            if(DynamicType != null)
+                    // check if we need to upcast
+                    if(upcast)
+                    {
+                        var newMeta = propertyMetaData.Where(x => x.DefaultValue != null).FirstOrDefault(x => x.DefaultValue.Equals(val));
+                        if (newMeta != null)
+                        {
+                            var newType = newMeta.PropertyInfo.DeclaringType;
+                            o = Activator.CreateInstance(newType);
+                        }
+                    }
+
+                    return o;
+                };
+            }
+            if (DynamicType != null)
             {
                 var m = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(ReadDictionaryData))
@@ -233,6 +289,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 return (r, o, s) =>
                 {
                     m.Invoke(this, new[] { propertyName, r, o, s, sp });
+                    return o;
                 };
             }
 
@@ -240,7 +297,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             //throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
         }
 
-        private void SkipNode(JsonReader r, object o, JsonSerializer s)
+        private object SkipNode(JsonReader r, object o, JsonSerializer s)
         {
             switch(r.TokenType)
             {
@@ -253,6 +310,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 default:
                     break;
             }
+            return o;
         }
 
         private void SkipNodeObject(JsonReader r, object o, JsonSerializer s)

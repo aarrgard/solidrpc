@@ -51,6 +51,17 @@ namespace SolidRpc.Tests.Serialization
             }
         }
 
+        public class StructBase { 
+            public virtual string Type { get; set; } 
+        }
+        public class Struct1 : StructBase {
+            public override string Type { get; set; } = "Type1";
+            public int[] Arr { get; set; }
+        }
+        public class Struct2 : StructBase {
+            public override string Type { get; set; } = "Type2";
+            public int[][] Arr { get; set; }
+        }
 
         private IServiceProvider GetServiceProvider()
         {
@@ -276,10 +287,37 @@ namespace SolidRpc.Tests.Serialization
                 var i = JsonHelper.Deserialize<int>(s);
                 Assert.Fail();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Assert.AreEqual("Cannot read json stream:[Not json]", e.Message);
             }
+        }
+
+        /// <summary>
+        /// Tests the uri type
+        /// </summary>
+        [Test]
+        public void TestNominator()
+        {
+            var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
+
+            var s1 = new Struct1() { Arr = new [] { 1, 2 } };
+            Assert.AreEqual("Type1", s1.Type);
+            serFact.SerializeToString(out string s, s1);
+            Assert.AreEqual(@"{""Type"":""Type1"",""Arr"":[1,2]}", s);
+
+            var s2 = new Struct2() { Arr = new [] { new [] { 1, 2 } } };
+            Assert.AreEqual("Type2", s2.Type);
+            serFact.SerializeToString(out s, s2);
+            Assert.AreEqual(@"{""Type"":""Type2"",""Arr"":[[1,2]]}", s);
+
+            serFact.DeserializeFromString(@"{""Type"":""Type1"",""Arr"":[1,2]}", out StructBase sb);
+            Assert.AreEqual("Type1", sb.Type);
+            Assert.AreEqual(typeof(Struct1), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Type"":""Type2"",""Arr"":[[1,2]]}", out sb);
+            Assert.AreEqual("Type2", sb.Type);
+            Assert.AreEqual(typeof(Struct2), sb.GetType());
         }
     }
 }

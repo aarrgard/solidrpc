@@ -268,10 +268,12 @@ namespace SolidRpc.Tests.CodeGenerator
             using (var ctx = CreateKestrelHostContext(ss => {}, cs =>
             {
                 cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
+                cs.AddSolidRpcBindings(typeof(EO.BankId.IpApi.Services.IIpApi));
             }))
             {
                 await ctx.StartAsync();
                 await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.Services.IBankId).Assembly.GetName().Name);
+                await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.IpApi.Services.IIpApi).Assembly.GetName().Name);
             }
         }
 
