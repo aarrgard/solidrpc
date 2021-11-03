@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Services;
+using System.IO;
 
 namespace SolidRpc.Tests.CodeGenerator
 {
@@ -67,7 +68,7 @@ namespace SolidRpc.Tests.CodeGenerator
             var tsGenerator = sp.GetRequiredService<ITypescriptGenerator>();
 
             var ts = await tsGenerator.CreateTypesTsForAssemblyAsync(typeof(ISolidRpcOidc).Assembly.GetName().Name);
-            //using (var fs = new FileInfo(@"C:\Development\github\solidrpc\SolidRpc.Tests\NpmGenerator\src\types.ts").CreateText())
+            //using (var fs = new FileInfo(@"/Users/andreasarrgard/Development/github/solidrpc/SolidRpc.Tests/CodeGenerator/TestCreateTypescript.ts").CreateText())
             //{
             //    fs.Write(ts);
             //}

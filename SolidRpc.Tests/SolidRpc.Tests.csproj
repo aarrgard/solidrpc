@@ -34,7 +34,6 @@
     <EmbeddedResource Include="Swagger\TestSwaggerSpecExternalFileReference.json" />
     <EmbeddedResource Include="Swagger\TestSwaggerSpecReferenceToExternalFile.json" />
     <EmbeddedResource Include="Swagger\petstore.json" />
-    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1AllMethods.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TestArray.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1OptionalParameter.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1NullableParameter.json" />

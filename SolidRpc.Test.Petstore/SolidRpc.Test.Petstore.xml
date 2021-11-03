@@ -384,16 +384,6 @@
             Constructs a new instance
             </summary>
         </member>
-        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">
-            <summary>
-            Invalid input
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException.#ctor">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
         <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.InvalidIDSuppliedException">
             <summary>
             Invalid ID supplied
@@ -420,6 +410,16 @@
             </summary>
         </member>
         <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePet.ValidationException.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException">
+            <summary>
+            Invalid input
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Test.Petstore.Types.Services.Pet.UpdatePetWithForm.InvalidInputException.#ctor">
             <summary>
             Constructs a new instance
             </summary>

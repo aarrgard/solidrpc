@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{02FC1D9B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C253128-5D02-4E68-BAFB-901E9F7B1055}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.DotNetTool", "SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.DotNetTool", "SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D62C2EE1-7472-4CEA-A334-D14D98193014}"
 	ProjectSection(SolutionItems) = preProject

@@ -18,27 +18,27 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 
         private class PropertyMetaData
         {
-            private object _defaultValue;
-
+            private Lazy<object> _defaultValue;
+            
             public PropertyMetaData(PropertyInfo propertyInfo)
             {
                 PropertyInfo = propertyInfo;
                 ValueGetter = typeof(NewtonsoftConverter<T>).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                     .Single(o => o.Name == nameof(Deserialize))
                     .MakeGenericMethod(PropertyInfo.PropertyType);
+                _defaultValue = new Lazy<object>(() =>
+                {
+                    if (!PropertyInfo.DeclaringType.GetConstructors().Any(o => o.GetParameters().Length == 0))
+                    {
+                        return null;
+                    }
+
+                    return PropertyInfo.GetValue(Activator.CreateInstance(PropertyInfo.DeclaringType));
+                });
             }
             public MethodInfo ValueGetter { get; }
             public PropertyInfo PropertyInfo { get; }
-            public object DefaultValue { 
-                get
-                {
-                    if(_defaultValue == null)
-                    {
-                        _defaultValue = PropertyInfo.GetValue(Activator.CreateInstance(PropertyInfo.DeclaringType));
-                    }
-                    return _defaultValue;
-                }
-            }
+            public object DefaultValue => _defaultValue.Value;
         }
 
         /// <summary>
@@ -90,6 +90,10 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 
             foreach(var prop in GetProperties())
             {
+                if (!prop.DeclaringType.IsAssignableFrom(typeof(T)))
+                {
+                    continue;
+                }
                 var attr = prop.GetCustomAttribute<DataMemberAttribute>();
                 if(attr == null)
                 {
@@ -127,14 +131,21 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
         {
             if(s_cachedProperties == null)
             {
-                s_cachedProperties = typeof(T).Assembly.GetTypes()
+                var props = new Dictionary<string, PropertyInfo>();
+                typeof(T).Assembly.GetTypes()
                     .Where(o => typeof(T).IsAssignableFrom(o))
                     .SelectMany(o => o.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance))
                     .Where(o => o.CanRead)
                     .Where(o => o.GetMethod.GetParameters().Length == 0)
                     .Where(o => o.CanWrite)
                     .Where(o => o.SetMethod.GetParameters().Length == 1)
-                    .ToList();
+                    .ToList().ForEach(o =>
+                    {
+                        props[$"{o.DeclaringType.FullName}.{o.Name}"] = o;
+                    });
+
+                s_cachedProperties = props.Values.ToList();
+
             }
             return s_cachedProperties;
         }
@@ -261,7 +272,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 bool upcast = propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
                 return (r, o, s) =>
                 {
-                    var pmd = propertyMetaData.FirstOrDefault(x => x.PropertyInfo.DeclaringType == o.GetType());
+                    var pmd = propertyMetaData.FirstOrDefault(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType()));
                     var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
                     var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
                     pmd.PropertyInfo.SetValue(o, val);

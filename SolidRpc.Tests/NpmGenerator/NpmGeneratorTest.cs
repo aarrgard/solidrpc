@@ -8,6 +8,7 @@ using SolidRpc.Node.Services;
 using System;
 using SolidRpc.Node.Types;
 using SolidRpc.Node.InternalServices;
+using System.IO;
 
 namespace SolidRpc.Tests.NpmGenerator
 {
@@ -125,7 +126,8 @@ const puppeteer = require('puppeteer');
             var sp = sc.BuildServiceProvider();
             var nodeService = sp.GetRequiredService<INodeService>();
 
-            var res = await nodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, null, "npm\\bin\\npm-cli.js", new string[] { "--version" });
+            var sep = Path.DirectorySeparatorChar;
+            var res = await nodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, null, $"npm{sep}bin{sep}npm-cli.js", new string[] { "--version" });
 
             Assert.AreEqual(0, res.ExitCode);
             Assert.AreEqual("7.13.0", res.Out.Trim());

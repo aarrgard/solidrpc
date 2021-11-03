@@ -242,36 +242,6 @@
             The session id.
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApiAttribute">
-            <summary>
-            Configures the openapi
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Name">
-            <summary>
-            The name of the method or parameter
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.In">
-            <summary>
-            Where should the parameter be put.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Verbs">
-            <summary>
-            The verbs to use.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Path">
-            <summary>
-            The path to bind.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.CollectionFormat">
-            <summary>
-            The separator to use in lists
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
             <summary>
             Interface that can be implemented to resolve the base uri.
@@ -1766,6 +1736,36 @@
             <param name="methodInfo">The method to resolve the uri for(may be null)</param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApiAttribute">
+            <summary>
+            Configures the openapi
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Name">
+            <summary>
+            The name of the method or parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.In">
+            <summary>
+            Where should the parameter be put.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Verbs">
+            <summary>
+            The verbs to use.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Path">
+            <summary>
+            The path to bind.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.CollectionFormat">
+            <summary>
+            The separator to use in lists
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">
             <summary>
             The security attribute defines what permissions that are required to
@@ -3259,26 +3259,6 @@
             OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.Types.RateLimitExceededException">
-            <summary>
-            Raised when the rate limit has been exceeded
-            </summary>
-        </member>
-        <member name="F:SolidRpc.Abstractions.Types.RateLimitExceededException.HttpStatusCode">
-            <summary>
-            The http status code
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Types.RateLimitExceededException.#ctor">
-            <summary>
-            Constructs a new exception
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.Types.RateLimitExceededException.#ctor(System.String)">
-            <summary>
-            Constructs a new exception
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting">
             <summary>
             Specifies the rate limit settings for the specified resource
@@ -3314,6 +3294,26 @@
         <member name="P:SolidRpc.Abstractions.Types.RateLimit.RateLimitToken.Expires">
             <summary>
             The time when the token expires
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.RateLimitExceededException">
+            <summary>
+            Raised when the rate limit has been exceeded
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.Types.RateLimitExceededException.HttpStatusCode">
+            <summary>
+            The http status code
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.RateLimitExceededException.#ctor">
+            <summary>
+            Constructs a new exception
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.RateLimitExceededException.#ctor(System.String)">
+            <summary>
+            Constructs a new exception
             </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.SolidRpcHostInstance">

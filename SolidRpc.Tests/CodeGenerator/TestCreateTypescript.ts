@@ -1,4 +1,4 @@
-﻿import { default as CancellationToken } from 'cancellationtoken';
+import { default as CancellationToken } from 'cancellationtoken';
 import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators'
 import { SolidRpcJs } from 'solidrpcjs';
@@ -814,7 +814,7 @@ export namespace Abstractions {
                 scope : string[],
                 responseType : string,
                 clientId : string,
-                redirectUri? : string,
+                redirectUri : string,
                 state? : string,
                 responseMode? : string,
                 nonce? : string,

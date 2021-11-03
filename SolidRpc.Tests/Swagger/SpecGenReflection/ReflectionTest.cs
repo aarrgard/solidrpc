@@ -11,6 +11,7 @@ using SolidRpc.OpenApi.Model.Generator;
 using SolidRpc.OpenApi.Model.Generator.V2;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
@@ -252,21 +253,46 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         /// Tests generating the swagger spec from compiled code
         /// </summary>
         [Test]
-        public void TestInterface1AllMethods()
+        public async Task TestInterface1AllMethods()
         {
             var cSharpRepository = new CSharpRepository();
             CSharpReflectionParser.AddType(cSharpRepository, typeof(Interface1));
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(GetSettings()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
-            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1AllMethods)}.json"), spec);
+            //await WriteSpec(nameof(TestInterface1AllMethods), spec);
+            Assert.AreEqual(await ReadSpec(nameof(TestInterface1AllMethods)), spec);
+        }
+
+        private async Task WriteSpec(string fileName, string spec)
+        {
+            var d = GetProjectFolder("SolidRpc.Tests");
+            d = d.GetDirectories().First(o => o.Name == "Swagger");
+            d = d.GetDirectories().First(o => o.Name == "SpecGenReflection");
+            var f = new FileInfo(Path.Combine(d.FullName, $"{fileName}.json"));
+            using (var fs = f.CreateText())
+            {
+                await fs.WriteAsync(spec);
+            }
+        }
+
+        private async Task<string> ReadSpec(string fileName)
+        {
+            var d = GetProjectFolder("SolidRpc.Tests");
+            d = d.GetDirectories().First(o => o.Name == "Swagger");
+            d = d.GetDirectories().First(o => o.Name == "SpecGenReflection");
+            var f = new FileInfo(Path.Combine(d.FullName, $"{fileName}.json"));
+            using (var fs = f.OpenText())
+            {
+                return await fs.ReadToEndAsync();
+            }
         }
 
         /// <summary>
         /// Tests generating the swagger spec from compiled code
         /// </summary>
         [Test]
-        public void TestInterface1TestArray()
+        public async Task TestInterface1TestArray()
         {
             var cSharpRepository = new CSharpRepository();
             var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestArray));
@@ -274,7 +300,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(GetSettings()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
-            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1TestArray)}.json"), spec);
+            //await WriteSpec(nameof(TestInterface1TestArray), spec);
+            Assert.AreEqual(await ReadSpec(nameof(TestInterface1TestArray)), spec);
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(2, binding.Arguments.Count());
@@ -338,7 +365,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         /// Tests generating the swagger spec from compiled code
         /// </summary>
         [Test]
-        public void TestInterface1StringValues()
+        public async Task TestInterface1StringValues()
         {
             var cSharpRepository = new CSharpRepository();
             var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestStringValues));
@@ -346,7 +373,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(GetSettings()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
-            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1StringValues)}.json"), spec);
+            //await WriteSpec(nameof(TestInterface1StringValues), spec);
+            Assert.AreEqual(await ReadSpec(nameof(TestInterface1StringValues)), spec);
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());
@@ -356,7 +384,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         /// Tests generating the swagger spec from compiled code
         /// </summary>
         [Test]
-        public void TestInterface1Dictionary()
+        public async Task TestInterface1Dictionary()
         {
             var cSharpRepository = new CSharpRepository();
             var methodInfo = typeof(Interface1).GetMethod(nameof(Interface1.TestDictionary));
@@ -364,7 +392,8 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
             var swaggerSpec = new OpenApiSpecGeneratorV2(GetSettings()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
-            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInterface1Dictionary)}.json"), spec);
+            //await WriteSpec(nameof(TestInterface1Dictionary), spec);
+            Assert.AreEqual(await ReadSpec(nameof(TestInterface1Dictionary)), spec);
 
             var binding = ServiceProvider.GetRequiredService<IMethodBinderStore>().CreateMethodBindings(spec, methodInfo).First();
             Assert.AreEqual(1, binding.Arguments.Count());

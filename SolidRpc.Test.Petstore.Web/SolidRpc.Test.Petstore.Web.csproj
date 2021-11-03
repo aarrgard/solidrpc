@@ -9,6 +9,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'SolidRpc.Test.PetstoreWeb' " />
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>

@@ -18,9 +18,21 @@ namespace SolidRpc.Node.InternalServices
             {
                 throw new Exception("The environment does not contain a PATH entry");
             }
+            string exeName = "node.exe";
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                    exeName = "node";
+                    break;
+                default:
+                    exeName = "node.exe";
+                    break;
+
+
+            }
             foreach (var path in paths.Split(Path.PathSeparator))
             {
-                var exePath = Path.Combine(path, "node.exe");
+                var exePath = Path.Combine(path, exeName);
                 if (File.Exists(exePath))
                 {
                     return new string[] { exePath };
