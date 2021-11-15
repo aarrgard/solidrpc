@@ -163,7 +163,7 @@
         "tags": [
           "ISolidRpcContentHandler"
         ],
-        "description": "Returns the content for supplied path.\n\nNote that the path is marked as optional(default value set). This is so that the parameter\nis placed in the query string instead of path.",
+        "description": "Returns the content for supplied path.\r\n\r\nNote that the path is marked as optional(default value set). This is so that the parameter\r\nis placed in the query string instead of path.",
         "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetContent",
         "produces": [
           "*/*"
@@ -322,7 +322,7 @@
         "tags": [
           "ISolidRpcHost"
         ],
-        "description": "Returns the id of this host. This method can be used to determine if a host is up and running by\ncomparing the returned value with the instance that we want to send to. If a host goes down it is\nremoved from the router and another instance probably responds to the call.",
+        "description": "Returns the id of this host. This method can be used to determine if a host is up and running by\r\ncomparing the returned value with the instance that we want to send to. If a host goes down it is\r\nremoved from the router and another instance probably responds to the call.",
         "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostInstance",
         "produces": [
           "application/json"
@@ -584,7 +584,7 @@
         "tags": [
           "ISolidRpcOAuth2"
         ],
-        "description": "This is the method returns a html page that calls supplied callback\nafter the token callback has been invoked. Use this method to\nretreive tokens from a standalone node instance.\n\nStart a local http server and supply the address to the handler.",
+        "description": "This is the method returns a html page that calls supplied callback\r\nafter the token callback has been invoked. Use this method to\r\nretreive tokens from a standalone node instance.\r\n\r\nStart a local http server and supply the address to the handler.",
         "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#GetAuthorizationCodeTokenAsync",
         "produces": [
           "*/*"
@@ -629,7 +629,7 @@
         "tags": [
           "ISolidRpcOAuth2"
         ],
-        "description": "This is the method that is invoked when a user has been authenticated\nand a valid token is supplied.",
+        "description": "This is the method that is invoked when a user has been authenticated\r\nand a valid token is supplied.",
         "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#TokenCallbackAsync",
         "produces": [
           "*/*"
@@ -1256,7 +1256,7 @@
         "HostId": {
           "type": "string",
           "format": "uuid",
-          "description": "The unique id of this host. This id is regenerated every time a\nnew memory context is created"
+          "description": "The unique id of this host. This id is regenerated every time a\r\nnew memory context is created"
         },
         "Started": {
           "type": "string",
@@ -1266,7 +1266,7 @@
         "LastAlive": {
           "type": "string",
           "format": "date-time",
-          "description": "The last time this host was alive. This field is set(and returned) when a client\ninvokes the ISolidRpcHost.GetHostInstance."
+          "description": "The last time this host was alive. This field is set(and returned) when a client\r\ninvokes the ISolidRpcHost.GetHostInstance."
         },
         "BaseAddress": {
           "type": "string",
@@ -1312,7 +1312,7 @@
         }
       },
       "type": "object",
-      "description": "Represents a HttpRequest. We can use this type to create dynamic invocation\nhandlers that intercepts all the data sent to it."
+      "description": "Represents a HttpRequest. We can use this type to create dynamic invocation\r\nhandlers that intercepts all the data sent to it."
     },
     "OAuth2.OpenIDConnectDiscovery": {
       "properties": {
@@ -1552,7 +1552,7 @@
         "MaxConcurrentCalls": {
           "type": "integer",
           "format": "int32",
-          "description": "If set specifies the maximum number of concurrent calls\nthere can be to the resource"
+          "description": "If set specifies the maximum number of concurrent calls\r\nthere can be to the resource"
         }
       },
       "type": "object",
@@ -1567,7 +1567,7 @@
         "Id": {
           "type": "string",
           "format": "uuid",
-          "description": "The unique id of this token. This guid may be empty if no token\nwas issued from the service."
+          "description": "The unique id of this token. This guid may be empty if no token\r\nwas issued from the service."
         },
         "Expires": {
           "type": "string",
@@ -1594,7 +1594,7 @@
     },
     {
       "name": "ISolidRpcContentHandler",
-      "description": "The content handler uses the ISolidRpcContentStore to deliver static or proxied content.\n\nThis handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler."
+      "description": "The content handler uses the ISolidRpcContentStore to deliver static or proxied content.\r\n\r\nThis handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler."
     },
     {
       "name": "ISolidRpcHost",
@@ -1602,7 +1602,7 @@
     },
     {
       "name": "ISolidRpcHostStore",
-      "description": "The host store is responsible for storing persistent information about\na host in a cluster. Usually hosts are placed behind a load balancer that\ncan route to a specific host based on some cookie or header information."
+      "description": "The host store is responsible for storing persistent information about\r\na host in a cluster. Usually hosts are placed behind a load balancer that\r\ncan route to a specific host based on some cookie or header information."
     },
     {
       "name": "ISolidRpcMethodStore",
