@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{02FC1D9B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C253128-5D02-4E68-BAFB-901E9F7B1055}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.DotNetTool", "SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.DotNetTool", "SolidRpc.OpenApi.DotNetTool\SolidRpc.OpenApi.DotNetTool.csproj", "{CF885EBE-DD69-4379-B331-07C7A8CF61D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D62C2EE1-7472-4CEA-A334-D14D98193014}"
 	ProjectSection(SolutionItems) = preProject
@@ -63,6 +63,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Node", "SolidRpc.Node\SolidRpc.Node.csproj", "{82709B24-F308-4175-A04A-C4F7E2A75B64}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Node.Arch", "SolidRpc.Node.Arch\SolidRpc.Node.Arch.csproj", "{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Test.Petstore.AzFunctionsV5", "SolidRpc.Test.Petstore.AzFunctionsV5\SolidRpc.Test.Petstore.AzFunctionsV5.csproj", "{D4F09DED-73CB-4658-B60B-54EC036A8217}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +172,10 @@ Global
 		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +206,7 @@ Global
 		{F9616CB2-C8E9-4637-93E9-5A82CD06CB05} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{82709B24-F308-4175-A04A-C4F7E2A75B64} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
+		{D4F09DED-73CB-4658-B60B-54EC036A8217} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}
