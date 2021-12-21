@@ -550,6 +550,21 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.AllowedCors">
+            <summary>
+            The allowed cors
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.Origins">
+            <summary>
+            All the origins.
+            </summary>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
             <summary>
             Interface that we use to access the data in the Http request

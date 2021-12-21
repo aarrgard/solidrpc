@@ -18,6 +18,35 @@ namespace SolidRpc.Abstractions.OpenApi.Http
     public static class IHttpRequestExtensions
     {
         /// <summary>
+        /// Checks the origin header against the list of allowed origins
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="allowedCorsOrigins"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static bool CheckCorsIsValid(this IHttpRequest req, IEnumerable<string> allowedCorsOrigins, out string origin)
+        {
+            var localOrigin = req.Headers.Where(o => string.Equals(o.Name,"origin",StringComparison.InvariantCultureIgnoreCase)).Select(o => o.GetStringValue()).FirstOrDefault();
+            origin = localOrigin;
+            if(localOrigin == null)
+            {
+                // no origin header - allow invocation
+                return true;
+            }
+            if(allowedCorsOrigins.Contains("*"))
+            {
+                // all hosts allowed - allow invocation
+                return true;
+            }
+            if (allowedCorsOrigins.Any(o => localOrigin.StartsWith(o)))
+            {
+                // specified origin allowed - allow invocation
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Returns the host
         /// </summary>
         /// <param name="source"></param>

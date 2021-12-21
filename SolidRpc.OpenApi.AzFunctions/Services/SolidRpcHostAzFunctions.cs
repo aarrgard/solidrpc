@@ -202,7 +202,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     throw new Exception("Found more than one function for path:"+path);
                 }
                 var functionName = pathFunctionNames.Single();
-                var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).OrderBy(o => o).ToArray();
+                var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).Union(new[] { "options" }).OrderBy(o => o).ToArray();
                 var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Distinct().Single();
 
                 var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);

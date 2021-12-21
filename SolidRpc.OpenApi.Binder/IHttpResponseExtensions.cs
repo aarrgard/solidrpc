@@ -17,6 +17,36 @@ namespace SolidRpc.Abstractions.OpenApi.Http
     public static class IHttpResponseExtensions
     {
         private static Regex ETagRegex = new Regex("\"(.*)\"");
+
+        /// <summary>
+        /// Adds the allowed cors headers
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="request"></param>
+        public static void AddAllowedCorsHeaders(this IHttpResponse response, IHttpRequest request)
+        {
+            var origin = request.Headers.Where(o => o.Name == "origin").Select(o => o.GetStringValue()).FirstOrDefault();
+            if (string.IsNullOrEmpty(origin))
+            {
+                return;
+            }
+            if (!string.IsNullOrEmpty(origin))
+            {
+                response.AdditionalHeaders.Add("Access-Control-Allow-Origin", origin);
+            }
+            var accessControlRequestHeaders = request.Headers.Where(o => o.Name == "Access-Control-Request-Headers").Select(o => o.GetStringValue()).FirstOrDefault();
+            if (!string.IsNullOrEmpty(accessControlRequestHeaders))
+            {
+                response.AdditionalHeaders.Add("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+            var accessControlRequestMethod = request.Headers.Where(o => o.Name == "Access-Control-Request-Method").Select(o => o.GetStringValue()).FirstOrDefault();
+            if (!string.IsNullOrEmpty(accessControlRequestMethod))
+            {
+                response.AdditionalHeaders.Add("Access-Control-Allow-Method", accessControlRequestMethod);
+            }
+            response.AdditionalHeaders.Add("Access-Control-Max-Age", "86400");
+        }
+
         /// <summary>
         /// 
         /// </summary>

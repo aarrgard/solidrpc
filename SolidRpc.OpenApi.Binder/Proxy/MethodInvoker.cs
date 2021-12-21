@@ -48,8 +48,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             public void AddPath(IMethodBinding methodBinding)
             {
+                AddPath(methodBinding.Method, methodBinding);
+                AddPath("OPTIONS", methodBinding);
+            }
+
+            private void AddPath(string method, IMethodBinding methodBinding)
+            {
                 var work = this;
-                var segments = $"{methodBinding.Method}{methodBinding.LocalPath}".Split('/');
+                var segments = $"{method}{methodBinding.LocalPath}".Split('/');
                 foreach (var segment in segments)
                 {
                     var key = segment;
@@ -89,16 +95,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
+            AllowedCors allowedCors,
             IMethodBinderStore methodBinderStore)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             MethodInfo2Binding = new Dictionary<MethodInfo, IMethodBinding>();
+            AllowedCors = allowedCors;
         }
 
-        public ILogger Logger { get; }
+        private ILogger Logger { get; }
         public IMethodBinderStore MethodBinderStore { get; }
-        public Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
+        private Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
+        private AllowedCors AllowedCors { get; }
+
         private PathSegment RootSegment => GetRootSegment();
 
         private PathSegment GetRootSegment()
@@ -159,6 +169,29 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             IEnumerable<IMethodBinding> methodBindings, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            var resp = new SolidHttpResponse();
+
+            //
+            // handle the access-control(CORS) request for this invocation
+            //
+            if (!request.CheckCorsIsValid(AllowedCors.Origins, out string origin))
+            {
+                // request not allowed
+                resp.StatusCode = 401;
+                serviceProvider.LogInformation<MethodInvoker>($"Rejecting request. {origin} not part of allowed origins {string.Join(",", AllowedCors.Origins)}");
+                return resp;
+            }
+
+            //
+            // handle cors invocation
+            //
+            if (string.Equals(request.Method, "options", StringComparison.InvariantCultureIgnoreCase))
+            {
+                resp.StatusCode = 204;
+                resp.AddAllowedCorsHeaders(request);
+                return resp;
+            }
+
             var invocationValues = new Dictionary<string, object>();
 
             if (Logger.IsEnabled(LogLevel.Information))
@@ -215,7 +248,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"Service for {selectedBinding.MethodInfo.DeclaringType} is not a solid proxy.");
             }
 
-            var resp = new SolidHttpResponse();
             //
             // extract arguments
             //
@@ -303,6 +335,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
                 }
             }
+
+            resp.AddAllowedCorsHeaders(request);
 
             return resp;
         }

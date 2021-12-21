@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.OpenApi.Proxy;
@@ -38,21 +39,25 @@ namespace SolidRpc.OpenApi.Binder.Services
         public SolidRpcOAuth2(
             IServiceProvider serviceProvider,
             IInvoker<ISolidRpcOAuth2> invoker,
-            ISerializerFactory serializationFactory)
+            ISerializerFactory serializationFactory,
+            AllowedCors allowedCors)
         {
             ServiceProvider = serviceProvider;
             Invoker = invoker;
             SerializationFactory = serializationFactory;
+            AllowedCors = allowedCors;
         }
 
         private IServiceProvider ServiceProvider { get; }
         private IInvoker<ISolidRpcOAuth2> Invoker { get; }
         private ISerializerFactory SerializationFactory { get; }
+        private AllowedCors AllowedCors { get; }
 
         private IEnumerable<string> AllowedHosts {
             get
             {
                 var addrs = new HashSet<string>();
+                AllowedCors.Origins.ToList().ForEach(o => addrs.Add(o));
                 addrs.Add("127.0.0.1");
                 addrs.Add("localhost");
                 var mat = (IMethodAddressTransformer)ServiceProvider.GetRequiredService(typeof(IMethodAddressTransformer));

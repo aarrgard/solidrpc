@@ -1,5 +1,4 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Threading.Tasks;
 

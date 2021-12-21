@@ -2,6 +2,7 @@
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
+using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
@@ -358,6 +359,17 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddSolidRpcSingletonServices();
             return services.GetSolidRpcService<ISolidRpcContentStore>();
+        }
+
+        /// <summary>
+        /// Sets the allowed cors
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="allowedCors"></param>
+        /// <returns></returns>
+        public static void SetAllowedCors(this IServiceCollection services, params string[] allowedCors)
+        {
+            services.GetSolidRpcService<AllowedCors>().Origins = allowedCors;
         }
 
         /// <summary>
