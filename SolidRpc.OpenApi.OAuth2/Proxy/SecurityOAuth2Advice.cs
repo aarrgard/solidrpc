@@ -191,7 +191,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 // try to fetch token from query
                 //
                 var accessToken = redirectUri.Query.Split('?').Skip(1).FirstOrDefault()?
-                    .Split('&').Select(o => o.Split('=')).Where(o => o.Length > 1).Where(o => o[0] == "access_token").Select(o => o[1]).FirstOrDefault();
+                    .Split('&').Select(o => o.Split('='))
+                    .Where(o => o.Length > 1)
+                    .Where(o => o[0] == "access_token")
+                    .Select(o => o[1]).FirstOrDefault();
                 if (!string.IsNullOrEmpty(accessToken))
                 {
                     return accessToken;

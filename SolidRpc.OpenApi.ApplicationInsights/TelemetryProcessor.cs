@@ -34,14 +34,5 @@ namespace SolidRpc.OpenApi.ApplicationInsights
 
             // do not send this telemetry
         }
-
-        // Example: replace with your own criteria.
-        private bool OKtoSend(ITelemetry item)
-        {
-            var dependency = item as DependencyTelemetry;
-            if (dependency == null) return true;
-
-            return dependency.Success != true;
-        }
     }
 }

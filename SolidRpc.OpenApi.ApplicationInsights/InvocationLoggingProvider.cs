@@ -58,7 +58,16 @@ namespace SolidRpc.OpenApi.ApplicationInsights
         {
             TelemetryClient = telemetryClient;
 
-            var tpcb = TelemetryClient.TelemetryConfiguration.TelemetryProcessorChainBuilder;
+            TelemetryConfiguration tc;
+            try
+            {
+                tc = TelemetryClient.TelemetryConfiguration;
+            }
+            catch
+            {
+                tc = TelemetryConfiguration.Active;
+            }
+            var tpcb = tc.TelemetryProcessorChainBuilder;
             tpcb.Use(next => new TelemetryProcessor(next));
             tpcb.Build();
 
