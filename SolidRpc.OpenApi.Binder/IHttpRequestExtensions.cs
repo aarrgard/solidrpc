@@ -26,7 +26,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <returns></returns>
         public static bool CheckCorsIsValid(this IHttpRequest req, IEnumerable<string> allowedCorsOrigins, out string origin)
         {
-            var localOrigin = req.Headers.Where(o => string.Equals(o.Name,"origin",StringComparison.InvariantCultureIgnoreCase)).Select(o => o.GetStringValue()).FirstOrDefault();
+            var localOrigin = req.Headers.GetStringValue("origin");
             origin = localOrigin;
             if(localOrigin == null)
             {

@@ -41,6 +41,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 return ConfigureAzureFunction(services, conf);
             });
 
+            services.SetAllowedCors("http://localhost:8080");
+
             services.AddSolidRpcSwaggerUI(o => {
                 o.OAuthClientId = "swagger-ui";
                 o.OAuthClientSecret = "swagger-ui";

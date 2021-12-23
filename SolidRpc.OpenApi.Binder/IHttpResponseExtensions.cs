@@ -25,7 +25,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="request"></param>
         public static void AddAllowedCorsHeaders(this IHttpResponse response, IHttpRequest request)
         {
-            var origin = request.Headers.Where(o => o.Name == "origin").Select(o => o.GetStringValue()).FirstOrDefault();
+            var origin = request.Headers.GetStringValue("origin");
             if (string.IsNullOrEmpty(origin))
             {
                 return;
@@ -34,12 +34,12 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 response.AdditionalHeaders.Add("Access-Control-Allow-Origin", origin);
             }
-            var accessControlRequestHeaders = request.Headers.Where(o => o.Name == "Access-Control-Request-Headers").Select(o => o.GetStringValue()).FirstOrDefault();
+            var accessControlRequestHeaders = request.Headers.GetStringValue("Access-Control-Request-Headers");
             if (!string.IsNullOrEmpty(accessControlRequestHeaders))
             {
                 response.AdditionalHeaders.Add("Access-Control-Allow-Headers", accessControlRequestHeaders);
             }
-            var accessControlRequestMethod = request.Headers.Where(o => o.Name == "Access-Control-Request-Method").Select(o => o.GetStringValue()).FirstOrDefault();
+            var accessControlRequestMethod = request.Headers.GetStringValue("Access-Control-Request-Method");
             if (!string.IsNullOrEmpty(accessControlRequestMethod))
             {
                 response.AdditionalHeaders.Add("Access-Control-Allow-Method", accessControlRequestMethod);

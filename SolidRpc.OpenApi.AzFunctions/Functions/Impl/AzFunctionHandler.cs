@@ -392,7 +392,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     return;
                 }
 
-                var methods = o.Select(o2 => o2.Method.ToUpper()).Distinct().ToList();
+                var methods = o.Select(o2 => o2.Method.ToUpper()).Union(new[] { "OPTIONS" }).Distinct().ToList();
                 var backendUri = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{o.Key}";
                 var frontEndRoute = CreateFrontendRoute(o.Key);
                 var proxyModified = CreateProxy(proxies.Proxies, o.Key, methods, frontEndRoute, backendUri, false);

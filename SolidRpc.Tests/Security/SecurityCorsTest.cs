@@ -3,6 +3,8 @@ using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -104,6 +106,7 @@ namespace SolidRpc.Tests.Security
                 allowedCors.Origins = new[] { "test" };
                 var resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.NoContent, resp.StatusCode);
+                Assert.IsFalse(resp.Headers.TryGetValues("Access-Control-Allow-Origin", out IEnumerable<string> dummy));
 
                 client.DefaultRequestHeaders.Add("origin", "localhost");
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
@@ -112,6 +115,7 @@ namespace SolidRpc.Tests.Security
                 allowedCors.Origins = new[] { "test", "localhost" };
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.NoContent, resp.StatusCode);
+                Assert.AreEqual("localhost", resp.Headers.GetValues("Access-Control-Allow-Origin").First());
 
             }
         }
