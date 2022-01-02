@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace SolidRpc.Abstractions.OpenApi.Binder
@@ -8,6 +9,11 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
     /// </summary>
     public interface IMethodAddressTransformer
     {
+        /// <summary>
+        /// Returns the allowed origins
+        /// </summary>
+        IEnumerable<string> Origins { get; }
+
         /// <summary>
         /// Returns the base address for this server
         /// </summary>

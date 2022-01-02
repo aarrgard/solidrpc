@@ -174,13 +174,24 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             var client = HttpClientFactory.CreateClient();
             var content = new FormUrlEncodedContent(nvc);
             var resp = await client.PostAsync(doc.TokenEndpoint, content);
-            TokenResponse result;
-            using (var s = await resp.Content.ReadAsStreamAsync())
+
+            if(!resp.IsSuccessStatusCode)
             {
-                SerializerFactory.DeserializeFromStream(s, out result);
+                return null;
             }
 
-            if(string.IsNullOrEmpty(result?.AccessToken))
+            TokenResponse result = null;
+            try
+            {
+                var strResp = await resp.Content.ReadAsStringAsync();
+                SerializerFactory.DeserializeFromString(strResp, out result);
+            } 
+            catch
+            {
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(result?.AccessToken))
             {
                 return null;
             }

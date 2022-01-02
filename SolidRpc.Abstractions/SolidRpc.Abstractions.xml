@@ -4,277 +4,241 @@
         <name>SolidRpc.Abstractions</name>
     </assembly>
     <members>
-        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestDataExtensions">
             <summary>
-            Implements some basic features of the application
+            Contains extension methods for the enums
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.HostId">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestDataExtensions.GetStringValue(System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData},System.String)">
             <summary>
-            The host id - unique for each IoC container setup.
+            Returns true if supplied type is a nullable type.
             </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.Started">
-            <summary>
-            The datetime when this application was started.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.ShutdownToken">
-            <summary>
-            Returns a token that will be cancelled when the application shuts down.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
-            <summary>
-            Adds a startup task that we should wait for before starting to interact with the application.
-            </summary>
-            <param name="startupTask"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a shutdown callback
-            </summary>
-            <param name="startupCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a shutdown callback
-            </summary>
-            <param name="shutdownCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.WaitForStartupTasks">
-            <summary>
-            Ensures that all the startup tasks have completed.
-            </summary>
+            <param name="type"></param>
+            <param name="nullableType"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.StopApplication">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.AllowedCors">
             <summary>
-            Stops this application
+            The allowed cors
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization">
-            <summary>
-            Implements the logic for authorization
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.CurrentPrincipal">
-            <summary>
-            Gets / sets the current principal
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.ClientId">
-            <summary>
-            Returns the "client_id" claim from current principal
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.SessionId">
-            <summary>
-            Returns the "session_id" claim from current principal
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore">
-            <summary>
-            The implementation of this interface is a singleton service
-            that provides access to static content. 
-            
-            Static resources may be configured(added) during setup of the IoC container.
-            
-            If no path prefix is specified all the registered paths for the assembly are used at
-            runtime to determine if the content should be delivered.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.String)">
-            <summary>
-            Adds a content mapping. 
-            </summary>
-            <param name="contentAssembly">The assebly that contains the content</param>
-            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
-            <param name="pathPrefix">The absolute path to use to obtain the content.</param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.Reflection.Assembly)">
-            <summary>
-            Adds a content mapping. 
-            </summary>
-            <param name="contentAssembly">The assebly that contains the content</param>
-            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
-            <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddMapping(System.String,System.Func{System.IServiceProvider,System.Threading.Tasks.Task{System.Uri}},System.Boolean)">
-            <summary>
-            Use this method to expose a static path to a dynamic resource.
-            </summary>
-            <param name="path"></param>
-            <param name="mapping"></param>
-            <param name="isRedirect"></param>
-        </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken">
-            <summary>
-            Represents a continuation token.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.Token">
-            <summary>
-            The continuation token
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.GetToken``1">
-            <summary>
-            Returns the token
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.SetToken``1(``0)">
-            <summary>
-            Returns the token
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions">
-            <summary>
-            Extension methods for the token
-            </summary>
-        </member>
-        <member name="F:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.ContinuationToken">
-            <summary>
-            The continuation token
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.GetHttpHeaderName(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
-            <summary>
-            Returns the http header name for the continuation token
-            </summary>
-            <param name="continuationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.PushToken(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
-            <summary>
-            Pushes the token
-            </summary>
-            <param name="continuationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.LoadToken(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
-            <summary>
-            Pushes the token
-            </summary>
-            <param name="continuationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcApplication">
-            <summary>
-            Implements the solid application logic
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.ShutdownToken">
-            <summary>
-            Returns the shutdown token
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.HostId">
-            <summary>
-            The host id
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.Started">
-            <summary>
-            The startup time
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a shutdown callback
-            </summary>
-            <param name="shutdownCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Adds a startup callback
-            </summary>
-            <param name="startupCallback"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
-            <summary>
-            Adds a startup task
-            </summary>
-            <param name="startupTask"></param>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.Dispose">
-            <summary>
-            Dispses the application
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.StopApplication">
-            <summary>
-            Stops the application
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.WaitForStartupTasks">
-            <summary>
-            Invoked to wait for all the startup tasks to complete.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization">
-            <summary>
-            Implements the solid authorization logic
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.#ctor">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.#ctor">
             <summary>
             Constructs a new instance
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.CurrentPrincipal">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.Origins">
             <summary>
-            The current principal
+            All the origins.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.ClientId">
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
             <summary>
-            The client id
+            Interface that we use to access the data in the Http request
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.SessionId">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.CancellationToken">
             <summary>
-            The session id.
+            Returns the cancellation token
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApiAttribute">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Method">
             <summary>
-            Configures the openapi
+            The method to use
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Name">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Scheme">
             <summary>
-            The name of the method or parameter
+            The scheme to use.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.In">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.HostAndPort">
             <summary>
-            Where should the parameter be put.
+            The host to use.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Verbs">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Path">
             <summary>
-            The verbs to use.
+            The path
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Path">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.PathData">
             <summary>
-            The path to bind.
+            The path data. This information is extracted/populated by the binder. No
+            need to populate from implementation.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.CollectionFormat">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Headers">
             <summary>
-            The separator to use in lists
+            The request headers
             </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Query">
+            <summary>
+            The request query string
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.ContentType">
+            <summary>
+            The content type of the body data.
+            
+            When composing a request a call that consumes 
+             - "application/x-www-form-urlencoded"
+             - "multipart/form-data"
+             - "application/json"
+            will create the request accordingly.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.BodyData">
+            <summary>
+            The data in the body. Check the ContentType to 
+            determine how the data should be transmitted.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData">
+            <summary>
+            Represents some request data.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.ContentType">
+            <summary>
+            The content type - stored in the Content-Type header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Encoding">
+            <summary>
+            The encoding - stored in the Content-Type header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.ETag">
+            <summary>
+            The etag - stored in the ETag header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.LastModified">
+            <summary>
+            The last modified date
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Filename">
+            <summary>
+            File filename - usually stored in the Content-Disposition header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Name">
+            <summary>
+            The name of the data
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetStringValue">
+            <summary>
+            The string representation
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetBinaryValue">
+            <summary>
+            Returns the binary value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.As``1">
+            <summary>
+            Returns the data as supplied type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse">
+            <summary>
+            Interface that we use to access the data in the Http response
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.StatusCode">
+            <summary>
+            Returns the status code
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.MediaType">
+            <summary>
+            Returns the media type - stored in the Content-Type header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.CharSet">
+            <summary>
+            Returns the char et - stored in the Content-Type header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Filename">
+            <summary>
+            The filename - stored in Content-Disposition header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Location">
+            <summary>
+            The location - stored in Location header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ETag">
+            <summary>
+            The ETag - stored in Location header
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.LastModified">
+            <summary>
+            Accessor for the "Last-Modified" header.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ResponseStream">
+            <summary>
+            Returns the response stream
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.AdditionalHeaders">
+            <summary>
+            The additional headers
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker">
+            <summary>
+            Interface that exposes functionality to invoke a method in an IoC container.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.MethodBinderStore">
+            <summary>
+            The store that contains all the bindings
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.CancellationToken)">
+            <summary>
+            Invokes the supplied request.
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="invocationSource"></param>
+            <param name="request"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding},System.Threading.CancellationToken)">
+            <summary>
+            Invokes the supplied request.
+            </summary>
+            <param name="serviceProvider"></param>
+            <param name="invocationSource"></param>
+            <param name="request"></param>
+            <param name="methodBindings"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer">
             <summary>
             Interface that can be implemented to resolve the base uri.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.Origins">
+            <summary>
+            Returns the allowed origins
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.BaseAddress">
@@ -548,220 +512,6 @@
             Flushes the queues.
             </summary>
             <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.AllowedCors">
-            <summary>
-            The allowed cors
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.#ctor">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.Origins">
-            <summary>
-            All the origins.
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
-            <summary>
-            Interface that we use to access the data in the Http request
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.CancellationToken">
-            <summary>
-            Returns the cancellation token
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Method">
-            <summary>
-            The method to use
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Scheme">
-            <summary>
-            The scheme to use.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.HostAndPort">
-            <summary>
-            The host to use.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Path">
-            <summary>
-            The path
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.PathData">
-            <summary>
-            The path data. This information is extracted/populated by the binder. No
-            need to populate from implementation.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Headers">
-            <summary>
-            The request headers
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Query">
-            <summary>
-            The request query string
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.ContentType">
-            <summary>
-            The content type of the body data.
-            
-            When composing a request a call that consumes 
-             - "application/x-www-form-urlencoded"
-             - "multipart/form-data"
-             - "application/json"
-            will create the request accordingly.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.BodyData">
-            <summary>
-            The data in the body. Check the ContentType to 
-            determine how the data should be transmitted.
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData">
-            <summary>
-            Represents some request data.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.ContentType">
-            <summary>
-            The content type - stored in the Content-Type header.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Encoding">
-            <summary>
-            The encoding - stored in the Content-Type header
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.ETag">
-            <summary>
-            The etag - stored in the ETag header
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.LastModified">
-            <summary>
-            The last modified date
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Filename">
-            <summary>
-            File filename - usually stored in the Content-Disposition header.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.Name">
-            <summary>
-            The name of the data
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetStringValue">
-            <summary>
-            The string representation
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetBinaryValue">
-            <summary>
-            Returns the binary value.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.As``1">
-            <summary>
-            Returns the data as supplied type.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse">
-            <summary>
-            Interface that we use to access the data in the Http response
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.StatusCode">
-            <summary>
-            Returns the status code
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.MediaType">
-            <summary>
-            Returns the media type - stored in the Content-Type header.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.CharSet">
-            <summary>
-            Returns the char et - stored in the Content-Type header.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Filename">
-            <summary>
-            The filename - stored in Content-Disposition header
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.Location">
-            <summary>
-            The location - stored in Location header
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ETag">
-            <summary>
-            The ETag - stored in Location header
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.LastModified">
-            <summary>
-            Accessor for the "Last-Modified" header.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.ResponseStream">
-            <summary>
-            Returns the response stream
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpResponse.AdditionalHeaders">
-            <summary>
-            The additional headers
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker">
-            <summary>
-            Interface that exposes functionality to invoke a method in an IoC container.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.MethodBinderStore">
-            <summary>
-            The store that contains all the bindings
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.CancellationToken)">
-            <summary>
-            Invokes the supplied request.
-            </summary>
-            <param name="serviceProvider"></param>
-            <param name="invocationSource"></param>
-            <param name="request"></param>
-            <param name="cancellation"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IMethodInvoker.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Collections.Generic.IEnumerable{SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding},System.Threading.CancellationToken)">
-            <summary>
-            Invokes the supplied request.
-            </summary>
-            <param name="serviceProvider"></param>
-            <param name="invocationSource"></param>
-            <param name="request"></param>
-            <param name="methodBindings"></param>
-            <param name="cancellation"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.IInvoker">
@@ -1780,6 +1530,274 @@
             <param name="originalUri"></param>
             <param name="methodInfo">The method to resolve the uri for(may be null)</param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication">
+            <summary>
+            Implements some basic features of the application
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.HostId">
+            <summary>
+            The host id - unique for each IoC container setup.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.Started">
+            <summary>
+            The datetime when this application was started.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.ShutdownToken">
+            <summary>
+            Returns a token that will be cancelled when the application shuts down.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
+            <summary>
+            Adds a startup task that we should wait for before starting to interact with the application.
+            </summary>
+            <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="startupCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="shutdownCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.WaitForStartupTasks">
+            <summary>
+            Ensures that all the startup tasks have completed.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.StopApplication">
+            <summary>
+            Stops this application
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization">
+            <summary>
+            Implements the logic for authorization
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.CurrentPrincipal">
+            <summary>
+            Gets / sets the current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.ClientId">
+            <summary>
+            Returns the "client_id" claim from current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcAuthorization.SessionId">
+            <summary>
+            Returns the "session_id" claim from current principal
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore">
+            <summary>
+            The implementation of this interface is a singleton service
+            that provides access to static content. 
+            
+            Static resources may be configured(added) during setup of the IoC container.
+            
+            If no path prefix is specified all the registered paths for the assembly are used at
+            runtime to determine if the content should be delivered.
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.String)">
+            <summary>
+            Adds a content mapping. 
+            </summary>
+            <param name="contentAssembly">The assebly that contains the content</param>
+            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+            <param name="pathPrefix">The absolute path to use to obtain the content.</param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddContent(System.Reflection.Assembly,System.String,System.Reflection.Assembly)">
+            <summary>
+            Adds a content mapping. 
+            </summary>
+            <param name="contentAssembly">The assebly that contains the content</param>
+            <param name="assemblyRelativeName">The string to append to the name of the assembly. All resoures that start with that name are added</param>
+            <param name="apiAssembly">The interface assembly containing the openapi spec.</param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddMapping(System.String,System.Func{System.IServiceProvider,System.Threading.Tasks.Task{System.Uri}},System.Boolean)">
+            <summary>
+            Use this method to expose a static path to a dynamic resource.
+            </summary>
+            <param name="path"></param>
+            <param name="mapping"></param>
+            <param name="isRedirect"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken">
+            <summary>
+            Represents a continuation token.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.Token">
+            <summary>
+            The continuation token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.GetToken``1">
+            <summary>
+            Returns the token
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken.SetToken``1(``0)">
+            <summary>
+            Returns the token
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions">
+            <summary>
+            Extension methods for the token
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.ContinuationToken">
+            <summary>
+            The continuation token
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.GetHttpHeaderName(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
+            <summary>
+            Returns the http header name for the continuation token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.PushToken(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
+            <summary>
+            Pushes the token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationTokenExtensions.LoadToken(SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken)">
+            <summary>
+            Pushes the token
+            </summary>
+            <param name="continuationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcApplication">
+            <summary>
+            Implements the solid application logic
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.ShutdownToken">
+            <summary>
+            Returns the shutdown token
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.HostId">
+            <summary>
+            The host id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.Started">
+            <summary>
+            The startup time
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddShutdownCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a shutdown callback
+            </summary>
+            <param name="shutdownCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Adds a startup callback
+            </summary>
+            <param name="startupCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.AddStartupTask(System.Threading.Tasks.Task)">
+            <summary>
+            Adds a startup task
+            </summary>
+            <param name="startupTask"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.Dispose">
+            <summary>
+            Dispses the application
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.StopApplication">
+            <summary>
+            Stops the application
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcApplication.WaitForStartupTasks">
+            <summary>
+            Invoked to wait for all the startup tasks to complete.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization">
+            <summary>
+            Implements the solid authorization logic
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.#ctor">
+            <summary>
+            Constructs a new instance
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.CurrentPrincipal">
+            <summary>
+            The current principal
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.ClientId">
+            <summary>
+            The client id
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.InternalServices.SolidRpcAuthorization.SessionId">
+            <summary>
+            The session id.
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApiAttribute">
+            <summary>
+            Configures the openapi
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Name">
+            <summary>
+            The name of the method or parameter
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.In">
+            <summary>
+            Where should the parameter be put.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Verbs">
+            <summary>
+            The verbs to use.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.Path">
+            <summary>
+            The path to bind.
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApiAttribute.CollectionFormat">
+            <summary>
+            The separator to use in lists
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SecurityAttribute">
             <summary>
@@ -3461,7 +3479,7 @@
             Implements the solid authorization logic
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.#ctor(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.Abstractions.Services.ISolidRpcOAuth2},SolidRpc.Abstractions.Serialization.ISerializerFactory)">
+        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.#ctor(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.Abstractions.Services.ISolidRpcOAuth2},SolidRpc.Abstractions.Serialization.ISerializerFactory,SolidRpc.Abstractions.OpenApi.Http.AllowedCors)">
             <summary>
             Constructs a new instance
             </summary>
@@ -3555,6 +3573,14 @@
             Returns the static content provider.
             </summary>
             <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetAllowedCors(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String[])">
+            <summary>
+            Sets the allowed cors
+            </summary>
+            <param name="services"></param>
+            <param name="allowedCors"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcOpenApiParser(Microsoft.Extensions.DependencyInjection.IServiceCollection)">

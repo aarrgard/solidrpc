@@ -96,18 +96,21 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
             AllowedCors allowedCors,
+            IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             MethodInfo2Binding = new Dictionary<MethodInfo, IMethodBinding>();
             AllowedCors = allowedCors;
+            MethodAddressTransformer = methodAddressTransformer;
         }
 
         private ILogger Logger { get; }
         public IMethodBinderStore MethodBinderStore { get; }
         private Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
         private AllowedCors AllowedCors { get; }
+        private IMethodAddressTransformer MethodAddressTransformer { get; }
 
         private PathSegment RootSegment => GetRootSegment();
 
@@ -174,7 +177,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // handle the access-control(CORS) request for this invocation
             //
-            if (!request.CheckCorsIsValid(AllowedCors.Origins, out string origin))
+            if (!request.CheckCorsIsValid(AllowedCors.Origins.Union(MethodAddressTransformer.Origins), out string origin))
             {
                 // request not allowed
                 resp.StatusCode = 401;

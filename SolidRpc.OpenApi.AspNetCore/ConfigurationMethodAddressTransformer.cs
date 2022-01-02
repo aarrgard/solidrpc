@@ -4,6 +4,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.OpenApi.Binder;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -96,6 +97,20 @@ namespace SolidRpc.OpenApi.Binder
         /// The  base address
         /// </summary>
         public Uri BaseAddress { get; }
+
+        /// <summary>
+        /// Returs the origins.
+        /// </summary>
+        public IEnumerable<string> Origins
+        {
+            get
+            {
+                var uri = BaseAddress.ToString();
+                var slashIdx = uri.IndexOf('/', "https://x".Length);
+                return new[] { uri.Substring(0, slashIdx)};
+            }
+        }
+
         private string Scheme { get; }
         private HostString Host { get; }
         private string PathPrefix { get; }

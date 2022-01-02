@@ -73,8 +73,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
 
-            conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
-            //conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
+            //conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
+            conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))
