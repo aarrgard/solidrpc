@@ -258,9 +258,16 @@ namespace SolidRpc.OpenApi.Generator.Impl
                     attrName = $"{attrName}Attribute";
                 }
                 attrName = GetFullName(sn, attrName);
+
                 var namedArgs = new Dictionary<string, object>();
-                a.ArgumentList.Arguments.Where(x => x.NameEquals != null).ToList().ForEach(x => namedArgs[x.NameEquals.Name.ToString()] = CreateValue(x.Expression));
-                var args = a.ArgumentList.Arguments.Where(x => x.NameEquals == null).Select(x => CreateValue(x.Expression)).ToList();
+                IEnumerable<object> args = new object[0];
+                var ala = a.ArgumentList?.Arguments;
+                if(ala != null)
+                {
+                    ala.Value.Where(x => x.NameEquals != null).ToList().ForEach(x => namedArgs[x.NameEquals.Name.ToString()] = CreateValue(x.Expression));
+                    args = ala.Value.Where(x => x.NameEquals == null).Select(x => CreateValue(x.Expression)).ToList();
+                }
+
                 mp.AddMember(new CSharpAttribute(mp, attrName, args, namedArgs));
             }
         }

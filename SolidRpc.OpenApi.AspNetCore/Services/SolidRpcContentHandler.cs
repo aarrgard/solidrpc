@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -67,17 +68,21 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken)
         {
-            var tasks = ContentStore.DynamicContents
-                .Where(o => o.Value.IsRedirect == redirects)
-                .Select(async o =>
+            var scopeFact = ServiceProvider.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFact.CreateScope())
             {
-                return new NameValuePair()
-                {
-                    Name = o.Key,
-                    Value = (await o.Value.UriResolver(ServiceProvider))?.ToString()
-                };
-            });
-            return (await Task.WhenAll(tasks));
+                var tasks = ContentStore.DynamicContents
+                    .Where(o => o.Value.IsRedirect == redirects)
+                    .Select(async o =>
+                    {
+                        return new NameValuePair()
+                        {
+                            Name = o.Key,
+                            Value = (await o.Value.UriResolver(scope.ServiceProvider))?.ToString()
+                        };
+                    });
+                return (await Task.WhenAll(tasks));
+            }
         }
 
         /// <summary>

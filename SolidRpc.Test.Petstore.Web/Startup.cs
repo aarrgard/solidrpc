@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Linq;
 using SolidRpc.OpenApi.SwaggerUI.Services;
+using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Test.Petstore.Services;
+using System.Threading;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -41,6 +44,13 @@ namespace SolidRpc.Test.PetstoreWeb
                 return true;
             });
             services.AddSolidRpcOAuth2();
+
+            services.AddPetstore();
+            services.GetSolidRpcContentStore().AddMapping("/", async sp =>
+            {
+                var handler = sp.GetRequiredService<IInvoker<IPet>>();
+                return await handler.GetUriAsync(o => o.GetPetById(100, CancellationToken.None));
+            });
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>
             //{
             //    //conf.Authority = "https://login.microsoftonline.com/common/v2.0";

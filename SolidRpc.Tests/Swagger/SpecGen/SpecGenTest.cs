@@ -7,6 +7,7 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
 using SolidRpc.OpenApi.SwaggerUI.Services;
+using SolidRpc.Test.Petstore.Services;
 using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
