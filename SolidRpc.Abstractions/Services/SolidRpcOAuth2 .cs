@@ -39,34 +39,33 @@ namespace SolidRpc.OpenApi.Binder.Services
         public SolidRpcOAuth2(
             IServiceProvider serviceProvider,
             IInvoker<ISolidRpcOAuth2> invoker,
-            ISerializerFactory serializationFactory,
-            AllowedCors allowedCors)
+            ISerializerFactory serializationFactory)
         {
             ServiceProvider = serviceProvider;
             Invoker = invoker;
             SerializationFactory = serializationFactory;
-            AllowedCors = allowedCors;
         }
 
         private IServiceProvider ServiceProvider { get; }
         private IInvoker<ISolidRpcOAuth2> Invoker { get; }
         private ISerializerFactory SerializationFactory { get; }
-        private AllowedCors AllowedCors { get; }
-
+        private IMethodAddressTransformer MethodAddressTransformer => ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
         private IEnumerable<string> AllowedHosts {
             get
             {
-                var addrs = new HashSet<string>();
-                AllowedCors.Origins.ToList().ForEach(o => addrs.Add(o));
-                addrs.Add("127.0.0.1");
-                addrs.Add("localhost");
-                var mat = (IMethodAddressTransformer)ServiceProvider.GetRequiredService(typeof(IMethodAddressTransformer));
-                if(mat != null)
-                {
-                    var baseAddr = ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress;
-                    addrs.Add(baseAddr.Host.Split(':').First());
-                }
-                return addrs;
+                return MethodAddressTransformer.AllowedCorsOrigins
+                    .Select(o =>
+                    {
+                        if (Uri.TryCreate(o, UriKind.Absolute, out Uri res))
+                        {
+                            return res.Host;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }).Where(o => o != null)
+                    .ToList();
             }
         }
 

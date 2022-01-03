@@ -17,21 +17,6 @@
             <param name="nullableType"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Http.AllowedCors">
-            <summary>
-            The allowed cors
-            </summary>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.#ctor">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Http.AllowedCors.Origins">
-            <summary>
-            All the origins.
-            </summary>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest">
             <summary>
             Interface that we use to access the data in the Http request
@@ -236,7 +221,7 @@
             Interface that can be implemented to resolve the base uri.
             </summary>
         </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.Origins">
+        <member name="P:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.AllowedCorsOrigins">
             <summary>
             Returns the allowed origins
             </summary>
@@ -3479,7 +3464,7 @@
             Implements the solid authorization logic
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.#ctor(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.Abstractions.Services.ISolidRpcOAuth2},SolidRpc.Abstractions.Serialization.ISerializerFactory,SolidRpc.Abstractions.OpenApi.Http.AllowedCors)">
+        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.#ctor(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.Abstractions.Services.ISolidRpcOAuth2},SolidRpc.Abstractions.Serialization.ISerializerFactory)">
             <summary>
             Constructs a new instance
             </summary>
@@ -3573,14 +3558,6 @@
             Returns the static content provider.
             </summary>
             <param name="services"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetAllowedCors(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String[])">
-            <summary>
-            Sets the allowed cors
-            </summary>
-            <param name="services"></param>
-            <param name="allowedCors"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcOpenApiParser(Microsoft.Extensions.DependencyInjection.IServiceCollection)">

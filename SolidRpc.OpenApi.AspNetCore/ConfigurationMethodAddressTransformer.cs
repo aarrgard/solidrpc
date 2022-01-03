@@ -28,6 +28,11 @@ namespace SolidRpc.OpenApi.Binder
         public const string ConfigScheme = "SolidRpc.BaseUriTransformer.Scheme";
 
         /// <summary>
+        /// The allowed CORS origins
+        /// </summary>
+        public const string ConfigCors = "SolidRpc.BaseUriTransformer.Cors";
+
+        /// <summary>
         /// The configuration variable that stores the host
         /// </summary>
         public const string ConfigHost = "SolidRpc.BaseUriTransformer.Host";
@@ -91,7 +96,18 @@ namespace SolidRpc.OpenApi.Binder
                 }
             }
             BaseAddress = TransformUri(new Uri("http://localhost/"), null);
+
+            ConfiguredCors = (configuration[ConfigCors] ?? "").Split(',')
+                .Where(o => !string.IsNullOrEmpty(o))
+                .Union(new[] { "127.0.0.1", "localhost"})
+                .Distinct()
+                .ToList();
         }
+
+        public IEnumerable<string> ConfiguredCors { get; set; }
+        private string Scheme { get; }
+        private HostString Host { get; }
+        private string PathPrefix { get; }
 
         /// <summary>
         /// The  base address
@@ -99,21 +115,27 @@ namespace SolidRpc.OpenApi.Binder
         public Uri BaseAddress { get; }
 
         /// <summary>
-        /// Returs the origins.
+        /// Returs the allowed origins.
         /// </summary>
-        public IEnumerable<string> Origins
+        public IEnumerable<string> AllowedCorsOrigins
         {
             get
             {
-                var uri = BaseAddress.ToString();
-                var slashIdx = uri.IndexOf('/', "https://x".Length);
-                return new[] { uri.Substring(0, slashIdx)};
+                return ConfiguredCors.Union(new[] { ConvertToCorsOrigin(BaseAddress) });
             }
         }
 
-        private string Scheme { get; }
-        private HostString Host { get; }
-        private string PathPrefix { get; }
+        private string ConvertToCorsOrigin(Uri baseAddress)
+        {
+            if(baseAddress.IsDefaultPort)
+            {
+                return $"{baseAddress.Scheme}://{baseAddress.Host}";
+            }
+            else
+            {
+                return $"{baseAddress.Scheme}://{baseAddress.Host}:{baseAddress.Port}";
+            }
+        }
 
         /// <summary>
         /// Transforms the supplied uri

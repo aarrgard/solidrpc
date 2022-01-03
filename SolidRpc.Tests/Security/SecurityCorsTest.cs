@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.OpenApi.Binder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,8 +94,8 @@ namespace SolidRpc.Tests.Security
             {
                 await ctx.StartAsync();
 
-                var allowedCors = ctx.ServerServiceProvider.GetRequiredService<AllowedCors>();
-                allowedCors.Origins = new [] { "*" };
+                var addrTrans = (ConfigurationMethodAddressTransformer)ctx.ServerServiceProvider.GetRequiredService<IMethodAddressTransformer>();
+                addrTrans.ConfiguredCors = new [] { "*" };
 
                 var testInterface = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
                 await testInterface.TestCorsAsync();
@@ -103,7 +105,7 @@ namespace SolidRpc.Tests.Security
 
                 var client = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
 
-                allowedCors.Origins = new[] { "test" };
+                addrTrans.ConfiguredCors = new[] { "test" };
                 var resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.NoContent, resp.StatusCode);
                 Assert.IsFalse(resp.Headers.TryGetValues("Access-Control-Allow-Origin", out IEnumerable<string> dummy));
@@ -112,7 +114,7 @@ namespace SolidRpc.Tests.Security
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
 
-                allowedCors.Origins = new[] { "test", "localhost" };
+                addrTrans.ConfiguredCors = new[] { "test", "localhost" };
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.NoContent, resp.StatusCode);
                 Assert.AreEqual("localhost", resp.Headers.GetValues("Access-Control-Allow-Origin").First());

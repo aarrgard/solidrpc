@@ -12,7 +12,7 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         /// <summary>
         /// Returns the allowed origins
         /// </summary>
-        IEnumerable<string> Origins { get; }
+        IEnumerable<string> AllowedCorsOrigins { get; }
 
         /// <summary>
         /// Returns the base address for this server

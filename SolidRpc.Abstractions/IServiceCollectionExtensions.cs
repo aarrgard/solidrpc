@@ -362,17 +362,6 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Sets the allowed cors
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="allowedCors"></param>
-        /// <returns></returns>
-        public static void SetAllowedCors(this IServiceCollection services, params string[] allowedCors)
-        {
-            services.GetSolidRpcService<AllowedCors>().Origins = allowedCors;
-        }
-
-        /// <summary>
         /// Returns the static content provider.
         /// </summary>
         /// <param name="services"></param>
