@@ -70,5 +70,13 @@ namespace SolidRpc.Abstractions.Services
         /// <returns></returns>
         [Security(nameof(SolidRpcHostPermission))]
         Task<Uri> BaseAddress(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the list of allowed cors origins.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<IEnumerable<string>> AllowedCorsOrigins(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

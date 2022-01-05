@@ -2185,6 +2185,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.AllowedCorsOrigins(System.Threading.CancellationToken)">
+            <summary>
+            Returns the list of allowed cors origins.
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHostStore">
             <summary>
             The host store is responsible for storing persistent information about 

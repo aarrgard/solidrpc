@@ -203,7 +203,17 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <returns></returns>
         public Task<Uri> BaseAddress(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(ServiceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress);
+            return Task.FromResult(MethodAddressResolver.BaseAddress);
+        }
+
+        /// <summary>
+        /// The allowed cors origins
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<IEnumerable<string>> AllowedCorsOrigins(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(MethodAddressResolver.AllowedCorsOrigins);
         }
     }
 }
