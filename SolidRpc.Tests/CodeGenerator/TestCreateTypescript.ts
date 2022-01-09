@@ -539,6 +539,30 @@ export namespace Abstractions {
                     }
                 }, BaseAddressSubject);
             }
+            let AllowedCorsOriginsSubject = new Subject<string[]>();
+            /**
+             * This observable is hot and monitors all the responses from the AllowedCorsOrigins invocations.
+             */
+            export var AllowedCorsOriginsObservable = AllowedCorsOriginsSubject.asObservable().pipe(share());
+            /**
+             * Returns the list of allowed cors origins.
+             * @param cancellationToken 
+             */
+            export function AllowedCorsOrigins(
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<string[]> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<string[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return Array.from(data).map(o => o as string);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, AllowedCorsOriginsSubject);
+            }
             }
         /**
          * The host store is responsible for storing persistent information about 
