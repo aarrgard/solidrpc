@@ -95,6 +95,9 @@ namespace SolidRpc.Tests.Security
                 await ctx.StartAsync();
 
                 var addrTrans = (ConfigurationMethodAddressTransformer)ctx.ServerServiceProvider.GetRequiredService<IMethodAddressTransformer>();
+                addrTrans.BaseAddress = new Uri("https://eo-ci-bankid-func.azurewebsites.net/front");
+                Assert.IsTrue(addrTrans.AllowedCorsOrigins.Contains("https://eo-ci-bankid-func.azurewebsites.net"));
+
                 addrTrans.ConfiguredCors = new [] { "*" };
 
                 var testInterface = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
@@ -105,19 +108,19 @@ namespace SolidRpc.Tests.Security
 
                 var client = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
 
-                addrTrans.ConfiguredCors = new[] { "test" };
+                addrTrans.ConfiguredCors = new[] { "https://test.test" };
                 var resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.NoContent, resp.StatusCode);
                 Assert.IsFalse(resp.Headers.TryGetValues("Access-Control-Allow-Origin", out IEnumerable<string> dummy));
 
-                client.DefaultRequestHeaders.Add("origin", "localhost");
+                client.DefaultRequestHeaders.Add("origin", "https://localhost");
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
 
-                addrTrans.ConfiguredCors = new[] { "test", "localhost" };
+                addrTrans.ConfiguredCors = new[] { "https://localhost" };
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
                 Assert.AreEqual(HttpStatusCode.NoContent, resp.StatusCode);
-                Assert.AreEqual("localhost", resp.Headers.GetValues("Access-Control-Allow-Origin").First());
+                Assert.AreEqual("https://localhost", resp.Headers.GetValues("Access-Control-Allow-Origin").First());
 
             }
         }

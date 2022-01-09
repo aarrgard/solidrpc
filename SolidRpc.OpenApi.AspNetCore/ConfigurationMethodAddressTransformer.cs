@@ -95,11 +95,10 @@ namespace SolidRpc.OpenApi.Binder
                     }
                 }
             }
-            BaseAddress = TransformUri(new Uri("http://localhost/"), null);
+            BaseAddress = TransformUri(new Uri("https://localhost/"), null);
 
             ConfiguredCors = (configuration[ConfigCors] ?? "").Split(',')
                 .Where(o => !string.IsNullOrEmpty(o))
-                .Union(new[] { "127.0.0.1", "localhost"})
                 .Distinct()
                 .ToList();
         }
@@ -112,7 +111,7 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// The  base address
         /// </summary>
-        public Uri BaseAddress { get; }
+        public Uri BaseAddress { get; set; }
 
         /// <summary>
         /// Returs the allowed origins.
