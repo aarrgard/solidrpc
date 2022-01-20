@@ -30,6 +30,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         DateTimeOffset? LastModified { get; }
 
         /// <summary>
+        /// The content of the set cookie header
+        /// </summary>
+        string SetCookie { get; }
+
+        /// <summary>
         /// File filename - usually stored in the Content-Disposition header.
         /// </summary>
         string Filename { get; }

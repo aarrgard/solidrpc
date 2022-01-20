@@ -39,6 +39,10 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 target.ETag = etag;
             }
+            if (source.Headers.TryGetValue("Set-Cookie", out StringValues setCookie))
+            {
+                target.SetCookie = setCookie;
+            }
             if (source.Headers.TryGetValue("LastModified", out StringValues lastModified))
             {
                 throw new System.Exception("!!!");
@@ -71,6 +75,10 @@ namespace SolidRpc.OpenApi.Binder.Http
             {
                 target.StatusCode = 302;
                 target.Headers.Add("Location", source.Location);
+            }
+            if (!string.IsNullOrEmpty(source.SetCookie))
+            {
+                target.Headers.Add("Set-Cookie", source.SetCookie);
             }
             foreach (var header in source.AdditionalHeaders)
             {

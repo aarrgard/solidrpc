@@ -45,6 +45,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         DateTimeOffset? LastModified { get; set; }
 
         /// <summary>
+        /// Accessor for the "Set-Cookie" header.
+        /// </summary>
+        string SetCookie { get; set; }
+
+        /// <summary>
         /// Returns the response stream
         /// </summary>
         /// <returns></returns>

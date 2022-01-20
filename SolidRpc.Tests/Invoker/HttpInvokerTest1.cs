@@ -11,6 +11,7 @@ using SolidRpc.Abstractions.Types.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -63,6 +64,13 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default(CancellationToken));
+
+            /// <summary>
+            /// Tests the continuation token.
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<FileContent> TestSetCookie(CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -70,6 +78,13 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            public TestImplementation(IInvoker<ITestInterface> invoker)
+            {
+                Invoker = invoker;
+            }
+
+            private IInvoker<ITestInterface> Invoker { get; }
+
             /// <summary>
             /// 
             /// </summary>
@@ -93,6 +108,41 @@ namespace SolidRpc.Tests.Invoker
                 int i = ct.GetToken<int>();
                 ct.SetToken(i + 1);
                 return Task.FromResult(i);
+            }
+
+            public async Task<FileContent> TestSetCookie(CancellationToken cancellation = default)
+            {
+                var uri = await Invoker.GetUriAsync(o => o.TestSetCookie(cancellation));
+
+                string cookieName = "TestCookie135xyx";
+                var invoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
+                var cookieValue = ParseCookies(invoc.GetValue<IEnumerable<string>>("http_req_cookie"))
+                    .Where(o => o.Name == cookieName)
+                    .Select(o => o.Value)
+                    .FirstOrDefault();
+                cookieValue = cookieValue ?? "0";
+                cookieValue = (int.Parse(cookieValue) + 1).ToString();
+
+                var enc = Encoding.UTF8;
+                var strContent =  $"Cookie value:{cookieValue}";
+
+                var secure = string.Equals(uri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase) ? "Secure;" : "";
+                return new FileContent()
+                {
+                    CharSet = enc.HeaderName,
+                    ContentType = "text/plain",
+                    Content = new MemoryStream(enc.GetBytes(strContent)),
+                    SetCookie = $"{cookieName}={cookieValue}; Path={uri.AbsolutePath}; Domain={uri.Host}; HttpOnly; SameSite=Strict; {secure}"
+                };
+            }
+
+            private IEnumerable<NameValuePair> ParseCookies(IEnumerable<string> cookies)
+            {
+                if (cookies == null) return new NameValuePair[0];
+                return cookies.Select(o => {
+                    var vals = o.Split(';').First().Split('=');
+                    return new NameValuePair() { Name = vals[0], Value = vals[1] };
+                });
             }
         }
 
@@ -251,6 +301,40 @@ namespace SolidRpc.Tests.Invoker
                 //{
                 //    Assert.AreEqual(i, await proxy.TestContinuationTokenAsync());
                 //}
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestHttpInvokerSetCookie()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+
+                var cookieContainer = new CookieContainer();
+                using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
+                using (var client = new HttpClient(handler))
+                {
+                    var uri = await invoker.GetUriAsync(o => o.TestSetCookie(CancellationToken.None));
+                    client.DefaultRequestHeaders.Add(SecKey.ToString(), SecKey.ToString());
+
+                    var req = new HttpRequestMessage(HttpMethod.Get, uri);
+
+                    var resp = await client.SendAsync(req);
+                    var strResp = await resp.Content.ReadAsStringAsync();
+                    Assert.AreEqual("Cookie value:1", strResp);
+
+                    Assert.AreEqual(1, cookieContainer.Count);
+
+                    resp = await client.GetAsync(uri);
+                    strResp = await resp.Content.ReadAsStringAsync();
+                    Assert.AreEqual("Cookie value:2", strResp);
+                }
             }
         }
     }

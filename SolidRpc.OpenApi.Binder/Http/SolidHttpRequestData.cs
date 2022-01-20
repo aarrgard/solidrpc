@@ -607,6 +607,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         public string Filename { get; protected set; }
 
+        /// <summary>
+        /// The content of the set cookie header
+        /// </summary>
+        public string SetCookie { get; protected set; }
+
         protected Encoding GetEncoding()
         {
             return Encoding ?? Encoding.UTF8;

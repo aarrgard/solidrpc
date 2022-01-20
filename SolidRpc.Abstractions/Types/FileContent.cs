@@ -42,5 +42,10 @@ namespace SolidRpc.Abstractions.Types
         /// The ETag.
         /// </summary>
         public string ETag { get; set; }
+
+        /// <summary>
+        /// The SetCookie.
+        /// </summary>
+        public string SetCookie { get; set; }
     }
 }

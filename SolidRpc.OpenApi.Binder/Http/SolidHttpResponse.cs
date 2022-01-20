@@ -59,6 +59,11 @@ namespace SolidRpc.OpenApi.Binder.Http
         public string ETag { get; set; }
 
         /// <summary>
+        /// The ETag.
+        /// </summary>
+        public string SetCookie { get; set; }
+
+        /// <summary>
         /// The additional headers
         /// </summary>
         public IDictionary<string, string> AdditionalHeaders { get; }

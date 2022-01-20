@@ -75,7 +75,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 target.Location = source.Headers.Location.ToString();
             }
-            foreach(var h in source.Headers)
+            if (source.Headers.TryGetValues("Set-Cookie", out IEnumerable<string> setCookie))
+            {
+                target.SetCookie = string.Join(";", setCookie);
+            }
+            foreach (var h in source.Headers)
             {
                 switch(h.Key.ToLower())
                 {
@@ -159,6 +163,11 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             if (source.ETag != null)
             {
                 target.Headers.ETag = EntityTagHeaderValue.Parse(AddQuotesIfMissing(source.ETag));
+            }
+
+            if(source.SetCookie != null)
+            {
+                target.Headers.Add("Set-Cookie", source.SetCookie);
             }
 
             foreach (var header in source.AdditionalHeaders)

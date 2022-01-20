@@ -156,5 +156,13 @@ namespace SolidRpc.Abstractions.Types
         /// Returns the etag from the template copy
         /// </summary>
         public Func<object, string> GetETag { get; private set; }
+        /// <summary>
+        /// Sets the set cookie in the template copy
+        /// </summary>
+        public Action<object, string> SetSetCookie { get; private set; }
+        /// <summary>
+        /// Returns the set cookie from the template copy
+        /// </summary>
+        public Func<object, string> GetSetCookie { get; private set; }
     }
 }

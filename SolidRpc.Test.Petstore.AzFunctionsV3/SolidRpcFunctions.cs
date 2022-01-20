@@ -108,6 +108,20 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcHost_AllowedCorsOrigins
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHost_AllowedCorsOrigins")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress")]
@@ -253,6 +267,20 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_GetAuthorizationCodeTokenAsync")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)
@@ -701,6 +729,20 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_RunNodeService")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/RunNodeService")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_TestSetCookie
+    {
+        [FunctionName("Http_SolidRpc_Test_Petstore_AzFunctionsV3_ITestInterface_TestSetCookie")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/TestSetCookie")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

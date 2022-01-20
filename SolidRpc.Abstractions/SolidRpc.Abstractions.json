@@ -607,7 +607,7 @@
         "tags": [
           "ISolidRpcOAuth2"
         ],
-        "description": "This is the method returns a html page that calls supplied callback\r\nafter the token callback has been invoked. Use this method to\r\nretreive tokens from a standalone node instance.\r\n\r\nStart a local http server and supply the address to the handler.",
+        "description": "This method returns a html page that authorizes the user. When the user\r\nhas been authorized the supplied callback is invoked with the \"access_token\"\r\nsupplied as a query parameter along with the \"state\".\r\n\r\nUse this method to retreive tokens from a standalone node instance or from a SPA(single page app)\r\n\r\nStart a local http server and supply the address to the handler.",
         "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#GetAuthorizationCodeTokenAsync",
         "produces": [
           "*/*"
@@ -618,19 +618,22 @@
             "in": "query",
             "required": false,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "description": "the callback"
           },
           {
             "name": "state",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "description": "the state"
           },
           {
             "name": "scopes",
             "in": "query",
             "required": false,
             "type": "array",
+            "description": "the scopes",
             "items": {
               "type": "string"
             },
@@ -647,12 +650,41 @@
         }
       }
     },
+    "/Services/ISolidRpcOAuth2/RefreshTokenAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOAuth2"
+        ],
+        "description": "Use this method to refresh a token obtained from the callback.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#RefreshTokenAsync",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "accessToken",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "the token to refresh - may be an expired token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "/Services/ISolidRpcOAuth2/TokenCallbackAsync": {
       "get": {
         "tags": [
           "ISolidRpcOAuth2"
         ],
-        "description": "This is the method that is invoked when a user has been authenticated\r\nand a valid token is supplied.",
+        "description": "This is the method that is invoked when a user has been authenticated\r\nand a valid token is supplied. The authentication uses the \"authorization code\" flow\r\nso this method retreives the access token using supplied code.",
         "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#TokenCallbackAsync",
         "produces": [
           "*/*"
@@ -662,13 +694,15 @@
             "name": "code",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "description": "code token to use"
           },
           {
             "name": "state",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "description": "the state"
           }
         ],
         "responses": {

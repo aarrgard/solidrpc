@@ -525,6 +525,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 template.SetLastModified(res, response.LastModified);
                 template.SetLocation(res, response.Location);
                 template.SetETag(res, response.ETag);
+                template.SetSetCookie(res, response.SetCookie);
 
                 if (string.IsNullOrEmpty(response.MediaType) && string.IsNullOrEmpty(response.Location))
                 {
@@ -770,6 +771,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                 response.LastModified = fileTemplate.GetLastModified(obj);
                 response.Location = fileTemplate.GetLocation(obj);
                 response.ETag = fileTemplate.GetETag(obj);
+                response.SetCookie = fileTemplate.GetSetCookie(obj);
                 return Task.CompletedTask;
             }
 

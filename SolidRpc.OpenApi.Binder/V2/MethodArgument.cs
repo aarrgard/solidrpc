@@ -105,6 +105,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     template.SetCharSet(data, valData.Encoding?.HeaderName);
                     template.SetFileName(data, valData.Filename);
                     template.SetETag(data, valData.ETag);
+                    template.SetSetCookie(data, valData.SetCookie);
                     template.SetLastModified(data, valData.LastModified);
                     return data;
                 };

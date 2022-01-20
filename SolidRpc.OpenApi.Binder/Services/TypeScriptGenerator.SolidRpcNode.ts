@@ -74,8 +74,9 @@ export namespace SolidRpcNode {
                 startHttpServerIfNotStarted(httpSrvPort);
                 let callbackUri = 'http://localhost:' + httpSrvPort + '/test';
                 let state = 'my state 2';
-                let req = Abstractions.Services.ISolidRpcOAuth2.GetAuthorizationCodeTokenAsync(callbackUri, state);
-                open(req.getUrl());
+                let url = Abstractions.Services.ISolidRpcOAuth2.GetAuthorizationCodeTokenAsync(callbackUri, state).getUrl();
+                console.log("Opening url:" + url)
+                open(url);
             } else {
                 setAccessTokenAndContinue();
             }

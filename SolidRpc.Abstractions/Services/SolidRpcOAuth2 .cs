@@ -157,6 +157,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             var auth = GetAuthority(conf);
 
             var redirectUri = await Invoker.GetUriAsync(o => o.TokenCallbackAsync(null, null, cancellationToken));
+            var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync(null, cancellationToken));
 
             var statems = new MemoryStream(Convert.FromBase64String(state));
             SerializationFactory.DeserializeFromStream(statems, out State statestruct);
@@ -209,6 +210,13 @@ namespace SolidRpc.OpenApi.Binder.Services
                 Content = new MemoryStream(enc.GetBytes(content)),
                 CharSet = enc.HeaderName
             };
+        }
+
+        public async Task<string> RefreshTokenAsync(string accessToken = null, CancellationToken cancellation = default)
+        {
+            // make sure that we get a refresh token as a cookie
+            var currInvoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
+            return null;
         }
     }
 }

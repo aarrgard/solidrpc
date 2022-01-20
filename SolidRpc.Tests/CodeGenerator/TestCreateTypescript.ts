@@ -659,14 +659,16 @@ export namespace Abstractions {
              */
             export var GetAuthorizationCodeTokenAsyncObservable = GetAuthorizationCodeTokenAsyncSubject.asObservable().pipe(share());
             /**
-             * This is the method returns a html page that calls supplied callback
-             *             after the token callback has been invoked. Use this method to
-             *             retreive tokens from a standalone node instance.
+             * This method returns a html page that authorizes the user. When the user
+             *             has been authorized the supplied callback is invoked with the "access_token"
+             *             supplied as a query parameter along with the "state".
+             *             
+             *             Use this method to retreive tokens from a standalone node instance or from a SPA(single page app)
              *             
              *             Start a local http server and supply the address to the handler.
-             * @param callbackUri 
-             * @param state 
-             * @param scopes 
+             * @param callbackUri the callback
+             * @param state the state
+             * @param scopes the scopes
              * @param cancellationToken 
              */
             export function GetAuthorizationCodeTokenAsync(
@@ -697,9 +699,10 @@ export namespace Abstractions {
             export var TokenCallbackAsyncObservable = TokenCallbackAsyncSubject.asObservable().pipe(share());
             /**
              * This is the method that is invoked when a user has been authenticated
-             *             and a valid token is supplied.
-             * @param code 
-             * @param state 
+             *             and a valid token is supplied. The authentication uses the "authorization code" flow
+             *             so this method retreives the access token using supplied code.
+             * @param code code token to use
+             * @param state the state
              * @param cancellation 
              */
             export function TokenCallbackAsync(
@@ -720,6 +723,33 @@ export namespace Abstractions {
                         throw 'Response code != 200('+code+')';
                     }
                 }, TokenCallbackAsyncSubject);
+            }
+            let RefreshTokenAsyncSubject = new Subject<string>();
+            /**
+             * This observable is hot and monitors all the responses from the RefreshTokenAsync invocations.
+             */
+            export var RefreshTokenAsyncObservable = RefreshTokenAsyncSubject.asObservable().pipe(share());
+            /**
+             * Use this method to refresh a token obtained from the callback.
+             * @param accessToken the token to refresh - may be an expired token
+             * @param cancellation 
+             */
+            export function RefreshTokenAsync(
+                accessToken? : string,
+                cancellation? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<string> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(accessToken, x => { query['accessToken'] = x; });
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                    if(code == 200) {
+                        return data as string;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, RefreshTokenAsyncSubject);
             }
             }
         /**
@@ -1508,6 +1538,7 @@ export namespace Abstractions {
                 SolidRpcJs.ifnotnull(obj.LastModified, val => { this.LastModified = SolidRpcJs.ifnotnull<Date>(val, (notnull) => new Date(notnull)); });
                 SolidRpcJs.ifnotnull(obj.Location, val => { this.Location = val as string; });
                 SolidRpcJs.ifnotnull(obj.ETag, val => { this.ETag = val as string; });
+                SolidRpcJs.ifnotnull(obj.SetCookie, val => { this.SetCookie = val as string; });
             }
             toJson(arr: string[]): void {
                 arr.push('{');
@@ -1518,6 +1549,7 @@ export namespace Abstractions {
                 if(this.LastModified) { arr.push('"LastModified": '); arr.push(JSON.stringify(this.LastModified)); arr.push(','); } 
                 if(this.Location) { arr.push('"Location": '); arr.push(JSON.stringify(this.Location)); arr.push(','); } 
                 if(this.ETag) { arr.push('"ETag": '); arr.push(JSON.stringify(this.ETag)); arr.push(','); } 
+                if(this.SetCookie) { arr.push('"SetCookie": '); arr.push(JSON.stringify(this.SetCookie)); arr.push(','); } 
                 if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
             }
             /**
@@ -1548,6 +1580,10 @@ export namespace Abstractions {
              * The ETag.
              */
             ETag: string | null = null;
+            /**
+             * The SetCookie.
+             */
+            SetCookie: string | null = null;
         }
         /**
          * Represents a name/value pair
