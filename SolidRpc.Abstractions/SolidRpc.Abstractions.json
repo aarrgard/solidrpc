@@ -650,21 +650,21 @@
         }
       }
     },
-    "/Services/ISolidRpcOAuth2/RefreshTokenAsync": {
+    "/Services/ISolidRpcOAuth2/RefreshTokenAsync/{accessToken}": {
       "get": {
         "tags": [
           "ISolidRpcOAuth2"
         ],
-        "description": "Use this method to refresh a token obtained from the callback.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#RefreshTokenAsync",
+        "description": "Use this method to refresh a token obtained from the callback.\r\n\r\nThis method fetches a new token from the OAuth server using the refresh token stored as a cookie when authorizing for the first time.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#RefreshTokenAsync#1",
         "produces": [
-          "application/json"
+          "*/*"
         ],
         "parameters": [
           {
             "name": "accessToken",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string",
             "description": "the token to refresh - may be an expired token"
           }
@@ -673,7 +673,7 @@
           "200": {
             "description": "The response type",
             "schema": {
-              "type": "string"
+              "type": "file"
             }
           }
         }

@@ -21,12 +21,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     {
         private class CachedJwt
         {
-            public CachedJwt(string jwt, DateTime validTo)
+            public CachedJwt(TokenResponse jwt, DateTime validTo)
             {
                 Jwt = jwt;
                 ValidTo = validTo;
             }
-            public string Jwt { get; }
+            public TokenResponse Jwt { get; }
             public DateTime ValidTo { get; }
         }
 
@@ -112,7 +112,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="scopes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<string> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TokenResponse> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
@@ -133,7 +133,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<string> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TokenResponse> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "password"));
@@ -146,7 +146,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
-        public Task<string> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "authorization_code"));
@@ -157,7 +157,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
-        private async Task<string> GetJwtAsync(List<KeyValuePair<string, string>> nvc, TimeSpan? timeout, CancellationToken cancellationToken)
+        public Task<TokenResponse> RefreshTokenAsync(string clientId, string clientSecret, string refreshToken, CancellationToken cancellationToken)
+        {
+            var nvc = new List<KeyValuePair<string, string>>();
+            nvc.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
+            nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
+            nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
+            nvc.Add(new KeyValuePair<string, string>("refresh_token", refreshToken));
+            return GetTokenResponseAsync(nvc, cancellationToken);
+        }
+
+        private async Task<TokenResponse> GetJwtAsync(List<KeyValuePair<string, string>> nvc, TimeSpan? timeout, CancellationToken cancellationToken)
         {
             // defalt timeout of 5 minutes...
             if (timeout == null) timeout = TimeSpan.FromMinutes(5);
@@ -170,32 +180,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                     return cachedJwt.Jwt;
                 }
             }
-            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
-            var client = HttpClientFactory.CreateClient();
-            var content = new FormUrlEncodedContent(nvc);
-            var resp = await client.PostAsync(doc.TokenEndpoint, content);
 
-            if(!resp.IsSuccessStatusCode)
+            var result = await GetTokenResponseAsync(nvc, cancellationToken);
+            if(result == null)
             {
                 return null;
             }
-
-            TokenResponse result = null;
-            try
-            {
-                var strResp = await resp.Content.ReadAsStringAsync();
-                SerializerFactory.DeserializeFromString(strResp, out result);
-            } 
-            catch
-            {
-                return null;
-            }
-
-            if (string.IsNullOrEmpty(result?.AccessToken))
-            {
-                return null;
-            }
-
             //
             // parse returned token
             //
@@ -205,10 +195,40 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             //
             // add cached token
             //
-            var cj = new CachedJwt(result.AccessToken, securityToken.ValidTo);
+            var cj = new CachedJwt(result, securityToken.ValidTo);
             CachedJwts.AddOrUpdate(key, cj, (k, o) => cj);
 
-            return result.AccessToken;
+            return result;
+        }
+
+        private async Task<TokenResponse> GetTokenResponseAsync(List<KeyValuePair<string, string>> nvc, CancellationToken cancellationToken)
+        {
+            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+            var client = HttpClientFactory.CreateClient();
+            var content = new FormUrlEncodedContent(nvc);
+            var resp = await client.PostAsync(doc.TokenEndpoint, content);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            TokenResponse result = null;
+            try
+            {
+                var strResp = await resp.Content.ReadAsStringAsync();
+                SerializerFactory.DeserializeFromString(strResp, out result);
+            }
+            catch
+            {
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(result?.AccessToken))
+            {
+                return null;
+            }
+            return result;
         }
 
         /// <summary>

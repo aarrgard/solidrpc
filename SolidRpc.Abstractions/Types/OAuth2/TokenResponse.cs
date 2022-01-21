@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using System.Collections.Generic;
 namespace SolidRpc.Abstractions.Types.OAuth2
 {
     /// <summary>

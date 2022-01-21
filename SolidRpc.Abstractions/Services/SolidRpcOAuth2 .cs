@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,18 @@ namespace SolidRpc.OpenApi.Binder.Services
     /// </summary>
     public class SolidRpcOAuth2 : ISolidRpcOAuth2
     {
+        private const string RefreshTokenCookieName = "RefreshToken";
+
+        private class TokenData
+        {
+            [DataMember(Name = "iss")]
+            public string Iss { get; set; }
+            [DataMember(Name = "sub")]
+            public string Sub { get; set; }
+            [DataMember(Name = "client_id")]
+            public string ClientId { get; set; }
+        }
+
         private class State
         {
             public string ClientState { get; set; }
@@ -157,7 +170,6 @@ namespace SolidRpc.OpenApi.Binder.Services
             var auth = GetAuthority(conf);
 
             var redirectUri = await Invoker.GetUriAsync(o => o.TokenCallbackAsync(null, null, cancellationToken));
-            var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync(null, cancellationToken));
 
             var statems = new MemoryStream(Convert.FromBase64String(state));
             SerializationFactory.DeserializeFromStream(statems, out State statestruct);
@@ -172,18 +184,34 @@ namespace SolidRpc.OpenApi.Binder.Services
             var callback = statestruct.Callback?.ToString() ?? "";
             if(callback.IndexOf('?') > 0)
             {
-                callback = $"{callback}&access_token={token}";
+                callback = $"{callback}&access_token={token.AccessToken}";
             }
             else
             {
-                callback = $"{callback}?access_token={token}";
+                callback = $"{callback}?access_token={token.AccessToken}";
             }
 
-            return await CreateContent(nameof(TokenCallbackAsync), new Dictionary<string, string>()
+            var result = await CreateContent(nameof(TokenCallbackAsync), new Dictionary<string, string>()
             {
-                { "accessToken", token},
+                { "accessToken", token.AccessToken},
                 { "callback", callback }
-           }); ;
+           });
+
+            await SetRefreshTokenAsync(result, token.RefreshToken);
+
+            return result;
+        }
+
+        private async Task SetRefreshTokenAsync(FileContent result, string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return;
+            }
+            var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync(null, CancellationToken.None));
+            var secure = string.Equals(refreshUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase) ? "Secure;" : "";
+
+            result.SetCookie = $"{RefreshTokenCookieName}={refreshToken}; Path={refreshUri.AbsolutePath}; Domain={refreshUri.Host}; HttpOnly; SameSite=Strict; {secure}";
         }
 
         private async Task<FileContent> CreateContent(string resourcename, IDictionary<string, string> replace)
@@ -212,11 +240,91 @@ namespace SolidRpc.OpenApi.Binder.Services
             };
         }
 
-        public async Task<string> RefreshTokenAsync(string accessToken = null, CancellationToken cancellation = default)
+        public async Task<FileContent> RefreshTokenAsync(string accessToken = null, CancellationToken cancellation = default)
         {
+            var conf = GetOAuth2Conf();
+            var auth = GetAuthority(conf);
+
+            var origAccessTokenData = ParseAccessToken(accessToken);
+
             // make sure that we get a refresh token as a cookie
             var currInvoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
-            return null;
+            var cookieValue = ParseCookies(currInvoc.GetValue<IEnumerable<string>>("http_req_cookie"))
+                .Where(o => o.Name == RefreshTokenCookieName)
+                .Select(o => o.Value)
+                .FirstOrDefault();
+
+            // use authority to refresh it
+            var token = await auth.RefreshTokenAsync(conf.OAuth2ClientId, conf.OAuth2ClientSecret, cookieValue, cancellation);
+            if(token == null)
+            {
+                return null;
+            }
+
+            var newAccessTokenData = ParseAccessToken(accessToken);
+            if (newAccessTokenData?.Iss != origAccessTokenData?.Iss)
+            {
+                throw new Exception("Issuer for access tokens does not match");
+            }
+            if (newAccessTokenData?.ClientId != origAccessTokenData?.ClientId)
+            {
+                throw new Exception("ClientId for access tokens does not match");
+            }
+            if (newAccessTokenData?.Sub != origAccessTokenData?.Sub)
+            {
+                throw new Exception("Subject for access tokens does not match");
+            }
+
+
+            // send response
+            var enc = Encoding.ASCII;
+            var result = new FileContent()
+            {
+                CharSet = enc.HeaderName,
+                Content = new MemoryStream(enc.GetBytes(token.AccessToken))
+            };
+            await SetRefreshTokenAsync(result, token.RefreshToken);
+
+            return result;
+        }
+
+        private TokenData ParseAccessToken(string accessToken)
+        {
+            try
+            {
+                var parts = accessToken.Split('.');
+                var b64Payload = parts[1];
+                var pad = b64Payload.Length % 4;
+                switch(pad)
+                {
+                    case 0:
+                        break;
+                    case 2:
+                        b64Payload += "==";
+                        break;
+                    case 3:
+                        b64Payload += "=";
+                        break;
+                    default:
+                        throw new Exception("Invalid JWT length");
+                }
+
+                SerializationFactory.DeserializeFromStream(new MemoryStream(Convert.FromBase64String(b64Payload)), out TokenData tokenData);
+                return tokenData;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private IEnumerable<NameValuePair> ParseCookies(IEnumerable<string> cookies)
+        {
+            if (cookies == null) return new NameValuePair[0];
+            return cookies.Select(o => {
+                var vals = o.Split(';').First().Split('=');
+                return new NameValuePair() { Name = vals[0], Value = vals[1] };
+            });
         }
     }
 }

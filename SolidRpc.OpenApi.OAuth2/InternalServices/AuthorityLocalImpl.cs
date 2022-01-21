@@ -90,8 +90,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return new TokenResponse()
             {
                 AccessToken = plainToken.RawData,
+                RefreshToken = plainToken.RawData,
                 ExpiresIn = ((int)(plainToken.ValidTo - DateTime.UtcNow).TotalSeconds).ToString(),
-                TokenType = "jwt"
+                TokenType = "jwt",
             };
         }
 
@@ -155,19 +156,24 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return Task.FromResult(GetLocalKeys());
         }
 
-        Task<string> IAuthority.GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken)
+        Task<TokenResponse> IAuthority.GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken)
         {
             return AuthorityImpl.GetClientJwtAsync(clientId, clientSecret, scopes, timeout, cancellationToken);
         }
 
-        Task<string> IAuthority.GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken)
+        Task<TokenResponse> IAuthority.GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken)
         {
             return AuthorityImpl.GetUserJwtAsync(clientId, clientSecret, username, password, scopes, timeout, cancellationToken);
         }
 
-        public Task<string> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
             return AuthorityImpl.GetCodeJwtToken(clientId, clientSecret, code, redirectUri, timeout, cancellationToken);
+        }
+
+        public Task<TokenResponse> RefreshTokenAsync(string clientId, string clientSecret, string refreshToken, CancellationToken cancellationToken)
+        {
+            return AuthorityImpl.RefreshTokenAsync(clientId, clientSecret, refreshToken, cancellationToken);
         }
     }
 }

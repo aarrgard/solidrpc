@@ -18,6 +18,7 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using System.Net;
 using System.Text.RegularExpressions;
 using SolidRpc.Abstractions.InternalServices;
+using System.Threading;
 
 namespace SolidRpc.Tests.Security
 {
@@ -151,6 +152,7 @@ namespace SolidRpc.Tests.Security
             clientServices.AddSolidRpcOAuth2();
             clientServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), null, o => ConfigureClientService(clientServices, o, baseAddress));
             clientServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), null, o => ConfigureClientService(clientServices, o, baseAddress));
+            clientServices.AddSolidRpcBindings(typeof(ISolidRpcOAuth2), null, o => ConfigureClientService(clientServices, o, baseAddress));
             base.ConfigureClientServices(clientServices, baseAddress);
         }
 
@@ -184,6 +186,7 @@ namespace SolidRpc.Tests.Security
         {
             base.ConfigureServerServices(serverServices);
             serverServices.AddSolidRpcOAuth2Local(GetIssuer(serverServices.GetSolidRpcService<Uri>()).ToString(), o => o.CreateSigningKey());
+            serverServices.AddSolidRpcServices();
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {
@@ -405,15 +408,30 @@ namespace SolidRpc.Tests.Security
                 var httpClient = clientFactory.CreateClient();
                 var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
-                // authenticate client
-                var response = await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
+                // authenticate user
+                var response = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
+                {
+                    Address = res.TokenEndpoint,
+
+                    ClientId = "client",
+                    ClientSecret = "secret",
+                    Scope = "api1",
+
+                    UserName = "bob",
+                    Password = "bob"
+                });
+
+                ValidateAccessToken(res, response);
+
+                // use refresh token to get new access token
+                response = await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
                 {
                     Address = res.TokenEndpoint,
 
                     ClientId = "client",
                     ClientSecret = "secret",
 
-                    RefreshToken = "xyz"
+                    RefreshToken = response.RefreshToken
                 });
 
                 ValidateAccessToken(res, response);
@@ -444,7 +462,7 @@ namespace SolidRpc.Tests.Security
                 // Test user as user principal
                 //
                 var userJwt = await authLocal.GetUserJwtAsync("clientid", "clientsecret", "userid", "password", new[] { "scope1", "scope2" });
-                var prin = await authLocal.GetPrincipalAsync(userJwt);
+                var prin = await authLocal.GetPrincipalAsync(userJwt.AccessToken);
                 Assert.IsNotNull(prin.Claims.Where(o => o.Type == "scope").Where(o => o.Value == "scope1").Single());
                 Assert.IsNotNull(prin.Claims.Where(o => o.Type == "scope").Where(o => o.Value == "scope2").Single());
                 ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = prin;
@@ -456,8 +474,8 @@ namespace SolidRpc.Tests.Security
                 //
                 var clientJwt1 = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
                 var clientJwt2 = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
-                Assert.AreEqual(clientJwt1, clientJwt2);
-                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt1);
+                Assert.AreEqual(clientJwt1.AccessToken, clientJwt2.AccessToken);
+                ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt1.AccessToken);
                 res = await protectedService.GetUserEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
                 
@@ -499,7 +517,8 @@ namespace SolidRpc.Tests.Security
 
                 // invoke directly - intercept 302
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<IOAuth2ProtectedService>>();
-                var uri = await invoker.GetUriAsync(o => o.GetProtectedResourceWithRedirect("test"));
+                var arg = Guid.NewGuid().ToString();
+                var uri = await invoker.GetUriAsync(o => o.GetProtectedResourceWithRedirect(arg));
                 var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
                 var resp = await httpClient.GetAsync(uri);
                 Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
@@ -524,10 +543,51 @@ namespace SolidRpc.Tests.Security
                 var accessToken = re.Match(content).Groups[1].Value;
                 re = new Regex("callback = '([^']+)';");
                 var callback = re.Match(content).Groups[1].Value;
+                Assert.IsTrue(callback.Contains(arg));
 
                 resp = await httpClient.GetAsync(new Uri($"{callback}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+
+                //
+                // lets refresh the access token
+                //
+                await Task.Delay(1000); // we want a new token - make sure that the expiry is not same
+                var oauthInvoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ISolidRpcOAuth2>>();
+                var refreshUri = await oauthInvoker.GetUriAsync(o => o.RefreshTokenAsync(accessToken, CancellationToken.None));
+                resp = await httpClient.GetAsync(refreshUri);
+                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+                content = await resp.Content.ReadAsStringAsync();
+
+                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), accessToken);
+                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), content);
+                Assert.AreNotEqual(accessToken, content);
             }
+        }
+
+        private void ValidateAccessToken(IAuthorityLocal authorityLocal, string accessToken)
+        {
+            var tokenValidationParameter = new TokenValidationParameters()
+            {
+                ValidateActor = false,
+                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidIssuer = authorityLocal.Authority,
+                ValidateIssuerSigningKey = false,
+                ValidateLifetime = true,
+                RequireExpirationTime = true,
+                RequireSignedTokens = false,
+                IssuerSigningKeyResolver = (token, st, kid, validationParameters) => {
+                    var authKeys = authorityLocal.GetSigningKeysAsync().Result.ToList();
+                    var keys = JsonConvert.SerializeObject(new SolidRpc.Abstractions.Types.OAuth2.OpenIDKeys() { Keys = authKeys });
+                    var signingKeys = Microsoft.IdentityModel.Tokens.JsonWebKeySet.Create(keys)
+                    .GetSigningKeys().Where(o => o.KeyId == kid).ToList();
+                    return signingKeys;
+                }
+
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var claimsPrincipal = tokenHandler.ValidateToken(accessToken, tokenValidationParameter, out securityToken);
         }
 
         private void ValidateAccessToken(DiscoveryDocumentResponse discResp, TokenResponse resp)

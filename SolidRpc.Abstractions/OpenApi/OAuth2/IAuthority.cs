@@ -47,7 +47,7 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetClientJwtAsync(
+        Task<TokenResponse> GetClientJwtAsync(
             string clientId, 
             string clientSecret, 
             IEnumerable<string> scopes, 
@@ -65,7 +65,7 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetUserJwtAsync(
+        Task<TokenResponse> GetUserJwtAsync(
             string clientId, 
             string clientSecret, 
             string userId, 
@@ -83,7 +83,7 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="timeout"></param>
         /// <param name="redirectUri"></param>
         /// <param name="cancellationToken"></param>
-        Task<string> GetCodeJwtToken(
+        Task<TokenResponse> GetCodeJwtToken(
             string clientId,
             string clientSecret,
             string code,
@@ -91,5 +91,18 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
             TimeSpan? timeout = null, 
             CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Refreshes a token
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="refreshToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TokenResponse> RefreshTokenAsync(
+            string clientId, 
+            string clientSecret, 
+            string refreshToken,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-[assembly: SolidRpcService(typeof(ISolidRpcOidc), typeof(SolidRpcOidcImpl), SolidRpcServiceLifetime.Scoped)]
+[assembly: SolidRpcService(typeof(ISolidRpcOidc), typeof(SolidRpcOidcImpl), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.OAuth2.Services
 {
     /// <summary>
@@ -35,11 +35,20 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         {
             ServiceProvider = serviceProvider;
             Invoker = invoker;
+            RefreshTokens = new Dictionary<string, ClaimsIdentity>();
         }
 
         private IServiceProvider ServiceProvider { get; }
         private IInvoker<ISolidRpcOidc> Invoker { get; }
         private IAuthorityLocal LocalAuthority => ServiceProvider.GetRequiredService<IAuthorityLocal>();
+        private IDictionary<string, ClaimsIdentity> RefreshTokens { get; }
+
+        private string CreateRefreshToken(ClaimsIdentity claimsIdentity)
+        {
+            var refreshToken = Guid.NewGuid().ToString();
+            RefreshTokens[refreshToken] = claimsIdentity;
+            return refreshToken;
+        }
 
         /// <summary>
         /// Returns the discovery document
@@ -111,7 +120,10 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             var session_state = $"&session_state={Guid.NewGuid()}";
 
             var accessToken = idToken.AccessToken;
-            if (responseType == "code") accessToken = $"code:{accessToken}";
+            if (responseType == "code")
+            {
+                accessToken = CreateRefreshToken(ci);
+            }
 
             if (string.Equals(responseMode, "form_post"))
             {
@@ -185,12 +197,16 @@ namespace SolidRpc.OpenApi.OAuth2.Services
 
         private async Task<TokenResponse> GetTokenAsyncRefreshToken(string clientId, string clientSecret, string refreshToken, CancellationToken cancellationToken)
         {
-            var claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new  Claim("client_id", clientId));
+            var claimsIdentity = RefreshTokens[refreshToken];
+            if(claimsIdentity == null)
+            {
+                throw new Exception("Failed to find identity for refresh token:" + refreshToken);
+            }
             var accessToken = await LocalAuthority.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
+                RefreshToken = CreateRefreshToken(claimsIdentity),
                 ExpiresIn = accessToken.ExpiresIn,
                 TokenType = accessToken.TokenType
             };
@@ -204,12 +220,13 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             claimsIdentity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, username));
             foreach (var scope in scopes)
             {
-                claimsIdentity.AddClaim(new  Claim("scope", scope));
+                claimsIdentity.AddClaim(new Claim("scope", scope));
             }
             var accessToken = await LocalAuthority.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
+                RefreshToken = CreateRefreshToken(claimsIdentity),
                 ExpiresIn = accessToken.ExpiresIn,
                 Scope = string.Join(" ", scopes),
                 TokenType = accessToken.TokenType
@@ -229,6 +246,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
+                RefreshToken = CreateRefreshToken(claimsIdentity),
                 ExpiresIn = accessToken.ExpiresIn,
                 Scope = string.Join(" ", scopes),
                 TokenType = accessToken.TokenType
@@ -236,18 +254,19 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         }
         private async Task<TokenResponse> GetTokenAsyncAuthorizationCode(string clientId, string clientSecret, string code, string redirectUri, string codeVerifier, CancellationToken cancellationToken)
         {
-            if(code == null ||!code.StartsWith("code:"))
+            var principal = RefreshTokens[code];
+            if(principal == null)
             {
-                throw new Exception("Not a code:" + code);
+                throw new Exception("Cannot find identity for code:" + code);
             }
-            code = code.Substring("code:".Length);
-            var prin = await LocalAuthority.GetPrincipalAsync(code, null, cancellationToken);
-            var accessToken = await LocalAuthority.CreateAccessTokenAsync((ClaimsIdentity)prin.Identity, null, cancellationToken);
+            var accessToken = await LocalAuthority.CreateAccessTokenAsync(principal, null, cancellationToken);
             return new TokenResponse()
             {
                 AccessToken = accessToken.AccessToken,
+                RefreshToken = CreateRefreshToken(principal),
                 ExpiresIn = accessToken.ExpiresIn,
-                TokenType = accessToken.TokenType
+                Scope = string.Join(" ", principal.Claims.Where(o => o.Type == "scope").Select(o => o.Value)),
+                TokenType = accessToken.TokenType,
             };
         }
     }

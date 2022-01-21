@@ -47,12 +47,14 @@ namespace SolidRpc.Abstractions.Services
 
         /// <summary>
         /// Use this method to refresh a token obtained from the callback.
+        /// 
+        /// This method fetches a new token from the OAuth server using the refresh token stored as a cookie when authorizing for the first time.
         /// </summary>
         /// <param name="accessToken">the token to refresh - may be an expired token</param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<string> RefreshTokenAsync(
-            string accessToken = null,
+        Task<FileContent> RefreshTokenAsync(
+            string accessToken,
             CancellationToken cancellation = default);
     }
 }

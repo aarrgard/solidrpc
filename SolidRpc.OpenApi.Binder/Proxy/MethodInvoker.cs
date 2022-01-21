@@ -214,7 +214,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.GetTransportType()))}).");
             }
-            invocationValues.Add(RequestHeaderMethodUri, selectedBinding.BindUri(request, transport.OperationAddress));
 
             var invokerTransport = transport.InvokerTransport;
             if (!string.IsNullOrEmpty(invokerTransport))
@@ -279,6 +278,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
                 }
             }
+
+            //
+            // recreate uri for redirects
+            //
+            invocationValues.Add(RequestHeaderMethodUri, selectedBinding.BindUri(request, transport.OperationAddress));
 
             //
             // set continuation token

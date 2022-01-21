@@ -220,7 +220,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     throw new Exception($"Cannot obtain jwt token for client {ClientId}@{Authority.Authority}.");
                 }
-                invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt}");
+                invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt.AccessToken}");
                 return;
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Proxy)

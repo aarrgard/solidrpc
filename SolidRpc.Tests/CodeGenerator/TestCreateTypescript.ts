@@ -724,28 +724,30 @@ export namespace Abstractions {
                     }
                 }, TokenCallbackAsyncSubject);
             }
-            let RefreshTokenAsyncSubject = new Subject<string>();
+            let RefreshTokenAsyncSubject = new Subject<Types.FileContent>();
             /**
              * This observable is hot and monitors all the responses from the RefreshTokenAsync invocations.
              */
             export var RefreshTokenAsyncObservable = RefreshTokenAsyncSubject.asObservable().pipe(share());
             /**
              * Use this method to refresh a token obtained from the callback.
+             *             
+             *             This method fetches a new token from the OAuth server using the refresh token stored as a cookie when authorizing for the first time.
              * @param accessToken the token to refresh - may be an expired token
              * @param cancellation 
              */
             export function RefreshTokenAsync(
-                accessToken? : string,
+                accessToken : string,
                 cancellation? : CancellationToken
-            ): SolidRpcJs.RpcServiceRequestTyped<string> {
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{accessToken}';
+                SolidRpcJs.ifnull(accessToken, () => { uri = uri.replace('{accessToken}', ''); }, nn =>  { uri = uri.replace('{accessToken}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
-                SolidRpcJs.ifnotnull(accessToken, x => { query['accessToken'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
                     if(code == 200) {
-                        return data as string;
+                        return new Types.FileContent(data);
                     } else {
                         throw 'Response code != 200('+code+')';
                     }

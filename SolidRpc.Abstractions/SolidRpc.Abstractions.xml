@@ -1005,6 +1005,16 @@
             <param name="redirectUri"></param>
             <param name="cancellationToken"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.RefreshTokenAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Refreshes a token
+            </summary>
+            <param name="clientId"></param>
+            <param name="clientSecret"></param>
+            <param name="refreshToken"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory">
             <summary>
             Interface that provides access to an authority factory
@@ -2306,6 +2316,8 @@
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.RefreshTokenAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Use this method to refresh a token obtained from the callback.
+            
+            This method fetches a new token from the OAuth server using the refresh token stored as a cookie when authorizing for the first time.
             </summary>
             <param name="accessToken">the token to refresh - may be an expired token</param>
             <param name="cancellation"></param>

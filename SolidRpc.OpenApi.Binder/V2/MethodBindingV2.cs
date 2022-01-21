@@ -364,9 +364,10 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         public Uri BindUri(IHttpRequest request, Uri addressOverride = null)
         {
-            if(addressOverride == null)
+            UriBuilder ub;
+            if (addressOverride == null)
             {
-                var ub = new UriBuilder();
+                ub = new UriBuilder();
                 ub.Scheme = request.Scheme;
                 ub.Host = request.GetHost();
                 var port = request.GetPort();
@@ -375,17 +376,14 @@ namespace SolidRpc.OpenApi.Binder.V2
                     ub.Port = port.Value;
                 }
                 ub.Path = request.Path;
-                ub.Query = string.Join("&", request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
-                return ub.Uri;
             }
             else
-            {
-                var ub = new UriBuilder(addressOverride);
-                // replace all the path segments in path from request
-                ub.Path = ReplaceData(ub.Path, request.PathData);
-                ub.Query = string.Join("&", request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
-                return ub.Uri;
+            { 
+                ub = new UriBuilder(addressOverride);
+                ub.Path = ReplaceData(addressOverride.LocalPath, request.PathData);
             }
+            ub.Query = string.Join("&", request.Query.Select(o => $"{o.Name}={HttpUtility.UrlEncode(o.GetStringValue())}"));
+            return ub.Uri;
         }
 
         private string ReplaceData(string path, IEnumerable<IHttpRequestData> pathData)
