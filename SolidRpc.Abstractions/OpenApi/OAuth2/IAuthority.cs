@@ -18,6 +18,21 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         string Authority { get; }
 
         /// <summary>
+        /// Adds a set of default scopes to request based on the supplied grant type.
+        /// </summary>
+        /// <param name="grantType"></param>
+        /// <param name="scopes"></param>
+        void AddDefaultScopes(string grantType, IEnumerable<string> scopes);
+
+        /// <summary>
+        /// Returns the scopes for supplied grant type
+        /// </summary>
+        /// <param name="grantType"></param>
+        /// <param name="additionalScopes"></param>
+        /// <returns></returns>
+        IEnumerable<string> GetScopes(string grantType, IEnumerable<string> additionalScopes);
+
+        /// <summary>
         /// Returns the discovery document
         /// </summary>
         Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default(CancellationToken));

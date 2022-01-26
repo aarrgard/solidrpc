@@ -96,10 +96,6 @@ namespace SolidRpc.OpenApi.Binder.Services
             IEnumerable<string> scopes = null,
             CancellationToken cancellationToken = default)
         {
-            if(!(scopes ?? new string[0]).Any())
-            {
-                scopes = new string[] { "openid", "solidrpc" };
-            }
             var host = callbackUri.Host.Split(':').First();
             if (!AllowedHosts.Contains(host))
             {
@@ -107,7 +103,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             }
 
             var conf = GetOAuth2Conf();
+            var auth = GetAuthority(conf);
             var doc = await GetDiscoveryDocumentAsync(conf, cancellationToken);
+
+            scopes = auth.GetScopes("authorization_code", scopes);
 
             var statems = new MemoryStream();
             SerializationFactory.SerializeToStream(statems, new State()
@@ -151,7 +150,12 @@ namespace SolidRpc.OpenApi.Binder.Services
 
         private async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(ISecurityOAuth2Config conf, CancellationToken cancellationToken)
         {
-            return await GetAuthority(conf).GetDiscoveryDocumentAsync(cancellationToken);
+            var dd = await GetAuthority(conf).GetDiscoveryDocumentAsync(cancellationToken);
+            if(dd == null)
+            {
+                throw new Exception("Failed to get discovery document from " + conf?.OAuth2Authority);
+            }
+            return dd;
         }
 
         /// <summary>

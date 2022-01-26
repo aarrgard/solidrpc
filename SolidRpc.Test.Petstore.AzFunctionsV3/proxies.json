@@ -531,16 +531,6 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip"
     },
-    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync": {
-      "matchCondition": {
-        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync",
-        "methods": [
-          "GET",
-          "OPTIONS"
-        ]
-      },
-      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync"
-    },
     "SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins": {
       "matchCondition": {
         "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins",
@@ -560,6 +550,16 @@
         ]
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Test/Petstore/AzFunctionsV3/ITestInterface/TestSetCookie"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}"
     },
     "front/{path}": {
       "matchCondition": {

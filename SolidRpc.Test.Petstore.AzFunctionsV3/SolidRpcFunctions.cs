@@ -276,11 +276,11 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
-    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync_arg0
     {
-        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync")]
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync_arg0")]
         public static Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

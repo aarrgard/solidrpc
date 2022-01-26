@@ -124,22 +124,25 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             {
                 return async (_, cancellationToken) =>
                 {
-                    var uri = await dm.UriResolver(ServiceProvider);
-                    var httpClient = HttpClientFactory.CreateClient();
-                    var resp = await httpClient.GetAsync(uri, cancellationToken);
-                    var ms = new MemoryStream();
-                    await resp.Content.CopyToAsync(ms);
-
-                    return new FileContent()
+                    using(var ss = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                     {
-                        Content = new MemoryStream(ms.ToArray()),
-                        CharSet = resp.Content?.Headers?.ContentType?.CharSet,
-                        ContentType = resp.Content?.Headers?.ContentType?.MediaType,
-                        Location = resp.Headers?.Location?.ToString(),
-                        ETag = resp.Headers?.ETag?.Tag,
-                        LastModified = resp.Content?.Headers?.LastModified
-                    };
-                };
+                        var uri = await dm.UriResolver(ss.ServiceProvider);
+                        var httpClient = HttpClientFactory.CreateClient();
+                        var resp = await httpClient.GetAsync(uri, cancellationToken);
+                        var ms = new MemoryStream();
+                        await resp.Content.CopyToAsync(ms);
+
+                        return new FileContent()
+                        {
+                            Content = new MemoryStream(ms.ToArray()),
+                            CharSet = resp.Content?.Headers?.ContentType?.CharSet,
+                            ContentType = resp.Content?.Headers?.ContentType?.MediaType,
+                            Location = resp.Headers?.Location?.ToString(),
+                            ETag = resp.Headers?.ETag?.Tag,
+                            LastModified = resp.Content?.Headers?.LastModified
+                        };
+                    }
+                 };
             }
 
             //

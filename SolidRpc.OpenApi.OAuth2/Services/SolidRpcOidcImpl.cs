@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-[assembly: SolidRpcService(typeof(ISolidRpcOidc), typeof(SolidRpcOidcImpl), SolidRpcServiceLifetime.Singleton)]
+[assembly: SolidRpcService(typeof(ISolidRpcOidc), typeof(SolidRpcOidcImpl), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.OAuth2.Services
 {
     /// <summary>
@@ -24,6 +24,8 @@ namespace SolidRpc.OpenApi.OAuth2.Services
     /// </summary>
     public class SolidRpcOidcImpl : ISolidRpcOidc
     {
+        private static IDictionary<string, ClaimsIdentity> RefreshTokens = new Dictionary<string, ClaimsIdentity>();
+
         /// <summary>
         /// Constructs a new instance
         /// </summary>
@@ -35,13 +37,11 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         {
             ServiceProvider = serviceProvider;
             Invoker = invoker;
-            RefreshTokens = new Dictionary<string, ClaimsIdentity>();
         }
 
         private IServiceProvider ServiceProvider { get; }
         private IInvoker<ISolidRpcOidc> Invoker { get; }
         private IAuthorityLocal LocalAuthority => ServiceProvider.GetRequiredService<IAuthorityLocal>();
-        private IDictionary<string, ClaimsIdentity> RefreshTokens { get; }
 
         private string CreateRefreshToken(ClaimsIdentity claimsIdentity)
         {

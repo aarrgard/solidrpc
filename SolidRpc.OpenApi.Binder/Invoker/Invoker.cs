@@ -150,7 +150,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 {
                     // add access_token if resource is protected
                     var oauthConf = methodBinding.GetSolidProxyConfig<ISecurityOAuth2Config>();
-                    if (oauthConf.RedirectUnauthorizedIdentity)
+                    if (oauthConf?.RedirectUnauthorizedIdentity ?? false)
                     {
                         req.Query = req.Query.Union(new[] { new SolidHttpRequestDataString("text/plain", "access_token", accessToken) }).ToList();
                     }

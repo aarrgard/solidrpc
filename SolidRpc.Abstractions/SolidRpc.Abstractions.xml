@@ -949,6 +949,21 @@
             The uri of the issuer
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.AddDefaultScopes(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Adds a set of default scopes to request based on the supplied grant type.
+            </summary>
+            <param name="grantType"></param>
+            <param name="scopes"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetScopes(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Returns the scopes for supplied grant type
+            </summary>
+            <param name="grantType"></param>
+            <param name="additionalScopes"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.GetDiscoveryDocumentAsync(System.Threading.CancellationToken)">
             <summary>
             Returns the discovery document

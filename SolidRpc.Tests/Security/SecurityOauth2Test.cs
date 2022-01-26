@@ -100,7 +100,7 @@ namespace SolidRpc.Tests.Security
             /// </summary>
             /// <param name="arg"></param>
             /// <returns></returns>
-            Task<string> GetProtectedResourceWithRedirect(string arg);
+            Task<string> GetProtectedResourceWithRedirect(string arg, string optional = null);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SolidRpc.Tests.Security
             /// </summary>
             /// <param name="arg"></param>
             /// <returns></returns>
-            public Task<string> GetProtectedResourceWithRedirect(string arg)
+            public Task<string> GetProtectedResourceWithRedirect(string arg, string optional = null)
             {
                 return Task.FromResult(arg + ":" + Principal.Identity.Name);
             }
@@ -517,8 +517,10 @@ namespace SolidRpc.Tests.Security
 
                 // invoke directly - intercept 302
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<IOAuth2ProtectedService>>();
-                var arg = Guid.NewGuid().ToString();
-                var uri = await invoker.GetUriAsync(o => o.GetProtectedResourceWithRedirect(arg));
+                var arg1 = Guid.NewGuid().ToString();
+                var arg2 = Guid.NewGuid().ToString();
+                var arg3 = Guid.NewGuid().ToString();
+                var uri = (await invoker.GetUriAsync(o => o.GetProtectedResourceWithRedirect(arg1, arg2))) + $"&additional_query={arg3}";
                 var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
                 var resp = await httpClient.GetAsync(uri);
                 Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
@@ -543,7 +545,9 @@ namespace SolidRpc.Tests.Security
                 var accessToken = re.Match(content).Groups[1].Value;
                 re = new Regex("callback = '([^']+)';");
                 var callback = re.Match(content).Groups[1].Value;
-                Assert.IsTrue(callback.Contains(arg));
+                Assert.IsTrue(callback.Contains(arg1));
+                Assert.IsTrue(callback.Contains(arg2));
+                Assert.IsTrue(callback.Contains(arg3));
 
                 resp = await httpClient.GetAsync(new Uri($"{callback}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);

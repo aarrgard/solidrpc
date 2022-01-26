@@ -251,13 +251,14 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                         {
                             if (AuthorityFactory == null) throw new Exception("You need to add the OAuth2 services.");
                             var authority = AuthorityFactory.GetAuthority(oauth2Config.OAuth2Authority);
+                            if (authority == null) throw new Exception("Failed to get authority: "+ oauth2Config.OAuth2Authority);
                             var authDoc = await authority.GetDiscoveryDocumentAsync(cancellationToken);
                             authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnectDiscovery()
                             {
                                 AuthorizationEndpoint = new Uri("https://no.authority.found"),
                                 TokenEndpoint = new Uri("https://no.authority.found"),
                             };
-                            op.AddOAuth2Auth(authDoc, "authorizationCode", oauth2Config.OAuth2Scopes);
+                            op.AddOAuth2Auth(authDoc, "authorizationCode", authority.GetScopes("authorization_code", oauth2Config.OAuth2Scopes));
                         }
                         var securityKeyConfig = binding.GetSolidProxyConfig<ISecurityKeyConfig>();
                         var securityKey = securityKeyConfig?.SecurityKey;
@@ -319,10 +320,11 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                 {
                     name = $"{assemblyName}.{name}";
                 }
+                var url = await Invoker.GetUriAsync(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, onlyImplemented, cancellationToken));
                 swaggerUrls.Add(new SwaggerUrl()
                 {
                     Name = name,
-                    Url = await Invoker.GetUriAsync(o => o.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, onlyImplemented, cancellationToken))
+                    Url = url
                 });
             }
             return swaggerUrls

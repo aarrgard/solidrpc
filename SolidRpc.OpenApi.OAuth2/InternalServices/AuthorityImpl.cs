@@ -73,11 +73,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             HttpClientFactory = httpClientFactory;
             Authority = authority;
             CachedJwts = new ConcurrentDictionary<string, CachedJwt>();
+            GrantTypeScopes = new Dictionary<string, IEnumerable<string>>();
         }
         private IAuthorityFactory AuthorityFactoryImpl { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ConcurrentDictionary<string, CachedJwt> CachedJwts { get; }
+        private Dictionary<string, IEnumerable<string>> GrantTypeScopes { get; }
 
         /// <summary>
         /// The authority
@@ -104,6 +106,35 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return Task.CompletedTask;
         }
 
+        public void AddDefaultScopes(string grantType, IEnumerable<string> scopes)
+        {
+            if (GrantTypeScopes.TryGetValue(grantType, out IEnumerable<string> additionalScopes))
+            {
+                GrantTypeScopes[grantType] = additionalScopes.Union(scopes).Distinct().ToList();
+            }
+            else
+            {
+                GrantTypeScopes[grantType] = scopes.ToList();
+            }
+        }
+
+        public IEnumerable<string> GetScopes(string grantType, IEnumerable<string> scopes)
+        {
+            if(scopes == null)
+            {
+                scopes = new string[0];
+            }
+            if(GrantTypeScopes.TryGetValue(grantType, out IEnumerable<string> additionalScopes))
+            {
+                scopes = additionalScopes.Union(scopes).Distinct();
+            }
+            return scopes;
+        }
+        private string CreateScopes(string grantType, IEnumerable<string> scopes)
+        {
+            return string.Join(" ", GetScopes(grantType, scopes));
+        }
+
         /// <summary>
         /// Return the client jwt.
         /// </summary>
@@ -118,7 +149,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
             nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
-            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(" ", scopes)));
+            nvc.Add(new KeyValuePair<string, string>("scope", CreateScopes("client_credentials", scopes)));
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }
 
@@ -141,7 +172,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
             nvc.Add(new KeyValuePair<string, string>("username", username));
             nvc.Add(new KeyValuePair<string, string>("password", password));
-            nvc.Add(new KeyValuePair<string, string>("scope", string.Join(" ", scopes)));
+            nvc.Add(new KeyValuePair<string, string>("scope", CreateScopes("password", scopes)));
 
             return GetJwtAsync(nvc, timeout, cancellationToken);
         }

@@ -175,5 +175,15 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         {
             return AuthorityImpl.RefreshTokenAsync(clientId, clientSecret, refreshToken, cancellationToken);
         }
+
+        public void AddDefaultScopes(string grantType, IEnumerable<string> scopes)
+        {
+            AuthorityImpl.AddDefaultScopes(grantType, scopes);
+        }
+
+        public IEnumerable<string> GetScopes(string grantType, IEnumerable<string> additionalScopes)
+        {
+            return AuthorityImpl.GetScopes(grantType, additionalScopes);
+        }
     }
 }
