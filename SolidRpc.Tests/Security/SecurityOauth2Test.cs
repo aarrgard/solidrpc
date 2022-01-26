@@ -278,6 +278,7 @@ namespace SolidRpc.Tests.Security
                     Address = res.TokenEndpoint,
                     GrantType = "client_credentials",
 
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
                     ClientId = "client",
                     ClientSecret = "secret",
 
@@ -313,10 +314,11 @@ namespace SolidRpc.Tests.Security
                 var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
                 // authenticate client
-                var response = await httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                var response = await httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest()
                 {
                     Address = res.TokenEndpoint,
 
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
                     ClientId = "client",
                     ClientSecret = "secret",
                     Scope = "api1"
@@ -345,6 +347,7 @@ namespace SolidRpc.Tests.Security
                 {
                     Address = res.TokenEndpoint,
 
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
                     ClientId = "client",
                     ClientSecret = "secret",
                     Scope = "api1",
@@ -413,6 +416,7 @@ namespace SolidRpc.Tests.Security
                 {
                     Address = res.TokenEndpoint,
 
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
                     ClientId = "client",
                     ClientSecret = "secret",
                     Scope = "api1",
