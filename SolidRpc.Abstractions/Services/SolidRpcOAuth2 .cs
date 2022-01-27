@@ -244,12 +244,16 @@ namespace SolidRpc.OpenApi.Binder.Services
             };
         }
 
+        /// <summary>
+        /// Returns a new access token for supplied token
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         public async Task<FileContent> RefreshTokenAsync(string accessToken = null, CancellationToken cancellation = default)
         {
             var conf = GetOAuth2Conf();
             var auth = GetAuthority(conf);
-
-            var origAccessTokenData = ParseAccessToken(accessToken);
 
             // make sure that we get a refresh token as a cookie
             var currInvoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
@@ -258,6 +262,11 @@ namespace SolidRpc.OpenApi.Binder.Services
                 .Select(o => o.Value)
                 .FirstOrDefault();
 
+            if(string.IsNullOrEmpty(cookieValue))
+            {
+                return null;
+            }
+
             // use authority to refresh it
             var token = await auth.RefreshTokenAsync(conf.OAuth2ClientId, conf.OAuth2ClientSecret, cookieValue, cancellation);
             if(token == null)
@@ -265,20 +274,23 @@ namespace SolidRpc.OpenApi.Binder.Services
                 return null;
             }
 
-            var newAccessTokenData = ParseAccessToken(accessToken);
-            if (newAccessTokenData?.Iss != origAccessTokenData?.Iss)
+            if(!string.Equals(accessToken, "current", StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new Exception("Issuer for access tokens does not match");
+                var origAccessTokenData = ParseAccessToken(accessToken);
+                var newAccessTokenData = ParseAccessToken(token.AccessToken);
+                if (newAccessTokenData?.Iss != origAccessTokenData?.Iss)
+                {
+                    throw new Exception("Issuer for access tokens does not match");
+                }
+                if (newAccessTokenData?.ClientId != origAccessTokenData?.ClientId)
+                {
+                    throw new Exception("ClientId for access tokens does not match");
+                }
+                if (newAccessTokenData?.Sub != origAccessTokenData?.Sub)
+                {
+                    throw new Exception("Subject for access tokens does not match");
+                }
             }
-            if (newAccessTokenData?.ClientId != origAccessTokenData?.ClientId)
-            {
-                throw new Exception("ClientId for access tokens does not match");
-            }
-            if (newAccessTokenData?.Sub != origAccessTokenData?.Sub)
-            {
-                throw new Exception("Subject for access tokens does not match");
-            }
-
 
             // send response
             var enc = Encoding.ASCII;
@@ -297,6 +309,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             try
             {
                 var parts = accessToken.Split('.');
+                if(parts.Length < 2)
+                {
+                    return null;
+                }
                 var b64Payload = parts[1];
                 var pad = b64Payload.Length % 4;
                 switch(pad)

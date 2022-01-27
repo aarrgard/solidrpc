@@ -3565,6 +3565,14 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.RefreshTokenAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns a new access token for supplied token
+            </summary>
+            <param name="accessToken"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>
             Extension methods for the solidrpc logic

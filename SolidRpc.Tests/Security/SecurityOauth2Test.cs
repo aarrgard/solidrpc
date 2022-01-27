@@ -556,6 +556,8 @@ namespace SolidRpc.Tests.Security
                 resp = await httpClient.GetAsync(new Uri($"{callback}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
 
+                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), accessToken);
+
                 //
                 // lets refresh the access token
                 //
@@ -566,9 +568,16 @@ namespace SolidRpc.Tests.Security
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
                 content = await resp.Content.ReadAsStringAsync();
 
-                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), accessToken);
                 ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), content);
+
                 Assert.AreNotEqual(accessToken, content);
+
+                // get current access token
+                refreshUri = await oauthInvoker.GetUriAsync(o => o.RefreshTokenAsync("current", CancellationToken.None));
+                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+                var currentContent = await resp.Content.ReadAsStringAsync();
+
+                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), currentContent);
             }
         }
 
