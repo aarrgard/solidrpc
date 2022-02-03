@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Swagger\SpecGenReflection\TestInterface1TestInheritedStruct.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
     <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />
@@ -28,6 +32,7 @@
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Dictionary.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1HttpRequest.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1Principal.json" />
+    <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TestInheritedStruct.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestOpenApiAttributes.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestSameMethodNameDifferentInterfaces.json" />
     <EmbeddedResource Include="Swagger\SpecGenReflection\TestInterface1TimeSpan.json" />

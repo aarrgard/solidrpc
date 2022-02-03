@@ -63,7 +63,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             {
                 return;
             }
-            ProtectedMembers.Add(new CSharpTypeExtends(this, extType));
+            var ext = new CSharpTypeExtends(this, extType);
+            ProtectedMembers.Add(ext);
         }
 
         /// <summary>

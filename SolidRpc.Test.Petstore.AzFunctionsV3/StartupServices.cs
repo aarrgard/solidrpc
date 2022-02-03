@@ -32,7 +32,10 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
             services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
 
-            services.AddSolidRpcOAuth2();
+            services.AddSolidRpcOAuth2(conf =>
+            {
+                conf.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc"/*, "offline_access"*/ });
+            });
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
 
             services.AddSolidRpcBindings(typeof(ITestInterface).Assembly, typeof(TestImplementation).Assembly, conf =>
@@ -71,8 +74,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
 
-            //conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
-            conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "swagger-ui", "swagger-ui");
+            conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))

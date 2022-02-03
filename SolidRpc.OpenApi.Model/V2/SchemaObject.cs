@@ -169,6 +169,12 @@ namespace SolidRpc.OpenApi.Model.V2
         public SchemaObject AdditionalProperties { get; set; }
 
         /// <summary>
+        /// Schema that contains all of these elements.
+        /// </summary>
+        [DataMember(Name = "allOf", EmitDefaultValue = false)]
+        public IEnumerable<SchemaObject> AllOf { get; set; }
+
+        /// <summary>
         /// Specifies if this object is required
         /// </summary>
         [DataMember(Name = "required", EmitDefaultValue = false)]

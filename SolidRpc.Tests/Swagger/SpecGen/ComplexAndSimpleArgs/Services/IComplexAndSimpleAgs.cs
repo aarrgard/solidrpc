@@ -15,7 +15,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen.ComplexAndSimpleArgs.Services
         /// <param name="simpleType">The simple type</param>
         /// <param name="ct1">The complex type</param>
         /// <returns></returns>
-        ComplexType1 GetSimpleAndComplexType(string simpleType, ComplexType1 ct1);
+        ComplexType1 GetSimpleAndComplexType(string simpleType, ComplexType2 ct1);
 
         /// <summary>
         /// Proxies an integer

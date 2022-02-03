@@ -68,12 +68,16 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 {
                     AddAttributes(cSharpType, type.CustomAttributes);
                     cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
-                    type.GetProperties().ToList().ForEach(o =>
+                    type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).ToList().ForEach(o =>
                     {
                         var propertyType = GetType(cSharpRepository, o.PropertyType);
                         var cSharpProperty = new CSharpProperty(cSharpType, o.Name, propertyType);
                         cSharpType.AddMember(cSharpProperty);
                     });
+                    if (type.BaseType != null && type.BaseType != typeof(object))
+                    {
+                        cSharpType.AddExtends(GetType(cSharpRepository, type.BaseType));
+                    }
                 }
             }
             else if (type.IsInterface)

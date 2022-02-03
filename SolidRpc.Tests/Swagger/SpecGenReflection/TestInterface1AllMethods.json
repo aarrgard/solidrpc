@@ -216,6 +216,34 @@
         }
       }
     },
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestInheritedStruct/{ts}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a TimeSpan argument",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestInheritedStruct#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ts",
+            "in": "path",
+            "required": true,
+            "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited"
+            }
+          }
+        }
+      }
+    },
     "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestIPrincipal": {
       "get": {
         "tags": [
@@ -438,6 +466,22 @@
       },
       "type": "object",
       "description": "Represents a request"
+    },
+    "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited": {
+      "allOf": [
+        {
+          "properties": {
+            "StringProp": {
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "description": "Tests inheritance"
+        },
+        {
+          "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStruct"
+        }
+      ]
     }
   },
   "tags": [

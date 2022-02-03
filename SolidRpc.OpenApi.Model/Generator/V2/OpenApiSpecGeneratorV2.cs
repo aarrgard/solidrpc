@@ -500,6 +500,22 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 {
                     so.Properties = CreateDefinitionsObject(so, clazz);
                 }
+
+                // add inheritance
+                var extends = type.Members.OfType<ICSharpTypeExtends>().ToList();
+                if (extends.Any())
+                {
+                    var baseSo = new SchemaObject(definitions);
+                    var refs = new List<SchemaObject>();
+                    refs.Add(so);
+                    foreach(var ext in extends)
+                    {
+                        var x = type.GetParent<ICSharpRepository>().GetClass(ext.Name);
+                        refs.Add(new SchemaObject(baseSo) { Ref = CreateRefObject(node, x) });
+                    }
+                    baseSo.AllOf = refs;
+                    definitions[defName] = baseSo;
+                }
             }
 
             return $"#/definitions/{defName}";

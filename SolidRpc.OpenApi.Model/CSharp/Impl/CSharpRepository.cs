@@ -272,13 +272,15 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
-                return new CSharpClass(ns, qn.Name, runtimeType);
+                var cs = new CSharpClass(ns, qn.Name, runtimeType);
+                return cs;
             });
             if (member is ICSharpClass clz)
             {
                 return clz;
             }
-            throw new Exception($"Member({fullName}) is not a class:{member.GetType().FullName}");
+            return null;
+            //throw new Exception($"Member({fullName}) is not a class:{member.GetType().FullName}");
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="extType"></param>
-        public CSharpTypeExtends(ICSharpMember parent, ICSharpMember extType) : base(parent, extType.FullName)
+        public CSharpTypeExtends(ICSharpMember parent, ICSharpType extType) : base(parent, extType.FullName)
         {
         }
 

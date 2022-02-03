@@ -112,7 +112,7 @@ process.stdin.on('data', handleCommand);
 
                 Process = await Task.Factory.StartNew(StartProcess, new ExecutionArg()
                 {
-                    Arguments = scriptFileName,
+                    Arguments = $"\"{scriptFileName}\"",
                     CancellationToken = cancellationToken,
                 }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             }
@@ -229,28 +229,22 @@ process.stdin.on('data', handleCommand);
             var scriptFile = Path.Combine(NodeContext.NodeModulesDir, fileName);
             return await Task.Factory.StartNew(RunJs, new ExecutionArg()
             {
-                Arguments = $"{scriptFile} {string.Join(" ", args)}"
+                Arguments = $"\"{scriptFile}\" {string.Join(" ", args)}"
             }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private Process StartProcess(object oArg)
         {
             var eArg = (ExecutionArg)oArg;
-            var nodeArgs = eArg.Arguments;
-
-            //
-            // save script to file
-            //
 
             //
             //
             //
-            var nodePath = Environment.GetEnvironmentVariable("NODE_PATH");
             var process = new Process();
             process.StartInfo.FileName = NodeContext.NodeExePath;
-            process.StartInfo.Arguments = nodeArgs.Trim();
+            process.StartInfo.Arguments = eArg.Arguments.Trim();
             process.StartInfo.WorkingDirectory = NodeContext.NodeWorkingDir;
-            process.StartInfo.EnvironmentVariables["NODE_PATH"] = NodeContext.NodeModulesDir;
+            process.StartInfo.EnvironmentVariables["NODE_PATH"] = $"{NodeContext.NodeModulesDir}";
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardInput = true;

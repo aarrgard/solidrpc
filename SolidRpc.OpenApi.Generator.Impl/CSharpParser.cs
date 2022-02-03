@@ -170,12 +170,41 @@ namespace SolidRpc.OpenApi.Generator.Impl
                     CreateCSharpEnumValue(emds);
                     return;
                 }
-            } 
-            catch(Exception e)
+                if(member is ClassDeclarationSyntax cds)
+                {
+                    CreateClassDeclaration(cds);
+                    return;
+                }
+                //Console.WriteLine("Skipping member:" + member.GetType().FullName);
+            }
+            catch (Exception e)
             {
                 // eat it or throw it?
                 // throw e
                 Console.WriteLine(e.Message);
+            }
+        }
+
+        private void CreateClassDeclaration(ClassDeclarationSyntax cds)
+        {
+            var (className, nameScope) = GetClassOrInterfaceName(cds);
+            var m = GetMember(className, nameScope);
+            if(cds.BaseList?.Types != null)
+            {
+                foreach (var e in cds.BaseList.Types)
+                {
+                    var extName = GetFullName(cds, e.Type.ToString().Trim());
+                    ICSharpType ext = CSharpRepository.GetClass(extName);
+                    if (ext == null)
+                    {
+                        ext = CSharpRepository.GetInterface(extName);
+                    }
+                    if (ext == null)
+                    {
+                        throw new Exception("Cannot find type:" + extName);
+                    }
+                    m.AddMember(new CSharpTypeExtends(m, ext));
+                }
             }
         }
 

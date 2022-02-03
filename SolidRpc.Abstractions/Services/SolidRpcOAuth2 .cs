@@ -116,12 +116,16 @@ namespace SolidRpc.OpenApi.Binder.Services
             });
 
             var redirectUri = await Invoker.GetUriAsync(o => o.TokenCallbackAsync(null, null, cancellationToken));
+            var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync("current", cancellationToken));
 
             return await CreateContent(nameof(GetAuthorizationCodeTokenAsync), new Dictionary<string, string>()
             {
+                { "refreshTokenEndpoint", $"{refreshUri}"},
+                { "callback_uri", callbackUri.ToString() },
+                { "clientState", state},
                 { "authorizationEndpoint", $"{doc.AuthorizationEndpoint}"},
                 { "client_id", HttpUtility.UrlEncode(conf.OAuth2ClientId)},
-                { "state", HttpUtility.UrlEncode(Convert.ToBase64String(statems.ToArray()))},
+                { "serverState", HttpUtility.UrlEncode(Convert.ToBase64String(statems.ToArray()))},
                 { "scope", HttpUtility.UrlEncode(string.Join(" ", scopes)) },
                 { "redirect_uri", HttpUtility.UrlEncode(redirectUri.ToString())}
             });
@@ -213,9 +217,10 @@ namespace SolidRpc.OpenApi.Binder.Services
                 return;
             }
             var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync(null, CancellationToken.None));
-            var secure = string.Equals(refreshUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase) ? "Secure;" : "";
+            var secure = string.Equals(refreshUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase) ? ";Secure" : "";
 
-            result.SetCookie = $"{RefreshTokenCookieName}={refreshToken}; Path={refreshUri.AbsolutePath}; Domain={refreshUri.Host}; HttpOnly; SameSite=Strict; {secure}";
+            //result.SetCookie = $"{RefreshTokenCookieName}={refreshToken};Path={refreshUri.AbsolutePath};Domain={refreshUri.Host};HttpOnly;SameSite=Strict;{secure}";
+            result.SetCookie = $"{RefreshTokenCookieName}={refreshToken};Path={refreshUri.AbsolutePath};HttpOnly{secure}";
         }
 
         private async Task<FileContent> CreateContent(string resourcename, IDictionary<string, string> replace)
@@ -297,6 +302,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             var result = new FileContent()
             {
                 CharSet = enc.HeaderName,
+                ContentType = "text/plain",
                 Content = new MemoryStream(enc.GetBytes(token.AccessToken))
             };
             await SetRefreshTokenAsync(result, token.RefreshToken);

@@ -67,7 +67,7 @@ namespace SolidRpc.Node.Services
             var res = await NodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, directoryInfo.FullName, $"npm{sep}bin{sep}npm-cli.js", new[] { "install" }, cancellationToken);
             if(res.ExitCode != 0)
             {
-                throw new Exception("Cannot explode module!");
+                throw new Exception("Cannot explode module. 'npm install' failed.");
             }
             using (var fs = explodedFile.CreateText())
             {

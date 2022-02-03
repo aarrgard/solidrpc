@@ -103,16 +103,13 @@
         }
       }
     },
-    "/Services/IComplexAndSimpleArgs/GetSimpleAndComplexType/{simpleType}": {
-      "post": {
+    "/Services/IComplexAndSimpleArgs/GetSimpleAndComplexType/{simpleType}/{ct1}": {
+      "get": {
         "tags": [
           "IComplexAndSimpleArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetSimpleAndComplexType#1",
-        "consumes": [
-          "application/json"
-        ],
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetSimpleAndComplexType#2",
         "produces": [
           "application/json"
         ],
@@ -126,11 +123,9 @@
           },
           {
             "name": "ct1",
-            "in": "body",
+            "in": "path",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/ComplexType1"
-            },
+            "$ref": "#/definitions/ComplexType2",
             "description": "The complex type"
           }
         ],
@@ -177,6 +172,22 @@
     }
   },
   "definitions": {
+    "ComplexType2": {
+      "allOf": [
+        {
+          "properties": {
+            "CT2": {
+              "$ref": "#/definitions/ComplexType2"
+            }
+          },
+          "type": "object",
+          "description": "ComplexType1"
+        },
+        {
+          "$ref": "#/definitions/ComplexType1"
+        }
+      ]
+    },
     "ComplexType1": {
       "properties": {
         "CT1": {

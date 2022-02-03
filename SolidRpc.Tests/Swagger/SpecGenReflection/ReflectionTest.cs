@@ -134,6 +134,13 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// <param name="ts"></param>
             /// <returns></returns>
             Task<TimeSpan> TestTimeSpan(TimeSpan ts);
+
+            /// <summary>
+            /// Tests a TimeSpan argument
+            /// </summary>
+            /// <param name="ts"></param>
+            /// <returns></returns>
+            Task<TestStructInherited> TestInheritedStruct(TestStructInherited ts);
         }
 
         /// <summary>
@@ -163,6 +170,17 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// Recursive property
             /// </summary>
             public IEnumerable<TestStruct> Recurse { get; set; }
+        }
+
+        /// <summary>
+        /// Tests inheritance
+        /// </summary>
+        public class TestStructInherited : TestStruct
+        {
+            /// <summary>
+            /// A string property
+            /// </summary>
+            public string StringProp { get; set; }
         }
 
         /// <summary>
@@ -504,6 +522,22 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             var swaggerSpec = new OpenApiSpecGeneratorV2(GetSettings()).CreateSwaggerSpec(specResolver, cSharpRepository);
             var spec = swaggerSpec.WriteAsJsonString(true);
             Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestOpenApiAttributes)}.json"), spec);
+        }
+
+        /// <summary>
+        /// Tests generating inherited structures
+        /// </summary>
+        [Test]
+        public void TestInheritedStruct()
+        {
+            var cSharpRepository = new CSharpRepository();
+            var m = typeof(Interface1).GetMethod(nameof(Interface1.TestInheritedStruct));
+            var csm = CSharpReflectionParser.AddMethod(cSharpRepository, m);
+
+            var specResolver = ServiceProvider.GetRequiredService<IOpenApiSpecResolver>();
+            var swaggerSpec = new OpenApiSpecGeneratorV2(GetSettings()).CreateSwaggerSpec(specResolver, cSharpRepository);
+            var spec = swaggerSpec.WriteAsJsonString(true);
+            Assert.AreEqual(GetManifestResourceAsString($"{nameof(TestInheritedStruct)}.json"), spec);
         }
     }
 }

@@ -1,0 +1,81 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenApi",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestInheritedStruct/{ts}": {
+      "get": {
+        "tags": [
+          "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
+        ],
+        "description": "Tests a TimeSpan argument",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestInheritedStruct#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ts",
+            "in": "path",
+            "required": true,
+            "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited": {
+      "allOf": [
+        {
+          "properties": {
+            "StringProp": {
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "description": "Tests inheritance"
+        },
+        {
+          "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStruct"
+        }
+      ]
+    },
+    "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStruct": {
+      "properties": {
+        "IntProp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Recurse": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStruct"
+          }
+        }
+      },
+      "type": "object",
+      "description": "The test struct"
+    }
+  },
+  "tags": [
+    {
+      "name": "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1",
+      "description": "A test interface"
+    }
+  ]
+}
