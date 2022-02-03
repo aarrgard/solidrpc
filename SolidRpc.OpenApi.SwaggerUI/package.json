@@ -9,7 +9,7 @@
   ],
   "description": "Builds the Swagger UI for SolidRpc integration.",
   "dependencies": {
-    "swagger-ui-dist": "4.1.3"
+    "swagger-ui-dist": "4.4.1"
   },
   "scripts": {
     "build": "cp -R ./node_modules/swagger-ui-dist/* ./www"
