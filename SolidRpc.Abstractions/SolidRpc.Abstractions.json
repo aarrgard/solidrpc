@@ -158,26 +158,6 @@
         }
       }
     },
-    "/Services/Interface1/GetX": {
-      "get": {
-        "tags": [
-          "Interface1"
-        ],
-        "description": "",
-        "operationId": "Get#SolidRpc#Abstractions#Services#Interface1#GetX",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "The response type",
-            "schema": {
-              "$ref": "#/definitions/Test1.Class2"
-            }
-          }
-        }
-      }
-    },
     "/Services/ISolidRpcContentHandler/GetContent": {
       "get": {
         "tags": [
@@ -1314,33 +1294,6 @@
       "type": "object",
       "description": ""
     },
-    "Test1.Class2": {
-      "allOf": [
-        {
-          "properties": {
-            "X2": {
-              "type": "string",
-              "description": ""
-            }
-          },
-          "type": "object",
-          "description": ""
-        },
-        {
-          "$ref": "#/definitions/Test1.Class1"
-        }
-      ]
-    },
-    "Test1.Class1": {
-      "properties": {
-        "X1": {
-          "type": "string",
-          "description": ""
-        }
-      },
-      "type": "object",
-      "description": ""
-    },
     "NameValuePair": {
       "properties": {
         "Name": {
@@ -1695,10 +1648,6 @@
     {
       "name": "Code.ITypescriptGenerator",
       "description": "instance responsible for generating code structures"
-    },
-    {
-      "name": "Interface1",
-      "description": ""
     },
     {
       "name": "ISolidRpcContentHandler",
