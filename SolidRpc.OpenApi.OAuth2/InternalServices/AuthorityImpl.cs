@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types.OAuth2;
@@ -58,16 +59,19 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <summary>
         /// Constructs a new instance
         /// </summary>
+        /// <param name="logger"></param>
         /// <param name="authorityFactoryImpl"></param>
         /// <param name="httpClientFactory"></param>
         /// <param name="serializerFactory"></param>
         /// <param name="authority"></param>
         public AuthorityImpl(
+            ILogger<AuthorityImpl> logger,
             IAuthorityFactory authorityFactoryImpl,
             IHttpClientFactory httpClientFactory,
             ISerializerFactory serializerFactory,
             string authority)
         {
+            Logger = logger;
             AuthorityFactoryImpl = authorityFactoryImpl;
             SerializerFactory = serializerFactory;
             HttpClientFactory = httpClientFactory;
@@ -75,6 +79,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             CachedJwts = new ConcurrentDictionary<string, CachedJwt>();
             GrantTypeScopes = new Dictionary<string, IEnumerable<string>>();
         }
+        private ILogger Logger { get; }
         private IAuthorityFactory AuthorityFactoryImpl { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
@@ -145,6 +150,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public Task<TokenResponse> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
+
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
@@ -166,6 +174,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public Task<TokenResponse> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
+
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "password"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
@@ -179,6 +190,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
         public Task<TokenResponse> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
+
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "authorization_code"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
@@ -190,6 +204,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
         public Task<TokenResponse> RefreshTokenAsync(string clientId, string clientSecret, string refreshToken, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
+
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
             nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
@@ -217,6 +234,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             {
                 return null;
             }
+
             //
             // parse returned token
             //
@@ -241,6 +259,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
             if (!resp.IsSuccessStatusCode)
             {
+                Logger.LogError("Response from authority is not succesful.");
                 return null;
             }
 
@@ -252,11 +271,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             }
             catch
             {
+                Logger.LogError("Failed to deserialize response from authority.");
                 return null;
             }
 
             if (string.IsNullOrEmpty(result?.AccessToken))
             {
+                Logger.LogError("Response from authority does not contain an access token");
                 return null;
             }
             return result;

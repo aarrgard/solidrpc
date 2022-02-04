@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.InternalServices;
+﻿using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
@@ -27,6 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient(sp => sp.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal);
             services.AddTransient<IPrincipal>(sp => sp.GetRequiredService<ClaimsPrincipal>());
             services.AddSingletonIfMissing<IAuthorityFactory>(sp => new AuthorityFactoryImpl(
+                sp.GetRequiredService<ILogger<AuthorityImpl>>(),
                 sp.GetRequiredService<IHttpClientFactory>(),
                 sp.GetRequiredService<ISerializerFactory>(),
                 AuthorityConfigurator));

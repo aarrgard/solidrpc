@@ -174,6 +174,8 @@ namespace SolidRpc.OpenApi.Binder.Services
             string state = null, 
             CancellationToken cancellationToken = default)
         {
+            if (code == null) throw new ArgumentException("No code token supplied");
+
             var conf = GetOAuth2Conf();
             var auth = GetAuthority(conf);
 
@@ -188,6 +190,11 @@ namespace SolidRpc.OpenApi.Binder.Services
                 redirectUri.ToString(),
                 null,
                 cancellationToken);
+
+            if(token == null || string.IsNullOrEmpty(token.AccessToken))
+            {   
+                throw new Exception("No token returned for supplied code.");
+            }
 
             var callback = statestruct.Callback?.ToString() ?? "";
             if(callback.IndexOf('?') > 0)

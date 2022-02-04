@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.OAuth2;
+﻿using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using System;
 using System.Collections.Concurrent;
@@ -19,10 +20,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="serializerFactory"></param>
         /// <param name="authorityConfigurator"></param>
         public AuthorityFactoryImpl(
+            ILogger<AuthorityImpl> logger,
             IHttpClientFactory httpClientFactory,
             ISerializerFactory serializerFactory,
             AuthorityConfigurator authorityConfigurator)
         {
+            Logger = logger;
             HttpClientFactory = httpClientFactory;
             SerializerFactory = serializerFactory;
             AuthorityConfigurator = authorityConfigurator;
@@ -30,6 +33,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             LocalAuthorities = new ConcurrentDictionary<string, IAuthorityLocal>();
             PruneCachedJwts();
         }
+        private ILogger<AuthorityImpl> Logger { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
         private AuthorityConfigurator AuthorityConfigurator { get; }
@@ -56,7 +60,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public IAuthority GetAuthority(string url)
         {
             if (string.IsNullOrEmpty(url)) return null;
-            return Authorities.GetOrAdd(url, _ => AuthorityConfigurator.Configure(new AuthorityImpl(this, HttpClientFactory, SerializerFactory, url)));
+            return Authorities.GetOrAdd(url, _ => AuthorityConfigurator.Configure(new AuthorityImpl(Logger, this, HttpClientFactory, SerializerFactory, url)));
         }
 
         /// <summary>
