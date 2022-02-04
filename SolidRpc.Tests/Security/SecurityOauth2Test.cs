@@ -535,7 +535,7 @@ namespace SolidRpc.Tests.Security
 
                 // continue on to the OAuth server
                 var content = await resp.Content.ReadAsStringAsync();
-                var re = new Regex("'([^']+)'");
+                var re = new Regex("'([^']+&scope=)'");
                 var strUri = re.Match(content).Groups[1].Value;
                 resp = await httpClient.GetAsync(new Uri(strUri));
 
