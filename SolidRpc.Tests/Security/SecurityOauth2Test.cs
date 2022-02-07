@@ -185,6 +185,10 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureServerServices(IServiceCollection serverServices)
         {
             base.ConfigureServerServices(serverServices);
+            serverServices.AddSolidRpcOAuth2(conf =>
+            {
+                conf.AddDefaultScopes("authorization_code", new[] { "openid", "offline_access" });
+            });
             serverServices.AddSolidRpcOAuth2Local(GetIssuer(serverServices.GetSolidRpcService<Uri>()).ToString(), o => o.CreateSigningKey());
             serverServices.AddSolidRpcServices();
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
@@ -535,7 +539,7 @@ namespace SolidRpc.Tests.Security
 
                 // continue on to the OAuth server
                 var content = await resp.Content.ReadAsStringAsync();
-                var re = new Regex("'([^']+&scope=)'");
+                var re = new Regex("'([^']+&scope=openid\\+offline_access)'");
                 var strUri = re.Match(content).Groups[1].Value;
                 resp = await httpClient.GetAsync(new Uri(strUri));
 
