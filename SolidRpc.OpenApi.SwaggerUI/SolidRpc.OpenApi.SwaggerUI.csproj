@@ -23,11 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
+    <None Remove="www\favicon-16x16.sdfsdf.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="www\" />
+    <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

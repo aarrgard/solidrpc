@@ -14,8 +14,6 @@
   <ItemGroup>
     <EmbeddedResource Include="$(AssemblyName).json" />
     <EmbeddedResource Include="$(AssemblyName).xml" />
-    <EmbeddedResource Include="Services\SolidRpcOAuth2.GetAuthorizationCodeTokenAsync.html" />
-    <EmbeddedResource Include="Services\SolidRpcOAuth2.TokenCallbackAsync.html" />
   </ItemGroup>
 
   <ItemGroup>

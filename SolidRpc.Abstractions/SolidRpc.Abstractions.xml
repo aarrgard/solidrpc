@@ -3536,43 +3536,6 @@
             <param name="source"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2">
-            <summary>
-            Implements the solid authorization logic
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.#ctor(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Invoker.IInvoker{SolidRpc.Abstractions.Services.ISolidRpcOAuth2},SolidRpc.Abstractions.Serialization.ISerializerFactory)">
-            <summary>
-            Constructs a new instance
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.GetAuthorizationCodeTokenAsync(System.Uri,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
-            <summary>
-            Returns the authorization code token
-            </summary>
-            <param name="callbackUri"></param>
-            <param name="state"></param>
-            <param name="scopes"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.TokenCallbackAsync(System.String,System.String,System.Threading.CancellationToken)">
-            <summary>
-            The token callvack
-            </summary>
-            <param name="code"></param>
-            <param name="state"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.Binder.Services.SolidRpcOAuth2.RefreshTokenAsync(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Returns a new access token for supplied token
-            </summary>
-            <param name="accessToken"></param>
-            <param name="cancellation"></param>
-            <returns></returns>
-        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
             <summary>
             Extension methods for the solidrpc logic

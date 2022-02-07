@@ -116,19 +116,33 @@ namespace SolidRpc.OpenApi.Binder.Services
             });
 
             var redirectUri = await Invoker.GetUriAsync(o => o.TokenCallbackAsync(null, null, cancellationToken));
-            var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync("current", cancellationToken));
+            var authorizationEndpoint = doc.AuthorizationEndpoint;
+            var client_id = HttpUtility.UrlEncode(conf.OAuth2ClientId);
+            var redirect_uri = HttpUtility.UrlEncode(redirectUri.ToString());
+            var serverState = HttpUtility.UrlEncode(Convert.ToBase64String(statems.ToArray()));
+            var scope = HttpUtility.UrlEncode(string.Join(" ", scopes));
 
-            return await CreateContent(nameof(GetAuthorizationCodeTokenAsync), new Dictionary<string, string>()
+            if (scopes.Any(o => o.Equals("offline_access", StringComparison.InvariantCultureIgnoreCase)))
             {
-                { "refreshTokenEndpoint", $"{refreshUri}"},
-                { "callback_uri", callbackUri.ToString() },
-                { "clientState", state},
-                { "authorizationEndpoint", $"{doc.AuthorizationEndpoint}"},
-                { "client_id", HttpUtility.UrlEncode(conf.OAuth2ClientId)},
-                { "serverState", HttpUtility.UrlEncode(Convert.ToBase64String(statems.ToArray()))},
-                { "scope", HttpUtility.UrlEncode(string.Join(" ", scopes)) },
-                { "redirect_uri", HttpUtility.UrlEncode(redirectUri.ToString())}
-            });
+                var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync("current", cancellationToken));
+                return await CreateContent(nameof(GetAuthorizationCodeTokenAsync), new Dictionary<string, string>()
+                {
+                    { "refreshTokenEndpoint", $"{refreshUri}"},
+                    { "callback_uri", callbackUri.ToString() },
+                    { "clientState", state},
+                    { "authorizationEndpoint", $"{doc.AuthorizationEndpoint}"},
+                    { "client_id", client_id},
+                    { "serverState", serverState},
+                    { "scope", scope },
+                    { "redirect_uri", redirect_uri}
+                });
+            }
+            else
+            {
+                var uri = new Uri($"{authorizationEndpoint}?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&state={serverState}&scope={scope}");
+                throw new FoundException(uri);
+            }
+
         }
 
         private ISecurityOAuth2Config GetOAuth2Conf()

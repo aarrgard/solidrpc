@@ -13,7 +13,8 @@
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 var status = xhr.status;
                 if (status === 200 && xhr.responseText != null && xhr.responseText.length > 0) {
-                    document.location.href = '{callback_uri}?access_token=' + xhr.responseText + '&state={clientState}';
+                    var sep = ("{callback_uri}".indexOf('?') > 0) ? '&' : '?';
+                    document.location.href = '{callback_uri}' + sep + 'access_token=' + xhr.responseText + '&state={clientState}';
                 } else {
                     document.location.href = '{authorizationEndpoint}?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&state={serverState}&scope={scope}';
                 }

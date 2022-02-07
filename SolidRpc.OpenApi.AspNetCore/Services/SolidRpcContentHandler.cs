@@ -157,7 +157,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             var staticFiles = pathMappings
                 .Where(o => path.StartsWith(o.PathPrefix))
                 .Where(o => {
-                    return path.Substring(o.PathPrefix.Length).Replace('/', '.').Equals(o.Content.PathName);
+                    var contentPath = path.Substring(o.PathPrefix.Length);
+                    var resourceName = contentPath.Replace('/', '.');
+                    return resourceName.Equals(o.Content.PathName, StringComparison.InvariantCultureIgnoreCase);
                 }).Select(o => o.Content).ToList();
 
             if (!staticFiles.Any()) 

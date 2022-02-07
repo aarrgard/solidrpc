@@ -1,0 +1,8 @@
+<svg class="checklists-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle class="checklists-circles" cx="4.5" cy="6.5" r="1" fill="#1E1E1E"/>
+<circle class="checklists-circles" cx="4.5" cy="12.5" r="1" fill="#1E1E1E"/>
+<circle class="checklists-circles" cx="4.5" cy="18.5" r="1" fill="#1E1E1E"/>
+<line class="checklists-lines" x1="7" y1="6.4" x2="19" y2="6.4" stroke="#1E1E1E" stroke-width="1.2"/>
+<line class="checklists-lines" x1="7" y1="12.4" x2="19" y2="12.4" stroke="#1E1E1E" stroke-width="1.2"/>
+<line class="checklists-lines" x1="7" y1="18.4" x2="19" y2="18.4" stroke="#1E1E1E" stroke-width="1.2"/>
+</svg>
