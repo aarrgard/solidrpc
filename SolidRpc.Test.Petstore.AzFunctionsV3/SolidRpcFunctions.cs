@@ -276,6 +276,20 @@ namespace SolidRpc.OpenApi.AzFunctions
     }
 
 
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_LogoutAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_LogoutAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
     public class Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync_arg0
     {
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync_arg0")]
@@ -337,6 +351,20 @@ namespace SolidRpc.OpenApi.AzFunctions
         [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_GetTokenAsync")]
         public static Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "options", "post", Route = "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync")] HttpRequestMessage req,
+            [Inject] IServiceProvider serviceProvider,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+        }
+    }
+
+
+    public class Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_RevokeAsync
+    {
+        [FunctionName("Http_SolidRpc_Abstractions_Services_ISolidRpcOidc_RevokeAsync")]
+        public static Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "options", "post", Route = "SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync")] HttpRequestMessage req,
             [Inject] IServiceProvider serviceProvider,
             ILogger log,
             CancellationToken cancellationToken)

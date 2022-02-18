@@ -259,7 +259,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
             if (!resp.IsSuccessStatusCode)
             {
-                Logger.LogError("Response from authority is not succesful.");
+                Logger.LogError($"Response from {doc.TokenEndpoint} is not successful.");
                 return null;
             }
 
@@ -382,6 +382,24 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
             OpenIdKeys = openIdKeys;
             return openIdKeys.Keys;
+        }
+
+        public async Task RevokeTokenAsync(string clientId, string clientSecret, string token, CancellationToken cancellationToken = default)
+        {
+            var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+            var client = HttpClientFactory.CreateClient();
+            var nvc = new List<KeyValuePair<string, string>>();
+            nvc.Add(new KeyValuePair<string, string>("client_id", clientId));
+            nvc.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
+            nvc.Add(new KeyValuePair<string, string>("token", token));
+            var content = new FormUrlEncodedContent(nvc);
+            var resp = await client.PostAsync(doc.TokenEndpoint, content);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                Logger.LogError($"Response from {doc.TokenEndpoint} authority is not succesful.");
+            }
+
         }
     }
 }

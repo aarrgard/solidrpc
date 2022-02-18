@@ -58,6 +58,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
         {
             var authorizationEndpoint = await Invoker.GetUriAsync(o => o.AuthorizeAsync(null, null, null, null, null, null, null, cancellationToken), false);
+            var revokationEndpoint = await Invoker.GetUriAsync(o => o.RevokeAsync(null, null, null, null, cancellationToken), false);
             var tokenEndpoint = await Invoker.GetUriAsync(o => o.GetTokenAsync(null, null, null, null, null, null, null, null, null, null, cancellationToken), false);
             var jwksUri = await Invoker.GetUriAsync(o => o.GetKeysAsync(cancellationToken), false);
             return new OpenIDConnectDiscovery()
@@ -65,6 +66,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
                 Issuer = LocalAuthority.Authority,
                 AuthorizationEndpoint = authorizationEndpoint,
                 TokenEndpoint = tokenEndpoint,
+                RevocationEndpoint = revokationEndpoint,
                 JwksUri = jwksUri,
             };
         }
@@ -268,6 +270,12 @@ namespace SolidRpc.OpenApi.OAuth2.Services
                 Scope = string.Join(" ", principal.Claims.Where(o => o.Type == "scope").Select(o => o.Value)),
                 TokenType = accessToken.TokenType,
             };
+        }
+
+        public Task RevokeAsync(string clientId = null,  string clientSecret = null,  string token = null,  string tokenHint = null, CancellationToken cancellationToken = default)
+        {
+            RefreshTokens.Remove(token);
+            return Task.CompletedTask;
         }
     }
 }

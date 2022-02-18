@@ -185,5 +185,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         {
             return AuthorityImpl.GetScopes(grantType, additionalScopes);
         }
+
+        public Task RevokeTokenAsync(string clientId, string clientSecret, string token, CancellationToken cancellationToken = default)
+        {
+            return AuthorityImpl.RevokeTokenAsync(clientId, clientSecret, token, cancellationToken);
+        }
     }
 }

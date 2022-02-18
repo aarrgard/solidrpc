@@ -443,6 +443,30 @@ namespace SolidRpc.Tests.Security
                 });
 
                 ValidateAccessToken(res, response);
+
+                var revokeResponse = await httpClient.RevokeTokenAsync(new TokenRevocationRequest() {
+                    Address = res.RevocationEndpoint,
+
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                    ClientId = "client",
+                    ClientSecret = "secret",
+                    Token = response.RefreshToken
+                });
+
+                Assert.AreEqual(HttpStatusCode.OK, revokeResponse.HttpStatusCode);
+
+                // use refresh token to get new access token(should fail)
+                response = await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
+                {
+                    Address = res.TokenEndpoint,
+
+                    ClientId = "client",
+                    ClientSecret = "secret",
+
+                    RefreshToken = response.RefreshToken
+                });
+
+                Assert.AreEqual(HttpStatusCode.InternalServerError, response.HttpStatusCode);
             }
         }
 

@@ -171,6 +171,12 @@ namespace SolidRpc.Tests.Invoker
             {
                 throw new NotImplementedException();
             }
+
+            public Task RevokeAsync([OpenApi(Name = "client_id", In = "formData")] string clientId = null, [OpenApi(Name = "client_secret", In = "formData")] string clientSecret = null, [OpenApi(Name = "token", In = "formData")] string token = null, [OpenApi(Name = "token_hint", In = "formData")] string tokenHint = null, CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
+
         }
 
         /// <summary>

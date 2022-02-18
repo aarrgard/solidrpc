@@ -96,11 +96,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             IEnumerable<string> scopes = null,
             CancellationToken cancellationToken = default)
         {
-            var host = callbackUri.Host.Split(':').First();
-            if (!AllowedHosts.Contains(host))
-            {
-                throw new ArgumentException($"Host not allowed({host}). Allowed hosts are {string.Join(",", AllowedHosts)}");
-            }
+            CheckAllowedCallback(callbackUri);
 
             var conf = GetOAuth2Conf();
             var auth = GetAuthority(conf);
@@ -143,6 +139,16 @@ namespace SolidRpc.OpenApi.Binder.Services
                 throw new FoundException(uri);
             }
 
+        }
+
+        private void CheckAllowedCallback(Uri callbackUri)
+        {
+            callbackUri = callbackUri ?? new Uri("https://not.supplied/");
+            var host = callbackUri.Host.Split(':').First();
+            if (!AllowedHosts.Contains(host))
+            {
+                throw new ArgumentException($"Host not allowed({host}). Allowed hosts are {string.Join(",", AllowedHosts)}");
+            }
         }
 
         private ISecurityOAuth2Config GetOAuth2Conf()
@@ -222,7 +228,7 @@ namespace SolidRpc.OpenApi.Binder.Services
 
             var result = await CreateContent(nameof(TokenCallbackAsync), new Dictionary<string, string>()
             {
-                { "accessToken", token.AccessToken},
+                //{ "accessToken", token.AccessToken},
                 { "callback", callback }
            });
 
@@ -238,10 +244,12 @@ namespace SolidRpc.OpenApi.Binder.Services
                 return;
             }
             var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync(null, CancellationToken.None));
+            var path = refreshUri.AbsolutePath.ToString();
+            path = string.Join("/", path.Split('/').Reverse().Skip(2).Reverse());
             var secure = string.Equals(refreshUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase) ? ";Secure" : "";
 
-            //result.SetCookie = $"{RefreshTokenCookieName}={refreshToken};Path={refreshUri.AbsolutePath};Domain={refreshUri.Host};HttpOnly;SameSite=Strict;{secure}";
-            result.SetCookie = $"{RefreshTokenCookieName}={refreshToken};Path={refreshUri.AbsolutePath};HttpOnly{secure}";
+            //result.SetCookie = $"{RefreshTokenCookieName}={refreshToken};Path={path};Domain={refreshUri.Host};HttpOnly;SameSite=Strict;{secure}";
+            result.SetCookie = $"{RefreshTokenCookieName}={refreshToken};Path={path};HttpOnly{secure}";
         }
 
         private async Task<FileContent> CreateContent(string resourcename, IDictionary<string, string> replace)
@@ -282,19 +290,15 @@ namespace SolidRpc.OpenApi.Binder.Services
             var auth = GetAuthority(conf);
 
             // make sure that we get a refresh token as a cookie
-            var currInvoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
-            var cookieValue = ParseCookies(currInvoc.GetValue<IEnumerable<string>>("http_req_cookie"))
-                .Where(o => o.Name == RefreshTokenCookieName)
-                .Select(o => o.Value)
-                .FirstOrDefault();
+            var refreshToken = GetRefreshToken();
 
-            if(string.IsNullOrEmpty(cookieValue))
+            if (string.IsNullOrEmpty(refreshToken))
             {
                 return null;
             }
 
             // use authority to refresh it
-            var token = await auth.RefreshTokenAsync(conf.OAuth2ClientId, conf.OAuth2ClientSecret, cookieValue, cancellation);
+            var token = await auth.RefreshTokenAsync(conf.OAuth2ClientId, conf.OAuth2ClientSecret, refreshToken, cancellation);
             if(token == null)
             {
                 return null;
@@ -372,6 +376,36 @@ namespace SolidRpc.OpenApi.Binder.Services
                 var vals = o.Split(';').First().Split('=');
                 return new NameValuePair() { Name = vals[0], Value = vals[1] };
             });
+        }
+
+        public async Task<FileContent> LogoutAsync(Uri callbackUri = null, CancellationToken cancellationToken = default)
+        {
+            if (callbackUri != null) CheckAllowedCallback(callbackUri);
+
+            // revoke refresh token
+            var refreshToken = GetRefreshToken();
+            if(!string.IsNullOrEmpty(refreshToken))
+            {
+                var conf = GetOAuth2Conf();
+                var auth = GetAuthority(conf);
+
+                await auth.RevokeTokenAsync(conf.OAuth2ClientId, conf.OAuth2ClientSecret, refreshToken, cancellationToken);
+            }
+
+            var result = new FileContent();
+            result.Location = callbackUri.ToString();
+            await SetRefreshTokenAsync(result, "");
+            return result;
+        }
+
+        private string GetRefreshToken()
+        {
+            var currInvoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
+            var tokens = ParseCookies(currInvoc.GetValue<IEnumerable<string>>("http_req_cookie"))
+                .Where(o => o.Name == RefreshTokenCookieName);
+            return tokens
+                .Select(o => o.Value)
+                .FirstOrDefault();
         }
     }
 }

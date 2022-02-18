@@ -1030,6 +1030,16 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.RevokeTokenAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Revokes the supplied token
+            </summary>
+            <param name="clientId"></param>
+            <param name="clientSecret"></param>
+            <param name="token"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory">
             <summary>
             Interface that provides access to an authority factory
@@ -2338,6 +2348,14 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.LogoutAsync(System.Uri,System.Threading.CancellationToken)">
+            <summary>
+            Performs the logout @ the identity server.
+            </summary>
+            <param name="callbackUri"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcOidc">
             <summary>
             Implements logic for the oidc server
@@ -2382,6 +2400,16 @@
             <param name="state">RECOMMENDED. Opaque value used to maintain state between the request and the callback. Typically, Cross-Site Request Forgery (CSRF, XSRF) mitigation is done by cryptographically binding the value of this parameter with a browser cookie.</param>
             <param name="responseMode">The Response Mode determines how the Authorization Server returns result parameters from the Authorization Endpoint. Non-default modes are specified using the response_mode request parameter. If response_mode is not present in a request, the default Response Mode mechanism specified by the Response Type is used.</param>
             <param name="nonce">OPTIONAL. String value used to associate a Client session with an ID Token, and to mitigate replay attacks. The value is passed through unmodified from the Authentication Request to the ID Token. Sufficient entropy MUST be present in the nonce values used to prevent attackers from guessing values. For implementation notes, see Section 15.5.2.</param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOidc.RevokeAsync(System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            revokes a token
+            </summary>
+            <param name="clientId"></param>
+            <param name="clientSecret"></param>
+            <param name="token"></param>
+            <param name="tokenHint"></param>
             <param name="cancellationToken"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit">

@@ -650,6 +650,36 @@
         }
       }
     },
+    "/Services/ISolidRpcOAuth2/LogoutAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOAuth2"
+        ],
+        "description": "Performs the logout @ the identity server.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#LogoutAsync",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "callbackUri",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uri",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/ISolidRpcOAuth2/RefreshTokenAsync/{accessToken}": {
       "get": {
         "tags": [
@@ -925,6 +955,53 @@
             "schema": {
               "$ref": "#/definitions/OAuth2.TokenResponse"
             }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOidc/RevokeAsync": {
+      "post": {
+        "tags": [
+          "ISolidRpcOidc"
+        ],
+        "description": "revokes a token",
+        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcOidc#RevokeAsync",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "client_secret",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "token",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "token_hint",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }

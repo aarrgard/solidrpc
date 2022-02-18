@@ -115,9 +115,23 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<TokenResponse> RefreshTokenAsync(
-            string clientId, 
-            string clientSecret, 
+            string clientId,
+            string clientSecret,
             string refreshToken,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Revokes the supplied token
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="token"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task RevokeTokenAsync(
+            string clientId,
+            string clientSecret,
+            string token,
             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

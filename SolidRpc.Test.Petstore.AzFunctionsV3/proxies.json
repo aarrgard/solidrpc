@@ -561,6 +561,26 @@
       },
       "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}"
     },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync"
+    },
     "front/{path}": {
       "matchCondition": {
         "route": "/front/{*path}",

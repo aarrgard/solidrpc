@@ -74,5 +74,20 @@ namespace SolidRpc.Abstractions.Services
             [OpenApi(Name = "response_mode", In = "query")] string responseMode = default(string),
             [OpenApi(Name = "nonce", In = "query")] string nonce = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// revokes a token
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="token"></param>
+        /// <param name="tokenHint"></param>
+        /// <param name="cancellationToken"></param>
+        Task RevokeAsync(
+            [OpenApi(Name = "client_id", In = "formData")] string clientId = default(string),
+            [OpenApi(Name = "client_secret", In = "formData")] string clientSecret = default(string),
+            [OpenApi(Name = "token", In = "formData")] string token = default(string),
+            [OpenApi(Name = "token_hint", In = "formData")] string tokenHint = default(string),
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -56,5 +56,15 @@ namespace SolidRpc.Abstractions.Services
         Task<FileContent> RefreshTokenAsync(
             string accessToken,
             CancellationToken cancellation = default);
+
+        /// <summary>
+        /// Performs the logout @ the identity server.
+        /// </summary>
+        /// <param name="callbackUri"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> LogoutAsync(
+            Uri callbackUri = null,
+            CancellationToken cancellationToken = default);
     }
 }
