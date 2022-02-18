@@ -226,12 +226,8 @@ namespace SolidRpc.OpenApi.Binder.Services
                 callback = $"{callback}?access_token={token.AccessToken}";
             }
 
-            var result = await CreateContent(nameof(TokenCallbackAsync), new Dictionary<string, string>()
-            {
-                //{ "accessToken", token.AccessToken},
-                { "callback", callback }
-           });
-
+            var result = new FileContent();
+            result.Location = callback;
             await SetRefreshTokenAsync(result, token.RefreshToken);
 
             return result;

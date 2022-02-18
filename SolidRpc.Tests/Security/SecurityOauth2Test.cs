@@ -569,17 +569,17 @@ namespace SolidRpc.Tests.Security
 
                 Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
                 resp = await httpClient.GetAsync(resp.Headers.Location);
-                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+                Assert.AreEqual(HttpStatusCode.Redirect, resp.StatusCode);
 
                 // now go back to the original page
-                content = await resp.Content.ReadAsStringAsync();
-                re = new Regex("accessToken = '([^']+)';");
-                var accessToken = re.Match(content).Groups[1].Value;
-                re = new Regex("callback = '([^']+)';");
-                var callback = re.Match(content).Groups[1].Value;
+                var callback = resp.Headers.Location.ToString();
                 Assert.IsTrue(callback.Contains(arg1));
                 Assert.IsTrue(callback.Contains(arg2));
                 Assert.IsTrue(callback.Contains(arg3));
+
+                var accessToken = callback.Split('?').Skip(1).First()
+                    .Split("&").Where(o => o.StartsWith("access_token")).First()
+                    .Split("=").Skip(1).First();
 
                 resp = await httpClient.GetAsync(new Uri($"{callback}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);

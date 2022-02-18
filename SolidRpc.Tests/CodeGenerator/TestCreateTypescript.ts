@@ -753,6 +753,33 @@ export namespace Abstractions {
                     }
                 }, RefreshTokenAsyncSubject);
             }
+            let LogoutAsyncSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the LogoutAsync invocations.
+             */
+            export var LogoutAsyncObservable = LogoutAsyncSubject.asObservable().pipe(share());
+            /**
+             * Performs the logout @ the identity server.
+             * @param callbackUri 
+             * @param cancellationToken 
+             */
+            export function LogoutAsync(
+                callbackUri? : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, LogoutAsyncSubject);
+            }
             }
         /**
          * Implements logic for the oidc server
@@ -894,6 +921,38 @@ export namespace Abstractions {
                         throw 'Response code != 200('+code+')';
                     }
                 }, AuthorizeAsyncSubject);
+            }
+            let RevokeAsyncSubject = new Subject<void>();
+            /**
+             * This observable is hot and monitors all the responses from the RevokeAsync invocations.
+             */
+            export var RevokeAsyncObservable = RevokeAsyncSubject.asObservable().pipe(share());
+            /**
+             * revokes a token
+             * @param clientId 
+             * @param clientSecret 
+             * @param token 
+             * @param tokenHint 
+             * @param cancellationToken 
+             */
+            export function RevokeAsync(
+                clientId? : string,
+                clientSecret? : string,
+                token? : string,
+                tokenHint? : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, RevokeAsyncSubject);
             }
             }
     }
