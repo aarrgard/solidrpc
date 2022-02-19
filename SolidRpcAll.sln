@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29215.179
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Tests", "SolidRpc.Tests\SolidRpc.Tests.csproj", "{BD634FC6-2AD4-4CC1-A112-46AF83516ADE}"
 EndProject
@@ -65,6 +65,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Node.Arch", "SolidRpc.Node.Arch\SolidRpc.Node.Arch.csproj", "{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFunctionsV5", "SolidRpc.Test.Petstore.AzFunctionsV5\SolidRpc.Test.Petstore.AzFunctionsV5.csproj", "{D4F09DED-73CB-4658-B60B-54EC036A8217}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Test.Petstore.AzFunctionsV6", "SolidRpc.Test.Petstore.AzFunctionsV6\SolidRpc.Test.Petstore.AzFunctionsV6.csproj", "{3F1A106A-C79D-473D-A2E4-8541429F687D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -176,6 +178,10 @@ Global
 		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4F09DED-73CB-4658-B60B-54EC036A8217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F1A106A-C79D-473D-A2E4-8541429F687D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F1A106A-C79D-473D-A2E4-8541429F687D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F1A106A-C79D-473D-A2E4-8541429F687D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F1A106A-C79D-473D-A2E4-8541429F687D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +213,7 @@ Global
 		{82709B24-F308-4175-A04A-C4F7E2A75B64} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{1C18CB58-05B5-46C1-9AB5-3EB68126D35F} = {02FC1D9B-C8C6-4F51-83BF-598B09F8B02F}
 		{D4F09DED-73CB-4658-B60B-54EC036A8217} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
+		{3F1A106A-C79D-473D-A2E4-8541429F687D} = {7C253128-5D02-4E68-BAFB-901E9F7B1055}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22AF29EB-6094-45FD-A3FD-3060F32E0E54}
