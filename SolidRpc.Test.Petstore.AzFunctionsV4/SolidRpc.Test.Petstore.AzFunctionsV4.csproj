@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.16.0" />
+    <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc023" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidRpc.Node\SolidRpc.Node.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.ApplicationInsights\SolidRpc.OpenApi.ApplicationInsights.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.AzFunctionsV2\SolidRpc.OpenApi.AzFunctionsV2Extension.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.AzQueue\SolidRpc.OpenApi.AzQueue.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.OAuth2\SolidRpc.OpenApi.OAuth2.csproj" />
+    <ProjectReference Include="..\SolidRpc.OpenApi.SwaggerUI\SolidRpc.OpenApi.SwaggerUI.csproj" />
+    <ProjectReference Include="..\SolidRpc.Test.Vitec.Impl\SolidRpc.Test.Vitec.Impl.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Update="proxies.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

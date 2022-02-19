@@ -1,0 +1,544 @@
+{
+  "proxies": {
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOauth2RedirectHtml": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOauth2RedirectHtml",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOauth2RedirectHtml"
+    },
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetSwaggerUrls"
+    },
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml"
+    },
+    "SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetOpenApiSpec/{arg0}/{arg1}"
+    },
+    "SolidRpc/Node/Services/INodeService/ListNodeModulesAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/ListNodeModulesAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ListNodeModulesAsync"
+    },
+    "SolidRpc/Node/Services/INodeService/ExecuteScriptAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteScriptAsync"
+    },
+    "SolidRpc/Node/Services/INodeService/GetNodeVersionAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/GetNodeVersionAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/GetNodeVersionAsync"
+    },
+    "SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Node/Services/INodeService/ExecuteFileAsync/{arg0}/{arg1}/{arg2}"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/FlagErrorMessagesAsPending"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ListMessagesAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ListMessagesAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ListMessagesAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessTestMessage/{arg0}"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/GetSettingsAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/GetSettingsAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/GetSettingsAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateSettings": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateSettings",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateSettings"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DoScheduledScanAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/DispatchMessageAsync/{arg0}/{arg1}"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessMessageAsync/{arg0}/{arg1}/{arg2}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessMessageAsync/{arg0}/{arg1}/{arg2}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/ProcessMessageAsync/{arg0}/{arg1}/{arg2}"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/UpdateMessageAsync"
+    },
+    "SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/OpenApi/AzQueue/Services/IAzTableQueue/SendTestMessageUsingProxyAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{arg0}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{arg0}"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync"
+    },
+    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync"
+    },
+    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{arg0}/{arg1}"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive"
+    },
+    "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip"
+    },
+    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting"
+    },
+    "SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{arg0}"
+    },
+    "SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{arg0}"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{arg0}"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins"
+    },
+    "SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync"
+    },
+    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{arg0}/{arg1}"
+    },
+    "SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync"
+    },
+    "SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync",
+        "methods": [
+          "POST",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync"
+    },
+    "SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{arg0}"
+    },
+    "SolidRpc/Abstractions/.well-known/openid-configuration": {
+      "matchCondition": {
+        "route": "/front/SolidRpc/Abstractions/.well-known/openid-configuration",
+        "methods": [
+          "GET",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/.well-known/openid-configuration"
+    },
+    "A{arg}": {
+      "matchCondition": {
+        "route": "/A{arg}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/front/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=A{arg}"
+    },
+    "EmPtY": {
+      "matchCondition": {
+        "route": "/",
+        "methods": [
+          "GET"
+        ]
+      },
+      "responseOverrides": {
+        "response.statusCode": "302",
+        "response.headers.Location": "http://%WEBSITE_HOSTNAME%/front/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml?onlyImplemented=true"
+      }
+    },
+    "front/{path}": {
+      "matchCondition": {
+        "route": "/front/{*path}",
+        "methods": [
+          "GET"
+        ]
+      },
+      "backendUri": "http://%WEBSITE_HOSTNAME%/api/SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent?path=/front/{path}"
+    }
+  }
+}

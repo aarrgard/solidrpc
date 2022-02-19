@@ -74,7 +74,7 @@ namespace SolidRpc.Tests.Invoker
         }
 
         /// <summary>
-        /// 
+        /// l
         /// </summary>
         public class TestImplementation : ITestInterface
         {
