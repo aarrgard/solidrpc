@@ -33,9 +33,6 @@ namespace SolidRpc.OpenApi.AzFunctions
             };
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
-            ConfigureConfiguration(services);
-            ConfigureConfiguration(services);
-
             //
             // configure logging
             //
@@ -50,41 +47,6 @@ namespace SolidRpc.OpenApi.AzFunctions
             services.AddSingleton<IContentTypeProvider>(new FileExtensionContentTypeProvider());
             services.AddSolidRpcSingletonServices();
             services.AddSolidRpcServices(configurator);
-        }
-
-        /// <summary>
-        /// Configures the configuration in the services.
-        /// </summary>
-        /// <param name="services"></param>
-        public virtual void ConfigureConfiguration(IServiceCollection services)
-        {
-            //
-            // configure IConfiguration
-            //
-            var azFuncHandler = services.GetAzFunctionHandler();
-            var configService = services.FirstOrDefault(o => o.ServiceType == typeof(IConfiguration));
-            var config = (IConfiguration)configService?.ImplementationInstance;
-            var cb = new ConfigurationBuilder();
-            if (config == null)
-            {
-                cb.AddEnvironmentVariables();
-            }
-            else
-            {
-                if(config[ConfigurationMethodAddressTransformer.ConfigPathPrefix] == azFuncHandler.HttpRouteFrontendPrefix)
-                {
-                    return;
-                }
-                cb.AddConfiguration(config);
-            }
-            cb.AddInMemoryCollection(new Dictionary<string, string>() {
-                { ConfigurationMethodAddressTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix}
-            });
-            if (configService != null)
-            {
-                services.Remove(configService);
-            }
-            services.AddSingleton<IConfiguration>(cb.Build());
         }
 
         /// <summary>

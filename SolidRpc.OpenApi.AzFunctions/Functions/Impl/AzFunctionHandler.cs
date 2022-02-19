@@ -163,7 +163,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
                     var json = JObject.Parse(tr.ReadToEnd());
                     // V2 - use extensions
                     var routePrefix = json.SelectToken("extensions.http.routePrefix")?.ToObject<string>();
-                    if (string.IsNullOrEmpty(routePrefix))
+                    if (routePrefix == null)
                     {
                         // V1 - use http directly
                         routePrefix = json.SelectToken("http.routePrefix")?.ToObject<string>();

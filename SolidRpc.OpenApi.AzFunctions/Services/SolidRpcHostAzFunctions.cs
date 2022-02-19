@@ -82,6 +82,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             await WriteAzFunctionsAsync(functionDefs,cancellationToken);
 
             var hostAddress = (await GetHostInstance(cancellationToken))?.BaseAddress;
+
             //
             // get the static routes
             //
@@ -105,6 +106,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 staticRoutes.ToDictionary(o => o.Name, o => o.Value),
                 redirects.ToDictionary(o => o.Name, o => o.Value)
                 );
+
 
         }
 

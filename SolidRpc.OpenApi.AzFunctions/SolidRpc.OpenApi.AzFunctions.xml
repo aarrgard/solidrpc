@@ -1017,12 +1017,6 @@
             <param name="services"></param>
             <param name="configurator"></param>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
-            <summary>
-            Configures the configuration in the services.
-            </summary>
-            <param name="services"></param>
-        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices.ConfigureAzureFunction(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>
             
