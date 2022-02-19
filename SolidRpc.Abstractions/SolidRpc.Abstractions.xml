@@ -3569,6 +3569,14 @@
             Extension methods for the solidrpc logic
             </summary>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.RemoveService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Removes the service
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSingletonIfMissing``2(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Adds the service if type is missing in the collection.
@@ -3670,12 +3678,31 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRemoteBindings``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Boolean,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="forceRemote"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRemoteBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
             </summary>
             <param name="sc"></param>
             <param name="interfaze"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRemoteBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Boolean,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="interfaze"></param>
+            <param name="forceRemote"></param>
             <param name="configurator"></param>
             <returns></returns>
         </member>

@@ -9,12 +9,10 @@
 
   <ItemGroup>
     <None Remove="Services\SolidRpcOAuth2.GetAuthorizationCodeTokenAsync.html" />
-    <None Remove="Services\SolidRpcOAuth2.TokenCallbackAsync.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Services\SolidRpcOAuth2.GetAuthorizationCodeTokenAsync.html" />
-    <EmbeddedResource Include="Services\SolidRpcOAuth2.TokenCallbackAsync.html" />
   </ItemGroup>
 
   <ItemGroup>

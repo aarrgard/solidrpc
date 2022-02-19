@@ -68,7 +68,7 @@ namespace SolidRpc.Tests.RateLimit
                 .AddAdviceDependency(typeof(SolidRpcRateLimitAdvice<,,>), typeof(SolidRpcOpenApiInitAdvice<,,>));
 
             base.ConfigureClientServices(clientServices, baseAddress);
-            clientServices.AddSolidRpcRemoteBindings<ISolidRpcRateLimit>();
+            clientServices.AddSolidRpcRemoteBindings<ISolidRpcRateLimit>(true);
 
             var apiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterface))
