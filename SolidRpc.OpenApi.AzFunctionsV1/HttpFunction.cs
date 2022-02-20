@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.Binder.Http;
@@ -30,9 +31,9 @@ namespace SolidRpc.OpenApi.AzFunctions
             {
                 // copy data from req to generic structure
                 // skip api prefix.
-                var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
+                var addrTrans = serviceProvider.GetRequiredService<IMethodAddressTransformer>();
                 var solidReq = new SolidHttpRequest();
-                await solidReq.CopyFromAsync(req, funcHandler.GetPrefixMappings());
+                await solidReq.CopyFromAsync(req, addrTrans.RewritePath);
 
                 // invoke the method
                 var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();

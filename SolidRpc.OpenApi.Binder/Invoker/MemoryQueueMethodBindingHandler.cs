@@ -102,7 +102,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
                 SerializerFactory.DeserializeFromString(msg, out httpRequest);
 
                 var request = new SolidHttpRequest();
-                await request.CopyFromAsync(httpRequest);
+                await request.CopyFromAsync(httpRequest, p => p);
 
                 using (var scope = ServiceScopeFactory.CreateScope())
                 {

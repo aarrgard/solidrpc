@@ -200,19 +200,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             }
         }
 
-        /// <summary>
-        /// Returns the prefix mappings
-        /// </summary>
-        /// <returns></returns>
-        public IDictionary<string, string> GetPrefixMappings()
-        {
-            return new Dictionary<string, string>()
-            {
-                { HttpRouteBackendPrefix, "" },
-                { HttpRouteFrontendPrefix, "" },
-            };
-        }
-
         private Type FindTriggerHandler(string typeSuffix)
         {
             var triggerHandler = FunctionAssembly.GetTypes().Where(o => o.FullName.EndsWith(typeSuffix)).FirstOrDefault();
@@ -319,7 +306,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             IDictionary<string, string> staticRoutes,
             IDictionary<string, string> redirects)
         {
-            var scheme = Environment.GetEnvironmentVariable(ConfigurationMethodAddressTransformer.ConfigScheme) ?? "http";
+            var scheme = Environment.GetEnvironmentVariable(ConfigurationMethodAddressTransformer.ConfigScheme.First()) ?? "http";
             // add the content fetcher 
             var staticRoute = $"{HttpRouteFrontendPrefix}/{{*path}}";
             staticRoutes[staticRoute] = $"{scheme}://%WEBSITE_HOSTNAME%{HttpRouteBackendPrefix}/{typeof(ISolidRpcContentHandler).FullName.Replace('.', '/')}/{nameof(ISolidRpcContentHandler.GetContent)}?path={HttpRouteFrontendPrefix}/{{path}}";

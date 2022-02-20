@@ -202,12 +202,6 @@
             The frontend prefix
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.GetPrefixMappings">
-            <summary>
-            Returns the prefix mappings
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateFunction``1(System.String)">
             <summary>
             Creates a new timer function
@@ -483,12 +477,6 @@
             <summary>
             Returns the frontend prefix
             </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.GetPrefixMappings">
-            <summary>
-            Returns the prefix mappings
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateFunction``1(System.String)">
             <summary>

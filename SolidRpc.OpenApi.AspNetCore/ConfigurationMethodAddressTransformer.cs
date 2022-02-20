@@ -17,30 +17,36 @@ namespace SolidRpc.OpenApi.Binder
     /// </summary>
     public class ConfigurationMethodAddressTransformer : IMethodAddressTransformer
     {
+        private static readonly string BaseConfig = "SolidRpc:AddressTransformer";
         /// <summary>
         /// The configuration variable that stores the path prefix
         /// </summary>
-        public const string ConfigPathPrefix = "SolidRpc.BaseUriTransformer.PathPrefix";
+        public static readonly string[] ConfigPathPrefix = new [] { $"{BaseConfig}:PathPrefix", "SolidRpc.BaseUriTransformer.PathPrefix" };
 
         /// <summary>
         /// The configuration variable that stores the scheme
         /// </summary>
-        public const string ConfigScheme = "SolidRpc.BaseUriTransformer.Scheme";
+        public static readonly string[] ConfigScheme = new[] { $"{BaseConfig}:Scheme", "SolidRpc.BaseUriTransformer.Scheme" };
 
         /// <summary>
         /// The allowed CORS origins
         /// </summary>
-        public const string ConfigCors = "SolidRpc.BaseUriTransformer.Cors";
+        public static readonly string[] ConfigCors = new[] { $"{BaseConfig}:Cors", "SolidRpc.BaseUriTransformer.Cors" };
 
         /// <summary>
         /// The configuration variable that stores the host
         /// </summary>
-        public const string ConfigHost = "SolidRpc.BaseUriTransformer.Host";
+        public static readonly string[] ConfigHost = new[] { $"{BaseConfig}:Host", "SolidRpc.BaseUriTransformer.Host" };
 
         /// <summary>
         /// The configuration variable that stores the variables to look for the host
         /// </summary>
-        public const string ConfigHostSettings = "SolidRpc.BaseUriTransformer.HostConfigSettings";
+        public static readonly string[] ConfigHostSettings = new[] { $"{BaseConfig}:HostConfigSettings", "SolidRpc.BaseUriTransformer.HostConfigSettings" };
+
+        /// <summary>
+        /// The configuration variable that specifies the rewrites that we should do.
+        /// </summary>
+        public static readonly string[] ConfigPathRewrites = new[] { $"{BaseConfig}:PrefixRewrites" };
 
         /// <summary>
         /// Constructs a new instance of the uri transformer.
@@ -59,13 +65,13 @@ namespace SolidRpc.OpenApi.Binder
             }
             else
             {
-                Scheme = configuration[ConfigScheme];
-                Host = HostString.FromUriComponent(configuration[ConfigHost]);
-                PathPrefix = configuration[ConfigPathPrefix];
+                Scheme = GetValue(configuration, ConfigScheme);
+                Host = HostString.FromUriComponent(GetValue(configuration,ConfigHost));
+                PathPrefix = GetValue(configuration, ConfigPathPrefix);
 
                 if (string.IsNullOrEmpty(Host.Host))
                 {
-                    var hostConfigSettings = configuration[ConfigHostSettings] ?? "urls,WEBSITE_HOSTNAME";
+                    var hostConfigSettings = GetValue(configuration,ConfigHostSettings,"urls,WEBSITE_HOSTNAME");
                     if (!string.IsNullOrEmpty(hostConfigSettings))
                     {
                         foreach (var hostConfigSetting in hostConfigSettings.Split(','))
@@ -97,16 +103,48 @@ namespace SolidRpc.OpenApi.Binder
             }
             BaseAddress = TransformUri(new Uri("https://localhost/"), null);
 
-            ConfiguredCors = (configuration[ConfigCors] ?? "").Split(',')
+            ConfiguredCors = GetValue(configuration,ConfigCors,"").Split(',')
                 .Where(o => !string.IsNullOrEmpty(o))
                 .Distinct()
                 .ToList();
+            PathRewrites = ParsePathRewrites(GetValue(configuration, ConfigPathRewrites, ""));
+        }
+
+        private string[][] ParsePathRewrites(string rewrites)
+        {
+            var retVal = new List<string[]>();
+            foreach (var part in rewrites.Split(','))
+            {
+                if (string.IsNullOrEmpty(part)) continue;
+                var parts = part.Split(':').Select(o => o.Trim()).ToArray();
+                if (parts.Length != 2) throw new Exception("Invalid rewrite rule:" + part);
+                if(parts[0] != parts[1])
+                {
+                    retVal.Add(parts);
+                }
+            }
+
+            return retVal.ToArray();
+        }
+
+        private string GetValue(IConfiguration configuration, string[] confNames, string defaultValue = null)
+        {
+            foreach(var confName in confNames)
+            {
+                var value = configuration[confName];
+                if(value != null)
+                {
+                    return value;
+                }
+            }
+            return defaultValue;
         }
 
         public IEnumerable<string> ConfiguredCors { get; set; }
         private string Scheme { get; }
         private HostString Host { get; }
         private string PathPrefix { get; }
+        private string[][] PathRewrites { get; }
 
         /// <summary>
         /// The  base address
@@ -178,6 +216,20 @@ namespace SolidRpc.OpenApi.Binder
                 newUri.Path = $"{PathPrefix}{newUri.Path}";
             }
             return newUri.Uri ?? throw new Exception("Uri is null!");
+        }
+
+        public string RewritePath(string path)
+        { 
+            for(int i = 0; i < 100; i++)
+            {
+                var match = PathRewrites.FirstOrDefault(o => path.StartsWith(o[0]));
+                if (match == null) return path;
+                if (path == match[0]) return match[1];
+                if (path[match[0].Length] != '/') return path;
+
+                path = $"{match[1]}{path.Substring(match[0].Length)}";
+            }
+            throw new Exception("Followed more than 100 rewrites - invalid configuration");
         }
     }
 }

@@ -241,6 +241,13 @@
             Returns the base address for this server
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.RewritePath(System.String)">
+            <summary>
+            Rewrites the supplied path based on the rewrite rules
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Binder.IMethodAddressTransformer.TransformUri(System.Uri,System.Reflection.MethodInfo)">
             <summary>
             Returns the uri for supplied method. If no method is supplied

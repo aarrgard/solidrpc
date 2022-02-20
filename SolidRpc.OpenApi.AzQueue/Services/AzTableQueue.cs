@@ -95,7 +95,7 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             SerializerFactory.DeserializeFromString(message, out httpRequest);
 
             var request = new SolidHttpRequest();
-            await request.CopyFromAsync(httpRequest);
+            await request.CopyFromAsync(httpRequest, p => p);
 
             var resp = await MethodInvoker.InvokeAsync(ServiceProvider, QueueHandler, request);
             if(resp.StatusCode >= 200 && resp.StatusCode < 300)

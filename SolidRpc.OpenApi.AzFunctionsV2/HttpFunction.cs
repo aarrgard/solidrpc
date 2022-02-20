@@ -32,7 +32,8 @@ namespace SolidRpc.OpenApi.AzFunctions
                 //
                 // for some reason the port is not added to the request
                 //
-                var baseAddress = serviceProvider.GetRequiredService<IMethodAddressTransformer>().BaseAddress;
+                var addrTrans = serviceProvider.GetRequiredService<IMethodAddressTransformer>();
+                var baseAddress = addrTrans.BaseAddress;
                 if (baseAddress.Host == req.RequestUri.Host)
                 {
                     var ub = new UriBuilder(req.RequestUri);
@@ -42,9 +43,8 @@ namespace SolidRpc.OpenApi.AzFunctions
                 
                 // copy data from req to generic structure
                 // skip api prefix.
-                var funcHandler = serviceProvider.GetRequiredService<IAzFunctionHandler>();
                 var solidReq = new SolidHttpRequest();
-                await solidReq.CopyFromAsync(req, funcHandler.GetPrefixMappings());
+                await solidReq.CopyFromAsync(req, addrTrans.RewritePath);
 
                 // invoke the method
                 var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();

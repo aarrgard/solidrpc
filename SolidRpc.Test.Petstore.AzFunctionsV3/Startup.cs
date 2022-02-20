@@ -32,7 +32,8 @@ namespace SolidRpc.OpenApi.AzFunctionsV4Extension
             builder.ConfigurationBuilder
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    { ConfigurationMethodAddressTransformer.ConfigPathPrefix, azFuncHandler.HttpRouteFrontendPrefix }
+                    { ConfigurationMethodAddressTransformer.ConfigPathPrefix.First(), azFuncHandler.HttpRouteFrontendPrefix },
+                    { ConfigurationMethodAddressTransformer.ConfigPathRewrites.First(), $"{azFuncHandler.HttpRouteBackendPrefix}:,{azFuncHandler.HttpRouteFrontendPrefix}:" }
                 })
                 .AddEnvironmentVariables();
         }

@@ -178,10 +178,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="target"></param>
         /// <param name="source"></param>
         /// <param name="prefixMappings"></param>
-        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequest source)
+        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequest source, Func<string,string> pathRewrite)
         {
             target.Method = source.Method;
-            target.CopyUri(source.Uri);
+            target.CopyUri(source.Uri, pathRewrite);
             target.Headers = source.Headers
                 .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
                 .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value))
@@ -203,7 +203,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="target"></param>
         /// <param name="uri"></param>
         /// <param name="prefixMappings"></param>
-        public static void CopyUri(this IHttpRequest target, Uri uri, IDictionary<string, string> prefixMappings = null)
+        public static void CopyUri(this IHttpRequest target, Uri uri, Func<string, string> pathRewrite)
         {
             if (uri.IsDefaultPort)
             {
@@ -214,17 +214,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.HostAndPort = $"{uri.Host}:{uri.Port}";
             }
             target.HostAndPort = uri.Host;
-            target.Path = uri.AbsolutePath;
-            if (prefixMappings != null)
-            {
-                foreach (var prefixMapping in prefixMappings)
-                {
-                    if (target.Path.StartsWith(prefixMapping.Key))
-                    {
-                        target.Path = $"{prefixMapping.Value}{target.Path.Substring(prefixMapping.Key.Length)}";
-                    }
-                }
-            }
+            target.Path = pathRewrite(uri.AbsolutePath);
             target.Query = (uri.Query.StartsWith("?") ? uri.Query.Substring(1) : uri.Query)
                 .Split('&')
                 .Select(o => o.Split('='))
@@ -253,10 +243,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// <param name="target"></param>
         /// <param name="source"></param>
         /// <param name="prefixMappings"></param>
-        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source, IDictionary<string, string> prefixMappings = null)
+        public static async Task CopyFromAsync(this IHttpRequest target, HttpRequestMessage source, Func<string, string> pathRewrite)
         {
             target.Method = source.Method.Method;
-            target.CopyUri(source.RequestUri, prefixMappings);
+            target.CopyUri(source.RequestUri, pathRewrite);
             target.Headers = source.Headers
                 .SelectMany(o => o.Value.Select(o2 => new { o.Key, Value = o2 }))
                 .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value))

@@ -51,7 +51,7 @@ namespace SolidRpc.OpenApi.AzFunctions
                 serFact.DeserializeFromString(message, out httpReq);
 
                 var solidReq = new SolidHttpRequest();
-                await solidReq.CopyFromAsync(httpReq);
+                await solidReq.CopyFromAsync(httpReq, p => p);
 
                 // invoke the method
                 var httpHandler = serviceProvider.GetRequiredService<AzQueueHandler>();

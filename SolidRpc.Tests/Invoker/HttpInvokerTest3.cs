@@ -206,7 +206,7 @@ namespace SolidRpc.Tests.Invoker
                 serializerFactory.DeserializeFromString(message, out httpRequest);
 
                 var request = new SolidHttpRequest();
-                await request.CopyFromAsync(httpRequest);
+                await request.CopyFromAsync(httpRequest, p => p);
 
                 var reqMsg = new System.Net.Http.HttpRequestMessage();
                 request.CopyTo(reqMsg);

@@ -31,12 +31,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         string HttpRouteFrontendPrefix { get; }
 
         /// <summary>
-        /// Returns the prefix mappings
-        /// </summary>
-        /// <returns></returns>
-        IDictionary<string, string> GetPrefixMappings();
-
-        /// <summary>
         /// Creates a new timer function
         /// </summary>
         /// <returns></returns>

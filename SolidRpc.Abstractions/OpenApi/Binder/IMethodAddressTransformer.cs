@@ -20,6 +20,13 @@ namespace SolidRpc.Abstractions.OpenApi.Binder
         Uri BaseAddress { get; }
 
         /// <summary>
+        /// Rewrites the supplied path based on the rewrite rules
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        string RewritePath(string path);
+
+        /// <summary>
         /// Returns the uri for supplied method. If no method is supplied
         /// the base address for the open api spec is determined.
         /// </summary>
