@@ -119,7 +119,8 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
                         case "a":
                             continue;
                         default:
-                            throw new Exception("Cannot handle node:" + childElement.Name);
+                            //throw new Exception("Cannot handle node:" + childElement.Name);
+                            continue;
                     }
                 }
             }

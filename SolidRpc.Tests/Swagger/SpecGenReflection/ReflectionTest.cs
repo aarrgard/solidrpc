@@ -64,6 +64,7 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
             /// </summary>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// <value></value>
             Task TestStuff(CancellationToken cancellationToken);
 
             /// <summary>

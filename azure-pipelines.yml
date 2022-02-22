@@ -46,6 +46,8 @@ steps:
 #
 # Prepare nuget packages
 #
+- task: NuGetAuthenticate@0
+
 - task: PowerShell@2
   displayName: SolidCI - Nuget prepare
   inputs:
