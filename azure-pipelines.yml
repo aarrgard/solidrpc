@@ -77,7 +77,7 @@ steps:
 #
 # Pack it in a nuget assembly and copy to artifacts folder, then push it
 #
-- script: dotnet pack SolidRpc.sln --configuration $(buildConfiguration) --no-build --include-source --include-symbols
+- script: dotnet pack SolidRpc.sln --configuration $(buildConfiguration) --no-build --include-source
   displayName: 'Nuget - Create packages'
   workingDirectory: $(projectFolder)
 
