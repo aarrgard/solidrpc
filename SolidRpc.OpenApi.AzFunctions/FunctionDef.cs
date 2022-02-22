@@ -74,11 +74,6 @@ namespace SolidRpc.OpenApi.AzFunctions
 
         private (string, string) FixupPath(string path)
         {
-            // remove frontend prefix
-            if (path.StartsWith($"{FunctionHandler.HttpRouteFrontendPrefix}/"))
-            {
-                path = path.Substring(FunctionHandler.HttpRouteFrontendPrefix.Length + 1);
-            }
             //
             // transform wildcard names
             //

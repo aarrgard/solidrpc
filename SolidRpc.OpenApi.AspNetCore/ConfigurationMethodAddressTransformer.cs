@@ -118,6 +118,7 @@ namespace SolidRpc.OpenApi.Binder
                 if (string.IsNullOrEmpty(part)) continue;
                 var parts = part.Split(':').Select(o => o.Trim()).ToArray();
                 if (parts.Length != 2) throw new Exception("Invalid rewrite rule:" + part);
+                if (retVal.Any(o => o[0] == parts[0] && o[1] == parts[1])) continue;
                 if(parts[0] != parts[1])
                 {
                     retVal.Add(parts);

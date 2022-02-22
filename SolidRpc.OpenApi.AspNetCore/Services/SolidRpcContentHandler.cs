@@ -28,24 +28,24 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="serviceProvider"></param>
         /// <param name="contentStore"></param>
         /// <param name="methodBinderStore"></param>
-        /// <param name="httpClientFactory"></param>
+        /// <param name="methodAddressTransformer"></param>
         public SolidRpcContentHandler(
             IServiceProvider serviceProvider,
             SolidRpcContentStore contentStore, 
             IMethodBinderStore methodBinderStore,
-            IHttpClientFactory httpClientFactory)
+            IMethodAddressTransformer methodAddressTransformer)
         {
             ServiceProvider = serviceProvider;
             ContentStore = contentStore;
             MethodBinderStore = methodBinderStore;
-            HttpClientFactory = httpClientFactory;
+            MethodAddressTransformer = methodAddressTransformer;
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
 
         private IServiceProvider ServiceProvider { get; }
         private SolidRpcContentStore ContentStore { get; }
         private IMethodBinderStore MethodBinderStore { get; }
-        private IHttpClientFactory HttpClientFactory { get; }
+        private IMethodAddressTransformer MethodAddressTransformer { get; }
 
         /// <summary>
         /// The static files configured for this host
@@ -97,7 +97,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             {
                 throw new FileContentNotFoundException();
             }
-            return StaticFiles.GetOrAdd(path, GetStaticContentInternal).Invoke(path, cancellationToken);
+            return StaticFiles.GetOrAdd(path, GetContentInternal).Invoke(path, cancellationToken);
         }
 
         private IEnumerable<string> GetPathPrefixes(StaticContent c)
@@ -105,17 +105,18 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
             if(!string.IsNullOrEmpty(c.PathPrefix))
             {
-                return new[] { c.PathPrefix };
+                return new[] { MethodAddressTransformer.RewritePath(c.PathPrefix) };
             }
             else
             {
                 return MethodBinderStore.MethodBinders
                         .Where(mb => mb.Assembly == c.ApiAssembly)
-                        .Select(o => o.HostedAddress.AbsolutePath);                    
+                        .Select(o => o.HostedAddress.AbsolutePath)
+                        .Select(o => MethodAddressTransformer.RewritePath(o));                    
             }
         }
 
-        private Func<string, CancellationToken, Task<FileContent>> GetStaticContentInternal(string path)
+        private Func<string, CancellationToken, Task<FileContent>> GetContentInternal(string path)
         {
             //
             // check path mappings
@@ -127,7 +128,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                     using(var ss = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                     {
                         var uri = await dm.UriResolver(ss.ServiceProvider);
-                        var httpClient = HttpClientFactory.CreateClient();
+                        var httpClient = ss.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
                         var resp = await httpClient.GetAsync(uri, cancellationToken);
                         var ms = new MemoryStream();
                         await resp.Content.CopyToAsync(ms);

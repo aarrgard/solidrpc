@@ -47,7 +47,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
             services.AddSolidRpcOAuth2Local(GetOAuth2Issuer(services), conf => { conf.CreateSigningKey(); });
-            services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
+            //services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             //services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
 

@@ -10,7 +10,8 @@ namespace SolidRpc.Abstractions.Services
     /// 
     /// This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.
     /// </summary>
-    public interface ISolidRpcContentHandler    {
+    public interface ISolidRpcContentHandler
+    {
 
         /// <summary>
         /// Returns the content for supplied path.

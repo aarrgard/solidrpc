@@ -45,7 +45,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             : base(logger, serviceProvider)
         {
             MethodBinderStore = methodBinderStore;
-            ContentHandler = contentHandler;
             FunctionHandler = functionHandler;
             ConfigurationStore = configurationStore;
 
@@ -60,7 +59,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         }
 
         private IMethodBinderStore MethodBinderStore { get; }
-        private ISolidRpcContentHandler ContentHandler { get; }
         private IAzFunctionHandler FunctionHandler { get; }
         private ISolidProxyConfigurationStore ConfigurationStore { get; }
 
@@ -80,34 +78,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
             var startTime = DateTime.Now;
             await WriteAzFunctionsAsync(functionDefs,cancellationToken);
-
-            var hostAddress = (await GetHostInstance(cancellationToken))?.BaseAddress;
-
-            //
-            // get the static routes
-            //
-            var staticRoutes = (await ContentHandler.GetPathMappingsAsync(false, cancellationToken)).ToList();
-            var wildcardRoutes = staticRoutes.Where(o => o.Name.EndsWith("*")).Where(o => o.Value.EndsWith("*")).ToList();
-            staticRoutes.RemoveAll(o => wildcardRoutes.Any(o2 => o.Name == o2.Name));
-            staticRoutes.AddRange(wildcardRoutes.Select(o => new NameValuePair() {
-                Name = o.Name.Replace("*", "{arg}"),
-                Value = o.Value.Replace("*", "{arg}")
-            }));
-            staticRoutes = staticRoutes.Select(o => new NameValuePair() { Name = o.Name, Value = o.Value.Replace($"/{hostAddress.Authority}/", "/%WEBSITE_HOSTNAME%/") }).ToList();
-
-            //
-            // get the redirects
-            //
-            var redirects = (await ContentHandler.GetPathMappingsAsync(true, cancellationToken)).ToList();
-            redirects = redirects.Select(o => new NameValuePair() { Name = o.Name, Value = o.Value.Replace($"/{hostAddress.Authority}/", "/%WEBSITE_HOSTNAME%/") }).ToList();
-
-            FunctionHandler.SyncProxiesFile(
-                functionDefs,
-                staticRoutes.ToDictionary(o => o.Name, o => o.Value),
-                redirects.ToDictionary(o => o.Name, o => o.Value)
-                );
-
-
         }
 
         private IEnumerable<FunctionDef> GetFunctionDefinitions(IMethodBinding mb)
@@ -194,18 +164,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             //
             // handle http functions
             //
-            var httpFunctionDefs = functionDefs.OfType<HttpFunctionDef>().ToList();
-            var httpPaths = httpFunctionDefs.Select(o => o.PathWithArgNames).Distinct().ToList();
-            foreach (var path in httpPaths)
             {
-                var pathFunctionNames = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.FunctionName).Distinct();
-                if(pathFunctionNames.Count() > 1)
-                {
-                    throw new Exception("Found more than one function for path:"+path);
-                }
-                var functionName = pathFunctionNames.Single();
-                var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).Union(new[] { "options" }).OrderBy(o => o).ToArray();
-                var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Distinct().Single();
+                var path = "/{*restOfPath}";
+                var functionName = "WildcardFunc";
+                var methods = (new[] { "get", "post", "options" }).OrderBy(o => o).ToArray();
+                var authLevel = "Anonymous";
 
                 var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
                 httpFunction.AuthLevel = authLevel;
@@ -213,6 +176,25 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 httpFunction.Methods = methods;
                 touchedFunctions.Add(httpFunction);
             }
+            //var httpFunctionDefs = functionDefs.OfType<HttpFunctionDef>().ToList();
+            //var httpPaths = httpFunctionDefs.Select(o => o.PathWithArgNames).Distinct().ToList();
+            //foreach (var path in httpPaths)
+            //{
+            //    var pathFunctionNames = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.FunctionName).Distinct();
+            //    if(pathFunctionNames.Count() > 1)
+            //    {
+            //        throw new Exception("Found more than one function for path:"+path);
+            //    }
+            //    var functionName = pathFunctionNames.Single();
+            //    var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).Union(new[] { "options" }).OrderBy(o => o).ToArray();
+            //    var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Distinct().Single();
+
+            //    var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
+            //    httpFunction.AuthLevel = authLevel;
+            //    httpFunction.Route = FunctionHandler.CreateRoute(path);
+            //    httpFunction.Methods = methods;
+            //    touchedFunctions.Add(httpFunction);
+            //}
 
             //
             // handle queue functions

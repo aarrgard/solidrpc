@@ -246,26 +246,31 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                     }
                     if (binding.IsLocal)
                     {
-                        var oauth2Config = binding.GetSolidProxyConfig<ISecurityOAuth2Config>();
-                        if (oauth2Config?.Enabled ?? false)
+                        var pathClaimConfig = binding.GetSolidProxyConfig<ISecurityPathClaimConfig>();
+                        var pathClaimEnabled = pathClaimConfig?.Enabled ?? false;
+                        if(pathClaimEnabled)
                         {
-                            if (AuthorityFactory == null) throw new Exception("You need to add the OAuth2 services.");
-                            var authority = AuthorityFactory.GetAuthority(oauth2Config.OAuth2Authority);
-                            if (authority == null) throw new Exception("Failed to get authority: "+ oauth2Config.OAuth2Authority);
-                            var authDoc = await authority.GetDiscoveryDocumentAsync(cancellationToken);
-                            authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnectDiscovery()
+                            var oauth2Config = binding.GetSolidProxyConfig<ISecurityOAuth2Config>();
+                            if (oauth2Config?.Enabled ?? false)
                             {
-                                AuthorizationEndpoint = new Uri("https://no.authority.found"),
-                                TokenEndpoint = new Uri("https://no.authority.found"),
-                            };
-                            op.AddOAuth2Auth(authDoc, "authorizationCode", authority.GetScopes("authorization_code", oauth2Config.OAuth2Scopes));
-                        }
-                        var securityKeyConfig = binding.GetSolidProxyConfig<ISecurityKeyConfig>();
-                        var securityKey = securityKeyConfig?.SecurityKey;
-                        if ((securityKeyConfig?.Enabled ?? false) && securityKey != null)
-                        {
-                            var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
-                            op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
+                                if (AuthorityFactory == null) throw new Exception("You need to add the OAuth2 services.");
+                                var authority = AuthorityFactory.GetAuthority(oauth2Config.OAuth2Authority);
+                                if (authority == null) throw new Exception("Failed to get authority: "+ oauth2Config.OAuth2Authority);
+                                var authDoc = await authority.GetDiscoveryDocumentAsync(cancellationToken);
+                                authDoc = authDoc ?? new Abstractions.Types.OAuth2.OpenIDConnectDiscovery()
+                                {
+                                    AuthorizationEndpoint = new Uri("https://no.authority.found"),
+                                    TokenEndpoint = new Uri("https://no.authority.found"),
+                                };
+                                op.AddOAuth2Auth(authDoc, "authorizationCode", authority.GetScopes("authorization_code", oauth2Config.OAuth2Scopes));
+                            }
+                            var securityKeyConfig = binding.GetSolidProxyConfig<ISecurityKeyConfig>();
+                            var securityKey = securityKeyConfig?.SecurityKey;
+                            if ((securityKeyConfig?.Enabled ?? false) && securityKey != null)
+                            {
+                                var definitionName = $"SolidRpcSecurity.{securityKey.Value.Key}";
+                                op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
+                            }
                         }
                         var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
                         if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))

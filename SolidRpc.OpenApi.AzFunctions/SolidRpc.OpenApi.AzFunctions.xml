@@ -197,11 +197,6 @@
             Returns the http route prefix.
             </summary>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.HttpRouteFrontendPrefix">
-            <summary>
-            The frontend prefix
-            </summary>
-        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.CreateFunction``1(System.String)">
             <summary>
             Creates a new timer function
@@ -213,11 +208,6 @@
             Creates a new timer function
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.SyncProxiesFile(System.Collections.Generic.List{SolidRpc.OpenApi.AzFunctions.FunctionDef},System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
-            <summary>
-            Puts all the functions in the proxies file.
-            </summary>
         </member>
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler.HttpTriggerHandler">
             <summary>
@@ -473,11 +463,6 @@
             Returns the route prefix.
             </summary>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.HttpRouteFrontendPrefix">
-            <summary>
-            Returns the frontend prefix
-            </summary>
-        </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateFunction``1(System.String)">
             <summary>
             Creates a function
@@ -485,11 +470,6 @@
             <typeparam name="T"></typeparam>
             <param name="functionName"></param>
             <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.SyncProxiesFile(System.Collections.Generic.List{SolidRpc.OpenApi.AzFunctions.FunctionDef},System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
-            <summary>
-            Syncronizes the proxies file with the functions.
-            </summary>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.CreateRoute(System.String)">
             <summary>

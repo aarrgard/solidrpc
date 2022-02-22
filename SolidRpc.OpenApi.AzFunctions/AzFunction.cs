@@ -20,11 +20,18 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static async Task DoRun(Func<Task> del)
         {
-            await Interceptor(async () =>
+            try
             {
-                await del();
-                return null;
-            });
+                await Interceptor(async () =>
+                {
+                    await del();
+                    return null;
+                });
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -35,8 +42,15 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static async Task<T> DoRun<T>(Func<Task<T>> del)
         {
-            var res = await Interceptor(async () => await del());
-            return (T)res;
+            try
+            {
+                var res = await Interceptor(async () => await del());
+                return (T)res;
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
         }
     }
 }

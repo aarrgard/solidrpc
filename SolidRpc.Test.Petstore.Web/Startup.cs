@@ -21,8 +21,8 @@ namespace SolidRpc.Test.PetstoreWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //var oauth2Iss = "https://localhost:5001/";
-            var oauth2Iss = "https://identity.erikolsson.se";
+            var oauth2Iss = "https://localhost:5001/";
+            //var oauth2Iss = "https://identity.erikolsson.se";
             services.AddLogging(o => {
                 o.SetMinimumLevel(LogLevel.Trace);
                 o.AddConsole();

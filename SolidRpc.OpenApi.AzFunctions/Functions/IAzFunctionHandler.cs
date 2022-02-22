@@ -26,11 +26,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         string HttpRouteBackendPrefix { get; }
 
         /// <summary>
-        /// The frontend prefix
-        /// </summary>
-        string HttpRouteFrontendPrefix { get; }
-
-        /// <summary>
         /// Creates a new timer function
         /// </summary>
         /// <returns></returns>
@@ -41,14 +36,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions
         /// </summary>
         /// <returns></returns>
         T GetOrCreateFunction<T>(string name) where T : class, IAzFunction;
-
-        /// <summary>
-        /// Puts all the functions in the proxies file.
-        /// </summary>
-        void SyncProxiesFile(
-            List<FunctionDef> functionDefs,
-            IDictionary<string, string> staticRoutes, 
-            IDictionary<string, string> redirects);
 
         /// <summary>
         /// Returns the http trigger handler.

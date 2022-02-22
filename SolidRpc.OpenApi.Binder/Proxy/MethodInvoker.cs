@@ -7,6 +7,7 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
@@ -31,13 +32,17 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
         private class PathSegment
         {
+            private static readonly IEnumerable<IMethodBinding> EmptyMethodBindings = new IMethodBinding[0];
+
             public PathSegment()
             {
                 SubSegments = new Dictionary<string, PathSegment>();
+                MethodBindings = EmptyMethodBindings;
             }
             public PathSegment(PathSegment parentSegment) : this()
             {
                 ParentSegment = parentSegment;
+                MethodBindings = EmptyMethodBindings;
             }
 
             public PathSegment ParentSegment { get; }
@@ -46,16 +51,18 @@ namespace SolidRpc.OpenApi.Binder.Proxy
 
             public IEnumerable<IMethodBinding> MethodBindings { get; set; }
 
+            public Func<IHttpRequest, IHttpRequest> Rewrite { get; set; }
+
             public void AddPath(IMethodBinding methodBinding)
             {
-                AddPath(methodBinding.Method, methodBinding);
-                AddPath("OPTIONS", methodBinding);
+                AddPath(methodBinding.Method, methodBinding.LocalPath, r => r, methodBinding);
+                AddPath("OPTIONS", methodBinding.LocalPath, r => r, methodBinding);
             }
 
-            private void AddPath(string method, IMethodBinding methodBinding)
+            public void AddPath(string method, string path, Func<IHttpRequest, IHttpRequest> rewrite, IMethodBinding methodBinding)
             {
                 var work = this;
-                var segments = $"{method}{methodBinding.LocalPath}".Split('/');
+                var segments = $"{method}{path}".Split('/');
                 foreach (var segment in segments)
                 {
                     var key = segment;
@@ -69,58 +76,61 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     }
                     work = subSegment;
                 }
-                work.MethodBindings = (work.MethodBindings == null) ?
-                    new[] { methodBinding } : work.MethodBindings.Union(new[] { methodBinding }).ToArray();
+                work.MethodBindings = work.MethodBindings.Union(new[] { methodBinding }).ToArray();
+                work.Rewrite = rewrite;
             }
 
-            public IEnumerable<IMethodBinding> GetMethodBindings(IEnumerator<string> segments)
+            public PathSegment GetPathSegment(IEnumerator<string> segments)
             {
                 if (!segments.MoveNext())
                 {
-                    return MethodBindings;
+                    return this;
                 }
                 if (!SubSegments.TryGetValue(segments.Current, out PathSegment subSegment))
                 {
                     if (!SubSegments.TryGetValue("{}", out subSegment))
                     {
-                        throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",", SubSegments.Keys)}");
+                        return null;
+                        //throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",", SubSegments.Keys)}");
                     }
                 }
-                return subSegment.GetMethodBindings(segments);
+                return subSegment.GetPathSegment(segments);
             }
         }
 
-        private readonly object _mutex = new object();
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         private PathSegment _rootSegment;
 
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
             IMethodAddressTransformer methodAddressTransformer,
+            ISolidRpcContentHandler contentHandler,
             IMethodBinderStore methodBinderStore)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             MethodInfo2Binding = new Dictionary<MethodInfo, IMethodBinding>();
             MethodAddressTransformer = methodAddressTransformer;
+            ContentHandler = contentHandler;
         }
 
         private ILogger Logger { get; }
         public IMethodBinderStore MethodBinderStore { get; }
         private Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
         private IMethodAddressTransformer MethodAddressTransformer { get; }
+        private ISolidRpcContentHandler ContentHandler { get; }
 
-        private PathSegment RootSegment => GetRootSegment();
-
-        private PathSegment GetRootSegment()
+        private async Task<PathSegment> GetRootSegmentAsync(CancellationToken cancellationToken)
         {
             var rootSegment = _rootSegment;
-            if (rootSegment != null)
+            if (_rootSegment != null)
             {
-                return rootSegment;
+                return _rootSegment;
             }
-            lock(_mutex)
+            await _semaphore.WaitAsync(cancellationToken);
+            try 
             {
-                Logger.LogInformation($"Creating new root segments...");
+                Logger.LogInformation($" new root segments...");
                 rootSegment = new PathSegment();
                 var methodBindings = MethodBinderStore.MethodBinders
                     .SelectMany(o => o.MethodBindings)
@@ -137,29 +147,62 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         MethodInfo2Binding[mi] = methodBinding;
                     }
                 });
+
+                // Add prefix mappings into content handler
+                var prefixes1 = (await ContentHandler.GetPathMappingsAsync(true)).Select(o => o.Name);
+                var prefixes2 = (await ContentHandler.GetPathMappingsAsync(false)).Select(o => o.Name);
+                var prefixes3 = ContentHandler.PathPrefixes;
+                var contentBinding = MethodBinderStore.GetMethodBinding<ISolidRpcContentHandler>(o => o.GetContent("/", cancellationToken));
+                prefixes1.Union(prefixes2).Union(prefixes3).ToList().ForEach(o =>
+                {
+                    var prefix = MethodAddressTransformer.RewritePath(o);          
+                    if(prefix.EndsWith("*"))
+                    {
+                        prefix = prefix.Substring(0, prefix.Length-1);
+                    }
+                    if (!prefix.EndsWith("/"))
+                    {
+                        prefix = $"{prefix}/";
+                    }
+                    prefix = $"{prefix}{{}}";
+                    Func<IHttpRequest, IHttpRequest> rewrite = (r) =>
+                    {
+                        r.Query = new[] { new SolidHttpRequestDataString("text/plain", "path", r.Path) };
+                        r.Path = contentBinding.LocalPath;
+                        return r;
+                    };
+                    rootSegment.AddPath("GET", prefix, rewrite, contentBinding);
+                    rootSegment.AddPath("OPTIONS", prefix, rewrite, contentBinding);
+                });
+
                 Logger.LogInformation($"...root segments created");
+            } 
+            finally
+            {
+                _semaphore.Release();
             }
             _rootSegment = rootSegment;
             return rootSegment;
         }
 
-        public Task<IHttpResponse> InvokeAsync(
+        public async Task<IHttpResponse> InvokeAsync(
             IServiceProvider serviceProvider,
             ITransportHandler invocationSource,
             IHttpRequest request, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var pathKey = $"{request.Method}{request.Path}";
-            var methodBindings = RootSegment.GetMethodBindings(pathKey.Split('/').AsEnumerable().GetEnumerator());
-            if(methodBindings == null)
+            var pathSegment = (await GetRootSegmentAsync(cancellationToken)).GetPathSegment(pathKey.Split('/').AsEnumerable().GetEnumerator());
+            if(pathSegment == null || !pathSegment.MethodBindings.Any())
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);
-                return Task.FromResult<IHttpResponse>(new SolidHttpResponse()
+                return new SolidHttpResponse()
                 {
                     StatusCode = 404
-                });
+                };
             }
-            return InvokeAsync(serviceProvider, invocationSource, request, methodBindings, cancellationToken);
+            request = pathSegment.Rewrite(request);
+            return await InvokeAsync(serviceProvider, invocationSource, request, pathSegment.MethodBindings, cancellationToken);
         }
 
         public async Task<IHttpResponse> InvokeAsync(
