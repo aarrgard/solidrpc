@@ -34,6 +34,9 @@ steps:
     feedsToUse: config
     nugetConfigPath: $(projectFolder)/nuget.config
 
+- task: NuGetAuthenticate@0
+  displayName: Nuget - autenticate
+
 #
 # Setupd solidci paths - must be done after nuget restore
 #
@@ -46,7 +49,6 @@ steps:
 #
 # Prepare nuget packages
 #
-- task: NuGetAuthenticate@0
 
 - task: PowerShell@2
   displayName: SolidCI - Nuget prepare
@@ -88,6 +90,11 @@ steps:
   inputs:
     contents: '$(projectFolder)/**/*.nupkg'
     targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Nuget - publish - Pipeline'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
   displayName: 'Nuget - push - internal'
