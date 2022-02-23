@@ -522,12 +522,12 @@ namespace Microsoft.Extensions.DependencyInjection
             // make sure that the type is registered
             //
             var services = sc.Where(o => o.ServiceType == interfaze);
-            if(forceRemote)
+            if (!services.Any(o => o.ImplementationType == interfaze))
             {
-                if (!services.Any(o => o.ImplementationType == interfaze))
-                {
-                    sc.AddTransient(interfaze, interfaze);
-                }
+                sc.AddTransient(interfaze, interfaze);
+            }
+            if (forceRemote)
+            {
                 services.Where(o => o.ImplementationType != interfaze).ToList().ForEach(o => sc.Remove(o));
             }
 
