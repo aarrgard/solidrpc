@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SolidRpc.Abstractions.Serialization;
 using System;
 using System.IO;
-using System.Text;
 
 namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
@@ -17,7 +17,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 Formatting = serializerSettings.PrettyPrint ? Formatting.Indented : Formatting.None,
                 ContractResolver = new NewtonsoftContractResolver(serializerSettings)
             });
-
+            JsonSerializer.Converters.Add(new StringEnumConverter() { AllowIntegerValues = false });
         }
 
         private ISerializerFactory Factory { get; }

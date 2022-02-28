@@ -17,6 +17,12 @@ namespace SolidRpc.Tests.Serialization
     /// </summary>
     public class SerializationTest : TestBase
     {
+        private enum TestEnum
+        {
+            TestVal1 = 10,
+            TestVal2 = 20
+        }
+
         /// <summary>
         /// Test class
         /// </summary>
@@ -273,6 +279,18 @@ namespace SolidRpc.Tests.Serialization
             var serFact = sp.GetRequiredService<ISerializerFactory>();
 
             TestSerializeDeserialize(serFact, new Uri("ws://test.ws/ws"), str => Assert.AreEqual("\"ws://test.ws/ws\"", str));
+        }
+
+        /// <summary>
+        /// Tests the enum
+        /// </summary>
+        [Test]
+        public void TestEnumValue()
+        {
+            var sp = GetServiceProvider();
+            var serFact = sp.GetRequiredService<ISerializerFactory>();
+
+            TestSerializeDeserialize(serFact, TestEnum.TestVal2, str => Assert.AreEqual("\"TestVal2\"", str));
         }
 
         /// <summary>
