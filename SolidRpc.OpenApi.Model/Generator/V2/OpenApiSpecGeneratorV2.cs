@@ -511,6 +511,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     foreach(var ext in extends)
                     {
                         var x = type.GetParent<ICSharpRepository>().GetClass(ext.Name);
+                        if (x == null) continue;
                         refs.Add(new SchemaObject(baseSo) { Ref = CreateRefObject(node, x) });
                     }
                     baseSo.AllOf = refs;

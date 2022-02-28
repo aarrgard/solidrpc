@@ -1,0 +1,56 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "TypesImplementsInterface",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/TypesImplementsInterface",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/ITypesImplementsInterface/GetData": {
+      "get": {
+        "tags": [
+          "ITypesImplementsInterface"
+        ],
+        "description": "",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#TypesImplementsInterface#Services#ITypesImplementsInterface#GetData",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "$ref": "#/definitions/Sub.ComplexType"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Sub.ComplexType": {
+      "allOf": [
+        {
+          "properties": {
+            "Data": {
+              "type": "string",
+              "description": "ComplexType1"
+            }
+          },
+          "type": "object",
+          "description": "ComplexType"
+        }
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "ITypesImplementsInterface",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}
