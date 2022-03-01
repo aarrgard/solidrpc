@@ -103,13 +103,16 @@
         }
       }
     },
-    "/Services/IComplexAndSimpleArgs/GetSimpleAndComplexType/{simpleType}/{ct1}": {
-      "get": {
+    "/Services/IComplexAndSimpleArgs/GetSimpleAndComplexType/{simpleType}": {
+      "post": {
         "tags": [
           "IComplexAndSimpleArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetSimpleAndComplexType#2",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#ComplexAndSimpleArgs#Services#IComplexAndSimpleArgs#GetSimpleAndComplexType#1",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -123,9 +126,11 @@
           },
           {
             "name": "ct1",
-            "in": "path",
+            "in": "body",
             "required": true,
-            "$ref": "#/definitions/ComplexType2",
+            "schema": {
+              "$ref": "#/definitions/ComplexType2"
+            },
             "description": "The complex type"
           }
         ],

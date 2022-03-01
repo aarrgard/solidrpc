@@ -203,7 +203,7 @@ namespace SolidRpc.OpenApi.Model.V2
             throw new Exception($"Cannot determine type for {item.Type}/{item.Format}");
         }
 
-        public string GetBaseType()
+        public virtual string GetBaseType()
         {
             var refSchema = GetRefSchema();
             if(refSchema != null)

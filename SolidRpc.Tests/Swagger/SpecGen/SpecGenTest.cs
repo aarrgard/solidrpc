@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "TypesImplementsInterface") continue;
+                if (subDir.Name != "ComplexAndSimpleArgs") continue;
                 CreateSpec(subDir.Name, true);
             }
         }
@@ -581,6 +581,18 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     )).Returns(uri);
                 var urires = proxy.GetUri(uri);
                 CompareStructs(uri, urires);
+
+                // complex inheritance
+                var complexType = new ComplexAndSimpleArgs.Types.ComplexType2() {
+                    CT1 = new ComplexAndSimpleArgs.Types.ComplexType1(),
+                    CT2 = new ComplexAndSimpleArgs.Types.ComplexType2() 
+                };
+                moq.Setup(o => o.GetSimpleAndComplexType(
+                    It.Is<string>(s => s == "test"),
+                    It.Is<ComplexAndSimpleArgs.Types.ComplexType2>(a => CompareStructs(complexType, a))
+                    )).Returns(complexType);
+                var ct1 = proxy.GetSimpleAndComplexType("test", complexType);
+                CompareStructs(complexType, ct1);
             });
         }
 

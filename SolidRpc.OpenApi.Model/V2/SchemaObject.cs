@@ -235,5 +235,18 @@ namespace SolidRpc.OpenApi.Model.V2
         {
             return Required ?? new string[0];
         }
+
+        /// <summary>
+        /// Returns the base type
+        /// </summary>
+        /// <returns></returns>
+        public override string GetBaseType()
+        {
+            if(AllOf?.Any() ?? false)
+            {
+                return AllOf.Select(o => o.GetBaseType()).Where(o => o != null).FirstOrDefault();
+            }
+            return base.GetBaseType();
+        }
     }
 }

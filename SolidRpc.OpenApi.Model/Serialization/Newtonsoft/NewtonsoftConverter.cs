@@ -263,8 +263,21 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 return (r, o, s) =>
                 {
                     var val = m.Invoke(this, new[] { r, o, s, sp});
-                    prop.SetValue(o, val);
-                    return o;
+                    try
+                    {
+                        prop.SetValue(o, val);
+                        return o;
+                    } 
+                    catch(TargetException e)
+                    {
+                        var newo = Activator.CreateInstance(prop.DeclaringType);
+                        foreach(var p in o.GetType().GetProperties())
+                        {
+                            p.SetValue(newo, p.GetValue(o));
+                        }
+                        prop.SetValue(newo, val);
+                        return newo;
+                    }
                 };
             }
             if (propertyMetaData.Count > 1)
