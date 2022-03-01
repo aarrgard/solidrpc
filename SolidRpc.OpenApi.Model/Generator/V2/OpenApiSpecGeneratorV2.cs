@@ -502,7 +502,11 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 }
 
                 // add inheritance
-                var extends = type.Members.OfType<ICSharpTypeExtends>().ToList();
+                var repo = type.GetParent<ICSharpRepository>();
+                var extends = type.Members.OfType<ICSharpTypeExtends>()
+                    .Select(o => repo.GetClass(o.Name))
+                    .Where(o => o != null)
+                    .ToList();
                 if (extends.Any())
                 {
                     var baseSo = new SchemaObject(definitions);
@@ -510,9 +514,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                     refs.Add(so);
                     foreach(var ext in extends)
                     {
-                        var x = type.GetParent<ICSharpRepository>().GetClass(ext.Name);
-                        if (x == null) continue;
-                        refs.Add(new SchemaObject(baseSo) { Ref = CreateRefObject(node, x) });
+                        refs.Add(new SchemaObject(baseSo) { Ref = CreateRefObject(node, ext) });
                     }
                     baseSo.AllOf = refs;
                     definitions[defName] = baseSo;

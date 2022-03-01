@@ -22,7 +22,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The response type",
+            "description": "ComplexType",
             "schema": {
               "$ref": "#/definitions/Sub.ComplexType"
             }
@@ -33,18 +33,14 @@
   },
   "definitions": {
     "Sub.ComplexType": {
-      "allOf": [
-        {
-          "properties": {
-            "Data": {
-              "type": "string",
-              "description": "ComplexType1"
-            }
-          },
-          "type": "object",
-          "description": "ComplexType"
+      "properties": {
+        "Data": {
+          "type": "string",
+          "description": "ComplexType1"
         }
-      ]
+      },
+      "type": "object",
+      "description": "ComplexType"
     }
   },
   "tags": [
