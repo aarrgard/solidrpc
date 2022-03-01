@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                if (subDir.Name != "ComplexAndSimpleArgs") continue;
+                //if (subDir.Name != "ComplexAndSimpleArgs") continue;
                 CreateSpec(subDir.Name, true);
             }
         }

@@ -216,22 +216,27 @@
         }
       }
     },
-    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestInheritedStruct/{ts}": {
-      "get": {
+    "/SolidRpc/Tests/Swagger/SpecGenReflection/ReflectionTest/Interface1/TestInheritedStruct": {
+      "post": {
         "tags": [
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a TimeSpan argument",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestInheritedStruct#1",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestInheritedStruct",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
             "name": "ts",
-            "in": "path",
+            "in": "body",
             "required": true,
-            "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited"
+            "schema": {
+              "$ref": "#/definitions/SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.TestStructInherited"
+            }
           }
         ],
         "responses": {
