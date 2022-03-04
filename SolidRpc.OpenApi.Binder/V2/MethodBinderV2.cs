@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
@@ -203,7 +204,11 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return true;
             }
-            if(clrType == typeof(string[]) && type == typeof(StringValues))
+            if (clrType == typeof(string[]) && type == typeof(StringValues))
+            {
+                return true;
+            }
+            if (clrType == typeof(Stream) && type == typeof(byte[]))
             {
                 return true;
             }

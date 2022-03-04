@@ -361,6 +361,33 @@ export namespace Abstractions {
                     }
                 }, GetPathMappingsAsyncSubject);
             }
+            let GetProtectedContentAsyncSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the GetProtectedContentAsync invocations.
+             */
+            export var GetProtectedContentAsyncObservable = GetProtectedContentAsyncSubject.asObservable().pipe(share());
+            /**
+             * Returns the protected content for supplied resource
+             * @param resource 
+             * @param cancellationToken 
+             */
+            export function GetProtectedContentAsync(
+                resource : Uint8Array,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}';
+                SolidRpcJs.ifnull(resource, () => { uri = uri.replace('{resource}', ''); }, nn =>  { uri = uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, GetProtectedContentAsyncSubject);
+            }
             }
         /**
          * Represents a solid rpc host.

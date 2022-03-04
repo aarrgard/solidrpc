@@ -24,6 +24,15 @@ namespace SolidRpc.Abstractions.Types.OAuth2
             return s_SecurityKeys.GetOrAdd(keyId, _ => CreateKey(key));
         }
 
+        private static SecurityKey CreateKey(OpenIDKey key)
+        {
+            var sw = new StringWriter();
+            JsonHelper.Serialize(sw, key, typeof(OpenIDKey));
+            var json = $"{{\"Keys\":[{sw}]}}";
+            var jsonKeys = JsonWebKeySet.Create(json);
+            return jsonKeys.GetSigningKeys().First();
+        }
+
         /// <summary>
         /// Adds the oauth2 services
         /// </summary>
@@ -34,15 +43,6 @@ namespace SolidRpc.Abstractions.Types.OAuth2
             var k = JsonWebKeyConverter.ConvertFromSecurityKey(key);
             var ms = JsonHelper.Serialize(k, typeof(JsonWebKey));
             return JsonHelper.Deserialize<OpenIDKey>(ms);
-        }
-
-        private static SecurityKey CreateKey(OpenIDKey key)
-        {
-            var sw = new StringWriter();
-            JsonHelper.Serialize(sw, key, typeof(OpenIDKey));
-            var json = $"{{\"Keys\":[{sw}]}}";
-            var jsonKeys = JsonWebKeySet.Create(json);
-            return jsonKeys.GetSigningKeys().First();
         }
     }
 }

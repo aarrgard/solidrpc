@@ -100,7 +100,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     {
                         data = Activator.CreateInstance(type);
                     }
-                    template.SetContent(data, valData.GetBinaryValue());
+                    template.SetContent(data, valData.GetStreamValue());
                     template.SetContentType(data, valData.ContentType);
                     template.SetCharSet(data, valData.Encoding?.HeaderName);
                     template.SetFileName(data, valData.Filename);
@@ -368,7 +368,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 if(rd.ContentType == "application/json")
                 {
-                    var newValue = JsonHelper.Deserialize(rd.GetBinaryValue(), ParameterInfo.ParameterType, rd.Encoding);
+                    var newValue = JsonHelper.Deserialize(rd.GetStreamValue(), ParameterInfo.ParameterType, rd.Encoding);
                     return newValue;
                 }
                 throw new Exception("Cannot extract args from request data!");

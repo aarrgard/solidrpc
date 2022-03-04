@@ -18,8 +18,21 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class AuthorityLocalImpl : IAuthorityLocal
     {
-        private SecurityKey _privateKey;
-        private SecurityKey _publicKey;
+        private class RsaKey
+        {
+            public RsaKey(RSA rsa, string keyId)
+            {
+                RSA = rsa;
+                SecurityKey = new RsaSecurityKey(rsa) { KeyId = keyId};
+                OpenIDKey = SecurityKey.AsOpenIDKey();
+            }
+            public string KeyId => SecurityKey.KeyId;
+            public RSA RSA { get; }
+            public SecurityKey SecurityKey { get; }
+            public OpenIDKey OpenIDKey { get; }
+        }
+        private RsaKey _privateKey;
+        private RsaKey _publicKey;
 
         /// <summary>
         /// Constructs a new instance
@@ -36,7 +49,9 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <summary>
         /// Returns the private signing key.
         /// </summary>
-        OpenIDKey IAuthorityLocal.PrivateSigningKey => _privateKey.AsOpenIDKey();
+        OpenIDKey IAuthorityLocal.PrivateSigningKey => _privateKey.OpenIDKey;
+
+        OpenIDKey IAuthorityLocal.PublicSigningKey => _publicKey.OpenIDKey;
 
         public string Authority => AuthorityImpl.Authority;
 
@@ -47,7 +62,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         private IEnumerable<OpenIDKey> GetLocalKeys()
         {
             if (_publicKey == null) throw new Exception("No signing key exists for local authority.");
-            yield return _publicKey.AsOpenIDKey();
+            yield return _publicKey.OpenIDKey;
         }
 
         /// <summary>
@@ -74,7 +89,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 throw new Exception("Private signing key not part o public keys");
             }
 
-            var signingCredentials = new SigningCredentials(_privateKey, SecurityAlgorithms.RsaSha512Signature);
+            var signingCredentials = new SigningCredentials(_privateKey.SecurityKey, SecurityAlgorithms.RsaSha512Signature);
             var securityTokenDescriptor = new SecurityTokenDescriptor()
             {
                 Issuer = Authority,
@@ -102,39 +117,29 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public void CreateSigningKey()
         {
             var rsa = RSA.Create();
-            var keyId = Guid.NewGuid().ToString();
-            var privateKey = new RsaSecurityKey(rsa.ExportParameters(true))
-            {
-                KeyId = keyId
-            };
-            var publicKey = new RsaSecurityKey(rsa.ExportParameters(false))
-            {
-                KeyId = keyId
-            };
-            SetSigningKey(privateKey, publicKey);
+            SetRsa(rsa, rsa, Guid.NewGuid().ToString());
         }
 
-        private void SetSigningKey(SecurityKey privateKey, SecurityKey publicKey)
+        private void SetRsa(
+            RSA publicKey, 
+            RSA privateKey,
+            string keyId)
         {
-            _privateKey = privateKey;
-            _publicKey = publicKey;
+            _publicKey = new RsaKey(publicKey, keyId);
+            _privateKey = new RsaKey(privateKey, keyId);
         }
 
         /// <summary>
         /// Sets the signing key.
         /// </summary>
         /// <param name="cert"></param>
+        /// <param name="keyId"></param>
         public void SetSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId)
         {
             if (keyId == null) keyId = c => c.Thumbprint;
-            SetSigningKey(new RsaSecurityKey(cert.GetRSAPrivateKey())
-            {
-                KeyId = keyId(cert)
-            }, new RsaSecurityKey(cert.GetRSAPublicKey())
-            {
-                KeyId = keyId(cert)
-            });
-
+            var publicKey = cert.GetRSAPublicKey();
+            var privateKey = cert.GetRSAPrivateKey();
+            SetRsa(publicKey, privateKey, keyId(cert));
         }
 
         Task<OpenIDConnectDiscovery> IAuthority.GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
@@ -189,6 +194,16 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public Task RevokeTokenAsync(string clientId, string clientSecret, string token, CancellationToken cancellationToken = default)
         {
             return AuthorityImpl.RevokeTokenAsync(clientId, clientSecret, token, cancellationToken);
+        }
+
+        public byte[] Encrypt(byte[] data)
+        {
+            return _publicKey.RSA.Encrypt(data, RSAEncryptionPadding.OaepSHA512);
+        }
+
+        public byte[] Decrypt(byte[] data)
+        {
+            return _privateKey.RSA.Decrypt(data, RSAEncryptionPadding.OaepSHA512);
         }
     }
 }

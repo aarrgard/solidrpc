@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SolidProxy.MicrosoftDI;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -25,27 +27,31 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// The content handler
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="contentStore"></param>
-        /// <param name="methodBinderStore"></param>
+        /// <param name="serviceScopeFactory"></param>
+        /// <param name="protectedContent"></param>
         /// <param name="methodAddressTransformer"></param>
+        /// <param name="methodBinderStore"></param>
+        /// <param name="contentStore"></param>
         public SolidRpcContentHandler(
-            IServiceProvider serviceProvider,
-            SolidRpcContentStore contentStore, 
+            IServiceScopeFactory serviceScopeFactory,
+            IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore,
-            IMethodAddressTransformer methodAddressTransformer)
+            SolidRpcContentStore contentStore,
+            ISolidRpcProtectedContent protectedContent = null)
         {
-            ServiceProvider = serviceProvider;
-            ContentStore = contentStore;
-            MethodBinderStore = methodBinderStore;
-            MethodAddressTransformer = methodAddressTransformer;
+            ServiceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodAddressTransformer));
+            MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
+            ContentStore = contentStore ?? throw new ArgumentNullException(nameof(contentStore));
+            ProtectedContent = protectedContent;
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
 
-        private IServiceProvider ServiceProvider { get; }
-        private SolidRpcContentStore ContentStore { get; }
-        private IMethodBinderStore MethodBinderStore { get; }
+        private IServiceScopeFactory ServiceScopeFactory { get; }
+        private ISolidRpcProtectedContent ProtectedContent { get; }
         private IMethodAddressTransformer MethodAddressTransformer { get; }
+        private IMethodBinderStore MethodBinderStore { get; }
+        private SolidRpcContentStore ContentStore { get; }
 
         /// <summary>
         /// The static files configured for this host
@@ -68,8 +74,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken)
         {
-            var scopeFact = ServiceProvider.GetRequiredService<IServiceScopeFactory>();
-            using (var scope = scopeFact.CreateScope())
+            using (var scope = ServiceScopeFactory.CreateScope())
             {
                 var tasks = ContentStore.DynamicContents
                     .Where(o => o.Value.IsRedirect == redirects)
@@ -102,8 +107,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
         private IEnumerable<string> GetPathPrefixes(StaticContent c)
         {
-
-            if(!string.IsNullOrEmpty(c.PathPrefix))
+            if (!string.IsNullOrEmpty(c.PathPrefix))
             {
                 return new[] { MethodAddressTransformer.RewritePath(c.PathPrefix) };
             }
@@ -125,7 +129,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             {
                 return async (_, cancellationToken) =>
                 {
-                    using(var ss = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                    using(var ss = ServiceScopeFactory.CreateScope())
                     {
                         var uri = await dm.UriResolver(ss.ServiceProvider);
                         var httpClient = ss.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
@@ -184,6 +188,18 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                     LastModified = assemblyLocation?.LastWriteTime
                 });
             };
+        }
+
+        /// <summary>
+        /// Returns the protected content
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
+        {
+            return ProtectedContent.GetProtectedContentAsync(resource, cancellationToken);
         }
     }
 }

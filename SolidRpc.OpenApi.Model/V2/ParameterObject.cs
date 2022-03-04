@@ -91,7 +91,6 @@ namespace SolidRpc.OpenApi.Model.V2
         public bool IsBinaryType()
         {
             if (Type == "file") return true;
-            if (Type == "string" && Format == "binary") return true;
             if (Schema == null) return false;
             return Schema.IsBinaryType(); 
         }

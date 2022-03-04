@@ -439,9 +439,18 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             }
             if (type.EnumerableType != null)
             {
-                itemBase.Type = "array";
-                itemBase.Items = GetSchema(itemBase, false, type.EnumerableType);
-                return;
+                if(type.EnumerableType.Name == "byte")
+                {
+                    itemBase.Type = "string";
+                    itemBase.Format = "binary";
+                    return;
+                }
+                else
+                {
+                    itemBase.Type = "array";
+                    itemBase.Items = GetSchema(itemBase, false, type.EnumerableType);
+                    return;
+                }
             }
             else if (type.NullableType != null)
             {

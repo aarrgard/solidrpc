@@ -35,5 +35,13 @@ namespace SolidRpc.Abstractions.Services
         /// Returns all the path mappings.
         /// </summary>
         Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the protected content for supplied resource
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken);
     }
 }

@@ -54,7 +54,13 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         /// Returns the binary value.
         /// </summary>
         /// <returns></returns>
-        Stream GetBinaryValue();
+        byte[] GetBinaryValue();
+
+        /// <summary>
+        /// Returns the binary value.
+        /// </summary>
+        /// <returns></returns>
+        Stream GetStreamValue();
 
         /// <summary>
         /// Returns the data as supplied type.

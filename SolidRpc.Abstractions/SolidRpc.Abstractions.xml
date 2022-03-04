@@ -132,6 +132,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.GetStreamValue">
+            <summary>
+            Returns the binary value.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestData.As``1">
             <summary>
             Returns the data as supplied type.
@@ -1085,6 +1091,25 @@
             The signing key
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.PublicSigningKey">
+            <summary>
+            The signing key
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.Encrypt(System.Byte[])">
+            <summary>
+            Encrypts using the supplied key.
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.Decrypt(System.Byte[])">
+            <summary>
+            Encrypts using the supplied key.
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateAccessTokenAsync(System.Security.Claims.ClaimsIdentity,System.Nullable{System.DateTimeOffset},System.Threading.CancellationToken)">
             <summary>
             Creates the jwt token from supplied claims
@@ -1727,6 +1752,35 @@
             <param name="continuationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent">
+            <summary>
+            Provides access to protected content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.GetProtectedContentAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Returns the protected content for supplied resource
+            </summary>
+            <param name="resource"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.GetProtectedContentAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the content for the supplied resource.
+            </summary>
+            <param name="resource"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.CreateProtectedResourceStrings(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Constructs a list of protected resurce strings from supplied content paths
+            </summary>
+            <param name="content"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.InternalServices.SolidRpcApplication">
             <summary>
             Implements the solid application logic
@@ -2179,6 +2233,14 @@
             <summary>
             Returns all the path mappings.
             </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.GetProtectedContentAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Returns the protected content for supplied resource
+            </summary>
+            <param name="resource"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHost">
             <summary>

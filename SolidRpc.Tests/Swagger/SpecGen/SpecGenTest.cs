@@ -80,7 +80,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "ComplexAndSimpleArgs") continue;
+                //if (subDir.Name != "ByteArrArgs") continue;
                 CreateSpec(subDir.Name, true);
             }
         }
@@ -848,6 +848,28 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var stringCheck2 = "one+one";
                 moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.CompletedTask);
                 await proxy.DoSometingAsync(stringCheck1, stringCheck2);
+            });
+        }
+
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestByteArrArgs()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestByteArrArgs).Substring(4));
+
+                var moq = new Mock<ByteArrArgs.Services.IByteArrArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                await ctx.StartAsync();
+                var barr = new byte[] { 1,2,3 };
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<ByteArrArgs.Services.IByteArrArgs>();
+                moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(barr, a)))).Returns(() => barr);
+                var res = proxy.ProxyByteArray(barr);
+                Assert.IsTrue(CompareStructs(barr, res));
             });
         }
 

@@ -323,6 +323,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                                     return null;
                                 }
                             };
+                        case SystemByteArray:
+                            return (_) => _?.GetBinaryValue();
                         case SystemString:
                             return (_) => _?.GetStringValue();
                         default:
@@ -336,7 +338,7 @@ namespace SolidRpc.OpenApi.Binder.Http
                     return (_) =>
                     {
                         if (_ == null) return null;
-                        using (var s = _.GetBinaryValue())
+                        using (var s = _.GetStreamValue())
                         {
                             return JsonHelper.Deserialize(s, type);
                         }
@@ -548,6 +550,8 @@ namespace SolidRpc.OpenApi.Binder.Http
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, ((Uri)val).ToString()));
                         case SystemString:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, (string)val));
+                        case SystemByteArray:
+                            return (_, val) => f(new SolidHttpRequestDataBinary(contentType, null, name, (byte[])val));
                         default:
                             if(type?.IsEnum ?? false)
                             {
@@ -629,7 +633,14 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// </summary>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public abstract Stream GetBinaryValue();
+        public abstract byte[] GetBinaryValue();
+
+        /// <summary>
+        /// Returns the binary value using supplied encoding.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public abstract Stream GetStreamValue();
 
         /// <summary>
         /// Convertes the value to specified type.
@@ -645,14 +656,9 @@ namespace SolidRpc.OpenApi.Binder.Http
                     switch (typeof(T).FullName)
                     {
                         case SystemIOStream:
-                            return (T)(object)GetBinaryValue();
+                            return (T)(object)GetStreamValue();
                         case SystemByteArray:
-                            using (var s = GetBinaryValue())
-                            {
-                                var ms = new MemoryStream();
-                                s.CopyTo(ms);
-                                return (T)(object)ms.ToArray();
-                            }
+                            return (T)(object)GetBinaryValue();
                         case SystemString:
                             return (T)(object)GetStringValue();
                         default:

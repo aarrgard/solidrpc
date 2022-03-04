@@ -696,7 +696,7 @@ namespace SolidRpc.OpenApi.Binder.V2
         private IDictionary<string, string> ExtractJsonContents(IHttpRequestData bodyData)
         {
             var res = new Dictionary<string, string>();
-            using (var s = bodyData.GetBinaryValue())
+            using (var s = bodyData.GetStreamValue())
             using (var tr = new StreamReader(s, bodyData.Encoding ?? Encoding.UTF8))
             using (var jr = new JsonTextReader(tr))
             {

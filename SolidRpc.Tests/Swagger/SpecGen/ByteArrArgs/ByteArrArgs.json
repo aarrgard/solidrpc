@@ -1,0 +1,51 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ByteArrArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/ByteArrArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IByteArrArgs/ProxyByteArray/{arr}": {
+      "get": {
+        "tags": [
+          "IByteArrArgs"
+        ],
+        "description": "",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#ByteArrArgs#Services#IByteArrArgs#ProxyByteArray#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "arr",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "binary",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IByteArrArgs",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}

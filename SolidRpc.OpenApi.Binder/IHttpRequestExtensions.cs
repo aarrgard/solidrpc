@@ -268,7 +268,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 HttpContent part;
                 if (d is SolidHttpRequestDataBinary binary)
                 {
-                    var streamContent = d.GetBinaryValue();
+                    var streamContent = d.GetStreamValue();
                     if (streamContent == null) continue;
                     part = new StreamContent(streamContent);
                     var contentType = binary.ContentType ?? "application/octet-stream";
@@ -329,7 +329,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             switch (body.ContentType.ToLower())
             {
                 case "application/octet-stream":
-                    content = new StreamContent(body.GetBinaryValue());
+                    content = new StreamContent(body.GetStreamValue());
                     content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
                     content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = body.Name, FileName = "test.xml" };
                     break;
@@ -338,7 +338,7 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                     content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
                     break;
                 default:
-                    content = new StreamContent(body.GetBinaryValue());
+                    content = new StreamContent(body.GetStreamValue());
                     content.Headers.ContentType = new MediaTypeHeaderValue(body.ContentType) { CharSet = body.Encoding?.HeaderName };
                     break;
             }

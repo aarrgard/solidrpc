@@ -28,6 +28,7 @@ namespace SolidRpc.Tests.Security
             services.AddSolidRpcServices(o => true);
         }
 
+
         /// <summary>
         /// Tests the signing of a jwt token
         /// </summary>
@@ -47,8 +48,31 @@ namespace SolidRpc.Tests.Security
 
                 var jwt = await a.CreateAccessTokenAsync(claimsIdentity);
 
-                var prin = (ClaimsPrincipal)(await a.GetPrincipalAsync(jwt.AccessToken));
+                var prin = await a.GetPrincipalAsync(jwt.AccessToken);
                 Assert.AreEqual("test", prin.Claims.Single(o => o.Type == "test").Value);
+
+                TestEncDecData(a);
+            }
+        }
+
+        private void TestEncDecData(IAuthorityLocal a)
+        {
+            var a1 = new byte[] { 1, 2, 3 };
+            var a2 = a.Encrypt(a1);
+            var a3 = a.Decrypt(a2);
+            Assert.AreEqual(a1.Length, a3.Length);
+            for (int i = 0; i < a1.Length; i++)
+            {
+                Assert.AreEqual(a1[i], a3[i]);
+            }
+
+            //a.CreateSigningKey();
+
+            a3 = a.Decrypt(a2);
+            Assert.AreEqual(a1.Length, a3.Length);
+            for (int i = 0; i < a1.Length; i++)
+            {
+                Assert.AreEqual(a1[i], a3[i]);
             }
         }
 
@@ -82,10 +106,12 @@ namespace SolidRpc.Tests.Security
 
                 var jwt = await a.CreateAccessTokenAsync(claimsIdentity);
 
-                var prin = (ClaimsPrincipal)(await a.GetPrincipalAsync(jwt.AccessToken));
+                var prin = await a.GetPrincipalAsync(jwt.AccessToken);
                 Assert.AreEqual("test", prin.Claims.Single(o => o.Type == "test").Value);
                 Assert.IsTrue(int.Parse(jwt.ExpiresIn) > 3550);
                 Assert.IsTrue(int.Parse(jwt.ExpiresIn) <= 3600);
+
+                TestEncDecData(a);
             }
         }
     }

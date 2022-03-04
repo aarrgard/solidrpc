@@ -105,6 +105,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             GetClass(typeof(object), "object");
             GetClass(typeof(void), "void");
             GetClass(typeof(bool), "bool");
+            GetClass(typeof(byte), "byte");
             GetClass(typeof(short), "short");
             GetClass(typeof(int), "int");
             GetClass(typeof(long), "long");

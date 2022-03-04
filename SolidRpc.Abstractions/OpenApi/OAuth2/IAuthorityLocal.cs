@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.Types.OAuth2;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -29,6 +30,25 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         /// The signing key
         /// </summary>
         OpenIDKey PrivateSigningKey { get; }
+
+        /// <summary>
+        /// The signing key
+        /// </summary>
+        OpenIDKey PublicSigningKey { get; }
+
+        /// <summary>
+        /// Encrypts using the supplied key.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        byte[] Encrypt(byte[] data);
+
+        /// <summary>
+        /// Encrypts using the supplied key.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        byte[] Decrypt(byte[] data);
 
         /// <summary>
         /// Creates the jwt token from supplied claims

@@ -200,6 +200,10 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 return ResolveCodeType(rootNamespace, enumType).Concat(new string[] { "[]" }).ToArray();
             }
+            if (type.IsArray && type != typeof(byte[]))
+            {
+                return ResolveCodeType(rootNamespace, type.GetElementType()).Concat(new string[] { "[]" }).ToArray();
+            }
             if (type.IsGenericType)
             {
                 throw new Exception("Cannot handle generic type:" + type.GetGenericTypeDefinition());
@@ -214,7 +218,10 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "System.String":
                     return new string[] { "string" };
                 case "System.String[]":
-                    return new string[] { "string" , "[]"};
+                    return new string[] { "string", "[]" };
+                case "System.IO.Stream":
+                case "System.Byte[]":
+                    return new string[] { "Uint8Array" };
                 case "System.Byte":
                 case "System.Int16":
                 case "System.Int32":
@@ -223,8 +230,6 @@ namespace SolidRpc.OpenApi.Binder.Services
                 case "System.Single":
                 case "System.Decimal":
                     return new string[] { "number" };
-                case "System.IO.Stream":
-                    return new string[] { "Uint8Array" };
                 case "System.Threading.CancellationToken":
                     return new string[] { "CancellationToken" };
                 case "System.Uri":

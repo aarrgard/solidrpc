@@ -218,6 +218,36 @@
         }
       }
     },
+    "/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}": {
+      "get": {
+        "tags": [
+          "ISolidRpcContentHandler"
+        ],
+        "description": "Returns the protected content for supplied resource",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetProtectedContentAsync#1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "binary",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/ISolidRpcHost/AllowedCorsOrigins": {
       "get": {
         "tags": [
