@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.Types;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,9 +31,10 @@ namespace SolidRpc.Abstractions.InternalServices
         /// Constructs a list of protected resurce strings from supplied content paths
         /// </summary>
         /// <param name="content"></param>
+        /// <param name="expiryTime"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<byte[]>> CreateProtectedResourceStringsAsync(IEnumerable<string> content, CancellationToken cancellationToken = default);
+        Task<IEnumerable<byte[]>> CreateProtectedResourceStringsAsync(IEnumerable<string> content, DateTimeOffset expiryTime, CancellationToken cancellationToken = default);
 
 
     }

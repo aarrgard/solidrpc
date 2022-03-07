@@ -6,6 +6,7 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -19,6 +20,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class SolidRpcProtectedContent : ISolidRpcProtectedContent
     {
+        private static readonly DateTimeOffset StartDate = new DateTimeOffset(2020,01,01,0,0,0,0,TimeSpan.Zero);
+
         public SolidRpcProtectedContent(
             ILogger<SolidRpcProtectedContent> logger,
             IAuthorityLocal authority = null)
@@ -30,9 +33,24 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         private ILogger Logger { get; }
         private IAuthorityLocal Authority { get; }
 
-        public Task<IEnumerable<byte[]>> CreateProtectedResourceStringsAsync(IEnumerable<string> content, CancellationToken cancellationToken)
+        public Task<IEnumerable<byte[]>> CreateProtectedResourceStringsAsync(IEnumerable<string> content, DateTimeOffset expiryTime, CancellationToken cancellationToken)
         {
-            return Task.FromResult(content.Select(o => Authority.Encrypt(Encoding.UTF8.GetBytes(o))));
+            var expHours = (int)(expiryTime - StartDate).TotalHours;
+            if (expHours < 0) throw new ArgumentException("Expiry date too early.");
+            var expTime = BitConverter.GetBytes(expHours);
+            var res = content.Select(o =>
+            {
+                var ms = new MemoryStream();
+                WriteAll(ms, expTime);
+                WriteAll(ms, Encoding.UTF8.GetBytes(o));
+                return Authority.Encrypt(ms.ToArray());
+            });
+            return Task.FromResult(res);
+        }
+
+        private void WriteAll(MemoryStream ms, byte[] vs)
+        {
+            ms.Write(vs, 0, vs.Length);
         }
 
         public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
@@ -44,10 +62,16 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             } 
             catch(Exception e)
             {
-                Logger.LogError(e, "Failed to decrypt resource identifier");
-                throw new FileContentNotFoundException();
+                throw new FileContentNotFoundException("Failed to decrypt resource identifier");
             }
-            return GetProtectedContentAsync(Encoding.UTF8.GetString(decResource), cancellationToken);
+
+            var expHours = BitConverter.ToInt32(decResource, 0);
+            var expTime = StartDate.AddHours(expHours);
+            if(expTime < DateTimeOffset.UtcNow)
+            {
+                throw new FileContentNotFoundException("Resource expired");
+            }
+            return GetProtectedContentAsync(Encoding.UTF8.GetString(decResource, 4, decResource.Length - 4), cancellationToken);
         }
 
         public virtual Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken)

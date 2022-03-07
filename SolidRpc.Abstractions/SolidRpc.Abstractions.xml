@@ -1781,11 +1781,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.CreateProtectedResourceStringsAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.CreateProtectedResourceStringsAsync(System.Collections.Generic.IEnumerable{System.String},System.DateTimeOffset,System.Threading.CancellationToken)">
             <summary>
             Constructs a list of protected resurce strings from supplied content paths
             </summary>
             <param name="content"></param>
+            <param name="expiryTime"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

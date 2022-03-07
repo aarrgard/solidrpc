@@ -738,6 +738,13 @@ namespace SolidRpc.OpenApi.Binder.V2
                 {
                     response.Location = httpLocation.ToString();
                 }
+
+                // add exception message
+                var enc = Encoding.UTF8;
+                response.MediaType = "text/plain";
+                response.CharSet = enc.HeaderName;
+                response.ResponseStream = new MemoryStream(enc.GetBytes(ex.Message ?? ""));
+
                 return Task.CompletedTask;
             }
 

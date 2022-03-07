@@ -167,13 +167,26 @@ namespace SolidRpc.Tests.Security
 
 
                 var pc = ctx.ServerServiceProvider.GetRequiredService<ISolidRpcProtectedContent>();
-                var rs = (await pc.CreateProtectedResourceStringsAsync(new[] { "Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76" })).Single();
+                var rs = (await pc.CreateProtectedResourceStringsAsync(new[] { "Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76" }, DateTime.Now.AddHours(1))).Single();
 
 
                 var h = ctx.ClientServiceProvider.GetRequiredService<ISolidRpcContentHandler>();
                 var r = await h.GetProtectedContentAsync(rs);
 
                 Assert.AreEqual("Test", await r.AsStringAsync());
+
+                //
+                // test expired
+                //
+                try
+                {
+                    rs = (await pc.CreateProtectedResourceStringsAsync(new[] { "Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76" }, DateTime.Now.AddHours(-1))).Single();
+                    r = await h.GetProtectedContentAsync(rs);
+                }
+                catch(Exception e)
+                {
+                    //Assert.AreEqual("Test", e.Message);
+                }
             }
         }
     }
