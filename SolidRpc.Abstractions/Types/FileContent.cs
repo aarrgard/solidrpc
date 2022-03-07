@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Abstractions.Types
 {
@@ -47,5 +49,33 @@ namespace SolidRpc.Abstractions.Types
         /// The SetCookie.
         /// </summary>
         public string SetCookie { get; set; }
+    }
+
+    /// <summary>
+    /// Provides extension methods
+    /// </summary>
+    public static class FileContentExtensions
+    {
+        /// <summary>
+        /// Returns the content as stream
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        public static async Task<string> AsStringAsync(this FileContent fileContent)
+        {
+            StreamReader r;
+            if(!string.IsNullOrEmpty(fileContent.CharSet))
+            {
+                r = new StreamReader(fileContent.Content, Encoding.GetEncoding(fileContent.CharSet));
+            }
+            else
+            {
+                r = new StreamReader(fileContent.Content);
+            }
+            using(r)
+            {
+                return await r.ReadToEndAsync();
+            }
+        }
     }
 }

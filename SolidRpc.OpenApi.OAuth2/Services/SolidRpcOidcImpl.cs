@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.Abstractions;
-using SolidRpc.Abstractions.OpenApi.Invoker;
+﻿using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.OAuth2;
-using SolidRpc.OpenApi.OAuth2.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-[assembly: SolidRpcService(typeof(ISolidRpcOidc), typeof(SolidRpcOidcImpl), SolidRpcServiceLifetime.Scoped)]
 namespace SolidRpc.OpenApi.OAuth2.Services
 {
     /// <summary>
@@ -30,18 +26,17 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         /// Constructs a new instance
         /// </summary>
         /// <param name="invoker"></param>
-        /// <param name="serviceProvider"></param>
+        /// <param name="localAuthority"></param>
         public SolidRpcOidcImpl(
             IInvoker<ISolidRpcOidc> invoker,
-            IServiceProvider serviceProvider)
+            IAuthorityLocal localAuthority)
         {
-            ServiceProvider = serviceProvider;
+            LocalAuthority = localAuthority;
             Invoker = invoker;
         }
 
-        private IServiceProvider ServiceProvider { get; }
         private IInvoker<ISolidRpcOidc> Invoker { get; }
-        private IAuthorityLocal LocalAuthority => ServiceProvider.GetRequiredService<IAuthorityLocal>();
+        private IAuthorityLocal LocalAuthority { get; }
 
         private string CreateRefreshToken(ClaimsIdentity claimsIdentity)
         {

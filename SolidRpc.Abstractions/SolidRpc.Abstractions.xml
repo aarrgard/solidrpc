@@ -1074,14 +1074,22 @@
             authority.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateSigningKey">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateSigningKey(System.Boolean)">
             <summary>
-            Creates a new set of signing keys for this authority.
+            Creates a new set of signing keys for this authority. 
             </summary>
+            <param name="removeOld">specifies if the old key should be removed or kept</param>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.SetSigningKey(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{System.Security.Cryptography.X509Certificates.X509Certificate2,System.String})">
             <summary>
-            Sets the signing keys
+            Sets the signing key that is to be used for signing.
+            </summary>
+            <param name="cert"></param>
+            <param name="keyId"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.AddSigningKey(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{System.Security.Cryptography.X509Certificates.X509Certificate2,System.String})">
+            <summary>
+            Adds a signing key to the set of keys.
             </summary>
             <param name="cert"></param>
             <param name="keyId"></param>
@@ -1773,7 +1781,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.CreateProtectedResourceStrings(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.CreateProtectedResourceStringsAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <summary>
             Constructs a list of protected resurce strings from supplied content paths
             </summary>
@@ -2900,6 +2908,18 @@
             <summary>
             The SetCookie.
             </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.FileContentExtensions">
+            <summary>
+            Provides extension methods
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.FileContentExtensions.AsStringAsync(SolidRpc.Abstractions.Types.FileContent)">
+            <summary>
+            Returns the content as stream
+            </summary>
+            <param name="fileContent"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.FileContentNotFoundException">
             <summary>

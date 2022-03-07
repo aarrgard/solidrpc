@@ -16,7 +16,7 @@ namespace SolidRpc.Abstractions.InternalServices
         /// <param name="resource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken);
+        Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Returns the content for the supplied resource.
@@ -24,7 +24,7 @@ namespace SolidRpc.Abstractions.InternalServices
         /// <param name="resource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken);
+        Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Constructs a list of protected resurce strings from supplied content paths
@@ -32,7 +32,7 @@ namespace SolidRpc.Abstractions.InternalServices
         /// <param name="content"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<byte[]>> CreateProtectedResourceStrings(IEnumerable<string> content, CancellationToken cancellationToken);
+        Task<IEnumerable<byte[]>> CreateProtectedResourceStringsAsync(IEnumerable<string> content, CancellationToken cancellationToken = default);
 
 
     }

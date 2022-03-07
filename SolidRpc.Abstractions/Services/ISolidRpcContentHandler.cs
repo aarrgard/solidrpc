@@ -22,7 +22,7 @@ namespace SolidRpc.Abstractions.Services
         /// <param name="path">The path to get the content for</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetContent(string path = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<FileContent> GetContent(string path = null, CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace SolidRpc.Abstractions.Services
         /// <summary>
         /// Returns all the path mappings.
         /// </summary>
-        Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Returns the protected content for supplied resource
@@ -42,6 +42,6 @@ namespace SolidRpc.Abstractions.Services
         /// <param name="resource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken);
+        Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken = default);
     }
 }

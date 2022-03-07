@@ -18,6 +18,19 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class AuthorityLocalImpl : IAuthorityLocal
     {
+        private class RsaKeyPair
+        {
+            public RsaKeyPair(RsaKey publicKey, RsaKey privateKey)
+            {
+                PublicKey = publicKey;
+                PrivateKey = privateKey;
+            }
+
+            public RsaKey PublicKey { get; }
+            public RsaKey PrivateKey { get; }
+            public string KeyId => PublicKey.KeyId;
+        }
+
         private class RsaKey
         {
             public RsaKey(RSA rsa, string keyId)
@@ -31,8 +44,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             public SecurityKey SecurityKey { get; }
             public OpenIDKey OpenIDKey { get; }
         }
-        private RsaKey _privateKey;
-        private RsaKey _publicKey;
+
+        private IList<RsaKeyPair> _keys;
 
         /// <summary>
         /// Constructs a new instance
@@ -42,16 +55,19 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             AuthorityImpl authorityImpl)
         {
             AuthorityImpl = authorityImpl;
+            _keys = new List<RsaKeyPair>();
         }
 
         private AuthorityImpl AuthorityImpl { get; }
 
+        private RsaKeyPair CurrentKeyPair => _keys.Last();
+
         /// <summary>
         /// Returns the private signing key.
         /// </summary>
-        OpenIDKey IAuthorityLocal.PrivateSigningKey => _privateKey.OpenIDKey;
+        public OpenIDKey PrivateSigningKey => CurrentKeyPair.PrivateKey.OpenIDKey;
 
-        OpenIDKey IAuthorityLocal.PublicSigningKey => _publicKey.OpenIDKey;
+        public OpenIDKey PublicSigningKey => CurrentKeyPair.PublicKey.OpenIDKey;
 
         public string Authority => AuthorityImpl.Authority;
 
@@ -61,8 +77,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         private IEnumerable<OpenIDKey> GetLocalKeys()
         {
-            if (_publicKey == null) throw new Exception("No signing key exists for local authority.");
-            yield return _publicKey.OpenIDKey;
+            return _keys.Select(o => o.PublicKey.OpenIDKey);
         }
 
         /// <summary>
@@ -79,17 +94,18 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             {
                 expires = issuedAt.AddHours(1);
             }
-            if(_privateKey == null)
+            if(!_keys.Any())
             {
                 throw new Exception("No private signing key available");
             }
+            var secKey = CurrentKeyPair.PrivateKey.SecurityKey;
             var keys = await GetSigningKeysAsync(cancellationToken);
-            if (!keys.Any(o => o.Kid == _privateKey.KeyId))
+            if (!keys.Any(o => o.Kid == secKey.KeyId))
             {
                 throw new Exception("Private signing key not part o public keys");
             }
 
-            var signingCredentials = new SigningCredentials(_privateKey.SecurityKey, SecurityAlgorithms.RsaSha512Signature);
+            var signingCredentials = new SigningCredentials(secKey, SecurityAlgorithms.RsaSha512Signature);
             var securityTokenDescriptor = new SecurityTokenDescriptor()
             {
                 Issuer = Authority,
@@ -114,19 +130,27 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <summary>
         /// Creates a signing key
         /// </summary>
-        public void CreateSigningKey()
+        public void CreateSigningKey(bool removeOld = false)
         {
             var rsa = RSA.Create();
             SetRsa(rsa, rsa, Guid.NewGuid().ToString());
         }
 
-        private void SetRsa(
+        private RsaKeyPair SetRsa(
             RSA publicKey, 
             RSA privateKey,
             string keyId)
         {
-            _publicKey = new RsaKey(publicKey, keyId);
-            _privateKey = new RsaKey(privateKey, keyId);
+            var keyPair = new RsaKeyPair(new RsaKey(publicKey, keyId), new RsaKey(privateKey, keyId));
+            _keys.Add(keyPair);
+            return keyPair;
+        }
+
+
+        public void AddSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId = null)
+        {
+            if (keyId == null) keyId = c => c.Thumbprint;
+            SetRsa(cert.GetRSAPublicKey(), cert.GetRSAPrivateKey(), keyId(cert));
         }
 
         /// <summary>
@@ -137,9 +161,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public void SetSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId)
         {
             if (keyId == null) keyId = c => c.Thumbprint;
-            var publicKey = cert.GetRSAPublicKey();
-            var privateKey = cert.GetRSAPrivateKey();
-            SetRsa(publicKey, privateKey, keyId(cert));
+            var keypair = SetRsa(cert.GetRSAPublicKey(), cert.GetRSAPrivateKey(), keyId(cert));
+            _keys = _keys.OrderBy(o => keypair.KeyId == o.KeyId ? 1 : 0).ToList();
         }
 
         Task<OpenIDConnectDiscovery> IAuthority.GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
@@ -198,12 +221,22 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
         public byte[] Encrypt(byte[] data)
         {
-            return _publicKey.RSA.Encrypt(data, RSAEncryptionPadding.OaepSHA512);
+            return CurrentKeyPair.PublicKey.RSA.Encrypt(data, RSAEncryptionPadding.OaepSHA512);
         }
 
         public byte[] Decrypt(byte[] data)
         {
-            return _privateKey.RSA.Decrypt(data, RSAEncryptionPadding.OaepSHA512);
+            foreach(var keyPair in _keys.Reverse())
+            {
+                try
+                {
+                    return keyPair.PrivateKey.RSA.Decrypt(data, RSAEncryptionPadding.OaepSHA512);
+                }
+                catch(CryptographicException e)
+                {
+                }
+            }
+            throw new Exception("Cannot decrypt data");
         }
     }
 }

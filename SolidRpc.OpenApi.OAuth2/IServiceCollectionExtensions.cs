@@ -2,7 +2,9 @@
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
+using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
+using SolidRpc.OpenApi.OAuth2.Services;
 using System;
 using System.Net.Http;
 using System.Security.Claims;
@@ -55,6 +57,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 conf?.Invoke(auth);
                 return auth;
             });
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the test oidc service
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcOidcImpl(this IServiceCollection services)
+        {
+            services.AddScoped<ISolidRpcOidc, SolidRpcOidcImpl>();
             return services;
         }
 

@@ -324,7 +324,10 @@ namespace SolidRpc.OpenApi.Binder.Http
                                 }
                             };
                         case SystemByteArray:
-                            return (_) => _?.GetBinaryValue();
+                            return (_) =>
+                            {
+                                return Convert.FromBase64String(_?.GetStringValue());
+                            };
                         case SystemString:
                             return (_) => _?.GetStringValue();
                         default:
@@ -551,7 +554,10 @@ namespace SolidRpc.OpenApi.Binder.Http
                         case SystemString:
                             return (_, val) => f(new SolidHttpRequestDataString(contentType, name, (string)val));
                         case SystemByteArray:
-                            return (_, val) => f(new SolidHttpRequestDataBinary(contentType, null, name, (byte[])val));
+                            return (_, val) =>
+                            {
+                                return f(new SolidHttpRequestDataString(contentType, name, Convert.ToBase64String((byte[])val)));
+                            };
                         default:
                             if(type?.IsEnum ?? false)
                             {

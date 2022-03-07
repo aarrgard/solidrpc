@@ -190,7 +190,8 @@ namespace SolidRpc.Tests.Security
                 conf.AddDefaultScopes("authorization_code", new[] { "openid", "offline_access" });
             });
             serverServices.AddSolidRpcOAuth2Local(GetIssuer(serverServices.GetSolidRpcService<Uri>()).ToString(), o => o.CreateSigningKey());
-            serverServices.AddSolidRpcServices();
+            serverServices.AddSolidRpcOidcImpl();
+            serverServices.AddSolidRpcServices(o => true);
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
             {

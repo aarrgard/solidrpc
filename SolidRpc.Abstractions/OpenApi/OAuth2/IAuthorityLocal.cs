@@ -15,16 +15,24 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
     public interface IAuthorityLocal : IAuthority
     {
         /// <summary>
-        /// Creates a new set of signing keys for this authority.
+        /// Creates a new set of signing keys for this authority. 
         /// </summary>
-        void CreateSigningKey();
+        /// <param name="removeOld">specifies if the old key should be removed or kept</param>
+        void CreateSigningKey(bool removeOld = false);
 
         /// <summary>
-        /// Sets the signing keys
+        /// Sets the signing key that is to be used for signing.
         /// </summary>
         /// <param name="cert"></param>
         /// <param name="keyId"></param>
         void SetSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId = null);
+
+        /// <summary>
+        /// Adds a signing key to the set of keys.
+        /// </summary>
+        /// <param name="cert"></param>
+        /// <param name="keyId"></param>
+        void AddSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId = null);
 
         /// <summary>
         /// The signing key

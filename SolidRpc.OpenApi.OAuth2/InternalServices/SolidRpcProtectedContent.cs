@@ -1,8 +1,10 @@
-﻿using SolidRpc.Abstractions;
+﻿using Microsoft.Extensions.Logging;
+using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.OAuth2.InternalServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,27 +19,41 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class SolidRpcProtectedContent : ISolidRpcProtectedContent
     {
-        public SolidRpcProtectedContent(IAuthorityLocal authority = null)
+        public SolidRpcProtectedContent(
+            ILogger<SolidRpcProtectedContent> logger,
+            IAuthorityLocal authority = null)
         {
+            Logger = logger;
             Authority = authority;
         }
 
+        private ILogger Logger { get; }
         private IAuthorityLocal Authority { get; }
 
-        public Task<IEnumerable<byte[]>> CreateProtectedResourceStrings(IEnumerable<string> content, CancellationToken cancellationToken)
+        public Task<IEnumerable<byte[]>> CreateProtectedResourceStringsAsync(IEnumerable<string> content, CancellationToken cancellationToken)
         {
-            var key = Authority.PublicSigningKey;
             return Task.FromResult(content.Select(o => Authority.Encrypt(Encoding.UTF8.GetBytes(o))));
         }
 
         public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            byte[] decResource;
+            try
+            {
+                decResource = Authority.Decrypt(resource);
+            } 
+            catch(Exception e)
+            {
+                Logger.LogError(e, "Failed to decrypt resource identifier");
+                throw new FileContentNotFoundException();
+            }
+            return GetProtectedContentAsync(Encoding.UTF8.GetString(decResource), cancellationToken);
         }
 
-        public Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken)
+        public virtual Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            Logger.LogError("No protected content found:"+resource);
+            throw new FileContentNotFoundException();
         }
     }
 }
