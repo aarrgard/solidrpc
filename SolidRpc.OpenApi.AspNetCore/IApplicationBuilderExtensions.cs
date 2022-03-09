@@ -326,7 +326,7 @@ namespace Microsoft.AspNetCore.Builder
 
         private static async Task HandleInvocation(ISolidRpcContentHandler contentHandler, HttpContext ctx)
         {
-            if(ctx.Response.StatusCode != 404)
+            if(ctx.Response.HasStarted)
             {
                 return;
             }

@@ -570,14 +570,6 @@ namespace SolidRpc.OpenApi.Binder.V2
             return _ => (Task)gmi.Invoke(null, new object[] { _ });
         }
 
-        private string RemoveQuotes(string str)
-        {
-            if (str == null) return null;
-            if (!str.StartsWith("\"")) return str;
-            if (!str.EndsWith("\"")) return str;
-            return str.Substring(1, str.Length - 2);
-        }
-
         private bool ContentTypeMatches(string contentTypePattern, string contentType)
         {
             var contentTypePatternParts = (contentTypePattern ?? "").Split('/');
