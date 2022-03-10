@@ -190,7 +190,7 @@ namespace SolidRpc.Tests.Security
                 conf.AddDefaultScopes("authorization_code", new[] { "openid", "offline_access" });
             });
             serverServices.AddSolidRpcOAuth2Local(GetIssuer(serverServices.GetSolidRpcService<Uri>()).ToString(), o => o.CreateSigningKey());
-            serverServices.AddSolidRpcOidcImpl();
+            serverServices.AddSolidRpcOidcTestImpl();
             serverServices.AddSolidRpcServices(o => true);
             var openApi = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IOAuth2EnabledService).GetMethods().Union(typeof(IOAuth2ProtectedService).GetMethods()).ToArray()).WriteAsJsonString();
             serverServices.AddSolidRpcBindings(typeof(IOAuth2EnabledService), typeof(OAuth2EnabledService), o =>
@@ -653,8 +653,7 @@ namespace SolidRpc.Tests.Security
                 RequireSignedTokens = true,
                 IssuerSigningKeyResolver = (token, st, kid, validationParameters) => {
                     var keys = JsonConvert.SerializeObject(discResp.KeySet);
-                    var signingKeys = Microsoft.IdentityModel.Tokens.JsonWebKeySet.Create(keys)
-                    .GetSigningKeys().Where(o => o.KeyId == kid).ToList();
+                    var signingKeys = JsonWebKeySet.Create(keys).GetSigningKeys().Where(o => o.KeyId == kid).ToList();
                     return signingKeys;
                 }
             };

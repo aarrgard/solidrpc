@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -72,7 +73,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             string authority)
         {
             Logger = logger;
-            AuthorityFactoryImpl = authorityFactoryImpl;
+            AuthorityFactory = authorityFactoryImpl;
             SerializerFactory = serializerFactory;
             HttpClientFactory = httpClientFactory;
             Authority = authority;
@@ -80,11 +81,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             GrantTypeScopes = new Dictionary<string, IEnumerable<string>>();
         }
         private ILogger Logger { get; }
-        private IAuthorityFactory AuthorityFactoryImpl { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ConcurrentDictionary<string, CachedJwt> CachedJwts { get; }
         private Dictionary<string, IEnumerable<string>> GrantTypeScopes { get; }
+
+        public IAuthorityFactory AuthorityFactory { get; }
 
         /// <summary>
         /// The authority
@@ -400,6 +402,21 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 Logger.LogError($"Response from {doc.TokenEndpoint} authority is not succesful.");
             }
 
+        }
+
+        public async Task<bool> VerifyData(byte[] data, byte[] signature, CancellationToken cancellationToken = default)
+        {
+            var keys = await GetSigningKeysAsync(cancellationToken);
+            foreach (var key in keys.Reverse())
+            {
+                var rsa = key.AsRSACryptoProvider();
+                if (rsa == null) continue;
+                if (rsa.VerifyData(data, signature, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

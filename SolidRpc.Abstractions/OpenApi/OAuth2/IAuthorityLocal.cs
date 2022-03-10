@@ -1,6 +1,5 @@
 ﻿using SolidRpc.Abstractions.Types.OAuth2;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -45,18 +44,14 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
         OpenIDKey PublicSigningKey { get; }
 
         /// <summary>
-        /// Encrypts using the supplied key.
+        /// Creates a signed hash from supplied data
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        byte[] Encrypt(byte[] data);
-
-        /// <summary>
-        /// Encrypts using the supplied key.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        byte[] Decrypt(byte[] data);
+        Task<byte[]> SignHash(
+            byte[] data,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Creates the jwt token from supplied claims

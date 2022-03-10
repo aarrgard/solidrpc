@@ -9,10 +9,9 @@ using System.IO;
 using System;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.InternalServices;
-using SolidRpc.OpenApi.OAuth2.InternalServices;
-using Microsoft.Extensions.Logging;
 using System.Threading;
 using SolidRpc.Abstractions.Types;
+using Microsoft.IdentityModel.Logging;
 
 namespace SolidRpc.Tests.Security
 {
@@ -21,13 +20,13 @@ namespace SolidRpc.Tests.Security
     /// </summary>
     public class SecurityAuthorityTest : WebHostTest
     {
-        private class SolidRpcProtectedContentImpl : SolidRpcProtectedContent
+        private class SolidRpcProtectedContentImpl : ISolidRpcProtectedContent
         {
-            public SolidRpcProtectedContentImpl(ILogger<SolidRpcProtectedContent> logger, IAuthorityLocal authority = null) : base(logger, authority)
+            public SolidRpcProtectedContentImpl()
             {
             }
 
-            public override async Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken)
+            public async Task<FileContent> GetProtectedContentAsync(string resource, CancellationToken cancellationToken)
             {
                 var enc = System.Text.Encoding.UTF8;
                 switch (resource)
@@ -39,7 +38,7 @@ namespace SolidRpc.Tests.Security
                             Content = new MemoryStream(enc.GetBytes("Test"))
                         };
                 }
-                return await base.GetProtectedContentAsync(resource, cancellationToken);
+                throw new FileContentNotFoundException();
             }
         }
 
@@ -50,11 +49,12 @@ namespace SolidRpc.Tests.Security
         /// <returns></returns>
         public override void ConfigureServerServices(IServiceCollection services)
         {
+            IdentityModelEventSource.ShowPII = true;
             base.ConfigureServerServices(services);
             services.AddSingleton<ISolidRpcProtectedContent, SolidRpcProtectedContentImpl>();
             var issuer = new Uri(services.GetSolidRpcService<Uri>(), "SolidRpc/Abstractions");
             services.AddSolidRpcOAuth2Local(issuer.ToString());
-            services.AddSolidRpcOidcImpl();
+            services.AddSolidRpcOidcTestImpl();
             services.AddSolidRpcServices(o => true);
         }
 
@@ -87,29 +87,19 @@ namespace SolidRpc.Tests.Security
                 var prin = await a.GetPrincipalAsync(jwt.AccessToken);
                 Assert.AreEqual("test", prin.Claims.Single(o => o.Type == "test").Value);
 
-                TestEncDecData(a);
+                await TestEncDecData(a);
             }
         }
 
-        private void TestEncDecData(IAuthorityLocal a)
+        private async Task TestEncDecData(IAuthorityLocal a)
         {
             var a1 = new byte[] { 1, 2, 3 };
-            var a2 = a.Encrypt(a1);
-            var a3 = a.Decrypt(a2);
-            Assert.AreEqual(a1.Length, a3.Length);
-            for (int i = 0; i < a1.Length; i++)
-            {
-                Assert.AreEqual(a1[i], a3[i]);
-            }
+            var a2 = await a.SignHash(a1);
+            Assert.IsTrue(await a.VerifyData(a1, a2));
 
             a.CreateSigningKey();
 
-            a3 = a.Decrypt(a2);
-            Assert.AreEqual(a1.Length, a3.Length);
-            for (int i = 0; i < a1.Length; i++)
-            {
-                Assert.AreEqual(a1[i], a3[i]);
-            }
+            Assert.IsTrue(await a.VerifyData(a1, a2));
         }
 
         /// <summary>
@@ -166,8 +156,8 @@ namespace SolidRpc.Tests.Security
                 a.CreateSigningKey();
 
 
-                var pc = ctx.ServerServiceProvider.GetRequiredService<ISolidRpcProtectedContent>();
-                var rs = (await pc.CreateProtectedResourceStringsAsync(new[] { "Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76" }, DateTime.Now.AddHours(1))).Single();
+                var pc = ctx.ServerServiceProvider.GetRequiredService<ISolidRpcProtectedResource>();
+                var rs = await pc.ProtectAsync("Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76", DateTime.Now.AddHours(1));
 
 
                 var h = ctx.ClientServiceProvider.GetRequiredService<ISolidRpcContentHandler>();
@@ -180,7 +170,7 @@ namespace SolidRpc.Tests.Security
                 //
                 try
                 {
-                    rs = (await pc.CreateProtectedResourceStringsAsync(new[] { "Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76" }, DateTime.Now.AddHours(-1))).Single();
+                    rs = await pc.ProtectAsync("Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76", DateTime.Now.AddHours(-1));
                     r = await h.GetProtectedContentAsync(rs);
                 }
                 catch(Exception e)

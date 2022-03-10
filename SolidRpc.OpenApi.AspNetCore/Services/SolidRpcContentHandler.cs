@@ -36,12 +36,14 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore,
             SolidRpcContentStore contentStore,
+            ISolidRpcProtectedResource protectedResource,
             ISolidRpcProtectedContent protectedContent = null)
         {
             ServiceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodAddressTransformer));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             ContentStore = contentStore ?? throw new ArgumentNullException(nameof(contentStore));
+            ProtectedResource = protectedResource;
             ProtectedContent = protectedContent;
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
@@ -51,6 +53,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         private IMethodAddressTransformer MethodAddressTransformer { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private SolidRpcContentStore ContentStore { get; }
+        private ISolidRpcProtectedResource ProtectedResource { get; }
 
         /// <summary>
         /// The static files configured for this host
@@ -198,7 +201,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <exception cref="NotImplementedException"></exception>
         public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
         {
-            return ProtectedContent.GetProtectedContentAsync(resource, cancellationToken);
+            return ProtectedResource.GetProtectedContentAsync(resource, cancellationToken);
         }
     }
 }

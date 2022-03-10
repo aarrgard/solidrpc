@@ -13,6 +13,11 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
     public interface IAuthority
     {
         /// <summary>
+        /// Returns the authority factory
+        /// </summary>
+        IAuthorityFactory AuthorityFactory { get; }
+
+        /// <summary>
         /// The uri of the issuer
         /// </summary>
         string Authority { get; }
@@ -133,5 +138,17 @@ namespace SolidRpc.Abstractions.OpenApi.OAuth2
             string clientSecret,
             string token,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Verifies the supplied data using the signature provided
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="signature"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<bool> VerifyData(
+            byte[] data, 
+            byte[] signature,
+            CancellationToken cancellationToken = default);
     }
 }

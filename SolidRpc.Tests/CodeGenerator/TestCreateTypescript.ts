@@ -982,6 +982,38 @@ export namespace Abstractions {
                 }, RevokeAsyncSubject);
             }
             }
+        /**
+         * Provides access to protected content
+         */
+        export namespace ISolidRpcProtectedContent {
+            let GetProtectedContentAsyncSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the GetProtectedContentAsync invocations.
+             */
+            export var GetProtectedContentAsyncObservable = GetProtectedContentAsyncSubject.asObservable().pipe(share());
+            /**
+             * Returns the content for the supplied resource.
+             * @param resource 
+             * @param cancellationToken 
+             */
+            export function GetProtectedContentAsync(
+                resource : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcProtectedContent');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcProtectedContent/GetProtectedContentAsync/{resource}';
+                SolidRpcJs.ifnull(resource, () => { uri = uri.replace('{resource}', ''); }, nn =>  { uri = uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, GetProtectedContentAsyncSubject);
+            }
+            }
     }
     export namespace Types {
         export namespace Code {
@@ -1442,6 +1474,7 @@ export namespace Abstractions {
                     SolidRpcJs.ifnotnull(obj.x5c, val => { this.X5c = Array.from(val).map(o => o as string); });
                     SolidRpcJs.ifnotnull(obj.n, val => { this.N = val as string; });
                     SolidRpcJs.ifnotnull(obj.e, val => { this.E = val as string; });
+                    SolidRpcJs.ifnotnull(obj.d, val => { this.D = val as string; });
                     SolidRpcJs.ifnotnull(obj.issuer, val => { this.Issuer = val as string; });
                 }
                 toJson(arr: string[]): void {
@@ -1455,6 +1488,7 @@ export namespace Abstractions {
                     if(this.X5c) { arr.push('"x5c": '); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(',');; arr.push(','); } 
                     if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
                     if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
+                    if(this.D) { arr.push('"d": '); arr.push(JSON.stringify(this.D)); arr.push(','); } 
                     if(this.Issuer) { arr.push('"issuer": '); arr.push(JSON.stringify(this.Issuer)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
@@ -1494,6 +1528,10 @@ export namespace Abstractions {
                  * 
                  */
                 E: string | null = null;
+                /**
+                 * 
+                 */
+                D: string | null = null;
                 /**
                  * 
                  */

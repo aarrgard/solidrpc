@@ -957,6 +957,11 @@
             Represents an authority
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.AuthorityFactory">
+            <summary>
+            Returns the authority factory
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.Authority">
             <summary>
             The uri of the issuer
@@ -1053,6 +1058,15 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthority.VerifyData(System.Byte[],System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Verifies the supplied data using the signature provided
+            </summary>
+            <param name="data"></param>
+            <param name="signature"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityFactory">
             <summary>
             Interface that provides access to an authority factory
@@ -1104,18 +1118,12 @@
             The signing key
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.Encrypt(System.Byte[])">
+        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.SignHash(System.Byte[],System.Threading.CancellationToken)">
             <summary>
-            Encrypts using the supplied key.
+            Creates a signed hash from supplied data
             </summary>
             <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.Decrypt(System.Byte[])">
-            <summary>
-            Encrypts using the supplied key.
-            </summary>
-            <param name="data"></param>
+            <param name="cancellationToken"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.OAuth2.IAuthorityLocal.CreateAccessTokenAsync(System.Security.Claims.ClaimsIdentity,System.Nullable{System.DateTimeOffset},System.Threading.CancellationToken)">
@@ -1760,33 +1768,33 @@
             <param name="continuationToken"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent">
+        <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource">
             <summary>
             Provides access to protected content
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.GetProtectedContentAsync(System.Byte[],System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.ProtectAsync(System.String,System.DateTimeOffset,System.Threading.CancellationToken)">
             <summary>
-            Returns the protected content for supplied resource
+            Constructs a list of protected resource strings from supplied content paths
             </summary>
             <param name="resource"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.GetProtectedContentAsync(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Returns the content for the supplied resource.
-            </summary>
-            <param name="resource"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedContent.CreateProtectedResourceStringsAsync(System.Collections.Generic.IEnumerable{System.String},System.DateTimeOffset,System.Threading.CancellationToken)">
-            <summary>
-            Constructs a list of protected resurce strings from supplied content paths
-            </summary>
-            <param name="content"></param>
             <param name="expiryTime"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.UnprotectAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Decrypts a protected resource
+            </summary>
+            <param name="resource"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.GetProtectedContentAsync(System.Byte[],System.Threading.CancellationToken)">
+            <summary>
+            Returns the protected content
+            </summary>
+            <param name="resource"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -2489,6 +2497,19 @@
             <param name="token"></param>
             <param name="tokenHint"></param>
             <param name="cancellationToken"></param>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcProtectedContent">
+            <summary>
+            Provides access to protected content
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcProtectedContent.GetProtectedContentAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the content for the supplied resource.
+            </summary>
+            <param name="resource"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit">
             <summary>
@@ -3427,6 +3448,11 @@
             
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.D">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.Types.OAuth2.OpenIDKey.Issuer">
             <summary>
             
@@ -3471,6 +3497,47 @@
             <summary>
             OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.  The scope of the access token as described by Section 3.3.
             </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.ProtectedResource">
+            <summary>
+            Represents a protected resource
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.ProtectedResource.Source">
+            <summary>
+            The source of the protected resource.
+            Add /SolidRpc/Abstractions/Services/.well-known/openid-configuration to get the keys
+            Add /SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/==data==
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.ProtectedResource.Expiration">
+            <summary>
+            The expiration date
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.Types.ProtectedResource.Resource">
+            <summary>
+            The resource
+            </summary>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Types.ProtectedResourceExtensions">
+            <summary>
+            Provides extension methods for a protected resource
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.ProtectedResourceExtensions.ToByteArrayAsync(SolidRpc.Abstractions.Types.ProtectedResource,System.Func{System.String,System.Byte[],System.Threading.Tasks.Task{System.Byte[]}})">
+            <summary>
+            Serializes the protected resource into a byte array
+            </summary>
+            <param name="pr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Types.ProtectedResourceExtensions.AsProtectedResourceAsync(System.Byte[],System.Func{System.String,System.Byte[],System.Byte[],System.Threading.Tasks.Task{System.Boolean}})">
+            <summary>
+            Serializes the protected resource into a byte array
+            </summary>
+            <param name="protectedResource"></param>
+            <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.Types.RateLimitExceededException">
             <summary>

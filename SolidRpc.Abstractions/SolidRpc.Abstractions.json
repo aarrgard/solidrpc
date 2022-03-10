@@ -1036,6 +1036,35 @@
         }
       }
     },
+    "/Services/ISolidRpcProtectedContent/GetProtectedContentAsync/{resource}": {
+      "get": {
+        "tags": [
+          "ISolidRpcProtectedContent"
+        ],
+        "description": "Returns the content for the supplied resource.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcProtectedContent#GetProtectedContentAsync#1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync": {
       "get": {
         "tags": [
@@ -1673,6 +1702,10 @@
           "type": "string",
           "description": ""
         },
+        "d": {
+          "type": "string",
+          "description": ""
+        },
         "issuer": {
           "type": "string",
           "description": ""
@@ -1779,6 +1812,10 @@
     {
       "name": "ISolidRpcOidc",
       "description": "Implements logic for the oidc server"
+    },
+    {
+      "name": "ISolidRpcProtectedContent",
+      "description": "Provides access to protected content"
     },
     {
       "name": "RateLimit.ISolidRpcRateLimit",

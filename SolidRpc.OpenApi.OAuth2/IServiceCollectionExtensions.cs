@@ -65,9 +65,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcOidcImpl(this IServiceCollection services)
+        public static IServiceCollection AddSolidRpcOidcTestImpl(this IServiceCollection services)
         {
-            services.AddScoped<ISolidRpcOidc, SolidRpcOidcImpl>();
+            services.AddScoped<ISolidRpcOidc, SolidRpcOidcTestImpl>();
             return services;
         }
 

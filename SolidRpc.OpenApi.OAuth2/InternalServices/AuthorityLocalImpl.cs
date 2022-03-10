@@ -58,6 +58,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             _keys = new List<RsaKeyPair>();
         }
 
+        public AuthorityLocalImpl()
+        {
+        }
+
+        public IAuthorityFactory AuthorityFactory => AuthorityImpl.AuthorityFactory;
+
         private AuthorityImpl AuthorityImpl { get; }
 
         private RsaKeyPair CurrentKeyPair => _keys.Last();
@@ -67,8 +73,15 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         public OpenIDKey PrivateSigningKey => CurrentKeyPair.PrivateKey.OpenIDKey;
 
+        /// <summary>
+        /// Returns the public signing key
+        /// REturns the public signing key
+        /// </summary>
         public OpenIDKey PublicSigningKey => CurrentKeyPair.PublicKey.OpenIDKey;
 
+        /// <summary>
+        /// Returns the authority.
+        /// </summary>
         public string Authority => AuthorityImpl.Authority;
 
         /// <summary>
@@ -132,8 +145,12 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         public void CreateSigningKey(bool removeOld = false)
         {
-            var rsa = RSA.Create();
-            SetRsa(rsa, rsa, Guid.NewGuid().ToString());
+            var privateRSA = RSA.Create();
+            //var privateRSA = RSA.Create();
+            //privateRSA.ImportParameters(rsa.ExportParameters(true));
+            var publicRSA = RSA.Create();
+            publicRSA.ImportParameters(privateRSA.ExportParameters(false));
+            SetRsa(publicRSA, privateRSA, Guid.NewGuid().ToString());
         }
 
         private RsaKeyPair SetRsa(
@@ -219,24 +236,16 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return AuthorityImpl.RevokeTokenAsync(clientId, clientSecret, token, cancellationToken);
         }
 
-        public byte[] Encrypt(byte[] data)
+        public Task<byte[]> SignHash(byte[] data, CancellationToken cancellationToken = default)
         {
-            return CurrentKeyPair.PublicKey.RSA.Encrypt(data, RSAEncryptionPadding.OaepSHA512);
+            var b = CurrentKeyPair.PrivateKey.RSA.SignData(data, 0, data.Length, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+
+            return Task.FromResult(b);
         }
 
-        public byte[] Decrypt(byte[] data)
+        public Task<bool> VerifyData(byte[] data, byte[] signature, CancellationToken cancellationToken = default)
         {
-            foreach(var keyPair in _keys.Reverse())
-            {
-                try
-                {
-                    return keyPair.PrivateKey.RSA.Decrypt(data, RSAEncryptionPadding.OaepSHA512);
-                }
-                catch(CryptographicException e)
-                {
-                }
-            }
-            throw new Exception("Cannot decrypt data");
+            return AuthorityImpl.VerifyData(data, signature, cancellationToken);
         }
     }
 }
