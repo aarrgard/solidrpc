@@ -1790,7 +1790,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.GetProtectedContentAsync(System.Byte[],System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.GetProtectedContentAsync(SolidRpc.Abstractions.Types.ProtectedResource,System.Threading.CancellationToken)">
             <summary>
             Returns the protected content
             </summary>

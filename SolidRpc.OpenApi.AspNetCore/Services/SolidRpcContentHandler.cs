@@ -199,9 +199,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
+        public async Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
         {
-            return ProtectedResource.GetProtectedContentAsync(resource, cancellationToken);
+            var pr = await ProtectedResource.UnprotectAsync(resource, cancellationToken);
+            return await ProtectedResource.GetProtectedContentAsync(pr, cancellationToken);
         }
     }
 }

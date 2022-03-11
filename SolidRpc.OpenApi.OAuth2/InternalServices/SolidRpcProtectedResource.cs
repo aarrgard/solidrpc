@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -19,17 +20,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     {
         public SolidRpcProtectedResource(
             ILogger<SolidRpcProtectedResource> logger,
-            ISolidRpcProtectedContent solidRpcProtectedContent = null,
+            IInvoker<ISolidRpcProtectedContent> contentInvoker,
             IAuthorityLocal authority = null)
         {
             Logger = logger;
             Authority = authority;
-            SolidRpcProtectedContent = solidRpcProtectedContent;
+            ContentInvoker = contentInvoker;
         }
 
         private ILogger Logger { get; }
         private IAuthorityLocal Authority { get; }
-        private ISolidRpcProtectedContent SolidRpcProtectedContent { get; }
+        private IInvoker<ISolidRpcProtectedContent> ContentInvoker { get; }
 
         public Task<byte[]> ProtectAsync(string content, DateTimeOffset expiryTime, CancellationToken cancellationToken)
         {
@@ -43,21 +44,29 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         }
 
 
-        public async Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
+        public async Task<FileContent> GetProtectedContentAsync(ProtectedResource resource, CancellationToken cancellationToken)
         {
-            var pr = await UnprotectAsync(resource, cancellationToken);
-            if(pr.Expiration < DateTimeOffset.UtcNow)
+            if(resource.Expiration < DateTimeOffset.UtcNow)
             {
                 throw new FileContentNotFoundException("Resource expired");
             }
 
-            if(pr.Source == Authority.Authority)
+            if(resource.Source == Authority.Authority)
             {
-                return await SolidRpcProtectedContent.GetProtectedContentAsync(pr.Resource, cancellationToken);
+                return await ContentInvoker.InvokeAsync(o => o.GetProtectedContentAsync(resource.Resource, cancellationToken), opts => {
+                    return opts.SetTransport("Local");
+                });
             }
             else
             {
-                throw new FileContentNotFoundException("Content not local");
+                return await ContentInvoker.InvokeAsync(o => o.GetProtectedContentAsync(resource.Resource, cancellationToken), opts => {
+                    return opts.SetTransport("Http").AddPreInvokeCallback(r =>
+                    {
+                        var uri = new Uri(Authority.Authority);
+                        r.HostAndPort = $"{uri.Host}:{uri.Port}";    
+                        return Task.CompletedTask;
+                    });
+                });
             }
         }
 

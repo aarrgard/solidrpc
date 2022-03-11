@@ -12,6 +12,7 @@ using SolidRpc.Abstractions.InternalServices;
 using System.Threading;
 using SolidRpc.Abstractions.Types;
 using Microsoft.IdentityModel.Logging;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 
 namespace SolidRpc.Tests.Security
 {
@@ -56,6 +57,12 @@ namespace SolidRpc.Tests.Security
             services.AddSolidRpcOAuth2Local(issuer.ToString());
             services.AddSolidRpcOidcTestImpl();
             services.AddSolidRpcServices(o => true);
+
+            services.GetSolidRpcContentStore().AddMapping("/SolidRpc/Other/.well-known/openid-configuration", sp =>
+            {
+                var o = sp.GetRequiredService<IInvoker<ISolidRpcOidc>>();
+                return o.GetUriAsync(o => o.GetDiscoveryDocumentAsync(CancellationToken.None));
+            });
         }
 
 
@@ -151,13 +158,14 @@ namespace SolidRpc.Tests.Security
             {
                 await ctx.StartAsync();
 
-
                 var a = ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>();
                 a.CreateSigningKey();
 
-
                 var pc = ctx.ServerServiceProvider.GetRequiredService<ISolidRpcProtectedResource>();
-                var rs = await pc.ProtectAsync("Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76", DateTime.Now.AddHours(1));
+                var timeout = DateTime.Now.AddHours(1);
+                var rs = await pc.ProtectAsync("Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76", timeout);
+                var rsSame = await pc.ProtectAsync("Vitec/a3c9c279-b1f2-46ca-aa0a-db909c0a3e76", timeout);
+                Assert.AreEqual(rs, rsSame);
 
 
                 var h = ctx.ClientServiceProvider.GetRequiredService<ISolidRpcContentHandler>();
@@ -177,6 +185,22 @@ namespace SolidRpc.Tests.Security
                 {
                     //Assert.AreEqual("Test", e.Message);
                 }
+
+                var otherA = a.AuthorityFactory.GetLocalAuthority(new Uri(new Uri(a.Authority), "Other").ToString());
+                otherA.CreateSigningKey();
+
+                var aDD = await a.GetDiscoveryDocumentAsync();
+                var otherDD = await otherA.GetDiscoveryDocumentAsync();
+                Assert.AreEqual(otherDD.Issuer, aDD.Issuer);
+                Assert.AreEqual(a.Authority, aDD.Issuer);
+                Assert.AreNotEqual(otherA.Authority, otherDD.Issuer);
+
+                // fetch it remotely
+                var pr = await pc.UnprotectAsync(rs);
+                pr.Source = otherA.Authority;
+                pr.Expiration = DateTime.Now.AddMinutes(1);
+                r = await pc.GetProtectedContentAsync(pr);
+                Assert.AreEqual("Test", await r.AsStringAsync());
             }
         }
     }

@@ -17,7 +17,10 @@ namespace SolidRpc.Abstractions.InternalServices
         /// <param name="expiryTime"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<byte[]> ProtectAsync(string resource, DateTimeOffset expiryTime, CancellationToken cancellationToken = default);
+        Task<byte[]> ProtectAsync(
+            string resource, 
+            DateTimeOffset expiryTime, 
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Decrypts a protected resource
@@ -25,14 +28,18 @@ namespace SolidRpc.Abstractions.InternalServices
         /// <param name="resource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ProtectedResource> UnprotectAsync(byte[] resource, CancellationToken cancellationToken);
-        
+        Task<ProtectedResource> UnprotectAsync(
+            byte[] resource, 
+            CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Returns the protected content
         /// </summary>
         /// <param name="resource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken);
+        Task<FileContent> GetProtectedContentAsync(
+            ProtectedResource resource, 
+            CancellationToken cancellationToken = default);
     }
 }
