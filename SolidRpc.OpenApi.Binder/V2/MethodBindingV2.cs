@@ -751,9 +751,16 @@ namespace SolidRpc.OpenApi.Binder.V2
             var fileTemplate = FileContentTemplate.GetTemplate(objType);
             if (fileTemplate.IsTemplateType)
             {
-                if(obj == null)
+                // handle status code for 302
+                response.Location = fileTemplate.GetLocation(obj);
+                if(!string.IsNullOrEmpty(response.Location))
                 {
-                    // nothinh to resturn - make sure that the content type is empty
+                    response.StatusCode = 302;
+                }
+
+                if (obj == null)
+                {
+                    // nothing to resturn - make sure that the content type is empty
                     response.MediaType = null;
                     return Task.CompletedTask;
                 }
@@ -766,7 +773,6 @@ namespace SolidRpc.OpenApi.Binder.V2
                 response.CharSet = fileTemplate.GetCharSet(obj);
                 response.Filename = fileTemplate.GetFileName(obj);
                 response.LastModified = fileTemplate.GetLastModified(obj);
-                response.Location = fileTemplate.GetLocation(obj);
                 response.ETag = fileTemplate.GetETag(obj);
                 response.SetCookie = fileTemplate.GetSetCookie(obj);
                 return Task.CompletedTask;

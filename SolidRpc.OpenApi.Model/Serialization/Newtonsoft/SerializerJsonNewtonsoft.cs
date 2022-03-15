@@ -8,16 +8,26 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
     public class SerializerJsonNewtonsoft : ISerializer
     {
-        public SerializerJsonNewtonsoft(ISerializerFactory factory, SerializerSettings serializerSettings)
+        /// <summary>
+        /// Creates a new serializer
+        /// </summary>
+        /// <returns></returns>
+        public static JsonSerializer CreateSerializer(SerializerSettings serializerSettings)
         {
-            Factory = factory;
-            SerializerSettings = serializerSettings;
-            JsonSerializer = JsonSerializer.Create(new JsonSerializerSettings()
+            var ser = JsonSerializer.Create(new JsonSerializerSettings()
             {
                 Formatting = serializerSettings.PrettyPrint ? Formatting.Indented : Formatting.None,
                 ContractResolver = new NewtonsoftContractResolver(serializerSettings)
             });
-            JsonSerializer.Converters.Add(new StringEnumConverter() { AllowIntegerValues = false });
+            ser.Converters.Add(new StringEnumConverter() { AllowIntegerValues = false });
+            return ser;
+        }
+
+        public SerializerJsonNewtonsoft(ISerializerFactory factory, SerializerSettings serializerSettings)
+        {
+            Factory = factory;
+            SerializerSettings = serializerSettings;
+            JsonSerializer = CreateSerializer(serializerSettings);
         }
 
         private ISerializerFactory Factory { get; }

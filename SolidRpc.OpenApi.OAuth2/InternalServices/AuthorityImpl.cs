@@ -255,9 +255,21 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         private async Task<TokenResponse> GetTokenResponseAsync(List<KeyValuePair<string, string>> nvc, CancellationToken cancellationToken)
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
+            if(doc.TokenEndpoint == null)
+            {
+                throw new Exception("Discovery document contains no token endpoint.");
+            }
             var client = HttpClientFactory.CreateClient();
             var content = new FormUrlEncodedContent(nvc);
-            var resp = await client.PostAsync(doc.TokenEndpoint, content);
+            HttpResponseMessage resp;
+            try
+            {
+                resp = await client.PostAsync(doc.TokenEndpoint, content);
+            } 
+            catch (Exception e)
+            {
+                throw;
+            }
 
             if (!resp.IsSuccessStatusCode)
             {

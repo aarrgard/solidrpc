@@ -34,7 +34,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
             services.AddSolidRpcOAuth2(conf =>
             {
-                conf.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc", "offline_access" });
+                conf.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc"/*, "offline_access"*/ });
             });
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
 
@@ -74,7 +74,9 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
 
-            conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
+            var settings = services.GetSolidRpcService<IConfiguration>();
+            conf.SetOAuth2ClientSecurity(settings["OAuth2Authority"], settings["OAuth2ClientId"], settings["OAuth2ClientSecret"]);
+            //conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))
@@ -124,7 +126,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
         private string GetOAuth2Issuer(IServiceCollection services)
         {
-
             var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
             if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
             var oauth2Issuer = $"{baseAddress}/SolidRpc/Abstractions";

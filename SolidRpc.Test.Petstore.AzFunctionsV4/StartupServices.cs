@@ -27,6 +27,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             var settings = services.GetSolidRpcService<IConfiguration>();
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
 
+            services.AddSolidRpcOidcTestImpl();
             base.ConfigureServices(services, c => ConfigureAzureFunction(services, c));
 
             services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");

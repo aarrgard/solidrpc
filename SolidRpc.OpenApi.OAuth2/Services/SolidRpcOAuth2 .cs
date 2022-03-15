@@ -118,6 +118,11 @@ namespace SolidRpc.OpenApi.Binder.Services
             var serverState = HttpUtility.UrlEncode(Convert.ToBase64String(statems.ToArray()));
             var scope = HttpUtility.UrlEncode(string.Join(" ", scopes));
 
+            if(doc.AuthorizationEndpoint == null)
+            {
+                throw new Exception($"Authority {auth.Authority} does not have an authorization endpoint configured.");
+            }
+
             if (scopes.Any(o => o.Equals("offline_access", StringComparison.InvariantCultureIgnoreCase)))
             {
                 var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync("current", cancellationToken));

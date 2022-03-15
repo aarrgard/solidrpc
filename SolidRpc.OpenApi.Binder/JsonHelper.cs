@@ -18,10 +18,7 @@ namespace SolidRpc.OpenApi.Binder
     {
         public static readonly Encoding DefaultEncoding = Encoding.UTF8;
         private static ConcurrentDictionary<Type, Func<object, object>> s_makeArray = new ConcurrentDictionary<Type, Func<object, object>>();
-        private static readonly JsonSerializer s_serializer = new JsonSerializer()
-        {
-            ContractResolver = new NewtonsoftContractResolver(SerializerSettings.Default)
-        };
+        private static readonly JsonSerializer s_serializer = SerializerJsonNewtonsoft.CreateSerializer(SerializerSettings.Default);
 
         /// <summary>
         /// Deserializes the supplied stream into an object

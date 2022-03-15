@@ -19,11 +19,24 @@ using System.Web;
 
 namespace Microsoft.AspNetCore.Builder
 {
+    public static class HttpContextExtensions
+    {
+        public static bool IsProcessed(this HttpContext httpContext)
+        {
+            return (httpContext.Items["__Processed__"] as bool?) ?? false;
+        }
+        public static void SetProcessed(this HttpContext httpContext)
+        {
+            httpContext.Items["__Processed__"] = true;
+        }
+    }
+
     /// <summary>
     /// Extension methods for the application builder
     /// </summary>
     public static class IApplicationBuilderExtensions
     {
+ 
         private class PathHandler
         {
              /// <summary>
@@ -326,7 +339,7 @@ namespace Microsoft.AspNetCore.Builder
 
         private static async Task HandleInvocation(ISolidRpcContentHandler contentHandler, HttpContext ctx)
         {
-            if(ctx.Response.HasStarted)
+            if(ctx.IsProcessed())
             {
                 return;
             }
@@ -348,6 +361,7 @@ namespace Microsoft.AspNetCore.Builder
                 resp.AddAllowedCorsHeaders(request);
 
                 await resp.CopyToAsync(ctx.Response);
+                ctx.SetProcessed();
             }
             catch (FileContentNotFoundException)
             {
@@ -368,7 +382,6 @@ namespace Microsoft.AspNetCore.Builder
                 //
                 if (context.Request.Path != "")
                 {
-                    context.Response.StatusCode = 404;
                     return;
                 }
 
@@ -385,6 +398,8 @@ namespace Microsoft.AspNetCore.Builder
 
                 // send data back
                 await response.CopyToAsync(context.Response);
+
+                context.SetProcessed();
             }
             catch (Exception e)
             {

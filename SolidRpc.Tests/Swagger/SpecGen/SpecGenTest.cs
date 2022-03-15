@@ -160,6 +160,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var res = await proxy.GetEnumTypeAsync(EnumArgs.Types.TestEnum.Two);
                 Assert.AreEqual(EnumArgs.Types.TestEnum.Two, res);
+
+                var invoc = ctx.ClientServiceProvider.GetRequiredService<IInvoker<EnumArgs.Services.IEnumArgs>>();
+                var uri = await invoc.GetUriAsync(o => o.GetEnumTypeAsync(EnumArgs.Types.TestEnum.Two, CancellationToken.None));
+                Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/EnumArgs/Services/IEnumArgs/GetEnumTypeAsync/Two", uri.AbsolutePath);
+
             });
         }
 

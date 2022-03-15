@@ -21,19 +21,20 @@ namespace SolidRpc.Test.PetstoreWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var oauth2Iss = "https://localhost:5001/";
-            //var oauth2Iss = "https://identity.erikolsson.se";
+            var oauth2Iss = "https://localhost:5001/SolidRpc/Abstractions";
+            //var oauth2Iss = "https://eo-ci-identity-web.azurewebsites.net";
             services.AddLogging(o => {
                 o.SetMinimumLevel(LogLevel.Trace);
                 o.AddConsole();
             });
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             services.AddHttpClient();
+            services.AddSolidRpcOidcTestImpl();
             services.AddSolidRpcServices(conf =>
             {
                 if (conf.Methods.First().DeclaringType == typeof(ISolidRpcOAuth2))
                 {
-                    conf.SetOAuth2ClientSecurity(oauth2Iss, "eo-prd-vitec-web", "0a5fa78b-da2b-401a-89b5-a5239bc32ac3");
+                    conf.SetOAuth2ClientSecurity(oauth2Iss, "eo-ci-customer-web", "0ef5ed1d-fa63-4e79-b4ad-f447409b73fa");
                     conf.DisableSecurity();
                 }
                 return true;
@@ -60,7 +61,7 @@ namespace SolidRpc.Test.PetstoreWeb
                 return true;
             });
             services.AddSolidRpcOAuth2(a => {
-                a.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc"/*, "offline_access"*/ });
+                a.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc", "offline_access" });
             });
             //services.ConfigureSolidRpcOAuth2(oauth2Iss, a => {
             //    a.AddDefaultScopes("authorization_code", new[] { "offline_access" });
@@ -81,6 +82,8 @@ namespace SolidRpc.Test.PetstoreWeb
                 var handler = sp.GetRequiredService<IInvoker<ISolidRpcOidc>>();
                 return await handler.GetUriAsync(o => o.GetDiscoveryDocumentAsync(CancellationToken.None));
             });
+
+
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>
             //{
             //    //conf.Authority = "https://login.microsoftonline.com/common/v2.0";

@@ -285,7 +285,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 var sorted = serviceAttrs.OrderByDescending(o => GetDepth(o.ImplementationType)).ToList();
                 if(instances == SolidRpcServiceInstances.One)
                 {
-                    sorted = sorted.Take(1).ToList();
+                    if (services.Any(o => o.ServiceType == serviceAttrs.Key))
+                    {
+                        sorted = sorted.Take(0).ToList();
+                    }
+                    else
+                    {
+                        sorted = sorted.Take(1).ToList();
+                    }
                 }
                 foreach(var attr in sorted)
                 {
@@ -442,12 +449,14 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // make sure that the type is registered
             //
-            if (!sc.Any(o => o.ServiceType == interfaze))
+            var service = sc.FirstOrDefault(o => o.ServiceType == interfaze);
+            if (service == null)
             {
                 sc.AddTransient(interfaze, impl ?? interfaze);
             }
 
-            if (!sc.Any(o => o.ServiceType == interfaze))
+            service = sc.FirstOrDefault(o => o.ServiceType == interfaze);
+            if (service == null)
             {
                 return new ISolidRpcOpenApiConfig[0];
             }
