@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
 
 [assembly: SolidRpcService(typeof(ISolidRpcContentStore), typeof(SolidRpcContentStore))]
@@ -128,6 +130,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public IDictionary<string, DynamicMapping> DynamicContents { get; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public string NotFoundRewrite { get; private set; }
+
+        /// <summary>
         /// Keeps track of registrations so that we do not add resources more than once.
         /// </summary>
         private HashSet<string> Registrations { get; }
@@ -198,6 +205,15 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping, bool isRedirect)
         {
             DynamicContents[path] = new DynamicMapping(mapping, isRedirect);
+        }
+
+        /// <summary>
+        /// Sets the path to get when other paths are not found
+        /// </summary>
+        /// <param name="path"></param>
+        public void SetNotFoundRewrite(string path)
+        {
+            NotFoundRewrite = path;
         }
     }
 }

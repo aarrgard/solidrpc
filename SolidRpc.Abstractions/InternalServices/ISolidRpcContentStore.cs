@@ -38,5 +38,11 @@ namespace SolidRpc.Abstractions.InternalServices
         /// <param name="mapping"></param>
         /// <param name="isRedirect"></param>
         void AddMapping(string path, Func<IServiceProvider, Task<Uri>> mapping, bool isRedirect = false);
+
+        /// <summary>
+        /// This path to fetch the content for when not found
+        /// </summary>
+        /// <param name="path"></param>
+        void SetNotFoundRewrite(string path);
     }
 }

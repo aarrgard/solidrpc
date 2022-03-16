@@ -1713,6 +1713,12 @@
             <param name="mapping"></param>
             <param name="isRedirect"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.SetNotFoundRewrite(System.String)">
+            <summary>
+            This path to fetch the content for when not found
+            </summary>
+            <param name="path"></param>
+        </member>
         <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken">
             <summary>
             Represents a continuation token.

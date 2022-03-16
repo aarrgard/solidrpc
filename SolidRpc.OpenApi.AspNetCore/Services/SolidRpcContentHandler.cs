@@ -26,20 +26,20 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <summary>
         /// The content handler
         /// </summary>
-        /// <param name="serviceScopeFactory"></param>
+        /// <param name="serviceProvider"></param>
         /// <param name="protectedContent"></param>
         /// <param name="methodAddressTransformer"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="contentStore"></param>
         public SolidRpcContentHandler(
-            IServiceScopeFactory serviceScopeFactory,
+            IServiceProvider serviceProvider,
             IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore,
             SolidRpcContentStore contentStore,
             ISolidRpcProtectedResource protectedResource,
             ISolidRpcProtectedContent protectedContent = null)
         {
-            ServiceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodAddressTransformer));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             ContentStore = contentStore ?? throw new ArgumentNullException(nameof(contentStore));
@@ -48,7 +48,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
 
-        private IServiceScopeFactory ServiceScopeFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
         private ISolidRpcProtectedContent ProtectedContent { get; }
         private IMethodAddressTransformer MethodAddressTransformer { get; }
         private IMethodBinderStore MethodBinderStore { get; }
@@ -76,7 +76,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// </summary>
         public async Task<IEnumerable<NameValuePair>> GetPathMappingsAsync(bool redirects, CancellationToken cancellationToken)
         {
-            using (var scope = ServiceScopeFactory.CreateScope())
+            using (var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var tasks = ContentStore.DynamicContents
                     .Where(o => o.Value.IsRedirect == redirects)
@@ -131,7 +131,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             {
                 return async (_, cancellationToken) =>
                 {
-                    using(var ss = ServiceScopeFactory.CreateScope())
+                    using(var ss = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                     {
                         var uri = await dm.UriResolver(ss.ServiceProvider);
                         var httpClient = ss.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
@@ -171,10 +171,17 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
             if (!staticFiles.Any()) 
             {
-                return (_, cancellationToken) =>
+                if (string.IsNullOrEmpty(ContentStore.NotFoundRewrite) || path == ContentStore.NotFoundRewrite)
                 {
-                    throw new FileContentNotFoundException($"Cannot locate resource {_}");
-                };
+                    return (_, cancellationToken) =>
+                    {
+                        throw new FileContentNotFoundException($"Cannot locate resource {_}");
+                    };
+                }
+                else
+                {
+                    return GetContentInternal(ContentStore.NotFoundRewrite);
+                }
             }
             var staticFile = staticFiles.First();
 

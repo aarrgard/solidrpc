@@ -6,6 +6,7 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
@@ -13,8 +14,11 @@ using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 
@@ -58,10 +62,12 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             });
 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", "/images");
+            services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
             services.GetSolidRpcContentStore().AddMapping("/", async sp =>
             {
                 return await sp.GetRequiredService<IInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
             }, true);
+
         }
 
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
