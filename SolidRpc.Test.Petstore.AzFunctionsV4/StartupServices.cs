@@ -6,7 +6,6 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
@@ -14,11 +13,8 @@ using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
 using System;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
 
@@ -35,7 +31,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             base.ConfigureServices(services, c => ConfigureAzureFunction(services, c));
 
             services.AddSolidRpcApplicationInsights(OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
-
             services.AddSolidRpcOAuth2(conf =>
             {
                 conf.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc", "offline_access" });
@@ -51,7 +46,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddSolidRpcRateLimit();
             //services.AddSolidRpcRateLimitTableStorage(ConfigureAzureFunction);
             //services.AddVitec(ConfigureAzureFunction);
-            services.AddSolidRpcOAuth2Local(GetOAuth2Issuer(services), conf => { conf.CreateSigningKey(); });
+            services.AddSolidRpcOAuth2Local(conf => { conf.CreateSigningKey(); });
             //services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             //services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
@@ -73,7 +68,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
 
-            conf.SetOAuth2ClientSecurity(GetOAuth2Issuer(services), "swagger-ui", "swagger-ui");
+            conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), "swagger-ui", "swagger-ui");
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))
@@ -121,13 +116,5 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             return true;
         }
 
-        private string GetOAuth2Issuer(IServiceCollection services)
-        {
-
-            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
-            if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
-            var oauth2Issuer = $"{baseAddress}/SolidRpc/Abstractions";
-            return oauth2Issuer;
-        }
     }
 }

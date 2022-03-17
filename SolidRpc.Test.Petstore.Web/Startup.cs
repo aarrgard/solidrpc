@@ -66,7 +66,7 @@ namespace SolidRpc.Test.PetstoreWeb
             //services.ConfigureSolidRpcOAuth2(oauth2Iss, a => {
             //    a.AddDefaultScopes("authorization_code", new[] { "offline_access" });
             //});
-            services.AddSolidRpcOAuth2Local(oauth2Iss, a =>
+            services.AddSolidRpcOAuth2Local(a =>
             {
                 a.CreateSigningKey();
             });

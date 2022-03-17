@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.InternalServices;
+using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
@@ -9,6 +11,7 @@ using System;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -45,19 +48,47 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the oauth2 services
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="conf"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, Action<IAuthorityLocal> conf = null)
+        {
+            return AddSolidRpcOAuth2Local(services, null, conf);
+        }
+
+        /// <summary>
+        /// Adds the oauth2 services
+        /// </summary>
+        /// <param name="services"></param>
         /// <param name="localAuthority"></param>
         /// <param name="conf"></param>
         /// <returns></returns>
         public static IServiceCollection AddSolidRpcOAuth2Local(this IServiceCollection services, string localAuthority, Action<IAuthorityLocal> conf = null)
         {
             services.AddSolidRpcOAuth2();
-            services.AddSingletonIfMissing(o =>
+            services.AddSingletonIfMissing(sp =>
             {
-                var auth = o.GetRequiredService<IAuthorityFactory>().GetLocalAuthority(localAuthority);
+                if(string.IsNullOrEmpty(localAuthority))
+                {
+                    localAuthority = services.GetSolidRpcOAuth2LocalIssuer();
+                }
+                var auth = sp.GetRequiredService<IAuthorityFactory>().GetLocalAuthority(localAuthority);
                 conf?.Invoke(auth);
                 return auth;
             });
             return services;
+        }
+
+        /// <summary>
+        /// Returns the address to the local oauth2 issuer
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static string GetSolidRpcOAuth2LocalIssuer(this IServiceCollection services)
+        {
+            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
+            if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
+            var oauth2Issuer = $"{baseAddress}/SolidRpc/Abstractions";
+            return oauth2Issuer;
         }
 
         /// <summary>

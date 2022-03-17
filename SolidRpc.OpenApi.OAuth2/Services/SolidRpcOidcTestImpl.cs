@@ -190,8 +190,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
 
         private async Task<TokenResponse> GetTokenAsyncRefreshToken(string clientId, string clientSecret, string refreshToken, CancellationToken cancellationToken)
         {
-            var claimsIdentity = RefreshTokens[refreshToken];
-            if(claimsIdentity == null)
+            if(!RefreshTokens.TryGetValue(refreshToken, out ClaimsIdentity claimsIdentity))
             {
                 throw new Exception("Failed to find identity for refresh token:" + refreshToken);
             }

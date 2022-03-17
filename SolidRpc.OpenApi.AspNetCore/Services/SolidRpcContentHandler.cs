@@ -27,29 +27,26 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// The content handler
         /// </summary>
         /// <param name="serviceProvider"></param>
-        /// <param name="protectedContent"></param>
         /// <param name="methodAddressTransformer"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="contentStore"></param>
+        /// <param name="protectedResource"></param>
         public SolidRpcContentHandler(
             IServiceProvider serviceProvider,
             IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore,
             SolidRpcContentStore contentStore,
-            ISolidRpcProtectedResource protectedResource,
-            ISolidRpcProtectedContent protectedContent = null)
+            ISolidRpcProtectedResource protectedResource)
         {
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodAddressTransformer));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             ContentStore = contentStore ?? throw new ArgumentNullException(nameof(contentStore));
             ProtectedResource = protectedResource;
-            ProtectedContent = protectedContent;
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
 
         private IServiceProvider ServiceProvider { get; }
-        private ISolidRpcProtectedContent ProtectedContent { get; }
         private IMethodAddressTransformer MethodAddressTransformer { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private SolidRpcContentStore ContentStore { get; }
