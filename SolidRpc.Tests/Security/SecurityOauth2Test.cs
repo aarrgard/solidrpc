@@ -487,6 +487,8 @@ namespace SolidRpc.Tests.Security
                 // Test invoking using the configured client
                 //
                 var res = await protectedService.GetClientEnabledResource("test");
+                Assert.AreEqual("test:clientid", res); 
+                res = await protectedService.GetClientEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
 
                 var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(GetIssuer(ctx.BaseAddress));
@@ -511,7 +513,7 @@ namespace SolidRpc.Tests.Security
                 ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt1.AccessToken);
                 res = await protectedService.GetUserEnabledResource("test");
                 Assert.AreEqual("test:clientid", res);
-                
+
                 //
                 // Test resetting the current principal
                 //

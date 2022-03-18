@@ -23,13 +23,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     {
         private class CachedJwt
         {
-            public CachedJwt(TokenResponse jwt, DateTime validTo)
+            public CachedJwt(TokenResponse jwt, DateTimeOffset validTo)
             {
                 Jwt = jwt;
                 ValidTo = validTo;
             }
             public TokenResponse Jwt { get; }
-            public DateTime ValidTo { get; }
+            public DateTimeOffset ValidTo { get; }
         }
 
         private class AuthorityTokenValidationParameters : TokenValidationParameters, IAuthorityTokenChecks
@@ -225,7 +225,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             var key = string.Join(":", nvc.Select(o => o.Value));
             if(CachedJwts.TryGetValue(key, out CachedJwt cachedJwt))
             {
-                if (cachedJwt.ValidTo < DateTime.Now.Subtract(timeout.Value))
+                if (cachedJwt.ValidTo > DateTimeOffset.Now.Subtract(timeout.Value))
                 {
                     return cachedJwt.Jwt;
                 }

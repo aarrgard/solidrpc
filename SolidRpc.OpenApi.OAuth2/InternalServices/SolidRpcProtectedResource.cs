@@ -62,7 +62,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 return await ContentInvoker.InvokeAsync(o => o.GetProtectedContentAsync(resource.Resource, cancellationToken), opts => {
                     return opts.SetTransport("Http").AddPreInvokeCallback(r =>
                     {
-                        var uri = new Uri(Authority.Authority);
+                        var uri = new Uri(resource.Source);
                         r.HostAndPort = $"{uri.Host}:{uri.Port}";    
                         return Task.CompletedTask;
                     });
