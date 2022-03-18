@@ -158,7 +158,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 }
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
-                    var parameterType = cSharpRepository.GetClass("System.Threading.CancellationToken");
+                    var parameterType = cSharpRepository.GetType("System.Threading.CancellationToken");
                     var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, "cancellationToken", parameterType, true, $"default({parameterType.FullName})");
                     m.AddMember(mp);
                 }
