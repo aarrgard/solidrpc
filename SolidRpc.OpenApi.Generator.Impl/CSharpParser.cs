@@ -403,12 +403,31 @@ namespace SolidRpc.OpenApi.Generator.Impl
                     {
                         fullName = MergeNames(u.Key, ".", typeName.Substring(alias.Length+1));
                     }
-                    type = CSharpRepository.GetType(fullName);
-                    if (type != null)
+                    var prospect = CSharpRepository.GetType(fullName);
+                    if(prospect != null)
                     {
-                        return type.FullName;
+                        if (type == null)
+                        {
+                            type = prospect;
+                        }
+                        else if (type.FullName.StartsWith("System."))
+                        {
+                            type = prospect;
+                        }
+                        else if (prospect.FullName.StartsWith("System."))
+                        {
+                            //type = type;
+                        }
+                        else
+                        {
+                            throw new Exception($"Found more than one type for {typeName} - {type.FullName} {prospect.FullName}");
+                        }
                     }
                 }
+            }
+            if (type != null)
+            {
+                return type.FullName;
             }
             type = CSharpRepository.GetType(typeName);
             if (type != null)
