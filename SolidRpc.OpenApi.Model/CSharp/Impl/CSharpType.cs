@@ -53,6 +53,12 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         public bool IsEnumType => this is ICSharpEnum;
 
+
+        /// <summary>
+        /// Returns true if this type is an enum type.
+        /// </summary>
+        public bool IsValueType => this is ICSharpStruct;
+
         /// <summary>
         /// Adds an extends clause to this type
         /// </summary>

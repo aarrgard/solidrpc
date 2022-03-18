@@ -55,9 +55,14 @@ namespace SolidRpc.OpenApi.Model.CSharp
         ICSharpType NullableType { get; }
 
         /// <summary>
-        /// Returns true if this is an enum type
+        /// Returns true if this is a value type
         /// </summary>
         bool IsEnumType { get; }
+
+        /// <summary>
+        /// Returns true if this is an enum type
+        /// </summary>
+        bool IsValueType { get; }
 
         /// <summary>
         /// Returns true if this is a file type.

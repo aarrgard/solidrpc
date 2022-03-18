@@ -37,6 +37,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             CreateOpenApiSpec(typeof(ISolidRpcOAuth2).Assembly);
             CreateOpenApiSpec(typeof(ISwaggerUI).Assembly);
+            //CreateOpenApiSpec("C:\\Development\\eo_devops\\sparse\\Vitec\\services\\Vitec\\EO.Vitec", "EO.Vitec");
         }
 
         private void CreateOpenApiSpec(Assembly assembly)
@@ -44,13 +45,18 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             var path = GetProjectFolder(GetType().Assembly.GetName().Name).FullName;
             path = Path.Combine(path, "..");
             path = Path.Combine(path, assembly.GetName().Name);
+            CreateOpenApiSpec(path, assembly.GetName().Name);
+        }
+
+        private void CreateOpenApiSpec(string path, string name)
+        {
             var dir = new DirectoryInfo(path);
             Assert.IsTrue(dir.Exists);
             Program.MainWithExeptions(new[] {
                 "-code2openapi",
                 "-d", path,
-                "-BasePath", $".{assembly.GetName().Name}".Replace(".","/"),
-                $"{assembly.GetName().Name}.json"}).Wait();
+                "-BasePath", $".{name}".Replace(".","/"),
+                $"{name}.json"}).Wait();
         }
 
         /// <summary>

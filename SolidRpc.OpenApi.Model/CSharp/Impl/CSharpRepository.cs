@@ -113,8 +113,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             GetClass(typeof(double), "double");
             GetClass(typeof(decimal), "decimal");
             GetClass(typeof(string), "string");
-            GetClass(typeof(DateTime), typeof(DateTime).FullName);
-            GetClass(typeof(DateTimeOffset), typeof(DateTimeOffset).FullName);
+            GetStruct(typeof(DateTime), typeof(DateTime).FullName);
+            GetStruct(typeof(DateTimeOffset), typeof(DateTimeOffset).FullName);
             LoadSystemTypes(typeof(int).Assembly);
             LoadSystemTypes(typeof(Uri).Assembly);
             LoadSystemTypes(typeof(Guid).Assembly);
@@ -131,6 +131,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             foreach (var type in assembly.GetTypes())
             {
+                if (!type.IsVisible)
+                {
+                    continue;
+                }
                 if (type.IsNotPublic)
                 {
                     continue;
@@ -144,11 +148,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 {
                     added = GetInterface(type);
                 }
-                else if (type.IsClass)
-                {
-                    added = GetClass(type);
-                }
                 else if (type.IsValueType)
+                {
+                    added = GetStruct(type);
+                }
+                else if (type.IsClass)
                 {
                     added = GetClass(type);
                 }
@@ -293,12 +297,39 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public ICSharpClass GetClass(Type type, string typeName = null)
         {
             if (typeName == null) typeName = type.FullName;
-            return (ICSharpClass)Types.GetOrAdd(typeName, _ =>
+            var t =Types.GetOrAdd(typeName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
                 return new CSharpClass(ns, qn.Name, type);
             });
+            if (!(t is ICSharpClass c))
+            {
+                throw new Exception(type.Name + " is not added as a struct");
+            }
+            return c;
+        }
+
+        /// <summary>
+        /// Returns the struct for supplied qualified name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public ICSharpStruct GetStruct(Type type, string typeName = null)
+        {
+            if (typeName == null) typeName = type.FullName;
+            var t = Types.GetOrAdd(typeName, _ =>
+            {
+                var qn = new QualifiedName(_);
+                var ns = GetNamespace(qn.Namespace);
+                return new CSharpStruct(ns, qn.Name, type);
+            });
+            if(!(t is ICSharpStruct s))
+            {
+                throw new Exception(type.Name+" is not added as a struct");
+            }
+            return s;
         }
 
 
@@ -309,12 +340,17 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <returns></returns>
         public ICSharpInterface GetInterface(string fullName)
         {
-            return (ICSharpInterface)Types.GetOrAdd(fullName, _ =>
+            var t =  (ICSharpInterface)Types.GetOrAdd(fullName, _ =>
             {
                 var qn = new QualifiedName(_);
                 var ns = GetNamespace(qn.Namespace);
                 return new CSharpInterface(ns, qn.Name, null);
             });
+            if (!(t is ICSharpInterface i))
+            {
+                throw new Exception(fullName + " is not added as a struct");
+            }
+            return i;
         }
 
         /// <summary>
