@@ -26,10 +26,10 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         /// <param name="localAuthority"></param>
         public SolidRpcOidcImpl(
             IInvoker<ISolidRpcOidc> invoker,
-            IAuthorityLocal localAuthority)
+            IAuthorityLocal localAuthority = null)
         {
-            LocalAuthority = localAuthority;
             Invoker = invoker;
+            LocalAuthority = localAuthority;
         }
 
         protected IInvoker<ISolidRpcOidc> Invoker { get; }
@@ -57,7 +57,15 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         /// <returns></returns>
         public async Task<OpenIDKeys> GetKeysAsync(CancellationToken cancellationToken = default)
         {
-            var keys = await LocalAuthority.GetSigningKeysAsync(cancellationToken);
+            IEnumerable<OpenIDKey> keys;
+            if (LocalAuthority == null)
+            {
+                keys = new OpenIDKey[0];
+            }
+            else
+            {
+                keys = await LocalAuthority.GetSigningKeysAsync(cancellationToken);
+            }
             return new OpenIDKeys() { Keys = keys.ToArray() };
         }
 
