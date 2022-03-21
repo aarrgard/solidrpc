@@ -20,7 +20,23 @@ namespace SolidRpc.OpenApi.OAuth2.Services
     /// </summary>
     public class SolidRpcOidcTestImpl : SolidRpcOidcImpl
     {
-        private static IDictionary<string, ClaimsIdentity> RefreshTokens = new Dictionary<string, ClaimsIdentity>();
+        private static readonly IDictionary<string, ClaimsIdentity> RefreshTokens = new Dictionary<string, ClaimsIdentity>();
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly string ClientId = Guid.NewGuid().ToString();
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly string ClientSecret = Guid.NewGuid().ToString();
+        /// <summary>
+        /// 
+        /// </summary>
+        public static string[] ClientAllowedPaths = new string[] { };
+        /// <summary>
+        /// 
+        /// </summary>
+        public static string[] UserAllowedPaths = new string[] { };
 
         /// <summary>
         /// Constructs a new instance
@@ -103,7 +119,10 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             claims.Add(new Claim("iss", LocalAuthority.Authority));
             claims.Add(new Claim("aud", clientId));
             claims.Add(new Claim("sub", Guid.NewGuid().ToString()));
-            claims.Add(new Claim("AllowedPath", "/*"));
+            UserAllowedPaths.ToList().ForEach(o =>
+            {
+                claims.Add(new Claim("AllowedPath", o));
+            });
             if(nonce != null)
             {
                 claims.Add(new Claim("nonce", nonce));
@@ -173,6 +192,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         /// <returns></returns>
         public override Task<TokenResponse> GetTokenAsync(string grantType = null, string clientId = null, string clientSecret = null, string username = null, string password = null, IEnumerable<string> scope = null, string code = null, string redirectUri = null, string codeVerifier = null, string refreshToken = null, CancellationToken cancellationToken = default)
         {
+            CheckClientIdAndSecret(clientId, clientSecret);
             switch (grantType)
             {
                 case "authorization_code":
@@ -234,6 +254,10 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             {
                 claimsIdentity.AddClaim(new Claim("scope", scope));
             }
+            ClientAllowedPaths.ToList().ForEach(o =>
+            {
+                claimsIdentity.AddClaim(new Claim("AllowedPath", o));
+            });
             var accessToken = await LocalAuthority.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()
             {
@@ -264,8 +288,15 @@ namespace SolidRpc.OpenApi.OAuth2.Services
 
         public override Task RevokeAsync(string clientId = null,  string clientSecret = null,  string token = null,  string tokenHint = null, CancellationToken cancellationToken = default)
         {
+            CheckClientIdAndSecret(clientId, clientSecret);
             RefreshTokens.Remove(token);
             return Task.CompletedTask;
+        }
+
+        private void CheckClientIdAndSecret(string clientId, string clientSecret)
+        {
+            if (clientId != ClientId) throw new Exception("Wrong client id");
+            if (clientSecret != ClientSecret) throw new Exception("Wrong client secret");
         }
     }
 }

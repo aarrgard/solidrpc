@@ -19,6 +19,9 @@ using System.Net;
 using System.Text.RegularExpressions;
 using SolidRpc.Abstractions.InternalServices;
 using System.Threading;
+using SolidRpc.OpenApi.OAuth2.Services;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace SolidRpc.Tests.Security
 {
@@ -166,7 +169,7 @@ namespace SolidRpc.Tests.Security
 
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetClientEnabledResource))
             {
-                conf.SetOAuth2ClientSecurity(GetIssuer(baseAddress), "clientid", "secret");
+                conf.SetOAuth2ClientSecurity(GetIssuer(baseAddress), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
                 conf.DisableSecurity();
             }
             if (conf.Methods.Single().Name == nameof(IOAuth2EnabledService.GetUserEnabledResource))
@@ -184,6 +187,8 @@ namespace SolidRpc.Tests.Security
         /// <returns></returns>
         public override void ConfigureServerServices(IServiceCollection serverServices)
         {
+            SolidRpcOidcTestImpl.ClientAllowedPaths = new[] { "/*" };
+            SolidRpcOidcTestImpl.UserAllowedPaths = new[] { "/*" };
             base.ConfigureServerServices(serverServices);
             serverServices.AddSolidRpcOAuth2(conf =>
             {
@@ -202,7 +207,7 @@ namespace SolidRpc.Tests.Security
             serverServices.AddSolidRpcBindings(typeof(IOAuth2ProtectedService), typeof(OAuth2ProtectedService), o =>
             {
                 o.OpenApiSpec = openApi;
-                var oauth2Config = o.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), "clientid", "secret");
+                var oauth2Config = o.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
                 if (o.Methods.Single().Name == nameof(IOAuth2ProtectedService.GetProtectedResourceWithRedirect))
                 {
                     oauth2Config.RedirectUnauthorizedIdentity = true;
@@ -216,7 +221,7 @@ namespace SolidRpc.Tests.Security
             {
                 if(c.Methods.Single().DeclaringType == typeof(ISolidRpcOAuth2))
                 {
-                    c.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), "clientid", "secret");
+                    c.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
                     c.DisableSecurity();
                 }
                 return true;
@@ -284,8 +289,8 @@ namespace SolidRpc.Tests.Security
                     GrantType = "client_credentials",
 
                     ClientCredentialStyle = ClientCredentialStyle.PostBody,
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
 
                     Parameters =
                     {
@@ -324,8 +329,8 @@ namespace SolidRpc.Tests.Security
                     Address = res.TokenEndpoint,
 
                     ClientCredentialStyle = ClientCredentialStyle.PostBody,
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
                     Scope = "api1"
                 });
 
@@ -353,8 +358,8 @@ namespace SolidRpc.Tests.Security
                     Address = res.TokenEndpoint,
 
                     ClientCredentialStyle = ClientCredentialStyle.PostBody,
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
                     Scope = "api1",
 
                     UserName = "bob",
@@ -379,7 +384,7 @@ namespace SolidRpc.Tests.Security
                 var httpClient = clientFactory.CreateClient();
                 var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
 
-                var authResp = await httpClient.GetAsync($"{res.AuthorizeEndpoint}?redirect_uri=http://test.test/test&client_id=y&response_type=code");
+                var authResp = await httpClient.GetAsync($"{res.AuthorizeEndpoint}?redirect_uri=http://test.test/test&client_id={SolidRpcOidcTestImpl.ClientId}&response_type=code");
                 Assert.AreEqual(HttpStatusCode.Found, authResp.StatusCode);
                 var code = authResp.Headers.Location.Query.Split('?')[1].Split('&').Where(o => o.StartsWith("code=")).Single().Split('=')[1];
 
@@ -388,8 +393,9 @@ namespace SolidRpc.Tests.Security
                 {
                     Address = res.TokenEndpoint,
 
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
 
                     Code = code,
                     RedirectUri = "https://app.com/callback",
@@ -422,8 +428,8 @@ namespace SolidRpc.Tests.Security
                     Address = res.TokenEndpoint,
 
                     ClientCredentialStyle = ClientCredentialStyle.PostBody,
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
                     Scope = "api1",
 
                     UserName = "bob",
@@ -437,8 +443,9 @@ namespace SolidRpc.Tests.Security
                 {
                     Address = res.TokenEndpoint,
 
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
 
                     RefreshToken = response.RefreshToken
                 });
@@ -449,8 +456,8 @@ namespace SolidRpc.Tests.Security
                     Address = res.RevocationEndpoint,
 
                     ClientCredentialStyle = ClientCredentialStyle.PostBody,
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
                     Token = response.RefreshToken
                 });
 
@@ -461,8 +468,9 @@ namespace SolidRpc.Tests.Security
                 {
                     Address = res.TokenEndpoint,
 
-                    ClientId = "client",
-                    ClientSecret = "secret",
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
 
                     RefreshToken = response.RefreshToken
                 });
@@ -487,16 +495,16 @@ namespace SolidRpc.Tests.Security
                 // Test invoking using the configured client
                 //
                 var res = await protectedService.GetClientEnabledResource("test");
-                Assert.AreEqual("test:clientid", res); 
+                Assert.AreEqual($"test:{SolidRpcOidcTestImpl.ClientId}", res); 
                 res = await protectedService.GetClientEnabledResource("test");
-                Assert.AreEqual("test:clientid", res);
+                Assert.AreEqual($"test:{SolidRpcOidcTestImpl.ClientId}", res);
 
                 var authLocal = ctx.ClientServiceProvider.GetRequiredService<IAuthorityFactory>().GetAuthority(GetIssuer(ctx.BaseAddress));
 
                 //
                 // Test user as user principal
                 //
-                var userJwt = await authLocal.GetUserJwtAsync("clientid", "clientsecret", "userid", "password", new[] { "scope1", "scope2" });
+                var userJwt = await authLocal.GetUserJwtAsync(SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret, "userid", "password", new[] { "scope1", "scope2" });
                 var prin = await authLocal.GetPrincipalAsync(userJwt.AccessToken);
                 Assert.IsNotNull(prin.Claims.Where(o => o.Type == "scope").Where(o => o.Value == "scope1").Single());
                 Assert.IsNotNull(prin.Claims.Where(o => o.Type == "scope").Where(o => o.Value == "scope2").Single());
@@ -507,12 +515,12 @@ namespace SolidRpc.Tests.Security
                 //
                 // Test client as user principal
                 //
-                var clientJwt1 = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
-                var clientJwt2 = await authLocal.GetClientJwtAsync("clientid", "clientsecret", new[] { "test" });
+                var clientJwt1 = await authLocal.GetClientJwtAsync(SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret, new[] { "test" });
+                var clientJwt2 = await authLocal.GetClientJwtAsync(SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret, new[] { "test" });
                 Assert.AreEqual(clientJwt1.AccessToken, clientJwt2.AccessToken);
                 ctx.ClientServiceProvider.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = await authLocal.GetPrincipalAsync(clientJwt1.AccessToken);
                 res = await protectedService.GetUserEnabledResource("test");
-                Assert.AreEqual("test:clientid", res);
+                Assert.AreEqual($"test:{SolidRpcOidcTestImpl.ClientId}", res);
 
                 //
                 // Test resetting the current principal
@@ -526,6 +534,30 @@ namespace SolidRpc.Tests.Security
                 {
                     // this is the way we want it
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tests the web host
+        /// </summary>
+        [Test]
+        public async Task TestOauthBasicAuth()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<IOAuth2ProtectedService>>();
+                var uri = await invoker.GetUriAsync(o => o.GetProtectedResource("test"));
+
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+                var resp = await httpClient.GetAsync(uri);
+                Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
+
+                var authParams = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{SolidRpcOidcTestImpl.ClientId}:{SolidRpcOidcTestImpl.ClientSecret}"));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authParams);
+                resp = await httpClient.GetAsync(uri);
+                Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
             }
         }
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -136,7 +138,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
 
             //
-            // check authorization
+            // check authorization header
             //
             string jwt;
             var authHeader = invocation.GetValue<StringValues>($"http_req_authorization").ToString();
@@ -152,14 +154,22 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             {
                 jwt = authHeader.Substring("jwt ".Length);
             }
+            else if (authHeader.StartsWith("basic ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                jwt = await GetClientJwtAsync(authHeader.Substring("basic ".Length), invocation.CancellationToken);
+            }
             else
             {
                 jwt = await DoRedirectUnauthorizedIdentity(invocation);
             }
-            if(string.IsNullOrEmpty(jwt))
+            if (string.IsNullOrEmpty(jwt))
             {
                 return;
             }
+
+            //
+            // handle jwt 
+            //
             var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
             ClaimsPrincipal jwtPrincipal;
             try
@@ -171,6 +181,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 await DoRedirectUnauthorizedIdentity(invocation);
                 return;
             }
+
+            //
+            // assign the principal to the current set of identities
+            //
             if (auth.CurrentPrincipal.Claims.Any())
             {
                 auth.CurrentPrincipal.AddIdentities(jwtPrincipal.Identities);
@@ -180,6 +194,24 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 auth.CurrentPrincipal = jwtPrincipal;
             }
             invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
+        }
+
+        private async Task<string> GetClientJwtAsync(string basic, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dec = Encoding.ASCII.GetString(Convert.FromBase64String(basic));
+                var parts = dec.Split(':');
+                var clientId = parts[0];
+                var clientSecret = parts[1];
+                var resp = await Authority.GetClientJwtAsync(clientId, clientSecret, Scopes, TimeSpan.FromSeconds(5), cancellationToken);
+                return resp.AccessToken;
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Invalid basic header:" + basic);
+                return null;
+            }
         }
 
         private async Task<string> DoRedirectUnauthorizedIdentity(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
