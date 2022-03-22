@@ -2994,7 +2994,7 @@
         </member>
         <member name="M:SolidRpc.Abstractions.Types.FileContentTemplate.GetTemplate(System.Type)">
             <summary>
-            REturns the template spec for supplied type.
+            Returns the template spec for supplied type.
             </summary>
             <param name="type"></param>
             <returns></returns>

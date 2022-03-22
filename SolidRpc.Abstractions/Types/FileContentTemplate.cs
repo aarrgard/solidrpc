@@ -56,7 +56,7 @@ namespace SolidRpc.Abstractions.Types
         }
 
         /// <summary>
-        /// REturns the template spec for supplied type.
+        /// Returns the template spec for supplied type.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>

@@ -337,5 +337,25 @@ namespace SolidRpc.Tests.Serialization
             Assert.AreEqual("Type2", sb.Type);
             Assert.AreEqual(typeof(Struct2), sb.GetType());
         }
+
+        /// <summary>
+        /// Tests the uri type
+        /// </summary>
+        [Test]
+        public void TestSerializeFileType()
+        {
+            var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
+
+            var fc = new FileContent();
+            var x = new ComplexType() { MyData = "test" };
+            serFact.SerializeToFileType(fc, x);
+            Assert.IsNotNull(fc.Content);
+            Assert.AreEqual("application/json", fc.ContentType);
+
+            ComplexType x2;
+            serFact.DeserializeFromFileType(fc, out x2);
+            Assert.AreEqual(x.MyStream, x2.MyStream);
+
+        }
     }
 }
