@@ -36,7 +36,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore,
             SolidRpcContentStore contentStore,
-            ISolidRpcProtectedResource protectedResource)
+            ISolidRpcProtectedResource protectedResource = null)
         {
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodAddressTransformer));
@@ -205,6 +205,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <exception cref="NotImplementedException"></exception>
         public async Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
         {
+            if(ProtectedResource == null) throw new FileContentNotFoundException("Protected resource handler registered");
             var pr = await ProtectedResource.UnprotectAsync(resource, cancellationToken);
             return await ProtectedResource.GetProtectedContentAsync(pr, cancellationToken);
         }
