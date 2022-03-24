@@ -233,7 +233,7 @@ namespace SolidRpc.OpenApi.Binder.Services
 
             var result = new FileContent();
             result.Location = callback;
-            if (string.IsNullOrEmpty(token.RefreshToken))
+            if (!string.IsNullOrEmpty(token.RefreshToken))
             {
                 await SetRefreshTokenAsync(result, token.RefreshToken);
             }
@@ -332,7 +332,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                 ContentType = "text/plain",
                 Content = new MemoryStream(enc.GetBytes(token.AccessToken))
             };
-            if (string.IsNullOrEmpty(token.RefreshToken))
+            if (!string.IsNullOrEmpty(token.RefreshToken))
             {
                 await SetRefreshTokenAsync(result, token.RefreshToken);
             }

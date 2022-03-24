@@ -144,7 +144,7 @@ namespace SolidRpc.Tests.Security
                 Assert.IsTrue(int.Parse(jwt.ExpiresIn) > 3550);
                 Assert.IsTrue(int.Parse(jwt.ExpiresIn) <= 3600);
 
-                TestEncDecData(a);
+                await TestEncDecData(a);
             }
         }
 
