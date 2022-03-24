@@ -21,15 +21,18 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public SolidRpcProtectedResource(
             ILogger<SolidRpcProtectedResource> logger,
             IInvoker<ISolidRpcProtectedContent> contentInvoker,
+            IAuthorityFactory authorityFactory = null,
             IAuthorityLocal authority = null)
         {
             Logger = logger;
             Authority = authority;
+            AuthorityFactory = authorityFactory;
             ContentInvoker = contentInvoker;
         }
 
         private ILogger Logger { get; }
         private IAuthorityLocal Authority { get; }
+        private IAuthorityFactory AuthorityFactory { get; }
         private IInvoker<ISolidRpcProtectedContent> ContentInvoker { get; }
 
         public Task<byte[]> ProtectAsync(string content, DateTimeOffset expiryTime, CancellationToken cancellationToken)
@@ -72,9 +75,10 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
 
         public Task<ProtectedResource> UnprotectAsync(byte[] resource, CancellationToken cancellationToken)
         {
+            if (AuthorityFactory == null) throw new Exception("No authority factory registered.");
             return resource.AsProtectedResourceAsync(async (source, data, signature) =>
             {
-                var prAuth = Authority.AuthorityFactory.GetAuthority(source);
+                var prAuth = AuthorityFactory.GetAuthority(source);
                 return await prAuth.VerifyData(data, signature, cancellationToken);
             });
         }

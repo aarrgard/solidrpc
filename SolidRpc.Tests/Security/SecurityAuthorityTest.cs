@@ -69,7 +69,7 @@ namespace SolidRpc.Tests.Security
         public override void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
             base.ConfigureClientServices(clientServices, baseAddress);
-            clientServices.AddSolidRpcRemoteBindings<ISolidRpcContentHandler>();
+            clientServices.AddSolidRpcRemoteBindings<ISolidRpcContentHandler>(true);
         }
 
         /// <summary>
