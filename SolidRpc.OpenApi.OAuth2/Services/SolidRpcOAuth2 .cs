@@ -233,17 +233,18 @@ namespace SolidRpc.OpenApi.Binder.Services
 
             var result = new FileContent();
             result.Location = callback;
-            await SetRefreshTokenAsync(result, token.RefreshToken);
+            if (string.IsNullOrEmpty(token.RefreshToken))
+            {
+                await SetRefreshTokenAsync(result, token.RefreshToken);
+            }
+
 
             return result;
         }
 
         private async Task SetRefreshTokenAsync(FileContent result, string refreshToken)
         {
-            if (string.IsNullOrEmpty(refreshToken))
-            {
-                return;
-            }
+            refreshToken = refreshToken ?? "";
             var refreshUri = await Invoker.GetUriAsync(o => o.RefreshTokenAsync(null, CancellationToken.None));
             var path = refreshUri.AbsolutePath.ToString();
             path = string.Join("/", path.Split('/').Reverse().Skip(2).Reverse());
@@ -331,7 +332,10 @@ namespace SolidRpc.OpenApi.Binder.Services
                 ContentType = "text/plain",
                 Content = new MemoryStream(enc.GetBytes(token.AccessToken))
             };
-            await SetRefreshTokenAsync(result, token.RefreshToken);
+            if (string.IsNullOrEmpty(token.RefreshToken))
+            {
+                await SetRefreshTokenAsync(result, token.RefreshToken);
+            }
 
             return result;
         }
