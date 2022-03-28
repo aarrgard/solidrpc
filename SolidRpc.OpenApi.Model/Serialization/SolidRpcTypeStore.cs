@@ -10,7 +10,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
     /// </summary>
     public class SolidRpcTypeStore
     {
-        private static ConcurrentDictionary<Type, string> s_type2string = new ConcurrentDictionary<Type, string>();
+        private static ConcurrentDictionary<string, string> s_type2string = new ConcurrentDictionary<string, string>();
         private static ConcurrentDictionary<string, Type> s_string2type = new ConcurrentDictionary<string, Type>();
 
         /// <summary>
@@ -20,10 +20,22 @@ namespace SolidRpc.OpenApi.Model.Serialization
         /// <returns></returns>
         public static string GetTypeName(Type type)
         {
-            return s_type2string.GetOrAdd(type, GetTypeNameInternal);
+            return GetTypeName(type, false);
         }
 
-        private static string GetTypeNameInternal(Type type)
+        /// <summary>
+        /// Returns the type name for supplied type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="treatEnumsAsArrays"></param>
+        /// <returns></returns>
+        public static string GetTypeName(Type type, bool treatEnumsAsArrays)
+        {
+            var key = $"{treatEnumsAsArrays}:{type.FullName}";
+            return s_type2string.GetOrAdd(key, _ => GetTypeNameInternal(type, treatEnumsAsArrays));
+        }
+
+        private static string GetTypeNameInternal(Type type, bool treatEnumsAsArrays)
         {
             if (type.IsGenericTypeDefinition)
             {
@@ -33,7 +45,14 @@ namespace SolidRpc.OpenApi.Model.Serialization
             {
                 var genTypeName = GetTypeName(type.GetGenericTypeDefinition());
                 var genArgNames = type.GetGenericArguments().Select(o => GetTypeName(o));
-                return $"{genTypeName}<{string.Join(",", genArgNames)}>";
+                if (genTypeName == "System.Collections.Generic.IEnumerable" && treatEnumsAsArrays)
+                {
+                    return $"{string.Join(",", genArgNames)}[]";
+                }
+                else
+                {
+                    return $"{genTypeName}<{string.Join(",", genArgNames)}>";
+                }
             }
             if (type.IsArray)
             {

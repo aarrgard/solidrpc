@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Linq;
 using SolidRpc.OpenApi.Binder;
 using System.Text;
+using System.Collections.Generic;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -339,10 +340,10 @@ namespace SolidRpc.Tests.Serialization
         }
 
         /// <summary>
-        /// Tests the uri type
+        /// Tests the file serialization type
         /// </summary>
         [Test]
-        public void TestSerializeFileType()
+        public void TestSerializeFileTypeClass()
         {
             var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
 
@@ -351,11 +352,31 @@ namespace SolidRpc.Tests.Serialization
             serFact.SerializeToFileType(fc, x);
             Assert.IsNotNull(fc.Content);
             Assert.AreEqual("application/json", fc.ContentType);
+            Assert.AreEqual("SolidRpc.Tests.Serialization.SerializationTest+ComplexType", fc.FileName);
 
             ComplexType x2;
             serFact.DeserializeFromFileType(fc, out x2);
-            Assert.AreEqual(x.MyStream, x2.MyStream);
+            Assert.AreEqual(x.MyData, x2.MyData);
+        }
 
+        /// <summary>
+        /// Tests the file serialization type
+        /// </summary>
+        [Test]
+        public void TestSerializeFileTypeArray()
+        {
+            var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
+
+            var fc = new FileContent();
+            IEnumerable<ComplexType> x = new[] { new ComplexType() { MyData = "test" } };
+            serFact.SerializeToFileType(fc, x);
+            Assert.IsNotNull(fc.Content);
+            Assert.AreEqual("application/json", fc.ContentType);
+            Assert.AreEqual("SolidRpc.Tests.Serialization.SerializationTest+ComplexType[]", fc.FileName);
+
+            IEnumerable<ComplexType> x2;
+            serFact.DeserializeFromFileType(fc, out x2);
+            Assert.AreEqual(x.First().MyData, x2.First().MyData);
         }
     }
 }

@@ -115,7 +115,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
             var ms = new MemoryStream();
             SerializeToStream(ms, type, o, mediaType, charSet, prettyFormat);
             template.SetContent(fileTypeInstance, new MemoryStream(ms.ToArray()));
-            template.SetFileName(fileTypeInstance, SolidRpcTypeStore.GetTypeName(type));
+            template.SetFileName(fileTypeInstance, SolidRpcTypeStore.GetTypeName(type, true));
             template.SetContentType(fileTypeInstance, mediaType);
             template.SetCharSet(fileTypeInstance, charSet?.HeaderName);
 
@@ -130,10 +130,10 @@ namespace SolidRpc.OpenApi.Model.Serialization
                 throw new ArgumentException("Supplied file type instance is not a file type");
             }
             var fileName = template.GetFileName(fileTypeInstance);
-            var typeName = SolidRpcTypeStore.GetTypeName(typeof(T));
+            var typeName = SolidRpcTypeStore.GetTypeName(typeof(T), true);
             if (fileName != typeName)
             {
-                throw new ArgumentException($"Filename({typeName}) of supplied file instance does not match type to deserialize");
+                throw new ArgumentException($"Filename({fileName}) of supplied file instance does not match type({typeName}) to deserialize");
             }
             var mediaType = template.GetContentType(fileTypeInstance);
             var charSet = template.GetCharSet(fileTypeInstance);
