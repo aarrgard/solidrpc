@@ -260,47 +260,45 @@ namespace Microsoft.AspNetCore.Builder
         /// <returns></returns>
         private static string GetNextSegment(string pathBase, string rawPath)
         {
-            var rawPathDecoded = HttpUtility.UrlDecode(rawPath);
-
             //
             // for some reason the [] are not decoded?? - perhaps more will show up...
             //
             pathBase = DecodeHex(pathBase);
 
-            if (!rawPathDecoded.StartsWith(pathBase))
+            if (!DecodeHex(rawPath).StartsWith(pathBase))
             {
                 throw new Exception("raw path does not start with path base!");
             }
 
             // split raw path into segments and remove decoded version from path base
-            var segments = rawPath.Split('/').AsEnumerable().GetEnumerator();
-            if(!segments.MoveNext()) throw new Exception("Cannot move to next segment!");
-            if(segments.Current != "") throw new Exception("Paths does not start with slash!");
+            var rawSegments = rawPath.Split('/').AsEnumerable().GetEnumerator();
+            if(!rawSegments.MoveNext()) throw new Exception("Cannot move to next segment!");
+            if(rawSegments.Current != "") throw new Exception("Paths does not start with slash!");
             while (pathBase.Length > 0)
             {
-                if (!segments.MoveNext()) throw new Exception("Cannot move to next segment!");
-                var urlDecdedSegment = "/" + DecodeHex(segments.Current);
-                if (!pathBase.StartsWith(urlDecdedSegment))
+                if (!rawSegments.MoveNext()) throw new Exception("Cannot move to next segment!");
+                var rawDecodedSegment = "/" + DecodeHex(rawSegments.Current);
+                if (!pathBase.StartsWith(rawDecodedSegment))
                 {
                     throw new Exception("Something is rotten in the state of denmark!");
                 }
-                pathBase = pathBase.Substring(urlDecdedSegment.Length);
+                pathBase = pathBase.Substring(rawDecodedSegment.Length);
             }
 
-            if(!segments.MoveNext())
+            if(!rawSegments.MoveNext())
             {
                 return null;
             }
 
             // raw url might contain query parameters
-            var currentSegment = segments.Current;
-            var queryStart = currentSegment.IndexOf('?');
+            var currentRawSegment = rawSegments.Current;
+            var queryStart = currentRawSegment.IndexOf('?');
             if (queryStart > -1)
             {
-                currentSegment = currentSegment.Substring(0, queryStart);
+                currentRawSegment = currentRawSegment.Substring(0, queryStart);
             }
 
-            return "/" + HttpUtility.UrlDecode(currentSegment);
+            return $"/{DecodeHex(currentRawSegment)}";
         }
 
         private static string DecodeHex(string str)

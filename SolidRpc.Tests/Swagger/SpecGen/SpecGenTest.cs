@@ -837,6 +837,10 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var stringCheck7 = "one%%";
                 moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck7), It.Is<string>(a => a == stringCheck7))).Returns(() => stringCheck7);
                 Assert.AreEqual(stringCheck7, proxy.ProxyStrings(stringCheck7, stringCheck7));
+
+                var stringCheck8 = "one one";
+                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck8), It.Is<string>(a => a == stringCheck8))).Returns(() => stringCheck8);
+                Assert.AreEqual(stringCheck8, proxy.ProxyStrings(stringCheck8, stringCheck8));
             });
         }
 
