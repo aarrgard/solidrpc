@@ -236,6 +236,7 @@ namespace Microsoft.AspNetCore.Builder
                 var rawPath = reqFeat.RawTarget;
 
                 var nextRawSegment = GetNextRawSegment(ctx.Request.PathBase, rawPath);
+                nextRawSegment = DecodeHex(nextRawSegment, '/');
                 
                 path = ctx.Request.Path.Value;
                 if (!path.StartsWith(nextRawSegment))
@@ -305,7 +306,7 @@ namespace Microsoft.AspNetCore.Builder
             return $"/{currentRawSegment}";
         }
 
-        private static string DecodeHex(string str)
+        private static string DecodeHex(string str, params char[] skipChars)
         {
             var sb = new StringBuilder();
             int escapeSequence = 0;
@@ -328,8 +329,12 @@ namespace Microsoft.AspNetCore.Builder
                             var hex = $"{sb[sb.Length - 2]}{sb[sb.Length - 1]}";
                             if(int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int nbr))
                             {
-                                sb.Length = sb.Length - 3;
-                                sb.Append((char)nbr);
+                                var c = (char)nbr;
+                                if(!skipChars.Contains(c))
+                                {
+                                    sb.Length = sb.Length - 3;
+                                    sb.Append(c);
+                                }
                             }
                             escapeSequence = 0;
                         }
