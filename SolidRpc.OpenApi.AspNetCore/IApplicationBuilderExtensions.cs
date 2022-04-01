@@ -235,16 +235,20 @@ namespace Microsoft.AspNetCore.Builder
                 var reqFeat = (IHttpRequestFeature)ctx.Features[typeof(IHttpRequestFeature)];
                 var rawPath = reqFeat.RawTarget;
 
-                var nextSegment = GetNextSegment(ctx.Request.PathBase, rawPath);
+                var nextRawSegment = GetNextRawSegment(ctx.Request.PathBase, rawPath);
                 
                 path = ctx.Request.Path.Value;
-                if (!path.StartsWith(nextSegment))
+                if (!path.StartsWith(nextRawSegment))
                 {
-                    throw new Exception("Path does not start with extracted next segement");
+                    nextRawSegment = DecodeHex(nextRawSegment);
+                    if (!path.StartsWith(nextRawSegment))
+                    {
+                        throw new Exception("Path does not start with extracted next segement");
+                    }
                 }
 
-                ctx.Request.Path = path.Substring(nextSegment.Length);
-                ctx.Request.PathBase = ctx.Request.PathBase.Add(nextSegment);
+                ctx.Request.Path = path.Substring(nextRawSegment.Length);
+                ctx.Request.PathBase = ctx.Request.PathBase.Add(nextRawSegment);
                 return true;
             }
             return false;
@@ -258,7 +262,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="pathBase"></param>
         /// <param name="rawPath"></param>
         /// <returns></returns>
-        private static string GetNextSegment(string pathBase, string rawPath)
+        private static string GetNextRawSegment(string pathBase, string rawPath)
         {
             //
             // for some reason the [] are not decoded?? - perhaps more will show up...
@@ -298,7 +302,7 @@ namespace Microsoft.AspNetCore.Builder
                 currentRawSegment = currentRawSegment.Substring(0, queryStart);
             }
 
-            return $"/{DecodeHex(currentRawSegment)}";
+            return $"/{currentRawSegment}";
         }
 
         private static string DecodeHex(string str)

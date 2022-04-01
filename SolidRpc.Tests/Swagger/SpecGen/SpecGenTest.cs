@@ -800,47 +800,53 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlEncodeArg.Services.IUrlEncodeArg>();
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<UrlEncodeArg.Services.IUrlEncodeArg>>();
+                
+                var stringChecks = new[]
+                {
+                    "",
+                    "test",
+                    "one/one",
+                    "one+one",
+                    "one()",
+                    "one[]",
+                    "one<>",
+                    "one%%",
+                    "one one"
+                };
 
-                var stringCheckEmpty = "";
-                var stringCheckFixed = "test";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheckEmpty), It.Is<string>(a => a == stringCheckFixed))).Returns(() => stringCheckFixed);
-                Assert.AreEqual(stringCheckFixed, proxy.ProxyStrings(stringCheckEmpty, stringCheckFixed));
+                foreach(var check in stringChecks)
+                {
+                    moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == check), It.Is<string>(a => a == check))).Returns(() => check);
+                    Assert.AreEqual(check, proxy.ProxyStrings(check, check));
+                    var uri = await invoker.GetUriAsync(o => o.ProxyStrings(check, check));
+                    Assert.IsTrue(uri.PathAndQuery.EndsWith($"/{HttpUtility.UrlEncode(check)}/{HttpUtility.UrlEncode(check)}"));
+                }
 
-                var stringCheck0 = "";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck0), It.Is<string>(a => a == stringCheck0))).Returns(() => stringCheck0);
-                Assert.AreEqual(stringCheck0, proxy.ProxyStrings(stringCheck0, stringCheck0));
+                //
+                // byte array
+                //
+                var arr = new byte[1000];
+                for(int i = 0; i < arr.Length; i++)
+                {
+                    arr[i] = (byte)i;
+                }
 
-                var stringCheck1 = "one/one";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck1))).Returns(() => stringCheck1);
-                Assert.AreEqual(stringCheck1, proxy.ProxyStrings(stringCheck1, stringCheck1));
+                moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(a,arr)))).Returns(() => arr);
+                Assert.IsTrue(CompareStructs(arr, proxy.ProxyByteArray(arr)));
 
-                var stringCheck2 = "one+one";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck2), It.Is<string>(a => a == stringCheck2))).Returns(() => stringCheck2);
-                Assert.AreEqual(stringCheck2, proxy.ProxyStrings(stringCheck2, stringCheck2));
-
-                var stringCheck3 = "one()";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck3), It.Is<string>(a => a == stringCheck3))).Returns(() => stringCheck3);
-                Assert.AreEqual(stringCheck3, proxy.ProxyStrings(stringCheck3, stringCheck3));
-
-                var stringCheck4 = "one[]";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck4), It.Is<string>(a => a == stringCheck4))).Returns(() => stringCheck4);
-                Assert.AreEqual(stringCheck4, proxy.ProxyStrings(stringCheck4, stringCheck4));
-
-                var stringCheck5 = "one{}";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck5), It.Is<string>(a => a == stringCheck5))).Returns(() => stringCheck5);
-                Assert.AreEqual(stringCheck5, proxy.ProxyStrings(stringCheck5, stringCheck5));
-
-                var stringCheck6 = "one<>";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck6), It.Is<string>(a => a == stringCheck6))).Returns(() => stringCheck6);
-                Assert.AreEqual(stringCheck6, proxy.ProxyStrings(stringCheck6, stringCheck6));
-
-                var stringCheck7 = "one%%";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck7), It.Is<string>(a => a == stringCheck7))).Returns(() => stringCheck7);
-                Assert.AreEqual(stringCheck7, proxy.ProxyStrings(stringCheck7, stringCheck7));
-
-                var stringCheck8 = "one one";
-                moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == stringCheck8), It.Is<string>(a => a == stringCheck8))).Returns(() => stringCheck8);
-                Assert.AreEqual(stringCheck8, proxy.ProxyStrings(stringCheck8, stringCheck8));
+                //
+                // raw post
+                //
+                if(ctx is TestHostContextKestrel)
+                {
+                    var b64 = "A991R2IAAAAALABodHRwczovL2xvY2FsaG9zdDo1MDAxL1NvbGlkUnBjL0Fic3RyYWN0aW9uczcAQnJva2VySW1hZ2U6ODljMWVmNjctNWY0Yy00MGE3LTkxODktYWRiNzE2MjlmMzM0OnIxMDB4MAABcvnFdKkOCb5wa57Ov1F8FYT8d1sgN1Z%2fGE74o93zIKWyyMe2i%2fKbKy2f%2fQ032YLv4Nl3HcpXHaeApsrmPRPtXQBVmTeHVgjVfaz2FQbe06vV9MSmKsgmxZs1tCAlO6kzsOsN7e9cTYL5TzQyAiFqWN7hXEICWdiI9mBk%2f%2fZ0LO1n32TVXyrMclEBqMU%2fLkrGoOhvTsWL353iOLeMtzoLz+4dYOeezZSz2Cyc9jEWhBHGsHn+ly%2foqTb8CzJfPobQPQSjmF225Q+BA0v3eGCaem0VKfP2Pav59WabTECl38DSlyaKzHcpTbh+q9F9hqrxP%2fGq2A6JOyT7EzgPTPRhUw==";
+                    arr = Convert.FromBase64String(HttpUtility.UrlDecode(b64));
+                    moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(a, arr)))).Returns(() => arr);
+                    var url = (await invoker.GetUriAsync(o => o.ProxyByteArray(new byte[0]))).ToString();
+                    var resp = await ctx.HttpClient.GetAsync($"{url}{b64}");
+                    Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+                }
             });
         }
 

@@ -10,6 +10,37 @@
     "https"
   ],
   "paths": {
+    "/Services/IUrlEncodeArg/ProxyByteArray/{arr}": {
+      "get": {
+        "tags": [
+          "IUrlEncodeArg"
+        ],
+        "description": "Proxies the string",
+        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#UrlEncodeArg#Services#IUrlEncodeArg#ProxyByteArray#1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "arr",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "binary",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      }
+    },
     "/Services/IUrlEncodeArg/ProxyStrings/{s1}/{s2}": {
       "get": {
         "tags": [
