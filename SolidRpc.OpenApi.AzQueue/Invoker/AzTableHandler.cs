@@ -265,6 +265,26 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
         }
 
+        public async Task RemoveMessagesAsync(string connectionName, string queueName, CancellationToken cancellationToken)
+        {
+            var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
+            var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusError };
+            IEnumerable<TableMessageEntity> rows = new TableMessageEntity[0];
+            do
+            {
+                var batch = new TableBatchOperation();
+                foreach(var row in rows)
+                {
+                    batch.Add(TableOperation.Delete(row));
+                }
+                if (batch.Any())
+                {
+                    await cloudTable.ExecuteBatchAsync(batch, TableRequestOptions, OperationContext, cancellationToken);
+                }
+                rows = await GetMessagesAsync(cloudTable, queueName, statuses, 100, cancellationToken);
+            } while (rows.Any());
+        }
+
         private async Task<bool> DispatchMessageAsync(CloudTable cloudTable, string connectionName, string queueName, CancellationToken cancellationToken)
         {
             var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusSettings };

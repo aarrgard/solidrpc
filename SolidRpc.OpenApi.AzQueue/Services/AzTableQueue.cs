@@ -237,5 +237,19 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             await cloudTable.ExecuteAsync(TableOperation.Merge(row), TableRequestOptions, OperationContext, cancellationToken);
             await CloudQueueStore.DeleteLargeMessageAsync(msg.ConnectionName, oldMsg, cancellationToken);
         }
+
+        public Task RemoveMessagesAsync(string queueName, CancellationToken cancellationToken = default)
+        {
+            var tasks = QueueHandler.GetTableTransports()
+                .Select(o => new { o.ConnectionName, o.QueueName })
+                .Where(o => o.QueueName == queueName)
+                .Distinct()
+                .Select(o => QueueHandler.RemoveMessagesAsync(o.ConnectionName, o.QueueName, cancellationToken));
+            if(!tasks.Any())
+            {
+                throw new ArgumentException($"Cannot find queue({queueName}) among queues({string.Join(",", QueueHandler.GetTableTransports().Select(o => o.QueueName))})");
+            }
+            return Task.WhenAll(tasks);
+        }
     }
 }
