@@ -12,6 +12,7 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Test.Petstore.Services;
 using System.Threading;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.OAuth2.Services;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -21,8 +22,8 @@ namespace SolidRpc.Test.PetstoreWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //var oauth2Iss = "https://localhost:5001/SolidRpc/Abstractions";
-            var oauth2Iss = "https://eo-ci-identity-web.azurewebsites.net";
+            var oauth2Iss = "https://localhost:5001/SolidRpc/Abstractions";
+            //var oauth2Iss = "https://eo-ci-identity-web.azurewebsites.net";
             services.AddLogging(o => {
                 o.SetMinimumLevel(LogLevel.Trace);
                 o.AddConsole();
@@ -34,7 +35,9 @@ namespace SolidRpc.Test.PetstoreWeb
             {
                 if (conf.Methods.First().DeclaringType == typeof(ISolidRpcOAuth2))
                 {
-                    conf.SetOAuth2ClientSecurity(oauth2Iss, "eo-ci-customer-web", "0ef5ed1d-fa63-4e79-b4ad-f447409b73fa");
+                    SolidRpcOidcTestImpl.ClientAllowedPaths = new[] { "/*" };
+                    SolidRpcOidcTestImpl.UserAllowedPaths = new[] { "/*" };
+                    conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
                     conf.DisableSecurity();
                 }
                 return true;
@@ -77,11 +80,7 @@ namespace SolidRpc.Test.PetstoreWeb
                 var handler = sp.GetRequiredService<IInvoker<IPet>>();
                 return await handler.GetUriAsync(o => o.GetPetById(100, CancellationToken.None));
             });
-            services.GetSolidRpcContentStore().AddMapping("/.well-known/openid-configuration", async sp =>
-            {
-                var handler = sp.GetRequiredService<IInvoker<ISolidRpcOidc>>();
-                return await handler.GetUriAsync(o => o.GetDiscoveryDocumentAsync(CancellationToken.None));
-            });
+            services.AddSolidRpcWellKnownRootRewrite();
 
 
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>

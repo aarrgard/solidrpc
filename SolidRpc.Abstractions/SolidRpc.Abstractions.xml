@@ -1719,6 +1719,13 @@
             </summary>
             <param name="path"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcContentStore.AddPrefixRewrite(System.String,System.String)">
+            <summary>
+            Adds a rewrite rule
+            </summary>
+            <param name="fromPrefix"></param>
+            <param name="toPrefix"></param>
+        </member>
         <member name="T:SolidRpc.Abstractions.InternalServices.ISolidRpcContinuationToken">
             <summary>
             Represents a continuation token.
@@ -2228,6 +2235,28 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge">
+            <summary>
+            Provides logic for the acme challange
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge.SetAcmeChallengeAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the acme challenge. The part before the . is the filename and all of the 
+            supplied challenge is provided in the file.
+            </summary>
+            <param name="challenge"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge.GetAcmeChallengeAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the acme challenge
+            </summary>
+            <param name="key"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcContentHandler">
             <summary>
             The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
@@ -2562,6 +2591,11 @@
             <param name="setting"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.Services.SolidRpcAcmeChallenge">
+            <summary>
+            Implements the logic for the acme challenge
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.SolidRpcConstants">
             <summary>
@@ -3810,6 +3844,13 @@
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetSolidRpcOpenApiParser(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Returns the static content provider.
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcWellKnownRootRewrite(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
             </summary>
             <param name="services"></param>
             <returns></returns>

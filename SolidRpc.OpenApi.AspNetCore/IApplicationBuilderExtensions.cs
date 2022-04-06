@@ -80,6 +80,8 @@ namespace Microsoft.AspNetCore.Builder
                 preInvoke = (ctx) => Task.CompletedTask;
             }
 
+            applicationBuilder.Use(RewriteUrl);
+
             var dict = new Dictionary<string, PathHandler>();
 
             //
@@ -150,6 +152,13 @@ namespace Microsoft.AspNetCore.Builder
                     (ab) => BindPath(ab, method, dict, preInvoke));
             }
             return applicationBuilder;
+        }
+
+        private static Task RewriteUrl(HttpContext ctx, Func<Task> next)
+        {
+            var trans = ctx.RequestServices.GetRequiredService<IMethodAddressTransformer>();
+            ctx.Request.Path = trans.RewritePath(ctx.Request.Path);
+            return next();
         }
 
         private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, PathHandler> paths, Func<HttpContext, Task> preInvoke)
@@ -233,7 +242,8 @@ namespace Microsoft.AspNetCore.Builder
             {
                 // we need to use the "raw" url to get correct data 
                 var reqFeat = (IHttpRequestFeature)ctx.Features[typeof(IHttpRequestFeature)];
-                var rawPath = reqFeat.RawTarget;
+                var addrTrans = ctx.RequestServices.GetRequiredService<IMethodAddressTransformer>();
+                var rawPath = addrTrans.RewritePath(reqFeat.RawTarget);
 
                 var nextRawSegment = GetNextRawSegment(ctx.Request.PathBase, rawPath);
                 nextRawSegment = DecodeHex(nextRawSegment, '/');

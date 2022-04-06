@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
 
 [assembly: SolidRpcService(typeof(ISolidRpcContentStore), typeof(SolidRpcContentStore))]
@@ -112,6 +111,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             DynamicContents = new Dictionary<string, DynamicMapping>();
             ContentTypeProvider = new FileExtensionContentTypeProvider();
             Registrations = new HashSet<string>();
+            Rewrites = Enumerable.Empty<string[]>();
         }
 
         /// <summary>
@@ -128,6 +128,11 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// The registered contents
         /// </summary>
         public IDictionary<string, DynamicMapping> DynamicContents { get; }
+        
+        /// <summary>
+        /// The registered rewrites
+        /// </summary>
+        public IEnumerable<string[]> Rewrites { get; private set;  }
 
         /// <summary>
         /// 
@@ -214,6 +219,19 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public void SetNotFoundRewrite(string path)
         {
             NotFoundRewrite = path;
+        }
+
+        /// <summary>
+        /// Adds a rewrite rule
+        /// </summary>
+        /// <param name="fromPrefix"></param>
+        /// <param name="toPrefix"></param>
+        public void AddPrefixRewrite(string fromPrefix, string toPrefix)
+        {
+            if(!Rewrites.Any(o => o[0] == fromPrefix && o[1] == toPrefix))
+            {
+                Rewrites = Rewrites.Union(new [] { new[] { fromPrefix, toPrefix } }).ToArray();
+            }
         }
     }
 }

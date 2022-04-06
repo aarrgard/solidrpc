@@ -1,5 +1,4 @@
-﻿using SolidRpc.Abstractions;
-using SolidRpc.Abstractions.Types;
+﻿using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.OAuth2;
 using System.Collections.Generic;
 using System.Threading;

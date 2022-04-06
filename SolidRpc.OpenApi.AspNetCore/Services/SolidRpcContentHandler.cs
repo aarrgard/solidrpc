@@ -64,7 +64,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         {
             get
             {
-                return ContentStore.StaticContents.SelectMany(o => GetPathPrefixes(o)).Distinct();
+                return ContentStore.StaticContents.SelectMany(o => GetPathPrefixes(o))
+                    .Union(ContentStore.Rewrites.Select(o => o[0]))
+                    .Distinct();
             }
         }
 

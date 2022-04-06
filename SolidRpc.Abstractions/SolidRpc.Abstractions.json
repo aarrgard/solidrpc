@@ -158,6 +158,58 @@
         }
       }
     },
+    "/.well-known/acme-challenge/{key}": {
+      "get": {
+        "tags": [
+          "ISolidRpcAcmeChallenge"
+        ],
+        "description": "Returns the acme challenge",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcAcmeChallenge#GetAcmeChallengeAsync#1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcAcmeChallenge/SetAcmeChallengeAsync/{challenge}": {
+      "get": {
+        "tags": [
+          "ISolidRpcAcmeChallenge"
+        ],
+        "description": "Sets the acme challenge. The part before the . is the filename and all of the\r\nsupplied challenge is provided in the file.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcAcmeChallenge#SetAcmeChallengeAsync#1",
+        "parameters": [
+          {
+            "name": "challenge",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/Services/ISolidRpcContentHandler/GetContent": {
       "get": {
         "tags": [
@@ -1788,6 +1840,10 @@
     {
       "name": "Code.ITypescriptGenerator",
       "description": "instance responsible for generating code structures"
+    },
+    {
+      "name": "ISolidRpcAcmeChallenge",
+      "description": "Provides logic for the acme challange"
     },
     {
       "name": "ISolidRpcContentHandler",

@@ -2,12 +2,10 @@
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
-using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Services.RateLimit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,8 +64,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (service.ImplementationType != null)
                 {
                     var args = service.ImplementationType.GetConstructors().First()
-                        .GetParameters().Select(o => o.ParameterType)
-                        .Select(o => services.GetSolidRpcService(o, true))
+                        .GetParameters().Select(o => new { o.ParameterType, o.IsOptional })
+                        .Select(o => services.GetSolidRpcService(o.ParameterType, !o.IsOptional))
                         .ToArray();
                     var impl = Activator.CreateInstance(service.ImplementationType, args); // create before remove...
                     services.Remove(service);
@@ -392,6 +390,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.GetSolidRpcService<IOpenApiParser>();
         }
 
+        /// <summary>
+        /// Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcWellKnownRootRewrite(this IServiceCollection services)
+        {
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/.well-known", "/SolidRpc/Abstractions/.well-known");
+            return services;
+        }
 
         /// <summary>
         /// Configures all the interfaces in supplied assembly

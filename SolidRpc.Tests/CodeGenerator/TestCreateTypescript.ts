@@ -299,6 +299,66 @@ export namespace Abstractions {
                 }
         }
         /**
+         * Provides logic for the acme challange
+         */
+        export namespace ISolidRpcAcmeChallenge {
+            let SetAcmeChallengeAsyncSubject = new Subject<void>();
+            /**
+             * This observable is hot and monitors all the responses from the SetAcmeChallengeAsync invocations.
+             */
+            export var SetAcmeChallengeAsyncObservable = SetAcmeChallengeAsyncSubject.asObservable().pipe(share());
+            /**
+             * Sets the acme challenge. The part before the . is the filename and all of the 
+             *             supplied challenge is provided in the file.
+             * @param challenge 
+             * @param cancellation 
+             */
+            export function SetAcmeChallengeAsync(
+                challenge : string,
+                cancellation? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<void> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcAcmeChallenge/SetAcmeChallengeAsync/{challenge}';
+                SolidRpcJs.ifnull(challenge, () => { uri = uri.replace('{challenge}', ''); }, nn =>  { uri = uri.replace('{challenge}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                    if(code == 200) {
+                        return null;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, SetAcmeChallengeAsyncSubject);
+            }
+            let GetAcmeChallengeAsyncSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the GetAcmeChallengeAsync invocations.
+             */
+            export var GetAcmeChallengeAsyncObservable = GetAcmeChallengeAsyncSubject.asObservable().pipe(share());
+            /**
+             * Returns the acme challenge
+             * @param key 
+             * @param cancellation 
+             */
+            export function GetAcmeChallengeAsync(
+                key : string,
+                cancellation? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/.well-known/acme-challenge/{key}';
+                SolidRpcJs.ifnull(key, () => { uri = uri.replace('{key}', ''); }, nn =>  { uri = uri.replace('{key}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, GetAcmeChallengeAsyncSubject);
+            }
+            }
+        /**
          * The content handler uses the ISolidRpcContentStore to deliver static or proxied content.
          *             
          *             This handler can be invoked from a configured proxy or mapped directly in a .Net Core Handler.

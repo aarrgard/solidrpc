@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.Binder;
 using System;
 using System.Collections.Generic;
@@ -51,11 +53,15 @@ namespace SolidRpc.OpenApi.Binder
         /// <summary>
         /// Constructs a new instance of the uri transformer.
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        public ConfigurationMethodAddressTransformer(IServiceProvider serviceProvider)
+        /// <param name="baseAddress"></param>
+        /// <param name="configuration"></param>
+        /// <param name="contentStore"></param>
+        public ConfigurationMethodAddressTransformer(
+            IConfiguration configuration,
+            Uri baseAddress = null,
+            ISolidRpcContentStore contentStore = null)
         {
-            var baseAddress = (Uri)serviceProvider.GetService(typeof(Uri));
-            var configuration = (IConfiguration)serviceProvider.GetService(typeof(IConfiguration));
+            ContentStore = contentStore as SolidRpcContentStore;
             if (baseAddress != null)
             {
                 Scheme = baseAddress.Scheme;
@@ -107,8 +113,12 @@ namespace SolidRpc.OpenApi.Binder
                 .Where(o => !string.IsNullOrEmpty(o))
                 .Distinct()
                 .ToList();
-            PathRewrites = ParsePathRewrites(GetValue(configuration, ConfigPathRewrites, ""));
+
+            var rewrites = ParsePathRewrites(GetValue(configuration, ConfigPathRewrites, ""));
+            PathRewrites = rewrites;
         }
+
+        private SolidRpcContentStore ContentStore { get; }
 
         private string[][] ParsePathRewrites(string rewrites)
         {
@@ -145,7 +155,9 @@ namespace SolidRpc.OpenApi.Binder
         private string Scheme { get; }
         private HostString Host { get; }
         private string PathPrefix { get; }
-        private string[][] PathRewrites { get; }
+        private IEnumerable<string[]> PathRewrites { get; }
+
+        private IEnumerable<string[]> ContentStoreRewrites => ContentStore == null ? Enumerable.Empty<string[]>() : ContentStore.Rewrites;
 
         /// <summary>
         /// The  base address
@@ -219,11 +231,17 @@ namespace SolidRpc.OpenApi.Binder
             return newUri.Uri ?? throw new Exception("Uri is null!");
         }
 
+        /// <summary>
+        /// Rewrites supplied path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public string RewritePath(string path)
         { 
             for(int i = 0; i < 100; i++)
             {
-                var match = PathRewrites.FirstOrDefault(o => path.StartsWith(o[0]));
+                var match = PathRewrites.Union(ContentStoreRewrites).FirstOrDefault(o => path.StartsWith(o[0]));
                 if (match == null) return path;
                 if (path == match[0]) return match[1];
                 if (path[match[0].Length] != '/') return path;

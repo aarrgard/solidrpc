@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.DependencyInjection;
+using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
@@ -29,7 +31,10 @@ namespace SolidRpc.OpenApi.Binder.Http
             // The kestrel team dont like encoded values in the path som we cannot use it to bind stuff...
             // https://github.com/aspnet/Mvc/issues/6388 - its a wont - fix 2017...
             //
-            var rawTarget = ((IHttpRequestFeature)source.HttpContext.Features[typeof(IHttpRequestFeature)]).RawTarget;
+            var reqFeat = (IHttpRequestFeature)source.HttpContext.Features[typeof(IHttpRequestFeature)];
+            var addrTrans = source.HttpContext.RequestServices.GetRequiredService<IMethodAddressTransformer>();
+            var rawTarget = addrTrans.RewritePath(reqFeat.RawTarget);
+
             var questionIdx = rawTarget.IndexOf('?');
             if(questionIdx > -1)
             {

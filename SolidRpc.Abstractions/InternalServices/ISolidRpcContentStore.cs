@@ -44,5 +44,12 @@ namespace SolidRpc.Abstractions.InternalServices
         /// </summary>
         /// <param name="path"></param>
         void SetNotFoundRewrite(string path);
+        
+        /// <summary>
+        /// Adds a rewrite rule
+        /// </summary>
+        /// <param name="fromPrefix"></param>
+        /// <param name="toPrefix"></param>
+        void AddPrefixRewrite(string fromPrefix, string toPrefix);
     }
 }

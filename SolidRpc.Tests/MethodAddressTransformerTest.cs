@@ -30,6 +30,7 @@ namespace SolidRpc.Tests
             sc.AddSingleton<IConfiguration>(cb.Build());
             sc.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             sc.AddSolidRpcServices();
+            sc.GetSolidRpcContentStore().AddPrefixRewrite("/.well-known/acme-challenge", "/SolidRpc/Abstractions/.well-known/acme-challenge");
             var sp = sc.BuildServiceProvider();
 
             var mat = sp.GetRequiredService<ConfigurationMethodAddressTransformer>();
@@ -40,6 +41,8 @@ namespace SolidRpc.Tests
             Assert.AreEqual("/test22", mat.RewritePath("/test22"));
             Assert.AreEqual("/test3", mat.RewritePath("/front/test2"));
             Assert.AreEqual("/test4", mat.RewritePath("/test4"));
+            
+            Assert.AreEqual("/SolidRpc/Abstractions/.well-known/acme-challenge/RMZcgQn8BgDBTWktwrmFUMR4maVMLY-EMSNG1T37EsU", mat.RewritePath("/.well-known/acme-challenge/RMZcgQn8BgDBTWktwrmFUMR4maVMLY-EMSNG1T37EsU"));
         }
 
     }
