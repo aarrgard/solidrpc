@@ -72,11 +72,20 @@ namespace SolidRpc.Abstractions.Services
         Task<Uri> BaseAddress(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Returns the list of allowed cors origins.
+        /// Returns the default timezone
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [Security(nameof(SolidRpcHostPermission))]
-        Task<IEnumerable<string>> AllowedCorsOrigins(CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> DefaultTimezone(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Returns the list of allowed cors origins.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<DateTimeOffset> ParseDateTime(string dateTime, CancellationToken cancellationToken = default);
     }
 }

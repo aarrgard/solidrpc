@@ -5,6 +5,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
@@ -56,6 +57,8 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         protected ISolidRpcApplication SolidRpcApplication => ServiceProvider.GetRequiredService<ISolidRpcApplication>();
 
         private IMethodAddressTransformer MethodAddressResolver => ServiceProvider.GetRequiredService<IMethodAddressTransformer>();
+
+        private ISerializerFactory SerializerFactory => ServiceProvider.GetRequiredService<ISerializerFactory>();
 
         /// <summary>
         /// The host stores
@@ -214,6 +217,30 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         public Task<IEnumerable<string>> AllowedCorsOrigins(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(MethodAddressResolver.AllowedCorsOrigins);
+        }
+
+        /// <summary>
+        /// Returns the default timezone
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<string> DefaultTimezone(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(SerializerFactory.DefaultSerializerSettings.DefaultTimeZone.DisplayName);
+        }
+
+        /// <summary>
+        /// Parses the supplied datetime.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<DateTimeOffset> ParseDateTime(string dateTime, CancellationToken cancellationToken = default)
+        {
+            SerializerFactory.DeserializeFromString(dateTime, out DateTimeOffset res);
+            return Task.FromResult(res);
         }
     }
 }
