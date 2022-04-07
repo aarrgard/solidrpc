@@ -656,29 +656,56 @@ export namespace Abstractions {
                     }
                 }, BaseAddressSubject);
             }
-            let AllowedCorsOriginsSubject = new Subject<string[]>();
+            let DefaultTimezoneSubject = new Subject<string>();
             /**
-             * This observable is hot and monitors all the responses from the AllowedCorsOrigins invocations.
+             * This observable is hot and monitors all the responses from the DefaultTimezone invocations.
              */
-            export var AllowedCorsOriginsObservable = AllowedCorsOriginsSubject.asObservable().pipe(share());
+            export var DefaultTimezoneObservable = DefaultTimezoneSubject.asObservable().pipe(share());
             /**
-             * Returns the list of allowed cors origins.
+             * Returns the default timezone
              * @param cancellationToken 
              */
-            export function AllowedCorsOrigins(
+            export function DefaultTimezone(
                 cancellationToken? : CancellationToken
-            ): SolidRpcJs.RpcServiceRequestTyped<string[]> {
+            ): SolidRpcJs.RpcServiceRequestTyped<string> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins';
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/DefaultTimezone';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<string[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
-                        return Array.from(data).map(o => o as string);
+                        return data as string;
                     } else {
                         throw 'Response code != 200('+code+')';
                     }
-                }, AllowedCorsOriginsSubject);
+                }, DefaultTimezoneSubject);
+            }
+            let ParseDateTimeSubject = new Subject<Date>();
+            /**
+             * This observable is hot and monitors all the responses from the ParseDateTime invocations.
+             */
+            export var ParseDateTimeObservable = ParseDateTimeSubject.asObservable().pipe(share());
+            /**
+             * Returns the list of allowed cors origins.
+             * @param dateTime 
+             * @param cancellationToken 
+             */
+            export function ParseDateTime(
+                dateTime : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Date> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/ParseDateTime/{dateTime}';
+                SolidRpcJs.ifnull(dateTime, () => { uri = uri.replace('{dateTime}', ''); }, nn =>  { uri = uri.replace('{dateTime}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Date>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Date(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, ParseDateTimeSubject);
             }
             }
         /**

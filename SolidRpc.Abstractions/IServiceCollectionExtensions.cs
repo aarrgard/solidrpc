@@ -5,6 +5,7 @@ using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using System;
 using System.Collections.Generic;
@@ -388,6 +389,18 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddSolidRpcSingletonServices();
             return services.GetSolidRpcService<IOpenApiParser>();
+        }
+
+        /// <summary>
+        /// Sets the serializer timezone to use when no timezone specified in json.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="capitol"></param>
+        public static void SetSolidRpcSerializerTimezone(this IServiceCollection services, string capitol)
+        {
+            var tz = TimeZoneInfo.GetSystemTimeZones().Where(o => o.Id.Contains(capitol) || o.DisplayName.Contains(capitol)).Single();
+            var serializerFactory = services.GetSolidRpcService<ISerializerFactory>();
+            serializerFactory.DefaultSerializerSettings = serializerFactory.DefaultSerializerSettings.SetDefaultTimeZone(tz);
         }
 
         /// <summary>

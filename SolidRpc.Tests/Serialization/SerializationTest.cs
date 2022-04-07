@@ -189,9 +189,9 @@ namespace SolidRpc.Tests.Serialization
 
         }
 
-        private void TestParseDate(ISerializerFactory serFact, int year, int month, int day, int hour, int minute, int second, string capital)
+        private void TestParseDate(ISerializerFactory serFact, int year, int month, int day, int hour, int minute, int second, string capitol)
         {
-            var tz = TimeZoneInfo.GetSystemTimeZones().Where(o => o.Id.Contains(capital) || o.DisplayName.Contains(capital)).FirstOrDefault();
+            var tz = TimeZoneInfo.GetSystemTimeZones().Where(o => o.Id.Contains(capitol) || o.DisplayName.Contains(capitol)).FirstOrDefault();
             serFact.DefaultSerializerSettings = serFact.DefaultSerializerSettings.SetDefaultTimeZone(tz);
             DateTimeOffset dt;
             var dtStr = $"\"{year.ToString("#0000")}-{month.ToString("#00")}-{day.ToString("#00")}T{hour.ToString("#00")}:{minute.ToString("#00")}:{second.ToString("#00")}\"";

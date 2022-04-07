@@ -3874,6 +3874,13 @@
             <param name="services"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcSerializerTimezone(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            Sets the serializer timezone to use when no timezone specified in json.
+            </summary>
+            <param name="services"></param>
+            <param name="capitol"></param>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcWellKnownRootRewrite(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
