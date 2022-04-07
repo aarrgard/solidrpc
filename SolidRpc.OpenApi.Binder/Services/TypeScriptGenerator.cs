@@ -134,15 +134,31 @@ namespace SolidRpc.OpenApi.Binder.Services
             CreteJsComment(code, indentation, interfaze.Description);
             code.Append(indentation).AppendLine($"export namespace {interfaze.Name} {{");
             var interfazeIndentation = CreateIndentation(indentation);
+            var methodNames = new List<string>();
             (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
+                
+                //
+                // construct unique method name
+                //
+                var methodName = m.Name;
+                int idx = 1;
+                while(methodNames.Contains(methodName))
+                {
+                    methodName = $"{m.Name}{idx}";
+                    idx++;
+                }
+                methodNames.Add(methodName);
 
+                //
+                // Add the method
+                //
                 var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
-                code.Append(interfazeIndentation).AppendLine($"let {m.Name}Subject = new Subject<{tsReturnType}>();");
+                code.Append(interfazeIndentation).AppendLine($"let {methodName}Subject = new Subject<{tsReturnType}>();");
                 CreteJsComment(code, interfazeIndentation, $"This observable is hot and monitors all the responses from the {m.Name} invocations.");
-                code.Append(interfazeIndentation).AppendLine($"export var {m.Name}Observable = {m.Name}Subject.asObservable().pipe(share());");
+                code.Append(interfazeIndentation).AppendLine($"export var {methodName}Observable = {methodName}Subject.asObservable().pipe(share());");
 
                 CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
-                code.Append(interfazeIndentation).Append($"export function {m.Name}(");
+                code.Append(interfazeIndentation).Append($"export function {methodName}(");
                 bool firstArg = true;
                 string cancellationTokenArgName = "null";
                 (m.Arguments ?? new CodeMethodArg[0]).ToList().ForEach(a =>
@@ -223,81 +239,12 @@ namespace SolidRpc.OpenApi.Binder.Services
                         code.Append(respIndentation).AppendLine($"}}");
 
                     }
-                    code.Append(codeIndentation).AppendLine($"}}, {m.Name}Subject);");
+                    code.Append(codeIndentation).AppendLine($"}}, {methodName}Subject);");
                     code.Append(interfazeIndentation).AppendLine($"}}");
                 }
             });
 
             code.Append(interfazeIndentation).AppendLine($"}}");
-        }
-
-        private void CreateTypesTsClass(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, CodeInterface interfaze, StringBuilder code, string indentation)
-        {
-            var className = interfaze.Name;
-            if(className.StartsWith("I"))
-            {
-                className = className.Substring(1);
-            }
-            CreteJsComment(code, indentation, interfaze.Description);
-            className = $"{className}Impl";
-            code.Append(indentation).AppendLine($"export class {className}  extends SolidRpcJs.RpcServiceImpl implements {interfaze.Name} {{");
-            {
-                var interfazeIndentation = CreateIndentation(indentation);
-                code.Append(interfazeIndentation).AppendLine($"private Namespace: SolidRpcJs.Namespace;");
-                //
-                // constructor
-                //
-                code.Append(interfazeIndentation).AppendLine($"constructor() {{");
-                {
-                    var ctorIndentation = CreateIndentation(interfazeIndentation);
-                    code.Append(ctorIndentation).AppendLine($"super();");
-                    code.Append(ctorIndentation).AppendLine($"this.Namespace = SolidRpcJs.rootNamespace.declareNamespace('{string.Join(".", rootNamespace.Name.Concat(codeNamespaceName).Concat(new[] { interfaze.Name }))}');");
-                    (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m =>
-                    {
-                        var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
-                        code.Append(ctorIndentation).AppendLine($"this.{m.Name}Subject = new Subject<{tsReturnType}>();");
-                        code.Append(ctorIndentation).AppendLine($"this.{m.Name}Observable = this.{m.Name}Subject.asObservable().pipe(share());");
-                    });
-                }
-                code.Append(interfazeIndentation).AppendLine($"}}");
-
-                //
-                // methods
-                //
-                (interfaze.Methods ?? new CodeMethod[0]).ToList().ForEach(m => {
-                    var tsReturnType = CreateTypescriptType(rootNamespace, codeNamespaceName, m.ReturnType);
-                    CreteJsComment(code, interfazeIndentation, m.Description, m.Arguments.ToDictionary(o => o.Name, o => o.Description));
-                    code.Append(interfazeIndentation).Append($"{m.Name}(");
-                    string cancellationTokenArgName = "null";
-                    bool firstArg = true;
-                    (m.Arguments ?? new CodeMethodArg[0]).ToList().ForEach(a =>
-                    {
-                        var argumentIndentation = CreateIndentation(interfazeIndentation);
-                        code.AppendLine(firstArg ? "" : ",");
-                        firstArg = false;
-                        var tsArgType = CreateTypescriptType(rootNamespace, codeNamespaceName, a.ArgType);
-                        if(tsArgType == "CancellationToken")
-                        {
-                            cancellationTokenArgName = a.Name;
-                        }
-                        code.Append(argumentIndentation).Append($"{a.Name}{(a.Optional ? "?" : "")} : {tsArgType}");
-                    });
-                    if (!firstArg)
-                    {
-                        code.AppendLine().Append(interfazeIndentation);
-                    }
-                    code.AppendLine($"): Observable<{tsReturnType}> {{");
-
-                    //
-                    // hot observable
-                    //
-                    CreteJsComment(code, interfazeIndentation, $"This observable is hot and monitors all the responses from the {m.Name} invocations.");
-                    code.Append(interfazeIndentation).AppendLine($"{m.Name}Observable : Observable<{tsReturnType}>;");
-                    code.Append(interfazeIndentation).AppendLine($"private {m.Name}Subject : Subject<{tsReturnType}>;");
-
-                });
-            }
-            code.Append(indentation).AppendLine($"}}");
         }
 
         private string CreateJs2JsonConverter(RootNamespace rootNamespace, IEnumerable<string> codeNamespaceName, IEnumerable<string> type, string varName)

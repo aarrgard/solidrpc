@@ -11,15 +11,25 @@ namespace SolidRpc.Abstractions.InternalServices
     public interface ISolidRpcProtectedResource
     {
         /// <summary>
-        /// Constructs a list of protected resource strings from supplied content paths
+        /// Constructs a protected resource from supplied resource string
         /// </summary>
         /// <param name="resource"></param>
         /// <param name="expiryTime"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<byte[]> ProtectAsync(
-            string resource, 
-            DateTimeOffset expiryTime, 
+            string resource,
+            DateTimeOffset expiryTime,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Protectes a resource
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<byte[]> ProtectAsync(
+            ProtectedResource resource,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -36,10 +46,12 @@ namespace SolidRpc.Abstractions.InternalServices
         /// Returns the protected content
         /// </summary>
         /// <param name="resource"></param>
+        /// <param name="fileName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<FileContent> GetProtectedContentAsync(
-            ProtectedResource resource, 
+            byte[] resource, 
+            string fileName,
             CancellationToken cancellationToken = default);
     }
 }

@@ -199,7 +199,7 @@ namespace SolidRpc.Tests.Security
                 var pr = await pc.UnprotectAsync(rs);
                 pr.Source = otherA.Authority;
                 pr.Expiration = DateTime.Now.AddMinutes(1);
-                r = await pc.GetProtectedContentAsync(pr);
+                r = await pc.GetProtectedContentAsync(await pc.ProtectAsync(pr), null);
                 Assert.AreEqual("Test", await r.AsStringAsync());
             }
         }

@@ -20,57 +20,41 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     {
         public SolidRpcProtectedResource(
             ILogger<SolidRpcProtectedResource> logger,
-            IInvoker<ISolidRpcProtectedContent> contentInvoker,
+            IInvoker<ISolidRpcContentHandler> contentHandlerInvoker,
+            ISolidRpcProtectedContent protectedContent = null,
             IAuthorityFactory authorityFactory = null,
             IAuthorityLocal authority = null)
         {
             Logger = logger;
             Authority = authority;
             AuthorityFactory = authorityFactory;
-            ContentInvoker = contentInvoker;
+            ProtectedContent = protectedContent;
+            ContentHandlerInvoker = contentHandlerInvoker;
+            RecurseProtection = Guid.NewGuid();
         }
 
         private ILogger Logger { get; }
         private IAuthorityLocal Authority { get; }
         private IAuthorityFactory AuthorityFactory { get; }
-        private IInvoker<ISolidRpcProtectedContent> ContentInvoker { get; }
+        private ISolidRpcProtectedContent ProtectedContent { get; }
+        private IInvoker<ISolidRpcContentHandler> ContentHandlerInvoker { get; }
+        private Guid RecurseProtection { get; }
 
         public Task<byte[]> ProtectAsync(string content, DateTimeOffset expiryTime, CancellationToken cancellationToken)
         {
-            var auth = Authority.Authority;
-            return (new ProtectedResource()
-                {
-                    Resource = content,
-                    Source = Authority.Authority,
-                    Expiration = expiryTime
-                }).ToByteArrayAsync((source, barr) => Authority.SignHash(barr, cancellationToken));
+            return ProtectAsync(new ProtectedResource()
+            {
+                Resource = content,
+                Source = Authority.Authority,
+                Expiration = expiryTime
+            });
         }
 
-
-        public async Task<FileContent> GetProtectedContentAsync(ProtectedResource resource, CancellationToken cancellationToken)
+        public Task<byte[]> ProtectAsync(ProtectedResource resource, CancellationToken cancellationToken = default)
         {
-            if(resource.Expiration < DateTimeOffset.UtcNow)
-            {
-                throw new FileContentNotFoundException("Resource expired");
-            }
-
-            if(resource.Source == Authority.Authority)
-            {
-                return await ContentInvoker.InvokeAsync(o => o.GetProtectedContentAsync(resource.Resource, cancellationToken), opts => {
-                    return opts.SetTransport("Local");
-                });
-            }
-            else
-            {
-                return await ContentInvoker.InvokeAsync(o => o.GetProtectedContentAsync(resource.Resource, cancellationToken), opts => {
-                    return opts.SetTransport("Http").AddPreInvokeCallback(r =>
-                    {
-                        var uri = new Uri(resource.Source);
-                        r.HostAndPort = $"{uri.Host}:{uri.Port}";    
-                        return Task.CompletedTask;
-                    });
-                });
-            }
+            if (resource == null) throw new ArgumentNullException(nameof(resource));
+            var auth = Authority.Authority;
+            return resource.ToByteArrayAsync((source, barr) => Authority.SignHash(barr, cancellationToken));
         }
 
         public Task<ProtectedResource> UnprotectAsync(byte[] resource, CancellationToken cancellationToken)
@@ -81,6 +65,36 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 var prAuth = AuthorityFactory.GetAuthority(source);
                 return await prAuth.VerifyData(data, signature, cancellationToken);
             });
+        }
+
+
+        public async Task<FileContent> GetProtectedContentAsync(byte[] b64, string fileName, CancellationToken cancellationToken)
+        {
+            var resource = await UnprotectAsync(b64, cancellationToken);
+            if(resource.Expiration < DateTimeOffset.UtcNow)
+            {
+                throw new FileContentNotFoundException("Resource expired");
+            }
+
+            if(resource.Source == Authority.Authority)
+            {
+                return await ProtectedContent.GetProtectedContentAsync(resource.Resource, cancellationToken);
+            }
+            else if(fileName == RecurseProtection.ToString())
+            {
+                return await ProtectedContent.GetProtectedContentAsync(resource.Resource, cancellationToken);
+            }
+            else
+            {
+                return await ContentHandlerInvoker.InvokeAsync(o => o.GetProtectedContentAsync(b64, RecurseProtection.ToString(), cancellationToken), opts => {
+                    return opts.SetTransport("Http").AddPreInvokeCallback(r =>
+                    {
+                        var uri = new Uri(resource.Source);
+                        r.HostAndPort = $"{uri.Host}:{uri.Port}";    
+                        return Task.CompletedTask;
+                    });
+                });
+            }
         }
     }
 }

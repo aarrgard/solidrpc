@@ -402,6 +402,28 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcWellKnownOidcRewrite(this IServiceCollection services)
+        {
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/.well-known/openid-configuration", "/SolidRpc/Abstractions/.well-known/openid-configuration");
+            return services;
+        }
+
+        /// <summary>
+        /// Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSolidRpcWellKnownAcmeRewrite(this IServiceCollection services)
+        {
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/.well-known/acme-challenge", "/SolidRpc/Abstractions/.well-known/acme-challenge");
+            return services;
+        }
+
+        /// <summary>
         /// Configures all the interfaces in supplied assembly
         /// </summary>
         /// <param name="sc"></param>

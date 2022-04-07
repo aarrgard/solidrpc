@@ -205,11 +205,23 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
+        public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
         {
-            if(ProtectedResource == null) throw new FileContentNotFoundException("Protected resource handler registered");
-            var pr = await ProtectedResource.UnprotectAsync(resource, cancellationToken);
-            return await ProtectedResource.GetProtectedContentAsync(pr, cancellationToken);
+            return GetProtectedContentAsync(resource, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Returns a protected content.
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="fileName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<FileContent> GetProtectedContentAsync(byte[] resource, string fileName, CancellationToken cancellationToken = default)
+        {
+            if (ProtectedResource == null) throw new FileContentNotFoundException("Protected resource handler not registered");
+            return await ProtectedResource.GetProtectedContentAsync(resource, fileName, cancellationToken);
         }
     }
 }

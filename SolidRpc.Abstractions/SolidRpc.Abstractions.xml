@@ -1788,10 +1788,18 @@
         </member>
         <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.ProtectAsync(System.String,System.DateTimeOffset,System.Threading.CancellationToken)">
             <summary>
-            Constructs a list of protected resource strings from supplied content paths
+            Constructs a protected resource from supplied resource string
             </summary>
             <param name="resource"></param>
             <param name="expiryTime"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.ProtectAsync(SolidRpc.Abstractions.Types.ProtectedResource,System.Threading.CancellationToken)">
+            <summary>
+            Protectes a resource
+            </summary>
+            <param name="resource"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -1803,11 +1811,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.GetProtectedContentAsync(SolidRpc.Abstractions.Types.ProtectedResource,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcProtectedResource.GetProtectedContentAsync(System.Byte[],System.String,System.Threading.CancellationToken)">
             <summary>
             Returns the protected content
             </summary>
             <param name="resource"></param>
+            <param name="fileName"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -2291,6 +2300,15 @@
             Returns the protected content for supplied resource
             </summary>
             <param name="resource"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcContentHandler.GetProtectedContentAsync(System.Byte[],System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns the protected content for supplied resource
+            </summary>
+            <param name="resource"></param>
+            <param name="fileName">A dummy file name</param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
@@ -3849,6 +3867,20 @@
             <returns></returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcWellKnownRootRewrite(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcWellKnownOidcRewrite(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcWellKnownAcmeRewrite(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Rewrites /.well-known to /SolidRpc/Abstractions/.well-known
             </summary>

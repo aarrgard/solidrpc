@@ -43,5 +43,14 @@ namespace SolidRpc.Abstractions.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Returns the protected content for supplied resource
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="fileName">A dummy file name</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> GetProtectedContentAsync(byte[] resource, string fileName, CancellationToken cancellationToken = default);
     }
 }

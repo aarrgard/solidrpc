@@ -448,6 +448,36 @@ export namespace Abstractions {
                     }
                 }, GetProtectedContentAsyncSubject);
             }
+            let GetProtectedContentAsync1Subject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the GetProtectedContentAsync invocations.
+             */
+            export var GetProtectedContentAsync1Observable = GetProtectedContentAsync1Subject.asObservable().pipe(share());
+            /**
+             * Returns the protected content for supplied resource
+             * @param resource 
+             * @param fileName A dummy file name
+             * @param cancellationToken 
+             */
+            export function GetProtectedContentAsync1(
+                resource : Uint8Array,
+                fileName : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}/{fileName}';
+                SolidRpcJs.ifnull(resource, () => { uri = uri.replace('{resource}', ''); }, nn =>  { uri = uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                SolidRpcJs.ifnull(fileName, () => { uri = uri.replace('{fileName}', ''); }, nn =>  { uri = uri.replace('{fileName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, GetProtectedContentAsync1Subject);
+            }
             }
         /**
          * Represents a solid rpc host.
