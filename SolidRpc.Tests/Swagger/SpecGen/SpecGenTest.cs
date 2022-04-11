@@ -4,10 +4,10 @@ using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
 using SolidRpc.OpenApi.SwaggerUI.Services;
-using SolidRpc.Test.Petstore.Services;
 using SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types;
 using System;
 using System.Collections.Generic;
@@ -840,11 +840,20 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 //
                 if(ctx is TestHostContextKestrel)
                 {
+                    // standard base64 encoded
                     var b64 = "A991R2IAAAAALABodHRwczovL2xvY2FsaG9zdDo1MDAxL1NvbGlkUnBjL0Fic3RyYWN0aW9uczcAQnJva2VySW1hZ2U6ODljMWVmNjctNWY0Yy00MGE3LTkxODktYWRiNzE2MjlmMzM0OnIxMDB4MAABcvnFdKkOCb5wa57Ov1F8FYT8d1sgN1Z%2fGE74o93zIKWyyMe2i%2fKbKy2f%2fQ032YLv4Nl3HcpXHaeApsrmPRPtXQBVmTeHVgjVfaz2FQbe06vV9MSmKsgmxZs1tCAlO6kzsOsN7e9cTYL5TzQyAiFqWN7hXEICWdiI9mBk%2f%2fZ0LO1n32TVXyrMclEBqMU%2fLkrGoOhvTsWL353iOLeMtzoLz+4dYOeezZSz2Cyc9jEWhBHGsHn+ly%2foqTb8CzJfPobQPQSjmF225Q+BA0v3eGCaem0VKfP2Pav59WabTECl38DSlyaKzHcpTbh+q9F9hqrxP%2fGq2A6JOyT7EzgPTPRhUw==";
-                    arr = Convert.FromBase64String(HttpUtility.UrlDecode(b64));
-                    moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(a, arr)))).Returns(() => arr);
+                    arr = Base64Url.Decode(HttpUtility.UrlDecode(b64));
+                    var newArr = Base64Url.Encode(arr);
                     var url = (await invoker.GetUriAsync(o => o.ProxyByteArray(new byte[0]))).ToString();
                     var resp = await ctx.HttpClient.GetAsync($"{url}{b64}");
+                    Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
+
+                    // base64url encoded - "/"&"+" are replaced with "_"&"-" - no padding.
+                    b64 = "A991R2IAAAAALABodHRwczovL2xvY2FsaG9zdDo1MDAxL1NvbGlkUnBjL0Fic3RyYWN0aW9uczcAQnJva2VySW1hZ2U6ODljMWVmNjctNWY0Yy00MGE3LTkxODktYWRiNzE2MjlmMzM0OnIxMDB4MAABcvnFdKkOCb5wa57Ov1F8FYT8d1sgN1Z_GE74o93zIKWyyMe2i_KbKy2f_Q032YLv4Nl3HcpXHaeApsrmPRPtXQBVmTeHVgjVfaz2FQbe06vV9MSmKsgmxZs1tCAlO6kzsOsN7e9cTYL5TzQyAiFqWN7hXEICWdiI9mBk__Z0LO1n32TVXyrMclEBqMU_LkrGoOhvTsWL353iOLeMtzoLz4dYOeezZSz2Cyc9jEWhBHGsHnly_oqTb8CzJfPobQPQSjmF225QBA0v3eGCaem0VKfP2Pav59WabTECl38DSlyaKzHcpTbhq9F9hqrxP_Gq2A6JOyT7EzgPTPRhUw";
+                    arr = Base64Url.Decode(HttpUtility.UrlDecode(b64));
+                    moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(a, arr)))).Returns(() => arr);
+                    url = (await invoker.GetUriAsync(o => o.ProxyByteArray(new byte[0]))).ToString();
+                    resp = await ctx.HttpClient.GetAsync($"{url}{b64}");
                     Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
                 }
             });
