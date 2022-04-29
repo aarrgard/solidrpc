@@ -966,6 +966,49 @@
         }
       }
     },
+    "/Services/ISolidRpcOidc/EndSessionAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOidc"
+        ],
+        "description": "Ends the current session",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#EndSessionAsync",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id_token_hint",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "post_logout_redirect_uri",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/.well-known/openid-configuration": {
       "get": {
         "tags": [

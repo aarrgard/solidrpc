@@ -68,12 +68,14 @@ namespace SolidRpc.OpenApi.OAuth2.Services
             var revokationEndpoint = await Invoker.GetUriAsync(o => o.RevokeAsync(null, null, null, null, cancellationToken), false);
             var tokenEndpoint = await Invoker.GetUriAsync(o => o.GetTokenAsync(null, null, null, null, null, null, null, null, null, null, cancellationToken), false);
             var jwksUri = await Invoker.GetUriAsync(o => o.GetKeysAsync(cancellationToken), false);
+            var endSessionEndpoint = await Invoker.GetUriAsync(o => o.EndSessionAsync(null, null, null, cancellationToken), false);
             return new OpenIDConnectDiscovery()
             {
                 Issuer = LocalAuthority.Authority,
                 AuthorizationEndpoint = authorizationEndpoint,
                 TokenEndpoint = tokenEndpoint,
                 RevocationEndpoint = revokationEndpoint,
+                EndSessionEndpoint = endSessionEndpoint,
                 JwksUri = jwksUri,
             };
         }

@@ -157,6 +157,11 @@ namespace SolidRpc.Tests.Invoker
                 });
             }
 
+            public Task<FileContent> EndSessionAsync([OpenApi(Name = "id_token_hint", In = "query")] string idTokenHint, [OpenApi(Name = "post_logout_redirect_uri", In = "query")] string postLogoutRedirectUri, [OpenApi(Name = "state", In = "query")] string state, CancellationToken cancellationToken = default)
+            {
+                throw new NotImplementedException();
+            }
+
             public Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
             {
                 throw new NotImplementedException();

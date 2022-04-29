@@ -17,8 +17,36 @@ namespace SolidRpc.OpenApi.Model.Generator
     {
         private static string MakeSafeName(string name)
         {
-            return name.Replace("`", "");
+            name = name.Replace("`", "");
+            name = RemoveAndCapitalizeFirstChar("-", name);
+            name = RemoveAndCapitalizeFirstChar(" ", name);
+            return name;
         }
+
+        private static string RemoveAndCapitalizeFirstChar(string find, string str)
+        {
+            var startIdx = str.IndexOf(find);
+            if(startIdx == -1)
+            {
+                return str;
+            }
+            str = str.Substring(0, startIdx) + CapitalizeFirstChar(str.Substring(startIdx + find.Length));
+            return RemoveAndCapitalizeFirstChar(find, str);
+        }
+
+        private static string CapitalizeLastChar(string name)
+        {
+            if(string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+            if (char.IsUpper(name[name.Length - 1]))
+            {
+                return name;
+            }
+            return name.Substring(0, name.Length - 2) + char.ToUpper(name[name.Length -1]);
+        }
+
         private static string CapitalizeFirstChar(string name)
         {
             if (char.IsUpper(name[0]))
@@ -90,7 +118,7 @@ namespace SolidRpc.OpenApi.Model.Generator
                 {
                     Exceptions = operation.Exceptions.Select(o => DefinitionMapper(settings, o)),
                     ReturnType = DefinitionMapper(settings, operation.ReturnType),
-                    InterfaceName = className,
+                    InterfaceName = ClassNameMapper(className),
                     MethodName = MethodNameMapper(operation.OperationId),
                     Parameters = operation.Parameters.Select(o => new OpenApi.Model.Agnostic.CSharpMethodParameter()
                     {

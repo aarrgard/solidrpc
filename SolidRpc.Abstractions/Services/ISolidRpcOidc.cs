@@ -88,5 +88,19 @@ namespace SolidRpc.Abstractions.Services
             [OpenApi(Name = "token", In = "formData")] string token = default(string),
             [OpenApi(Name = "token_hint", In = "formData")] string tokenHint = default(string),
             CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Ends the current session
+        /// </summary>
+        /// <param name="idTokenHint"></param>
+        /// <param name="postLogoutRedirectUri"></param>
+        /// <param name="state"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> EndSessionAsync(
+            [OpenApi(Name = "id_token_hint", In = "query")] string idTokenHint,
+            [OpenApi(Name = "post_logout_redirect_uri", In = "query")] string postLogoutRedirectUri,
+            [OpenApi(Name = "state", In = "query")] string state,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

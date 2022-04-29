@@ -2559,6 +2559,16 @@
             <param name="tokenHint"></param>
             <param name="cancellationToken"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOidc.EndSessionAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Ends the current session
+            </summary>
+            <param name="idTokenHint"></param>
+            <param name="postLogoutRedirectUri"></param>
+            <param name="state"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcProtectedContent">
             <summary>
             Provides access to protected content

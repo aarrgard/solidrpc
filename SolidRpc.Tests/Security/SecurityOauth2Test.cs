@@ -476,6 +476,43 @@ namespace SolidRpc.Tests.Security
                 });
 
                 Assert.AreEqual(HttpStatusCode.InternalServerError, response.HttpStatusCode);
+
+            }
+        }
+
+
+        /// <summary>
+        /// Tests the web host
+        /// </summary>
+        [Test]
+        public async Task TestOauthEndSession()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var clientFactory = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = clientFactory.CreateClient();
+                var res = await httpClient.GetDiscoveryDocumentAsync(GetIssuer(ctx.BaseAddress));
+
+                // authenticate user
+                var response = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
+                {
+                    Address = res.TokenEndpoint,
+
+                    ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                    ClientId = SolidRpcOidcTestImpl.ClientId,
+                    ClientSecret = SolidRpcOidcTestImpl.ClientSecret,
+                    Scope = "api1",
+
+                    UserName = "bob",
+                    Password = "bob"
+                });
+
+                ValidateAccessToken(res, response);
+
+                var endSessionUrl = $"{res.EndSessionEndpoint}?post_logout_redirect_uri=https://localhost:5001/signout-callback-aad&state=CfDJ8KAiLEpal9VHkKL5lvj-L21zCCticl4UMqadSk5qS1WSYWPWg5aSaHepWuSzdL4U19CLTnGiZbCNDnfIrmGUIB7m8cQoCAsCpCKSJdR0dMGYvxeqzyU8QHqouNOWwjeH-OGjhP_Zcw6CQoXBAJOVc0y7GmP8lziYu_Y03zcYIBcvjerddvYyi-3dGeH0HGr2omB280ztYGwB2CWI3wwlfP2vEU2WmPg7dvKu3ZQTMz1IESU55Icmz3gpDtheECY1y6ZbW1lvdPlG-yDMPKrEh_c4Gl9EIgV9zk791S-NsGLJBmmZOHMPTIlIgvGAYo0bkwtdghAtF161ekQ9WYLupbwtvwcZtJPP4k5RK854F8qE_9mdZtGLVVY7xR9XLMY9qYvmsTGw3OPCByJWOxd8jR1TUVx2mRQf0La3i1yWssg6MvEA199MrkXlmWqn39n3WdowHa6MtmQJSRxBeLYCTBp0-D3ASLHC_YcGUe70rDBPGS20_oPDpc0zOu3yeVSDPNZNPNQ6BRh8JO_F6RbI7Hf1QgvAhS0zbHV3itlUu0nqFNRb_U56x4ChVj2KcKIZ_cF-V_skvUt7j67UwO_2tXoGIa8onYFmjtxfiM_1R3O5LP4iLdI2xZyjqNNuE9BgDnvTzklBKRFME6Eq1vgAzys&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=6.15.1.0";
+                var resp = await httpClient.GetAsync(endSessionUrl);
             }
         }
 

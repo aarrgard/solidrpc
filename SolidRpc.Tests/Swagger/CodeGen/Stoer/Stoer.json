@@ -1,0 +1,135 @@
+{
+  "swagger": "2.0",
+  "info": {},
+  "tags": [
+    {
+      "name": "Partner API - Mortgage leads commands"
+    }
+  ],
+  "schemes": [ "http" ],
+  "paths": {
+    "/command/start-lead": {
+      "post": {
+        "tags": [ "Partner API - Mortgage leads commands" ],
+        "summary": "Start a mortgage lead from partner.",
+        "description": "",
+        "operationId": "startLead",
+        "consumes": [ "application/json" ],
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/se.stoer.brokering.partnerapi.api.leads.StartLeadCommand"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation successful, lead created",
+            "schema": {
+              "$ref": "#/definitions/se.stoer.brokering.partnerapi.app.StartMortgageLeadResponse"
+            }
+          },
+          "204": {
+            "description": "Request already processed"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "The requested operation is not allowed"
+          },
+          "422": {
+            "description": "The request payload is missing information"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "se.stoer.brokering.partnerapi.app.StartMortgageLeadResponse": {
+      "type": "object",
+      "required": [ "processId" ],
+      "properties": {
+        "processId": {
+          "type": "string"
+        }
+      }
+    },
+    "se.stoer.brokering.partnerapi.api.leads.StartLeadCommand": {
+      "type": "object",
+      "required": [ "email", "familyName", "givenName", "phone" ],
+      "properties": {
+        "givenName": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 50
+        },
+        "familyName": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 50
+        },
+        "email": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 20
+        },
+        "origin": {
+          "type": "string",
+          "description": "An optional origin for the lead. Allowed origin can be gotten on /config/origins (GET)",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "organization": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "organizationUnit": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "individual": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "leadType": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "other": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "comment": {
+          "type": "string",
+          "description": "An optional comment about the lead.",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "externalId": {
+          "type": "string",
+          "description": "The external ID of the lead. If included, this will be used to filter out duplicate requests.",
+          "minLength": 0,
+          "maxLength": 100
+        }
+      }
+    }
+  }
+}
