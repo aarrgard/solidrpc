@@ -2495,11 +2495,20 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.LogoutAsync(System.Uri,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.LogoutAsync(System.Uri,System.String,System.Threading.CancellationToken)">
             <summary>
             Performs the logout @ the identity server.
             </summary>
             <param name="callbackUri"></param>
+            <param name="accessToken"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcOAuth2.PostLogoutAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Performs the logout @ the identity server.
+            </summary>
+            <param name="state"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

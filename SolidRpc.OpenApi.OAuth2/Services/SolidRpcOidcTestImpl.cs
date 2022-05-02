@@ -306,7 +306,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         {
             return Task.FromResult(new FileContent()
             {
-                Location = "http://test.test/test"
+                Location = $"{postLogoutRedirectUri}?state={HttpUtility.UrlEncode(state)}"
             });
         }
     }

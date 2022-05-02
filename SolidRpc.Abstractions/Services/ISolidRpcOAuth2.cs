@@ -61,10 +61,22 @@ namespace SolidRpc.Abstractions.Services
         /// Performs the logout @ the identity server.
         /// </summary>
         /// <param name="callbackUri"></param>
+        /// <param name="accessToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<FileContent> LogoutAsync(
             Uri callbackUri = null,
+            string accessToken = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Performs the logout @ the identity server.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> PostLogoutAsync(
+            string state = null,
             CancellationToken cancellationToken = default);
     }
 }

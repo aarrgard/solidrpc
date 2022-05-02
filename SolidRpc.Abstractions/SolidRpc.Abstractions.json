@@ -814,6 +814,42 @@
             "type": "string",
             "format": "uri",
             "description": ""
+          },
+          {
+            "name": "accessToken",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcOAuth2/PostLogoutAsync": {
+      "get": {
+        "tags": [
+          "ISolidRpcOAuth2"
+        ],
+        "description": "Performs the logout @ the identity server.",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#PostLogoutAsync",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": ""
           }
         ],
         "responses": {
@@ -1739,6 +1775,7 @@
         },
         "end_session_endpoint": {
           "type": "string",
+          "format": "uri",
           "description": ""
         },
         "response_types_supported": {

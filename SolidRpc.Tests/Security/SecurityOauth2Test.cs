@@ -515,6 +515,7 @@ namespace SolidRpc.Tests.Security
                 var resp = await httpClient.GetAsync(endSessionUrl);
 
                 Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
+                Assert.AreEqual("https://localhost:5001/signout-callback-aad?state=CfDJ8KAiLEpal9VHkKL5lvj-L21zCCticl4UMqadSk5qS1WSYWPWg5aSaHepWuSzdL4U19CLTnGiZbCNDnfIrmGUIB7m8cQoCAsCpCKSJdR0dMGYvxeqzyU8QHqouNOWwjeH-OGjhP_Zcw6CQoXBAJOVc0y7GmP8lziYu_Y03zcYIBcvjerddvYyi-3dGeH0HGr2omB280ztYGwB2CWI3wwlfP2vEU2WmPg7dvKu3ZQTMz1IESU55Icmz3gpDtheECY1y6ZbW1lvdPlG-yDMPKrEh_c4Gl9EIgV9zk791S-NsGLJBmmZOHMPTIlIgvGAYo0bkwtdghAtF161ekQ9WYLupbwtvwcZtJPP4k5RK854F8qE_9mdZtGLVVY7xR9XLMY9qYvmsTGw3OPCByJWOxd8jR1TUVx2mRQf0La3i1yWssg6MvEA199MrkXlmWqn39n3WdowHa6MtmQJSRxBeLYCTBp0-D3ASLHC_YcGUe70rDBPGS20_oPDpc0zOu3yeVSDPNZNPNQ6BRh8JO_F6RbI7Hf1QgvAhS0zbHV3itlUu0nqFNRb_U56x4ChVj2KcKIZ_cF-V_skvUt7j67UwO_2tXoGIa8onYFmjtxfiM_1R3O5LP4iLdI2xZyjqNNuE9BgDnvTzklBKRFME6Eq1vgAzys", resp.Headers.Location.ToString());
             }
         }
 
@@ -610,6 +611,8 @@ namespace SolidRpc.Tests.Security
             {
                 await ctx.StartAsync();
 
+                var authLocal = ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>();
+
                 var protectedService = ctx.ClientServiceProvider.GetRequiredService<IOAuth2ProtectedService>();
                 try
                 {
@@ -658,7 +661,7 @@ namespace SolidRpc.Tests.Security
                 resp = await httpClient.GetAsync(new Uri($"{callback}"));
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
 
-                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), accessToken);
+                ValidateAccessToken(authLocal, accessToken);
 
                 //
                 // lets refresh the access token
@@ -670,7 +673,7 @@ namespace SolidRpc.Tests.Security
                 Assert.AreEqual(HttpStatusCode.OK, resp.StatusCode);
                 content = await resp.Content.ReadAsStringAsync();
 
-                ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), content);
+                ValidateAccessToken(authLocal, content);
 
                 Assert.AreNotEqual(accessToken, content);
 
@@ -680,6 +683,24 @@ namespace SolidRpc.Tests.Security
                 var currentContent = await resp.Content.ReadAsStringAsync();
 
                 ValidateAccessToken(ctx.ServerServiceProvider.GetRequiredService<IAuthorityLocal>(), currentContent);
+
+                // logout
+                var redirectUri = await oauthInvoker.GetUriAsync(o => o.TokenCallbackAsync(null, null, CancellationToken.None)); // dummy callback
+                var logoutUri = await oauthInvoker.GetUriAsync(o => o.LogoutAsync(redirectUri, accessToken, CancellationToken.None));
+                resp = await httpClient.GetAsync(logoutUri);
+                Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
+                Assert.IsTrue(resp.Headers.Location.ToString().StartsWith((await authLocal.GetDiscoveryDocumentAsync()).EndSessionEndpoint.ToString()));
+
+                // follow logout redirect
+                var postLogoutUri = await oauthInvoker.GetUriAsync(o => o.PostLogoutAsync(Convert.ToBase64String(Encoding.UTF8.GetBytes(redirectUri.ToString())), CancellationToken.None));
+                resp = await httpClient.GetAsync(resp.Headers.Location.ToString());
+                Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
+                Assert.AreEqual(postLogoutUri, resp.Headers.Location);
+
+                // follow redirect to the end...
+                resp = await httpClient.GetAsync(resp.Headers.Location.ToString());
+                Assert.AreEqual(HttpStatusCode.Found, resp.StatusCode);
+                Assert.AreEqual(redirectUri, resp.Headers.Location);
             }
         }
 

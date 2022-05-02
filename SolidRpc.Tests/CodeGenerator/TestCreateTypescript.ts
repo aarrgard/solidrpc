@@ -905,16 +905,19 @@ export namespace Abstractions {
             /**
              * Performs the logout @ the identity server.
              * @param callbackUri 
+             * @param accessToken 
              * @param cancellationToken 
              */
             export function LogoutAsync(
                 callbackUri? : string,
+                accessToken? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
                 let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
                 let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
+                SolidRpcJs.ifnotnull(accessToken, x => { query['accessToken'] = x; });
                 let headers: { [index: string]: any } = {};
                 return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
@@ -923,6 +926,33 @@ export namespace Abstractions {
                         throw 'Response code != 200('+code+')';
                     }
                 }, LogoutAsyncSubject);
+            }
+            let PostLogoutAsyncSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the PostLogoutAsync invocations.
+             */
+            export var PostLogoutAsyncObservable = PostLogoutAsyncSubject.asObservable().pipe(share());
+            /**
+             * Performs the logout @ the identity server.
+             * @param state 
+             * @param cancellationToken 
+             */
+            export function PostLogoutAsync(
+                state? : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/PostLogoutAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, PostLogoutAsyncSubject);
             }
             }
         /**
@@ -1097,6 +1127,39 @@ export namespace Abstractions {
                         throw 'Response code != 200('+code+')';
                     }
                 }, RevokeAsyncSubject);
+            }
+            let EndSessionAsyncSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the EndSessionAsync invocations.
+             */
+            export var EndSessionAsyncObservable = EndSessionAsyncSubject.asObservable().pipe(share());
+            /**
+             * Ends the current session
+             * @param idTokenHint 
+             * @param postLogoutRedirectUri 
+             * @param state 
+             * @param cancellationToken 
+             */
+            export function EndSessionAsync(
+                idTokenHint : string,
+                postLogoutRedirectUri : string,
+                state : string,
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/EndSessionAsync';
+                let query: { [index: string]: any } = {};
+                SolidRpcJs.ifnotnull(idTokenHint, x => { query['id_token_hint'] = x; });
+                SolidRpcJs.ifnotnull(postLogoutRedirectUri, x => { query['post_logout_redirect_uri'] = x; });
+                SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, EndSessionAsyncSubject);
             }
             }
         /**

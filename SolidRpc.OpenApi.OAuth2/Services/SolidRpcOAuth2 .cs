@@ -383,24 +383,46 @@ namespace SolidRpc.OpenApi.Binder.Services
             });
         }
 
-        public async Task<FileContent> LogoutAsync(Uri callbackUri = null, CancellationToken cancellationToken = default)
+        public async Task<FileContent> LogoutAsync(Uri callbackUri = null, string accessToken = null, CancellationToken cancellationToken = default)
         {
-            if (callbackUri != null) CheckAllowedCallback(callbackUri);
+            CheckAllowedCallback(callbackUri);
+
+            var conf = GetOAuth2Conf();
+            var auth = GetAuthority(conf);
 
             // revoke refresh token
             var refreshToken = GetRefreshToken();
             if(!string.IsNullOrEmpty(refreshToken))
             {
-                var conf = GetOAuth2Conf();
-                var auth = GetAuthority(conf);
 
                 await auth.RevokeTokenAsync(conf.OAuth2ClientId, conf.OAuth2ClientSecret, refreshToken, cancellationToken);
             }
 
-            var result = new FileContent();
-            result.Location = callbackUri.ToString();
-            await SetRefreshTokenAsync(result, "");
-            return result;
+            // call end session
+            var doc = await auth.GetDiscoveryDocumentAsync(cancellationToken);
+            if(doc.EndSessionEndpoint != null)
+            {
+                var state = "";
+                if(callbackUri != null)
+                {
+                    state = Convert.ToBase64String(Encoding.UTF8.GetBytes(callbackUri.ToString()));
+                }
+                var postLogoutRedirectUri = await Invoker.GetUriAsync(o => o.PostLogoutAsync(null, cancellationToken));
+                var endSession = $"{doc.EndSessionEndpoint}?id_token_hint={accessToken}&post_logout_redirect_uri={HttpUtility.UrlEncode(postLogoutRedirectUri.ToString())}&state={state}";
+
+                var result = new FileContent();
+                result.Location = endSession;
+                await SetRefreshTokenAsync(result, "");
+                return result;
+            }
+            else
+            {
+                var result = new FileContent();
+                result.Location = callbackUri.ToString();
+                await SetRefreshTokenAsync(result, "");
+                return result;
+            }
+
         }
 
         private string GetRefreshToken()
@@ -411,6 +433,15 @@ namespace SolidRpc.OpenApi.Binder.Services
             return tokens
                 .Select(o => o.Value)
                 .FirstOrDefault();
+        }
+
+        public async Task<FileContent> PostLogoutAsync(string state = null, CancellationToken cancellationToken = default)
+        {
+
+            var result = new FileContent();
+            result.Location = Encoding.UTF8.GetString(Convert.FromBase64String(state));
+            await SetRefreshTokenAsync(result, "");
+            return result;
         }
     }
 }
