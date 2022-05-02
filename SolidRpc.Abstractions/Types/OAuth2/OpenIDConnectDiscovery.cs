@@ -83,7 +83,7 @@ namespace SolidRpc.Abstractions.Types.OAuth2
         /// 
         /// </summary>
         [DataMember(Name="end_session_endpoint",EmitDefaultValue=false)]
-        public string EndSessionEndpoint { get; set; }
+        public Uri EndSessionEndpoint { get; set; }
     
         /// <summary>
         /// REQUIRED. JSON array containing a list of the OAuth 2.0 response_type values that this OP supports. Dynamic OpenID Providers MUST support the code, id_token, and the token id_token Response Type values.

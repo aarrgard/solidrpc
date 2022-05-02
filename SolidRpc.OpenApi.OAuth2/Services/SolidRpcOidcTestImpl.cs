@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Invoker;
+﻿using SolidRpc.Abstractions;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
@@ -299,6 +300,14 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         {
             if (clientId != ClientId) throw new Exception("Wrong client id");
             if (clientSecret != ClientSecret) throw new Exception("Wrong client secret");
+        }
+
+        public override Task<FileContent> EndSessionAsync([OpenApi(Name = "id_token_hint", In = "query")] string idTokenHint, [OpenApi(Name = "post_logout_redirect_uri", In = "query")] string postLogoutRedirectUri, [OpenApi(Name = "state", In = "query")] string state, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(new FileContent()
+            {
+                Location = "http://test.test/test"
+            });
         }
     }
 }

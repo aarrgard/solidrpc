@@ -137,7 +137,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<FileContent> EndSessionAsync([OpenApi(Name = "id_token_hint", In = "query")] string idTokenHint, [OpenApi(Name = "post_logout_redirect_uri", In = "query")] string postLogoutRedirectUri, [OpenApi(Name = "state", In = "query")] string state, CancellationToken cancellationToken = default)
+        public virtual Task<FileContent> EndSessionAsync([OpenApi(Name = "id_token_hint", In = "query")] string idTokenHint, [OpenApi(Name = "post_logout_redirect_uri", In = "query")] string postLogoutRedirectUri, [OpenApi(Name = "state", In = "query")] string state, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
