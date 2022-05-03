@@ -1095,5 +1095,46 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 Assert.AreEqual("{\"issuer\":\"My issuer\"}", getResp);
             });
         }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestFormAsStructArg()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestFormAsStructArg).Substring(4));
+
+                var moq = new Mock<FormAsStructArg.Services.IFormAsStructArg>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<FormAsStructArg.Services.IFormAsStructArg>();
+
+                var formData = new FormAsStructArg.Types.FormData() { StringValue = "test", GuidValue = Guid.NewGuid(), IntValue = 123 };
+                moq.Setup(o => o.GetFormData(
+                    It.Is<FormAsStructArg.Types.FormData>(a => CompareStructs(formData, a))
+                    )).Returns(formData);
+
+                var res = proxy.GetFormData(formData);
+                CompareStructs(formData, res);
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<FormAsStructArg.Services.IFormAsStructArg>>();
+                var uri = await invoker.GetUriAsync(o => o.GetFormData(formData));
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("FormAsStructArg");
+
+                var dict = new Dictionary<string, string>()
+                {
+                    { nameof(FormAsStructArg.Types.FormData.StringValue), formData.StringValue },
+                    { nameof(FormAsStructArg.Types.FormData.IntValue), formData.IntValue.ToString() },
+                    { nameof(FormAsStructArg.Types.FormData.GuidValue), formData.GuidValue.ToString() }
+                };
+                var content = new FormUrlEncodedContent(dict);
+
+                var httpRes = await httpClient.PostAsync(uri, content);
+                Assert.AreEqual(HttpStatusCode.OK, httpRes.StatusCode); 
+            });
+        }
     }
 }

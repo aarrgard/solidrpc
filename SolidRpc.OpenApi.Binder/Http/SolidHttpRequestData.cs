@@ -154,7 +154,7 @@ namespace SolidRpc.OpenApi.Binder.Http
         }
 
 
-        private static Func<IHttpRequestData, object> CreateExtractor(string contentType, string name, Type type, bool nullable)
+        public static Func<IHttpRequestData, object> CreateExtractor(string contentType, string name, Type type, bool nullable)
         {
             if (type.IsNullableType(out Type nullableType))
             {

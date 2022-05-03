@@ -1,0 +1,76 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "FormAsStructArg",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/FormAsStructArg",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IFormAsStructArg/GetFormData": {
+      "post": {
+        "tags": [
+          "IFormAsStructArg"
+        ],
+        "description": "Consumes one complex type an a simple string...",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#FormAsStructArg#Services#IFormAsStructArg#GetFormData",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "formData",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FormData"
+            },
+            "description": "The string values"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ComplexType1",
+            "schema": {
+              "$ref": "#/definitions/FormData"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "FormData": {
+      "properties": {
+        "StringValue": {
+          "type": "string",
+          "description": "String value"
+        },
+        "GuidValue": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Guid value"
+        },
+        "IntValue": {
+          "type": "integer",
+          "format": "int32",
+          "description": "int value"
+        }
+      },
+      "type": "object",
+      "description": "ComplexType1"
+    }
+  },
+  "tags": [
+    {
+      "name": "IFormAsStructArg",
+      "description": "Tests method with one complex type"
+    }
+  ]
+}
