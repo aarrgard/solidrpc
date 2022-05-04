@@ -347,7 +347,7 @@ namespace SolidRpc.OpenApi.Binder.V2
                     var subVal = rdEnum.Where(o => o.Name == pathElement);
                     if(!subVal.Any() && pathElement == "body")
                     {
-                        return ExtractFormWwwEncodedData(request, rdEnum);
+                        return ExtractFormData(rdEnum);
                     }
                     return await ExtractPath(request, pathEnumerator, true, subVal);
                 }
@@ -380,19 +380,18 @@ namespace SolidRpc.OpenApi.Binder.V2
             throw new Exception($"Cannot find path {pathElement} in {val.GetType().FullName}");
         }
 
-        private object ExtractFormWwwEncodedData(IHttpRequest request, IEnumerable<IHttpRequestData> rdEnum)
+        private object ExtractFormData(IEnumerable<IHttpRequestData> rdEnum)
         {
-            if (!string.Equals(request.ContentType,"application/x-www-form-urlencoded", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return null;
-            }
             var obj = Activator.CreateInstance(ParameterInfo.ParameterType);
             foreach(var p in ParameterInfo.ParameterType.GetProperties())
             {
-                var arg = rdEnum.Where(o => string.Equals(o.Name, p.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
                 var nullable = p.PropertyType.IsNullableType(out Type npt);
-                var val = SolidHttpRequestData.CreateExtractor(arg.ContentType, arg.Name, p.PropertyType, nullable)(arg);
-                p.SetValue(obj, val);
+                var arg = rdEnum.Where(o => string.Equals(o.Name, p.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                if(arg != null)
+                {
+                    var val = SolidHttpRequestData.CreateExtractor(arg.ContentType, arg.Name, p.PropertyType, nullable)(arg);
+                    p.SetValue(obj, val);
+                }
             }
             return obj;
         }

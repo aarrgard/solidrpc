@@ -21,6 +21,16 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Returns the swagger initializer
+        /// </summary>
+        /// <param name="onlyImplemented"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<FileContent> GetSwaggerInitializer(
+            bool onlyImplemented = true,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Returns the oauth2-redirect file
         /// </summary>
         /// <param name="cancellationToken"></param>

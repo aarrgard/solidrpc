@@ -102,6 +102,35 @@
         }
       }
     },
+    "/Services/ISwaggerUI/GetSwaggerInitializer": {
+      "get": {
+        "tags": [
+          "ISwaggerUI"
+        ],
+        "description": "Returns the swagger initializer",
+        "operationId": "Get#SolidRpc#OpenApi#SwaggerUI#Services#ISwaggerUI#GetSwaggerInitializer",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "onlyImplemented",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/ISwaggerUI/GetSwaggerUrls": {
       "get": {
         "tags": [

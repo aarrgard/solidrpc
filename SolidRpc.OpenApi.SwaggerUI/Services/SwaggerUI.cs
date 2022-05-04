@@ -60,7 +60,20 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         {
 
             var strBase = new Uri(await Invoker.GetUriAsync(o => o.GetIndexHtml(onlyImplemented, cancellationToken)), "../..");
-            var oauth2Redirect = await Invoker.GetUriAsync(o => o.GetOauth2RedirectHtml(cancellationToken));
+            var initializer = await Invoker.GetUriAsync(o => o.GetSwaggerInitializer(onlyImplemented, cancellationToken));
+
+            var str = GetManifestResourceAsString("index.html");
+            str = str.Replace("\"./swagger-initializer.js\"", $"\"{initializer}\"");
+            str = str.Replace("=\"./", $"=\"{strBase}");
+
+            var encoding = Encoding.UTF8;
+            return new FileContent()
+            {
+                CharSet = encoding.HeaderName,
+                Content = new MemoryStream(encoding.GetBytes(str)),
+                ContentType = "text/html"
+            };
+
             var html = $@"<!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
 <html lang=""en"">
@@ -112,8 +125,7 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         plugins: [
           SwaggerUIBundle.plugins.DownloadUrl
         ],
-        layout: ""StandaloneLayout"",
-        oauth2RedirectUrl: ""{oauth2Redirect}""
+        layout: ""StandaloneLayout""
       }})
       ui.initOAuth({{
         clientId: ""{SwaggerOptions.OAuthClientId}"",
@@ -127,12 +139,43 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
   </body>
 </html>
 ";
-            var encoding = Encoding.UTF8;
             return new FileContent()
             {
                 CharSet = encoding.HeaderName,
                 ContentType = $"text/html",
                 Content = new MemoryStream(encoding.GetBytes(html))
+            };
+        }
+
+        /// <summary>
+        /// Returns the swagger initializer
+        /// </summary>
+        /// <param name="onlyImplemented"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<FileContent> GetSwaggerInitializer(bool onlyImplemented = true, CancellationToken cancellationToken = default)
+        {
+            var oauth2Redirect = await Invoker.GetUriAsync(o => o.GetOauth2RedirectHtml(cancellationToken));
+
+            var str = GetManifestResourceAsString("swagger-initializer.js");
+
+            str = str.Replace("url: \"https://petstore.swagger.io/v2/swagger.json\"", $"urls: { AsJson(await GetSwaggerUrls(onlyImplemented, cancellationToken)) }");
+            str = str.Replace("layout: \"StandaloneLayout\"", $"layout: \"StandaloneLayout\", oauth2RedirectUrl: \"{oauth2Redirect}\"");
+
+            str = str.Replace("});", $@"}});
+      window.ui.initOAuth({{
+        clientId: ""{SwaggerOptions.OAuthClientId}"",
+        clientSecret: ""{SwaggerOptions.OAuthClientSecret}""
+      }});
+");
+
+            var encoding = Encoding.UTF8;
+            return new FileContent()
+            {
+                CharSet = encoding.HeaderName,
+                Content = new MemoryStream(encoding.GetBytes(str)),
+                ContentType = "text/javascript"
             };
         }
 

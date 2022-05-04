@@ -3,6 +3,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
@@ -15,6 +16,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -1123,17 +1125,49 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<FormAsStructArg.Services.IFormAsStructArg>>();
                 var uri = await invoker.GetUriAsync(o => o.GetFormData(formData));
                 var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("FormAsStructArg");
-
+                
+                // all params
                 var dict = new Dictionary<string, string>()
                 {
                     { nameof(FormAsStructArg.Types.FormData.StringValue), formData.StringValue },
                     { nameof(FormAsStructArg.Types.FormData.IntValue), formData.IntValue.ToString() },
                     { nameof(FormAsStructArg.Types.FormData.GuidValue), formData.GuidValue.ToString() }
                 };
-                var content = new FormUrlEncodedContent(dict);
+                HttpContent content = new FormUrlEncodedContent(dict);
 
                 var httpRes = await httpClient.PostAsync(uri, content);
-                Assert.AreEqual(HttpStatusCode.OK, httpRes.StatusCode); 
+                Assert.AreEqual(HttpStatusCode.OK, httpRes.StatusCode);
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(await httpRes.Content.ReadAsStringAsync(), out res);
+                CompareStructs(formData, res);
+
+                // only supply the string value
+                formData.GuidValue = Guid.Empty;
+                formData.IntValue = 0;
+                dict = new Dictionary<string, string>()
+                {
+                    { nameof(FormAsStructArg.Types.FormData.StringValue), formData.StringValue },
+                    { "ExtraValue", "dummy" }
+                };
+
+                content = new FormUrlEncodedContent(dict);
+
+                httpRes = await httpClient.PostAsync(uri, content);
+                Assert.AreEqual(HttpStatusCode.OK, httpRes.StatusCode);
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(await httpRes.Content.ReadAsStringAsync(), out res);
+                CompareStructs(formData, res);
+
+                // use multipart data to post 
+                content = new MultipartFormDataContent();
+                var sc = new StringContent(formData.StringValue);
+                sc.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline");
+                sc.Headers.ContentDisposition.Name = nameof(FormAsStructArg.Types.FormData.StringValue);
+                ((MultipartFormDataContent)content).Add(sc);
+
+                httpRes = await httpClient.PostAsync(uri, content);
+                Assert.AreEqual(HttpStatusCode.OK, httpRes.StatusCode);
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(await httpRes.Content.ReadAsStringAsync(), out res);
+                CompareStructs(formData, res);
+
             });
         }
     }
