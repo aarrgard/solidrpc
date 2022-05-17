@@ -2369,6 +2369,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.AllowedCorsOrigins(System.Threading.CancellationToken)">
+            <summary>
+            Returns the base url for this host
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.DefaultTimezone(System.Threading.CancellationToken)">
             <summary>
             Returns the default timezone

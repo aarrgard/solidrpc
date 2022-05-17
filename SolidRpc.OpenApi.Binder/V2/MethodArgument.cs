@@ -347,7 +347,11 @@ namespace SolidRpc.OpenApi.Binder.V2
                     var subVal = rdEnum.Where(o => o.Name == pathElement);
                     if(!subVal.Any() && pathElement == "body")
                     {
-                        return ExtractFormData(rdEnum);
+                        var formData = ExtractFormData(rdEnum);
+                        if(formData != null)
+                        {
+                            return formData;
+                        }
                     }
                     return await ExtractPath(request, pathEnumerator, true, subVal);
                 }
@@ -382,6 +386,10 @@ namespace SolidRpc.OpenApi.Binder.V2
 
         private object ExtractFormData(IEnumerable<IHttpRequestData> rdEnum)
         {
+            if(!ParameterInfo.ParameterType.IsClass)
+            {
+                return null;
+            }
             var obj = Activator.CreateInstance(ParameterInfo.ParameterType);
             foreach(var p in ParameterInfo.ParameterType.GetProperties())
             {

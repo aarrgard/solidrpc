@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -1121,6 +1122,31 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var res = proxy.GetFormData(formData);
                 CompareStructs(formData, res);
+
+                //
+                // proxying strings should still work
+                //
+                var farr = new[] { 
+                    new FormAsStructArg.Types.FormData() { 
+                        StringValue = "struct1"
+                    },
+                    new FormAsStructArg.Types.FormData() {
+                        StringValue = "struct2"
+                    }
+                };
+                moq.Setup(o => o.ProxyForms(
+                    It.Is<string>(a => a == "dummy"),
+                    It.Is<IEnumerable<FormAsStructArg.Types.FormData>>(a => CompareStructs(typeof(IEnumerable<FormAsStructArg.Types.FormData>), farr, a))
+                    )).Returns(farr);
+                var sarrres = proxy.ProxyForms("dummy", farr);
+                CompareStructs(typeof(IEnumerable<FormAsStructArg.Types.FormData>), farr, sarrres);
+
+                moq.Setup(o => o.ProxyForms(
+                     It.Is<string>(a => a == "dummy"),
+                     It.Is<IEnumerable<FormAsStructArg.Types.FormData>>(a => a == null)
+                     )).Returns((IEnumerable<FormAsStructArg.Types.FormData>)null);
+
+                sarrres = proxy.ProxyForms("dummy", null);
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<FormAsStructArg.Services.IFormAsStructArg>>();
                 var uri = await invoker.GetUriAsync(o => o.GetFormData(formData));

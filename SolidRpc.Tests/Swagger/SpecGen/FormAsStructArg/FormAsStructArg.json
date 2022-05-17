@@ -15,7 +15,7 @@
         "tags": [
           "IFormAsStructArg"
         ],
-        "description": "Consumes one complex type an a simple string...",
+        "description": "Processes the form data",
         "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#FormAsStructArg#Services#IFormAsStructArg#GetFormData",
         "consumes": [
           "application/json"
@@ -39,6 +39,53 @@
             "description": "ComplexType1",
             "schema": {
               "$ref": "#/definitions/FormData"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IFormAsStructArg/ProxyForms/{dummy}": {
+      "post": {
+        "tags": [
+          "IFormAsStructArg"
+        ],
+        "description": "Proxying strings should still work.",
+        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#FormAsStructArg#Services#IFormAsStructArg#ProxyForms#1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dummy",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "forms",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FormData"
+              }
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FormData"
+              }
             }
           }
         }
@@ -70,7 +117,7 @@
   "tags": [
     {
       "name": "IFormAsStructArg",
-      "description": "Tests method with one complex type"
+      "description": "Tests a form with some data"
     }
   ]
 }

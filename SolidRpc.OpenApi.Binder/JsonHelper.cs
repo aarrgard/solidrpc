@@ -131,6 +131,7 @@ namespace SolidRpc.OpenApi.Binder
 
         private static object MakeArray<T>(object e)
         {
+            if (e == null) return null;
             return ((IEnumerable<T>)e).ToArray();
         }
     }

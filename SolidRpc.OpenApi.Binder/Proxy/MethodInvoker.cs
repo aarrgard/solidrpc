@@ -221,7 +221,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             if (!request.CheckCorsIsValid(allowedCorsOrigins, out string origin))
             {
                 // request not allowed
-                resp.StatusCode = 401;
+                resp.StatusCode = 403;
                 serviceProvider.LogInformation<MethodInvoker>($"Rejecting request. {origin} not part of allowed origins {string.Join(",", allowedCorsOrigins)}");
                 return resp;
             }

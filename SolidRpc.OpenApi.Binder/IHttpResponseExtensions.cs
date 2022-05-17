@@ -14,7 +14,6 @@ namespace SolidRpc.Abstractions.OpenApi.Http
     /// </summary>
     public static class IHttpResponseExtensions
     {
-        private static Regex ETagRegex = new Regex("\"(.*)\"");
 
         /// <summary>
         /// Adds the allowed cors headers
