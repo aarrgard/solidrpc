@@ -337,6 +337,29 @@
         }
       }
     },
+    "/Services/ISolidRpcHost/AllowedCorsOrigins": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the base url for this host",
+        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#AllowedCorsOrigins",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
     "/Services/ISolidRpcHost/BaseAddress": {
       "get": {
         "tags": [
