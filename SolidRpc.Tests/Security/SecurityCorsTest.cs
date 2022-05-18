@@ -115,7 +115,7 @@ namespace SolidRpc.Tests.Security
 
                 client.DefaultRequestHeaders.Add("origin", "https://localhost");
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
-                Assert.AreEqual(HttpStatusCode.Unauthorized, resp.StatusCode);
+                Assert.AreEqual(HttpStatusCode.Forbidden, resp .StatusCode);
 
                 addrTrans.ConfiguredCors = new[] { "https://localhost" };
                 resp = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
