@@ -1234,7 +1234,7 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Methods) { arr.push('"methods": '); arr.push('['); for (let i = 0; i < this.Methods.length; i++) if(this.Methods[i]) {this.Methods[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Methods) { arr.push('"methods": '); arr.push('['); for (let i = 0; i < this.Methods.length; i++) { if(this.Methods[i]) {this.Methods[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1267,8 +1267,8 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Arguments) { arr.push('"arguments": '); arr.push('['); for (let i = 0; i < this.Arguments.length; i++) if(this.Arguments[i]) {this.Arguments[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
-                    if(this.ReturnType) { arr.push('"returnType": '); arr.push('['); for (let i = 0; i < this.ReturnType.length; i++) arr.push(JSON.stringify(this.ReturnType[i])); arr.push(']');; arr.push(','); } 
+                    if(this.Arguments) { arr.push('"arguments": '); arr.push('['); for (let i = 0; i < this.Arguments.length; i++) { if(this.Arguments[i]) {this.Arguments[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.ReturnType) { arr.push('"returnType": '); arr.push('['); for (let i = 0; i < this.ReturnType.length; i++) { arr.push(JSON.stringify(this.ReturnType[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(this.HttpMethod) { arr.push('"httpMethod": '); arr.push(JSON.stringify(this.HttpMethod)); arr.push(','); } 
                     if(this.HttpBaseAddress) { arr.push('"httpBaseAddress": '); arr.push(JSON.stringify(this.HttpBaseAddress)); arr.push(','); } 
                     if(this.HttpPath) { arr.push('"httpPath": '); arr.push(JSON.stringify(this.HttpPath)); arr.push(','); } 
@@ -1319,7 +1319,7 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.ArgType) { arr.push('"argType": '); arr.push('['); for (let i = 0; i < this.ArgType.length; i++) arr.push(JSON.stringify(this.ArgType[i])); arr.push(']');; arr.push(','); } 
+                    if(this.ArgType) { arr.push('"argType": '); arr.push('['); for (let i = 0; i < this.ArgType.length; i++) { arr.push(JSON.stringify(this.ArgType[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(this.Optional) { arr.push('"optional": '); arr.push(JSON.stringify(this.Optional)); arr.push(','); } 
                     if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
                     if(this.HttpLocation) { arr.push('"httpLocation": '); arr.push(JSON.stringify(this.HttpLocation)); arr.push(','); } 
@@ -1363,9 +1363,9 @@ export namespace Abstractions {
                 toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Namespaces) { arr.push('"namespaces": '); arr.push('['); for (let i = 0; i < this.Namespaces.length; i++) if(this.Namespaces[i]) {this.Namespaces[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
-                    if(this.Interfaces) { arr.push('"interfaces": '); arr.push('['); for (let i = 0; i < this.Interfaces.length; i++) if(this.Interfaces[i]) {this.Interfaces[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
-                    if(this.Types) { arr.push('"types": '); arr.push('['); for (let i = 0; i < this.Types.length; i++) if(this.Types[i]) {this.Types[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Namespaces) { arr.push('"namespaces": '); arr.push('['); for (let i = 0; i < this.Namespaces.length; i++) { if(this.Namespaces[i]) {this.Namespaces[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.Interfaces) { arr.push('"interfaces": '); arr.push('['); for (let i = 0; i < this.Interfaces.length; i++) { if(this.Interfaces[i]) {this.Interfaces[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.Types) { arr.push('"types": '); arr.push('['); for (let i = 0; i < this.Types.length; i++) { if(this.Types[i]) {this.Types[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1399,8 +1399,8 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Extends) { arr.push('"extends": '); arr.push('['); for (let i = 0; i < this.Extends.length; i++) arr.push(JSON.stringify(this.Extends[i])); arr.push(']');; arr.push(','); } 
-                    if(this.Properties) { arr.push('"properties": '); arr.push('['); for (let i = 0; i < this.Properties.length; i++) if(this.Properties[i]) {this.Properties[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Extends) { arr.push('"extends": '); arr.push('['); for (let i = 0; i < this.Extends.length; i++) { arr.push(JSON.stringify(this.Extends[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.Properties) { arr.push('"properties": '); arr.push('['); for (let i = 0; i < this.Properties.length; i++) { if(this.Properties[i]) {this.Properties[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1434,7 +1434,7 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.PropertyType) { arr.push('"propertyType": '); arr.push('['); for (let i = 0; i < this.PropertyType.length; i++) arr.push(JSON.stringify(this.PropertyType[i])); arr.push(']');; arr.push(','); } 
+                    if(this.PropertyType) { arr.push('"propertyType": '); arr.push('['); for (let i = 0; i < this.PropertyType.length; i++) { arr.push(JSON.stringify(this.PropertyType[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
@@ -1466,7 +1466,7 @@ export namespace Abstractions {
                 toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Files) { arr.push('"files": '); arr.push('['); for (let i = 0; i < this.Files.length; i++) if(this.Files[i]) {this.Files[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Files) { arr.push('"files": '); arr.push('['); for (let i = 0; i < this.Files.length; i++) { if(this.Files[i]) {this.Files[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1543,16 +1543,16 @@ export namespace Abstractions {
                     if(this.RevocationEndpoint) { arr.push('"revocation_endpoint": '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
                     if(this.DeviceAuthorizationEndpoint) { arr.push('"device_authorization_endpoint": '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
                     if(this.JwksUri) { arr.push('"jwks_uri": '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
-                    if(this.ScopesSupported) { arr.push('"scopes_supported": '); arr.push('['); for (let i = 0; i < this.ScopesSupported.length; i++) arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); arr.push('['); for (let i = 0; i < this.GrantTypesSupported.length; i++) arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); arr.push('['); for (let i = 0; i < this.ResponseModesSupported.length; i++) arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); arr.push('['); for (let i = 0; i < this.SubjectTypesSupported.length; i++) arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); arr.push('['); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.ScopesSupported) { arr.push('"scopes_supported": '); arr.push('['); for (let i = 0; i < this.ScopesSupported.length; i++) { arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); arr.push('['); for (let i = 0; i < this.GrantTypesSupported.length; i++) { arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); arr.push('['); for (let i = 0; i < this.ResponseModesSupported.length; i++) { arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); arr.push('['); for (let i = 0; i < this.SubjectTypesSupported.length; i++) { arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); arr.push('['); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) { arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(this.EndSessionEndpoint) { arr.push('"end_session_endpoint": '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
-                    if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); arr.push('['); for (let i = 0; i < this.ResponseTypesSupported.length; i++) arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.ClaimsSupported) { arr.push('"claims_supported": '); arr.push('['); for (let i = 0; i < this.ClaimsSupported.length; i++) arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); arr.push('['); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(']');; arr.push(','); } 
-                    if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); arr.push('['); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); arr.push('['); for (let i = 0; i < this.ResponseTypesSupported.length; i++) { arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.ClaimsSupported) { arr.push('"claims_supported": '); arr.push('['); for (let i = 0; i < this.ClaimsSupported.length; i++) { arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); arr.push('['); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) { arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
+                    if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); arr.push('['); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) { arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(this.RequestUriParameterSupported) { arr.push('"request_uri_parameter_supported": '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
                     if(this.HttpLogoutSupported) { arr.push('"http_logout_supported": '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
                     if(this.FrontchannelLogoutSupported) { arr.push('"frontchannel_logout_supported": '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
@@ -1689,7 +1689,7 @@ export namespace Abstractions {
                     if(this.Kid) { arr.push('"kid": '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
                     if(this.X5u) { arr.push('"x5u": '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
                     if(this.X5t) { arr.push('"x5t": '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
-                    if(this.X5c) { arr.push('"x5c": '); arr.push('['); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(']');; arr.push(','); } 
+                    if(this.X5c) { arr.push('"x5c": '); arr.push('['); for (let i = 0; i < this.X5c.length; i++) { arr.push(JSON.stringify(this.X5c[i])); arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
                     if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
                     if(this.D) { arr.push('"d": '); arr.push(JSON.stringify(this.D)); arr.push(','); } 
@@ -1750,7 +1750,7 @@ export namespace Abstractions {
                 }
                 toJson(arr: string[]): void {
                     arr.push('{');
-                    if(this.Keys) { arr.push('"keys": '); arr.push('['); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Keys) { arr.push('"keys": '); arr.push('['); for (let i = 0; i < this.Keys.length; i++) { if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(','); } arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**

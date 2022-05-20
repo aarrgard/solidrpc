@@ -250,7 +250,7 @@ namespace SolidRpc.OpenApi.Binder.Services
         {
             if (type.LastOrDefault() == "[]")
             {
-                return $"arr.push('['); for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(']');";
+                return $"arr.push('['); for (let i = 0; i < {varName}.length; i++) {{ {CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(','); }} arr.push(']');";
             }
             if (type.LastOrDefault() == "?")
             {

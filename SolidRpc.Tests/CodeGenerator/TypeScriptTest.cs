@@ -289,7 +289,7 @@ namespace SolidRpc.Tests.CodeGenerator
             {
                 var guid = Guid.NewGuid();
                 var uri = new Uri("ws://test.ws/ws");
-                var ct = new ComplexType() { String = "test string", Integer = 123, StringArr = new[] { "test" } };
+                var ct = new ComplexType() { String = "test string", Integer = 123, StringArr = new[] { "test1", "test2" } };
                 var dict = new Dictionary<string, string>() { { "key", "value"} };
                 var dt = DateTime.Now;
                 dt = dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerSecond));
@@ -346,7 +346,7 @@ namespace SolidRpc.Tests.CodeGenerator
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyUriAsync), uri, $"\"{uri}\"");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyDictionaryAsync), dict, $"{{\"key\":\"value\"}}");
 
-                await RunTestScriptNoArgConvAsync<ComplexType>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyComplexTypeAsync), $"new x.TypeScriptTest.ComplexType({strCt})", "{\"Integer\":123,\"String\":\"test string\",\"StringArr\":[\"test\"]}");
+                await RunTestScriptNoArgConvAsync<ComplexType>(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyComplexTypeAsync), $"new x.TypeScriptTest.ComplexType({strCt})", "{\"Integer\":123,\"String\":\"test string\",\"StringArr\":[\"test1\",\"test2\"]}");
 
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)true, "true");
                 await RunTestScriptAsync(ctx.ClientServiceProvider, packages, nameof(ITestInterface.ProxyOBooleanAsync), (bool)false, "false");
