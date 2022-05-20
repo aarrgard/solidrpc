@@ -23,12 +23,12 @@ export namespace Abstractions {
                     assemblyName : string,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.Code.CodeNamespace> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
-                    SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ICodeNamespaceGenerator/CreateCodeNamespace/{assemblyName}';
+                    SolidRpcJs.ifnull(assemblyName, () => { __uri = __uri.replace('{assemblyName}', ''); }, nn =>  { __uri = __uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<Types.Code.CodeNamespace>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.Code.CodeNamespace>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.Code.CodeNamespace(data);
                         } else {
@@ -55,12 +55,12 @@ export namespace Abstractions {
                     assemblyNames : string[],
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.Code.NpmPackage[]> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
-                    SolidRpcJs.ifnull(assemblyNames, () => { uri = uri.replace('{assemblyNames}', ''); }, nn =>  { uri = uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateNpmPackage/{assemblyNames}';
+                    SolidRpcJs.ifnull(assemblyNames, () => { __uri = __uri.replace('{assemblyNames}', ''); }, nn =>  { __uri = __uri.replace('{assemblyNames}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<Types.Code.NpmPackage[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.Code.NpmPackage[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return Array.from(data).map(o => new Types.Code.NpmPackage(o));
                         } else {
@@ -80,11 +80,11 @@ export namespace Abstractions {
                 export function CreateInitialZip(
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip';
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.INpmGenerator');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/INpmGenerator/CreateInitialZip';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.FileContent(data);
                         } else {
@@ -111,12 +111,12 @@ export namespace Abstractions {
                     assemblyName : string,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<string> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
-                    SolidRpcJs.ifnull(assemblyName, () => { uri = uri.replace('{assemblyName}', ''); }, nn =>  { uri = uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForAssemblyAsync/{assemblyName}';
+                    SolidRpcJs.ifnull(assemblyName, () => { __uri = __uri.replace('{assemblyName}', ''); }, nn =>  { __uri = __uri.replace('{assemblyName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<string>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -138,12 +138,12 @@ export namespace Abstractions {
                     codeNamespace : Types.Code.CodeNamespace,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<string> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.Code.ITypescriptGenerator');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/Code/ITypescriptGenerator/CreateTypesTsForCodeNamespaceAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
-                    return new SolidRpcJs.RpcServiceRequestTyped<string>('post', uri, query, headers, SolidRpcJs.toJson(codeNamespace), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<string>('post', __uri, query, headers, SolidRpcJs.toJson(codeNamespace), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return data as string;
                         } else {
@@ -174,13 +174,13 @@ export namespace Abstractions {
                     timeout : Date,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
-                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitTokenAsync/{resourceName}/{timeout}';
+                    SolidRpcJs.ifnull(resourceName, () => { __uri = __uri.replace('{resourceName}', ''); }, nn =>  { __uri = __uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    SolidRpcJs.ifnull(timeout, () => { __uri = __uri.replace('{timeout}', ''); }, nn =>  { __uri = __uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.RateLimit.RateLimitToken(data);
                         } else {
@@ -204,13 +204,13 @@ export namespace Abstractions {
                     timeout : Date,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
-                    SolidRpcJs.ifnull(resourceName, () => { uri = uri.replace('{resourceName}', ''); }, nn =>  { uri = uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                    SolidRpcJs.ifnull(timeout, () => { uri = uri.replace('{timeout}', ''); }, nn =>  { uri = uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetSingeltonTokenAsync/{resourceName}/{timeout}';
+                    SolidRpcJs.ifnull(resourceName, () => { __uri = __uri.replace('{resourceName}', ''); }, nn =>  { __uri = __uri.replace('{resourceName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                    SolidRpcJs.ifnull(timeout, () => { __uri = __uri.replace('{timeout}', ''); }, nn =>  { __uri = __uri.replace('{timeout}', SolidRpcJs.encodeUriValue(nn.toString())); });
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitToken>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return new Types.RateLimit.RateLimitToken(data);
                         } else {
@@ -232,12 +232,12 @@ export namespace Abstractions {
                     rateLimitToken : Types.RateLimit.RateLimitToken,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/ReturnRateLimitTokenAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
-                    return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(rateLimitToken), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<void>('post', __uri, query, headers, SolidRpcJs.toJson(rateLimitToken), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return null;
                         } else {
@@ -257,11 +257,11 @@ export namespace Abstractions {
                 export function GetRateLimitSettingsAsync(
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/GetRateLimitSettingsAsync';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
-                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<Types.RateLimit.RateLimitSetting[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return Array.from(data).map(o => new Types.RateLimit.RateLimitSetting(o));
                         } else {
@@ -283,12 +283,12 @@ export namespace Abstractions {
                     setting : Types.RateLimit.RateLimitSetting,
                     cancellationToken? : CancellationToken
                 ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                    let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
-                    let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
+                    let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit');
+                    let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/RateLimit/ISolidRpcRateLimit/UpdateRateLimitSetting';
                     let query: { [index: string]: any } = {};
                     let headers: { [index: string]: any } = {};
                     headers['Content-Type']='application/json';
-                    return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(setting), cancellationToken, function(code : number, data : any) {
+                    return new SolidRpcJs.RpcServiceRequestTyped<void>('post', __uri, query, headers, SolidRpcJs.toJson(setting), cancellationToken, function(code : number, data : any) {
                         if(code == 200) {
                             return null;
                         } else {
@@ -317,12 +317,12 @@ export namespace Abstractions {
                 challenge : string,
                 cancellation? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcAcmeChallenge/SetAcmeChallengeAsync/{challenge}';
-                SolidRpcJs.ifnull(challenge, () => { uri = uri.replace('{challenge}', ''); }, nn =>  { uri = uri.replace('{challenge}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcAcmeChallenge/SetAcmeChallengeAsync/{challenge}';
+                SolidRpcJs.ifnull(challenge, () => { __uri = __uri.replace('{challenge}', ''); }, nn =>  { __uri = __uri.replace('{challenge}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<void>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('get', __uri, query, headers, null, cancellation, function(code : number, data : any) {
                     if(code == 200) {
                         return null;
                     } else {
@@ -344,12 +344,12 @@ export namespace Abstractions {
                 key : string,
                 cancellation? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/.well-known/acme-challenge/{key}';
-                SolidRpcJs.ifnull(key, () => { uri = uri.replace('{key}', ''); }, nn =>  { uri = uri.replace('{key}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/.well-known/acme-challenge/{key}';
+                SolidRpcJs.ifnull(key, () => { __uri = __uri.replace('{key}', ''); }, nn =>  { __uri = __uri.replace('{key}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellation, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -381,12 +381,12 @@ export namespace Abstractions {
                 path? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetContent';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(path, x => { query['path'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -408,12 +408,12 @@ export namespace Abstractions {
                 redirects : boolean,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
-                SolidRpcJs.ifnull(redirects, () => { uri = uri.replace('{redirects}', ''); }, nn =>  { uri = uri.replace('{redirects}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetPathMappingsAsync/{redirects}';
+                SolidRpcJs.ifnull(redirects, () => { __uri = __uri.replace('{redirects}', ''); }, nn =>  { __uri = __uri.replace('{redirects}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.NameValuePair(o));
                     } else {
@@ -435,12 +435,12 @@ export namespace Abstractions {
                 resource : Uint8Array,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}';
-                SolidRpcJs.ifnull(resource, () => { uri = uri.replace('{resource}', ''); }, nn =>  { uri = uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}';
+                SolidRpcJs.ifnull(resource, () => { __uri = __uri.replace('{resource}', ''); }, nn =>  { __uri = __uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -464,13 +464,13 @@ export namespace Abstractions {
                 fileName : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}/{fileName}';
-                SolidRpcJs.ifnull(resource, () => { uri = uri.replace('{resource}', ''); }, nn =>  { uri = uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
-                SolidRpcJs.ifnull(fileName, () => { uri = uri.replace('{fileName}', ''); }, nn =>  { uri = uri.replace('{fileName}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcContentHandler');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcContentHandler/GetProtectedContentAsync/{resource}/{fileName}';
+                SolidRpcJs.ifnull(resource, () => { __uri = __uri.replace('{resource}', ''); }, nn =>  { __uri = __uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                SolidRpcJs.ifnull(fileName, () => { __uri = __uri.replace('{fileName}', ''); }, nn =>  { __uri = __uri.replace('{fileName}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -495,11 +495,11 @@ export namespace Abstractions {
             export function GetHostId(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<string> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostId';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return data as string;
                     } else {
@@ -521,11 +521,11 @@ export namespace Abstractions {
             export function GetHostInstance(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostInstance';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.SolidRpcHostInstance(data);
                     } else {
@@ -545,11 +545,11 @@ export namespace Abstractions {
             export function SyncHostsFromStore(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/SyncHostsFromStore';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.SolidRpcHostInstance(o));
                     } else {
@@ -571,12 +571,12 @@ export namespace Abstractions {
                 hostInstance : Types.SolidRpcHostInstance,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/CheckHost';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('post', uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance>('post', __uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.SolidRpcHostInstance(data);
                     } else {
@@ -596,11 +596,11 @@ export namespace Abstractions {
             export function GetHostConfiguration(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/GetHostConfiguration';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.NameValuePair[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.NameValuePair(o));
                     } else {
@@ -620,11 +620,11 @@ export namespace Abstractions {
             export function IsAlive(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/IsAlive';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<void>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return null;
                     } else {
@@ -644,11 +644,11 @@ export namespace Abstractions {
             export function BaseAddress(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<string> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/BaseAddress';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return data as string;
                     } else {
@@ -668,11 +668,11 @@ export namespace Abstractions {
             export function AllowedCorsOrigins(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<string[]> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/AllowedCorsOrigins';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<string[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<string[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => o as string);
                     } else {
@@ -692,11 +692,11 @@ export namespace Abstractions {
             export function DefaultTimezone(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<string> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/DefaultTimezone';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/DefaultTimezone';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return data as string;
                     } else {
@@ -718,12 +718,12 @@ export namespace Abstractions {
                 dateTime : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Date> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/ParseDateTime/{dateTime}';
-                SolidRpcJs.ifnull(dateTime, () => { uri = uri.replace('{dateTime}', ''); }, nn =>  { uri = uri.replace('{dateTime}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/ParseDateTime/{dateTime}';
+                SolidRpcJs.ifnull(dateTime, () => { __uri = __uri.replace('{dateTime}', ''); }, nn =>  { __uri = __uri.replace('{dateTime}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Date>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Date>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Date(data);
                     } else {
@@ -752,12 +752,12 @@ export namespace Abstractions {
                 hostInstance : Types.SolidRpcHostInstance,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/AddHostInstanceAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
-                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', __uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return null;
                     } else {
@@ -779,12 +779,12 @@ export namespace Abstractions {
                 hostInstance : Types.SolidRpcHostInstance,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/RemoveHostInstanceAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
                 headers['Content-Type']='application/json';
-                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', __uri, query, headers, SolidRpcJs.toJson(hostInstance), cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return null;
                     } else {
@@ -804,11 +804,11 @@ export namespace Abstractions {
             export function ListHostInstancesAsync(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHostStore');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHostStore/ListHostInstancesAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.SolidRpcHostInstance[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return Array.from(data).map(o => new Types.SolidRpcHostInstance(o));
                     } else {
@@ -845,14 +845,14 @@ export namespace Abstractions {
                 scopes? : string[],
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/GetAuthorizationCodeTokenAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
                 SolidRpcJs.ifnotnull(scopes, x => { query['scopes'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -878,13 +878,13 @@ export namespace Abstractions {
                 state? : string,
                 cancellation? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/TokenCallbackAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(code, x => { query['code'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellation, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -908,12 +908,12 @@ export namespace Abstractions {
                 accessToken : string,
                 cancellation? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{accessToken}';
-                SolidRpcJs.ifnull(accessToken, () => { uri = uri.replace('{accessToken}', ''); }, nn =>  { uri = uri.replace('{accessToken}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/RefreshTokenAsync/{accessToken}';
+                SolidRpcJs.ifnull(accessToken, () => { __uri = __uri.replace('{accessToken}', ''); }, nn =>  { __uri = __uri.replace('{accessToken}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellation, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellation, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -937,13 +937,13 @@ export namespace Abstractions {
                 accessToken? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/LogoutAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(callbackUri, x => { query['callbackUri'] = x; });
                 SolidRpcJs.ifnotnull(accessToken, x => { query['accessToken'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -965,12 +965,12 @@ export namespace Abstractions {
                 state? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/PostLogoutAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOAuth2');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOAuth2/PostLogoutAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -995,11 +995,11 @@ export namespace Abstractions {
             export function GetDiscoveryDocumentAsync(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/.well-known/openid-configuration';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDConnectDiscovery>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.OAuth2.OpenIDConnectDiscovery(data);
                     } else {
@@ -1019,11 +1019,11 @@ export namespace Abstractions {
             export function GetKeysAsync(
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetKeysAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.OpenIDKeys>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.OAuth2.OpenIDKeys(data);
                     } else {
@@ -1063,11 +1063,11 @@ export namespace Abstractions {
                 refreshToken? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/GetTokenAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse>('post', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.OAuth2.TokenResponse>('post', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.OAuth2.TokenResponse(data);
                     } else {
@@ -1101,8 +1101,8 @@ export namespace Abstractions {
                 nonce? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/AuthorizeAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(scope, x => { query['scope'] = x; });
                 SolidRpcJs.ifnotnull(responseType, x => { query['response_type'] = x; });
@@ -1112,7 +1112,7 @@ export namespace Abstractions {
                 SolidRpcJs.ifnotnull(responseMode, x => { query['response_mode'] = x; });
                 SolidRpcJs.ifnotnull(nonce, x => { query['nonce'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -1140,11 +1140,11 @@ export namespace Abstractions {
                 tokenHint? : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<void> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/RevokeAsync';
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<void>('post', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return null;
                     } else {
@@ -1170,14 +1170,14 @@ export namespace Abstractions {
                 state : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/EndSessionAsync';
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcOidc');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcOidc/EndSessionAsync';
                 let query: { [index: string]: any } = {};
                 SolidRpcJs.ifnotnull(idTokenHint, x => { query['id_token_hint'] = x; });
                 SolidRpcJs.ifnotnull(postLogoutRedirectUri, x => { query['post_logout_redirect_uri'] = x; });
                 SolidRpcJs.ifnotnull(state, x => { query['state'] = x; });
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -1204,12 +1204,12 @@ export namespace Abstractions {
                 resource : string,
                 cancellationToken? : CancellationToken
             ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
-                let ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcProtectedContent');
-                let uri = ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcProtectedContent/GetProtectedContentAsync/{resource}';
-                SolidRpcJs.ifnull(resource, () => { uri = uri.replace('{resource}', ''); }, nn =>  { uri = uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcProtectedContent');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcProtectedContent/GetProtectedContentAsync/{resource}';
+                SolidRpcJs.ifnull(resource, () => { __uri = __uri.replace('{resource}', ''); }, nn =>  { __uri = __uri.replace('{resource}', SolidRpcJs.encodeUriValue(nn.toString())); });
                 let query: { [index: string]: any } = {};
                 let headers: { [index: string]: any } = {};
-                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
                     if(code == 200) {
                         return new Types.FileContent(data);
                     } else {
@@ -1234,7 +1234,7 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Methods) { arr.push('"methods": '); for (let i = 0; i < this.Methods.length; i++) if(this.Methods[i]) {this.Methods[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Methods) { arr.push('"methods": '); arr.push('['); for (let i = 0; i < this.Methods.length; i++) if(this.Methods[i]) {this.Methods[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1267,8 +1267,8 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Arguments) { arr.push('"arguments": '); for (let i = 0; i < this.Arguments.length; i++) if(this.Arguments[i]) {this.Arguments[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
-                    if(this.ReturnType) { arr.push('"returnType": '); for (let i = 0; i < this.ReturnType.length; i++) arr.push(JSON.stringify(this.ReturnType[i])); arr.push(',');; arr.push(','); } 
+                    if(this.Arguments) { arr.push('"arguments": '); arr.push('['); for (let i = 0; i < this.Arguments.length; i++) if(this.Arguments[i]) {this.Arguments[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.ReturnType) { arr.push('"returnType": '); arr.push('['); for (let i = 0; i < this.ReturnType.length; i++) arr.push(JSON.stringify(this.ReturnType[i])); arr.push(']');; arr.push(','); } 
                     if(this.HttpMethod) { arr.push('"httpMethod": '); arr.push(JSON.stringify(this.HttpMethod)); arr.push(','); } 
                     if(this.HttpBaseAddress) { arr.push('"httpBaseAddress": '); arr.push(JSON.stringify(this.HttpBaseAddress)); arr.push(','); } 
                     if(this.HttpPath) { arr.push('"httpPath": '); arr.push(JSON.stringify(this.HttpPath)); arr.push(','); } 
@@ -1319,7 +1319,7 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.ArgType) { arr.push('"argType": '); for (let i = 0; i < this.ArgType.length; i++) arr.push(JSON.stringify(this.ArgType[i])); arr.push(',');; arr.push(','); } 
+                    if(this.ArgType) { arr.push('"argType": '); arr.push('['); for (let i = 0; i < this.ArgType.length; i++) arr.push(JSON.stringify(this.ArgType[i])); arr.push(']');; arr.push(','); } 
                     if(this.Optional) { arr.push('"optional": '); arr.push(JSON.stringify(this.Optional)); arr.push(','); } 
                     if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
                     if(this.HttpLocation) { arr.push('"httpLocation": '); arr.push(JSON.stringify(this.HttpLocation)); arr.push(','); } 
@@ -1363,9 +1363,9 @@ export namespace Abstractions {
                 toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Namespaces) { arr.push('"namespaces": '); for (let i = 0; i < this.Namespaces.length; i++) if(this.Namespaces[i]) {this.Namespaces[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
-                    if(this.Interfaces) { arr.push('"interfaces": '); for (let i = 0; i < this.Interfaces.length; i++) if(this.Interfaces[i]) {this.Interfaces[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
-                    if(this.Types) { arr.push('"types": '); for (let i = 0; i < this.Types.length; i++) if(this.Types[i]) {this.Types[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Namespaces) { arr.push('"namespaces": '); arr.push('['); for (let i = 0; i < this.Namespaces.length; i++) if(this.Namespaces[i]) {this.Namespaces[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Interfaces) { arr.push('"interfaces": '); arr.push('['); for (let i = 0; i < this.Interfaces.length; i++) if(this.Interfaces[i]) {this.Interfaces[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
+                    if(this.Types) { arr.push('"types": '); arr.push('['); for (let i = 0; i < this.Types.length; i++) if(this.Types[i]) {this.Types[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1399,8 +1399,8 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Extends) { arr.push('"extends": '); for (let i = 0; i < this.Extends.length; i++) arr.push(JSON.stringify(this.Extends[i])); arr.push(',');; arr.push(','); } 
-                    if(this.Properties) { arr.push('"properties": '); for (let i = 0; i < this.Properties.length; i++) if(this.Properties[i]) {this.Properties[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Extends) { arr.push('"extends": '); arr.push('['); for (let i = 0; i < this.Extends.length; i++) arr.push(JSON.stringify(this.Extends[i])); arr.push(']');; arr.push(','); } 
+                    if(this.Properties) { arr.push('"properties": '); arr.push('['); for (let i = 0; i < this.Properties.length; i++) if(this.Properties[i]) {this.Properties[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1434,7 +1434,7 @@ export namespace Abstractions {
                     arr.push('{');
                     if(this.Description) { arr.push('"description": '); arr.push(JSON.stringify(this.Description)); arr.push(','); } 
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.PropertyType) { arr.push('"propertyType": '); for (let i = 0; i < this.PropertyType.length; i++) arr.push(JSON.stringify(this.PropertyType[i])); arr.push(',');; arr.push(','); } 
+                    if(this.PropertyType) { arr.push('"propertyType": '); arr.push('['); for (let i = 0; i < this.PropertyType.length; i++) arr.push(JSON.stringify(this.PropertyType[i])); arr.push(']');; arr.push(','); } 
                     if(this.HttpName) { arr.push('"httpName": '); arr.push(JSON.stringify(this.HttpName)); arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
@@ -1466,7 +1466,7 @@ export namespace Abstractions {
                 toJson(arr: string[]): void {
                     arr.push('{');
                     if(this.Name) { arr.push('"name": '); arr.push(JSON.stringify(this.Name)); arr.push(','); } 
-                    if(this.Files) { arr.push('"files": '); for (let i = 0; i < this.Files.length; i++) if(this.Files[i]) {this.Files[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Files) { arr.push('"files": '); arr.push('['); for (let i = 0; i < this.Files.length; i++) if(this.Files[i]) {this.Files[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
@@ -1543,16 +1543,16 @@ export namespace Abstractions {
                     if(this.RevocationEndpoint) { arr.push('"revocation_endpoint": '); arr.push(JSON.stringify(this.RevocationEndpoint)); arr.push(','); } 
                     if(this.DeviceAuthorizationEndpoint) { arr.push('"device_authorization_endpoint": '); arr.push(JSON.stringify(this.DeviceAuthorizationEndpoint)); arr.push(','); } 
                     if(this.JwksUri) { arr.push('"jwks_uri": '); arr.push(JSON.stringify(this.JwksUri)); arr.push(','); } 
-                    if(this.ScopesSupported) { arr.push('"scopes_supported": '); for (let i = 0; i < this.ScopesSupported.length; i++) arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); for (let i = 0; i < this.GrantTypesSupported.length; i++) arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); for (let i = 0; i < this.ResponseModesSupported.length; i++) arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); for (let i = 0; i < this.SubjectTypesSupported.length; i++) arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.ScopesSupported) { arr.push('"scopes_supported": '); arr.push('['); for (let i = 0; i < this.ScopesSupported.length; i++) arr.push(JSON.stringify(this.ScopesSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.GrantTypesSupported) { arr.push('"grant_types_supported": '); arr.push('['); for (let i = 0; i < this.GrantTypesSupported.length; i++) arr.push(JSON.stringify(this.GrantTypesSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.ResponseModesSupported) { arr.push('"response_modes_supported": '); arr.push('['); for (let i = 0; i < this.ResponseModesSupported.length; i++) arr.push(JSON.stringify(this.ResponseModesSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.SubjectTypesSupported) { arr.push('"subject_types_supported": '); arr.push('['); for (let i = 0; i < this.SubjectTypesSupported.length; i++) arr.push(JSON.stringify(this.SubjectTypesSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.IdTokenSigningAlgValuesSupported) { arr.push('"id_token_signing_alg_values_supported": '); arr.push('['); for (let i = 0; i < this.IdTokenSigningAlgValuesSupported.length; i++) arr.push(JSON.stringify(this.IdTokenSigningAlgValuesSupported[i])); arr.push(']');; arr.push(','); } 
                     if(this.EndSessionEndpoint) { arr.push('"end_session_endpoint": '); arr.push(JSON.stringify(this.EndSessionEndpoint)); arr.push(','); } 
-                    if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); for (let i = 0; i < this.ResponseTypesSupported.length; i++) arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.ClaimsSupported) { arr.push('"claims_supported": '); for (let i = 0; i < this.ClaimsSupported.length; i++) arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(',');; arr.push(','); } 
-                    if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(',');; arr.push(','); } 
+                    if(this.ResponseTypesSupported) { arr.push('"response_types_supported": '); arr.push('['); for (let i = 0; i < this.ResponseTypesSupported.length; i++) arr.push(JSON.stringify(this.ResponseTypesSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.ClaimsSupported) { arr.push('"claims_supported": '); arr.push('['); for (let i = 0; i < this.ClaimsSupported.length; i++) arr.push(JSON.stringify(this.ClaimsSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.TokenEndpointAuthMethodsSupported) { arr.push('"token_endpoint_auth_methods_supported": '); arr.push('['); for (let i = 0; i < this.TokenEndpointAuthMethodsSupported.length; i++) arr.push(JSON.stringify(this.TokenEndpointAuthMethodsSupported[i])); arr.push(']');; arr.push(','); } 
+                    if(this.CodeChallengeMethodsSupported) { arr.push('"code_challenge_methods_supported": '); arr.push('['); for (let i = 0; i < this.CodeChallengeMethodsSupported.length; i++) arr.push(JSON.stringify(this.CodeChallengeMethodsSupported[i])); arr.push(']');; arr.push(','); } 
                     if(this.RequestUriParameterSupported) { arr.push('"request_uri_parameter_supported": '); arr.push(JSON.stringify(this.RequestUriParameterSupported)); arr.push(','); } 
                     if(this.HttpLogoutSupported) { arr.push('"http_logout_supported": '); arr.push(JSON.stringify(this.HttpLogoutSupported)); arr.push(','); } 
                     if(this.FrontchannelLogoutSupported) { arr.push('"frontchannel_logout_supported": '); arr.push(JSON.stringify(this.FrontchannelLogoutSupported)); arr.push(','); } 
@@ -1689,7 +1689,7 @@ export namespace Abstractions {
                     if(this.Kid) { arr.push('"kid": '); arr.push(JSON.stringify(this.Kid)); arr.push(','); } 
                     if(this.X5u) { arr.push('"x5u": '); arr.push(JSON.stringify(this.X5u)); arr.push(','); } 
                     if(this.X5t) { arr.push('"x5t": '); arr.push(JSON.stringify(this.X5t)); arr.push(','); } 
-                    if(this.X5c) { arr.push('"x5c": '); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(',');; arr.push(','); } 
+                    if(this.X5c) { arr.push('"x5c": '); arr.push('['); for (let i = 0; i < this.X5c.length; i++) arr.push(JSON.stringify(this.X5c[i])); arr.push(']');; arr.push(','); } 
                     if(this.N) { arr.push('"n": '); arr.push(JSON.stringify(this.N)); arr.push(','); } 
                     if(this.E) { arr.push('"e": '); arr.push(JSON.stringify(this.E)); arr.push(','); } 
                     if(this.D) { arr.push('"d": '); arr.push(JSON.stringify(this.D)); arr.push(','); } 
@@ -1750,7 +1750,7 @@ export namespace Abstractions {
                 }
                 toJson(arr: string[]): void {
                     arr.push('{');
-                    if(this.Keys) { arr.push('"keys": '); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(',');; arr.push(','); } 
+                    if(this.Keys) { arr.push('"keys": '); arr.push('['); for (let i = 0; i < this.Keys.length; i++) if(this.Keys[i]) {this.Keys[i].toJson(arr)}; arr.push(']');; arr.push(','); } 
                     if(arr[arr.length-1] == ',') arr[arr.length-1] = '}'; else arr.push('}');
                 }
                 /**
