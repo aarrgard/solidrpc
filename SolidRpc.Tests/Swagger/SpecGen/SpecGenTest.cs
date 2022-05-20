@@ -206,6 +206,42 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         }
 
         /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestStringArrArgs()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestStringArrArgs).Substring(4));
+
+                var moq = new Mock<StringArrArgs.Services.IStringArrArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<StringArrArgs.Services.IStringArrArgs>();
+
+                // array with elements
+                var stringValues = new[] { "test1", "test2" }.AsEnumerable();
+                moq.Setup(o => o.ProxyStringArray(
+                    It.Is<IEnumerable<string>>(a => CompareTypedStructs(stringValues, a))
+                    )).Returns(stringValues);
+
+                var res = proxy.ProxyStringArray(stringValues);
+                CompareTypedStructs(stringValues, res);
+
+                // empty array 
+                stringValues = new string[0];
+                moq.Setup(o => o.ProxyStringArray(
+                    It.Is<IEnumerable<string>>(a => CompareTypedStructs(stringValues, a))
+                    )).Returns(stringValues);
+
+                res = proxy.ProxyStringArray(stringValues);
+                CompareTypedStructs(stringValues, res);
+            });
+        }
+
+        /// <summary>
         /// A dummy implemtation
         /// </summary>
         public class HttpRequestArgsProxy : HttpRequestArgs.Services.IHttpRequestArgs

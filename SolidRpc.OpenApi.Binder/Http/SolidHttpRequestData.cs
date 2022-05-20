@@ -100,23 +100,36 @@ namespace SolidRpc.OpenApi.Binder.Http
                     return (_) => subExtractor(_.FirstOrDefault());
                 case "multi":
                     var enumExtractor = CreateEnumExtractor(contentType, name, parameterType);
-                    return (_) => { return enumExtractor(_); };
+                    return FixEmptyArray(parameterType, (_) => { return enumExtractor(_); });
                 case "csv":
                     var csvExtractor = CreateEnumExtractor(contentType, name, parameterType);
-                    return (_) => { return csvExtractor(_.SelectMany(o => o.GetStringValue().Split(',').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                    return FixEmptyArray(parameterType, (_) => { return csvExtractor(_.SelectMany(o => o.GetStringValue().Split(',').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); });
                 case "ssv":
                     var ssvExtractor = CreateEnumExtractor(contentType, name, parameterType);
-                    return (_) => { return ssvExtractor(_.SelectMany(o => o.GetStringValue().Split(' ').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                    return FixEmptyArray(parameterType, (_) => { return ssvExtractor(_.SelectMany(o => o.GetStringValue().Split(' ').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); });
                 case "pipes":
                     var pipesExtractor = CreateEnumExtractor(contentType, name, parameterType);
-                    return (_) => { return pipesExtractor(_.SelectMany(o => o.GetStringValue().Split('|').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                    return FixEmptyArray(parameterType, (_) => { return pipesExtractor(_.SelectMany(o => o.GetStringValue().Split('|').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); });
                 case "tsv":
                     var tsvExtractor = CreateEnumExtractor(contentType, name, parameterType);
-                    return (_) => { return tsvExtractor(_.SelectMany(o => o.GetStringValue().Split('\t').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); };
+                    return FixEmptyArray(parameterType, (_) => { return tsvExtractor(_.SelectMany(o => o.GetStringValue().Split('\t').Select(o2 => new SolidHttpRequestDataString(o.ContentType, o.Name, o2)))); });
                 default:
                     throw new NotImplementedException("cannot handle collection format:" + collectionFormat);
             }
         }
+
+        private static Func<IEnumerable<IHttpRequestData>, object> FixEmptyArray(Type parameterType, Func<IEnumerable<IHttpRequestData>, object> f)
+        {
+            var enumType = GetEnumType(parameterType);
+            return (_) => {
+                if(string.IsNullOrEmpty(_.FirstOrDefault()?.GetStringValue()) && _.Count() == 1)
+                {
+                    return Array.CreateInstance(enumType, 0);
+                }
+                return f(_);
+            };
+        }
+
 
         private static Func<IEnumerable<IHttpRequestData>, object> CreateEnumExtractor(string contentType, string name, Type type)
         {
