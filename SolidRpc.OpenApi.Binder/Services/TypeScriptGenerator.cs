@@ -124,7 +124,6 @@ namespace SolidRpc.OpenApi.Binder.Services
             (codeNamespace.Interfaces ?? new CodeInterface[0]).OrderBy(o => o.Name).ToList().ForEach(o =>
             {
                 CreateTypesTsFunctions(rootNamespace, codeNamespaceName, o, code, nsIndentation);
-                //CreateTypesTsClass(rootNamespace, codeNamespaceName, o, code, nsIndentation);
             });
             code.Append(indentation).AppendLine($"}}");
         }
@@ -181,11 +180,11 @@ namespace SolidRpc.OpenApi.Binder.Services
 
                 {
                     var codeIndentation = CreateIndentation(interfazeIndentation);
-                    code.Append(codeIndentation).AppendLine($"let ns = SolidRpcJs.rootNamespace.declareNamespace('{string.Join(".", rootNamespace.Name.Concat(codeNamespaceName).Concat(new[] { interfaze.Name }))}');");
-                    code.Append(codeIndentation).AppendLine($"let uri = ns.getStringValue('baseUrl','{m.HttpBaseAddress}') + '{m.HttpPath}';");
+                    code.Append(codeIndentation).AppendLine($"let __ns = SolidRpcJs.rootNamespace.declareNamespace('{string.Join(".", rootNamespace.Name.Concat(codeNamespaceName).Concat(new[] { interfaze.Name }))}');");
+                    code.Append(codeIndentation).AppendLine($"let __uri = __ns.getStringValue('baseUrl','{m.HttpBaseAddress}') + '{m.HttpPath}';");
                     m.Arguments.Where(o => o.HttpLocation == "path").ToList().ForEach(o =>
                     {
-                        code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnull({o.Name}, () => {{ uri = uri.replace('{{{o.Name}}}', ''); }}, nn =>  {{ uri = uri.replace('{{{o.Name}}}', SolidRpcJs.encodeUriValue(nn.toString())); }});");
+                        code.Append(codeIndentation).AppendLine($"SolidRpcJs.ifnull({o.Name}, () => {{ __uri = __uri.replace('{{{o.Name}}}', ''); }}, nn =>  {{ __uri = __uri.replace('{{{o.Name}}}', SolidRpcJs.encodeUriValue(nn.toString())); }});");
                     });
 
                     code.Append(codeIndentation).AppendLine($"let query: {{ [index: string]: any }} = {{}};");
@@ -228,7 +227,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                         code.Append(CreateIndentation(codeIndentation)).AppendLine($"'{o.HttpName}': {o.Name},");
                     });
 
-                    code.Append(codeIndentation).AppendLine($"return new SolidRpcJs.RpcServiceRequestTyped<{tsReturnType}>('{m.HttpMethod.ToLower()}', uri, query, headers, {strBodyArgs}, {cancellationTokenArgName}, function(code : number, data : any) {{");
+                    code.Append(codeIndentation).AppendLine($"return new SolidRpcJs.RpcServiceRequestTyped<{tsReturnType}>('{m.HttpMethod.ToLower()}', __uri, query, headers, {strBodyArgs}, {cancellationTokenArgName}, function(code : number, data : any) {{");
                     {
                         var respIndentation = CreateIndentation(codeIndentation);
                         code.Append(respIndentation).AppendLine($"if(code == 200) {{");
@@ -251,7 +250,7 @@ namespace SolidRpc.OpenApi.Binder.Services
         {
             if (type.LastOrDefault() == "[]")
             {
-                return $"for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(',');";
+                return $"arr.push('['); for (let i = 0; i < {varName}.length; i++) {CreateJs2JsonConverter(rootNamespace, codeNamespaceName, type.Reverse().Skip(1).Reverse(), $"{varName}[i]")}; arr.push(']');";
             }
             if (type.LastOrDefault() == "?")
             {
