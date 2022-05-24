@@ -10,8 +10,10 @@ using SolidRpc.OpenApi.AzFunctions;
 using SolidRpc.OpenApi.AzFunctions.Bindings;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
+using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
+using SolidRpc.Test.Petstore.AzFunctionsV4;
 using System;
 using System.Linq;
 using System.Threading;
@@ -38,8 +40,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
 
             services.AddSolidRpcSwaggerUI(o => {
-                o.OAuthClientId = "swagger-ui";
-                o.OAuthClientSecret = "swagger-ui";
+                o.OAuthClientId = SolidRpcOidcTestImpl.ClientId;
+                o.OAuthClientSecret = SolidRpcOidcTestImpl.ClientSecret;
             }, c => ConfigureAzureFunction(services, c));
             services.AddSolidRpcNode(c => ConfigureAzureFunction(services, c));
             //services.AddSolidRpcRateLimit(new Uri("https://eo-prd-ratelimit-func.azurewebsites.net/front/SolidRpc/Abstractions/"));
@@ -50,6 +52,13 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             //services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
+
+            var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IProtectedResource)).WriteAsJsonString();
+            services.AddSolidRpcBindings(typeof(IProtectedResource), typeof(ProtectedResourceTest), conf =>
+            {
+                conf.OpenApiSpec = spec;
+                return true;
+            });
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {
@@ -68,7 +77,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
 
-            conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), "swagger-ui", "swagger-ui");
+            //conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), "swagger-ui", "swagger-ui");
+            conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
 
             var method = conf.Methods.First();
             if (method.DeclaringType == typeof(ISwaggerUI))

@@ -1,16 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
-using SolidRpc.OpenApi.Binder;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 {
@@ -19,7 +15,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
     /// </summary>
     public class AzFunctionHandler : IAzFunctionHandler
     {
-        private static Task s_restartJob = Task.CompletedTask;
         private static readonly string s_defaultHttpRoutePrefix = "/api";
         private string _routePrefix = null;
 

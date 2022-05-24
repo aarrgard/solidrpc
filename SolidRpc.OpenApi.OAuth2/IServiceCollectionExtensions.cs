@@ -95,10 +95,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the test oidc service
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="clientAllowedPaths"></param>
+        /// <param name="userAllowedPaths"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSolidRpcOidcTestImpl(this IServiceCollection services)
+        public static IServiceCollection AddSolidRpcOidcTestImpl(this IServiceCollection services, string[] clientAllowedPaths = null, string[] userAllowedPaths = null)
         {
             services.AddScoped<ISolidRpcOidc, SolidRpcOidcTestImpl>();
+            SolidRpcOidcTestImpl.ClientAllowedPaths = clientAllowedPaths ?? new[] { "/*" };
+            SolidRpcOidcTestImpl.UserAllowedPaths = userAllowedPaths ?? new[] { "/*" };
             return services;
         }
 

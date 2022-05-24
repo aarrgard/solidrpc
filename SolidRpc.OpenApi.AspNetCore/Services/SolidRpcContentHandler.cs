@@ -35,14 +35,12 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             IServiceProvider serviceProvider,
             IMethodAddressTransformer methodAddressTransformer,
             IMethodBinderStore methodBinderStore,
-            SolidRpcContentStore contentStore,
-            ISolidRpcProtectedResource protectedResource = null)
+            SolidRpcContentStore contentStore)
         {
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             MethodAddressTransformer = methodAddressTransformer ?? throw new ArgumentNullException(nameof(methodAddressTransformer));
             MethodBinderStore = methodBinderStore ?? throw new ArgumentNullException(nameof(methodBinderStore));
             ContentStore = contentStore ?? throw new ArgumentNullException(nameof(contentStore));
-            ProtectedResource = protectedResource;
             StaticFiles = new ConcurrentDictionary<string, Func<string, CancellationToken, Task<FileContent>>>();
         }
 
@@ -50,7 +48,6 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         private IMethodAddressTransformer MethodAddressTransformer { get; }
         private IMethodBinderStore MethodBinderStore { get; }
         private SolidRpcContentStore ContentStore { get; }
-        private ISolidRpcProtectedResource ProtectedResource { get; }
 
         /// <summary>
         /// The static files configured for this host
@@ -204,7 +201,6 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="resource"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public Task<FileContent> GetProtectedContentAsync(byte[] resource, CancellationToken cancellationToken)
         {
             return GetProtectedContentAsync(resource, null, cancellationToken);
@@ -220,8 +216,12 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <exception cref="NotImplementedException"></exception>
         public async Task<FileContent> GetProtectedContentAsync(byte[] resource, string fileName, CancellationToken cancellationToken = default)
         {
-            if (ProtectedResource == null) throw new FileContentNotFoundException("Protected resource handler not registered");
-            return await ProtectedResource.GetProtectedContentAsync(resource, fileName, cancellationToken);
+            using (var scope = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var protectedResource = scope.ServiceProvider.GetService<ISolidRpcProtectedResource>();
+                if (protectedResource == null) throw new FileContentNotFoundException("Protected resource handler not registered");
+                return await protectedResource.GetProtectedContentAsync(resource, fileName, cancellationToken);
+            }
         }
     }
 }

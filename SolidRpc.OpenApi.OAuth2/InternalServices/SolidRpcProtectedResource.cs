@@ -10,7 +10,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: SolidRpcService(typeof(ISolidRpcProtectedResource), typeof(SolidRpcProtectedResource), SolidRpcServiceLifetime.Singleton)]
+[assembly: SolidRpcService(typeof(ISolidRpcProtectedResource), typeof(SolidRpcProtectedResource), SolidRpcServiceLifetime.Transient)]
 namespace SolidRpc.OpenApi.OAuth2.InternalServices
 {
     /// <summary>
@@ -18,22 +18,25 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class SolidRpcProtectedResource : ISolidRpcProtectedResource
     {
+        /// <summary>
+        /// Constructs a new instance
+        /// </summary>
+        /// <param name="contentHandlerInvoker"></param>
+        /// <param name="protectedContent"></param>
+        /// <param name="authorityFactory"></param>
+        /// <param name="authority"></param>
         public SolidRpcProtectedResource(
-            ILogger<SolidRpcProtectedResource> logger,
             IInvoker<ISolidRpcContentHandler> contentHandlerInvoker,
             ISolidRpcProtectedContent protectedContent = null,
             IAuthorityFactory authorityFactory = null,
             IAuthorityLocal authority = null)
         {
-            Logger = logger;
             Authority = authority;
             AuthorityFactory = authorityFactory;
             ProtectedContent = protectedContent;
             ContentHandlerInvoker = contentHandlerInvoker;
             RecurseProtection = Guid.NewGuid();
         }
-
-        private ILogger Logger { get; }
         private IAuthorityLocal Authority { get; }
         private IAuthorityFactory AuthorityFactory { get; }
         private ISolidRpcProtectedContent ProtectedContent { get; }
