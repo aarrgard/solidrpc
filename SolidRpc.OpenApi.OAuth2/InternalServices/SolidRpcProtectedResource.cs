@@ -18,6 +18,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     /// </summary>
     public class SolidRpcProtectedResource : ISolidRpcProtectedResource
     {
+        private static readonly Guid s_RecurseProtection = Guid.NewGuid();
+
         /// <summary>
         /// Constructs a new instance
         /// </summary>
@@ -35,13 +37,11 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             AuthorityFactory = authorityFactory;
             ProtectedContent = protectedContent;
             ContentHandlerInvoker = contentHandlerInvoker;
-            RecurseProtection = Guid.NewGuid();
         }
         private IAuthorityLocal Authority { get; }
         private IAuthorityFactory AuthorityFactory { get; }
         private ISolidRpcProtectedContent ProtectedContent { get; }
         private IInvoker<ISolidRpcContentHandler> ContentHandlerInvoker { get; }
-        private Guid RecurseProtection { get; }
 
         public Task<byte[]> ProtectAsync(string content, DateTimeOffset expiryTime, CancellationToken cancellationToken)
         {
@@ -83,13 +83,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             {
                 return await ProtectedContent.GetProtectedContentAsync(resource.Resource, cancellationToken);
             }
-            else if(fileName == RecurseProtection.ToString())
+            else if(fileName == s_RecurseProtection.ToString())
             {
                 return await ProtectedContent.GetProtectedContentAsync(resource.Resource, cancellationToken);
             }
             else
             {
-                return await ContentHandlerInvoker.InvokeAsync(o => o.GetProtectedContentAsync(b64, RecurseProtection.ToString(), cancellationToken), opts => {
+                return await ContentHandlerInvoker.InvokeAsync(o => o.GetProtectedContentAsync(b64, s_RecurseProtection.ToString(), cancellationToken), opts => {
                     return opts.SetTransport("Http").AddPreInvokeCallback(r =>
                     {
                         var uri = new Uri(resource.Source);
