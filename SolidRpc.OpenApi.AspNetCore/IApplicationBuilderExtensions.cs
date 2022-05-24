@@ -336,15 +336,38 @@ namespace Microsoft.AspNetCore.Builder
                         sb.Append(str[i]);
                         if (escapeSequence == 3)
                         {
-                            var hex = $"{sb[sb.Length - 2]}{sb[sb.Length - 1]}";
-                            if(int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int nbr))
+                            var b = Convert.ToByte($"{sb[sb.Length - 2]}{sb[sb.Length - 1]}", 16);
+                            if (b < 126)
                             {
-                                var c = (char)nbr;
-                                if(!skipChars.Contains(c))
+                                var c = (char)b;
+                                if (!skipChars.Contains(c))
                                 {
                                     sb.Length = sb.Length - 3;
                                     sb.Append(c);
                                 }
+                                escapeSequence = 0;
+                            }
+                            else
+                            {
+                                // continue reading next escape sequence
+                            }
+                        }
+                        else if (escapeSequence == 4)
+                        {
+                            if (str[i] != '%')
+                            {
+                                escapeSequence = 0;
+                            }
+                        }
+                        else if (escapeSequence == 6)
+                        {
+                            var b1 = Convert.ToByte($"{sb[sb.Length - 2]}{sb[sb.Length - 1]}", 16);
+                            var b2 = Convert.ToByte($"{sb[sb.Length - 5]}{sb[sb.Length - 4]}", 16);
+                            var x = Encoding.UTF8.GetString(new byte[] { b2, b1})[0];
+                            if (!skipChars.Contains(x))
+                            {
+                                sb.Length = sb.Length - 6;
+                                sb.Append(x);
                             }
                             escapeSequence = 0;
                         }

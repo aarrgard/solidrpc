@@ -851,7 +851,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     "one[]",
                     "one<>",
                     "one%%",
-                    "one one"
+                    "one one",
+                    "å ä ö Å Ä Ö",
                 };
 
                 foreach(var check in stringChecks)
@@ -859,7 +860,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == check), It.Is<string>(a => a == check))).Returns(() => check);
                     Assert.AreEqual(check, proxy.ProxyStrings(check, check));
                     var uri = await invoker.GetUriAsync(o => o.ProxyStrings(check, check));
-                    Assert.IsTrue(uri.PathAndQuery.EndsWith($"/{HttpUtility.UrlEncode(check)}/{HttpUtility.UrlEncode(check)}"));
+                    Assert.IsTrue(uri.PathAndQuery.EndsWith($"/{HttpUtility.UrlEncode(check)}/{HttpUtility.UrlEncode(check)}", StringComparison.InvariantCultureIgnoreCase));
                 }
 
                 //
