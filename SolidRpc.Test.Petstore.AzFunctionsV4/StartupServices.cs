@@ -12,7 +12,6 @@ using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
-using SolidRpc.Test.Petstore.AzFunctionsV4;
 using System;
 using System.Linq;
 using System.Threading;
@@ -51,13 +50,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //services.AddAzFunctionTimer<ISolidRpcHost>(o => o.GetHostId(CancellationToken.None), "0 * * * * *");
             services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
             //services.AddAzFunctionTimer<ITestInterfaceDel>(o => o.RunNodeService(CancellationToken.None), "0 * * * * *");
-
-            var spec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IProtectedResource)).WriteAsJsonString();
-            services.AddSolidRpcBindings(typeof(IProtectedResource), typeof(ProtectedResourceTest), conf =>
-            {
-                conf.OpenApiSpec = spec;
-                return true;
-            });
 
             services.GetSolidRpcContentStore().AddMapping("/A*", async sp =>
             {

@@ -104,23 +104,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public MethodInvoker(
             ILogger<MethodInvoker> logger,
             IMethodAddressTransformer methodAddressTransformer,
-            ISolidRpcContentHandler contentHandler,
             IMethodBinderStore methodBinderStore)
         {
             Logger = logger;
             MethodBinderStore = methodBinderStore;
             MethodInfo2Binding = new Dictionary<MethodInfo, IMethodBinding>();
             MethodAddressTransformer = methodAddressTransformer;
-            ContentHandler = contentHandler;
         }
 
         private ILogger Logger { get; }
         public IMethodBinderStore MethodBinderStore { get; }
-        private Dictionary<MethodInfo, IMethodBinding>  MethodInfo2Binding { get; }
+        private Dictionary<MethodInfo, IMethodBinding> MethodInfo2Binding { get; }
         private IMethodAddressTransformer MethodAddressTransformer { get; }
-        private ISolidRpcContentHandler ContentHandler { get; }
 
-        private async Task<PathSegment> GetRootSegmentAsync(CancellationToken cancellationToken)
+        private async Task<PathSegment> GetRootSegmentAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
             var rootSegment = _rootSegment;
             if (_rootSegment != null)
@@ -149,9 +146,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 });
 
                 // Add prefix mappings into content handler
-                var prefixes1 = (await ContentHandler.GetPathMappingsAsync(true)).Select(o => o.Name);
-                var prefixes2 = (await ContentHandler.GetPathMappingsAsync(false)).Select(o => o.Name);
-                var prefixes3 = ContentHandler.PathPrefixes;
+                var contentHandler = serviceProvider.GetRequiredService<ISolidRpcContentHandler>();
+                var prefixes1 = (await contentHandler.GetPathMappingsAsync(true)).Select(o => o.Name);
+                var prefixes2 = (await contentHandler.GetPathMappingsAsync(false)).Select(o => o.Name);
+                var prefixes3 = contentHandler.PathPrefixes;
                 var contentBinding = MethodBinderStore.GetMethodBinding<ISolidRpcContentHandler>(o => o.GetContent("/", cancellationToken));
                 prefixes1.Union(prefixes2).Union(prefixes3).ToList().ForEach(o =>
                 {
@@ -192,7 +190,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var pathKey = $"{request.Method}{request.Path}";
-            var pathSegment = (await GetRootSegmentAsync(cancellationToken)).GetPathSegment(pathKey.Split('/').AsEnumerable().GetEnumerator());
+            var pathSegment = (await GetRootSegmentAsync(serviceProvider, cancellationToken)).GetPathSegment(pathKey.Split('/').AsEnumerable().GetEnumerator());
             if(pathSegment == null || !pathSegment.MethodBindings.Any())
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);
