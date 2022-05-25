@@ -1,15 +1,15 @@
 
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using SolidRpc.OpenApi.AzFunctions.Bindings;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-namespace SolidRpc.OpenApi.AzFunctions
-{
-
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.Extensions.Logging;
+    using SolidRpc.OpenApi.AzFunctions.Bindings;
+    using System;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    namespace SolidRpc.OpenApi.AzFunctions
+    {
+    
 
     public class Queue_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_ProcessMessageAsync_arg0_arg1_arg2
     {
@@ -54,4 +54,4 @@ namespace SolidRpc.OpenApi.AzFunctions
         }
     }
 
-}
+    }

@@ -12,7 +12,6 @@ using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Functions.Impl;
@@ -47,6 +46,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             MethodBinderStore = methodBinderStore;
             FunctionHandler = functionHandler;
             ConfigurationStore = configurationStore;
+            WriteSemaphore = new SemaphoreSlim(1);
 
             var instanceid = configuration["WEBSITE_INSTANCE_ID"];
             if (!string.IsNullOrEmpty(instanceid))
@@ -61,6 +61,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         private IMethodBinderStore MethodBinderStore { get; }
         private IAzFunctionHandler FunctionHandler { get; }
         private ISolidProxyConfigurationStore ConfigurationStore { get; }
+        private SemaphoreSlim WriteSemaphore { get; }
 
         /// <summary>
         /// Perfomes the setup.
@@ -138,118 +139,108 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
         private async Task WriteAzFunctionsAsync(List<FunctionDef> functionDefs, CancellationToken cancellationToken)
         {
-            var functionTypes = new Type[]
+            await WriteSemaphore.WaitAsync(cancellationToken);
+            try
             {
-                typeof(IAzHttpFunction),
-                typeof(IAzSvcBusFunction),
-                typeof(IAzQueueFunction),
-                typeof(IAzTimerFunction),
-            };
-            var existingFunctions = FunctionHandler.GetFunctions()
-                .Where(f => functionTypes.Any(ft => ft.IsAssignableFrom(f.GetType()))).ToList();
-            var touchedFunctions = new List<IAzFunction>();
-            var functionNames = new HashSet<string>(functionDefs.Select(o => o.FunctionName));
-
-            //
-            // remove functions that are not available any more
-            //
-            existingFunctions.Where(o => !functionNames.Contains(o.Name))
-                .Where(o => o.GeneratedBy?.StartsWith($"{typeof(AzTimerFunction).Assembly.GetName().Name}") ?? false)
-                .ToList()
-                .ForEach(o =>
+                var functionTypes = new Type[]
                 {
-                    o.Delete();
-                });
+                    typeof(IAzHttpFunction),
+                    typeof(IAzSvcBusFunction),
+                    typeof(IAzQueueFunction),
+                    typeof(IAzTimerFunction),
+                };
+                var existingFunctions = FunctionHandler.GetFunctions()
+                    .Where(f => functionTypes.Any(ft => ft.IsAssignableFrom(f.GetType()))).ToList();
+                var touchedFunctions = new List<IAzFunction>();
+                var functionNames = new HashSet<string>(functionDefs.Select(o => o.FunctionName));
 
-            //
-            // handle http functions
-            //
-            {
-                var path = "/{*restOfPath}";
-                var functionName = "WildcardFunc";
-                var methods = (new[] { "get", "post", "options" }).OrderBy(o => o).ToArray();
-                var authLevel = "Anonymous";
+                //
+                // remove functions that are not available any more
+                //
+                existingFunctions.Where(o => !functionNames.Contains(o.Name))
+                    .Where(o => o.GeneratedBy?.StartsWith($"{typeof(AzTimerFunction).Assembly.GetName().Name}") ?? false)
+                    .ToList()
+                    .ForEach(o =>
+                    {
+                        o.Delete();
+                    });
 
-                var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
-                httpFunction.AuthLevel = authLevel;
-                httpFunction.Route = FunctionHandler.CreateRoute(path);
-                httpFunction.Methods = methods;
-                touchedFunctions.Add(httpFunction);
+                //
+                // handle http functions
+                //
+                {
+                    var path = "/{*restOfPath}";
+                    var functionName = "WildcardFunc";
+                    var methods = (new[] { "get", "post", "options" }).OrderBy(o => o).ToArray();
+                    var authLevel = "Anonymous";
+
+                    var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
+                    httpFunction.AuthLevel = authLevel;
+                    httpFunction.Route = FunctionHandler.CreateRoute(path);
+                    httpFunction.Methods = methods;
+                    touchedFunctions.Add(httpFunction);
+                }
+
+                //
+                // handle queue functions
+                //
+                var tasks = new List<Task>();
+                var queueFunctionDefs = functionDefs.OfType<QueueFunctionDef>().ToList();
+                foreach(var queueFunctionDef in queueFunctionDefs)
+                {
+                    var functionName = queueFunctionDef.FunctionName;
+                    var queueType = queueFunctionDef.TransportType;
+
+                    if (queueType.Equals("azsvcbus", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var queueFunction = FunctionHandler.GetOrCreateFunction<IAzSvcBusFunction>(functionName);
+                        queueFunction.QueueName = queueFunctionDef.QueueName;
+                        queueFunction.Connection = queueFunctionDef.Connection;
+                        touchedFunctions.Add(queueFunction);
+                    }
+                    else if(queueType.Equals("azqueue", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var queueFunction = FunctionHandler.GetOrCreateFunction<IAzQueueFunction>(functionName);
+                        queueFunction.QueueName = queueFunctionDef.QueueName;
+                        queueFunction.Connection = queueFunctionDef.Connection;
+                        touchedFunctions.Add(queueFunction);
+                    }
+                    else
+                    {
+                        throw new Exception("Cannot handle queue type:" + queueType);
+                    }
+                }
+                await Task.WhenAll(tasks);
+
+                // write all touched functions
+                var solidRpcFunctionsCs = new StringBuilder();
+                touchedFunctions.ForEach(o => o.Save());
+
+                if(FunctionHandler.DevDir != null)
+                {
+                    var f = new FileInfo(Path.Combine(FunctionHandler.DevDir.FullName, "SolidRpcFunctions.cs"));
+                    using (var fs = f.CreateText())
+                    {
+                        fs.WriteLine($@"
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.Extensions.Logging;
+    using SolidRpc.OpenApi.AzFunctions.Bindings;
+    using System;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    namespace SolidRpc.OpenApi.AzFunctions
+    {{
+    {string.Join(Environment.NewLine, FunctionHandler.FunctionCode.OrderBy(o => o.Key).Select(o => o.Value))}
+    }}");
+                    }
+                }
+
             }
-            //var httpFunctionDefs = functionDefs.OfType<HttpFunctionDef>().ToList();
-            //var httpPaths = httpFunctionDefs.Select(o => o.PathWithArgNames).Distinct().ToList();
-            //foreach (var path in httpPaths)
-            //{
-            //    var pathFunctionNames = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.FunctionName).Distinct();
-            //    if(pathFunctionNames.Count() > 1)
-            //    {
-            //        throw new Exception("Found more than one function for path:"+path);
-            //    }
-            //    var functionName = pathFunctionNames.Single();
-            //    var methods = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.Method).Union(new[] { "options" }).OrderBy(o => o).ToArray();
-            //    var authLevel = httpFunctionDefs.Where(o => o.PathWithArgNames == path).Select(o => o.AuthLevel).Distinct().Single();
-
-            //    var httpFunction = FunctionHandler.GetOrCreateFunction<IAzHttpFunction>(functionName);
-            //    httpFunction.AuthLevel = authLevel;
-            //    httpFunction.Route = FunctionHandler.CreateRoute(path);
-            //    httpFunction.Methods = methods;
-            //    touchedFunctions.Add(httpFunction);
-            //}
-
-            //
-            // handle queue functions
-            //
-            var tasks = new List<Task>();
-            var queueFunctionDefs = functionDefs.OfType<QueueFunctionDef>().ToList();
-            foreach(var queueFunctionDef in queueFunctionDefs)
+            finally
             {
-                var functionName = queueFunctionDef.FunctionName;
-                var queueType = queueFunctionDef.TransportType;
-
-                if (queueType.Equals("azsvcbus", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var queueFunction = FunctionHandler.GetOrCreateFunction<IAzSvcBusFunction>(functionName);
-                    queueFunction.QueueName = queueFunctionDef.QueueName;
-                    queueFunction.Connection = queueFunctionDef.Connection;
-                    touchedFunctions.Add(queueFunction);
-                }
-                else if(queueType.Equals("azqueue", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var queueFunction = FunctionHandler.GetOrCreateFunction<IAzQueueFunction>(functionName);
-                    queueFunction.QueueName = queueFunctionDef.QueueName;
-                    queueFunction.Connection = queueFunctionDef.Connection;
-                    touchedFunctions.Add(queueFunction);
-                }
-                else
-                {
-                    throw new Exception("Cannot handle queue type:" + queueType);
-                }
-            }
-            await Task.WhenAll(tasks);
-
-            // write all touched functions
-            var solidRpcFunctionsCs = new StringBuilder();
-            touchedFunctions.ForEach(o => o.Save());
-
-            if(FunctionHandler.DevDir != null)
-            {
-                var f = new FileInfo(Path.Combine(FunctionHandler.DevDir.FullName, "SolidRpcFunctions.cs"));
-                using (var fs = f.CreateText())
-                {
-                    fs.WriteLine($@"
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using SolidRpc.OpenApi.AzFunctions.Bindings;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-namespace SolidRpc.OpenApi.AzFunctions
-{{
-{string.Join(Environment.NewLine, FunctionHandler.FunctionCode.OrderBy(o => o.Key).Select(o => o.Value))}
-}}");
-                }
+                WriteSemaphore.Release();
             }
         }
     }
