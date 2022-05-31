@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddPetstore(this IServiceCollection services)
         {
             services.AddSolidRpcBindings(typeof(IPet).Assembly, typeof(PetImpl).Assembly);
+            services.GetSolidRpcContentStore().AddContent(typeof(PetImpl).Assembly, $"www.images.test-override", "/images/");
             services.GetSolidRpcContentStore().AddContent(typeof(PetImpl).Assembly, "www", "/");
             return services;
         }

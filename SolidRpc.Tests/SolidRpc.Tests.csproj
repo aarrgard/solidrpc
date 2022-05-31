@@ -19,8 +19,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ContentStoreTest.override.html" />
+    <None Remove="ContentStoreTest.Override.override.html" />
+    <None Remove="ContentStoreTest.test.html" />
+    <None Remove="ContentStore\www\images\test-override2\override.html" />
     <None Remove="Swagger\CodeGen\Stoer\Stoer.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestInheritedStruct.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ContentStore\www\images\test-override1\override.html" />
+    <EmbeddedResource Include="ContentStore\www\images\override.html" />
+    <EmbeddedResource Include="ContentStore\www\images\test.html" />
+    <EmbeddedResource Include="ContentStore\www\images\test-override2\override.html" />
   </ItemGroup>
 
   <ItemGroup>

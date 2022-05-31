@@ -168,6 +168,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
         private void AddContentInternal(Assembly assembly, string assemblyRelativeName, Assembly apiAssembly, string pathPrefix)
         {
+            // fix special chars
+            assemblyRelativeName = assemblyRelativeName.Replace('/', '.').Replace('-', '_');
+
             //
             // avoid duplicate registrations
             //
@@ -178,7 +181,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             }
             Registrations.Add(regKey);
 
-            // get the name of the assemblt
+            // get the name of the assembly
             var assemblyName = assembly.GetName().Name;
             foreach (var resourceName in assembly.GetManifestResourceNames())
             {

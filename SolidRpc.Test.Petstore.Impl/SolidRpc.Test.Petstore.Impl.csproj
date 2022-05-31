@@ -12,6 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="www\images\test.txt" />
+    <None Remove="www\images\test-override\test.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SolidRpc.Abstractions\SolidRpc.Abstractions.csproj" />
     <ProjectReference Include="..\SolidRpc.Test.Petstore\SolidRpc.Test.Petstore.csproj" />
   </ItemGroup>
