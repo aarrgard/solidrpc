@@ -73,6 +73,16 @@ namespace SolidRpc.Tests.RateLimit
                 return true;
             });
         }
+
+        protected override void ConfigureServerConfiguration(IConfigurationBuilder cb, Uri baseAddress)
+        {
+            base.ConfigureServerConfiguration(cb, baseAddress);
+            cb.AddInMemoryCollection(new Dictionary<string, string>()
+                {
+                    { $"SolidRpcRateLimit:{typeof(ITestInterface).FullName}.{nameof(ITestInterface.RateLimitedMethod)}:MaxConcurrentCalls", "0"}
+                });
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -80,12 +90,6 @@ namespace SolidRpc.Tests.RateLimit
         /// <returns></returns>
         public override void ConfigureServerServices(IServiceCollection services)
         {
-            services.GetConfigurationBuilder(() => new ConfigurationBuilder(), _ => new ChainedConfigurationSource { Configuration = _})
-                .AddInMemoryCollection(new Dictionary<string, string>()
-                {
-                    { $"SolidRpcRateLimit:{typeof(ITestInterface).FullName}.{nameof(ITestInterface.RateLimitedMethod)}:MaxConcurrentCalls", "0"}
-                });
-                
             base.ConfigureServerServices(services);
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();

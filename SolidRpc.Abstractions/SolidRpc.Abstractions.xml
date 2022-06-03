@@ -4015,14 +4015,6 @@
             <param name="sc"></param>
             <param name="openApiProxyConfig"></param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcBaseUrlInConfig``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Uri)">
-            <summary>
-            Adds the base url of the service to the configuration
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="sc"></param>
-            <param name="baseUrl"></param>
-        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.GetConfigurationBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{Microsoft.Extensions.Configuration.IConfigurationBuilder},System.Func{Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfigurationSource})">
             <summary>
             Returns the configuration builder

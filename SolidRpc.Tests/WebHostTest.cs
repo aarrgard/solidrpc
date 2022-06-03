@@ -119,6 +119,7 @@ namespace SolidRpc.Tests
                     });
 
             }
+
             /// <summary>
             /// 
             /// </summary>
@@ -147,6 +148,9 @@ namespace SolidRpc.Tests
             {
                 var builder = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(new string[0]);
                 builder.ConfigureLogging(WebHostTest.ConfigureLogging);
+                builder.ConfigureAppConfiguration(cb => {
+                    WebHostTest.ConfigureServerConfiguration(cb, BaseAddress);
+                });
                 builder.ConfigureServices((sc) => {
                     sc.AddSingleton<Uri>(BaseAddress);
                     sc.AddSingleton<IStartup>(this);
@@ -203,8 +207,10 @@ namespace SolidRpc.Tests
                 //
                 // configure server services and use them from a singleton registration.
                 // 
+                var cb = new ConfigurationBuilder();
+                WebHostTest.ConfigureServerConfiguration(cb, BaseAddress);
                 var serverServices = new ServiceCollection();
-                AddBaseAddress(serverServices, BaseAddress, true);
+                serverServices.AddSingleton<IConfiguration>(cb.Build());
                 _serverServiceProvider = ConfigureServices(serverServices);
 
                 _serverServiceProvider.GetRequiredService<IMethodBinderStore>()
@@ -297,7 +303,10 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual Task StartAsync()
             {
+                var cb = new ConfigurationBuilder();
+                WebHostTest.ConfigureServerConfiguration(cb, BaseAddress);
                 var clientServices = new ServiceCollection();
+                clientServices.AddSingleton<IConfiguration>(cb.Build());
                 clientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
                 ConfigureClientServices(clientServices);
                 _clientServiceProvider = clientServices.BuildServiceProvider();
@@ -409,32 +418,8 @@ namespace SolidRpc.Tests
             /// <returns></returns>
             public virtual void ConfigureClientServices(IServiceCollection clientServices)
             {
-                AddBaseAddress(clientServices, BaseAddress, false);
                 WebHostTest.ConfigureClientServices(clientServices, BaseAddress);
                 ClientServicesCallback(clientServices);
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="services"></param>
-            /// <param name="baseAddress"></param>
-            /// <param name="addServerUrls"></param>
-            protected void AddBaseAddress(IServiceCollection services, Uri baseAddress, bool addServerUrls)
-            {
-                if (BaseAddress == null) throw new Exception("No base address set");
-                var strBaseAddress = baseAddress.ToString();
-                strBaseAddress = strBaseAddress.Substring(0, strBaseAddress.Length - 1);
-
-                var config = new Dictionary<string,string>();
-                config["SolidRpc:BaseUrl"] = strBaseAddress;
-                if(addServerUrls)
-                {
-                    config["urls"] = strBaseAddress;
-                }
-
-                services.GetConfigurationBuilder(() => new ConfigurationBuilder(), c => new ChainedConfigurationSource() { Configuration = c })
-                    .AddInMemoryCollection(config);
             }
 
             /// <summary>
@@ -584,7 +569,7 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public virtual void ConfigureServerServices(IServiceCollection serverServices)
         {
-            ConfigureConfiguration(serverServices);
+            var conf = serverServices.GetSolidRpcService<IConfiguration>();
             serverServices.AddSingleton(MemoryQueueBus);
             serverServices.AddLogging(ConfigureLogging);
             serverServices.AddHttpClient();
@@ -599,18 +584,38 @@ namespace SolidRpc.Tests
         /// <returns></returns>
         public virtual void ConfigureClientServices(IServiceCollection clientServices, Uri baseAddress)
         {
-            ConfigureConfiguration(clientServices);
+            var conf = clientServices.GetSolidRpcService<IConfiguration>();
             clientServices.AddSingleton(MemoryQueueBus);
             clientServices.AddLogging(ConfigureLogging);
             clientServices.AddHttpClient();
             clientServices.AddSolidRpcSingletonServices();
         }
 
-        private void ConfigureConfiguration(IServiceCollection services)
+        /// <summary>
+        /// Adds some configuration
+        /// </summary>
+        /// <param name="cb"></param>
+        protected virtual void ConfigureServerConfiguration(IConfigurationBuilder cb, Uri baseAddress)
         {
-            services.GetConfigurationBuilder(() => new ConfigurationBuilder(), c => new ChainedConfigurationSource() { Configuration = c })
-                .AddJsonFile("appsettings.local.json", true);
-            services.BuildConfiguration(() => new ConfigurationBuilder());
+            cb.AddJsonFile("appsettings.local.json", true);
+            ConfigureClientConfiguration(cb, baseAddress);
+        }
+
+        /// <summary>
+        /// Adds some configuration
+        /// </summary>
+        /// <param name="cb"></param>
+        protected virtual void ConfigureClientConfiguration(IConfigurationBuilder cb, Uri baseAddress)
+        {
+            if (baseAddress == null) throw new Exception("No base address set");
+            var strBaseAddress = baseAddress.ToString();
+            strBaseAddress = strBaseAddress.Substring(0, strBaseAddress.Length - 1);
+
+            var config = new Dictionary<string, string>();
+            config["SolidRpc:BaseUrl"] = strBaseAddress;
+            config["urls"] = strBaseAddress;
+
+            cb.AddInMemoryCollection(config);
         }
 
         /// <summary>

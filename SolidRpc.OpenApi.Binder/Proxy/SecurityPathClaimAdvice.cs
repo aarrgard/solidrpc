@@ -119,7 +119,27 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             }
 
             var localPath = MethodBinding.LocalPath;
-            var identityMatch = prin.Identities.FirstOrDefault(i => i.Claims.Any(c => c.Type == AllowedPathClaim.Type && PathMatcher.GetOrAdd(c.Value, CreatePathMatcher).IsMatch(localPath)));
+            ClaimsIdentity identityMatch = null;
+            foreach (var identity in prin.Identities)
+            {
+                foreach(var claim in identity.Claims)
+                {
+                    if (claim.Type != AllowedPathClaim.Type)
+                    {
+                        continue;
+                    }
+                    if (!PathMatcher.GetOrAdd(claim.Value, path => CreatePathMatcher(invocation.ServiceProvider, path)).IsMatch(localPath))
+                    {
+                        continue;
+                    }
+                    identityMatch = identity;
+                    break;
+                }
+                if(identityMatch != null)
+                {
+                    break;
+                }
+            }
 
             if(identityMatch == null)
             {
@@ -135,8 +155,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             return await next();
         }
 
-        private Regex CreatePathMatcher(string path)
+        private Regex CreatePathMatcher(IServiceProvider sp, string path)
         {
+            var addressTransformer = sp.GetRequiredService<IMethodAddressTransformer>();
+            path = addressTransformer.RewritePath(path);
             return new Regex($"^{path.Replace("*", ".*")}$");
         }
     }

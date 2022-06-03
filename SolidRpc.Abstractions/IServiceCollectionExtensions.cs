@@ -702,20 +702,6 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        /// <summary>
-        /// Adds the base url of the service to the configuration
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sc"></param>
-        /// <param name="baseUrl"></param>
-        public static void SetSolidRpcBaseUrlInConfig<T>(this IServiceCollection sc, Uri baseUrl)
-        {
-            var cb = sc.GetConfigurationBuilder();
-            cb.Add(new PropertiesConfigurationSource() { { $"{typeof(T).FullName.Replace(".", ":")}:BaseUrl", baseUrl.ToString() } });
-            sc.BuildConfiguration();
-        }
-
-
         private static IEnumerable<string> CreateConfigKeys(MethodInfo method, string sKey)
         {
             var assemblyName = method.DeclaringType.Assembly.GetName().Name;

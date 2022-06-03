@@ -88,24 +88,28 @@ namespace SolidRpc.Tests.RateLimit
                 return true;
             });
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public override void ConfigureServerServices(IServiceCollection services)
+
+        protected override void ConfigureServerConfiguration(IConfigurationBuilder cb, Uri baseAddress)
         {
-            services.GetConfigurationBuilder(() => new ConfigurationBuilder(), _ => new ChainedConfigurationSource { Configuration = _ })
-               .AddInMemoryCollection(new Dictionary<string, string>()
+            base.ConfigureServerConfiguration(cb, baseAddress);
+            cb.AddInMemoryCollection(new Dictionary<string, string>()
                {
                     { $"SolidRpcRateLimit:{typeof(ITestInterface).FullName}.{nameof(ITestInterface.RateLimitedMethod)}:MaxConcurrentCalls", "0"}
                });
+        }
 
-            base.ConfigureServerServices(services);
-            services.AddSolidRpcServices(o => true);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serverServices"></param>
+        /// <returns></returns>
+        public override void ConfigureServerServices(IServiceCollection serverServices)
+        {
+            base.ConfigureServerServices(serverServices);
+            serverServices.AddSolidRpcServices(o => true);
 
-            var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
-            services.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>
+            var apiSpec = serverServices.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
+            serverServices.AddSolidRpcSingletonBindings<ITestInterface>(new TestImplementation(), conf =>
             {
                 conf.OpenApiSpec = apiSpec;
                 return true;

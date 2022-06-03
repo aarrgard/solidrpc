@@ -14,6 +14,8 @@ using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.Abstractions.OpenApi.Http;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace SolidRpc.Tests.Invoker
 {
@@ -123,6 +125,15 @@ namespace SolidRpc.Tests.Invoker
 
         }
 
+        protected override void ConfigureClientConfiguration(IConfigurationBuilder cb, Uri baseAddress)
+        {
+            base.ConfigureClientConfiguration(cb, baseAddress);
+            cb.AddInMemoryCollection(new Dictionary<string, string>()
+            {
+                { $"{typeof(ITestInterfaceBack).FullName.Replace(".", ":")}:BaseUrl", baseAddress.ToString() }
+            });
+        }
+
         /// <summary>
         /// Configures the client services
         /// </summary>
@@ -145,7 +156,6 @@ namespace SolidRpc.Tests.Invoker
             //
             // backend api
             //
-            clientServices.SetSolidRpcBaseUrlInConfig<ITestInterfaceBack>(baseAddress);
             openApiSpec = clientServices.GetSolidRpcOpenApiParser()
                 .CreateSpecification(typeof(ITestInterfaceBack))
                 .WriteAsJsonString();
