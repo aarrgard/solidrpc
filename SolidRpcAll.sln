@@ -64,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Node", "SolidRpc.N
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Node.Arch", "SolidRpc.Node.Arch\SolidRpc.Node.Arch.csproj", "{1C18CB58-05B5-46C1-9AB5-3EB68126D35F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Test.Petstore.AzFunctionsV4", "SolidRpc.Test.Petstore.AzFunctionsV4\SolidRpc.Test.Petstore.AzFunctionsV4.csproj", "{B4AA9446-D23F-4D4B-BBB2-6B007733C810}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFunctionsV4", "SolidRpc.Test.Petstore.AzFunctionsV4\SolidRpc.Test.Petstore.AzFunctionsV4.csproj", "{B4AA9446-D23F-4D4B-BBB2-6B007733C810}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

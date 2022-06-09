@@ -51,15 +51,18 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             return $@"
     public class {Name}
     {{
+        private ILogger _logger;
+        private IServiceProvider _serviceProvider;
+        public {Name}(ILogger<{Name}> logger, IServiceProvider serviceProvider) {{
+            _logger = logger;
+            _serviceProvider = serviceProvider;
+        }}
         [FunctionName(""{Name}"")]
-        public static Task Run(
+        public Task Run(
             [TimerTrigger(""{Schedule}"", RunOnStartup = {RunOnStartup.ToString().ToLower()})] TimerInfo timerInfo,
-            [Inject] IServiceProvider serviceProvider,
-            [Constant(""{TimerId}"")] string timerId,
-            ILogger log,
             CancellationToken cancellationToken)
         {{
-            return TimerFunction.Run(timerInfo, log, serviceProvider, timerId, cancellationToken);
+            return TimerFunction.Run(timerInfo, _logger, _serviceProvider, ""{ Name }"", cancellationToken);
         }}
     }}
 ";

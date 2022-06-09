@@ -74,14 +74,18 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             return $@"
     public class {Name}
     {{
+        private ILogger _logger;
+        private IServiceProvider _serviceProvider;
+        public {Name}(ILogger<{Name}> logger, IServiceProvider serviceProvider) {{
+            _logger = logger;
+            _serviceProvider = serviceProvider;
+        }}
         [FunctionName(""{Name}"")]
-        public static Task<HttpResponseMessage> Run(
+        public Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.{Char.ToUpper(AuthLevel[0]) + AuthLevel.Substring(1)}, {string.Join(", ", Methods.Select(o => $"\"{o}\""))}, Route = ""{Route}"")] HttpRequestMessage req,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
             CancellationToken cancellationToken)
         {{
-            return HttpFunction.Run(req, log, serviceProvider, cancellationToken);
+            return HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
         }}
     }}
 ";

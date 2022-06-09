@@ -225,7 +225,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
-    using SolidRpc.OpenApi.AzFunctions.Bindings;
     using System;
     using System.Net.Http;
     using System.Threading;

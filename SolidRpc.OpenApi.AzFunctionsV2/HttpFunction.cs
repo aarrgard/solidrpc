@@ -25,39 +25,36 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task<HttpResponseMessage> Run(HttpRequestMessage req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            return AzFunction.DoRun(async () =>
+            //
+            // for some reason the port is not added to the request
+            //
+            var addrTrans = serviceProvider.GetRequiredService<IMethodAddressTransformer>();
+            var baseAddress = addrTrans.BaseAddress;
+            if (baseAddress.Host == req.RequestUri.Host)
             {
-                //
-                // for some reason the port is not added to the request
-                //
-                var addrTrans = serviceProvider.GetRequiredService<IMethodAddressTransformer>();
-                var baseAddress = addrTrans.BaseAddress;
-                if (baseAddress.Host == req.RequestUri.Host)
-                {
-                    var ub = new UriBuilder(req.RequestUri);
-                    ub.Port = baseAddress.Port;
-                    req.RequestUri = ub.Uri;
-                }
+                var ub = new UriBuilder(req.RequestUri);
+                ub.Port = baseAddress.Port;
+                req.RequestUri = ub.Uri;
+            }
                 
-                // copy data from req to generic structure
-                // skip api prefix.
-                var solidReq = new SolidHttpRequest();
-                await solidReq.CopyFromAsync(req, addrTrans.RewritePath);
+            // copy data from req to generic structure
+            // skip api prefix.
+            var solidReq = new SolidHttpRequest();
+            await solidReq.CopyFromAsync(req, addrTrans.RewritePath);
 
-                // invoke the method
-                var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();
-                var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-                var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
+            // invoke the method
+            var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();
+            var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
+            var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
 
-                //log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
+            //log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
 
-                // return the response.
-                var httpResponse = new HttpResponseMessage();
-                await res.CopyToAsync(httpResponse, req);
-                return httpResponse;
-            });
+            // return the response.
+            var httpResponse = new HttpResponseMessage();
+            await res.CopyToAsync(httpResponse, req);
+            return httpResponse;
         }
     }
 }

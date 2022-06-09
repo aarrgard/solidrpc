@@ -45,15 +45,19 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
 
     public class {Name}
     {{
+        private ILogger _logger;
+        private IServiceProvider _serviceProvider;
+        public {Name}(ILogger<{Name}> logger, IServiceProvider serviceProvider) {{
+            _logger = logger;
+            _serviceProvider = serviceProvider;
+        }}
         [FunctionName(""{Name}"")]
-        public static Task Run(
+        public Task Run(
             [QueueTrigger(""{QueueName}"", Connection = ""{Connection}"")] string message,
             string id,
-            [Inject] IServiceProvider serviceProvider,
-            ILogger log,
             CancellationToken cancellationToken)
         {{
-            return QueueFunction.Run(message, id, log, serviceProvider, cancellationToken);
+            return QueueFunction.Run(message, id, _logger, _serviceProvider, cancellationToken);
         }}
     }}
 ";

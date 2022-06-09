@@ -26,45 +26,42 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static async Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            return AzFunction.DoRun(async () =>
-            { 
-                if(log.IsEnabled(LogLevel.Trace))
-                {
-                    log.LogTrace($"Picked up message({id}) from queue:{message}");
-                }
+            if(log.IsEnabled(LogLevel.Trace))
+            {
+                log.LogTrace($"Picked up message({id}) from queue:{message}");
+            }
 
-                //
-                // the message might be base64 encoded. Microsoft tends to break contracts on a regular basis...
-                // 
-                if(!message.StartsWith("{"))
-                {
-                    message = Encoding.UTF8.GetString(Convert.FromBase64String(message));
-                }
+            //
+            // the message might be base64 encoded. Microsoft tends to break contracts on a regular basis...
+            // 
+            if(!message.StartsWith("{"))
+            {
+                message = Encoding.UTF8.GetString(Convert.FromBase64String(message));
+            }
                 
-                //
-                // deserialize the message
-                //
-                var serFact = serviceProvider.GetRequiredService<ISerializerFactory>();
-                HttpRequest httpReq;
-                serFact.DeserializeFromString(message, out httpReq);
+            //
+            // deserialize the message
+            //
+            var serFact = serviceProvider.GetRequiredService<ISerializerFactory>();
+            HttpRequest httpReq;
+            serFact.DeserializeFromString(message, out httpReq);
 
-                var solidReq = new SolidHttpRequest();
-                await solidReq.CopyFromAsync(httpReq, p => p);
+            var solidReq = new SolidHttpRequest();
+            await solidReq.CopyFromAsync(httpReq, p => p);
 
-                // invoke the method
-                var httpHandler = serviceProvider.GetRequiredService<AzQueueHandler>();
-                var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-                var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
+            // invoke the method
+            var httpHandler = serviceProvider.GetRequiredService<AzQueueHandler>();
+            var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
+            var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
 
-                if (res.StatusCode >= 200 && res.StatusCode < 300)
-                {
-                    // this is ok
-                    return;
-                }
-                throw new Exception($"Response code is not ok - {res.StatusCode}");
-            });
+            if (res.StatusCode >= 200 && res.StatusCode < 300)
+            {
+                // this is ok
+                return;
+            }
+            throw new Exception($"Response code is not ok - {res.StatusCode}");
         }
     }
 }

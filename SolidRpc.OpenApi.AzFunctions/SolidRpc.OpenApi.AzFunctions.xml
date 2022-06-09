@@ -4,31 +4,6 @@
         <name>SolidRpc.OpenApi.AzFunctions</name>
     </assembly>
     <members>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.AzFunction">
-            <summary>
-            Base class for all the implemented method handlers
-            </summary>
-        </member>
-        <member name="F:SolidRpc.OpenApi.AzFunctions.AzFunction.Interceptor">
-            <summary>
-            Assign this interceptor to intercept all the invokations.
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.AzFunction.DoRun(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Performs the invocation.
-            </summary>
-            <param name="del"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.AzFunction.DoRun``1(System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Performs the invocation.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="del"></param>
-            <returns></returns>
-        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Bindings.SolidRpcServiceCollectionAttribute">
             <summary>
             
