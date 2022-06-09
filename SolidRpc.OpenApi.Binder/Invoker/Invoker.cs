@@ -187,6 +187,14 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
                 return (mce.Method, args.ToArray());
             }
+            if (expr.Body is MemberExpression me)
+            {
+                if(me.Member is PropertyInfo pi)
+                {
+                    return (pi.GetMethod, null);
+                }
+                throw new Exception();
+            }
             throw new Exception("expression should be a method call.");
         }
 

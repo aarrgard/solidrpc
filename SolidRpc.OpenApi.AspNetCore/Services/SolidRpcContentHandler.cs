@@ -30,7 +30,6 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="methodAddressTransformer"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="contentStore"></param>
-        /// <param name="protectedResource"></param>
         public SolidRpcContentHandler(
             IServiceProvider serviceProvider,
             IMethodAddressTransformer methodAddressTransformer,
