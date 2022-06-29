@@ -150,8 +150,11 @@ namespace SolidRpc.OpenApi.Binder
             }
             return defaultValue;
         }
-
+        /// <summary>
+        /// Gets / sets the configured cors hosts.
+        /// </summary>
         public IEnumerable<string> ConfiguredCors { get; set; }
+
         private string Scheme { get; }
         private HostString Host { get; }
         private string PathPrefix { get; }

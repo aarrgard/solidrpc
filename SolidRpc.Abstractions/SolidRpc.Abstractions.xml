@@ -1383,6 +1383,48 @@
             </summary>
             <param name="config"></param>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.EnableSecurityRedirect(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Reflection.MethodInfo,System.Type,System.String)">
+            <summary>
+            Enables security redirect
+            </summary>
+            <param name="config"></param>
+            <param name="method"></param>
+            <param name="type"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.DisableSecurity(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Reflection.MethodInfo,System.Type,System.String)">
+            <summary>
+            Disables security
+            </summary>
+            <param name="config"></param>
+            <param name="method"></param>
+            <param name="type"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.ConfigureHandlerLocal``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Reflection.MethodInfo,System.Type,System.String)">
+            <summary>
+            Configures a local handler
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="config"></param>
+            <param name="method"></param>
+            <param name="type"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfigExtensions.ConfigureHandlerRemote``1(SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Reflection.MethodInfo,System.Type,System.String)">
+            <summary>
+            Configures a remote handler
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="config"></param>
+            <param name="method"></param>
+            <param name="type"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcRateLimitConfig">
             <summary>
             Interface used to configure the rate limits for an invocation

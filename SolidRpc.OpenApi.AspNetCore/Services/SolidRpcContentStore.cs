@@ -231,6 +231,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="toPrefix"></param>
         public void AddPrefixRewrite(string fromPrefix, string toPrefix)
         {
+            if (fromPrefix == toPrefix) return; // skip identity rewrites
             if(!Rewrites.Any(o => o[0] == fromPrefix && o[1] == toPrefix))
             {
                 Rewrites = Rewrites.Union(new [] { new[] { fromPrefix, toPrefix } }).ToArray();

@@ -4,6 +4,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace SolidRpc.Abstractions.OpenApi.Proxy
 {
@@ -202,6 +203,75 @@ namespace SolidRpc.Abstractions.OpenApi.Proxy
             config.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled = false;
             config.GetAdviceConfig<ISolidAzureFunctionConfig>().HttpAuthLevel = "anonymous";
         }
+
+        /// <summary>
+        /// Enables security redirect
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="method"></param>
+        /// <param name="type"></param>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public static bool EnableSecurityRedirect(this ISolidRpcOpenApiConfig config, MethodInfo method, Type type, string methodName = null)
+        {
+            if (method.DeclaringType != type) return false;
+            if (!string.IsNullOrEmpty(methodName) && method.Name != methodName) return false;
+            config.GetAdviceConfig<ISecurityOAuth2Config>().RedirectUnauthorizedIdentity = true;
+            return true;
+        }
+
+        /// <summary>
+        /// Disables security
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="method"></param>
+        /// <param name="type"></param>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public static bool DisableSecurity(this ISolidRpcOpenApiConfig config, MethodInfo method, Type type, string methodName = null)
+        {
+            if (method.DeclaringType != type) return false;
+            if (!string.IsNullOrEmpty(methodName) && method.Name != methodName) return false;
+            config.DisableSecurity();
+            return true;
+        }
+
+        /// <summary>
+        /// Configures a local handler
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <param name="method"></param>
+        /// <param name="type"></param>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public static T ConfigureHandlerLocal<T>(this ISolidRpcOpenApiConfig config, MethodInfo method, Type type, string methodName) where T : ITransport
+        {
+            if (method.DeclaringType != type) return default(T);
+            if (method.Name != methodName) return default(T);
+            config.ProxyTransportType = ITransportExtensions.GetTransportType(typeof(T));
+            config.SetInvokerTransport<IHttpTransport, T>();
+            return config.ConfigureTransport<T>();
+        }
+
+        /// <summary>
+        /// Configures a remote handler
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <param name="method"></param>
+        /// <param name="type"></param>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public static T ConfigureHandlerRemote<T>(this ISolidRpcOpenApiConfig config, MethodInfo method, Type type, string methodName) where T : ITransport
+        {
+            if (method.DeclaringType != type) return default(T);
+            if (method.Name != methodName) return default(T);
+            config.ProxyTransportType = ITransportExtensions.GetTransportType(typeof(T));
+            config.SetInvokerTransport<T, IHttpTransport>();
+            return config.ConfigureTransport<T>();
+        }
+
 
 
     }

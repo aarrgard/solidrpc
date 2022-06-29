@@ -95,7 +95,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         {
             if (string.IsNullOrEmpty(transport.ConnectionName))
             {
-                transport.ConnectionName = $"SolidRpc{TransportType}Connection";
+                transport.ConnectionName = $"AzureWebJobsStorage";
             }
             if (string.IsNullOrEmpty(transport.QueueName))
             {
