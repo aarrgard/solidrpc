@@ -240,10 +240,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                 if (_exceptionMappings == null)
                 {
                     // extract exception types
-                    _exceptionMappings = new Dictionary<int, Action>();
-                    _exceptionMappings[UnauthorizedException.HttpStatusCode] = CreateExceptionThrower(typeof(UnauthorizedException));
-                    _exceptionMappings[FileContentNotFoundException.HttpStatusCode] = CreateExceptionThrower(typeof(FileContentNotFoundException));
-                    _exceptionMappings[RateLimitExceededException.HttpStatusCode] = CreateExceptionThrower(typeof(RateLimitExceededException));
+                    var exceptionMappings = new Dictionary<int, Action>();
+                    exceptionMappings[UnauthorizedException.HttpStatusCode] = CreateExceptionThrower(typeof(UnauthorizedException));
+                    exceptionMappings[FileContentNotFoundException.HttpStatusCode] = CreateExceptionThrower(typeof(FileContentNotFoundException));
+                    exceptionMappings[RateLimitExceededException.HttpStatusCode] = CreateExceptionThrower(typeof(RateLimitExceededException));
                     CodeDocMethod.ExceptionDocumentation.ToList().ForEach(o =>
                     {
                         var exceptionType = MethodInfo.DeclaringType.Assembly.GetType(o.ExceptionType);
@@ -251,9 +251,10 @@ namespace SolidRpc.OpenApi.Binder.V2
                         var httpStatusCode = exceptionInstance.Data["HttpStatusCode"] as int?;
                         if (httpStatusCode != null)
                         {
-                            ExceptionMappings[httpStatusCode.Value] = CreateExceptionThrower(exceptionType);
+                            exceptionMappings[httpStatusCode.Value] = CreateExceptionThrower(exceptionType);
                         }
                     });
+                    _exceptionMappings = exceptionMappings;
                 }
                 return _exceptionMappings;
             }
