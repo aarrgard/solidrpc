@@ -38,9 +38,9 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         [Test]
         public void TestCreateOpenApiSpec()
         {
-            //CreateOpenApiSpec(typeof(ISolidRpcOAuth2).Assembly);
-            //CreateOpenApiSpec(typeof(ISwaggerUI).Assembly);
-            CreateOpenApiSpec("C:\\Development\\ra_devops\\RealAlliance\\services\\Customer\\RA.Customer", "RA.Customer");
+            CreateOpenApiSpec(typeof(ISolidRpcOAuth2).Assembly);
+            CreateOpenApiSpec(typeof(ISwaggerUI).Assembly);
+            //CreateOpenApiSpec("C:\\Development\\ra_devops\\RealAlliance\\services\\Customer\\RA.Customer", "RA.Customer");
         }
 
         private void CreateOpenApiSpec(Assembly assembly)
