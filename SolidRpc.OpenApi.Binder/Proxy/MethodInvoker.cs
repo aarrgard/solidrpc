@@ -80,21 +80,29 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 work.Rewrite = rewrite;
             }
 
-            public PathSegment GetPathSegment(IEnumerator<string> segments)
+            public PathSegment GetPathSegment(IEnumerator<string> segments, bool isInWildcard)
             {
                 if (!segments.MoveNext())
                 {
                     return this;
                 }
-                if (!SubSegments.TryGetValue(segments.Current, out PathSegment subSegment))
+                if (SubSegments.TryGetValue(segments.Current, out PathSegment subSegment))
                 {
-                    if (!SubSegments.TryGetValue("{}", out subSegment))
-                    {
-                        return null;
-                        //throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",", SubSegments.Keys)}");
-                    }
+                    return subSegment.GetPathSegment(segments, false);
                 }
-                return subSegment.GetPathSegment(segments);
+                else if (SubSegments.TryGetValue("{}", out subSegment))
+                {
+                    return subSegment.GetPathSegment(segments, true);
+                }
+                else if (isInWildcard)
+                {
+                    return this;
+                }
+                else
+                {
+                    return null;
+                    //throw new Exception($"Failed to find segment {segments.Current} among segments {string.Join(",", SubSegments.Keys)}");
+                }
             }
         }
 
@@ -190,7 +198,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var pathKey = $"{request.Method}{request.Path}";
-            var pathSegment = (await GetRootSegmentAsync(serviceProvider, cancellationToken)).GetPathSegment(pathKey.Split('/').AsEnumerable().GetEnumerator());
+            var pathSegment = (await GetRootSegmentAsync(serviceProvider, cancellationToken)).GetPathSegment(pathKey.Split('/').AsEnumerable().GetEnumerator(), false);
             if(pathSegment == null || !pathSegment.MethodBindings.Any())
             {
                 Logger.LogError("Could not find mapping for path " + pathKey);

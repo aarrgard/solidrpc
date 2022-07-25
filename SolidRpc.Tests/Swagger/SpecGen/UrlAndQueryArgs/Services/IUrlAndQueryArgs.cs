@@ -8,11 +8,11 @@ namespace SolidRpc.Tests.Swagger.SpecGen.UrlAndQueryArgs.Services
     public interface IUrlAndQueryArgs
     {
         /// <summary>
-        /// Consumes one complex type an a simple string...
+        /// Consumes a string arg from path and query
         /// </summary>
-        /// <param name="urlArg"></param>
+        /// <param name="pathArg"></param>
         /// <param name="queryArg"></param>
         /// <returns></returns>
-        Task DoSometingAsync(string urlArg, string queryArg = "");
+        Task<string> DoSometingAsync(string pathArg, string queryArg = "");
     }
 }

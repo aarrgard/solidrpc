@@ -16,7 +16,7 @@
           "IFileUpload"
         ],
         "description": "Returns the file data as null",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#FileUpload2#Services#IFileUpload#NullData",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_FileUpload2_Services_IFileUpload_NullData",
         "produces": [
           "*/*"
         ],
@@ -36,7 +36,7 @@
           "IFileUpload"
         ],
         "description": "Uploads a file. This method will get a \"file\" parameter.",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#FileUpload2#Services#IFileUpload#UploadFile",
+        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_FileUpload2_Services_IFileUpload_UploadFile",
         "consumes": [
           "multipart/form-data"
         ],

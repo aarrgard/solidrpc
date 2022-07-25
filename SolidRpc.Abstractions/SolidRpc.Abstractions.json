@@ -16,7 +16,7 @@
           "Code.ICodeNamespaceGenerator"
         ],
         "description": "Creates a code namespace for supplied assembly name",
-        "operationId": "Get#SolidRpc#Abstractions#Services#Code#ICodeNamespaceGenerator#CreateCodeNamespace#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_Code_ICodeNamespaceGenerator_CreateCodeNamespace_1",
         "produces": [
           "application/json"
         ],
@@ -45,7 +45,7 @@
           "Code.INpmGenerator"
         ],
         "description": "Returns a zip containing the code to get started",
-        "operationId": "Get#SolidRpc#Abstractions#Services#Code#INpmGenerator#CreateInitialZip",
+        "operationId": "Get#SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateInitialZip",
         "produces": [
           "*/*"
         ],
@@ -65,7 +65,7 @@
           "Code.INpmGenerator"
         ],
         "description": "Returns the files that should be stored in the node_modules directory",
-        "operationId": "Get#SolidRpc#Abstractions#Services#Code#INpmGenerator#CreateNpmPackage#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_Code_INpmGenerator_CreateNpmPackage_1",
         "produces": [
           "application/json"
         ],
@@ -101,7 +101,7 @@
           "Code.ITypescriptGenerator"
         ],
         "description": "Creates a types.ts file from supplied assembly name",
-        "operationId": "Get#SolidRpc#Abstractions#Services#Code#ITypescriptGenerator#CreateTypesTsForAssemblyAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForAssemblyAsync_1",
         "produces": [
           "application/json"
         ],
@@ -130,7 +130,7 @@
           "Code.ITypescriptGenerator"
         ],
         "description": "Creates a types.ts file from supplied code namespace",
-        "operationId": "Post#SolidRpc#Abstractions#Services#Code#ITypescriptGenerator#CreateTypesTsForCodeNamespaceAsync",
+        "operationId": "Post#SolidRpc_Abstractions_Services_Code_ITypescriptGenerator_CreateTypesTsForCodeNamespaceAsync",
         "consumes": [
           "application/json"
         ],
@@ -164,7 +164,7 @@
           "ISolidRpcAcmeChallenge"
         ],
         "description": "Returns the acme challenge",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcAcmeChallenge#GetAcmeChallengeAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcAcmeChallenge_GetAcmeChallengeAsync_1",
         "produces": [
           "*/*"
         ],
@@ -193,7 +193,7 @@
           "ISolidRpcAcmeChallenge"
         ],
         "description": "Sets the acme challenge. The part before the . is the filename and all of the\r\nsupplied challenge is provided in the file.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcAcmeChallenge#SetAcmeChallengeAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcAcmeChallenge_SetAcmeChallengeAsync_1",
         "parameters": [
           {
             "name": "challenge",
@@ -216,7 +216,7 @@
           "ISolidRpcContentHandler"
         ],
         "description": "Returns the content for supplied path.\r\n\r\nNote that the path is marked as optional(default value set). This is so that the parameter\r\nis placed in the query string instead of path.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetContent",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetContent",
         "produces": [
           "*/*"
         ],
@@ -245,7 +245,7 @@
           "ISolidRpcContentHandler"
         ],
         "description": "Returns all the path mappings.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetPathMappingsAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetPathMappingsAsync_1",
         "produces": [
           "application/json"
         ],
@@ -276,7 +276,7 @@
           "ISolidRpcContentHandler"
         ],
         "description": "Returns the protected content for supplied resource",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetProtectedContentAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetProtectedContentAsync_1",
         "produces": [
           "*/*"
         ],
@@ -306,7 +306,7 @@
           "ISolidRpcContentHandler"
         ],
         "description": "Returns the protected content for supplied resource",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcContentHandler#GetProtectedContentAsync#2",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcContentHandler_GetProtectedContentAsync_2",
         "produces": [
           "*/*"
         ],
@@ -343,7 +343,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the base url for this host",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#AllowedCorsOrigins",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_AllowedCorsOrigins",
         "produces": [
           "application/json"
         ],
@@ -366,7 +366,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the base url for this host",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#BaseAddress",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_BaseAddress",
         "produces": [
           "application/json"
         ],
@@ -387,7 +387,7 @@
           "ISolidRpcHost"
         ],
         "description": "Invokes the \"GetHostInstance\" targeted for supplied instance and resturns the result",
-        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcHost#CheckHost",
+        "operationId": "Post#SolidRpc_Abstractions_Services_ISolidRpcHost_CheckHost",
         "consumes": [
           "application/json"
         ],
@@ -421,7 +421,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the default timezone",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#DefaultTimezone",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_DefaultTimezone",
         "produces": [
           "application/json"
         ],
@@ -441,7 +441,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the host configuration.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostConfiguration",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostConfiguration",
         "produces": [
           "application/json"
         ],
@@ -464,7 +464,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the id of this host",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostId",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostId",
         "produces": [
           "application/json"
         ],
@@ -485,7 +485,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the id of this host. This method can be used to determine if a host is up and running by\r\ncomparing the returned value with the instance that we want to send to. If a host goes down it is\r\nremoved from the router and another instance probably responds to the call.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#GetHostInstance",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_GetHostInstance",
         "produces": [
           "application/json"
         ],
@@ -505,7 +505,7 @@
           "ISolidRpcHost"
         ],
         "description": "Function that determines if the host is alive.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#IsAlive",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_IsAlive",
         "responses": {
           "200": {
             "description": "Success"
@@ -519,7 +519,7 @@
           "ISolidRpcHost"
         ],
         "description": "Returns the list of allowed cors origins.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#ParseDateTime#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_ParseDateTime_1",
         "produces": [
           "application/json"
         ],
@@ -549,7 +549,7 @@
           "ISolidRpcHost"
         ],
         "description": "This method is invoked on all the hosts in a store when a new host is available.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHost#SyncHostsFromStore",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHost_SyncHostsFromStore",
         "produces": [
           "application/json"
         ],
@@ -572,7 +572,7 @@
           "ISolidRpcHostStore"
         ],
         "description": "Adds a host instance to the host store.",
-        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcHostStore#AddHostInstanceAsync",
+        "operationId": "Post#SolidRpc_Abstractions_Services_ISolidRpcHostStore_AddHostInstanceAsync",
         "consumes": [
           "application/json"
         ],
@@ -600,7 +600,7 @@
           "ISolidRpcHostStore"
         ],
         "description": "Lists the stored host instances",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcHostStore#ListHostInstancesAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcHostStore_ListHostInstancesAsync",
         "produces": [
           "application/json"
         ],
@@ -623,7 +623,7 @@
           "ISolidRpcHostStore"
         ],
         "description": "Removes a host instance from the store.",
-        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcHostStore#RemoveHostInstanceAsync",
+        "operationId": "Post#SolidRpc_Abstractions_Services_ISolidRpcHostStore_RemoveHostInstanceAsync",
         "consumes": [
           "application/json"
         ],
@@ -651,7 +651,7 @@
           "ISolidRpcMethodStore"
         ],
         "description": "Returns the http requests for the current user.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#GetHttpRequestAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcMethodStore_GetHttpRequestAsync",
         "produces": [
           "application/json"
         ],
@@ -684,7 +684,7 @@
           "ISolidRpcMethodStore"
         ],
         "description": "Returns the next http requests for supplied session",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#GetHttpRequestsAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcMethodStore_GetHttpRequestsAsync_2",
         "produces": [
           "application/json"
         ],
@@ -724,7 +724,7 @@
           "ISolidRpcMethodStore"
         ],
         "description": "Returns the http request for the current user.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#RemoveHttpRequestAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcMethodStore_RemoveHttpRequestAsync_1",
         "parameters": [
           {
             "name": "solidRpcCallId",
@@ -747,7 +747,7 @@
           "ISolidRpcMethodStore"
         ],
         "description": "Removes the http request",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcMethodStore#RemoveHttpRequestAsync#2",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcMethodStore_RemoveHttpRequestAsync_2",
         "parameters": [
           {
             "name": "sessionId",
@@ -777,7 +777,7 @@
           "ISolidRpcOAuth2"
         ],
         "description": "This method returns a html page that authorizes the user. When the user\r\nhas been authorized the supplied callback is invoked with the \"access_token\"\r\nsupplied as a query parameter along with the \"state\".\r\n\r\nUse this method to retreive tokens from a standalone node instance or from a SPA(single page app)\r\n\r\nStart a local http server and supply the address to the handler.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#GetAuthorizationCodeTokenAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOAuth2_GetAuthorizationCodeTokenAsync",
         "produces": [
           "*/*"
         ],
@@ -825,7 +825,7 @@
           "ISolidRpcOAuth2"
         ],
         "description": "Performs the logout @ the identity server.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#LogoutAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOAuth2_LogoutAsync",
         "produces": [
           "*/*"
         ],
@@ -862,7 +862,7 @@
           "ISolidRpcOAuth2"
         ],
         "description": "Performs the logout @ the identity server.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#PostLogoutAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOAuth2_PostLogoutAsync",
         "produces": [
           "*/*"
         ],
@@ -891,7 +891,7 @@
           "ISolidRpcOAuth2"
         ],
         "description": "Use this method to refresh a token obtained from the callback.\r\n\r\nThis method fetches a new token from the OAuth server using the refresh token stored as a cookie when authorizing for the first time.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#RefreshTokenAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOAuth2_RefreshTokenAsync_1",
         "produces": [
           "*/*"
         ],
@@ -920,7 +920,7 @@
           "ISolidRpcOAuth2"
         ],
         "description": "This is the method that is invoked when a user has been authenticated\r\nand a valid token is supplied. The authentication uses the \"authorization code\" flow\r\nso this method retreives the access token using supplied code.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOAuth2#TokenCallbackAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOAuth2_TokenCallbackAsync",
         "produces": [
           "*/*"
         ],
@@ -956,7 +956,7 @@
           "ISolidRpcOidc"
         ],
         "description": "authorizes a user",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#AuthorizeAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOidc_AuthorizeAsync",
         "produces": [
           "*/*"
         ],
@@ -1031,7 +1031,7 @@
           "ISolidRpcOidc"
         ],
         "description": "Ends the current session",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#EndSessionAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOidc_EndSessionAsync",
         "produces": [
           "*/*"
         ],
@@ -1074,7 +1074,7 @@
           "ISolidRpcOidc"
         ],
         "description": "Returns the /.well-known/openid-configuration file",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#GetDiscoveryDocumentAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOidc_GetDiscoveryDocumentAsync",
         "produces": [
           "application/json"
         ],
@@ -1094,7 +1094,7 @@
           "ISolidRpcOidc"
         ],
         "description": "Returns the keys",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcOidc#GetKeysAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcOidc_GetKeysAsync",
         "produces": [
           "application/json"
         ],
@@ -1114,7 +1114,7 @@
           "ISolidRpcOidc"
         ],
         "description": "authenticates a user",
-        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcOidc#GetTokenAsync",
+        "operationId": "Post#SolidRpc_Abstractions_Services_ISolidRpcOidc_GetTokenAsync",
         "consumes": [
           "multipart/form-data"
         ],
@@ -1213,7 +1213,7 @@
           "ISolidRpcOidc"
         ],
         "description": "revokes a token",
-        "operationId": "Post#SolidRpc#Abstractions#Services#ISolidRpcOidc#RevokeAsync",
+        "operationId": "Post#SolidRpc_Abstractions_Services_ISolidRpcOidc_RevokeAsync",
         "consumes": [
           "multipart/form-data"
         ],
@@ -1260,7 +1260,7 @@
           "ISolidRpcProtectedContent"
         ],
         "description": "Returns the content for the supplied resource.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#ISolidRpcProtectedContent#GetProtectedContentAsync#1",
+        "operationId": "Get#SolidRpc_Abstractions_Services_ISolidRpcProtectedContent_GetProtectedContentAsync_1",
         "produces": [
           "*/*"
         ],
@@ -1289,7 +1289,7 @@
           "RateLimit.ISolidRpcRateLimit"
         ],
         "description": "Returns the rate limit settings",
-        "operationId": "Get#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#GetRateLimitSettingsAsync",
+        "operationId": "Get#SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetRateLimitSettingsAsync",
         "produces": [
           "application/json"
         ],
@@ -1312,7 +1312,7 @@
           "RateLimit.ISolidRpcRateLimit"
         ],
         "description": "Returns the rate limit token.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#GetRateLimitTokenAsync#2",
+        "operationId": "Get#SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetRateLimitTokenAsync_2",
         "produces": [
           "application/json"
         ],
@@ -1349,7 +1349,7 @@
           "RateLimit.ISolidRpcRateLimit"
         ],
         "description": "Returns the singelton token for supplied key. This call implies a rate limit setting of max 1 concurrent call.",
-        "operationId": "Get#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#GetSingeltonTokenAsync#2",
+        "operationId": "Get#SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_GetSingeltonTokenAsync_2",
         "produces": [
           "application/json"
         ],
@@ -1386,7 +1386,7 @@
           "RateLimit.ISolidRpcRateLimit"
         ],
         "description": "Returns a rate limit token.",
-        "operationId": "Post#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#ReturnRateLimitTokenAsync",
+        "operationId": "Post#SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_ReturnRateLimitTokenAsync",
         "consumes": [
           "application/json"
         ],
@@ -1414,7 +1414,7 @@
           "RateLimit.ISolidRpcRateLimit"
         ],
         "description": "Updates the rate limit settings",
-        "operationId": "Post#SolidRpc#Abstractions#Services#RateLimit#ISolidRpcRateLimit#UpdateRateLimitSetting",
+        "operationId": "Post#SolidRpc_Abstractions_Services_RateLimit_ISolidRpcRateLimit_UpdateRateLimitSetting",
         "consumes": [
           "application/json"
         ],

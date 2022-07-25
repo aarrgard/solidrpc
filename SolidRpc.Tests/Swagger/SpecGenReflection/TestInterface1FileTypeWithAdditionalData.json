@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Nullable parameters should be optional",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestFileTypeWithAdditionalData#1",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGenReflection_ReflectionTest_Interface1_TestFileTypeWithAdditionalData_1",
         "consumes": [
           "multipart/form-data"
         ],

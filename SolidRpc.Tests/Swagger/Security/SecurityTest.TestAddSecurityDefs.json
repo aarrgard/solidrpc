@@ -17,7 +17,7 @@
           "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
         ],
         "description": "A test method",
-        "operationId": "Get#SolidRpc#Tests#Swagger#Binder#SecurityTest#ITestInterface#DoXAsync",
+        "operationId": "Get#SolidRpc_Tests_Swagger_Binder_SecurityTest_ITestInterface_DoXAsync",
         "produces": [
           "application/json"
         ],
@@ -31,12 +31,12 @@
         },
         "security": [
           {
-            "security-definition1": []
+            "accessCode": [
+              "scope2"
+            ]
           },
           {
-            "accessCode": [
-              "scope1"
-            ]
+            "security-definition2": []
           }
         ]
       }
@@ -47,7 +47,7 @@
           "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
         ],
         "description": "A test method",
-        "operationId": "Get#SolidRpc#Tests#Swagger#Binder#SecurityTest#ITestInterface#DoYAsync",
+        "operationId": "Get#SolidRpc_Tests_Swagger_Binder_SecurityTest_ITestInterface_DoYAsync",
         "produces": [
           "application/json"
         ],
@@ -73,18 +73,12 @@
     }
   },
   "securityDefinitions": {
-    "security-definition1": {
-      "type": "apiKey",
-      "name": "security-header1",
-      "in": "header"
-    },
     "accessCode": {
       "type": "oauth2",
       "flow": "accessCode",
       "authorizationUrl": "http://localhost/authorize",
       "tokenUrl": "http://localhost/token",
       "scopes": {
-        "scope1": "scope1",
         "scope2": "scope2"
       }
     },

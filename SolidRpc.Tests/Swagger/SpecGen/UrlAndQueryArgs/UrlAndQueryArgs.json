@@ -10,16 +10,19 @@
     "https"
   ],
   "paths": {
-    "/Services/IUrlAndQueryArgs/DoSometingAsync/{urlArg}": {
+    "/Services/IUrlAndQueryArgs/DoSometingAsync/{pathArg}": {
       "get": {
         "tags": [
           "IUrlAndQueryArgs"
         ],
-        "description": "Consumes one complex type an a simple string...",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#UrlAndQueryArgs#Services#IUrlAndQueryArgs#DoSometingAsync#1",
+        "description": "Consumes a string arg from path and query",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_UrlAndQueryArgs_Services_IUrlAndQueryArgs_DoSometingAsync_1",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "urlArg",
+            "name": "pathArg",
             "in": "path",
             "required": true,
             "type": "string",
@@ -35,7 +38,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "The response type",
+            "schema": {
+              "type": "string"
+            }
           }
         }
       }

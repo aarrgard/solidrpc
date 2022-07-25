@@ -15,6 +15,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
     /// </summary>
     public class OpenApiSpecGeneratorV2 : OpenApiSpecGenerator
     {
+        private readonly static char OperationIdSeparator = '_';
         private readonly static IEnumerable<string> s_AllVerbs = new string[] { 
             "Get", "Put", "Post", "Head", "Options", "Patch", "Delete" 
         };
@@ -136,7 +137,11 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
         {
             var operationObject = new OperationObject(pathItemObject);
             operationObject.Tags = new string[] { CreateTag(null, (ICSharpType)method.Parent).Name };
-            operationObject.OperationId = MapPath(method.FullName).Replace("/", "#").Replace("{", "#").Replace("}", "").Substring(1);
+            operationObject.OperationId = MapPath(method.FullName)
+                .Replace('/', OperationIdSeparator)
+                .Replace('{', OperationIdSeparator)
+                .Replace("}", "")
+                .Substring(1);
             operationObject.Description = method.Comment?.Summary;
 
             var parameters = method.Parameters
@@ -282,7 +287,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             var pathArgs = operationObject.GetParameters().Where(o => o.In == "path");
             if(pathArgs.Any())
             {
-                operationObject.OperationId = $"{operationObject.OperationId}#{pathArgs.Count()}";
+                operationObject.OperationId = $"{operationObject.OperationId}{OperationIdSeparator}{pathArgs.Count()}";
             }
 
             //
@@ -382,14 +387,14 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
 
         private string SetOperationVerb(string verb, string operationId)
         {
-            if (s_AllVerbsLower.Any(o => operationId.Split('#').First().ToLower() == o))
+            if (s_AllVerbsLower.Any(o => operationId.Split(OperationIdSeparator).First().ToLower() == o))
             {
-                int idx = operationId.IndexOf('#');
+                int idx = operationId.IndexOf(OperationIdSeparator);
                 return $"{verb}{operationId.Substring(idx, operationId.Length - idx)}";
             }
             else
             {
-                return $"{verb}#{operationId}";
+                return $"{verb}{OperationIdSeparator}{operationId}";
             }
         }
 

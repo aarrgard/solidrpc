@@ -16,7 +16,7 @@
           "ILastModifiedArg"
         ],
         "description": "Consumes two complex types an a simple string...",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#LastModifiedArg#Services#ILastModifiedArg#GetLastModifiedStruct",
+        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_LastModifiedArg_Services_ILastModifiedArg_GetLastModifiedStruct",
         "consumes": [
           "multipart/form-data"
         ],

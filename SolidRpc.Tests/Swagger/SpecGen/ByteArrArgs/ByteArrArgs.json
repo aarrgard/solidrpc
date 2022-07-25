@@ -16,7 +16,7 @@
           "IByteArrArgs"
         ],
         "description": "",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#ByteArrArgs#Services#IByteArrArgs#ProxyByteArray#1",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_ByteArrArgs_Services_IByteArrArgs_ProxyByteArray_1",
         "produces": [
           "application/json"
         ],

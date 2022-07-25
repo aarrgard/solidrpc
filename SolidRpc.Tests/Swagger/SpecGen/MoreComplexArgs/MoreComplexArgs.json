@@ -16,7 +16,7 @@
           "IMoreComplexArgs"
         ],
         "description": "Consumes two complex types an a simple string...",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#MoreComplexArgs#Services#IMoreComplexArgs#GetComplexType#2",
+        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_MoreComplexArgs_Services_IMoreComplexArgs_GetComplexType_2",
         "consumes": [
           "multipart/form-data"
         ],

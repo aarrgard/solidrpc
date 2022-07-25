@@ -655,7 +655,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             // create path data
             var patterns = Patterns;
             var pathElements = request.Path.Split('/');
-            if (patterns.Count != pathElements.Length)
+            if (patterns.Count > pathElements.Length)
             {
                 throw new Exception($"Supplied request path({request.Path}) does not match operation path({OperationObject.GetPath()})");
             }
@@ -663,7 +663,15 @@ namespace SolidRpc.OpenApi.Binder.V2
             for (int i = 0; i < patterns.Count; i++)
             {
                 if (patterns[i] == null) continue;
-                var data = HttpUtility.UrlDecode(pathElements[i]);
+                string data;
+                if(i == patterns.Count - 1)
+                {
+                    data = HttpUtility.UrlDecode(string.Join("/", pathElements.Skip(i)));
+                }
+                else
+                {
+                    data = HttpUtility.UrlDecode(pathElements.Skip(i).First());
+                }
                 pathData.Add(new SolidHttpRequestDataString("text/plain", patterns[i], data));
             }
 

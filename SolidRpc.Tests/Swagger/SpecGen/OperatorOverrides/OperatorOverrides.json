@@ -16,7 +16,7 @@
           "IOperatorOverrides"
         ],
         "description": "Consumes the type with overrides",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#OperatorOverrides#Services#IOperatorOverrides#GetComplexType",
+        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_OperatorOverrides_Services_IOperatorOverrides_GetComplexType",
         "consumes": [
           "application/json"
         ],

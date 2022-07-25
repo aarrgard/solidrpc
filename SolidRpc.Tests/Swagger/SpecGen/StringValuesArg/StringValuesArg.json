@@ -16,7 +16,7 @@
           "IStringValuesArg"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGen#StringValuesArg#Services#IStringValuesArg#GetStringValueArgs#1",
+        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_StringValuesArg_Services_IStringValuesArg_GetStringValueArgs_1",
         "consumes": [
           "application/json"
         ],

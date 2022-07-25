@@ -16,7 +16,7 @@
           "IUrlEncodeArg"
         ],
         "description": "Proxies the string",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#UrlEncodeArg#Services#IUrlEncodeArg#ProxyByteArray#1",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_UrlEncodeArg_Services_IUrlEncodeArg_ProxyByteArray_1",
         "produces": [
           "application/json"
         ],
@@ -47,7 +47,7 @@
           "IUrlEncodeArg"
         ],
         "description": "Proxies the string",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#UrlEncodeArg#Services#IUrlEncodeArg#ProxyStrings#2",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_UrlEncodeArg_Services_IUrlEncodeArg_ProxyStrings_2",
         "produces": [
           "application/json"
         ],

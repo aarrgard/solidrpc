@@ -3,6 +3,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.Binder.Http;
@@ -89,8 +90,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "ByteArrArgs") continue;
-                CreateSpec(subDir.Name, true);
+                //if (subDir.Name != "UrlAndQueryArgs") continue;
+                CreateSpec(subDir.Name, false);
             }
         }
 
@@ -916,8 +917,23 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var stringCheck1 = "one/one";
                 var stringCheck2 = "one+one";
-                moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.CompletedTask);
-                await proxy.DoSometingAsync(stringCheck1, stringCheck2);
+                moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.FromResult(stringCheck1+stringCheck2));
+                var res = await proxy.DoSometingAsync(stringCheck1, stringCheck2);
+                Assert.AreEqual("one/oneone+one", res);
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<UrlAndQueryArgs.Services.IUrlAndQueryArgs>>();
+                //var url = (await invoker.GetUriAsync(o => o.DoSometingAsync(stringCheck1, stringCheck2))).ToString();
+                var url = (await invoker.GetUriAsync(o => o.DoSometingAsync("__path__", stringCheck2))).ToString();
+                url = url.Replace("__path__", stringCheck1);
+                Assert.IsTrue(url.Contains($"/{stringCheck1}?"));
+                moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.FromResult(stringCheck1 + stringCheck2));
+
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(TestUrlAndQueryArgs).Substring(4));
+                var httpResp = await httpClient.GetAsync(url);
+                Assert.IsTrue(httpResp.IsSuccessStatusCode);
+                res = await httpResp.Content.ReadAsStringAsync();
+
+                Assert.AreEqual("\"one/oneone+one\"", res);
             });
         }
 

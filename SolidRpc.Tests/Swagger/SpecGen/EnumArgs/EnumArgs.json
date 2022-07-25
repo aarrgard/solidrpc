@@ -16,7 +16,7 @@
           "IEnumArgs"
         ],
         "description": "Consumes an enum.",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#EnumArgs#Services#IEnumArgs#GetEnumTypeAsync#1",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_EnumArgs_Services_IEnumArgs_GetEnumTypeAsync_1",
         "produces": [
           "application/json"
         ],

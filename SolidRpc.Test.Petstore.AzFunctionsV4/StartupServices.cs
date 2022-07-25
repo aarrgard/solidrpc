@@ -12,6 +12,7 @@ using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 using SolidRpc.Test.Petstore.AzFunctionsV2;
+using SolidRpc.Test.Petstore.AzFunctionsV4;
 using System;
 using System.Linq;
 using System.Threading;
@@ -63,6 +64,13 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             //    return await sp.GetRequiredService<IInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
             //}, true);
 
+            var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHttpFunc)).WriteAsJsonString();
+            services.AddSolidRpcBindings(typeof(IHttpFunc), typeof(HttpFuncImpl), c =>
+            {
+                c.OpenApiSpec = apiSpec;
+                c.DisableSecurity();
+                return true;
+            });
         }
 
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)

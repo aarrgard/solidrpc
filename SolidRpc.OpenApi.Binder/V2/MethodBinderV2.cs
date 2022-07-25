@@ -53,7 +53,7 @@ namespace SolidRpc.OpenApi.Binder.V2
             binderStatus.Append($"->#{prospects.Count}");
 
             // operation id must start with method name
-            var methodOpId = $"{mi.DeclaringType.FullName.Replace('.', '#').Replace('+', '#')}#{mi.Name}";
+            var methodOpId = $"{mi.DeclaringType.FullName.Replace('.', '_').Replace('+', '_')}_{mi.Name}";
             prospects = Operations.Where(o => MethodBindingV2.NameMatches(o.GetOperationId(), methodOpId)).ToList();
             if(prospects.Count == 0)
             {

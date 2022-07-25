@@ -417,14 +417,6 @@ namespace Microsoft.AspNetCore.Builder
         {
             try
             {
-                //
-                // check if the request is intended for this path.
-                //
-                if (context.Request.Path != "")
-                {
-                    return;
-                }
-
                 // extract information from http context.
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);

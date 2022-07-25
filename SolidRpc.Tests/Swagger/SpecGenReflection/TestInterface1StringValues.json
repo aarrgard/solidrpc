@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a set of string values",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestStringValues#1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGenReflection_ReflectionTest_Interface1_TestStringValues_1",
         "produces": [
           "application/json"
         ],

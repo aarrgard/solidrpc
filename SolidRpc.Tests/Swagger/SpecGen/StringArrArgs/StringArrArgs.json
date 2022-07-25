@@ -16,7 +16,7 @@
           "IStringArrArgs"
         ],
         "description": "",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGen#StringArrArgs#Services#IStringArrArgs#ProxyStringArray#1",
+        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_StringArrArgs_Services_IStringArrArgs_ProxyStringArray_1",
         "produces": [
           "application/json"
         ],

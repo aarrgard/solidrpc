@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Tests a dictionary",
-        "operationId": "Post#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestDictionary",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGenReflection_ReflectionTest_Interface1_TestDictionary",
         "consumes": [
           "application/json"
         ],

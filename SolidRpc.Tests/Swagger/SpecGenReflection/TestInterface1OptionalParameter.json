@@ -15,7 +15,7 @@
           "SolidRpc.Tests.Swagger.SpecGenReflection.ReflectionTest.Interface1"
         ],
         "description": "Optional parameters should be placed in the query.",
-        "operationId": "Get#SolidRpc#Tests#Swagger#SpecGenReflection#ReflectionTest#Interface1#TestOptionalParameter",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGenReflection_ReflectionTest_Interface1_TestOptionalParameter",
         "parameters": [
           {
             "name": "s",
