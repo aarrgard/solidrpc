@@ -17,7 +17,7 @@
           "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
         ],
         "description": "A test method",
-        "operationId": "Get#SolidRpc_Tests_Swagger_Binder_SecurityTest_ITestInterface_DoXAsync",
+        "operationId": "Get_SolidRpc_Tests_Swagger_Binder_SecurityTest_ITestInterface_DoXAsync",
         "produces": [
           "application/json"
         ],
@@ -47,7 +47,7 @@
           "SolidRpc.Tests.Swagger.Binder.SecurityTest.ITestInterface"
         ],
         "description": "A test method",
-        "operationId": "Get#SolidRpc_Tests_Swagger_Binder_SecurityTest_ITestInterface_DoYAsync",
+        "operationId": "Get_SolidRpc_Tests_Swagger_Binder_SecurityTest_ITestInterface_DoYAsync",
         "produces": [
           "application/json"
         ],
