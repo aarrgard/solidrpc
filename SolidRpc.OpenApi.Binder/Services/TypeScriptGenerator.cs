@@ -422,7 +422,7 @@ namespace SolidRpc.OpenApi.Binder.Services
             {
                 codeNamespaceName = codeNamespaceName.Skip(1);
                 type = type.Skip(1);
-                if(codeNamespaceName.Any())
+                if(type.Count() > 1)
                 {
                     codeNamespace = GetCodeNamespace(codeNamespace.Namespaces, type.First());
                 }

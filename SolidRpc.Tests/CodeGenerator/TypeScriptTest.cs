@@ -265,17 +265,19 @@ namespace SolidRpc.Tests.CodeGenerator
         /// Tests the javascript invocation
         /// </summary>
         [Test]
-        public async Task TestCompileEoBankId()
+        public async Task TestCompileExternalLibs()
         {
             using (var ctx = CreateKestrelHostContext(ss => {}, cs =>
             {
-                cs.AddSolidRpcBindings(typeof(EO.BankId.Services.IBankId));
-                cs.AddSolidRpcBindings(typeof(EO.BankId.IpApi.Services.IIpApi));
+                cs.AddSolidRpcRemoteBindings(typeof(EO.BankId.Services.IBankId).Assembly);
+                cs.AddSolidRpcRemoteBindings(typeof(EO.BankId.IpApi.Services.IIpApi).Assembly);
+                cs.AddSolidRpcRemoteBindings(typeof(RA.Broker.Services.IApplicationData).Assembly);
             }))
             {
                 await ctx.StartAsync();
                 await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.Services.IBankId).Assembly.GetName().Name);
                 await CreatePackage(ctx.ClientServiceProvider, typeof(EO.BankId.IpApi.Services.IIpApi).Assembly.GetName().Name);
+                await CreatePackage(ctx.ClientServiceProvider, typeof(RA.Broker.Services.IApplicationData).Assembly.GetName().Name);
             }
         }
 

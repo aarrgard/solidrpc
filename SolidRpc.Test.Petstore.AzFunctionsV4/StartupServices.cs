@@ -28,6 +28,9 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             var settings = services.GetSolidRpcService<IConfiguration>();
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
 
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/front", "");
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/api", "");
+
             services.AddSolidRpcOidcTestImpl();
             base.ConfigureServices(services, c => ConfigureAzureFunction(services, c));
 
@@ -58,11 +61,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             });
 
             services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", "/");
-            //services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
-            //services.GetSolidRpcContentStore().AddMapping("/", async sp =>
-            //{
-            //    return await sp.GetRequiredService<IInvoker<ISwaggerUI>>().GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
-            //}, true);
+            services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
+            services.GetSolidRpcContentStore().AddMapping("/", async sp =>
+            {
+                return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
+            }, true);
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHttpFunc)).WriteAsJsonString();
             services.AddSolidRpcBindings(typeof(IHttpFunc), typeof(HttpFuncImpl), c =>

@@ -543,6 +543,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Configures the supplied type so that it is exposed in the binder.
         /// </summary>
         /// <param name="sc"></param>
+        /// <param name="azz"></param>
+        /// <param name="configurator"></param>
+        /// <returns></returns>
+        public static IEnumerable<ISolidRpcOpenApiConfig> AddSolidRpcRemoteBindings(
+            this IServiceCollection sc,
+            Assembly azz,
+            Func<ISolidRpcOpenApiConfig, bool> configurator = null)
+        {
+            return azz.GetTypes()
+                .Where(o => o.IsInterface)
+                .SelectMany(o => sc.AddSolidRpcRemoteBindings(o, false, configurator))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Configures the supplied type so that it is exposed in the binder.
+        /// </summary>
+        /// <param name="sc"></param>
         /// <param name="interfaze"></param>
         /// <param name="configurator"></param>
         /// <returns></returns>

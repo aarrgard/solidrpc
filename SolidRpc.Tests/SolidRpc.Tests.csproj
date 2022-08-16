@@ -106,9 +106,12 @@
     <Reference Include="EO.BankId">
       <HintPath>ExternalLib\EO.BankId.dll</HintPath>
     </Reference>
-    <Reference Include="EO.BankId.IpApi">
-      <HintPath>ExternalLib\EO.BankId.IpApi.dll</HintPath>
-    </Reference>
+	  <Reference Include="EO.BankId.IpApi">
+		  <HintPath>ExternalLib\EO.BankId.IpApi.dll</HintPath>
+	  </Reference>
+	  <Reference Include="RA.Broker">
+		  <HintPath>ExternalLib\RA.Broker.dll</HintPath>
+	  </Reference>
   </ItemGroup>
 
   <ItemGroup>

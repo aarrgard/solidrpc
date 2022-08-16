@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -31,7 +32,13 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV4
 
         public async Task<FileContent> Https(string ops, CancellationToken cancellationToken = default)
         {
-            return new FileContent();
+            var enc = Encoding.UTF8;
+            return new FileContent()
+            {
+                CharSet = enc.HeaderName,
+                ContentType = "text/html",
+                Content = new MemoryStream(enc.GetBytes("<html><body>Test page</body></html>"))
+            };
         }
     }
 }

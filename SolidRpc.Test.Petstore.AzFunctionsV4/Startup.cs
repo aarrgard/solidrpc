@@ -27,15 +27,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV4Extension
         public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
         {
             base.ConfigureAppConfiguration(builder);
-            var context = builder.GetContext();
-            var azFuncHandler = new AzFunctionHandler(new DirectoryInfo(context.ApplicationRootPath), typeof(HttpFunction).Assembly);
-            builder.ConfigurationBuilder
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    //{ ConfigurationMethodAddressTransformer.ConfigPathPrefix.First(), azFuncHandler.HttpRouteBackendPrefix },
-                    { ConfigurationMethodAddressTransformer.ConfigPathRewrites.First(), $"/front:,/api:,{azFuncHandler.HttpRouteBackendPrefix}:" }
-                })
-                .AddEnvironmentVariables();
+            builder.ConfigurationBuilder.AddEnvironmentVariables();
         }
     }
 }

@@ -29,4 +29,7 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+	<EmbeddedResource Include="www\**\*.*" />
+  </ItemGroup>
 </Project>

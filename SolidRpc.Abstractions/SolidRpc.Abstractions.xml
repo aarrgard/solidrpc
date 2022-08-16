@@ -4006,6 +4006,15 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRemoteBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
+            <summary>
+            Configures the supplied type so that it is exposed in the binder.
+            </summary>
+            <param name="sc"></param>
+            <param name="azz"></param>
+            <param name="configurator"></param>
+            <returns></returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddSolidRpcRemoteBindings(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Type,System.Func{SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig,System.Boolean})">
             <summary>
             Configures the supplied type so that it is exposed in the binder.
