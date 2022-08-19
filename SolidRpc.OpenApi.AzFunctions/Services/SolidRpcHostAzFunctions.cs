@@ -89,31 +89,17 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 .Where(o => o.IsAdviceConfigured<ISolidRpcOpenApiConfig>())
                 .Where(o => o.ConfigureAdvice<ISolidRpcOpenApiConfig>().Enabled)
                 .Single();
-            if(!config.IsAdviceConfigured<ISolidAzureFunctionConfig>())
-            {
-                throw new Exception($"The method {mb.MethodInfo.DeclaringType.FullName}.{mb.MethodInfo.Name} does not have a configuration for ISolidAzureFunctionConfig.");
-            }
 
             var functions = new List<FunctionDef>();
             var openApiConfig = config.ConfigureAdvice<ISolidRpcOpenApiConfig>();
-            var azConfig = config.ConfigureAdvice<ISolidAzureFunctionConfig>();
             var httpTransport = openApiConfig.GetTransports().OfType<IHttpTransport>().FirstOrDefault();
             if (httpTransport != null)
             {
-                //
-                // handle auth level
-                //
-                var authLevel = azConfig.HttpAuthLevel;
-                if (string.IsNullOrEmpty(authLevel))
-                {
-                    throw new Exception($"AuthLevel not set for {mb.MethodInfo.DeclaringType.FullName}.{mb.MethodInfo.Name}");
-                }
-
                 var functionPath = httpTransport.OperationAddress.LocalPath;
                 functions.Add(new HttpFunctionDef(FunctionHandler, "http", mb.LocalPath, httpTransport.OperationAddress.LocalPath)
                 {
                     Method = mb.Method.ToLower(),
-                    AuthLevel = authLevel
+                    AuthLevel = "anonymous"
                 });
             }
             var queueTransport = openApiConfig.GetTransports().OfType<IQueueTransport>().FirstOrDefault();

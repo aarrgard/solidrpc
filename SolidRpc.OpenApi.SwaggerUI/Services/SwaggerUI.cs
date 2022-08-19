@@ -243,13 +243,6 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
                                 op.AddApiKeyAuth(definitionName, securityKey.Value.Key.ToLower());
                             }
                         }
-                        var azFuncAuth = binding.GetSolidProxyConfig<ISolidAzureFunctionConfig>()?.HttpAuthLevel;
-                        if (!string.IsNullOrEmpty(azFuncAuth) && !azFuncAuth.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var definitionName = $"AzureFunctions";
-                            var headerName = "x-functions-key";
-                            op.AddApiKeyAuth(definitionName, headerName);
-                        }
                     }
                     else
                     {

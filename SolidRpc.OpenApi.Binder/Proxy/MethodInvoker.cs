@@ -165,12 +165,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     if(prefix.EndsWith("*"))
                     {
                         prefix = prefix.Substring(0, prefix.Length-1);
+                        prefix = $"{prefix}{{}}";
                     }
-                    if (!prefix.EndsWith("/"))
-                    {
-                        prefix = $"{prefix}/";
-                    }
-                    prefix = $"{prefix}{{}}";
                     Func<IHttpRequest, IHttpRequest> rewrite = (r) =>
                     {
                         r.Query = new[] { new SolidHttpRequestDataString("text/plain", "path", r.Path) };

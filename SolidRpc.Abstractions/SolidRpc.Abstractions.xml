@@ -1235,41 +1235,6 @@
             invoke the operation.
             </summary>
         </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig">
-            <summary>
-            Interface used to determine how the azure function
-            settings should be.
-            </summary>
-        </member>
-        <member name="P:SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig.HttpAuthLevel">
-            <summary>
-            The authorization level in the http protocol
-            "anonymous", "admin", "function"
-            </summary>
-        </member>
-        <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3">
-            <summary>
-            We nned the advice for the configuration...
-            </summary>
-            <typeparam name="TObject"></typeparam>
-            <typeparam name="TMethod"></typeparam>
-            <typeparam name="TAdvice"></typeparam>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3.Configure(SolidRpc.Abstractions.OpenApi.Proxy.ISolidAzureFunctionConfig)">
-            <summary>
-            
-            </summary>
-            <param name="config"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Proxy.SolidAzureFunctionAdvice`3.Handle(System.Func{System.Threading.Tasks.Task{`2}},SolidProxy.Core.Proxy.ISolidProxyInvocation{`0,`1,`2})">
-            <summary>
-            
-            </summary>
-            <param name="next"></param>
-            <param name="invocation"></param>
-            <returns></returns>
-        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig">
             <summary>
             Configures the bindings for the rpc proxy.

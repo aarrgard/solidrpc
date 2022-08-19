@@ -3,9 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.Services;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using SolidRpc.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Reflection;
 using System;
@@ -55,16 +52,6 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="c"></param>
         protected virtual bool ConfigureAzureFunction(ISolidRpcOpenApiConfig c)
         {
-            var azConfig = c.GetAdviceConfig<ISolidAzureFunctionConfig>();
-            if (c.GetAdviceConfig<ISecurityPathClaimConfig>().Enabled)
-            {
-                azConfig.HttpAuthLevel = "anonymous";
-            }
-            else
-            {
-                azConfig.HttpAuthLevel = "function";
-            }
-
             var method = c.Methods.First();
             if (method.DeclaringType == typeof(ISolidRpcHost))
             {

@@ -65,7 +65,11 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             services.GetSolidRpcContentStore().AddMapping("/", async sp =>
             {
                 return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
-            }, true);
+            });
+            services.GetSolidRpcContentStore().AddMapping("/index.html", async sp =>
+            {
+                return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
+            });
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHttpFunc)).WriteAsJsonString();
             services.AddSolidRpcBindings(typeof(IHttpFunc), typeof(HttpFuncImpl), c =>
