@@ -215,7 +215,7 @@ namespace SolidRpc.OpenApi.OAuth2.Services
         {
             if(!RefreshTokens.TryGetValue(refreshToken, out ClaimsIdentity claimsIdentity))
             {
-                throw new Exception("Failed to find identity for refresh token:" + refreshToken);
+                throw new UnauthorizedException("Failed to find identity for refresh token:" + refreshToken);
             }
             var accessToken = await LocalAuthority.CreateAccessTokenAsync(claimsIdentity, null, cancellationToken);
             return new TokenResponse()

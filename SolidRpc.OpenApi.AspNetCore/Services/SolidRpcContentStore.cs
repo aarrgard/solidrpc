@@ -152,6 +152,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="pathPrefix"></param>
         public void AddContent(Assembly contentAssembly, string assemblyRelativeName, string pathPrefix)
         {
+            if (!pathPrefix.EndsWith("*")) pathPrefix = $"{pathPrefix}*";
             AddContentInternal(contentAssembly, assemblyRelativeName, null, pathPrefix);
         }
 

@@ -112,7 +112,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             {
                 return MethodBinderStore.MethodBinders
                         .Where(mb => mb.Assembly == c.ApiAssembly)
-                        .Select(o => o.HostedAddress.AbsolutePath)
+                        .Select(o => $"{o.HostedAddress.AbsolutePath}*")
                         .Select(o => MethodAddressTransformer.RewritePath(o));                    
             }
         }
@@ -152,7 +152,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             //
             var pathMappings = ContentStore.StaticContents.SelectMany(o => GetPathPrefixes(o).Select(o2 => new
             {
-                PathPrefix = o2,
+                PathPrefix = o2.EndsWith("*") ? o2.Substring(0,o2.Length-1) : o2,
                 Content = o
             })).ToList();
 
