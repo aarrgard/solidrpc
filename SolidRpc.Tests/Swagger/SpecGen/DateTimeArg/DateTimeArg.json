@@ -16,7 +16,7 @@
           "IDateTimeArg"
         ],
         "description": "Proxies the date time",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_DateTimeArg_Services_IDateTimeArg_ProxyDateTimeOffset_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_DateTimeArg_Services_IDateTimeArg_ProxyDateTimeOffset_1",
         "produces": [
           "application/json"
         ],

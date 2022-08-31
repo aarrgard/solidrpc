@@ -16,7 +16,7 @@
           "ISwaggerUI"
         ],
         "description": "Returns the index.html file.",
-        "operationId": "Get#SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetIndexHtml",
+        "operationId": "Get_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetIndexHtml",
         "produces": [
           "*/*"
         ],
@@ -45,7 +45,7 @@
           "ISwaggerUI"
         ],
         "description": "Returns the oauth2-redirect file",
-        "operationId": "Get#SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOauth2RedirectHtml",
+        "operationId": "Get_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOauth2RedirectHtml",
         "produces": [
           "*/*"
         ],
@@ -65,7 +65,7 @@
           "ISwaggerUI"
         ],
         "description": "Returns the openapi spec for supplied assembly name.",
-        "operationId": "Get#SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOpenApiSpec_3",
+        "operationId": "Get_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOpenApiSpec_2",
         "produces": [
           "*/*"
         ],
@@ -108,7 +108,7 @@
           "ISwaggerUI"
         ],
         "description": "Returns the swagger initializer",
-        "operationId": "Get#SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetSwaggerInitializer",
+        "operationId": "Get_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetSwaggerInitializer",
         "produces": [
           "*/*"
         ],
@@ -137,7 +137,7 @@
           "ISwaggerUI"
         ],
         "description": "Returns the swagger urls.",
-        "operationId": "Get#SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetSwaggerUrls",
+        "operationId": "Get_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetSwaggerUrls",
         "produces": [
           "application/json"
         ],

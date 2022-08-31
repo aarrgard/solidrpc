@@ -91,7 +91,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             foreach (var subDir in dir.GetDirectories())
             {
                 //if (subDir.Name != "UrlAndQueryArgs") continue;
-                CreateSpec(subDir.Name, false);
+                CreateSpec(subDir.Name, true);
             }
         }
 

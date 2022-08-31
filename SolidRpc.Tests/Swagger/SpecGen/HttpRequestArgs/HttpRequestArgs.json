@@ -16,7 +16,7 @@
           "IHttpRequestArgs"
         ],
         "description": "REturns null",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_ReturnNullRequest",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_ReturnNullRequest",
         "produces": [
           "application/json"
         ],
@@ -36,7 +36,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],
@@ -55,7 +55,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Put#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Put_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],
@@ -74,7 +74,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],
@@ -93,7 +93,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Delete#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Delete_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],
@@ -112,7 +112,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Options#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Options_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],
@@ -131,7 +131,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Head#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Head_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],
@@ -150,7 +150,7 @@
           "IHttpRequestArgs"
         ],
         "description": "Invokes the request",
-        "operationId": "Patch#SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
+        "operationId": "Patch_SolidRpc_Tests_Swagger_SpecGen_HttpRequestArgs_Services_IHttpRequestArgs_TestInvokeRequest",
         "produces": [
           "application/json"
         ],

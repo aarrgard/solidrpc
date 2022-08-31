@@ -87,10 +87,6 @@ namespace SolidRpc.Tests.Security
 
         }
         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         //[Test, Ignore("requires secrets")]
         //public async Task TestFacebook()
         //{

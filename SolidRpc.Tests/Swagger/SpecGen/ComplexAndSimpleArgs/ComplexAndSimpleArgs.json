@@ -16,7 +16,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies a decimal",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetDecimal_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetDecimal_1",
         "produces": [
           "application/json"
         ],
@@ -47,7 +47,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies a guid",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetGuid_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetGuid_1",
         "produces": [
           "application/json"
         ],
@@ -78,7 +78,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies an integer",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetInteger_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetInteger_1",
         "produces": [
           "application/json"
         ],
@@ -109,7 +109,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Consumes one complex type an a simple string...",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetSimpleAndComplexType_1",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetSimpleAndComplexType_1",
         "consumes": [
           "application/json"
         ],
@@ -150,7 +150,7 @@
           "IComplexAndSimpleArgs"
         ],
         "description": "Proxies a uri",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetUri_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_ComplexAndSimpleArgs_Services_IComplexAndSimpleArgs_GetUri_1",
         "produces": [
           "application/json"
         ],

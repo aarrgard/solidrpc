@@ -16,7 +16,7 @@
           "IUrlAndQueryArgs"
         ],
         "description": "Consumes a string arg from path and query",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_UrlAndQueryArgs_Services_IUrlAndQueryArgs_DoSometingAsync_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_UrlAndQueryArgs_Services_IUrlAndQueryArgs_DoSometingAsync_1",
         "produces": [
           "application/json"
         ],

@@ -16,7 +16,7 @@
           "IFormAsStructArg"
         ],
         "description": "Processes the form data",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_FormAsStructArg_Services_IFormAsStructArg_GetFormData",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_FormAsStructArg_Services_IFormAsStructArg_GetFormData",
         "consumes": [
           "application/json"
         ],
@@ -50,7 +50,7 @@
           "IFormAsStructArg"
         ],
         "description": "Proxying strings should still work.",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_FormAsStructArg_Services_IFormAsStructArg_ProxyForms_1",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_FormAsStructArg_Services_IFormAsStructArg_ProxyForms_1",
         "consumes": [
           "application/json"
         ],

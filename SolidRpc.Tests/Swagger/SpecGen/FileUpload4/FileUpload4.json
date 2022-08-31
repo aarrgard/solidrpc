@@ -16,7 +16,7 @@
           "IFileUpload"
         ],
         "description": "Uploads a file. This method will get a \"file\" parameter.",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_FileUpload4_Services_IFileUpload_UploadFile",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_FileUpload4_Services_IFileUpload_UploadFile",
         "consumes": [
           "multipart/form-data"
         ],

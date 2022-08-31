@@ -16,7 +16,7 @@
           "IRequiredOptionalArg"
         ],
         "description": "This argument should be optional",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetOptionalComplexType",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetOptionalComplexType",
         "consumes": [
           "application/json"
         ],
@@ -50,7 +50,7 @@
           "IRequiredOptionalArg"
         ],
         "description": "This argument should be optional",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetOptionalString",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetOptionalString",
         "produces": [
           "application/json"
         ],
@@ -79,7 +79,7 @@
           "IRequiredOptionalArg"
         ],
         "description": "This argument should be required",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetRequiredComplexType",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetRequiredComplexType",
         "consumes": [
           "application/json"
         ],
@@ -113,7 +113,7 @@
           "IRequiredOptionalArg"
         ],
         "description": "This argument should be required",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetRequiredString_1",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_RequiredOptionalArg_Services_IRequiredOptionalArg_GetRequiredString_1",
         "produces": [
           "application/json"
         ],

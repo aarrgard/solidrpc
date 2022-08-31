@@ -16,7 +16,7 @@
           "IOAuth2"
         ],
         "description": "Returns the discovery document",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_OAuth2_Services_IOAuth2_Discovery",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_OAuth2_Services_IOAuth2_Discovery",
         "produces": [
           "application/json"
         ],
@@ -36,7 +36,7 @@
           "IOAuth2"
         ],
         "description": "",
-        "operationId": "Get#SolidRpc_Tests_Swagger_SpecGen_OAuth2_Services_IOAuth2_Token",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_OAuth2_Services_IOAuth2_Token",
         "produces": [
           "application/json"
         ],
@@ -130,7 +130,7 @@
           "IOAuth2"
         ],
         "description": "",
-        "operationId": "Post#SolidRpc_Tests_Swagger_SpecGen_OAuth2_Services_IOAuth2_Token",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_OAuth2_Services_IOAuth2_Token",
         "produces": [
           "application/json"
         ],
