@@ -475,7 +475,7 @@ namespace SolidRpc.Tests.Security
                     RefreshToken = response.RefreshToken
                 });
 
-                Assert.AreEqual(HttpStatusCode.InternalServerError, response.HttpStatusCode);
+                Assert.AreEqual(HttpStatusCode.Unauthorized, response.HttpStatusCode);
 
             }
         }
