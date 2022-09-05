@@ -180,7 +180,11 @@ namespace Microsoft.AspNetCore.Builder
                 .Distinct()
                 .ToList();
 
-            var fixedPaths = parts.Where(o => !o.StartsWith("{")).Select(o => $"/{o}").ToList();
+            var fixedPaths = parts
+                .Where(o => !o.StartsWith("{"))
+                .Select(o => $"/{o}")
+                .ToList();
+
             foreach (var part in parts)
             {
                 ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths, preInvoke));
@@ -237,6 +241,10 @@ namespace Microsoft.AspNetCore.Builder
             if(fixedPaths.Contains(path))
             {
                 return false;
+            }
+            if(fixedPaths.Contains("/*"))
+            {
+                return true;
             }
             if(segment.StartsWith("/{"))
             {
