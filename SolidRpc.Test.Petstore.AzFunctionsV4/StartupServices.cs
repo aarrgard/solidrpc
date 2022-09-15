@@ -60,12 +60,12 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                 return await sp.GetRequiredService<IInvoker<ISolidRpcContentHandler>>().GetUriAsync(o => o.GetContent("A*", CancellationToken.None));
             });
 
-            services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", "/");
-            services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
-            services.GetSolidRpcContentStore().AddMapping("/", async sp =>
-            {
-                return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
-            });
+            //services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", "/");
+            services.GetSolidRpcContentStore().SetNotFoundRewrite("/index.html");
+            //services.GetSolidRpcContentStore().AddMapping("/", async sp =>
+            //{
+            //    return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
+            //});
             services.GetSolidRpcContentStore().AddMapping("/index.html", async sp =>
             {
                 return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));

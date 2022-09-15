@@ -117,10 +117,12 @@ namespace SolidRpc.OpenApi.DotNetTool
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
             var projectZip = await workingDir.CreateFileDataZip();
             var project = await gen.ParseProjectZip(projectZip);
-            var csproj = project.ProjectFiles
+            var csprojs = project.ProjectFiles
                 .Where(o => o.Directory == "")
-                .Where(o => o.FileData.Filename.EndsWith(".csproj"))
-                .SingleOrDefault();
+                .Where(o => o.FileData.Filename.EndsWith(".csproj"));
+            if (csprojs.Count() > 1) throw new Exception($"Directory {workingDir} contains more than one .csproj file");
+            var csproj = csprojs.SingleOrDefault();
+
 
             var settings = new SettingsSpecGen()
             {

@@ -195,16 +195,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         {
             var pathKey = $"{request.Method}{request.Path}";
             var pathSegment = (await GetRootSegmentAsync(serviceProvider, cancellationToken)).GetPathSegment(pathKey.Split('/').AsEnumerable().GetEnumerator(), false);
-            if(pathSegment == null || !pathSegment.MethodBindings.Any())
+            var methodBindings = pathSegment?.MethodBindings;
+            if (methodBindings == null || !methodBindings.Any())
             {
-                Logger.LogError("Could not find mapping for path " + pathKey);
-                return new SolidHttpResponse()
-                {
-                    StatusCode = 404
-                };
+                var contentBinding = MethodBinderStore.GetMethodBinding<ISolidRpcContentHandler>(o => o.GetContent("/", cancellationToken));
+                methodBindings = new[] { contentBinding };
+                request.Query = new[] { new SolidHttpRequestDataString("text/plain", "path", request.Path) };
+                request.Path = contentBinding.LocalPath;
             }
-            request = pathSegment.Rewrite(request);
-            return await InvokeAsync(serviceProvider, invocationSource, request, pathSegment.MethodBindings, cancellationToken);
+            request = pathSegment?.Rewrite(request) ?? request;
+            return await InvokeAsync(serviceProvider, invocationSource, request, methodBindings, cancellationToken);
         }
 
         public async Task<IHttpResponse> InvokeAsync(
