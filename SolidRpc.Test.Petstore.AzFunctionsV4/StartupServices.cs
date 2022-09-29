@@ -15,6 +15,7 @@ using SolidRpc.Test.Petstore.AzFunctionsV2;
 using SolidRpc.Test.Petstore.AzFunctionsV4;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 [assembly: SolidRpcServiceCollection(typeof(StartupServices))]
@@ -70,6 +71,8 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
             });
+
+            //services.AddSolidRpcRemoteBindings<INotification>(c => ConfigureAzureFunction(services, c));
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHttpFunc)).WriteAsJsonString();
             services.AddSolidRpcBindings(typeof(IHttpFunc), typeof(HttpFuncImpl), c =>
@@ -128,8 +131,21 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
                         break;
                 }
             }
+            //if (method.DeclaringType == typeof(INotification))
+            //{
+            //    ConfigureAzTableHandlerRemote(conf, method, method.DeclaringType, method.Name);
+            //}
             var res = base.ConfigureAzureFunction(conf);
             return true;
+        }
+
+        private void ConfigureAzTableHandlerRemote(ISolidRpcOpenApiConfig config, MethodInfo method, Type type, string methodName)
+        {
+            if (method.DeclaringType != type) return;
+            if (method.Name != methodName) return;
+            config.ProxyTransportType = AzTableHandler.TransportType;
+            config.SetInvokerTransport<IAzTableTransport, IHttpTransport>();
+            config.ConfigureTransport<IAzTableTransport>().SetConnectionName("AzureWebJobsStorage");
         }
 
     }

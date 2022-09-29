@@ -6,9 +6,7 @@ using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
-using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
-using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.AzQueue.Types;
@@ -282,6 +280,30 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                     await cloudTable.ExecuteBatchAsync(batch, TableRequestOptions, OperationContext, cancellationToken);
                 }
                 rows = await GetMessagesAsync(cloudTable, queueName, statuses, 100, cancellationToken);
+            } while (rows.Any());
+        }
+
+        public async Task MoveMessagesAsync(string connectionName, string fromQueue, string toQueue, CancellationToken cancellationToken)
+        {
+            var cloudTable = CloudQueueStore.GetCloudTable(connectionName);
+            var statuses = new[] { TableMessageEntity.StatusDispatched, TableMessageEntity.StatusPending, TableMessageEntity.StatusError };
+            IEnumerable<TableMessageEntity> rows = new TableMessageEntity[0];
+            do
+            {
+                foreach (var row in rows)
+                {
+                    var newRow = new TableMessageEntity(toQueue, row.Priority, row.Message);
+                    try
+                    {
+                        await cloudTable.ExecuteAsync(TableOperation.Insert(newRow), TableRequestOptions, OperationContext, cancellationToken);
+                        await cloudTable.ExecuteAsync(TableOperation.Delete(row), TableRequestOptions, OperationContext, cancellationToken);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogError("Error moving message", e);
+                    }
+                }
+                rows = await GetMessagesAsync(cloudTable, fromQueue, statuses, 100, cancellationToken);
             } while (rows.Any());
         }
 

@@ -65,6 +65,13 @@ namespace SolidRpc.OpenApi.AzQueue.Services
         Task<IEnumerable<AzTableMessage>> ListMessagesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Moves all the messages from one queue to another
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task MoveMessagesAsync(string fromQueue, string toQueue, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Removes all the messages matching the supplied key
         /// </summary>
         /// <param name="cancellationToken"></param>

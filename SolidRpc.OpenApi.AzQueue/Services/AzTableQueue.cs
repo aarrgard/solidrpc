@@ -251,5 +251,19 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             }
             return Task.WhenAll(tasks);
         }
+
+        public Task MoveMessagesAsync(string fromQueue, string toQueue, CancellationToken cancellationToken = default)
+        {
+            var tasks = QueueHandler.GetTableTransports()
+                .Select(o => new { o.ConnectionName, o.QueueName })
+                .Where(o => o.QueueName == toQueue)
+                .Distinct()
+                .Select(o => QueueHandler.MoveMessagesAsync(o.ConnectionName, fromQueue, o.QueueName, cancellationToken));
+            if (!tasks.Any())
+            {
+                throw new ArgumentException($"Cannot find queue({toQueue}) among queues({string.Join(",", QueueHandler.GetTableTransports().Select(o => o.QueueName))})");
+            }
+            return Task.WhenAll(tasks);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using System;
 
 namespace SolidRpc.OpenApi.AzQueue
@@ -35,7 +36,7 @@ namespace SolidRpc.OpenApi.AzQueue
         public TableMessageEntity(string queueName, int priority, string message)
         {
             PartitionKey = CreatePartitionKey(queueName);
-            RowKey = $"{priority}-{DateTime.UtcNow.Ticks}-{Guid.NewGuid().ToString()}";
+            RowKey = $"{priority}-{DateTime.UtcNow.Ticks}-{Guid.NewGuid()}";
             QueueName = queueName;
             Message = message;
             Status = StatusPending;
@@ -46,6 +47,7 @@ namespace SolidRpc.OpenApi.AzQueue
         /// The messageId
         /// </summary>
         public bool IsSettings => Status == StatusSettings;
+        public int Priority => int.TryParse(RowKey.Split('-')[0], out int result) ? result : InvocationOptions.MessagePriorityNormal;
 
         public string QueueName { get; set; }
 
