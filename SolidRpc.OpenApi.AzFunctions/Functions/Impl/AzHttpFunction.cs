@@ -81,11 +81,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             _serviceProvider = serviceProvider;
         }}
         [FunctionName(""{Name}"")]
-        public Task<HttpResponseMessage> Run(
+        public async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.{Char.ToUpper(AuthLevel[0]) + AuthLevel.Substring(1)}, {string.Join(", ", Methods.Select(o => $"\"{o}\""))}, Route = ""{Route}"")] HttpRequestMessage req,
             CancellationToken cancellationToken)
         {{
-            return HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
+            var res = await HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
+            return res;
         }}
     }}
 ";

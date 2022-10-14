@@ -56,11 +56,12 @@
             _serviceProvider = serviceProvider;
         }
         [FunctionName("WildcardFunc")]
-        public Task<HttpResponseMessage> Run(
+        public async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", "post", Route = "{*restOfPath}")] HttpRequestMessage req,
             CancellationToken cancellationToken)
         {
-            return HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
+            var res = await HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
+            return res;
         }
     }
 

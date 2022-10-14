@@ -37,7 +37,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV4
             {
                 CharSet = enc.HeaderName,
                 ContentType = "text/html",
-                Content = new MemoryStream(enc.GetBytes("<html><body>Test page</body></html>"))
+                Content = new MemoryStream(enc.GetBytes($"<html><body>Test page:{ops}</body></html>"))
             };
         }
     }

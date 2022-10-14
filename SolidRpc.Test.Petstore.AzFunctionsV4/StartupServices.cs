@@ -71,6 +71,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
             });
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/Vitec", "/SolidRpc/Test/Petstore/AzFunctionsV4/IHttpFunc/Https/Vitec");
 
             //services.AddSolidRpcRemoteBindings<INotification>(c => ConfigureAzureFunction(services, c));
 

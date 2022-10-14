@@ -157,7 +157,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 var contentHandler = serviceProvider.GetRequiredService<IInvoker<ISolidRpcContentHandler>>();
                 var prefixes1 = (await contentHandler.InvokeAsync(o => o.GetPathMappingsAsync(true, cancellationToken))).Select(o => o.Name);
                 var prefixes2 = (await contentHandler.InvokeAsync(o => o.GetPathMappingsAsync(false, cancellationToken))).Select(o => o.Name);
-                var prefixes3 = contentHandler.InvokeAsync(o => o.PathPrefixes);
+                var prefixes3 = contentHandler.InvokeAsync(o => o.PathPrefixes).Where(prefix => prefix.EndsWith("*"));
                 var contentBinding = MethodBinderStore.GetMethodBinding<ISolidRpcContentHandler>(o => o.GetContent("/", cancellationToken));
                 prefixes1.Union(prefixes2).Union(prefixes3).ToList().ForEach(o =>
                 {

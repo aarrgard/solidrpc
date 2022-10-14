@@ -9,12 +9,12 @@ namespace SolidRpc.Abstractions.OpenApi.Http
     /// </summary>
     public static class IHttpRequestDataExtensions
     {
- 
+
         /// <summary>
-        /// Returns true if supplied type is a nullable type.
+        /// Returns the value for supplied member name
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="nullableType"></param>
+        /// <param name="data"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
         public static string GetStringValue(this IEnumerable<IHttpRequestData> data, string name)
         {

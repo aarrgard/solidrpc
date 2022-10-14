@@ -8,12 +8,14 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.OAuth2;
+using SolidRpc.OpenApi.OAuth2.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,6 +61,14 @@ namespace SolidRpc.Tests.Invoker
             Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
 
             /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="s"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<string> DoYAsync(string s, CancellationToken cancellation = default(CancellationToken));
+
+            /// <summary>
             /// Tests the continuation token.
             /// </summary>
             /// <param name="cancellation"></param>
@@ -94,6 +104,18 @@ namespace SolidRpc.Tests.Invoker
             public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 return Task.FromResult(myStruct.Value);
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="s"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
+            public Task<string> DoYAsync(string s, CancellationToken cancellation = default)
+            {
+                return Task.FromResult(s);
             }
 
             /// <summary>
@@ -201,6 +223,8 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcOAuth2Local(services.GetSolidRpcService<Uri>().ToString());
             services.AddTransient<ISolidRpcOidc, TestOidc>();
             services.AddSolidRpcServices(o => true);
+
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/test", "/SolidRpc/Tests/Invoker/HttpInvokerTest1/ITestInterface/DoYAsync");
         }
 
         /// <summary>
@@ -264,6 +288,32 @@ namespace SolidRpc.Tests.Invoker
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
                 var res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => opt);
                 Assert.AreEqual(4711, res);
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestHttpInvokerWithPathRewrite()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+
+                var res = await invoker.InvokeAsync(o => o.DoYAsync("test", CancellationToken.None));
+                Assert.AreEqual("test", res);
+
+                var uri = await invoker.GetUriAsync(o => o.DoYAsync("XYZ", CancellationToken.None));
+                Assert.IsTrue(uri.AbsolutePath.EndsWith("/XYZ"));
+
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+                httpClient.DefaultRequestHeaders.Add(SecKey.ToString(), SecKey.ToString());
+                var resp = await httpClient.GetAsync(new Uri(uri, "/test/1/2/3"));
+                Assert.IsTrue(resp.IsSuccessStatusCode);
+                Assert.AreEqual("\"1/2/3\"", await resp.Content.ReadAsStringAsync());
             }
         }
 
