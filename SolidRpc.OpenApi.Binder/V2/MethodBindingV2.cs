@@ -443,7 +443,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
             foreach (var pathData in request.PathData)
             {
-                request.Path = request.Path.Replace($"{{{pathData.Name}}}", HttpUtility.UrlEncode(pathData.GetStringValue()).Replace("+", "%20"));
+                request.Path = request.Path.Replace($"{{{pathData.Name}}}", HttpUtility.UrlEncode(pathData.GetStringValue())?.Replace("+", "%20"));
             }
 
             //
