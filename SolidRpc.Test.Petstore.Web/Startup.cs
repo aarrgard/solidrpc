@@ -14,6 +14,7 @@ using System.Threading;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.Test.Petstore.Impl;
+using SolidRpc.Test.Petstore.Web;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -93,6 +94,13 @@ namespace SolidRpc.Test.PetstoreWeb
             //    return await handler.GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
             //});
             services.AddSolidRpcWellKnownRootRewrite();
+
+            var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
+            services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestInterface), conf =>
+            {
+                conf.OpenApiSpec = apiSpec;
+                return true;
+            });
 
 
             //services.AddSolidRpcSecurityFrontend((sp, conf) =>
