@@ -175,13 +175,16 @@ namespace SolidRpc.OpenApi.Binder.V2
                     }
                     else
                     {
-                        var template = FileContentTemplate.GetTemplate(value.GetType());
-                        await latest.SetBinaryData(name, template.GetContent(value));
-                        latest.SetContentType(template.GetContentType(value));
-                        latest.SetCharSet(template.GetCharSet(value));
-                        latest.SetFilename(template.GetFileName(value));
-                        latest.SetETag(template.GetETag(value));
-                        latest.SetLastModified(template.GetLastModified(value));
+                        if(value != null)
+                        {
+                            var template = FileContentTemplate.GetTemplate(value.GetType());
+                            await latest.SetBinaryData(name, template.GetContent(value));
+                            latest.SetContentType(template.GetContentType(value));
+                            latest.SetCharSet(template.GetCharSet(value));
+                            latest.SetFilename(template.GetFileName(value));
+                            latest.SetETag(template.GetETag(value));
+                            latest.SetLastModified(template.GetLastModified(value));
+                        }
                     }
                     break; ;
             }

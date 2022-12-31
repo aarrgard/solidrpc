@@ -81,6 +81,14 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<FileContent> TestSetCookie(CancellationToken cancellation = default(CancellationToken));
+
+            /// <summary>
+            /// Tests proxying a file
+            /// </summary>
+            /// <param name="fileContent"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation = default(CancellationToken));
         }
 
         /// <summary>
@@ -165,6 +173,11 @@ namespace SolidRpc.Tests.Invoker
                     var vals = o.Split(';').First().Split('=');
                     return new NameValuePair() { Name = vals[0], Value = vals[1] };
                 });
+            }
+
+            public Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation)
+            {
+                return Task.FromResult(fileContent);
             }
         }
 
@@ -332,6 +345,30 @@ namespace SolidRpc.Tests.Invoker
                 var res = await oidc.AuthorizeAsync(null, null, null, null, null, null, null, CancellationToken.None);
 
                 Assert.AreEqual("text/plain", res.ContentType);
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestFileContent()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var testInterface = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+                var res = await testInterface.TestProxyFile(null);
+                Assert.AreEqual("text/plain", res.ContentType);
+                Assert.AreEqual(0, res.Content.Length);
+
+                res = await testInterface.TestProxyFile(new FileContent() { 
+                    ContentType = "image/jpeg", 
+                    Content = new MemoryStream(new byte[10])});
+                Assert.AreEqual("image/jpeg", res.ContentType);
+                Assert.AreEqual(10, res.Content.Length);
+
             }
         }
 
