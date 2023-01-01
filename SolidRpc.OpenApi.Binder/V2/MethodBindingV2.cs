@@ -760,6 +760,10 @@ namespace SolidRpc.OpenApi.Binder.V2
             var fileTemplate = FileContentTemplate.GetTemplate(objType);
             if (fileTemplate.IsTemplateType)
             {
+                if(obj == null)
+                {
+                    return Task.CompletedTask;
+                }
                 // handle status code for 302
                 response.Location = fileTemplate.GetLocation(obj);
                 if(!string.IsNullOrEmpty(response.Location))

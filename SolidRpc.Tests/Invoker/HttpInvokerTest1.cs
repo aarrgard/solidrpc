@@ -177,6 +177,10 @@ namespace SolidRpc.Tests.Invoker
 
             public Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation)
             {
+                if(fileContent.Content.Length == 0)
+                {
+                    fileContent = null;
+                }
                 return Task.FromResult(fileContent);
             }
         }
@@ -360,8 +364,7 @@ namespace SolidRpc.Tests.Invoker
 
                 var testInterface = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
                 var res = await testInterface.TestProxyFile(null);
-                Assert.AreEqual("text/plain", res.ContentType);
-                Assert.AreEqual(0, res.Content.Length);
+                Assert.IsNull(res);
 
                 res = await testInterface.TestProxyFile(new FileContent() { 
                     ContentType = "image/jpeg", 
