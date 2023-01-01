@@ -9,6 +9,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
 
 namespace SolidRpc.OpenApi.Generator.Impl
 {
@@ -36,6 +38,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
         private ConcurrentDictionary<string, CompilationUnitSyntax> CompilationUnits { get; }
 
         private ICSharpRepository CSharpRepository { get; }
+        private CSharpCompilation CSharpCompilation { get; set; }
 
         private ICSharpRepository ParseProjectInternal(Project project)
         {
@@ -170,9 +173,14 @@ namespace SolidRpc.OpenApi.Generator.Impl
                     CreateCSharpEnumValue(emds);
                     return;
                 }
-                if(member is ClassDeclarationSyntax cds)
+                if (member is ClassDeclarationSyntax cds)
                 {
                     CreateClassDeclaration(cds);
+                    return;
+                }
+                if (member is FieldDeclarationSyntax fds)
+                {
+                    CreateFieldDeclaration(fds);
                     return;
                 }
                 //Console.WriteLine("Skipping member:" + member.GetType().FullName);
@@ -182,6 +190,28 @@ namespace SolidRpc.OpenApi.Generator.Impl
                 // eat it or throw it?
                 // throw e
                 Console.WriteLine(e.Message);
+            }
+        }
+
+        private void CreateFieldDeclaration(FieldDeclarationSyntax fds)
+        {
+            var (className, nameScope) = GetClassOrInterfaceName(fds);
+            var m = GetMember(className, nameScope);
+            
+            foreach (var variable in fds.Declaration.Variables)
+            {
+                var fieldName = variable.Identifier.ValueText;
+                var fieldTypeName = GetFullName(fds, fds.Declaration.Type.ToString());
+                string fieldValue = null;
+                if(variable.Initializer != null)
+                {
+                    fieldValue = variable.Initializer.Value.ToString();
+                }
+
+                var fieldType = CSharpRepository.GetType(fieldTypeName);
+                var field = new CSharpField(m, fieldName, fieldType, fieldValue);
+                m.AddMember(field);
+                AddAttributes(fds, fds.AttributeLists, field);
             }
         }
 

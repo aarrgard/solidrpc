@@ -1,6 +1,7 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
 using System;
+using System.Collections.Generic;
 
 namespace SolidRpc.OpenApi.Model.Generator
 {
@@ -63,6 +64,5 @@ namespace SolidRpc.OpenApi.Model.Generator
         /// <param name="cSharpRepository"></param>
         /// <returns></returns>
         public abstract IOpenApiSpec CreateSwaggerSpec(IOpenApiSpecResolver openApiSpecResolver, ICSharpRepository cSharpRepository);
-
     }
 }

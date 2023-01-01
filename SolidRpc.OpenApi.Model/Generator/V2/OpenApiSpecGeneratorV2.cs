@@ -422,6 +422,20 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                 successResponse.Description = "Success";
                 responsesObject["200"] = successResponse;
             }
+
+            // add exception responses
+            foreach(var ex in method.Comment?.Exceptions.AsNotNull())
+            {
+                var repo = method.GetParent<ICSharpRepository>();
+                var exClass = repo.GetClass(ex.Cref);
+                if(exClass == null) { continue; }
+                var httpCode = exClass.Members.OfType<ICSharpField>().Where(o => o.Name == "HttpStatusCode").Select(o => o.Value).FirstOrDefault();
+                if (httpCode == null) { continue; }
+                
+                var errorResponse = new ResponseObject(responsesObject);
+                errorResponse.Description = exClass.Comment?.Summary ?? "Failure";
+                responsesObject[httpCode] = errorResponse;
+            }
             return responsesObject;
         }
 

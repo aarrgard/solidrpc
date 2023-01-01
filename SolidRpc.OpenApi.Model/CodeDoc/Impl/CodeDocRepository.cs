@@ -38,6 +38,12 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             return assemblyDoc.GetClassDocumentation(type);
         }
 
+        public ICodeDocField GetFieldDoc(FieldInfo field)
+        {
+            var classDoc = GetClassDoc(field.DeclaringType);
+            return classDoc.GetFieldDocumentation(field);
+        }
+
         /// <summary>
         /// Returns the method doc
         /// </summary>

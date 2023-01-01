@@ -30,7 +30,10 @@
             "required": true,
             "schema": {
               "additionalProperties": {
-                "$ref": "#/definitions/ComplexType"
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ComplexType"
+                }
               },
               "type": "object"
             },
@@ -42,7 +45,10 @@
             "description": "The response type",
             "schema": {
               "additionalProperties": {
-                "$ref": "#/definitions/ComplexType"
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ComplexType"
+                }
               },
               "type": "object"
             }

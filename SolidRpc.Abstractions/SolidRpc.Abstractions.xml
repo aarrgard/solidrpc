@@ -4,6 +4,62 @@
         <name>SolidRpc.Abstractions</name>
     </assembly>
     <members>
+        <member name="T:System.Collections.Generic.IEnumerationExtensions">
+            <summary>
+            Extension methods for an enumeration
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerationExtensions.AsNotNull``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns an empty array if supplied argument is null
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="e"></param>
+            <returns></returns>
+        </member>
+        <member name="T:System.TypeExtensions">
+            <summary>
+            Contains extension methods for the Type
+            </summary>
+        </member>
+        <member name="M:System.TypeExtensions.IsFileContent(System.Type)">
+            <summary>
+            Returns true if the type is a binary template type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsHttpRequest(System.Type)">
+            <summary>
+            Returns true if the type is a HttpRequest template type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsEnumType(System.Type,System.Type@)">
+            <summary>
+            Returns true if the type is an enum
+            </summary>
+            <param name="type"></param>
+            <param name="enumType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsTaskType(System.Type,System.Type@)">
+            <summary>
+            Returns true if supplied tyoe is a task type.
+            </summary>
+            <param name="type"></param>
+            <param name="taskType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtensions.IsNullableType(System.Type,System.Type@)">
+            <summary>
+            Returns true if supplied type is a nullable type.
+            </summary>
+            <param name="type"></param>
+            <param name="nullableType"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Http.IHttpRequestDataExtensions">
             <summary>
             Contains extension methods for the enums
@@ -4046,49 +4102,6 @@
             </summary>
             <param name="services"></param>
             <param name="ctor"></param>
-            <returns></returns>
-        </member>
-        <member name="T:System.TypeExtensions">
-            <summary>
-            Contains extension methods for the Type
-            </summary>
-        </member>
-        <member name="M:System.TypeExtensions.IsFileContent(System.Type)">
-            <summary>
-            Returns true if the type is a binary template type.
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.IsHttpRequest(System.Type)">
-            <summary>
-            Returns true if the type is a HttpRequest template type.
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.IsEnumType(System.Type,System.Type@)">
-            <summary>
-            Returns true if the type is an enum
-            </summary>
-            <param name="type"></param>
-            <param name="enumType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.IsTaskType(System.Type,System.Type@)">
-            <summary>
-            Returns true if supplied tyoe is a task type.
-            </summary>
-            <param name="type"></param>
-            <param name="taskType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.TypeExtensions.IsNullableType(System.Type,System.Type@)">
-            <summary>
-            Returns true if supplied type is a nullable type.
-            </summary>
-            <param name="type"></param>
-            <param name="nullableType"></param>
             <returns></returns>
         </member>
     </members>

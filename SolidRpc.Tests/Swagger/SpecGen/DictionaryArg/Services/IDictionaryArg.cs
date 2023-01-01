@@ -13,6 +13,6 @@ namespace SolidRpc.Tests.Swagger.SpecGen.DictionaryArg.Services
         /// </summary>
         /// <param name="strings">The strings</param>
         /// <returns></returns>
-        IDictionary<string, ComplexType> GetDictionaryValues(IDictionary<string, ComplexType> strings);
+        IDictionary<string, IEnumerable<ComplexType>> GetDictionaryValues(IDictionary<string, IEnumerable<ComplexType>> strings);
     }
 }

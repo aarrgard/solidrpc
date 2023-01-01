@@ -18,6 +18,26 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         private static ICodeDocRepository s_codeDocRepository = new CodeDocRepository();
 
         /// <summary>
+        /// Adds the supplied field to the supplied repository.
+        /// </summary>
+        /// <param name="cSharpRepository"></param>
+        /// <param name="field"></param>
+        public static ICSharpField AddField(ICSharpRepository cSharpRepository, FieldInfo field)
+        {
+            var fieldType = GetType(cSharpRepository, field.FieldType);
+            var cSharpType = GetType(cSharpRepository, field.DeclaringType);
+            string defaultValue = null;
+            if(field.IsStatic)
+            {
+                defaultValue = field.GetValue(null)?.ToString();
+            }
+            var cSharpField = new CSharpField(cSharpType, field.Name, fieldType, defaultValue);
+            cSharpField.ParseComment(s_codeDocRepository.GetFieldDoc(field).CodeComments);
+            cSharpType.AddMember(cSharpField);
+            return cSharpField;
+        }
+
+        /// <summary>
         /// Adds the supplied method to the supplied repository.
         /// </summary>
         /// <param name="cSharpRepository"></param>
@@ -138,6 +158,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="type"></param>
         public static void AddType(CSharpRepository cSharpRepository, Type type)
         {
+            type.GetFields().ToList().ForEach(o => AddField(cSharpRepository, o));
             type.GetMethods().ToList().ForEach(o => AddMethod(cSharpRepository, o));
         }
     }

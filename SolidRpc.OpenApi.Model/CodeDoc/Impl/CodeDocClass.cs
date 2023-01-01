@@ -47,6 +47,11 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// </summary>
         public string Summary { get; private set; }
 
+        /// <summary>
+        /// All the field documentation
+        /// </summary>
+        public IDictionary<string, ICodeDocField> FieldDocumentation { get; }
+        IEnumerable<ICodeDocField> ICodeDocClass.FieldDocumentation => FieldDocumentation.Values;
 
         /// <summary>
         /// All the method documentations.
@@ -78,7 +83,6 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             }
         }
 
-
         /// <summary>
         /// Returns the documentation for supplied method
         /// </summary>
@@ -86,8 +90,7 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <returns></returns>
         public ICodeDocMethod GetMethodDocumentation(MethodInfo methodInfo)
         {
-            ICodeDocMethod doc;
-            if(!MethodDocumentation.TryGetValue(methodInfo.Name, out doc))
+            if(!MethodDocumentation.TryGetValue(methodInfo.Name, out ICodeDocMethod doc))
             {
                 doc = new CodeDocMethod(this, methodInfo.Name);
             }
@@ -101,10 +104,23 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
         /// <returns></returns>
         public ICodeDocProperty GetPropertyDocumentation(PropertyInfo pi)
         {
-            ICodeDocProperty doc;
-            if (!PropertyDocumentation.TryGetValue(pi.Name, out doc))
+            if (!PropertyDocumentation.TryGetValue(pi.Name, out ICodeDocProperty doc))
             {
                 doc = new CodeDocProperty(this, pi.Name);
+            }
+            return doc;
+        }
+
+        /// <summary>
+        /// Returns the field documentation
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ICodeDocField GetFieldDocumentation(FieldInfo field)
+        {
+            if (!FieldDocumentation.TryGetValue(field.Name, out ICodeDocField doc))
+            {
+                doc = new CodeDocField(this, field.Name);
             }
             return doc;
         }

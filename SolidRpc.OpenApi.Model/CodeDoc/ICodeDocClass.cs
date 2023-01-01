@@ -29,6 +29,18 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         IEnumerable<ICodeDocProperty> PropertyDocumentation { get; }
 
         /// <summary>
+        /// The field documentations.
+        /// </summary>
+        IEnumerable<ICodeDocField> FieldDocumentation { get; }
+
+        /// <summary>
+        /// Returns the field documentation
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        ICodeDocField GetFieldDocumentation(FieldInfo field);
+
+        /// <summary>
         /// Returns the documentation for supplied method.
         /// </summary>
         /// <param name="methodInfo"></param>

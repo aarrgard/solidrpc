@@ -92,7 +92,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "UrlAndQueryArgs") continue;
+                //if (subDir.Name != "Exceptions") continue;
                 CreateSpec(subDir.Name, true);
             }
         }
@@ -347,19 +347,19 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<DictionaryArg.Services.IDictionaryArg>();
 
-                var dictArg = new Dictionary<string, DictionaryArg.Types.ComplexType>()
+                var dictArg = new Dictionary<string, IEnumerable<DictionaryArg.Types.ComplexType>>()
                 {
-                    { "test1", new DictionaryArg.Types.ComplexType() {
+                    { "test1", new[] { new DictionaryArg.Types.ComplexType() {
                         ComplexTypes = new Dictionary<string, DictionaryArg.Types.ComplexType>()
                         {
                             { "test3", new DictionaryArg.Types.ComplexType() }
                         }
-                    }},
-                    { "test2", new DictionaryArg.Types.ComplexType() }
+                    }}},
+                    { "test2", new [] { new DictionaryArg.Types.ComplexType() } }
                 };
 
                 moq.Setup(o => o.GetDictionaryValues(
-                    It.Is<IDictionary<string, DictionaryArg.Types.ComplexType>>(a => CompareStructs(dictArg, a))
+                    It.Is<IDictionary<string, IEnumerable<DictionaryArg.Types.ComplexType>>>(a => CompareStructs(dictArg, a))
                     )).Returns(dictArg);
 
                 var res = proxy.GetDictionaryValues(dictArg);

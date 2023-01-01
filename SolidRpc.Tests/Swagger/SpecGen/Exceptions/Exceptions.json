@@ -1,0 +1,54 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Exceptions",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/Exceptions",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IExceptions/GetEtagStruct/{arg}": {
+      "get": {
+        "tags": [
+          "IExceptions"
+        ],
+        "description": "the method that declares the exception",
+        "operationId": "Get_SolidRpc_Tests_Swagger_SpecGen_Exceptions_Services_IExceptions_GetEtagStruct_1",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "arg",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "412": {
+            "description": "The test exception"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "IExceptions",
+      "description": "The service"
+    }
+  ]
+}

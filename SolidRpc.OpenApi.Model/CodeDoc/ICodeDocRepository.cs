@@ -30,6 +30,13 @@ namespace SolidRpc.OpenApi.Model.CodeDoc
         ICodeDocProperty GetPropertyDoc(PropertyInfo pi);
 
         /// <summary>
+        /// Returns the code documentation for supplied field
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        ICodeDocField GetFieldDoc(FieldInfo field);
+
+        /// <summary>
         /// Returns the class doc for supplied type
         /// </summary>
         /// <param name="type"></param>

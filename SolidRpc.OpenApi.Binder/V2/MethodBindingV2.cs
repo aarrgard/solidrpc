@@ -769,7 +769,7 @@ namespace SolidRpc.OpenApi.Binder.V2
 
                 if (obj == null)
                 {
-                    // nothing to resturn - make sure that the content type is empty
+                    // nothing to return - make sure that the content type is empty
                     response.MediaType = null;
                     return Task.CompletedTask;
                 }
