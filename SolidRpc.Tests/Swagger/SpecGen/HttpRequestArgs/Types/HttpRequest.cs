@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types
 {
@@ -16,5 +18,15 @@ namespace SolidRpc.Tests.Swagger.SpecGen.HttpRequestArgs.Types
         /// Uri
         /// </summary>
         public Uri Uri { get; set; }
+
+        /// <summary>
+        /// The headers
+        /// </summary>
+        public IDictionary<string, string[]> Headers { get; set; }
+
+        /// <summary>
+        /// The body.
+        /// </summary>
+        public Stream Body { get; set; }
     }
 }

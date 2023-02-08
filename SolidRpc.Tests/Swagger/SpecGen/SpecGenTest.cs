@@ -92,7 +92,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "Exceptions") continue;
+                //if (subDir.Name != "HttpRequestArgs") continue;
                 CreateSpec(subDir.Name, true);
             }
         }

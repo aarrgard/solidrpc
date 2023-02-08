@@ -205,7 +205,8 @@ namespace SolidRpc.OpenApi.Model.V2
                 return false;
             }
             var props = schema.Properties.ToDictionary(o => o.Key, o => o.Value.GetClrType());
-            return HttpRequestTemplate.IsHttpRequestType(schema.GetOperationName(), props);
+            var isHttpRequestType =  HttpRequestTemplate.IsHttpRequestType(schema.GetOperationName(), props);
+            return isHttpRequestType;
         }
 
         /// <summary>

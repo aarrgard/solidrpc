@@ -147,6 +147,12 @@ namespace SolidRpc.OpenApi.Model.V2
                 case null:
                 case "":
                 case "object":
+                    if(item is SchemaObject so && so.AdditionalProperties != null)
+                    {
+                        var propTypes = so.AdditionalProperties.GetClrType();
+                        return typeof(IDictionary<,>).MakeGenericType(typeof(string), propTypes);
+                    }
+                    return typeof(object);
                 case "file":
                     return typeof(object);
                 case "array":
