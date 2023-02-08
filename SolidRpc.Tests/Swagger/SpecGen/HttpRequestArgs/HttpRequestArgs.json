@@ -177,6 +177,21 @@
           "type": "string",
           "format": "uri",
           "description": "Uri"
+        },
+        "Headers": {
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "description": "The headers"
+        },
+        "Body": {
+          "type": "string",
+          "format": "binary",
+          "description": "The body."
         }
       },
       "type": "object",
