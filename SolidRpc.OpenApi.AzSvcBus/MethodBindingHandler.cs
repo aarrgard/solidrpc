@@ -1,5 +1,5 @@
-﻿using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.Management;
+﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,6 +13,7 @@ using SolidRpc.OpenApi.AzSvcBus;
 using SolidRpc.OpenApi.AzSvcBus.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -35,7 +36,8 @@ namespace SolidRpc.OpenApi.AzSvcBus
             ISerializerFactory serializerFactory,
             SvcBusHandler queueHandler,
             IMethodInvoker methodInvoker,
-            IServiceScopeFactory serviceScopeFactory)
+            IServiceScopeFactory serviceScopeFactory,
+            IServiceBusClient serviceBusClient)
         {
             Logger = logger;
             Configuration = configuration;
@@ -44,15 +46,17 @@ namespace SolidRpc.OpenApi.AzSvcBus
             QueueHandler = queueHandler;
             MethodInvoker = methodInvoker;
             ServiceScopeFactory = serviceScopeFactory;
+            ServiceBusClient = serviceBusClient;
         }
 
         private ILogger Logger { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private SvcBusHandler QueueHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
+        private IServiceBusClient ServiceBusClient { get; }
 
         /// <summary>
         /// Invoked when a binding has been created. If there is a Queue transport
@@ -99,44 +103,50 @@ namespace SolidRpc.OpenApi.AzSvcBus
             //
             // make sure that the queue exists
             //
-            var mgmt = new ManagementClient(connectionString);
+            var mgmt = new ServiceBusAdministrationClient(connectionString);
             try
             {
                 var queue = await mgmt.GetQueueAsync(queueName, cancellationToken);
             }
             catch (Exception)
             {
-                var queueDescription = new QueueDescription(queueName);
-                queueDescription.AutoDeleteOnIdle = new TimeSpan(1, 0, 0, 0);
-                var queue = await mgmt.CreateQueueAsync(queueName, cancellationToken);
+                var queueDescription = new CreateQueueOptions(queueName);
+                //queueDescription.AutoDeleteOnIdle = new TimeSpan(1, 0, 0, 0);
+                var queue = await mgmt.CreateQueueAsync(queueDescription, cancellationToken);
             }
 
             if (startReceiver)
             {
-                var gc = new QueueClient(connectionString, queueName, ReceiveMode.PeekLock);
-                gc.RegisterMessageHandler(MessageHandler, new MessageHandlerOptions(ExceptionHandler)
-                {
-                    MaxConcurrentCalls = 100,
-                    AutoComplete = true
-                });
+                StartReceivingMessagesAsync(connectionName, queueName);
             }
         }
 
-        private Task ExceptionHandler(ExceptionReceivedEventArgs arg)
+        private async Task StartReceivingMessagesAsync(string connectionName, string queueName)
         {
-            Logger.LogError(arg.Exception, "Error processing message:");
-            return Task.CompletedTask;
+            await Task.Yield();
+            var receiver = ServiceBusClient.GetServiceBusReceiver(connectionName, queueName);
+            while(!SolidRpcApplication.ShutdownToken.IsCancellationRequested)
+            {
+                var msg = await receiver.ReceiveMessageAsync(null, SolidRpcApplication.ShutdownToken);
+                try
+                {
+                    await MessageHandler(msg, SolidRpcApplication.ShutdownToken);
+                    await receiver.CompleteMessageAsync(msg, SolidRpcApplication.ShutdownToken);
+                } catch (Exception ex) 
+                {
+                    await receiver.DeadLetterMessageAsync(msg, new Dictionary<string ,object>() { }, SolidRpcApplication.ShutdownToken);
+                }
+            }
         }
 
-        private async Task MessageHandler(Message msg, CancellationToken cancellationToken)
+        private async Task MessageHandler(ServiceBusReceivedMessage msg, CancellationToken cancellationToken)
         {
             try
             {
                 Logger.LogInformation("Started processing message:" + msg.MessageId);
 
                 HttpRequest httpRequest;
-                var ms = new MemoryStream(msg.Body);
-                SerializerFactory.DeserializeFromStream(ms, out httpRequest);
+                SerializerFactory.DeserializeFromStream(msg.Body.ToStream(), out httpRequest);
 
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(httpRequest, p => p);

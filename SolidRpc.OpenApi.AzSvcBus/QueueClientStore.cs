@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
@@ -6,34 +6,47 @@ using SolidRpc.OpenApi.AzSvcBus;
 using System;
 using System.Collections.Concurrent;
 
-[assembly: SolidRpcService(typeof(IQueueClientStore), typeof(QueueClientStore), SolidRpcServiceLifetime.Singleton)]
+[assembly: SolidRpcService(typeof(IServiceBusClient), typeof(QueueClientStore), SolidRpcServiceLifetime.Singleton)]
 namespace SolidRpc.OpenApi.AzSvcBus
 {
-    public class QueueClientStore : IQueueClientStore
+    public class QueueClientStore : IServiceBusClient
     {
         public QueueClientStore(ILogger<QueueClientStore> logger, IConfiguration configuration)
         {
             Logger = logger;
             Configuration = configuration;
-            QueueClients = new ConcurrentDictionary<string, ConcurrentDictionary<string, QueueClient>>();
+            ServiceBusClients = new ConcurrentDictionary<string, ServiceBusClient>();
+            ServiceBusSenders = new ConcurrentDictionary<string, ConcurrentDictionary<string, ServiceBusSender>> ();
         }
         ILogger Logger { get; }
         IConfiguration Configuration { get; }
-        private ConcurrentDictionary<string, ConcurrentDictionary<string, QueueClient>> QueueClients { get; }
-        public QueueClient GetQueueClient(string connectionName, string queueName)
+        private ConcurrentDictionary<string, ServiceBusClient> ServiceBusClients { get; }
+        private ConcurrentDictionary<string, ConcurrentDictionary<string, ServiceBusSender>> ServiceBusSenders { get; }
+        private ConcurrentDictionary<string, ConcurrentDictionary<string, ServiceBusReceiver>> ServiceBusReceivers { get; }
+
+        private ServiceBusClient GetServiceBusClient(string connectionName)
         {
-            var dict = QueueClients.GetOrAdd(connectionName, _ => new ConcurrentDictionary<string, QueueClient>());
-            return dict.GetOrAdd(queueName, _ => CreateQueueClient(connectionName, queueName));
+            return ServiceBusClients.GetOrAdd(connectionName, _ => {
+                var connectionString = Configuration[connectionName];
+                return new ServiceBusClient(connectionString);
+            });
         }
 
-        private QueueClient CreateQueueClient(string connectionName, string queueName)
+        public ServiceBusSender GetServiceBusSender(string connectionName, string queueName)
         {
-            var connectionString = Configuration[connectionName];
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new System.Exception("Cannot find connection string for connection name:"+connectionName);
-            }
-            return new QueueClient(connectionString, queueName);
+            return ServiceBusSenders
+                .GetOrAdd(connectionName, _ => new ConcurrentDictionary<string, ServiceBusSender>())
+                .GetOrAdd(queueName, _ => GetServiceBusClient(connectionName).CreateSender(queueName));
+        }
+
+        public ServiceBusReceiver GetServiceBusReceiver(string connectionName, string queueName)
+        {
+            return ServiceBusReceivers
+                .GetOrAdd(connectionName, _ => new ConcurrentDictionary<string, ServiceBusReceiver>())
+                .GetOrAdd(queueName, _ => GetServiceBusClient(connectionName).CreateReceiver(queueName, new ServiceBusReceiverOptions()
+                {
+                    ReceiveMode = ServiceBusReceiveMode.PeekLock
+                }));
         }
     }
 }

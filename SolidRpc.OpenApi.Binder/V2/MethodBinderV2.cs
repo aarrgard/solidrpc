@@ -212,6 +212,23 @@ namespace SolidRpc.OpenApi.Binder.V2
             {
                 return true;
             }
+            if (clrType.IsGenericType && type.IsGenericType)
+            {
+                if (clrType.GetGenericTypeDefinition() == type.GetGenericTypeDefinition())
+                {
+                    if (clrType.GetGenericTypeDefinition() == type.GetGenericTypeDefinition())
+                    {
+                        if (clrType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                        {
+                            if (clrType.GetGenericArguments()[0] == typeof(string))
+                            {
+                                return true;
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 

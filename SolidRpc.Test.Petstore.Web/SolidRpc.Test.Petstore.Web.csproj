@@ -31,4 +31,8 @@
     <ProjectReference Include="..\SolidRpc.Test.Vitec\SolidRpc.Test.Vitec.csproj" />
   </ItemGroup>
 
+  <!--<Target Name="SwaggerGenerator" BeforeTargets="Compile">
+    <Exec Command="dotnet solidrpc-swaggergen -swagger2code petstore.json" WorkingDirectory="$(ProjectDir)" />
+  </Target>-->
+
 </Project>

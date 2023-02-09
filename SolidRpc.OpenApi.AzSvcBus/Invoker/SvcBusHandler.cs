@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
@@ -20,22 +20,22 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
         public SvcBusHandler(ILogger<QueueHandler<ISvcBusTransport>> logger,
             IMethodBinderStore methodBinderStore,
             ISerializerFactory serializerFactory,
-            IQueueClientStore queueClientStore,
+            IServiceBusClient serviceBusClient,
             ISolidRpcApplication solidRpcApplication) 
             : base(logger, methodBinderStore, serializerFactory, solidRpcApplication)
         {
-            QueueClientStore = queueClientStore;
+            ServiceBusClient = serviceBusClient;
         }
 
-        private IQueueClientStore QueueClientStore { get; }
+        private IServiceBusClient ServiceBusClient { get; }
 
         protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ISvcBusTransport queueTransport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
         {
             // dispatch message
-            var msg = new Message(Encoding.UTF8.GetBytes(message));
+            var msg = new ServiceBusMessage(Encoding.UTF8.GetBytes(message));
             msg.ContentType = "application/json";
-            var qc = QueueClientStore.GetQueueClient(queueTransport.ConnectionName, queueTransport.QueueName);
-            return qc.SendAsync(msg);
+            var qc = ServiceBusClient.GetServiceBusSender(queueTransport.ConnectionName, queueTransport.QueueName);
+            return qc.SendMessageAsync(msg, cancellationToken);
         }
     }
 }

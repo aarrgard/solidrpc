@@ -21,8 +21,8 @@ namespace SolidRpc.OpenApi.DotNetTool
     {
         private const string s_openapi2code = "-openapi2code";
         private const string s_code2openapi = "-code2openapi";
-        private static string[] s_commands = new[] { s_openapi2code, s_code2openapi };
-        private static readonly ConcurrentDictionary<string, XmlDocument> ProjectDocuments = new ConcurrentDictionary<string, XmlDocument>();
+        private const string s_serverbindings = "-serverbindings";
+        private static string[] s_commands = new[] { s_openapi2code, s_code2openapi, s_serverbindings };
         private static IServiceProvider s_serviceProvider;
 
         public static void Main(string[] args)
@@ -44,7 +44,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             var command = argList.Where(o => s_commands.Contains(o)).SingleOrDefault();
             if(command == null)
             {
-                Console.Error.WriteLine($"Must supply direction of code: {string.Join("or", s_commands)}");
+                Console.Error.WriteLine($"Must supply a command: {string.Join(" or ", s_commands)}");
                 Environment.Exit(1);
             }
             argList.Remove(command);
@@ -61,6 +61,9 @@ namespace SolidRpc.OpenApi.DotNetTool
                     break;
                 case s_openapi2code:
                     task = GenerateCodeFromOpenApi(workingDir, settings, files);
+                    break;
+                case s_serverbindings:
+                    task = GenerateServerBindings(workingDir, settings, files);
                     break;
                 default:
                     throw new Exception("Cannot handle command:" + command);
@@ -96,6 +99,24 @@ namespace SolidRpc.OpenApi.DotNetTool
             argList.RemoveAt(argIdx);
             argList.RemoveAt(argIdx);
             return val;
+        }
+
+        private static Task GenerateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> settings, IEnumerable<FileInfo> files)
+        {
+            if (files.Count() == 0)
+            {
+                throw new Exception($"Must specify file to generate");
+            }
+            if (files.Count() > 1)
+            {
+                throw new Exception($"Cannot specify more than one file when generating server bindings.");
+            }
+            return GenerateServerBindings(workingDir, settings, files.First());
+        }
+
+        private static Task GenerateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> settings, FileInfo fileInfo)
+        {
+            throw new NotImplementedException();
         }
 
         private static Task GenerateOpenApiFromCode(DirectoryInfo workingDir, IDictionary<string, string> settings, IEnumerable<FileInfo> files)
@@ -181,6 +202,17 @@ namespace SolidRpc.OpenApi.DotNetTool
             }
             return s_serviceProvider;
         }
+
+        private static Task GenereateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> settings, List<FileInfo> files)
+        {
+            var nonexisingFiles = files.Where(o => !o.Exists);
+            if (nonexisingFiles.Any())
+            {
+                throw new Exception($"Cannot find files {string.Join(",", nonexisingFiles.Select(o => o.FullName))}");
+            }
+            return Task.WhenAll(files.Select(o => GenerateCodeFromOpenApi(workingDir, settings, o)));
+        }
+
 
         private static Task GenerateCodeFromOpenApi(DirectoryInfo workingDir, IDictionary<string, string> settings, List<FileInfo> files)
         {
