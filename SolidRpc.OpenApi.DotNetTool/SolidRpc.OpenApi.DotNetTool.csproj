@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <Description>Generates code from a swagger specification.</Description>
     <PackageId>SolidRpc.OpenApi.DotNetTool</PackageId>
     <AssemblyName>dotnet-solidrpc-openapigen</AssemblyName>
