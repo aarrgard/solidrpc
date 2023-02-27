@@ -130,7 +130,7 @@ const puppeteer = require('puppeteer');
             var res = await nodeService.ExecuteFileAsync(NodeModuleNpmResolver.GuidModuleId, null, $"npm{sep}bin{sep}npm-cli.js", new string[] { "--version" });
 
             Assert.AreEqual(0, res.ExitCode);
-            Assert.AreEqual("7.13.0", res.Out.Trim());
+            Assert.AreEqual("9.5.1", res.Out.Trim());
             Assert.AreEqual("", res.Err);
         }
     }

@@ -45,7 +45,7 @@ namespace SolidRpc.Node.Services
             foreach(var assemblyName in compileAssemblyNames)
             {
                 var ts = await TypescriptGenerator.CreateTypesTsForAssemblyAsync(assemblyName, cancellationToken);
-                var npmPackage = await CompileTsAsync(npmPackages, assemblyName, "1.0.0.0", ts, cancellationToken);
+                var npmPackage = await CompileTsAsync(npmPackages, assemblyName, "1.0.0", ts, cancellationToken);
                 npmPackages.Add(npmPackage);
                 if(assemblyNames.Contains(assemblyName))
                 {

@@ -54,12 +54,12 @@ namespace SolidRpc.Node.Services
             {
                 tw.Write(@"{
  ""dependencies"": {
-    ""@types/node"": ""^16.7.8"",
-    ""open"": ""^8.2.1"",
-    ""axios"": ""^0.21.1"",
+    ""@types/node"": ""^18.14.2"",
+    ""open"": ""^8.4.2"",
+    ""axios"": ""^1.3.4"",
     ""cancellationtoken"": ""^2.2.0"",
-    ""rxjs"": ""^7.1.0"",
-    ""typescript"": ""^4.3.4""
+    ""rxjs"": ""^7.8.0"",
+    ""typescript"": ""^4.9.5""
  }
 }");
             }
