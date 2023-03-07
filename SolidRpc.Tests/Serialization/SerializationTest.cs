@@ -59,15 +59,23 @@ namespace SolidRpc.Tests.Serialization
         }
 
         public class StructBase { 
-            public virtual string Type { get; set; } 
+            public virtual string Type { get; set; }
+            [DataMember(Name ="Common", EmitDefaultValue = false)]
+            public string Common { get; set; }
         }
         public class Struct1 : StructBase {
             public override string Type { get; set; } = "Type1";
             public int[] Arr { get; set; }
         }
-        public class Struct2 : StructBase {
+        public class Struct2 : StructBase
+        {
             public override string Type { get; set; } = "Type2";
             public int[][] Arr { get; set; }
+        }
+        public class Struct3 : StructBase
+        {
+            public override string Type { get; set; } = "Type3";
+            public StructBase Arr { get; set; }
         }
 
         private IServiceProvider GetServiceProvider()
@@ -330,13 +338,45 @@ namespace SolidRpc.Tests.Serialization
             serFact.SerializeToString(out s, s2);
             Assert.AreEqual(@"{""Type"":""Type2"",""Arr"":[[1,2]]}", s);
 
-            serFact.DeserializeFromString(@"{""Type"":""Type1"",""Arr"":[1,2]}", out StructBase sb);
+            serFact.DeserializeFromString(@"{""Common"": ""a"",""Type"":""Type1"",""Arr"":[1,2]}", out StructBase sb);
             Assert.AreEqual("Type1", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual(new[] { 1, 2 }, ((Struct1)sb).Arr);
             Assert.AreEqual(typeof(Struct1), sb.GetType());
 
-            serFact.DeserializeFromString(@"{""Type"":""Type2"",""Arr"":[[1,2]]}", out sb);
+            serFact.DeserializeFromString(@"{""Common"": ""a"",""Arr"":[1,2],""Type"":""Type1""}", out sb);
+            Assert.AreEqual("Type1", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual(new[] { 1, 2 }, ((Struct1)sb).Arr);
+            Assert.AreEqual(typeof(Struct1), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Common"": ""a"",""Type"":""Type2"",""Arr"":[[1,2]]}", out sb);
             Assert.AreEqual("Type2", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual(new[] { new [] { 1, 2 } }, ((Struct2)sb).Arr);
             Assert.AreEqual(typeof(Struct2), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Arr"":[[1,2]], ""Common"": ""a"",""Type"":""Type2""}", out sb);
+            Assert.AreEqual("Type2", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual(typeof(Struct2), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Common"": ""a"",""Arr"":{""Type"":""Type2"" },""Type"":""Type3""}", out sb);
+            Assert.AreEqual("Type3", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual("Type2", ((Struct3)sb).Arr.Type);
+            Assert.AreEqual(typeof(Struct3), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Common"": ""a"",""Type"":""Type4"",""Arr"":[[1,2]]}", out sb);
+            Assert.AreEqual("Type4", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual(typeof(StructBase), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Type"":""Type4"",""Arr"":[[1,2]],""Common"": ""a""}", out sb);
+            Assert.AreEqual("Type4", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual(typeof(StructBase), sb.GetType());
+
         }
 
         /// <summary>

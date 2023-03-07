@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
@@ -14,6 +16,8 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
     /// <typeparam name="T"></typeparam>
     public class NewtonsoftConverter<T> : JsonConverter
     {
+        private delegate object ReadPropertyHandler(JsonReader r, object val, JsonSerializer s, ref IDictionary<string, string> sp);
+
         private static IEnumerable<PropertyInfo> s_cachedProperties;
 
         private class PropertyMetaData
@@ -46,7 +50,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
         /// </summary>
         public NewtonsoftConverter()
         {
-            ReadPropertyHandler = new ConcurrentDictionary<string, Func<JsonReader, object, JsonSerializer, object>>();
+            ReadPropertyHandlers = new ConcurrentDictionary<string, ReadPropertyHandler>();
             DynamicType = GetDynamicType(typeof(T));
             PropertyWriters = CreatePropertyWriters();
             Constructor = CreateConstructor();
@@ -186,7 +190,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             return null;
         }
 
-        private ConcurrentDictionary<string, Func<JsonReader, object, JsonSerializer, object>> ReadPropertyHandler { get; }
+        private ConcurrentDictionary<string, ReadPropertyHandler> ReadPropertyHandlers { get; }
         private IEnumerable<Action<JsonWriter, object, JsonSerializer>> PropertyWriters { get; }
         private Func<T> Constructor { get; }
         private Type DynamicType { get; }
@@ -216,12 +220,29 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             {
                 value = Constructor();
             }
+
+            //
+            // read ordinary properties
+            //
+            IDictionary<string, string> deferred = null;
             while (reader.TokenType == JsonToken.PropertyName)
             {
                 var propertyName = (string)reader.Value;
                 reader.Read();
-                value = ReadPropertyHandler.GetOrAdd(propertyName, CreateReadPropertyHandler).Invoke(reader, value, serializer);
+                value = ReadPropertyHandlers.GetOrAdd(propertyName, CreateReadPropertyHandler).Invoke(reader, value, serializer, ref deferred);
                 reader.Read();
+            }
+
+            //
+            // Handle deferred properties
+            //
+            if(deferred != null)
+            {
+                foreach(var x in deferred)
+                {
+                    var newReader = new JsonTextReader(new StringReader(x.Value));
+                    ReadPropertyHandlers[x.Key].Invoke(newReader, value, serializer, ref deferred);
+                }
             }
             if (reader.TokenType != JsonToken.EndObject)
             {
@@ -244,7 +265,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             }
        }
 
-        private Func<JsonReader, object, JsonSerializer, object> CreateReadPropertyHandler(string propertyName)
+        private ReadPropertyHandler CreateReadPropertyHandler(string propertyName)
         {
             var propertyMetaData = GetProperties()
                 .Where(o => {
@@ -260,7 +281,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 var prop = propertyMetaData.Single().PropertyInfo;
                 var m = propertyMetaData.Single().ValueGetter;
                 var sp = CreateSetParent(prop.PropertyType);
-                return (r, o, s) =>
+                return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
                     var val = m.Invoke(this, new[] { r, o, s, sp});
                     try
@@ -283,9 +304,17 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             if (propertyMetaData.Count > 1)
             {
                 bool upcast = propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
-                return (r, o, s) =>
+                return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
                     var pmd = propertyMetaData.FirstOrDefault(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType()));
+                    if(pmd == null)
+                    {
+                        rp = rp ?? new Dictionary<string, string>();
+                        var sb = new StringBuilder();
+                        var res = SkipNode(r,o,s,sb);
+                        rp[propertyName] = sb.ToString();
+                        return res;
+                    }
                     var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
                     var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
                     pmd.PropertyInfo.SetValue(o, val);
@@ -297,7 +326,12 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                         if (newMeta != null)
                         {
                             var newType = newMeta.PropertyInfo.DeclaringType;
-                            o = Activator.CreateInstance(newType);
+                            var newo = Activator.CreateInstance(newType);
+                            foreach (var p in o.GetType().GetProperties())
+                            {
+                                p.SetValue(newo, p.GetValue(o));
+                            }
+                            o = newo;
                         }
                     }
 
@@ -310,55 +344,76 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                     .Single(o => o.Name == nameof(ReadDictionaryData))
                     .MakeGenericMethod(DynamicType);
                 var sp = CreateSetParent(DynamicType);
-                return (r, o, s) =>
+                return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
                     m.Invoke(this, new[] { propertyName, r, o, s, sp });
                     return o;
                 };
             }
 
-            return SkipNode;
-            //throw new NotImplementedException($"Cannot handle property:{typeof(T).FullName}.{propertyName} - found {props.Count} props.");
+            return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) => { return SkipNode(r, o, s, null); };
         }
 
-        private object SkipNode(JsonReader r, object o, JsonSerializer s)
+        private object SkipNode(JsonReader r, object o, JsonSerializer s, StringBuilder sb)
         {
             switch(r.TokenType)
             {
                 case JsonToken.StartObject:
-                    SkipNodeObject(r, o, s);
+                    SkipNodeObject(r, o, s, sb);
                     break;
                 case JsonToken.StartArray:
-                    SkipNodeArray(r, o, s);
+                    SkipNodeArray(r, o, s, sb);
                     break;
+                case JsonToken.String:
+                case JsonToken.Date:
+                    sb?.Append($"\"{r.Value}\"");
+                    break;
+                case JsonToken.Integer:
+                case JsonToken.Float:
+                case JsonToken.Boolean:
+                    sb?.Append(r.Value);
+                    break;
+                case JsonToken.Null:
+                    sb?.Append("null");
+                    break;
+                case JsonToken.Comment:
                 default:
                     break;
             }
             return o;
         }
 
-        private void SkipNodeObject(JsonReader r, object o, JsonSerializer s)
+        private void SkipNodeObject(JsonReader r, object o, JsonSerializer s, StringBuilder sb)
         {
             if (r.TokenType != JsonToken.StartObject) throw new Exception("Not a start of object");
+            sb?.Append('{');
             if (!r.Read()) throw new Exception("Failed to read");
             while (r.TokenType != JsonToken.EndObject)
             {
                 if (r.TokenType != JsonToken.PropertyName) throw new Exception("Not a property name:" + r.TokenType);
+                sb?.Append($"\"{r.Value}\":");
                 if (!r.Read()) throw new Exception("Failed to read");
-                SkipNode(r, o, s);
+                SkipNode(r, o, s, sb);
                 if (!r.Read()) throw new Exception("Failed to read");
             }
+            sb?.Append('}');
         }
 
-        private void SkipNodeArray(JsonReader r, object o, JsonSerializer s)
+        private void SkipNodeArray(JsonReader r, object o, JsonSerializer s, StringBuilder sb)
         {
             if (r.TokenType != JsonToken.StartArray) throw new Exception("Not a start of object");
+            sb?.Append('[');
             if (!r.Read()) throw new Exception("Failed to read");
             while (r.TokenType != JsonToken.EndArray)
             {
-                SkipNode(r, o, s);
+                SkipNode(r, o, s,sb);
                 if (!r.Read()) throw new Exception("Failed to read");
+                if(r.TokenType != JsonToken.EndArray)
+                {
+                    sb.Append(',');
+                }
             }
+            sb?.Append(']');
         }
 
         private void ReadDictionaryData<Tp>(string propertyName, JsonReader r, object o, JsonSerializer s, Action<object, object> setParent) 
