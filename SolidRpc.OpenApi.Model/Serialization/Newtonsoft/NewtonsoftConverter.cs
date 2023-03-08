@@ -410,7 +410,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 if (!r.Read()) throw new Exception("Failed to read");
                 if(r.TokenType != JsonToken.EndArray)
                 {
-                    sb.Append(',');
+                    sb?.Append(',');
                 }
             }
             sb?.Append(']');
