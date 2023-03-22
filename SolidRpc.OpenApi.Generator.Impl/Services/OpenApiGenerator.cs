@@ -1,9 +1,11 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.Generator.Impl.Csproj;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Generator.Types.Project;
 using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.Generator.V2;
@@ -22,11 +24,13 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 {
     public class OpenApiGenerator : IOpenApiGenerator
     {
-        public OpenApiGenerator(IOpenApiParser openApiParser)
+        public OpenApiGenerator(IOpenApiParser openApiParser, ISerializerFactory serializerFactory)
         {
             OpenApiParser = openApiParser;
+            SerializerFactory = serializerFactory;
         }
         private IOpenApiParser OpenApiParser { get; }
+        private ISerializerFactory SerializerFactory { get; }
 
         public Task<Project> CreateCodeFromOpenApiSpec(SettingsCodeGen codeSettings, Project project, CancellationToken cancellationToken)
         {
@@ -145,7 +149,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             var ms = new MemoryStream();
             using (var zos = new ZipOutputStream(ms))
             {
-                foreach (var f in project.ProjectFiles)
+                foreach (var f in project.Files)
                 {
                     var ze = new ZipEntry($"{f.Directory}/{f.FileData.Filename}");
                     zos.PutNextEntry(ze);
@@ -187,8 +191,16 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
                         FileStream = new MemoryStream(ms.ToArray())
                     }
                 });
+
+                // parse assets file
+                if(string.Equals("obj/project.assets.json", ze.Name, StringComparison.InvariantCultureIgnoreCase)) 
+                {
+                    ms.Position = 0;
+                    SerializerFactory.DeserializeFromStream(ms, out ProjectAssets projectAssets);
+                    project.Assets = projectAssets;
+                }
             }
-            project.ProjectFiles = projectFiles;
+            project.Files = projectFiles;
         }
     }
 }

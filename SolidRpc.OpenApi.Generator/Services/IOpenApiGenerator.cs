@@ -1,4 +1,5 @@
 ﻿using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Generator.Types.Project;
 using System.Threading;
 using System.Threading.Tasks;
 

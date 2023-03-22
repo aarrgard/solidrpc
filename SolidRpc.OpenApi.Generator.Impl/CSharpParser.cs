@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Generator.Types.Project;
 using SolidRpc.OpenApi.Model.CSharp;
 using SolidRpc.OpenApi.Model.CSharp.Impl;
 using System;
@@ -9,8 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
 
 namespace SolidRpc.OpenApi.Generator.Impl
 {
@@ -38,11 +36,10 @@ namespace SolidRpc.OpenApi.Generator.Impl
         private ConcurrentDictionary<string, CompilationUnitSyntax> CompilationUnits { get; }
 
         private ICSharpRepository CSharpRepository { get; }
-        private CSharpCompilation CSharpCompilation { get; set; }
 
         private ICSharpRepository ParseProjectInternal(Project project)
         {
-            var csFiles = project.ProjectFiles
+            var csFiles = project.Files
                 .Where(o => o.FileData.Filename.EndsWith(".cs", StringComparison.InvariantCultureIgnoreCase));
             foreach (var csFile in csFiles)
             {

@@ -1,10 +1,12 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Model;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.Generator;
 using SolidRpc.OpenApi.Generator.Impl.Services;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Generator.Types.Project;
 using SolidRpc.OpenApi.Model;
 using System;
 using System.Collections.Concurrent;
@@ -12,6 +14,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -114,9 +118,166 @@ namespace SolidRpc.OpenApi.DotNetTool
             return GenerateServerBindings(workingDir, settings, files.First());
         }
 
-        private static Task GenerateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> settings, FileInfo fileInfo)
+        private static async Task GenerateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> argSettings, FileInfo fileInfo)
         {
-            throw new NotImplementedException();
+            var sp = GetServiceProvider();
+            var gen = sp.GetRequiredService<IOpenApiGenerator>();
+            var projectZip = await workingDir.CreateFileDataZip();
+            var project = await gen.ParseProjectZip(projectZip);
+
+            var settings = new SettingsServerGen() { };
+            UpdateSettingsFromArguments(argSettings, settings);
+
+            var packagesPath = project?.Assets?.Project?.Restore?.PackagesPath;
+            if (string.IsNullOrEmpty(packagesPath))
+            {
+                throw new Exception("Cannot located the packages path from the project.assets.json");
+            }
+            using (var tw = fileInfo.CreateText())
+            {
+                var dlls = new List<FileInfo>();
+                foreach (var targetLib in nn(project.Assets.Targets.First().Value))
+                {
+                    if(!project.Assets.Libraries.TryGetValue(targetLib.Key, out ProjectAssetsLibrary lib))
+                    {
+                        throw new Exception("Cannot locate the library " + targetLib.Key);
+                    }
+                    if (targetLib.Value.Compile == null)
+                    {
+                        continue;
+                    }
+                    if (string.IsNullOrEmpty(lib.Path))
+                    {
+                        continue;
+                    }
+                    if (lib.Type == "package")
+                    {
+                        var nugetLocation = Path.Combine(packagesPath, lib.Path);
+                        nugetLocation = Path.Combine(nugetLocation, targetLib.Value.Compile.First().Key);
+                        var dllLocation = new FileInfo(nugetLocation);
+                        if (dllLocation.Exists)
+                        {
+                            tw.WriteLine($"//{targetLib.Key}=>{dllLocation.FullName}");
+                            dlls.Add(dllLocation);
+                        }
+                        else
+                        {
+                            tw.WriteLine($"//{targetLib.Key}=>");
+                        }
+                    }
+                    else if (lib.Type == "project")
+                    {
+                        var projectPath = workingDir.FullName;
+                        if (!string.IsNullOrEmpty(settings.ProjectBaseFix))
+                        {
+                            projectPath = Path.Combine(projectPath, settings.ProjectBaseFix);
+                        }
+                        var csProjFile = new FileInfo(Path.Combine(projectPath, lib.Path));
+                        if(!csProjFile.Exists)
+                        {
+                            tw.WriteLine($"//{targetLib.Key}=>!!!!{csProjFile.FullName}");
+                        }
+                        var dir = csProjFile.Directory;
+                        var segments = targetLib.Value.Compile.First().Key.Split('/');
+                        var dllLocation = LocateFile(segments, csProjFile.Directory);
+                        if (dllLocation?.Exists ?? false)
+                        {
+                            tw.WriteLine($"//{targetLib.Key}=>{dllLocation.FullName}");
+                            dlls.Add(dllLocation);
+                        }
+                        else
+                        {
+                            tw.WriteLine($"//{targetLib.Key}=>");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Cannot handle library type: " + lib.Type);
+                    }
+                }
+
+                dlls = GetSolidRpcDlls(dlls).ToList();
+
+                foreach(var dll in dlls)
+                {
+                    tw.WriteLine("//Generating stubs for : " + dll.FullName);
+                }
+            }
+        }
+
+        private static IEnumerable<FileInfo> GetSolidRpcDlls(IEnumerable<FileInfo> dlls)
+        {
+            var solidRpcDlls = new List<FileInfo>();
+            foreach (var dll in dlls)
+            {
+                try
+                {
+                    using (var fs = dll.OpenRead())
+                    {
+                        using var peReader = new PEReader(fs);
+                        MetadataReader mr = peReader.GetMetadataReader();
+
+                        var md = mr.GetModuleDefinition();
+                        var moduleName = mr.GetString(md.Name);
+                        if(moduleName.EndsWith(".dll"))
+                        {
+                            moduleName = moduleName.Substring(0, moduleName.Length - 4);
+                        }
+
+                        foreach (var res in mr.ManifestResources)
+                        {
+                            var x = mr.GetManifestResource(res);
+                            var name = mr.GetString(x.Name);
+                            if(name == $"{moduleName}.{moduleName}.json")
+                            {
+                                solidRpcDlls.Add(dll);
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            return solidRpcDlls;
+        }
+
+        private static FileInfo LocateFile(IEnumerable<string> segments, DirectoryInfo directory)
+        {
+            if(directory == null)
+            {
+                return null;
+            }
+            if(segments.Count() == 1)
+            {
+                return directory.GetFiles().FirstOrDefault(o => string.Equals(o.Name, segments.First(), StringComparison.InvariantCulture));
+            }
+            if(segments.First() == "placeholder")
+            {
+                foreach(var dir in directory.GetDirectories())
+                {
+                    var fileInfo = LocateFile(segments.Skip(1), dir);
+                    if (fileInfo == null)
+                    {
+                        fileInfo = LocateFile(segments, dir);
+                    }
+                    if (fileInfo != null)
+                    {
+                        return fileInfo;
+                    }
+
+                }
+            }
+            return LocateFile(segments.Skip(1), directory.GetDirectories().FirstOrDefault(o => string.Equals(o.Name, segments.First(), StringComparison.InvariantCulture)));
+        }
+
+        private static IDictionary<string, T> nn<T>(IDictionary<string, T> x)
+        {
+            return x ?? new Dictionary<string, T>();
+        }
+
+        private static IEnumerable<T> nn<T>(IEnumerable<T> x)
+        {
+            return x ?? new T[0];
         }
 
         private static Task GenerateOpenApiFromCode(DirectoryInfo workingDir, IDictionary<string, string> settings, IEnumerable<FileInfo> files)
@@ -138,7 +299,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
             var projectZip = await workingDir.CreateFileDataZip();
             var project = await gen.ParseProjectZip(projectZip);
-            var csprojs = project.ProjectFiles
+            var csprojs = project.Files
                 .Where(o => o.Directory == "")
                 .Where(o => o.FileData.Filename.EndsWith(".csproj"));
             if (csprojs.Count() > 1) throw new Exception($"Directory {workingDir} contains more than one .csproj file");
@@ -231,7 +392,7 @@ namespace SolidRpc.OpenApi.DotNetTool
 
             var projectZip = await projectDir.CreateFileDataZip();
             var project = await gen.ParseProjectZip(projectZip);
-            var csproj = project.ProjectFiles
+            var csproj = project.Files
                 .Where(o => o.Directory == "")
                 .Where(o => o.FileData.Filename.EndsWith(".csproj"))
                 .SingleOrDefault();

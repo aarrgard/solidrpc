@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SolidRpc.OpenApi.Generator.Types
+namespace SolidRpc.OpenApi.Generator.Types.Project
 {
     /// <summary>
     /// Represents a project file
@@ -15,6 +15,6 @@ namespace SolidRpc.OpenApi.Generator.Types
         /// <summary>
         /// The file data
         /// </summary>
-        public FileData FileData { get; set; } 
+        public FileData FileData { get; set; }
     }
 }

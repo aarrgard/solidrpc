@@ -1,5 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Model;
-using SolidRpc.OpenApi.Generator.Types;
+using SolidRpc.OpenApi.Generator.Types.Project;
 using SolidRpc.OpenApi.Model;
 using System;
 using System.Collections.Concurrent;
@@ -43,7 +43,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
             openApiSpec = OpenApiSpecs.GetOrAdd(address, _ => {
                 var dirName = string.Join("/", _.Split('/').Reverse().Skip(1).Reverse());
                 var fileName = _.Split('/').Reverse().Take(1).First();
-                var projectFile = Project.ProjectFiles
+                var projectFile = Project.Files
                     .Where(o => o.Directory == dirName)
                     .Where(o => o.FileData.Filename == fileName)
                     .FirstOrDefault();
