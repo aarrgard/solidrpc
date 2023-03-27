@@ -150,7 +150,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="scopes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<TokenResponse> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TokenResponse> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
             if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
@@ -174,7 +174,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<TokenResponse> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TokenResponse> GetUserJwtAsync(string clientId, string clientSecret, string username, string password, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
             if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
@@ -302,7 +302,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
         {
             //
             // use cached version
@@ -339,7 +339,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="tokenChecks"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ClaimsPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ClaimsPrincipal> GetPrincipalAsync(string jwt, Action<IAuthorityTokenChecks> tokenChecks = null,  CancellationToken cancellationToken = default)
         {
             var allSigningKeys = await GetSecuritySigningKeysAsync(cancellationToken);
             var tokenValidationParameter = new AuthorityTokenValidationParameters(Authority, allSigningKeys, ReloadSigningKeys);
@@ -372,7 +372,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default)
         {
             var openIdKeys = OpenIdKeys;
             if (openIdKeys != null)
@@ -387,7 +387,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task<IEnumerable<OpenIDKey>> GetSigningKeysNoCacheAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<IEnumerable<OpenIDKey>> GetSigningKeysNoCacheAsync(CancellationToken cancellationToken = default)
         {
             var doc = await GetDiscoveryDocumentAsync(cancellationToken);
             var client = HttpClientFactory.CreateClient();

@@ -1,13 +1,13 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
-using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.Generator.Impl.Csproj;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Generator.Types.Project;
-using SolidRpc.OpenApi.Model;
 using SolidRpc.OpenApi.Model.CSharp;
+using SolidRpc.OpenApi.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Model.Generator.V2;
 using SolidRpc.OpenApi.Model.Generator.V3;
 using SolidRpc.OpenApi.Model.V2;
@@ -15,7 +15,9 @@ using SolidRpc.OpenApi.Model.V3;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,7 +105,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             });
         }
 
-        public Task<SettingsCodeGen> GetSettingsCodeGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<SettingsCodeGen> GetSettingsCodeGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default)
         {
             var csprojInfo = CsprojInfo.GetCsprojInfo(csproj.Filename, csproj.FileStream);
             return Task.FromResult(new SettingsCodeGen()
@@ -112,7 +114,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             });
         }
 
-        public Task<SettingsSpecGen> GetSettingsSpecGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<SettingsSpecGen> GetSettingsSpecGenFromCsproj(FileData csproj, CancellationToken cancellationToken = default)
         {
             var csprojInfo = CsprojInfo.GetCsprojInfo(csproj.Filename, csproj.FileStream);
             return Task.FromResult(new SettingsSpecGen()
@@ -144,7 +146,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             }
         }
 
-        public async Task<FileData> CreateProjectZip(Project project, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileData> CreateProjectZip(Project project, CancellationToken cancellationToken = default)
         {
             var ms = new MemoryStream();
             using (var zos = new ZipOutputStream(ms))
@@ -201,6 +203,135 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
                 }
             }
             project.Files = projectFiles;
+        }
+
+        public async Task<Project> CreateServerCode(SettingsServerGen settings, Project project, CancellationToken cancellationToken = default)
+        {
+            var serverCode = (ICSharpRepository)new CSharpRepository();
+            foreach (var projectFile in project.Files ?? new ProjectFile[0])
+            {
+                var fileName = projectFile.FileData.Filename;
+                if (!fileName.EndsWith(".dll"))
+                {
+                    continue;
+                }
+                var ns = fileName.Substring(0, fileName.Length - 4);
+
+                CreateServerCode(serverCode, ns, projectFile.FileData.FileStream);
+            }
+
+            var codeWriter = new CodeWriterZip("");
+            serverCode.WriteCode(codeWriter);
+            codeWriter.Close();
+            codeWriter.ZipOutputStream.Close();
+
+            using (var zipStream = new ZipInputStream(new MemoryStream(codeWriter.MemoryStream.ToArray())))
+            {
+                project = new Project();
+                await CreateProject(zipStream, project);
+                AddProjectFile(project, ".SolidRpcExtensions.cs");
+                return project;
+            }
+        }
+
+        private void AddProjectFile(Project project, string resourceSuffix)
+        {
+            var resName = GetType().Assembly.GetManifestResourceNames().Single(o => o.EndsWith(resourceSuffix));
+            project.Files = project.Files.Union(new[] { new ProjectFile() {
+                Directory = "Microsoft/Extensions/DependencyInjection",
+                FileData = new FileData()
+                {
+                    ContentType = "text/plain",
+                    Filename = resourceSuffix.Substring(1),
+                    FileStream = GetType().Assembly.GetManifestResourceStream(resName)
+                }
+            } }).ToList();
+        }
+
+        private void CreateServerCode(ICSharpRepository serverCode, string ns, Stream dllStream)
+        {
+            var nsNoDots = ns.Replace(".", "");
+            var c = serverCode.GetClass($"Microsoft.Extensions.DependencyInjection.{nsNoDots}Extensions");
+            c.SetModifier("public");
+            c.SetModifier("static");
+
+            var sns = new CSharpNamespace(serverCode, "System");
+            var csns = new CSharpNamespace(serverCode, "Microsoft.Extensions.DependencyInjection.SolidRpcExtensions");
+            var ipc = new CSharpInterface(csns, "IProxyConfig", null);
+
+            var configureArg = serverCode.GetClass($"System.Func<{ipc.FullName},{ipc.FullName}>");
+            var sc = serverCode.GetType($"Microsoft.Extensions.DependencyInjection.IServiceCollection");
+            var addServiceCollection = new CSharpMethod(c, $"Add{nsNoDots}", sc);
+            addServiceCollection.AddMember(new CSharpModifier(addServiceCollection, "public"));
+            addServiceCollection.AddMember(new CSharpModifier(addServiceCollection, "static"));
+            addServiceCollection.AddMember(new CSharpMethodParameter(addServiceCollection, "sc", sc, false));
+            addServiceCollection.AddMember(new CSharpMethodParameter(addServiceCollection, "configure", configureArg, false));
+
+            var dummyCode = new CSharpRepository();
+            var ms = new MemoryStream();
+            dllStream.CopyTo(ms);
+            var a = Assembly.Load(ms.ToArray());
+            foreach(var t in a.GetTypes())
+            {
+                if(!t.FullName.StartsWith($"{ns}.Services.")) { continue; }
+                if(!t.IsInterface) { continue; }
+
+                var sp = new CSharpInterface(sns, $"IServiceProvider", null);
+                var gipc = new CSharpInterface(csns, $"IProxyConfig<{t.FullName}>", null);
+                var gp = new CSharpInterface(csns, $"Proxy<{t.FullName}>", null);
+
+                var cst = CSharpReflectionParser.AddType(dummyCode, t);
+
+                var proxy = new CSharpClass(c, $"{t.FullName.Replace(".", "")}Proxy", null);
+                proxy.AddMember(new CSharpModifier(c, "public"));
+                proxy.AddExtends(gp);
+                proxy.AddExtends(cst);
+                c.AddMember(proxy);
+
+                var ctr = new CSharpConstructor(proxy, "serviceProvider, config");
+                var serviceProvider = new CSharpMethodParameter(ctr, "serviceProvider", sp, false);
+                ctr.AddMember(serviceProvider);
+                var proxyConfig = new CSharpMethodParameter(ctr, "config", gipc, false);
+                ctr.AddMember(proxyConfig);
+                proxy.AddMember(ctr);
+
+
+                foreach (var p in cst.Properties)
+                {
+                    p.AddMember(new CSharpModifier(p, "public"));
+                    proxy.AddMember(p);
+                    p.Getter.AppendLine("throw new System.NotImplementedException();");
+                }
+
+                foreach (var m in cst.Methods)
+                {
+                    m.AddMember(new CSharpModifier(m, "public"));
+                    proxy.AddMember(m);
+                    if(m.ReturnType != null)
+                    {
+                        m.Body.Append($"return ");
+                    }
+                    m.Body.Append($"GetImplementation().{m.Name}(");
+                    bool argEmitted = false;
+                    foreach(var arg in m.Parameters)
+                    {
+                        if (argEmitted)
+                        {
+                            m.Body.Append(", ");
+                        }
+                        m.Body.Append(arg.Name);
+                        argEmitted = true;
+                    }
+                    m.Body.AppendLine(");");
+                }
+
+                addServiceCollection.Body.AppendLine($"sc.SetupProxy<{t.FullName},{proxy.FullName}>(configure);");
+            }
+
+            addServiceCollection.Body.AppendLine("return sc;");
+            c.AddMember(addServiceCollection);
+
+
         }
     }
 }

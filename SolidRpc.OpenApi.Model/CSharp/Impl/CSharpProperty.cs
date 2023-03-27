@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
@@ -14,15 +15,33 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="parent"></param>
         /// <param name="name"></param>
         /// <param name="propertyType"></param>
-        public CSharpProperty(ICSharpMember parent, string name, ICSharpType propertyType) : base(parent, name)
+        public CSharpProperty(ICSharpMember parent, string name, ICSharpType propertyType, bool canRead = true, bool canWrite = true) : base(parent, name)
         {
             PropertyType = propertyType;
+            CanRead = canRead;
+            CanWrite = canWrite;
+            Getter = new StringBuilder();
+            Setter = new StringBuilder();
         }
 
         /// <summary>
         /// The property type
         /// </summary>
         public ICSharpType PropertyType { get; }
+
+        /// <summary>
+        /// Specifies if we can read this property
+        /// </summary>
+        public bool CanRead { get; }
+
+        /// <summary>
+        /// Specifies if we can write to this property
+        /// </summary>
+        public bool CanWrite { get; }
+
+        public StringBuilder Getter { get;}
+
+        public StringBuilder Setter { get; }
 
         /// <summary>
         /// Adds a member to this method
@@ -41,7 +60,35 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             WriteSummary(codeWriter);
             WriteAttributes(codeWriter);
-            codeWriter.Emit($"public {SimplifyName(PropertyType.FullName)} {Name} {{ get; set; }}{codeWriter.NewLine}");
+            codeWriter.Emit($"public {SimplifyName(PropertyType.FullName)} {Name} {{");
+            if (CanRead)
+            {
+                EmitCode(codeWriter, "get", Getter);
+            }
+            if (CanWrite)
+            {
+                EmitCode(codeWriter, "set", Setter);
+            }
+            codeWriter.Emit($" }}{codeWriter.NewLine}");
+        }
+
+        private void EmitCode(ICodeWriter codeWriter, string type, StringBuilder code)
+        {
+            if (code.Length == 0)
+            {
+                codeWriter.Emit($" {type};");
+            }
+            else
+            {
+                codeWriter.Emit($"{codeWriter.NewLine}");
+                codeWriter.Indent();
+                codeWriter.Emit($"{type} {{{codeWriter.NewLine}");
+                codeWriter.Indent();
+                codeWriter.Emit($"{code.ToString().Trim()}{codeWriter.NewLine}");
+                codeWriter.Unindent();
+                codeWriter.Emit($"}}{codeWriter.NewLine}");
+                codeWriter.Unindent();
+            }
         }
 
         /// <summary>

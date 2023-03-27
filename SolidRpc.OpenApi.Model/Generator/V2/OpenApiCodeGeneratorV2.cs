@@ -4,6 +4,7 @@ using System.Linq;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model.Agnostic;
 using SolidRpc.OpenApi.Model.CSharp;
+using SolidRpc.OpenApi.Model.CSharp.Impl;
 using SolidRpc.OpenApi.Model.V2;
 
 namespace SolidRpc.OpenApi.Model.Generator.V2
@@ -61,6 +62,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                       SecurityDefinitionMapper(o.Key));
 
                 var securityAttribute = cSharpRepository.GetClass(className);
+                securityAttribute.SetModifier("public");
                 securityAttribute.AddExtends(cSharpRepository.GetClass(typeof(Attribute).FullName));
 
                 var scopes = new CSharp.Impl.CSharpProperty(securityAttribute, "Scopes", cSharpRepository.GetClass(typeof(string[]).FullName));
@@ -86,6 +88,7 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
             cSharpMethods.ToList().ForEach(csm =>
             {
                 var i = cSharpRepository.GetInterface(csm.InterfaceName);
+                i.SetModifier("public");
                 AddCodeGeneratorAttribute(i);
 
                 // construct code comment for interface

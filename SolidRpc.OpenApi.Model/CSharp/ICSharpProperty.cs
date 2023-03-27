@@ -13,5 +13,25 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// The property type.
         /// </summary>
         ICSharpType PropertyType { get; }
+
+        /// <summary>
+        /// Can we read this property
+        /// </summary>
+        bool CanRead { get; }
+
+        /// <summary>
+        /// Can we write this property
+        /// </summary>
+        bool CanWrite { get; }
+
+        /// <summary>
+        /// The getter
+        /// </summary>
+        StringBuilder Getter { get; }
+
+        /// <summary>
+        /// The setter
+        /// </summary>
+        StringBuilder Setter { get; }
     }
 }

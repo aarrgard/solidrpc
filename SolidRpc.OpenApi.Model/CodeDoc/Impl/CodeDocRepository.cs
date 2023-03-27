@@ -87,11 +87,14 @@ namespace SolidRpc.OpenApi.Model.CodeDoc.Impl
             }
 
             // look for the documentation where the assebly resides
-            var xmlDocLocation = new FileInfo(Path.ChangeExtension(arg.Location, ".xml"));
-            if (docStream == null && xmlDocLocation.Exists)
+            if (docStream == null && !string.IsNullOrEmpty(arg.Location))
             {
-                // load from file
-                docStream = xmlDocLocation.OpenRead();
+                var xmlDocLocation = new FileInfo(Path.ChangeExtension(arg.Location, ".xml"));
+                if (xmlDocLocation.Exists)
+                {
+                    // load from file
+                    docStream = xmlDocLocation.OpenRead();
+                }
             }
 
             var xmlDocument = new XmlDocument();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp.Impl
 {
@@ -69,12 +70,14 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 codeWriter.Unindent();
                 codeWriter.Emit($"</param>{codeWriter.NewLine}");
             });
-            Comment.Exceptions.ToList().ForEach(e =>
+            Comment?.Exceptions.ToList().ForEach(e =>
             {
                 codeWriter.Emit($"/// <exception cref=\"{e.Cref}\">{e.Description}</exception>{codeWriter.NewLine}");
             });
             Members.OfType<ICSharpAttribute>().ToList().ForEach(o => o.WriteCode(codeWriter));
+            Members.OfType<ICSharpModifier>().ToList().ForEach(o => o.WriteCode(codeWriter));
             codeWriter.Emit($"{SimplifyName(ReturnType.FullName)} {Name}(");
+            codeWriter.Emit($"");
             for (int i = 0; i < parameters.Count; i++)
             {
                 codeWriter.Emit(codeWriter.NewLine);
@@ -86,7 +89,21 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 }
                 codeWriter.Unindent();
             }
-            codeWriter.Emit($");{codeWriter.NewLine}");
+            codeWriter.Emit($")");
+
+            if(Body.Length == 0)
+            {
+                codeWriter.Emit($";{codeWriter.NewLine}");
+            }
+            else
+            {
+                codeWriter.Emit($" {{{codeWriter.NewLine}");
+                codeWriter.Indent();
+                codeWriter.Emit(Body.ToString().Trim());
+                codeWriter.Emit($"{codeWriter.NewLine}");
+                codeWriter.Unindent();
+                codeWriter.Emit($"}}{codeWriter.NewLine}");
+            }
         }
 
         /// <summary>
@@ -98,5 +115,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             AddNamespacesFromName(namespaces, ReturnType);
             base.GetNamespaces(namespaces);
         }
+
+        /// <summary>
+        /// The body
+        /// </summary>
+        public StringBuilder Body { get; set; } = new StringBuilder();
     }
 }

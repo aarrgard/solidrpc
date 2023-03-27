@@ -1,23 +1,17 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Model;
-using SolidRpc.Abstractions.Serialization;
-using SolidRpc.OpenApi.Generator;
 using SolidRpc.OpenApi.Generator.Impl.Services;
 using SolidRpc.OpenApi.Generator.Services;
 using SolidRpc.OpenApi.Generator.Types;
 using SolidRpc.OpenApi.Generator.Types.Project;
 using SolidRpc.OpenApi.Model;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace SolidRpc.OpenApi.DotNetTool
 {
@@ -105,7 +99,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             return val;
         }
 
-        private static Task GenerateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> settings, IEnumerable<FileInfo> files)
+        private static Task GenerateServerBindings(DirectoryInfo projectDir, IDictionary<string, string> settings, IEnumerable<FileInfo> files)
         {
             if (files.Count() == 0)
             {
@@ -115,14 +109,14 @@ namespace SolidRpc.OpenApi.DotNetTool
             {
                 throw new Exception($"Cannot specify more than one file when generating server bindings.");
             }
-            return GenerateServerBindings(workingDir, settings, files.First());
+            return GenerateServerBindings(projectDir, settings, files.First());
         }
 
-        private static async Task GenerateServerBindings(DirectoryInfo workingDir, IDictionary<string, string> argSettings, FileInfo fileInfo)
+        private static async Task GenerateServerBindings(DirectoryInfo projectDir, IDictionary<string, string> argSettings, FileInfo fileInfo)
         {
             var sp = GetServiceProvider();
             var gen = sp.GetRequiredService<IOpenApiGenerator>();
-            var projectZip = await workingDir.CreateFileDataZip();
+            var projectZip = await projectDir.CreateFileDataZip();
             var project = await gen.ParseProjectZip(projectZip);
 
             var settings = new SettingsServerGen() { };
@@ -167,7 +161,7 @@ namespace SolidRpc.OpenApi.DotNetTool
                     }
                     else if (lib.Type == "project")
                     {
-                        var projectPath = workingDir.FullName;
+                        var projectPath = projectDir.FullName;
                         if (!string.IsNullOrEmpty(settings.ProjectBaseFix))
                         {
                             projectPath = Path.Combine(projectPath, settings.ProjectBaseFix);
@@ -202,7 +196,48 @@ namespace SolidRpc.OpenApi.DotNetTool
                 {
                     tw.WriteLine("//Generating stubs for : " + dll.FullName);
                 }
+
+                project = new Project()
+                {
+                    Files = dlls.Select(o => CreateFile(o)).ToList()
+                };
+
+                project = await gen.CreateServerCode(settings, project);
+                projectZip = await gen.CreateProjectZip(project);
+
+                if (argSettings.ContainsKey("only-compare") && bool.Parse(argSettings["only-compare"]))
+                {
+                    var filesThatDiffers = await projectDir.FileDataZipDiffers(projectZip);
+                    if (filesThatDiffers.Count > 0)
+                    {
+                        throw new Exception($"Files differs({string.Join(",", filesThatDiffers)})!");
+                    }
+                }
+                else
+                {
+                    await projectDir.WriteFileDataZip(projectZip);
+                }
             }
+        }
+
+        private static ProjectFile CreateFile(FileInfo fi)
+        {
+            var ms = new MemoryStream();
+            using (var fs = fi.OpenRead())
+            {
+                fs.CopyTo(ms);
+            }
+            ms.Position = 0;
+            return new ProjectFile()
+            {
+                FileData = new FileData()
+                {
+                    Filename = fi.Name,
+                    ContentType = "application/octet-stream",
+                    FileStream = ms
+                },
+                Directory = ""
+            };
         }
 
         private static IEnumerable<FileInfo> GetSolidRpcDlls(IEnumerable<FileInfo> dlls)

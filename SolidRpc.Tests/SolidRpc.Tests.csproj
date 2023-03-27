@@ -96,6 +96,7 @@
   <ItemGroup>
     <Folder Include="Swagger\CodeGen\Local\" />
     <Folder Include="Swagger\CodeGen\SecurityPermissionAttribute\Services\" />
+    <Folder Include="Swagger\ServerGen\TestProject1\Microsoft\Extensions\DependencyInjection\" />
   </ItemGroup>
 
   <ItemGroup>

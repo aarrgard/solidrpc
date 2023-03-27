@@ -24,7 +24,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                CreateSpec(subDir.Name, true);
+                CreateSpec(subDir.Name, false);
             }
         }
 

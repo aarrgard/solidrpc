@@ -19,7 +19,7 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <returns></returns>
         Task<Project> ParseProjectZip(
             FileData projectZip,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a project zip from supplied project files
@@ -29,7 +29,7 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <returns></returns>
         Task<FileData> CreateProjectZip(
             Project project,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a swagger specification from supplied project.
@@ -41,7 +41,7 @@ namespace SolidRpc.OpenApi.Generator.Services
         Task<FileData> CreateOpenApiSpecFromCode(
             SettingsSpecGen settings, 
             Project project, 
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a swagger specification from supplied project.
@@ -53,7 +53,19 @@ namespace SolidRpc.OpenApi.Generator.Services
         Task<Project> CreateCodeFromOpenApiSpec(
             SettingsCodeGen settings,
             Project project,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates the server code from supplied dll:s
+        /// </summary>
+        /// <param name="settings">The settings for generating the code</param>
+        /// <param name="project">The project to analyze</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<Project> CreateServerCode(
+            SettingsServerGen settings,
+            Project project,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Returns the settings for the code generation based
@@ -64,7 +76,7 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <returns></returns>
         Task<SettingsCodeGen> GetSettingsCodeGenFromCsproj(
             FileData csproj,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Returns the settings for the spec generation based
@@ -75,6 +87,6 @@ namespace SolidRpc.OpenApi.Generator.Services
         /// <returns></returns>
         Task<SettingsSpecGen> GetSettingsSpecGenFromCsproj(
             FileData csproj,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
     }
 }

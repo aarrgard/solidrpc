@@ -16,7 +16,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="ns"></param>
         /// <param name="name"></param>
         /// <param name="runtimeType"></param>
-        public CSharpType(ICSharpNamespace ns, string name, Type runtimeType) : base(ns, name)
+        public CSharpType(ICSharpMember ns, string name, Type runtimeType) : base(ns, name)
         {
             RuntimeType = runtimeType;
         }
@@ -138,18 +138,34 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         }
 
         /// <summary>
+        /// Sets the modifier
+        /// </summary>
+        /// <param name="modifier"></param>
+        public void SetModifier(string modifier)
+        {
+            if(!Members.OfType<ICSharpModifier>().Any(o => o.Name == modifier))
+            {
+                AddMember(new CSharpModifier(this, modifier));
+            }
+        }
+
+        /// <summary>
         /// Emits the type to supplied code writer.
         /// </summary>
         /// <param name="codeWriter"></param>
         public override void WriteCode(ICodeWriter codeWriter)
         {
-            codeWriter.MoveToClassFile(FullName);
+            var isNsType = Parent is ICSharpNamespace;
+            if (isNsType)
+            {
+                codeWriter.MoveToClassFile(FullName);
+            }
             Members.OfType<ICSharpUsing>().ToList().ForEach(o =>
             {
                 o.WriteCode(codeWriter);
             });
 
-            if (!string.IsNullOrEmpty(Namespace.FullName))
+            if (isNsType)
             {
                 codeWriter.Emit($"namespace {Namespace.FullName} {{{codeWriter.NewLine}");
                 codeWriter.Indent();
@@ -158,7 +174,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
             WriteSummary(codeWriter);
             WriteAttributes(codeWriter);
-            codeWriter.Emit($"public {structType} {Name}");
+            Members.OfType<ICSharpModifier>().ToList().ForEach(o => o.WriteCode(codeWriter));
+            codeWriter.Emit($"{structType} {Name}");
             if(Members.OfType<ICSharpTypeExtends>().Any())
             {
                 codeWriter.Emit($" : {string.Join(",", Members.OfType<ICSharpTypeExtends>().Select(o => o.Name))}");
@@ -166,7 +183,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             codeWriter.Emit($" {{{codeWriter.NewLine}");
             Members.Where(o => o is ICSharpMethod ||
                         o is ICSharpProperty ||
-                        o is ICSharpConstructor)
+                        o is ICSharpConstructor ||
+                        o is ICSharpType)
                 .ToList()
                 .ForEach(o =>
                 {
@@ -177,7 +195,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 });
             codeWriter.Emit($"}}{codeWriter.NewLine}");
 
-            if (!string.IsNullOrEmpty(Namespace.FullName))
+            if (isNsType)
             {
                 codeWriter.Unindent();
                 codeWriter.Emit($"}}{codeWriter.NewLine}");

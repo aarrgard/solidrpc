@@ -45,7 +45,14 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 }
                 if (c == ',')
                 {
-                    PushGenArg();
+                    if(_genericTypeIdx == 1)
+                    {
+                        PushGenArg();
+                    }
+                    else
+                    {
+                        _genArg.Append(c);
+                    }
                     return;
                 }
                 if (_genericTypeIdx == 0)
@@ -67,7 +74,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
             internal (string, IList<string>) GetResult()
             {
-                if (_genericTypeIdx != 0) throw new Exception("type index not at 0");
+                if (_genericTypeIdx != 0)
+                {
+                    throw new Exception("type index not at 0");
+                }
                 return (_typeName.ToString().Trim(), _genArgs);
             }
         }

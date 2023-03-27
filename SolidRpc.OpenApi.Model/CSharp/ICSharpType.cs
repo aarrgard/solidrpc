@@ -93,5 +93,11 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// <param name="valueType"></param>
         /// <returns></returns>
         bool IsDictionaryType(out ICSharpType keyType, out ICSharpType valueType);
+
+        /// <summary>
+        /// Adds the modifier if it is missing
+        /// </summary>
+        /// <param name="modifier"></param>
+        void SetModifier(string modifier);
     }
 }

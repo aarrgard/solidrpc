@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace SolidRpc.OpenApi.Model.CSharp
 {
@@ -16,5 +17,10 @@ namespace SolidRpc.OpenApi.Model.CSharp
         /// Returns the method parameters
         /// </summary>
         IEnumerable<ICSharpMethodParameter> Parameters { get; }
+
+        /// <summary>
+        /// The body
+        /// </summary>
+        StringBuilder Body { get; }
     }
 }

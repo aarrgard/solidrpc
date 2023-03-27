@@ -13,7 +13,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="ns"></param>
         /// <param name="name"></param>
         /// <param name="runtimeType"></param>
-        public CSharpInterface(ICSharpNamespace ns, string name, Type runtimeType) : base(ns, name, runtimeType)
+        public CSharpInterface(ICSharpMember ns, string name, Type runtimeType) : base(ns, name, runtimeType)
         {
         }
     }

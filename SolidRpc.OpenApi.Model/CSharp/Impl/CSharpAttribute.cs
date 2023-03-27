@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -92,10 +93,19 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 codeWriter.Emit(value.ToString());
                 codeWriter.Emit("\"");
             }
-            else if (value is IEnumerable<string> strArr)
+            else if (value is IEnumerable strArr)
             {
                 codeWriter.Emit("new [] {");
-                codeWriter.Emit(string.Join(",", strArr.Select(o => $"\"{o}\"")));
+                var emitted = false;
+                foreach(var o in strArr)
+                {
+                    if (emitted)
+                    {
+                        codeWriter.Emit(",");
+                    }
+                    WriteAttributeData(codeWriter, o);
+                    emitted = true;
+                }
                 codeWriter.Emit("}");
             }
             else if (value is bool b)

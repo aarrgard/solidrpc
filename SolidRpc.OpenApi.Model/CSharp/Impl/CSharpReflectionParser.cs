@@ -38,6 +38,22 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         }
 
         /// <summary>
+        /// Adds the supplied property to the supplied repository.
+        /// </summary>
+        /// <param name="cSharpRepository"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static ICSharpProperty AddProperty(CSharpRepository cSharpRepository, PropertyInfo property)
+        {
+            var propertyType = GetType(cSharpRepository, property.PropertyType);
+            var cSharpType = GetType(cSharpRepository, property.DeclaringType);
+            var cSharpProperty = new CSharpProperty(cSharpType, property.Name, propertyType, property.CanRead, property.CanWrite);
+            cSharpProperty.ParseComment(s_codeDocRepository.GetPropertyDoc(property).CodeComments);
+            cSharpType.AddMember(cSharpProperty);
+            return cSharpProperty;
+        }
+
+        /// <summary>
         /// Adds the supplied method to the supplied repository.
         /// </summary>
         /// <param name="cSharpRepository"></param>
@@ -76,10 +92,6 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
 
         private static ICSharpType GetType(ICSharpRepository cSharpRepository, Type type)
         {
-            if(type.IsTaskType(out Type taskType))
-            {
-                type = taskType ?? type; // null means just Task not Task<T>
-            }
             ICSharpType cSharpType;
             if (type.IsClass)
             {
@@ -133,9 +145,13 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         {
             foreach(var a in attributes)
             {
-                var ags = a.ConstructorArguments.Select(o => o.Value).ToList();
+                var args = a.ConstructorArguments.Select(o => o.Value).ToList();
+                if(cSharpType.Name == "GetHostId")
+                {
+                    Console.WriteLine("");
+                }
                 var namedArgs = a.NamedArguments.ToDictionary(o => o.MemberName, o => o.TypedValue.Value);
-                cSharpType.AddMember(new CSharpAttribute(cSharpType, a.AttributeType.FullName, ags, namedArgs));
+                cSharpType.AddMember(new CSharpAttribute(cSharpType, a.AttributeType.FullName, args, namedArgs));
             }
         }
 
@@ -156,10 +172,21 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// </summary>
         /// <param name="cSharpRepository"></param>
         /// <param name="type"></param>
-        public static void AddType(CSharpRepository cSharpRepository, Type type)
+        public static ICSharpType AddType(CSharpRepository cSharpRepository, Type type)
         {
-            type.GetFields().ToList().ForEach(o => AddField(cSharpRepository, o));
-            type.GetMethods().ToList().ForEach(o => AddMethod(cSharpRepository, o));
+            type.GetFields()
+                .ToList()
+                .ForEach(o => AddField(cSharpRepository, o));
+
+            type.GetProperties()
+                .ToList()
+                .ForEach(o => AddProperty(cSharpRepository, o));
+
+            type.GetMethods()
+                .Where(o => !o.IsSpecialName)
+                .ToList()
+                .ForEach(o => AddMethod(cSharpRepository, o));
+            return cSharpRepository.GetType(CreateTypeName(type));
         }
     }
 }

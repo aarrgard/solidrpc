@@ -326,6 +326,7 @@ namespace SolidRpc.OpenApi.Model.Generator
             if(!cls.Initialized)
             {
                 cls.Initialized = true;
+                cls.SetModifier("public");
                 AddCodeGeneratorAttribute(cls);
                 cls.ParseComment($"<summary>{cSharpObject.Description}</summary>");
                 if (cSharpObject.AdditionalProperties != null)
