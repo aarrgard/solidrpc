@@ -33,6 +33,11 @@ namespace SolidRpc.Tests.Invoker
             /// The char set
             /// </summary>
             public string ContentType { get; set; }
+
+            /// <summary>
+            /// special value
+            /// </summary>
+            public string Special { get; set; }
         }
 
 
@@ -71,6 +76,11 @@ namespace SolidRpc.Tests.Invoker
             public Task<ComplexStruct> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 myStruct.ContentType = HttpContext.Request.Headers["Content-Type"];
+                myStruct.Special = HttpContext.Request.Headers["X-Special"];
+                if(HttpContext.Request.Headers["Authorization"] == "invalid")
+                {
+                    throw new SolidRpc.Abstractions.Types.UnauthorizedException();
+                }
                 return Task.FromResult(myStruct);
             }
         }
@@ -146,6 +156,8 @@ namespace SolidRpc.Tests.Invoker
                 var ti = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
                 var res = await ti.DoXAsync(new ComplexStruct() { Value = 4711 });
                 Assert.AreEqual(4711, res.Value);
+                Assert.AreEqual("application/json", res.ContentType);
+                Assert.IsNull(res.Special);
                 Assert.IsTrue(this.visitedPreCallback);
                 Assert.IsTrue(this.visitedPostCallback);
 
@@ -160,6 +172,7 @@ namespace SolidRpc.Tests.Invoker
                 res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => opt.AddPreInvokeCallback(req =>
                     {
                         visitedPreCallback = true;
+                        req.SetHeader("X-Special", "something special");
                         return Task.CompletedTask;
                     }).AddPostInvokeCallback(resp =>
                     {
@@ -167,10 +180,26 @@ namespace SolidRpc.Tests.Invoker
                         return Task.CompletedTask;
                     }));
                 Assert.AreEqual(4711, res.Value);
+                Assert.AreEqual("application/json", res.ContentType);
+                Assert.AreEqual("something special", res.Special);
                 Assert.IsTrue(this.visitedPreCallback);
                 Assert.IsTrue(this.visitedPostCallback);
                 Assert.IsTrue(visitedPreCallback);
                 Assert.IsTrue(visitedPostCallback);
+
+                try
+                {
+                    res = await invoker.InvokeAsync(o => o.DoXAsync(new ComplexStruct() { Value = 4711 }, CancellationToken.None), opt => opt.AddPreInvokeCallback(req =>
+                    {
+                        req.SetHeader("Authorization", "invalid");
+                        return Task.CompletedTask;
+                    }));
+                    Assert.Fail();
+                } 
+                catch(SolidRpc.Abstractions.Types.UnauthorizedException)
+                {
+                    // ok
+                }
             }
         }
 

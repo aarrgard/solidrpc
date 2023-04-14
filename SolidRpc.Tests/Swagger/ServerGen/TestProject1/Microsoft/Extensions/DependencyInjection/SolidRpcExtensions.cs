@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <summary>
             /// The proxy type
             /// </summary>
-            System.Type ProxyType { get; }
+            Type ProxyType { get; }
 
             /// <summary>
             /// The service lifetime
@@ -55,6 +55,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         public class ProxyConfig<T> : IProxyConfig<T>
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="lifetime"></param>
+            /// <param name="factory"></param>
             public ProxyConfig(ServiceLifetime lifetime, Func<IServiceProvider, object> factory)
             {
                 Lifetime = lifetime;
@@ -71,13 +76,26 @@ namespace Microsoft.Extensions.DependencyInjection
             /// </summary>
             public ServiceLifetime Lifetime { get; }
 
+            /// <summary>
+            /// The factory
+            /// </summary>
             public Func<IServiceProvider, object> Factory { get; }
 
+            /// <summary>
+            /// The factory method to use in order to create implementations
+            /// </summary>
+            /// <param name="factory"></param>
+            /// <returns></returns>
             public IProxyConfig SetFactory(Func<IServiceProvider, object> factory)
             {
                 return new ProxyConfig<T>(Lifetime, factory);
             }
 
+            /// <summary>
+            /// The object lifetime in the IoC
+            /// </summary>
+            /// <param name="lifetime"></param>
+            /// <returns></returns>
             public IProxyConfig SetLifetime(ServiceLifetime lifetime)
             {
                 return new ProxyConfig<T>(lifetime, Factory);

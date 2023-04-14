@@ -45,6 +45,13 @@ namespace SolidRpc.Abstractions.OpenApi.Http
         IEnumerable<IHttpRequestData> Headers { get; set; }
 
         /// <summary>
+        /// Sets the header value
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        void SetHeader(string name, string value);
+
+        /// <summary>
         /// The request query string
         /// </summary>
         IEnumerable<IHttpRequestData> Query { get; set; }

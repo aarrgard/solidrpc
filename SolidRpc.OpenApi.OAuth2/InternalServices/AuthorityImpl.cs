@@ -148,6 +148,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <param name="clientId"></param>
         /// <param name="clientSecret"></param>
         /// <param name="scopes"></param>
+        /// <param name="timeout"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public Task<TokenResponse> GetClientJwtAsync(string clientId, string clientSecret, IEnumerable<string> scopes, TimeSpan? timeout, CancellationToken cancellationToken = default)

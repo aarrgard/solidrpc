@@ -114,6 +114,13 @@
             The request headers
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.SetHeader(System.String,System.String)">
+            <summary>
+            Sets the header value
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Http.IHttpRequest.Query">
             <summary>
             The request query string

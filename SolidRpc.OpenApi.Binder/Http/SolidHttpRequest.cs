@@ -1,5 +1,6 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace SolidRpc.OpenApi.Binder.Http
@@ -58,6 +59,20 @@ namespace SolidRpc.OpenApi.Binder.Http
         public IEnumerable<IHttpRequestData> Headers { get; set; }
 
         /// <summary>
+        /// Sets the header value
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void SetHeader(string name, string value)
+        {
+            Headers = Headers
+                .Where(o => !string.Equals(name, o.Name, System.StringComparison.InvariantCultureIgnoreCase))
+                .Union(new[] { new SolidHttpRequestDataString("text/plain", name, value) })
+                .ToList();
+        }
+
+        /// <summary>
         /// The query data
         /// </summary>
         public IEnumerable<IHttpRequestData> Query { get; set; }
@@ -71,6 +86,5 @@ namespace SolidRpc.OpenApi.Binder.Http
         /// Contains the data in the body.
         /// </summary>
         public IEnumerable<IHttpRequestData> BodyData { get; set; }
-
     }
 }
