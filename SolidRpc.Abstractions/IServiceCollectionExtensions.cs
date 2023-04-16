@@ -659,6 +659,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var openApiProxyConfig = mc.ConfigureAdvice<ISolidRpcOpenApiConfig>();
             sc.SetSolidRpcSecurityKeyFromConfig(openApiProxyConfig);
             sc.SetSolidRpcBaseUrlFromConfig(openApiProxyConfig);
+            sc.SetSolidOAuth2FromConfig(openApiProxyConfig);
             var enabled = configurator?.Invoke(openApiProxyConfig) ?? true;
             if(openApiProxyConfig.Enabled != mc.Enabled)
             {
@@ -668,6 +669,46 @@ namespace Microsoft.Extensions.DependencyInjection
             return openApiProxyConfig;
         }
 
+        private static void ResolveKey(IServiceCollection sc, ISolidRpcOpenApiConfig openApiProxyConfig, string sKey, Action<string> setter)
+        {
+            var configuration = sc.GetSolidRpcService<IConfiguration>(false);
+            if (configuration == null) return;
+            var method = openApiProxyConfig.Methods.Single();
+            var keys = CreateConfigKeys(method, sKey);
+            foreach (var key in keys)
+            {
+                var val = configuration[key];
+                if (val != null)
+                {
+                    setter(val);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the security key in supplied proxy config by getting the values from the configuration
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <param name="openApiProxyConfig"></param>
+        public static void SetSolidOAuth2FromConfig(this IServiceCollection sc, ISolidRpcOpenApiConfig openApiProxyConfig)
+        {
+            ResolveKey(sc, openApiProxyConfig, "OAuth2Authority", auth =>
+            {
+                string clientId = null;
+                string clientSecret = null;
+                ResolveKey(sc, openApiProxyConfig, "OAuth2ClientId", _ =>
+                {
+                    clientId = _;
+                });
+                ResolveKey(sc, openApiProxyConfig, "OAuth2ClientSecret", _ =>
+                {
+                    clientSecret = _;
+                });
+                openApiProxyConfig.SetOAuth2ClientSecurity(auth, clientId, clientSecret);
+            });
+        }
+
         /// <summary>
         /// Sets the security key in supplied proxy config by getting the values from the configuration
         /// </summary>
@@ -675,20 +716,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="openApiProxyConfig"></param>
         public static void SetSolidRpcSecurityKeyFromConfig(this IServiceCollection sc, ISolidRpcOpenApiConfig openApiProxyConfig)
         {
-            var configuration = sc.GetSolidRpcService<IConfiguration>(false);
-            if (configuration == null) return;
-            var method = openApiProxyConfig.Methods.Single();
-            var sKey = "SecurityKey";
-            var keys = CreateConfigKeys(method, sKey);
-            foreach (var key in keys)
+            ResolveKey(sc, openApiProxyConfig, "SecurityKey", val =>
             {
-                var val = configuration[key];
-                if (val != null)
-                {
-                    openApiProxyConfig.SetSecurityKey(sKey, val);
-                    return;
-                }
-            }
+                openApiProxyConfig.SetSecurityKey("SecurityKey", val);
+            });
         }
 
         /// <summary>
@@ -698,26 +729,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="openApiProxyConfig"></param>
         public static void SetSolidRpcBaseUrlFromConfig(this IServiceCollection sc, ISolidRpcOpenApiConfig openApiProxyConfig)
         {
-            var configuration = sc.GetSolidRpcService<IConfiguration>(false);
-            if (configuration == null) return;
-            var method = openApiProxyConfig.Methods.Single();
-            var sKey = "BaseUrl";
-            var keys = CreateConfigKeys(method, sKey);
-            foreach (var key in keys)
+            ResolveKey(sc, openApiProxyConfig, "BaseUrl", val =>
             {
-                var val = configuration[key];
-                if (val != null)
-                {
-                    if (!val.EndsWith("/")) val = $"{val}/";
-                    var baseUrl = new Uri(val);
-                    openApiProxyConfig.ConfigureTransport<IHttpTransport>()
-                        .SetMethodAddressTransformer((sp, url, mi) => {
-                        if(mi == null) return new Uri(baseUrl, url.AbsolutePath.Substring(1));
+                if (!val.EndsWith("/")) val = $"{val}/";
+                var baseUrl = new Uri(val);
+                openApiProxyConfig.ConfigureTransport<IHttpTransport>()
+                    .SetMethodAddressTransformer((sp, url, mi) => {
+                        if (mi == null) return new Uri(baseUrl, url.AbsolutePath.Substring(1));
                         return url;
                     });
-                    return;
-                }
-            }
+            });
         }
 
         private static IEnumerable<string> CreateConfigKeys(MethodInfo method, string sKey)
@@ -728,7 +749,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 interfaceName = interfaceName.Substring(assemblyName.Length + 1);
             }
-            var keys = $"SolidRpc.{assemblyName}.{interfaceName}.{method.Name}".Split('.').Distinct().ToArray();
+            var keys = $"SolidRpc.{assemblyName}.{interfaceName}.{method.Name}".Split('.').SelectMany(o => o.Split('+')).Distinct().ToArray();
             for(int i = keys.Length; i > 0; i--)
             {
                 yield return string.Join(":", keys.Take(i).Union(new[] { sKey }));

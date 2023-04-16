@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// </summary>
             /// <param name="body"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task AddPet(
                 SolidRpc.Test.Petstore.Types.Pet body,
                 System.Threading.CancellationToken cancellationToken) {
@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// </summary>
             /// <param name="body"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task UpdatePet(
                 SolidRpc.Test.Petstore.Types.Pet body,
                 System.Threading.CancellationToken cancellationToken) {
@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// </summary>
             /// <param name="status"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.Pet>> FindPetsByStatus(
                 System.Collections.Generic.IEnumerable<System.String> status,
                 System.Threading.CancellationToken cancellationToken) {
@@ -55,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// </summary>
             /// <param name="tags"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.Pet>> FindPetsByTags(
                 System.Collections.Generic.IEnumerable<System.String> tags,
                 System.Threading.CancellationToken cancellationToken) {
@@ -68,7 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <param name="petId"></param>
             /// <param name="apiKey"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task DeletePet(
                 System.Int64 petId,
                 System.String apiKey,
@@ -95,7 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <param name="name"></param>
             /// <param name="status"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task UpdatePetWithForm(
                 System.Int64 petId,
                 System.String name,
@@ -111,7 +111,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <param name="additionalMetadata"></param>
             /// <param name="file"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets",})]
+            [SolidRpc.Test.Petstore.Security.PetstoreAuth(Scopes=new [] {"write:pets","read:pets"})]
             public System.Threading.Tasks.Task<SolidRpc.Test.Petstore.Types.ApiResponse> UploadFile(
                 System.Int64 petId,
                 System.String additionalMetadata,

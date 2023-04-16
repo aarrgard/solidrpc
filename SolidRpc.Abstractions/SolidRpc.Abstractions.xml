@@ -4080,6 +4080,13 @@
             <param name="configurator"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidOAuth2FromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
+            <summary>
+            Sets the security key in supplied proxy config by getting the values from the configuration
+            </summary>
+            <param name="sc"></param>
+            <param name="openApiProxyConfig"></param>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.SetSolidRpcSecurityKeyFromConfig(Microsoft.Extensions.DependencyInjection.IServiceCollection,SolidRpc.Abstractions.OpenApi.Proxy.ISolidRpcOpenApiConfig)">
             <summary>
             Sets the security key in supplied proxy config by getting the values from the configuration

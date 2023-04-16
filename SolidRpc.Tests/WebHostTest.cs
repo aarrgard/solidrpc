@@ -304,7 +304,7 @@ namespace SolidRpc.Tests
             public virtual Task StartAsync()
             {
                 var cb = new ConfigurationBuilder();
-                WebHostTest.ConfigureServerConfiguration(cb, BaseAddress);
+                WebHostTest.ConfigureClientConfiguration(cb, BaseAddress);
                 var clientServices = new ServiceCollection();
                 clientServices.AddSingleton<IConfiguration>(cb.Build());
                 clientServices.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
@@ -595,6 +595,7 @@ namespace SolidRpc.Tests
         /// Adds some configuration
         /// </summary>
         /// <param name="cb"></param>
+        /// <param name="baseAddress"></param>
         protected virtual void ConfigureServerConfiguration(IConfigurationBuilder cb, Uri baseAddress)
         {
             cb.AddJsonFile("appsettings.local.json", true);

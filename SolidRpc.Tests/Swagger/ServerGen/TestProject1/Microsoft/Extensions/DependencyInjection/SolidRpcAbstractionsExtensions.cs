@@ -122,7 +122,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Guid> GetHostId(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().GetHostId(cancellationToken);
@@ -132,7 +132,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.SolidRpcHostInstance> GetHostInstance(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().GetHostInstance(cancellationToken);
@@ -142,7 +142,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.SolidRpcHostInstance>> SyncHostsFromStore(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().SyncHostsFromStore(cancellationToken);
@@ -153,7 +153,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// </summary>
             /// <param name="hostInstance"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.SolidRpcHostInstance> CheckHost(
                 SolidRpc.Abstractions.Types.SolidRpcHostInstance hostInstance,
                 System.Threading.CancellationToken cancellationToken) {
@@ -164,7 +164,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.NameValuePair>> GetHostConfiguration(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().GetHostConfiguration(cancellationToken);
@@ -174,7 +174,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task IsAlive(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().IsAlive(cancellationToken);
@@ -184,7 +184,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Uri> BaseAddress(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().BaseAddress(cancellationToken);
@@ -194,7 +194,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<System.String>> AllowedCorsOrigins(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().AllowedCorsOrigins(cancellationToken);
@@ -204,7 +204,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.String> DefaultTimezone(
                 System.Threading.CancellationToken cancellationToken) {
                 return GetImplementation().DefaultTimezone(cancellationToken);
@@ -215,7 +215,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// </summary>
             /// <param name="dateTime"></param>
             /// <param name="cancellationToken"></param>
-            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission",})]
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.DateTimeOffset> ParseDateTime(
                 System.String dateTime,
                 System.Threading.CancellationToken cancellationToken) {

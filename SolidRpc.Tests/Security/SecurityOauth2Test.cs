@@ -22,6 +22,8 @@ using System.Threading;
 using SolidRpc.OpenApi.OAuth2.Services;
 using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace SolidRpc.Tests.Security
 {
@@ -41,7 +43,7 @@ namespace SolidRpc.Tests.Security
             /// <param name="arg"></param>
             /// <returns></returns>
             Task<string> GetClientEnabledResource(string arg);
-            
+
             /// <summary>
             /// A test method
             /// </summary>
@@ -180,6 +182,29 @@ namespace SolidRpc.Tests.Security
             return true;
         }
 
+        protected override void ConfigureServerConfiguration(IConfigurationBuilder cb, Uri baseAddress)
+        {
+            base.ConfigureServerConfiguration(cb, baseAddress);
+
+            var dict = new Dictionary<string, string>();
+            AddOAuth2AuthConfig(dict, typeof(IOAuth2EnabledService), nameof(IOAuth2EnabledService.GetClientEnabledResource), baseAddress);
+            AddOAuth2AuthConfig(dict, typeof(IOAuth2ProtectedService), null, baseAddress);
+            
+            cb.AddInMemoryCollection(dict);
+        }
+
+        private void AddOAuth2AuthConfig(Dictionary<string, string> dict, Type interfaze, string method, Uri baseAddress)
+        {
+            string prefix = $"{string.Join(":", ("SolidRpc."+interfaze.FullName).Split('.').SelectMany(o => o.Split('+')).Distinct())}:";
+            if(!string.IsNullOrEmpty(method))
+            {
+                prefix = $"{prefix}{method}:";
+            }
+            dict[$"{prefix}OAuth2Authority"] = GetIssuer(baseAddress);
+            dict[$"{prefix}OAuth2ClientId"] = SolidRpcOidcTestImpl.ClientId;
+            dict[$"{prefix}OAuth2ClientSecret"] = SolidRpcOidcTestImpl.ClientSecret;
+        }
+
         /// <summary>
         /// Configures the server services
         /// </summary>
@@ -208,6 +233,7 @@ namespace SolidRpc.Tests.Security
             {
                 o.OpenApiSpec = openApi;
                 var oauth2Config = o.SetOAuth2ClientSecurity(GetIssuer(serverServices.GetSolidRpcService<Uri>()), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
+                //var oauth2Config = o.GetAdviceConfig<ISecurityOAuth2Config>();
                 if (o.Methods.Single().Name == nameof(IOAuth2ProtectedService.GetProtectedResourceWithRedirect))
                 {
                     oauth2Config.RedirectUnauthorizedIdentity = true;
