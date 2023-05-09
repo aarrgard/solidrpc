@@ -1,0 +1,211 @@
+{
+  "targets": {
+    "net6.0": {
+      "SolidRpc.Test.TestProject1/1.4.5": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Http": "2.2.0",
+          "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
+          "SolidProxy.MicrosoftDI": "1.0.0-rc022"
+        },
+        "compile": {
+          "bin/placeholder/RA.Mspecs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/RA.Mspecs.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SolidRpc.Test.TestProject1/1.4.5": {
+      "type": "project",
+      "path": "../TestProject2/TestProject2.csproj",
+      "msbuildProject": "../TestProject2/SolidRpc.Test.Petstore.csproj"
+    }
+  },
+    "projectFileDependencyGroups": {
+      "net6.0": [
+        "IdentityModel >= 6.0.0",
+        "Microsoft.AspNetCore.Mvc.Versioning >= 5.0.0",
+        "Microsoft.Extensions.Logging.Console >= 7.0.0",
+        "Microsoft.IdentityModel.Tokens >= 6.26.1",
+        "Microsoft.NET.Test.Sdk >= 17.5.0",
+        "Moq >= 4.18.4",
+        "NUnit3TestAdapter >= 4.4.2",
+        "Newtonsoft.Json >= 13.0.3",
+        "SolidCI.Azure >= 1.0.1",
+        "SolidProxy.GeneratorCastle >= 1.0.0-rc023",
+        "SolidRpc.Abstractions >= 1.0.0",
+        "SolidRpc.Node >= 1.0.0",
+        "SolidRpc.OpenApi.ApplicationInsights >= 1.0.0",
+        "SolidRpc.OpenApi.AspNetCore >= 1.0.0",
+        "SolidRpc.OpenApi.AzQueue >= 1.0.0",
+        "SolidRpc.OpenApi.Binder >= 1.0.0",
+        "SolidRpc.OpenApi.DotNetTool >= 1.0.0",
+        "SolidRpc.OpenApi.Generator >= 1.0.0",
+        "SolidRpc.OpenApi.Generator.Impl >= 1.0.0",
+        "SolidRpc.OpenApi.Model >= 1.0.0",
+        "SolidRpc.OpenApi.OAuth2 >= 1.0.0",
+        "SolidRpc.OpenApi.SwaggerUI >= 1.0.0",
+        "SolidRpc.Test.Petstore >= 1.4.5",
+        "Swashbuckle.AspNetCore >= 6.5.0",
+        "nunit >= 3.13.3"
+      ]
+    },
+    "packageFolders": {
+      "C:\\Users\\Andreas Arrgård\\.nuget\\packages\\": {}
+    },
+    "project": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Development\\github\\solidrpc\\SolidRpc.Tests\\SolidRpc.Tests.csproj",
+        "projectName": "SolidRpc.Tests",
+        "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.Tests\\SolidRpc.Tests.csproj",
+        "packagesPath": "C:\\Users\\Andreas Arrgård\\.nuget\\packages\\",
+        "outputPath": "C:\\Development\\github\\solidrpc\\SolidRpc.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Development\\github\\solidrpc\\NuGet.Config",
+          "C:\\Users\\Andreas Arrgård\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://pkgs.dev.azure.com/andreas0539/_packaging/Prerelease/nuget/v3/index.json": {},
+          "https://pkgs.dev.azure.com/andreas0539/_packaging/Released/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Development\\github\\solidrpc\\SolidRpc.Abstractions\\SolidRpc.Abstractions.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.Abstractions\\SolidRpc.Abstractions.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.Node\\SolidRpc.Node.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.Node\\SolidRpc.Node.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.ApplicationInsights\\SolidRpc.OpenApi.ApplicationInsights.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.ApplicationInsights\\SolidRpc.OpenApi.ApplicationInsights.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.AspNetCore\\SolidRpc.OpenApi.AspNetCore.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.AspNetCore\\SolidRpc.OpenApi.AspNetCore.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.AzQueue\\SolidRpc.OpenApi.AzQueue.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.AzQueue\\SolidRpc.OpenApi.AzQueue.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Binder\\SolidRpc.OpenApi.Binder.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Binder\\SolidRpc.OpenApi.Binder.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.DotNetTool\\SolidRpc.OpenApi.DotNetTool.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.DotNetTool\\SolidRpc.OpenApi.DotNetTool.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Generator.Impl\\SolidRpc.OpenApi.Generator.Impl.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Generator.Impl\\SolidRpc.OpenApi.Generator.Impl.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Generator\\SolidRpc.OpenApi.Generator.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Generator\\SolidRpc.OpenApi.Generator.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Model\\SolidRpc.OpenApi.Model.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.Model\\SolidRpc.OpenApi.Model.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.OAuth2\\SolidRpc.OpenApi.OAuth2.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.OAuth2\\SolidRpc.OpenApi.OAuth2.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.SwaggerUI\\SolidRpc.OpenApi.SwaggerUI.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.OpenApi.SwaggerUI\\SolidRpc.OpenApi.SwaggerUI.csproj"
+              },
+              "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Petstore\\SolidRpc.Test.Petstore.csproj": {
+                "projectPath": "C:\\Development\\github\\solidrpc\\SolidRpc.Test.Petstore\\SolidRpc.Test.Petstore.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "IdentityModel": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Versioning": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.26.1, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.5.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.18.4, )"
+            },
+            "NUnit3TestAdapter": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.4.2, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "SolidCI.Azure": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "SolidProxy.GeneratorCastle": {
+              "target": "Package",
+              "version": "[1.0.0-rc023, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "nunit": {
+              "target": "Package",
+              "version": "[3.13.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }

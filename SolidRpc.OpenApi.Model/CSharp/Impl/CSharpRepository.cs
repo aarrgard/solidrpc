@@ -158,6 +158,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 {
                     added = GetInterface(type);
                 }
+                else if (type.IsEnum)
+                {
+                    added = GetEnum(type);
+                }
                 else if (type.IsValueType)
                 {
                     added = GetStruct(type);
@@ -321,6 +325,28 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         }
 
         /// <summary>
+        /// Returns the enum for supplied qualified name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public ICSharpEnum GetEnum(Type type, string typeName = null)
+        {
+            if (typeName == null) typeName = type.FullName;
+            var t = Types.GetOrAdd(typeName, _ =>
+            {
+                var qn = new QualifiedName(_);
+                var ns = GetNamespace(qn.Namespace);
+                return new CSharpEnum(ns, qn.Name, type);
+            });
+            if (!(t is CSharpEnum s))
+            {
+                throw new Exception(type.Name + " is not added as a struct");
+            }
+            return s;
+        }
+
+        /// <summary>
         /// Returns the struct for supplied qualified name
         /// </summary>
         /// <param name="type"></param>
@@ -335,9 +361,9 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                 var ns = GetNamespace(qn.Namespace);
                 return new CSharpStruct(ns, qn.Name, type);
             });
-            if(!(t is ICSharpStruct s))
+            if (!(t is ICSharpStruct s))
             {
-                throw new Exception(type.Name+" is not added as a struct");
+                throw new Exception(type.Name + " is not added as a struct");
             }
             return s;
         }

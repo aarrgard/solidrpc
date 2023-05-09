@@ -121,6 +121,15 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
                     cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
                 }
             }
+            else if (type.IsEnum)
+            {
+                cSharpType = cSharpRepository.GetEnum(CreateTypeName(type));
+                if (cSharpType.Comment == null)
+                {
+                    AddAttributes(cSharpType, type.CustomAttributes);
+                    cSharpType.ParseComment(s_codeDocRepository.GetClassDoc(type)?.CodeComments);
+                }
+            }
             else
             {
                 cSharpType = cSharpRepository.GetType(CreateTypeName(type));

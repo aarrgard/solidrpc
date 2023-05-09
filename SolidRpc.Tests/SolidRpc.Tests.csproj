@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Compile Remove="Swagger\CodeGen\SecurityPermissionAttribute\Services\IArrayParam.cs" />
+    <Compile Remove="Swagger\ServerGen\TestProject2\Microsoft\Extensions\DependencyInjection\SolidRpcExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +106,8 @@
 
   <ItemGroup>
     <None Include="Swagger\ServerGen\TestProject1\TestProject1.csproj" />
+    <None Include="Swagger\ServerGen\TestProject2\Microsoft\Extensions\DependencyInjection\SolidRpcExtensions.cs" />
+    <None Include="Swagger\ServerGen\TestProject2\TestProject1.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -116,6 +119,9 @@
 	  </Reference>
 	  <Reference Include="RA.Broker">
 		  <HintPath>ExternalLib\RA.Broker.dll</HintPath>
+	  </Reference>
+	  <Reference Include="RA.Mspecs">
+	    <HintPath>Swagger\ServerGen\TestProject2\bin\Debug\netstandard2.0\RA.Mspecs.dll</HintPath>
 	  </Reference>
   </ItemGroup>
 

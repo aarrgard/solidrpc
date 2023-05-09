@@ -306,8 +306,8 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 bool upcast = propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
                 return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
-                    var pmd = propertyMetaData.FirstOrDefault(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType()));
-                    if(pmd == null)
+                    var pmds = propertyMetaData.Where(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType()));
+                    if (pmds.Count() != 1)
                     {
                         rp = rp ?? new Dictionary<string, string>();
                         var sb = new StringBuilder();
@@ -315,6 +315,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                         rp[propertyName] = sb.ToString();
                         return res;
                     }
+                    var pmd = pmds.First();
                     var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
                     var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
                     pmd.PropertyInfo.SetValue(o, val);

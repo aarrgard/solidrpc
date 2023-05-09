@@ -24,7 +24,8 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                CreateSpec(subDir.Name, false);
+                //if(subDir.Name != "TestProject2") { continue; }
+                CreateSpec(subDir.Name, false, subDir.Name == "TestProject1");
             }
         }
 
@@ -42,14 +43,14 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             return new DirectoryInfo(path);
         }
 
-        private void CreateSpec(string folderName, bool onlyCompare)
+        private void CreateSpec(string folderName, bool onlyCompare, bool fixProjectBase)
         {
             try
             {
+                var dir = GetProjectFolder(GetType().Assembly.GetName().Name);
                 //
                 // locate assets file
                 //
-                var dir = GetProjectFolder(GetType().Assembly.GetName().Name);
                 var obj = new DirectoryInfo(Path.Combine(dir.FullName, "obj"));
                 var assetsFile = new FileInfo(Path.Combine(obj.FullName, "project.assets.json"));
                 if(!assetsFile.Exists)
@@ -61,7 +62,10 @@ namespace SolidRpc.Tests.Swagger.ServerGen
                 dir = GetServerGenFolder(folderName);
                 obj = new DirectoryInfo(Path.Combine(dir.FullName, "obj"));
                 obj.Create();
-                assetsFile.CopyTo(Path.Combine(obj.FullName, assetsFile.Name), true);
+                if (folderName == "TestProject1")
+                {
+                    assetsFile.CopyTo(Path.Combine(obj.FullName, assetsFile.Name), true);
+                }
 
                 var bindingsFile = $"{dir.Name}.cs";
 
@@ -71,7 +75,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
                 "-only-compare", onlyCompare.ToString(),
                 "-BasePath", $".{GetType().Assembly.GetName().Name}.Swagger.ServerGen.{dir.Name}".Replace('.','/'),
                 "-ProjectNamespace", $"{GetType().Assembly.GetName().Name}.Swagger.ServerGen.{dir.Name}",
-                "-ProjectBaseFix", "../../..",
+                "-ProjectBaseFix", fixProjectBase ? "../../.." : "",
                 bindingsFile}).Wait();
             }
             catch (Exception e)

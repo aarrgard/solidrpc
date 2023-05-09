@@ -130,7 +130,7 @@ namespace SolidRpc.OpenApi.DotNetTool
             using (var tw = fileInfo.CreateText())
             {
                 var dlls = new List<FileInfo>();
-                foreach (var targetLib in nn(project.Assets.Targets.First().Value))
+                foreach (var targetLib in nn(project.Assets?.Targets?.First().Value))
                 {
                     if(!project.Assets.Libraries.TryGetValue(targetLib.Key, out ProjectAssetsLibrary lib))
                     {
@@ -181,7 +181,7 @@ namespace SolidRpc.OpenApi.DotNetTool
                         }
                         else
                         {
-                            tw.WriteLine($"//{targetLib.Key}=>");
+                            tw.WriteLine($"//{targetLib.Key}=>not:{string.Join("/",segments)}");
                         }
                     }
                     else

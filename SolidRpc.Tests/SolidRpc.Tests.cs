@@ -101,27 +101,4 @@
 //System.Security.Permissions/4.7.0=>
 //System.Security.Principal.Windows/4.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.security.principal.windows\4.7.0\ref\netcoreapp3.0\System.Security.Principal.Windows.dll
 //System.Text.Encoding/4.3.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.text.encoding\4.3.0\ref\netstandard1.3\System.Text.Encoding.dll
-//System.Text.Encoding.CodePages/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.text.encoding.codepages\6.0.0\lib\net6.0\System.Text.Encoding.CodePages.dll
-//System.Text.Encodings.Web/7.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.text.encodings.web\7.0.0\lib\net6.0\System.Text.Encodings.Web.dll
-//System.Text.Json/7.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.text.json\7.0.0\lib\net6.0\System.Text.Json.dll
-//System.Threading/4.0.11=>C:\Users\Andreas Arrgård\.nuget\packages\system.threading\4.0.11\ref\netstandard1.3\System.Threading.dll
-//System.Threading.Tasks/4.0.11=>C:\Users\Andreas Arrgård\.nuget\packages\system.threading.tasks\4.0.11\ref\netstandard1.3\System.Threading.Tasks.dll
-//System.Windows.Extensions/4.7.0=>
-//WindowsAzure.Storage/9.3.3=>C:\Users\Andreas Arrgård\.nuget\packages\windowsazure.storage\9.3.3\lib\netstandard1.3\Microsoft.WindowsAzure.Storage.dll
-//SolidRpc.Abstractions/1.0.0=>C:\Development\github\solidrpc\SolidRpc.Abstractions\bin\Debug\netstandard2.0\SolidRpc.Abstractions.dll
-//SolidRpc.Node/1.0.0=>C:\Development\github\solidrpc\SolidRpc.Node\bin\Debug\netstandard2.0\SolidRpc.Node.dll
-//SolidRpc.OpenApi.ApplicationInsights/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.ApplicationInsights\bin\Debug\netstandard2.0\SolidRpc.OpenApi.ApplicationInsights.dll
-//SolidRpc.OpenApi.AspNetCore/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.AspNetCore\bin\Debug\netstandard2.0\SolidRpc.OpenApi.AspNetCore.dll
-//SolidRpc.OpenApi.AzQueue/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.AzQueue\bin\Debug\netstandard2.0\SolidRpc.OpenApi.AzQueue.dll
-//SolidRpc.OpenApi.Binder/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.Binder\bin\Debug\netstandard2.0\SolidRpc.OpenApi.Binder.dll
-//SolidRpc.OpenApi.DotNetTool/1.0.0=>not:bin/placeholder/SolidRpc.OpenApi.DotNetTool.dll
-//SolidRpc.OpenApi.Generator/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.Generator\bin\Debug\netstandard2.0\SolidRpc.OpenApi.Generator.dll
-//SolidRpc.OpenApi.Generator.Impl/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.Generator.Impl\bin\Debug\netstandard2.0\SolidRpc.OpenApi.Generator.Impl.dll
-//SolidRpc.OpenApi.Model/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.Model\bin\Debug\netstandard2.0\SolidRpc.OpenApi.Model.dll
-//SolidRpc.OpenApi.OAuth2/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.OAuth2\bin\Debug\netstandard2.0\SolidRpc.OpenApi.OAuth2.dll
-//SolidRpc.OpenApi.SwaggerUI/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.SwaggerUI\bin\Debug\netstandard2.0\SolidRpc.OpenApi.SwaggerUI.dll
-//SolidRpc.Test.Petstore/1.4.5=>C:\Development\github\solidrpc\SolidRpc.Test.Petstore\bin\Debug\netstandard2.0\SolidRpc.Test.Petstore.dll
-//Generating stubs for : C:\Development\github\solidrpc\SolidRpc.Abstractions\bin\Debug\netstandard2.0\SolidRpc.Abstractions.dll
-//Generating stubs for : C:\Development\github\solidrpc\SolidRpc.OpenApi.Generator\bin\Debug\netstandard2.0\SolidRpc.OpenApi.Generator.dll
-//Generating stubs for : C:\Development\github\solidrpc\SolidRpc.OpenApi.SwaggerUI\bin\Debug\netstandard2.0\SolidRpc.OpenApi.SwaggerUI.dll
-//Generating stubs for : C:\Development\github\solidrpc\SolidRpc.Test.Petstore\bin\Debug\netstandard2.0\SolidRpc.Test.Petstore.dll
+//System.Text.Encoding.CodePages/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.text.encoding.codepages\6.0.0\lib\net6.0\System.
