@@ -10,6 +10,7 @@ using System.Linq;
 using SolidRpc.OpenApi.Binder;
 using System.Text;
 using System.Collections.Generic;
+using RA.Mspecs.Types.Event;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -63,19 +64,26 @@ namespace SolidRpc.Tests.Serialization
             [DataMember(Name ="Common", EmitDefaultValue = false)]
             public string Common { get; set; }
         }
-        public class Struct1 : StructBase {
+        public class Struct1 : StructBase
+        {
             public override string Type { get; set; } = "Type1";
-            public int[] Arr { get; set; }
+            public new int[] Arr { get; set; }
+        }
+        public class Struct11 : Struct1
+        {
+            public override string Type { get; set; } = "Type11";
+            public string Additional { get; set; }
         }
         public class Struct2 : StructBase
         {
             public override string Type { get; set; } = "Type2";
-            public int[][] Arr { get; set; }
+            public new int[][] Arr { get; set; }
         }
         public class Struct3 : StructBase
         {
             public override string Type { get; set; } = "Type3";
-            public StructBase Arr { get; set; }
+            public new StructBase Arr { get; set; }
+            public string Additional2 { get; set; }
         }
 
         private IServiceProvider GetServiceProvider()
@@ -327,7 +335,8 @@ namespace SolidRpc.Tests.Serialization
         public void TestNominator()
         {
             var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
-
+            StructBase sb;
+            
             var s1 = new Struct1() { Arr = new [] { 1, 2 } };
             Assert.AreEqual("Type1", s1.Type);
             serFact.SerializeToString(out string s, s1);
@@ -338,7 +347,7 @@ namespace SolidRpc.Tests.Serialization
             serFact.SerializeToString(out s, s2);
             Assert.AreEqual(@"{""Type"":""Type2"",""Arr"":[[1,2]]}", s);
 
-            serFact.DeserializeFromString(@"{""Common"": ""a"",""Type"":""Type1"",""Arr"":[1,2]}", out StructBase sb);
+            serFact.DeserializeFromString(@"{""Common"": ""a"",""Type"":""Type1"",""Arr"":[1,2]}", out sb);
             Assert.AreEqual("Type1", sb.Type);
             Assert.AreEqual("a", sb.Common);
             Assert.AreEqual(new[] { 1, 2 }, ((Struct1)sb).Arr);
@@ -376,6 +385,19 @@ namespace SolidRpc.Tests.Serialization
             Assert.AreEqual("Type4", sb.Type);
             Assert.AreEqual("a", sb.Common);
             Assert.AreEqual(typeof(StructBase), sb.GetType());
+
+            serFact.DeserializeFromString(@"{""Arr"":[1,2],""Common"": ""a"",""Additional"":""add"",""Additional2"":""add"",""Type"":""Type11""}", out sb);
+            Assert.AreEqual("Type11", sb.Type);
+            Assert.AreEqual("a", sb.Common);
+            Assert.AreEqual("add", ((Struct11)sb).Additional);
+            Assert.AreEqual(typeof(Struct11), sb.GetType());
+
+            // Fails!
+            //serFact.DeserializeFromString(@"{""Additional2"":""add"",""Arr"":[1,2],""Common"": ""a"",""Additional"":""add"",""Type"":""Type11""}", out sb);
+            //Assert.AreEqual("Type11", sb.Type);
+            //Assert.AreEqual("a", sb.Common);
+            //Assert.AreEqual("add", ((Struct11)sb).Additional);
+            //Assert.AreEqual(typeof(Struct11), sb.GetType());
 
         }
 
@@ -417,6 +439,18 @@ namespace SolidRpc.Tests.Serialization
             IEnumerable<ComplexType> x2;
             serFact.DeserializeFromFileType(fc, out x2);
             Assert.AreEqual(x.First().MyData, x2.First().MyData);
+        }
+
+        /// <summary>
+        /// Tests the mspecs serialization
+        /// </summary>
+        [Test]
+        public void TestMspecs()
+        {
+            var ms = new MemoryStream(Convert.FromBase64String("eyJhY2Nlc3NUb2tlbiI6Ik1EQXRNWHd3TURBd01EQXdNVGM1TUh3eU9EUS4iLCJzdWJzY3JpYmVySWQiOiJNREF0TVh3d01EQXdNREF3TVRjNU1Id3lPRFEuIiwiY3JlYXRlZERhdGUiOiIyMDIzLTA1LTEyVDA2OjA0OjMxLjAwMFoiLCJzdGF0dXMiOiJFTlVNU19QUk9WSURFUl9TRVJWSUNFX1NVQlNDUklQVElPTl9TVEFUVVNfQUNUSVZFIiwic2VydmljZUlkIjoiTURBdE1Yd3dNREF3TURBd01ESTJNWHd5T0RNLiIsIm9yZ2FuaXphdGlvbiI6eyJpZCI6Ik1EQXRNWHd3TURBd01EQXdNRE13TTN3eCIsIm5hbWUiOiJTa2FuZGlhTcOka2xhcm5hIEFCIiwiaWRlbnRpZmllciI6IjU1NjQ0OS02MTMwIiwiZW1haWwiOiJpbmZvQHNrYW5kaWFtYWtsYXJuYS5zZSJ9LCJpc09mZmljZU9wdEluU3Vic2NyaXB0aW9uIjp0cnVlLCJldmVudFR5cGUiOiJTVUJTQ1JJQkVSX0FEREVEIn0="));
+            var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
+            serFact.DeserializeFromStream(ms, out Event e);
+            Assert.AreEqual(typeof(EventSubscriberAdded), e.GetType());
         }
     }
 }

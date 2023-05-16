@@ -275,65 +275,83 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 .Select(o => new PropertyMetaData(o))
                 .ToList();
 
+            var propertyTypes = propertyMetaData
+                .Select(o => o.PropertyInfo.PropertyType)
+                .Distinct()
+                .ToList();
 
-            if(propertyMetaData.Count == 1)
+            if (propertyMetaData.Count == 1)
             {
                 var prop = propertyMetaData.Single().PropertyInfo;
                 var m = propertyMetaData.Single().ValueGetter;
                 var sp = CreateSetParent(prop.PropertyType);
                 return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
-                    var val = m.Invoke(this, new[] { r, o, s, sp});
-                    try
+                    var val = m.Invoke(this, new[] { r, o, s, sp });
+                    if (prop.DeclaringType.IsAssignableFrom(o.GetType()))
                     {
                         prop.SetValue(o, val);
                         return o;
-                    } 
-                    catch(TargetException e)
+                    }
+                    else
                     {
-                        var newo = Activator.CreateInstance(prop.DeclaringType);
-                        foreach(var p in o.GetType().GetProperties())
+                        if(o.GetType().IsAssignableFrom(prop.DeclaringType))
                         {
-                            p.SetValue(newo, p.GetValue(o));
+                            var newo = Activator.CreateInstance(prop.DeclaringType);
+                            foreach (var p in o.GetType().GetProperties())
+                            {
+                                p.SetValue(newo, p.GetValue(o));
+                            }
+                            prop.SetValue(newo, val);
+                            return newo;
                         }
-                        prop.SetValue(newo, val);
-                        return newo;
+                        return o;
                     }
                 };
             }
             if (propertyMetaData.Count > 1)
             {
-                bool upcast = propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
+                bool upcast = propertyTypes.Count() == 1 && propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
                 return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
-                    var pmds = propertyMetaData.Where(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType()));
-                    if (pmds.Count() != 1)
+                    if (upcast)
                     {
-                        rp = rp ?? new Dictionary<string, string>();
-                        var sb = new StringBuilder();
-                        var res = SkipNode(r,o,s,sb);
-                        rp[propertyName] = sb.ToString();
-                        return res;
-                    }
-                    var pmd = pmds.First();
-                    var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
-                    var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
-                    pmd.PropertyInfo.SetValue(o, val);
+                        var pmd = propertyMetaData.First();
+                        var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
+                        var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
+                        pmd.PropertyInfo.SetValue(o, val);
 
-                    // check if we need to upcast
-                    if(upcast)
-                    {
                         var newMeta = propertyMetaData.Where(x => x.DefaultValue != null).FirstOrDefault(x => x.DefaultValue.Equals(val));
                         if (newMeta != null)
                         {
                             var newType = newMeta.PropertyInfo.DeclaringType;
                             var newo = Activator.CreateInstance(newType);
-                            foreach (var p in o.GetType().GetProperties())
+                            while(!newType.IsAssignableFrom(o.GetType()))
+                            {
+                                newType = newType.BaseType;
+                            }
+                            foreach (var p in newType.GetProperties())
                             {
                                 p.SetValue(newo, p.GetValue(o));
                             }
                             o = newo;
                         }
+                    }
+                    else
+                    {
+                        var pmds = propertyMetaData.Where(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType()));
+                        if (pmds.Count() != 1)
+                        {
+                            rp = rp ?? new Dictionary<string, string>();
+                            var sb = new StringBuilder();
+                            var res = SkipNode(r, o, s, sb);
+                            rp[propertyName] = sb.ToString();
+                            return res;
+                        }
+                        var pmd = pmds.First();
+                        var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
+                        var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
+                        pmd.PropertyInfo.SetValue(o, val);
                     }
 
                     return o;
