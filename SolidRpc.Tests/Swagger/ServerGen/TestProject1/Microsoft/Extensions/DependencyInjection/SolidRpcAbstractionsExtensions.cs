@@ -713,7 +713,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         /// <param name="sc"></param>
         /// <param name="configure"></param>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddSolidRpcAbstractions(
-            Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
+            this Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
             System.Func<Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig,Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig> configure) {
             sc.SetupProxy<SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge,Microsoft.Extensions.DependencyInjection.SolidRpcAbstractionsExtensions.SolidRpcAbstractionsServicesISolidRpcAcmeChallengeProxy>(configure);
             sc.SetupProxy<SolidRpc.Abstractions.Services.ISolidRpcContentHandler,Microsoft.Extensions.DependencyInjection.SolidRpcAbstractionsExtensions.SolidRpcAbstractionsServicesISolidRpcContentHandlerProxy>(configure);

@@ -294,7 +294,7 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
                 var parameterName = o.Identifier.ToString();
                 var optional = o.Default != null;
-                var mp = new CSharpMethodParameter(method, parameterName, parameterType, optional);
+                var mp = new CSharpMethodParameter(method, parameterName, parameterType, false, optional);
                 method.AddMember(mp);
                 AddAttributes(o, o.AttributeLists, mp);
             });

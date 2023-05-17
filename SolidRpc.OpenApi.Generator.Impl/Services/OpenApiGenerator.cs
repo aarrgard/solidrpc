@@ -264,8 +264,8 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             var addServiceCollection = new CSharpMethod(c, $"Add{nsNoDots}", sc);
             addServiceCollection.AddMember(new CSharpModifier(addServiceCollection, "public"));
             addServiceCollection.AddMember(new CSharpModifier(addServiceCollection, "static"));
-            addServiceCollection.AddMember(new CSharpMethodParameter(addServiceCollection, "sc", sc, false));
-            addServiceCollection.AddMember(new CSharpMethodParameter(addServiceCollection, "configure", configureArg, false));
+            addServiceCollection.AddMember(new CSharpMethodParameter(addServiceCollection, "sc", sc, true, false));
+            addServiceCollection.AddMember(new CSharpMethodParameter(addServiceCollection, "configure", configureArg, false, false));
 
             var dummyCode = new CSharpRepository();
             var ms = new MemoryStream();
@@ -289,9 +289,9 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
                 c.AddMember(proxy);
 
                 var ctr = new CSharpConstructor(proxy, "serviceProvider, config");
-                var serviceProvider = new CSharpMethodParameter(ctr, "serviceProvider", sp, false);
+                var serviceProvider = new CSharpMethodParameter(ctr, "serviceProvider", sp, false, false);
                 ctr.AddMember(serviceProvider);
-                var proxyConfig = new CSharpMethodParameter(ctr, "config", gipc, false);
+                var proxyConfig = new CSharpMethodParameter(ctr, "config", gipc, false, false);
                 ctr.AddMember(proxyConfig);
                 proxy.AddMember(ctr);
 

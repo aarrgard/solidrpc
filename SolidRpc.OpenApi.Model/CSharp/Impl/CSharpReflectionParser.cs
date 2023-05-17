@@ -67,7 +67,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             method.GetParameters().ToList().ForEach(o =>
             {
                 var parameterType = GetType(cSharpRepository, o.ParameterType);
-                var cSharpMethodParameter = new CSharpMethodParameter(cSharpMethod, o.Name, parameterType, IsOptional(o));
+                var cSharpMethodParameter = new CSharpMethodParameter(cSharpMethod, o.Name, parameterType, false, IsOptional(o));
                 AddAttributes(cSharpMethodParameter, o.CustomAttributes);
                 cSharpMethod.AddMember(cSharpMethodParameter);
             });

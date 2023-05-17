@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         /// <param name="sc"></param>
         /// <param name="configure"></param>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddSolidRpcOpenApiSwaggerUI(
-            Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
+            this Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
             System.Func<Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig,Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig> configure) {
             sc.SetupProxy<SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI,Microsoft.Extensions.DependencyInjection.SolidRpcOpenApiSwaggerUIExtensions.SolidRpcOpenApiSwaggerUIServicesISwaggerUIProxy>(configure);
             return sc;

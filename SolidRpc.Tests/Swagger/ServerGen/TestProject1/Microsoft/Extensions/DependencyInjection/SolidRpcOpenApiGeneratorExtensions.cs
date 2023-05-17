@@ -105,7 +105,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         /// <param name="sc"></param>
         /// <param name="configure"></param>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddSolidRpcOpenApiGenerator(
-            Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
+            this Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
             System.Func<Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig,Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig> configure) {
             sc.SetupProxy<SolidRpc.OpenApi.Generator.Services.IOpenApiGenerator,Microsoft.Extensions.DependencyInjection.SolidRpcOpenApiGeneratorExtensions.SolidRpcOpenApiGeneratorServicesIOpenApiGeneratorProxy>(configure);
             return sc;

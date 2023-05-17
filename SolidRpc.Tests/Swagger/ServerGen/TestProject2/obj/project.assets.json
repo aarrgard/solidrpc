@@ -1,7 +1,7 @@
 {
   "targets": {
     "net6.0": {
-      "SolidRpc.Test.TestProject1/1.4.5": {
+      "SolidRpc.Test.TestProject2/1.4.5": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
@@ -16,14 +16,50 @@
         "runtime": {
           "bin/placeholder/RA.Mspecs.dll": {}
         }
+      },
+      "Moq/4.18.4": {
+        "type": "package",
+        "dependencies": {
+          "Castle.Core": "5.1.1"
+        },
+        "compile": {
+          "lib/net6.0/Moq.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Moq.dll": {
+            "related": ".xml"
+          }
+        }
       }
     }
   },
   "libraries": {
-    "SolidRpc.Test.TestProject1/1.4.5": {
+    "SolidRpc.Test.TestProject2/1.4.5": {
       "type": "project",
       "path": "../TestProject2/TestProject2.csproj",
       "msbuildProject": "../TestProject2/SolidRpc.Test.Petstore.csproj"
+    },
+    "Moq/4.18.4": {
+      "sha512": "IOo+W51+7Afnb0noltJrKxPBSfsgMzTKCw+Re5AMx8l/vBbAbMDOynLik4+lBYIWDJSO0uV7Zdqt7cNb6RZZ+A==",
+      "type": "package",
+      "path": "moq/4.18.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/Moq.dll",
+        "lib/net462/Moq.xml",
+        "lib/net6.0/Moq.dll",
+        "lib/net6.0/Moq.xml",
+        "lib/netstandard2.0/Moq.dll",
+        "lib/netstandard2.0/Moq.xml",
+        "lib/netstandard2.1/Moq.dll",
+        "lib/netstandard2.1/Moq.xml",
+        "moq.4.18.4.nupkg.sha512",
+        "moq.nuspec",
+        "moq.png"
+      ]
     }
   },
     "projectFileDependencyGroups": {

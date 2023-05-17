@@ -14,11 +14,13 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="parent"></param>
         /// <param name="name"></param>
         /// <param name="parameterType"></param>
+        /// <param name="isStatic"></param>
         /// <param name="optional"></param>
         /// <param name="defaultValue"></param>
-        public CSharpMethodParameter(ICSharpMember parent, string name, ICSharpType parameterType, bool optional, string defaultValue = null) : base(parent, name)
+        public CSharpMethodParameter(ICSharpMember parent, string name, ICSharpType parameterType, bool isStatic, bool optional, string defaultValue = null) : base(parent, name)
         {
             ParameterType = parameterType ?? throw new ArgumentNullException(nameof(parameterType));
+            IsStatic = isStatic;
             Optional = optional;
             DefaultValue = defaultValue;
         }
@@ -38,6 +40,11 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public ICSharpType ParameterType { get; }
 
         /// <summary>
+        /// Is this parameter static(this)
+        /// </summary>
+        public bool IsStatic { get; }
+
+        /// <summary>
         /// Is this parameter options
         /// </summary>
         public bool Optional { get; }
@@ -53,6 +60,10 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         /// <param name="codeWriter"></param>
         public override void WriteCode(ICodeWriter codeWriter)
         {
+            if(IsStatic)
+            {
+                codeWriter.Emit("this ");
+            }
             codeWriter.Emit($"{SimplifyName(ParameterType.FullName)} {Name}");
             if (!string.IsNullOrEmpty(DefaultValue))
             {

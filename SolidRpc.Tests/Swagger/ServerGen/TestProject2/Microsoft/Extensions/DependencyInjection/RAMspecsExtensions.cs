@@ -680,7 +680,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         /// <param name="sc"></param>
         /// <param name="configure"></param>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddRAMspecs(
-            Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
+            this Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
             System.Func<Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig,Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig> configure) {
             sc.SetupProxy<RA.Mspecs.Services.IContact,Microsoft.Extensions.DependencyInjection.RAMspecsExtensions.RAMspecsServicesIContactProxy>(configure);
             sc.SetupProxy<RA.Mspecs.Services.IDeal,Microsoft.Extensions.DependencyInjection.RAMspecsExtensions.RAMspecsServicesIDealProxy>(configure);

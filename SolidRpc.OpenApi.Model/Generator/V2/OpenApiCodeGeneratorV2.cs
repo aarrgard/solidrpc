@@ -155,14 +155,14 @@ namespace SolidRpc.OpenApi.Model.Generator.V2
                         defaultValue = $"null";
                     }
 
-                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, p.Optional, defaultValue);
+                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, p.Name, parameterType, false, p.Optional, defaultValue);
                     mp.ParseComment($"<summary>{p.Description}</summary>");
                     m.AddMember(mp);
                 }
                 if (CodeSettings.UseAsyncAwaitPattern)
                 {
                     var parameterType = cSharpRepository.GetType("System.Threading.CancellationToken");
-                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, "cancellationToken", parameterType, true, $"default({parameterType.FullName})");
+                    var mp = new Model.CSharp.Impl.CSharpMethodParameter(m, "cancellationToken", parameterType, false, true, $"default({parameterType.FullName})");
                     m.AddMember(mp);
                 }
                 i.AddMember(m);

@@ -1,7 +1,14 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NuGet.Frameworks;
+using NUnit.Framework;
+using RA.Mspecs.Services;
+using RA.Mspecs.Types.Contact;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidRpc.Tests.Swagger.ServerGen
 {
@@ -10,6 +17,18 @@ namespace SolidRpc.Tests.Swagger.ServerGen
     /// </summary>
     public class GenTest : WebHostMvcTest
     {
+        public class ContactImpl : IContact
+        {
+            public Task<Contact> GetContactAsync(string id, bool? useCache = null, CancellationToken cancellationToken = default)
+            {
+                return Task.FromResult(new Contact() { Id = id });
+            }
+
+            public Task<Contact> UpsertContactAsync(Contact contact, CancellationToken cancellationToken = default)
+            {
+                return Task.FromResult(contact);
+            }
+        }
 
         /// <summary>
         /// Tests generating swagger file from code
@@ -53,7 +72,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
                 //
                 var obj = new DirectoryInfo(Path.Combine(dir.FullName, "obj"));
                 var assetsFile = new FileInfo(Path.Combine(obj.FullName, "project.assets.json"));
-                if(!assetsFile.Exists)
+                if (!assetsFile.Exists)
                 {
                     throw new Exception("Cannot find the assets file");
                 }
@@ -85,5 +104,47 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             }
         }
 
+        /// <summary>
+        /// Tests generating swagger file from code
+        /// </summary>
+        [Test]
+        public async Task TestProject2NoImplementation()
+        {
+            var sc = new ServiceCollection();
+            sc.AddRAMspecs(conf => {
+                return conf;
+            });
+            var sp = sc.BuildServiceProvider();
+            var cs = sp.GetRequiredService<IContact>();
+            try
+            {
+                var c = await cs.GetContactAsync("test");
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("No implementation registered for service RA.Mspecs.Services.IContact", e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Tests generating swagger file from code
+        /// </summary>
+        [Test]
+        public async Task TestProject2Assembly()
+        {
+            var sc = new ServiceCollection();
+            sc.AddRAMspecs(conf => {
+                if(conf.ProxyType == typeof(IContact))
+                {
+                    return conf.SetAssemblyFactory(GetType().Assembly);
+                }
+                return conf;
+            });
+            var sp = sc.BuildServiceProvider();
+            var cs = sp.GetRequiredService<IContact>();
+            var c = await cs.GetContactAsync("test");
+            Assert.AreEqual("test", c.Id);
+        }
     }
 }

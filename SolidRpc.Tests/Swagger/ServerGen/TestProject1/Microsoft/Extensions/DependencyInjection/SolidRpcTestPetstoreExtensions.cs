@@ -287,7 +287,7 @@ namespace Microsoft.Extensions.DependencyInjection {
         /// <param name="sc"></param>
         /// <param name="configure"></param>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddSolidRpcTestPetstore(
-            Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
+            this Microsoft.Extensions.DependencyInjection.IServiceCollection sc,
             System.Func<Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig,Microsoft.Extensions.DependencyInjection.SolidRpcExtensions.IProxyConfig> configure) {
             sc.SetupProxy<SolidRpc.Test.Petstore.Services.IPet,Microsoft.Extensions.DependencyInjection.SolidRpcTestPetstoreExtensions.SolidRpcTestPetstoreServicesIPetProxy>(configure);
             sc.SetupProxy<SolidRpc.Test.Petstore.Services.IStore,Microsoft.Extensions.DependencyInjection.SolidRpcTestPetstoreExtensions.SolidRpcTestPetstoreServicesIStoreProxy>(configure);

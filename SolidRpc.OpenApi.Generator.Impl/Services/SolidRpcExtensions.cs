@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -24,9 +26,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
 
             /// <summary>
-            /// The implementation factory
+            /// The implementation
             /// </summary>
-            Func<IServiceProvider, object> Factory { get; }
+            Type Implementation { get; }
 
             /// <summary>
             /// Constructs a new config with new lifetime
@@ -38,9 +40,17 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <summary>
             /// Sets the factory method to use when constructing implementations
             /// </summary>
-            /// <param name="factory"></param>
+            /// <param name="implementation"></param>
             /// <returns></returns>
-            IProxyConfig SetFactory(Func<IServiceProvider, object> factory);
+            IProxyConfig SetImplementation(Type implementation);
+
+            /// <summary>
+            /// Resolves implementations from supplied assembly
+            /// </summary>
+            /// <param name="sc"></param>
+            /// <param name="assembly"></param>
+            /// <returns></returns>
+            IProxyConfig SetAssemblyFactory(Assembly assembly);
         }
 
         /// <summary>
@@ -59,11 +69,11 @@ namespace Microsoft.Extensions.DependencyInjection
             /// 
             /// </summary>
             /// <param name="lifetime"></param>
-            /// <param name="factory"></param>
-            public ProxyConfig(ServiceLifetime lifetime, Func<IServiceProvider, object> factory)
+            /// <param name="implementation"></param>
+            public ProxyConfig(ServiceLifetime lifetime, Type implementation)
             {
                 Lifetime = lifetime;
-                Factory = factory;
+                Implementation = implementation;
             }
 
             /// <summary>
@@ -79,16 +89,39 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <summary>
             /// The factory
             /// </summary>
-            public Func<IServiceProvider, object> Factory { get; }
+            public Type Implementation { get; }
 
             /// <summary>
             /// The factory method to use in order to create implementations
             /// </summary>
-            /// <param name="factory"></param>
+            /// <param name="implementation"></param>
             /// <returns></returns>
-            public IProxyConfig SetFactory(Func<IServiceProvider, object> factory)
+            public IProxyConfig SetImplementation(Type implementation)
             {
-                return new ProxyConfig<T>(Lifetime, factory);
+                return new ProxyConfig<T>(Lifetime, implementation);
+            }
+
+            /// <summary>
+            /// Resolves implementations from supplied assembly
+            /// </summary>
+            /// <param name="assembly"></param>
+            /// <returns></returns>
+            public IProxyConfig SetAssemblyFactory(Assembly assembly)
+            {
+                var implementations = assembly.GetTypes()
+                    .Where(o => ProxyType.IsAssignableFrom(o))
+                    .Where(o => o.DeclaringType != typeof(RAMspecsExtensions))
+                    .ToList();
+                if (implementations.Count() == 0)
+                {
+                    throw new Exception($"Cannot find implementation of type {ProxyType} in assembly {assembly.GetName().Name}");
+                }
+                if (implementations.Count() > 1)
+                {
+                    throw new Exception($"Found more than one implementation oftype {ProxyType} in assembly {assembly.GetName().Name}");
+                }
+                var implementation = implementations.Single();
+                return SetImplementation(implementation);
             }
 
             /// <summary>
@@ -98,7 +131,7 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <returns></returns>
             public IProxyConfig SetLifetime(ServiceLifetime lifetime)
             {
-                return new ProxyConfig<T>(lifetime, Factory);
+                return new ProxyConfig<T>(lifetime, Implementation);
             }
         }
 
@@ -111,7 +144,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var config = (IProxyConfig<T>)new ProxyConfig<T>(
                 ServiceLifetime.Transient,
-                sp => { throw new Exception($"Cannot create implementation for {typeof(T)}"); });
+                null);
             if (configure != null)
             {
                 config = (IProxyConfig<T>)configure(config);
@@ -135,7 +168,10 @@ namespace Microsoft.Extensions.DependencyInjection
             var config = Configure<TInterface>(configure);
             sc.AddSingleton(config);
             sc.Add(new ServiceDescriptor(typeof(TInterface), typeof(TImpl), config.Lifetime));
-
+            if (config.Implementation != null)
+            {
+                sc.Add(new ServiceDescriptor(config.Implementation, config.Implementation, config.Lifetime));
+            }
         }
 
         /// <summary>
@@ -172,7 +208,8 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <exception cref="NotImplementedException"></exception>
             protected T GetImplementation()
             {
-                return (T)_config.Factory(_serviceProvider);
+                var implementation = _config.Implementation ?? throw new Exception($"No implementation registered for service {_config.ProxyType.FullName}");
+                return (T)_serviceProvider.GetRequiredService(implementation);
             }
         }
     }
