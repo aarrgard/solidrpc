@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -249,7 +250,8 @@ namespace SolidRpc.Tests.MvcProxyTest
                 var timezone = TimeZoneInfo.Local;
                 var time = new DateTime(2019, 05, 25, 17, 32, 44);
                 var dateTime = new DateTimeOffset(time, timezone.GetUtcOffset(time));
-                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeOffsetInQuery)}?d={dateTime.ToString("yyy-MM-ddTHH:mm:ss")}");
+                var dtStr = dateTime.ToString("yyy-MM-ddTHH:mm:sszzz");
+                var resp = await ctx.GetResponse($"/MvcProxyTest/{nameof(MvcProxyTestController.ProxyDateTimeOffsetInQuery)}?d={HttpUtility.UrlEncode(dtStr)}");
                 var correctedDateTime = dateTime;
                 if (TimeZoneInfo.Local.IsDaylightSavingTime(dateTime))
                 {
