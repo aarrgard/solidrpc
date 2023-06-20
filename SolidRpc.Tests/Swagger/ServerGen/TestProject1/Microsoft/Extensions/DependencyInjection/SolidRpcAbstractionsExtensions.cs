@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SetAcmeChallengeAsync_challenge_cancellation;
+            private static System.Reflection.MethodInfo mi_SetAcmeChallengeAsync_challenge_cancellation = GetMethodInfo("SetAcmeChallengeAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetAcmeChallengeAsync_key_cancellation;
+            private static System.Reflection.MethodInfo mi_GetAcmeChallengeAsync_key_cancellation = GetMethodInfo("GetAcmeChallengeAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -72,7 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetContent_path_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetContent_path_cancellationToken = GetMethodInfo("GetContent", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -88,7 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetPathMappingsAsync_redirects_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetPathMappingsAsync_redirects_cancellationToken = GetMethodInfo("GetPathMappingsAsync", new System.Type[] {typeof(System.Boolean), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -104,7 +104,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_cancellationToken = GetMethodInfo("GetProtectedContentAsync", new System.Type[] {typeof(System.Byte[]), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -120,7 +120,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_fileName_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_fileName_cancellationToken = GetMethodInfo("GetProtectedContentAsync", new System.Type[] {typeof(System.Byte[]), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -151,7 +151,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetHostId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetHostId_cancellationToken = GetMethodInfo("GetHostId", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -166,7 +166,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetHostInstance_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetHostInstance_cancellationToken = GetMethodInfo("GetHostInstance", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -181,7 +181,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SyncHostsFromStore_cancellationToken;
+            private static System.Reflection.MethodInfo mi_SyncHostsFromStore_cancellationToken = GetMethodInfo("SyncHostsFromStore", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -196,7 +196,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CheckHost_hostInstance_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CheckHost_hostInstance_cancellationToken = GetMethodInfo("CheckHost", new System.Type[] {typeof(SolidRpc.Abstractions.Types.SolidRpcHostInstance), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -213,7 +213,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetHostConfiguration_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetHostConfiguration_cancellationToken = GetMethodInfo("GetHostConfiguration", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -228,7 +228,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_IsAlive_cancellationToken;
+            private static System.Reflection.MethodInfo mi_IsAlive_cancellationToken = GetMethodInfo("IsAlive", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -243,7 +243,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_BaseAddress_cancellationToken;
+            private static System.Reflection.MethodInfo mi_BaseAddress_cancellationToken = GetMethodInfo("BaseAddress", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -258,7 +258,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_AllowedCorsOrigins_cancellationToken;
+            private static System.Reflection.MethodInfo mi_AllowedCorsOrigins_cancellationToken = GetMethodInfo("AllowedCorsOrigins", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -273,7 +273,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_DefaultTimezone_cancellationToken;
+            private static System.Reflection.MethodInfo mi_DefaultTimezone_cancellationToken = GetMethodInfo("DefaultTimezone", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -288,7 +288,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_ParseDateTime_dateTime_cancellationToken;
+            private static System.Reflection.MethodInfo mi_ParseDateTime_dateTime_cancellationToken = GetMethodInfo("ParseDateTime", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -318,7 +318,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_AddHostInstanceAsync_hostInstance_cancellationToken;
+            private static System.Reflection.MethodInfo mi_AddHostInstanceAsync_hostInstance_cancellationToken = GetMethodInfo("AddHostInstanceAsync", new System.Type[] {typeof(SolidRpc.Abstractions.Types.SolidRpcHostInstance), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -334,7 +334,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_RemoveHostInstanceAsync_hostInstance_cancellationToken;
+            private static System.Reflection.MethodInfo mi_RemoveHostInstanceAsync_hostInstance_cancellationToken = GetMethodInfo("RemoveHostInstanceAsync", new System.Type[] {typeof(SolidRpc.Abstractions.Types.SolidRpcHostInstance), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -350,7 +350,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_ListHostInstancesAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_ListHostInstancesAsync_cancellationToken = GetMethodInfo("ListHostInstancesAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -377,7 +377,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetHttpRequestAsync_takeCount_cancellation;
+            private static System.Reflection.MethodInfo mi_GetHttpRequestAsync_takeCount_cancellation = GetMethodInfo("GetHttpRequestAsync", new System.Type[] {typeof(System.Nullable<System.Int32>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -393,7 +393,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_RemoveHttpRequestAsync_solidRpcCallId_cancellation;
+            private static System.Reflection.MethodInfo mi_RemoveHttpRequestAsync_solidRpcCallId_cancellation = GetMethodInfo("RemoveHttpRequestAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -409,7 +409,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetHttpRequestsAsync_sessionId_takeCount_cancellation;
+            private static System.Reflection.MethodInfo mi_GetHttpRequestsAsync_sessionId_takeCount_cancellation = GetMethodInfo("GetHttpRequestsAsync", new System.Type[] {typeof(System.String), typeof(System.Nullable<System.Int32>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -427,7 +427,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_RemoveHttpRequestAsync_sessionId_solidRpcCallId_cancellation;
+            private static System.Reflection.MethodInfo mi_RemoveHttpRequestAsync_sessionId_solidRpcCallId_cancellation = GetMethodInfo("RemoveHttpRequestAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -458,7 +458,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetAuthorizationCodeTokenAsync_callbackUri_state_scopes_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetAuthorizationCodeTokenAsync_callbackUri_state_scopes_cancellationToken = GetMethodInfo("GetAuthorizationCodeTokenAsync", new System.Type[] {typeof(System.Uri), typeof(System.String), typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -478,7 +478,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_TokenCallbackAsync_code_state_cancellation;
+            private static System.Reflection.MethodInfo mi_TokenCallbackAsync_code_state_cancellation = GetMethodInfo("TokenCallbackAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -496,7 +496,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_RefreshTokenAsync_accessToken_cancellation;
+            private static System.Reflection.MethodInfo mi_RefreshTokenAsync_accessToken_cancellation = GetMethodInfo("RefreshTokenAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -512,7 +512,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_LogoutAsync_callbackUri_accessToken_cancellationToken;
+            private static System.Reflection.MethodInfo mi_LogoutAsync_callbackUri_accessToken_cancellationToken = GetMethodInfo("LogoutAsync", new System.Type[] {typeof(System.Uri), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -530,7 +530,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_PostLogoutAsync_state_cancellationToken;
+            private static System.Reflection.MethodInfo mi_PostLogoutAsync_state_cancellationToken = GetMethodInfo("PostLogoutAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -559,7 +559,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetDiscoveryDocumentAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetDiscoveryDocumentAsync_cancellationToken = GetMethodInfo("GetDiscoveryDocumentAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -574,7 +574,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetKeysAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetKeysAsync_cancellationToken = GetMethodInfo("GetKeysAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -588,7 +588,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetTokenAsync_grantType_clientId_clientSecret_username_password_scope_code_redirectUri_codeVerifier_refreshToken_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetTokenAsync_grantType_clientId_clientSecret_username_password_scope_code_redirectUri_codeVerifier_refreshToken_cancellationToken = GetMethodInfo("GetTokenAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -622,7 +622,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_AuthorizeAsync_scope_responseType_clientId_redirectUri_state_responseMode_nonce_cancellationToken;
+            private static System.Reflection.MethodInfo mi_AuthorizeAsync_scope_responseType_clientId_redirectUri_state_responseMode_nonce_cancellationToken = GetMethodInfo("AuthorizeAsync", new System.Type[] {typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -650,7 +650,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_RevokeAsync_clientId_clientSecret_token_tokenHint_cancellationToken;
+            private static System.Reflection.MethodInfo mi_RevokeAsync_clientId_clientSecret_token_tokenHint_cancellationToken = GetMethodInfo("RevokeAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -672,7 +672,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_EndSessionAsync_idTokenHint_postLogoutRedirectUri_state_cancellationToken;
+            private static System.Reflection.MethodInfo mi_EndSessionAsync_idTokenHint_postLogoutRedirectUri_state_cancellationToken = GetMethodInfo("EndSessionAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -705,7 +705,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_cancellationToken = GetMethodInfo("GetProtectedContentAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -734,7 +734,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetRateLimitTokenAsync_resourceName_timeout_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetRateLimitTokenAsync_resourceName_timeout_cancellationToken = GetMethodInfo("GetRateLimitTokenAsync", new System.Type[] {typeof(System.String), typeof(System.TimeSpan), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -752,7 +752,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetSingeltonTokenAsync_resourceName_timeout_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetSingeltonTokenAsync_resourceName_timeout_cancellationToken = GetMethodInfo("GetSingeltonTokenAsync", new System.Type[] {typeof(System.String), typeof(System.TimeSpan), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -770,7 +770,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_ReturnRateLimitTokenAsync_rateLimitToken_cancellationToken;
+            private static System.Reflection.MethodInfo mi_ReturnRateLimitTokenAsync_rateLimitToken_cancellationToken = GetMethodInfo("ReturnRateLimitTokenAsync", new System.Type[] {typeof(SolidRpc.Abstractions.Types.RateLimit.RateLimitToken), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -786,7 +786,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetRateLimitSettingsAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetRateLimitSettingsAsync_cancellationToken = GetMethodInfo("GetRateLimitSettingsAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -800,7 +800,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpdateRateLimitSetting_setting_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpdateRateLimitSetting_setting_cancellationToken = GetMethodInfo("UpdateRateLimitSetting", new System.Type[] {typeof(SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -829,7 +829,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateCodeNamespace_assemblyName_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateCodeNamespace_assemblyName_cancellationToken = GetMethodInfo("CreateCodeNamespace", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -858,7 +858,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateNpmPackage_assemblyNames_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateNpmPackage_assemblyNames_cancellationToken = GetMethodInfo("CreateNpmPackage", new System.Type[] {typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -874,7 +874,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateInitialZip_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateInitialZip_cancellationToken = GetMethodInfo("CreateInitialZip", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -901,7 +901,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateTypesTsForAssemblyAsync_assemblyName_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateTypesTsForAssemblyAsync_assemblyName_cancellationToken = GetMethodInfo("CreateTypesTsForAssemblyAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -917,7 +917,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateTypesTsForCodeNamespaceAsync_codeNamespace_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateTypesTsForCodeNamespaceAsync_codeNamespace_cancellationToken = GetMethodInfo("CreateTypesTsForCodeNamespaceAsync", new System.Type[] {typeof(SolidRpc.Abstractions.Types.Code.CodeNamespace), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>

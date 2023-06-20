@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetContactAsync_id_useCache_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetContactAsync_id_useCache_cancellationToken = GetMethodInfo("GetContactAsync", new System.Type[] {typeof(System.String), typeof(System.Nullable<System.Boolean>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpsertContactAsync_contact_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpsertContactAsync_contact_cancellationToken = GetMethodInfo("UpsertContactAsync", new System.Type[] {typeof(RA.Mspecs.Types.Contact.Contact), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -64,7 +64,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetDealsAsync_subscriberId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetDealsAsync_subscriberId_cancellationToken = GetMethodInfo("GetDealsAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -80,7 +80,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetDealAsync_subscriberId_dealId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetDealAsync_subscriberId_dealId_cancellationToken = GetMethodInfo("GetDealAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -98,7 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_PlaceBidAsync_subscriberId_dealId_bidInput_cancellationToken;
+            private static System.Reflection.MethodInfo mi_PlaceBidAsync_subscriberId_dealId_bidInput_cancellationToken = GetMethodInfo("PlaceBidAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(RA.Mspecs.Types.Deal.Input.BidInput), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -118,7 +118,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SetBidUrlAsync_subscriberId_dealId_bidderId_url_cancellationToken;
+            private static System.Reflection.MethodInfo mi_SetBidUrlAsync_subscriberId_dealId_bidderId_url_cancellationToken = GetMethodInfo("SetBidUrlAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Uri), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -140,7 +140,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SetLoanPromiseAsync_subscriberId_dealId_bidderId_institute_validUntil_information_cancellationToken;
+            private static System.Reflection.MethodInfo mi_SetLoanPromiseAsync_subscriberId_dealId_bidderId_institute_validUntil_information_cancellationToken = GetMethodInfo("SetLoanPromiseAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Nullable<System.DateTimeOffset>), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -179,7 +179,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetEstateByDealIdAsync_dealId_useCache_fetchMissingEstate_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetEstateByDealIdAsync_dealId_useCache_fetchMissingEstate_cancellationToken = GetMethodInfo("GetEstateByDealIdAsync", new System.Type[] {typeof(System.String), typeof(System.Nullable<System.Boolean>), typeof(System.Nullable<System.Boolean>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -199,23 +199,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetEstateByBidderIdAsync_bidderId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetEstateByBidderTokenAsync_bidderId_cancellationToken = GetMethodInfo("GetEstateByBidderTokenAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
             /// <param name="bidderId"></param>
             /// <param name="cancellationToken"></param>
-            public System.Threading.Tasks.Task<RA.Mspecs.Types.Estate.Estate> GetEstateByBidderIdAsync(
+            public System.Threading.Tasks.Task<RA.Mspecs.Types.Estate.Estate> GetEstateByBidderTokenAsync(
                 System.String bidderId,
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
-                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_GetEstateByBidderIdAsync_bidderId_cancellationToken, new object[] {bidderId, cancellationToken}, () => impl.GetEstateByBidderIdAsync(bidderId, cancellationToken));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_GetEstateByBidderTokenAsync_bidderId_cancellationToken, new object[] {bidderId, cancellationToken}, () => impl.GetEstateByBidderTokenAsync(bidderId, cancellationToken));
             }
         
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpsertEstateAsync_estate_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpsertEstateAsync_estate_cancellationToken = GetMethodInfo("UpsertEstateAsync", new System.Type[] {typeof(RA.Mspecs.Types.Estate.Estate), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -231,7 +231,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpdateEstateAsync_dealId_contactId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpdateEstateAsync_dealId_contactId_cancellationToken = GetMethodInfo("UpdateEstateAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -249,7 +249,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_StoreDealByIdAsync_subscriberId_dealId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_StoreDealByIdAsync_subscriberId_dealId_cancellationToken = GetMethodInfo("StoreDealByIdAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -267,7 +267,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_StoreDealAsync_deal_cancellationToken;
+            private static System.Reflection.MethodInfo mi_StoreDealAsync_deal_cancellationToken = GetMethodInfo("StoreDealAsync", new System.Type[] {typeof(RA.Mspecs.Types.Deal.Deal), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -283,7 +283,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_PlaceBidAsync_dealId_contactIds_amount_cancellationToken;
+            private static System.Reflection.MethodInfo mi_PlaceBidAsync_dealId_contactIds_amount_cancellationToken = GetMethodInfo("PlaceBidAsync", new System.Type[] {typeof(System.String), typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.Decimal), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -303,25 +303,25 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SetBidderUrlAsync_dealId_contactId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_SetBidderUrlAsync_dealId_bidderToken_cancellationToken = GetMethodInfo("SetBidderUrlAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
             /// <param name="dealId"></param>
-            /// <param name="contactId"></param>
+            /// <param name="bidderToken"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task SetBidderUrlAsync(
                 System.String dealId,
-                System.String contactId,
+                System.String bidderToken,
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
-                return _config.InterceptAsync(_serviceProvider, impl, mi_SetBidderUrlAsync_dealId_contactId_cancellationToken, new object[] {dealId, contactId, cancellationToken}, () => impl.SetBidderUrlAsync(dealId, contactId, cancellationToken));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetBidderUrlAsync_dealId_bidderToken_cancellationToken, new object[] {dealId, bidderToken, cancellationToken}, () => impl.SetBidderUrlAsync(dealId, bidderToken, cancellationToken));
             }
         
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SetLoanPromiseAsync_dealId_contactId_institute_validUntil_information_cancellationToken;
+            private static System.Reflection.MethodInfo mi_SetLoanPromiseAsync_dealId_contactId_institute_validUntil_information_cancellationToken = GetMethodInfo("SetLoanPromiseAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.String), typeof(System.Nullable<System.DateTimeOffset>), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -345,7 +345,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetEstateImageAsync_dealId_imageId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetEstateImageAsync_dealId_imageId_cancellationToken = GetMethodInfo("GetEstateImageAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -376,7 +376,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBidderCreatedAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBidderCreatedAsync_e_cancellationToken = GetMethodInfo("HandleBidderCreatedAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBidderCreated), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -392,7 +392,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBidderUpdatedAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBidderUpdatedAsync_e_cancellationToken = GetMethodInfo("HandleBidderUpdatedAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBidderUpdated), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -408,7 +408,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleActivateAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleActivateAsync_e_cancellationToken = GetMethodInfo("HandleActivateAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventDealActivate), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -424,7 +424,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleDeactivateAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleDeactivateAsync_e_cancellationToken = GetMethodInfo("HandleDeactivateAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventDealDeactivate), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -440,7 +440,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleUpdateAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleUpdateAsync_e_cancellationToken = GetMethodInfo("HandleUpdateAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventDealUpdate), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -456,7 +456,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBidUpdatedAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBidUpdatedAsync_e_cancellationToken = GetMethodInfo("HandleBidUpdatedAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBidUpdated), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -472,7 +472,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBiddingUpdatedAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBiddingUpdatedAsync_e_cancellationToken = GetMethodInfo("HandleBiddingUpdatedAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBiddingUpdated), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -488,7 +488,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBiddingRestartAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBiddingRestartAsync_e_cancellationToken = GetMethodInfo("HandleBiddingRestartAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBiddingRestart), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -504,7 +504,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBidCreatedAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBidCreatedAsync_e_cancellationToken = GetMethodInfo("HandleBidCreatedAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBidCreated), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -520,7 +520,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleBidWinningAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleBidWinningAsync_e_cancellationToken = GetMethodInfo("HandleBidWinningAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventBidWinning), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -536,7 +536,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_HandleSubscriberAddedAsync_e_cancellationToken;
+            private static System.Reflection.MethodInfo mi_HandleSubscriberAddedAsync_e_cancellationToken = GetMethodInfo("HandleSubscriberAddedAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventSubscriberAdded), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -547,6 +547,22 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
                 return _config.InterceptAsync(_serviceProvider, impl, mi_HandleSubscriberAddedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleSubscriberAddedAsync(e, cancellationToken));
+            }
+        
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_HandleSubscriberAddedOfficeAsync_e_cancellationToken = GetMethodInfo("HandleSubscriberAddedOfficeAsync", new System.Type[] {typeof(RA.Mspecs.Types.Event.EventSubscriberAddedOffice), typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="e"></param>
+            /// <param name="cancellationToken"></param>
+            public System.Threading.Tasks.Task HandleSubscriberAddedOfficeAsync(
+                RA.Mspecs.Types.Event.EventSubscriberAddedOffice e,
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleSubscriberAddedOfficeAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleSubscriberAddedOfficeAsync(e, cancellationToken));
             }
         
         }
@@ -565,7 +581,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_ProcessWebhookAsync_request_cancellationToken;
+            private static System.Reflection.MethodInfo mi_ProcessWebhookAsync_request_cancellationToken = GetMethodInfo("ProcessWebhookAsync", new System.Type[] {typeof(RA.Mspecs.Types.HttpRequest), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -581,7 +597,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_InterpretWebhookAsync_uid_cancellationToken;
+            private static System.Reflection.MethodInfo mi_InterpretWebhookAsync_uid_cancellationToken = GetMethodInfo("InterpretWebhookAsync", new System.Type[] {typeof(System.Guid), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -597,7 +613,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_ListWebhookCallsAsync_fromDate_cancellationToken;
+            private static System.Reflection.MethodInfo mi_ListWebhookCallsAsync_fromDate_cancellationToken = GetMethodInfo("ListWebhookCallsAsync", new System.Type[] {typeof(System.Nullable<System.DateTimeOffset>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -613,7 +629,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_DownloadWebhookCallsAsync_fromDate_cancellationToken;
+            private static System.Reflection.MethodInfo mi_DownloadWebhookCallsAsync_fromDate_cancellationToken = GetMethodInfo("DownloadWebhookCallsAsync", new System.Type[] {typeof(System.Nullable<System.DateTimeOffset>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -629,7 +645,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetServicesAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetServicesAsync_cancellationToken = GetMethodInfo("GetServicesAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -643,7 +659,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpdateServiceAsync_service_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpdateServiceAsync_service_cancellationToken = GetMethodInfo("UpdateServiceAsync", new System.Type[] {typeof(RA.Mspecs.Types.Service.Service), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -659,7 +675,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_SetWebhooksOnServicesAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_SetWebhooksOnServicesAsync_cancellationToken = GetMethodInfo("SetWebhooksOnServicesAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -673,7 +689,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetSubscribersAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetSubscribersAsync_cancellationToken = GetMethodInfo("GetSubscribersAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -682,6 +698,38 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
                 return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Subscriber.Subscriber>>(_serviceProvider, impl, mi_GetSubscribersAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetSubscribersAsync(cancellationToken));
+            }
+        
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_GetSubscriberDetailsAsync_subscriberId_cancellationToken = GetMethodInfo("GetSubscriberDetailsAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="subscriberId"></param>
+            /// <param name="cancellationToken"></param>
+            public System.Threading.Tasks.Task<RA.Mspecs.Types.Subscriber.SubscriberDetails> GetSubscriberDetailsAsync(
+                System.String subscriberId,
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Subscriber.SubscriberDetails>(_serviceProvider, impl, mi_GetSubscriberDetailsAsync_subscriberId_cancellationToken, new object[] {subscriberId, cancellationToken}, () => impl.GetSubscriberDetailsAsync(subscriberId, cancellationToken));
+            }
+        
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_UpdateSubscriberUsersAndOfficesAsync_subscriberId_cancellationToken = GetMethodInfo("UpdateSubscriberUsersAndOfficesAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="subscriberId"></param>
+            /// <param name="cancellationToken"></param>
+            public System.Threading.Tasks.Task UpdateSubscriberUsersAndOfficesAsync(
+                System.String subscriberId,
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_UpdateSubscriberUsersAndOfficesAsync_subscriberId_cancellationToken, new object[] {subscriberId, cancellationToken}, () => impl.UpdateSubscriberUsersAndOfficesAsync(subscriberId, cancellationToken));
             }
         
         }
@@ -700,7 +748,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetOfficeByIdAsync_id_useCache_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetOfficeByIdAsync_id_useCache_cancellationToken = GetMethodInfo("GetOfficeByIdAsync", new System.Type[] {typeof(System.String), typeof(System.Nullable<System.Boolean>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -718,7 +766,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpsertOfficeAsync_office_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpsertOfficeAsync_office_cancellationToken = GetMethodInfo("UpsertOfficeAsync", new System.Type[] {typeof(RA.Mspecs.Types.Office.Office), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -747,7 +795,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_RedirectBidderAsync_bidderId_cancellation;
+            private static System.Reflection.MethodInfo mi_RedirectBidderAsync_bidderId_cancellation = GetMethodInfo("RedirectBidderAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -776,7 +824,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetCustomerEndpointsAsync_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetCustomerEndpointsAsync_cancellationToken = GetMethodInfo("GetCustomerEndpointsAsync", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -790,41 +838,41 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetCustomerEndpointAsync_subscriberId_useCache_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetCustomerEndpointsAsync_subscriberId_useCache_cancellationToken = GetMethodInfo("GetCustomerEndpointsAsync", new System.Type[] {typeof(System.String), typeof(System.Nullable<System.Boolean>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
             /// <param name="subscriberId"></param>
             /// <param name="useCache"></param>
             /// <param name="cancellationToken"></param>
-            public System.Threading.Tasks.Task<RA.Mspecs.Types.Customer.CustomerEndpoint> GetCustomerEndpointAsync(
+            public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Customer.CustomerEndpoint>> GetCustomerEndpointsAsync(
                 System.String subscriberId,
                 System.Boolean? useCache,
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
-                return _config.InterceptAsync<RA.Mspecs.Types.Customer.CustomerEndpoint>(_serviceProvider, impl, mi_GetCustomerEndpointAsync_subscriberId_useCache_cancellationToken, new object[] {subscriberId, useCache, cancellationToken}, () => impl.GetCustomerEndpointAsync(subscriberId, useCache, cancellationToken));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Customer.CustomerEndpoint>>(_serviceProvider, impl, mi_GetCustomerEndpointsAsync_subscriberId_useCache_cancellationToken, new object[] {subscriberId, useCache, cancellationToken}, () => impl.GetCustomerEndpointsAsync(subscriberId, useCache, cancellationToken));
             }
         
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpsertCustomerEndpointAsync_customerEndpoint_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpsertCustomerEndpointAsync_customerEndpoint_cancellationToken = GetMethodInfo("UpsertCustomerEndpointAsync", new System.Type[] {typeof(RA.Mspecs.Types.Customer.CustomerEndpoint), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
             /// <param name="customerEndpoint"></param>
             /// <param name="cancellationToken"></param>
-            public System.Threading.Tasks.Task UpsertCustomerEndpointAsync(
+            public System.Threading.Tasks.Task<RA.Mspecs.Types.Customer.CustomerEndpoint> UpsertCustomerEndpointAsync(
                 RA.Mspecs.Types.Customer.CustomerEndpoint customerEndpoint,
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
-                return _config.InterceptAsync(_serviceProvider, impl, mi_UpsertCustomerEndpointAsync_customerEndpoint_cancellationToken, new object[] {customerEndpoint, cancellationToken}, () => impl.UpsertCustomerEndpointAsync(customerEndpoint, cancellationToken));
+                return _config.InterceptAsync<RA.Mspecs.Types.Customer.CustomerEndpoint>(_serviceProvider, impl, mi_UpsertCustomerEndpointAsync_customerEndpoint_cancellationToken, new object[] {customerEndpoint, cancellationToken}, () => impl.UpsertCustomerEndpointAsync(customerEndpoint, cancellationToken));
             }
         
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_StructureUpdatedAsync_dataType_id_cancellationToken;
+            private static System.Reflection.MethodInfo mi_StructureUpdatedAsync_dataType_id_cancellationToken = GetMethodInfo("StructureUpdatedAsync", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -837,6 +885,26 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Threading.CancellationToken cancellationToken) {
                 var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
                 return _config.InterceptAsync(_serviceProvider, impl, mi_StructureUpdatedAsync_dataType_id_cancellationToken, new object[] {dataType, id, cancellationToken}, () => impl.StructureUpdatedAsync(dataType, id, cancellationToken));
+            }
+        
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_NotifyCustomerServiceAsync_endpointUid_dataType_id_cancellationToken = GetMethodInfo("NotifyCustomerServiceAsync", new System.Type[] {typeof(System.Guid), typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="endpointUid"></param>
+            /// <param name="dataType"></param>
+            /// <param name="id"></param>
+            /// <param name="cancellationToken"></param>
+            public System.Threading.Tasks.Task NotifyCustomerServiceAsync(
+                System.Guid endpointUid,
+                System.String dataType,
+                System.String id,
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_NotifyCustomerServiceAsync_endpointUid_dataType_id_cancellationToken, new object[] {endpointUid, dataType, id, cancellationToken}, () => impl.NotifyCustomerServiceAsync(endpointUid, dataType, id, cancellationToken));
             }
         
         }
@@ -855,7 +923,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetUserByIdAsync_id_useCache_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetUserByIdAsync_id_useCache_cancellationToken = GetMethodInfo("GetUserByIdAsync", new System.Type[] {typeof(System.String), typeof(System.Nullable<System.Boolean>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -873,7 +941,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpsertUserAsync_user_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpsertUserAsync_user_cancellationToken = GetMethodInfo("UpsertUserAsync", new System.Type[] {typeof(RA.Mspecs.Types.User.User), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -889,7 +957,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetUserImageAsync_userId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetUserImageAsync_userId_cancellationToken = GetMethodInfo("GetUserImageAsync", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>

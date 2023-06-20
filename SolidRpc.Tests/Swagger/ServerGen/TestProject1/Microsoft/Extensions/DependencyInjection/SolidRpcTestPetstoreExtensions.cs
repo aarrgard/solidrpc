@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_AddPet_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_AddPet_body_cancellationToken = GetMethodInfo("AddPet", new System.Type[] {typeof(SolidRpc.Test.Petstore.Types.Pet), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpdatePet_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpdatePet_body_cancellationToken = GetMethodInfo("UpdatePet", new System.Type[] {typeof(SolidRpc.Test.Petstore.Types.Pet), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -51,7 +51,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_FindPetsByStatus_status_cancellationToken;
+            private static System.Reflection.MethodInfo mi_FindPetsByStatus_status_cancellationToken = GetMethodInfo("FindPetsByStatus", new System.Type[] {typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -68,7 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_FindPetsByTags_tags_cancellationToken;
+            private static System.Reflection.MethodInfo mi_FindPetsByTags_tags_cancellationToken = GetMethodInfo("FindPetsByTags", new System.Type[] {typeof(System.Collections.Generic.IEnumerable<System.String>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -85,7 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_DeletePet_petId_apiKey_cancellationToken;
+            private static System.Reflection.MethodInfo mi_DeletePet_petId_apiKey_cancellationToken = GetMethodInfo("DeletePet", new System.Type[] {typeof(System.Int64), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -104,7 +104,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetPetById_petId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetPetById_petId_cancellationToken = GetMethodInfo("GetPetById", new System.Type[] {typeof(System.Int64), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -121,7 +121,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpdatePetWithForm_petId_name_status_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpdatePetWithForm_petId_name_status_cancellationToken = GetMethodInfo("UpdatePetWithForm", new System.Type[] {typeof(System.Int64), typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -142,7 +142,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UploadFile_petId_additionalMetadata_file_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UploadFile_petId_additionalMetadata_file_cancellationToken = GetMethodInfo("UploadFile", new System.Type[] {typeof(System.Int64), typeof(System.String), typeof(System.IO.Stream), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -176,7 +176,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetInventory_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetInventory_cancellationToken = GetMethodInfo("GetInventory", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -191,7 +191,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_PlaceOrder_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_PlaceOrder_body_cancellationToken = GetMethodInfo("PlaceOrder", new System.Type[] {typeof(SolidRpc.Test.Petstore.Types.Order), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -207,7 +207,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_DeleteOrder_orderId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_DeleteOrder_orderId_cancellationToken = GetMethodInfo("DeleteOrder", new System.Type[] {typeof(System.Int64), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -223,7 +223,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetOrderById_orderId_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetOrderById_orderId_cancellationToken = GetMethodInfo("GetOrderById", new System.Type[] {typeof(System.Int64), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -252,7 +252,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateUser_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateUser_body_cancellationToken = GetMethodInfo("CreateUser", new System.Type[] {typeof(SolidRpc.Test.Petstore.Types.User), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -268,7 +268,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateUsersWithArrayInput_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateUsersWithArrayInput_body_cancellationToken = GetMethodInfo("CreateUsersWithArrayInput", new System.Type[] {typeof(System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.User>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -284,7 +284,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateUsersWithListInput_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateUsersWithListInput_body_cancellationToken = GetMethodInfo("CreateUsersWithListInput", new System.Type[] {typeof(System.Collections.Generic.IEnumerable<SolidRpc.Test.Petstore.Types.User>), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -300,7 +300,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_LoginUser_username_password_cancellationToken;
+            private static System.Reflection.MethodInfo mi_LoginUser_username_password_cancellationToken = GetMethodInfo("LoginUser", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -318,7 +318,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_LogoutUser_cancellationToken;
+            private static System.Reflection.MethodInfo mi_LogoutUser_cancellationToken = GetMethodInfo("LogoutUser", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -332,7 +332,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_DeleteUser_username_cancellationToken;
+            private static System.Reflection.MethodInfo mi_DeleteUser_username_cancellationToken = GetMethodInfo("DeleteUser", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -348,7 +348,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetUserByName_username_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetUserByName_username_cancellationToken = GetMethodInfo("GetUserByName", new System.Type[] {typeof(System.String), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -364,7 +364,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_UpdateUser_username_body_cancellationToken;
+            private static System.Reflection.MethodInfo mi_UpdateUser_username_body_cancellationToken = GetMethodInfo("UpdateUser", new System.Type[] {typeof(System.String), typeof(SolidRpc.Test.Petstore.Types.User), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>

@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetIndexHtml_onlyImplemented_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetIndexHtml_onlyImplemented_cancellationToken = GetMethodInfo("GetIndexHtml", new System.Type[] {typeof(System.Boolean), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetSwaggerInitializer_onlyImplemented_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetSwaggerInitializer_onlyImplemented_cancellationToken = GetMethodInfo("GetSwaggerInitializer", new System.Type[] {typeof(System.Boolean), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -49,7 +49,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetOauth2RedirectHtml_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetOauth2RedirectHtml_cancellationToken = GetMethodInfo("GetOauth2RedirectHtml", new System.Type[] {typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -63,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetSwaggerUrls_onlyImplemented_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetSwaggerUrls_onlyImplemented_cancellationToken = GetMethodInfo("GetSwaggerUrls", new System.Type[] {typeof(System.Boolean), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetOpenApiSpec_assemblyName_openApiSpecResolverAddress_onlyImplemented_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetOpenApiSpec_assemblyName_openApiSpecResolverAddress_onlyImplemented_cancellationToken = GetMethodInfo("GetOpenApiSpec", new System.Type[] {typeof(System.String), typeof(System.String), typeof(System.Boolean), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Invoker;
@@ -9,14 +8,12 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.OAuth2;
-using SolidRpc.OpenApi.OAuth2.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,6 +48,20 @@ namespace SolidRpc.Tests.Invoker
         /// <summary>
         /// 
         /// </summary>
+        public interface IBackend
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<string> GetBackendValueAsync(CancellationToken cancellation = default);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         public interface ITestInterface
         {
             /// <summary>
@@ -59,7 +70,7 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
+            Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default);
 
             /// <summary>
             /// 
@@ -67,21 +78,21 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="s"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<string> DoYAsync(string s, CancellationToken cancellation = default(CancellationToken));
+            Task<string> DoYAsync(string s, CancellationToken cancellation = default);
 
             /// <summary>
             /// Tests the continuation token.
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default(CancellationToken));
+            Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default);
 
             /// <summary>
             /// Tests the continuation token.
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<FileContent> TestSetCookie(CancellationToken cancellation = default(CancellationToken));
+            Task<FileContent> TestSetCookie(CancellationToken cancellation = default);
 
             /// <summary>
             /// Tests proxying a file
@@ -89,20 +100,47 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="fileContent"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation = default(CancellationToken));
+            Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation = default);
+
+            /// <summary>
+            /// Tests proxying a file
+            /// </summary>
+            /// <param name="fileContent"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<string> GetBackendValueAsync(CancellationToken cancellation = default);
         }
 
         /// <summary>
-        /// l
+        /// 
+        /// </summary>
+        public class BackendImpl : IBackend
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            public Task<string> GetBackendValueAsync(CancellationToken cancellation = default)
+            {
+                var currIncoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
+                return Task.FromResult(currIncoc.GetValue("http_req_host").ToString());
+            }
+        }
+        /// <summary>
+        /// 
         /// </summary>
         public class TestImplementation : ITestInterface
         {
-            public TestImplementation(IInvoker<ITestInterface> invoker)
+            public TestImplementation(IInvoker<ITestInterface> invoker, IBackend backend)
             {
                 Invoker = invoker;
+                Backend = backend;
             }
 
             private IInvoker<ITestInterface> Invoker { get; }
+
+            private IBackend Backend { get; }
 
             /// <summary>
             /// 
@@ -110,7 +148,7 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="myStruct"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
+            public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default)
             {
                 return Task.FromResult(myStruct.Value);
             }
@@ -132,7 +170,7 @@ namespace SolidRpc.Tests.Invoker
             /// </summary>
             /// <param name="cancellation"></param>
             /// <returns></returns>
-            public Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default(CancellationToken))
+            public Task<int> TestContinuationTokenAsync(CancellationToken cancellation = default)
             {
                 ISolidRpcContinuationToken ct = null;
                 ct = ct.LoadToken();
@@ -141,6 +179,11 @@ namespace SolidRpc.Tests.Invoker
                 return Task.FromResult(i);
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
             public async Task<FileContent> TestSetCookie(CancellationToken cancellation = default)
             {
                 var uri = await Invoker.GetUriAsync(o => o.TestSetCookie(cancellation));
@@ -176,6 +219,12 @@ namespace SolidRpc.Tests.Invoker
                 });
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="fileContent"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
             public Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation)
             {
                 if(fileContent.Content.Length == 0)
@@ -183,6 +232,16 @@ namespace SolidRpc.Tests.Invoker
                     fileContent = null;
                 }
                 return Task.FromResult(fileContent);
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            public Task<string> GetBackendValueAsync(CancellationToken cancellation = default)
+            {
+                return Backend.GetBackendValueAsync(cancellation);
             }
         }
 
@@ -233,6 +292,13 @@ namespace SolidRpc.Tests.Invoker
             base.ConfigureServerServices(services);
             var openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestImplementation), conf =>
+            {
+                conf.OpenApiSpec = openApiSpec;
+                conf.SetSecurityKey(SecKey.ToString(), SecKey.ToString());
+                return true;
+            });
+            openApiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IBackend)).WriteAsJsonString();
+            services.AddSolidRpcBindings(typeof(IBackend), typeof(BackendImpl), conf =>
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetSecurityKey(SecKey.ToString(), SecKey.ToString());
@@ -309,6 +375,20 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestInvocationContextValuesAvailable()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+                var ti = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+                var backendValue = await ti.GetBackendValueAsync();
+                Assert.AreEqual(ctx.BaseAddress.Host+":"+ ctx.BaseAddress.Port, backendValue);
+            }
+        }
         /// <summary>
         /// Tests the type store
         /// </summary>

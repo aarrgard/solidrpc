@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_ParseProjectZip_projectZip_cancellationToken;
+            private static System.Reflection.MethodInfo mi_ParseProjectZip_projectZip_cancellationToken = GetMethodInfo("ParseProjectZip", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.FileData), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateProjectZip_project_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateProjectZip_project_cancellationToken = GetMethodInfo("CreateProjectZip", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.Project.Project), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -49,7 +49,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateOpenApiSpecFromCode_settings_project_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateOpenApiSpecFromCode_settings_project_cancellationToken = GetMethodInfo("CreateOpenApiSpecFromCode", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.SettingsSpecGen), typeof(SolidRpc.OpenApi.Generator.Types.Project.Project), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateCodeFromOpenApiSpec_settings_project_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateCodeFromOpenApiSpec_settings_project_cancellationToken = GetMethodInfo("CreateCodeFromOpenApiSpec", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.SettingsCodeGen), typeof(SolidRpc.OpenApi.Generator.Types.Project.Project), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -85,7 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_CreateServerCode_settings_project_cancellationToken;
+            private static System.Reflection.MethodInfo mi_CreateServerCode_settings_project_cancellationToken = GetMethodInfo("CreateServerCode", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.SettingsServerGen), typeof(SolidRpc.OpenApi.Generator.Types.Project.Project), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -103,7 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetSettingsCodeGenFromCsproj_csproj_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetSettingsCodeGenFromCsproj_csproj_cancellationToken = GetMethodInfo("GetSettingsCodeGenFromCsproj", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.FileData), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>
@@ -119,7 +119,7 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
-            System.Reflection.MethodInfo mi_GetSettingsSpecGenFromCsproj_csproj_cancellationToken;
+            private static System.Reflection.MethodInfo mi_GetSettingsSpecGenFromCsproj_csproj_cancellationToken = GetMethodInfo("GetSettingsSpecGenFromCsproj", new System.Type[] {typeof(SolidRpc.OpenApi.Generator.Types.FileData), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 
             /// </summary>

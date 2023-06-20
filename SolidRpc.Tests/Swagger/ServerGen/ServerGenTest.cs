@@ -114,7 +114,8 @@ namespace SolidRpc.Tests.Swagger.ServerGen
         public async Task TestProject2NoImplementation()
         {
             var sc = new ServiceCollection();
-            sc.AddRAMspecs(conf => {
+            sc.AddRAMspecs(conf =>
+            {
                 return conf;
             });
             var sp = sc.BuildServiceProvider();
@@ -138,8 +139,9 @@ namespace SolidRpc.Tests.Swagger.ServerGen
         {
             var intercepted = new List<MethodInfo>();
             var sc = new ServiceCollection();
-            sc.AddRAMspecs(conf => {
-                if(conf.ProxyType == typeof(IContact))
+            sc.AddRAMspecs(conf =>
+            {
+                if (conf.ProxyType == typeof(IContact))
                 {
                     return conf.SetAssemblyFactory(GetType().Assembly);
                 }
@@ -154,7 +156,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             var cs = sp.GetRequiredService<IContact>();
             var c = await cs.GetContactAsync("test");
             Assert.AreEqual("test", c.Id);
-            //Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted.Single().Name);
+            Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted.Single().Name);
         }
     }
 }

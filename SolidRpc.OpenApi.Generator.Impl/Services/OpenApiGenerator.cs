@@ -305,18 +305,17 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
                 {
                     var isTaskType = m.ReturnType?.IsTaskType ?? false;
                     var argNames = string.Join(", ", m.Parameters.Select(o => o.Name));
+                    var argTypes = string.Join(", ", m.Parameters.Select(o => $"typeof({o.ParameterType.FullName})"));
                     var miName = $"mi_{m.Name}_{string.Join("_", m.Parameters.Select(o => o.Name))}";
 
                     // add methodInfo member
-                    var methodInfoField = new CSharpField(proxy, miName, serverCode.GetType(typeof(MethodInfo).FullName), null);
+                    var methodInfoField = new CSharpField(proxy, miName, serverCode.GetType(typeof(MethodInfo).FullName), $"GetMethodInfo(\"{m.Name}\", new System.Type[] {{{argTypes}}})");
+                    methodInfoField.AddMember(new CSharpModifier(m, "private"));
+                    methodInfoField.AddMember(new CSharpModifier(m, "static"));
                     proxy.AddMember(methodInfoField);
     
                     // add method member
                     m.AddMember(new CSharpModifier(m, "public"));
-                    //if(isTaskType)
-                    //{
-                    //    m.AddMember(new CSharpModifier(m, "async"));
-                    //}
                     proxy.AddMember(m);
 
 

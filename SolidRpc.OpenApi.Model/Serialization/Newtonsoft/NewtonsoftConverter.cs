@@ -311,7 +311,8 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             }
             if (propertyMetaData.Count > 1)
             {
-                bool upcast = propertyTypes.Count() == 1 && propertyMetaData.Select(o => o.DefaultValue).Where(o => o != null).Distinct().Count() > 0;
+                var defaultValues = propertyMetaData.Select(o => o.DefaultValue).Distinct().ToList();
+                bool upcast = propertyTypes.Count() == 1 && propertyMetaData.Count() == defaultValues.Count();
                 return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) =>
                 {
                     if (upcast)

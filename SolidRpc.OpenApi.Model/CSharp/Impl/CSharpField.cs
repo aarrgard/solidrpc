@@ -47,6 +47,7 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public override void WriteCode(ICodeWriter codeWriter)
         {
             WriteSummary(codeWriter);
+            Members.OfType<ICSharpModifier>().ToList().ForEach(o => o.WriteCode(codeWriter));
             codeWriter.Emit($"{SimplifyName(FieldType.FullName)} {Name}");
             if(!string.IsNullOrEmpty(Value))
             {

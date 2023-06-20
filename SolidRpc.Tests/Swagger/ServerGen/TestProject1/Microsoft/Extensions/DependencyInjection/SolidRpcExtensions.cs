@@ -72,10 +72,12 @@ namespace Microsoft.Extensions.DependencyInjection
             /// Intercepts a call
             /// </summary>
             /// <param name="serviceProvider"></param>
+            /// <param name="impl"></param>
             /// <param name="methodInfo"></param>
             /// <param name="args"></param>
             /// <param name="last"></param>
             /// <returns></returns>
+            /// <typeparam name="T"></typeparam>
             Task<T> InterceptAsync<T>(
                 IServiceProvider serviceProvider,
                 object impl,
@@ -110,12 +112,17 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="mi"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public delegate Task<object> ProxyInterceptor(Func<Task<object>> next, IServiceProvider sp, object impl, MethodInfo mi, object[] args);
+        public delegate Task<object> ProxyInterceptor(
+            Func<Task<object>> next,
+            IServiceProvider sp,
+            object impl,
+            MethodInfo mi,
+            object[] args);
 
         /// <summary>
         /// 
         /// </summary>
-        public class ProxyConfig<T> : IProxyConfig<T>
+        public class ProxyConfig<T> : IProxyConfig<T> where T : class
         {
             /// <summary>
             /// Empty constructor
@@ -175,8 +182,8 @@ namespace Microsoft.Extensions.DependencyInjection
             public IProxyConfig SetAssemblyFactory(Assembly assembly)
             {
                 var implementations = assembly.GetTypes()
-                    .Where(o => ProxyType.IsAssignableFrom(o))
-                    .Where(o => o.DeclaringType != typeof(RAMspecsExtensions))
+                    .Where(t => !typeof(Proxy<T>).IsAssignableFrom(t))
+                    .Where(ProxyType.IsAssignableFrom)
                     .ToList();
                 if (implementations.Count() == 0)
                 {
@@ -269,7 +276,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <exception cref="NotImplementedException"></exception>
         public static void SetupProxy<TInterface, TImpl>(
             this IServiceCollection sc,
-            Func<IProxyConfig, IProxyConfig> configure)
+            Func<IProxyConfig, IProxyConfig> configure) where TInterface : class
         {
             var config = sc.ConfigureInterface<TInterface>(configure);
             sc.Add(new ServiceDescriptor(typeof(TInterface), typeof(TImpl), config.Lifetime));
@@ -285,6 +292,55 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         public class Proxy<T> where T : class
         {
+            /// <summary>
+            /// Returns the method info
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="types"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
+            protected static MethodInfo GetMethodInfo(string name, Type[] types)
+            {
+                var method = typeof(T)
+                    .GetMethods()
+                    .Where(o => o.Name == name)
+                    .Where(o => ParameterMatches(o.GetParameters(), types))
+                    .FirstOrDefault();
+                if (method == null)
+                {
+                    throw new Exception("Cannot find method");
+                }
+                return method;
+            }
+            private static bool ParameterMatches(ParameterInfo[] params1, Type[] params2)
+            {
+                if (params1.Length != params2.Length)
+                {
+                    return false;
+                }
+                for (int i = 0; i < params1.Length; i++)
+                {
+                    var t1 = FixType(params1[i].ParameterType);
+                    var t2 = FixType(params2[i]);
+                    if (t1 != t2)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            private static Type FixType(Type type)
+            {
+                if (type.IsGenericType)
+                {
+                    if (type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        return type.GetGenericArguments()[0];
+                    }
+                }
+                return type;
+            }
+
             /// <summary>
             /// The service provider
             /// </summary>
@@ -321,7 +377,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Some helper methods
         /// </summary>
-        public static IProxyConfig<TInterface> ConfigureInterface<TInterface>(this IServiceCollection sc, Func<IProxyConfig, IProxyConfig> configure)
+        public static IProxyConfig<TInterface> ConfigureInterface<TInterface>(this IServiceCollection sc, Func<IProxyConfig, IProxyConfig> configure) where TInterface : class
         {
             var existingConfigService = sc.FirstOrDefault(o => o.ServiceType == typeof(IProxyConfig<TInterface>));
             var config = existingConfigService?.ImplementationInstance as IProxyConfig<TInterface> ?? new ProxyConfig<TInterface>();

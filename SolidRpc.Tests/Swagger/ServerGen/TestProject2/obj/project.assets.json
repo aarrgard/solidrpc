@@ -5,10 +5,6 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "2.2.0",
-          "Microsoft.Extensions.Http": "2.2.0",
-          "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
-          "SolidProxy.MicrosoftDI": "1.0.0-rc022"
         },
         "compile": {
           "bin/placeholder/RA.Mspecs.dll": {}
@@ -17,20 +13,16 @@
           "bin/placeholder/RA.Mspecs.dll": {}
         }
       },
-      "Moq/4.18.4": {
-        "type": "package",
+      "RA.Customer/0.1.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
-          "Castle.Core": "5.1.1"
         },
         "compile": {
-          "lib/net6.0/Moq.dll": {
-            "related": ".xml"
-          }
+          "bin/placeholder/RA.Customer.dll": {}
         },
         "runtime": {
-          "lib/net6.0/Moq.dll": {
-            "related": ".xml"
-          }
+          "bin/placeholder/RA.Customer.dll": {}
         }
       }
     }
@@ -41,25 +33,10 @@
       "path": "../TestProject2/TestProject2.csproj",
       "msbuildProject": "../TestProject2/SolidRpc.Test.Petstore.csproj"
     },
-    "Moq/4.18.4": {
-      "sha512": "IOo+W51+7Afnb0noltJrKxPBSfsgMzTKCw+Re5AMx8l/vBbAbMDOynLik4+lBYIWDJSO0uV7Zdqt7cNb6RZZ+A==",
-      "type": "package",
-      "path": "moq/4.18.4",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net462/Moq.dll",
-        "lib/net462/Moq.xml",
-        "lib/net6.0/Moq.dll",
-        "lib/net6.0/Moq.xml",
-        "lib/netstandard2.0/Moq.dll",
-        "lib/netstandard2.0/Moq.xml",
-        "lib/netstandard2.1/Moq.dll",
-        "lib/netstandard2.1/Moq.xml",
-        "moq.4.18.4.nupkg.sha512",
-        "moq.nuspec",
-        "moq.png"
-      ]
+    "RA.Customer/0.1.0": {
+      "type": "project",
+      "path": "../TestProject2/TestProject2.csproj",
+      "msbuildProject": "../TestProject2/SolidRpc.Test.Petstore.csproj"
     }
   },
     "projectFileDependencyGroups": {
