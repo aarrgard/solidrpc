@@ -60,6 +60,16 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
         public bool IsValueType => this is ICSharpStruct;
 
         /// <summary>
+        /// Returns true if this is a task type
+        /// </summary>
+        public bool IsTaskType => Name.StartsWith("Task") && Namespace.FullName == "System.Threading.Tasks";
+
+        /// <summary>
+        /// Returns true if this is a cancellation token type
+        /// </summary>
+        public bool IsCancellationTokenType => Name == "CancellationToken" && Namespace.FullName == "System.Threading";
+
+        /// <summary>
         /// Adds an extends clause to this type
         /// </summary>
         /// <param name="extType"></param>
@@ -184,7 +194,8 @@ namespace SolidRpc.OpenApi.Model.CSharp.Impl
             Members.Where(o => o is ICSharpMethod ||
                         o is ICSharpProperty ||
                         o is ICSharpConstructor ||
-                        o is ICSharpType)
+                        o is ICSharpType || 
+                        o is ICSharpField)
                 .ToList()
                 .ForEach(o =>
                 {

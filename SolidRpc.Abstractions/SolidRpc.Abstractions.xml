@@ -1707,7 +1707,7 @@
         </member>
         <member name="M:SolidRpc.Abstractions.InternalServices.ISolidRpcApplication.AddStartupCallback(System.Func{System.Threading.Tasks.Task})">
             <summary>
-            Adds a shutdown callback
+            Adds a startup callback
             </summary>
             <param name="startupCallback"></param>
         </member>

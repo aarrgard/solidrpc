@@ -31,7 +31,7 @@ namespace SolidRpc.Abstractions.InternalServices
         void AddStartupTask(Task startupTask);
 
         /// <summary>
-        /// Adds a shutdown callback
+        /// Adds a startup callback
         /// </summary>
         /// <param name="startupCallback"></param>
         void AddStartupCallback(Func<Task> startupCallback);

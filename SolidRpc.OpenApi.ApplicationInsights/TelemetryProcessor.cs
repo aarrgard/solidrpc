@@ -23,13 +23,20 @@ namespace SolidRpc.OpenApi.ApplicationInsights
                     Next.Process(item);
                 }
             }
-            if (item is ExceptionTelemetry excpetionItem)
+            else if (item is ExceptionTelemetry excpetionItem)
             {
                 Next.Process(item);
             }
-            if (item is RequestTelemetry requestItem)
+            else if (item is RequestTelemetry requestItem)
             {
                 Next.Process(item);
+            }
+            else if (item is DependencyTelemetry dependencyItem)
+            {
+                if (dependencyItem.Extension is TelemetryExtension)
+                {
+                    Next.Process(item);
+                }
             }
 
             // do not send this telemetry

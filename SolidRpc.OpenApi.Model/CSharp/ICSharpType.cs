@@ -70,6 +70,16 @@ namespace SolidRpc.OpenApi.Model.CSharp
         bool IsFileType { get; }
 
         /// <summary>
+        /// Returns true if this is a task type(Generic or not).
+        /// </summary>
+        bool IsTaskType { get; }
+
+        /// <summary>
+        /// Returns true if this is a cancellation token type.
+        /// </summary>
+        bool IsCancellationTokenType { get; }
+
+        /// <summary>
         /// Returns true if this is a generic type
         /// </summary>
         bool IsGenericType { get; }

@@ -17,6 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetContactAsync_id_useCache_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="id"></param>
             /// <param name="useCache"></param>
             /// <param name="cancellationToken"></param>
@@ -24,9 +28,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String id,
                 System.Boolean? useCache,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetContactAsync(id, useCache, cancellationToken);
+                var impl = (RA.Mspecs.Services.IContact)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Contact.Contact>(_serviceProvider, impl, mi_GetContactAsync_id_useCache_cancellationToken, new object[] {id, useCache, cancellationToken}, () => impl.GetContactAsync(id, useCache, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpsertContactAsync_contact_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -35,7 +44,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.Contact.Contact> UpsertContactAsync(
                 RA.Mspecs.Types.Contact.Contact contact,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpsertContactAsync(contact, cancellationToken);
+                var impl = (RA.Mspecs.Services.IContact)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Contact.Contact>(_serviceProvider, impl, mi_UpsertContactAsync_contact_cancellationToken, new object[] {contact, cancellationToken}, () => impl.UpsertContactAsync(contact, cancellationToken));
             }
         
         }
@@ -54,14 +64,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetDealsAsync_subscriberId_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="subscriberId"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Deal.Deal>> GetDealsAsync(
                 System.String subscriberId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetDealsAsync(subscriberId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IDeal)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Deal.Deal>>(_serviceProvider, impl, mi_GetDealsAsync_subscriberId_cancellationToken, new object[] {subscriberId, cancellationToken}, () => impl.GetDealsAsync(subscriberId, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetDealAsync_subscriberId_dealId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -72,9 +91,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String subscriberId,
                 System.String dealId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetDealAsync(subscriberId, dealId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IDeal)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Deal.Deal>(_serviceProvider, impl, mi_GetDealAsync_subscriberId_dealId_cancellationToken, new object[] {subscriberId, dealId, cancellationToken}, () => impl.GetDealAsync(subscriberId, dealId, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_PlaceBidAsync_subscriberId_dealId_bidInput_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -87,9 +111,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String dealId,
                 RA.Mspecs.Types.Deal.Input.BidInput bidInput,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().PlaceBidAsync(subscriberId, dealId, bidInput, cancellationToken);
+                var impl = (RA.Mspecs.Services.IDeal)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Deal.DealBiddingBid>(_serviceProvider, impl, mi_PlaceBidAsync_subscriberId_dealId_bidInput_cancellationToken, new object[] {subscriberId, dealId, bidInput, cancellationToken}, () => impl.PlaceBidAsync(subscriberId, dealId, bidInput, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_SetBidUrlAsync_subscriberId_dealId_bidderId_url_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -104,9 +133,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String bidderId,
                 System.Uri url,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().SetBidUrlAsync(subscriberId, dealId, bidderId, url, cancellationToken);
+                var impl = (RA.Mspecs.Services.IDeal)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetBidUrlAsync_subscriberId_dealId_bidderId_url_cancellationToken, new object[] {subscriberId, dealId, bidderId, url, cancellationToken}, () => impl.SetBidUrlAsync(subscriberId, dealId, bidderId, url, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_SetLoanPromiseAsync_subscriberId_dealId_bidderId_institute_validUntil_information_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -125,7 +159,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.DateTimeOffset? validUntil,
                 System.String information,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().SetLoanPromiseAsync(subscriberId, dealId, bidderId, institute, validUntil, information, cancellationToken);
+                var impl = (RA.Mspecs.Services.IDeal)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetLoanPromiseAsync_subscriberId_dealId_bidderId_institute_validUntil_information_cancellationToken, new object[] {subscriberId, dealId, bidderId, institute, validUntil, information, cancellationToken}, () => impl.SetLoanPromiseAsync(subscriberId, dealId, bidderId, institute, validUntil, information, cancellationToken));
             }
         
         }
@@ -144,6 +179,10 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetEstateByDealIdAsync_dealId_useCache_fetchMissingEstate_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="dealId"></param>
             /// <param name="useCache"></param>
             /// <param name="fetchMissingEstate"></param>
@@ -153,9 +192,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Boolean? useCache,
                 System.Boolean? fetchMissingEstate,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetEstateByDealIdAsync(dealId, useCache, fetchMissingEstate, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_GetEstateByDealIdAsync_dealId_useCache_fetchMissingEstate_cancellationToken, new object[] {dealId, useCache, fetchMissingEstate, cancellationToken}, () => impl.GetEstateByDealIdAsync(dealId, useCache, fetchMissingEstate, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetEstateByBidderIdAsync_bidderId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -164,9 +208,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.Estate.Estate> GetEstateByBidderIdAsync(
                 System.String bidderId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetEstateByBidderIdAsync(bidderId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_GetEstateByBidderIdAsync_bidderId_cancellationToken, new object[] {bidderId, cancellationToken}, () => impl.GetEstateByBidderIdAsync(bidderId, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpsertEstateAsync_estate_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -175,9 +224,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.Estate.Estate> UpsertEstateAsync(
                 RA.Mspecs.Types.Estate.Estate estate,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpsertEstateAsync(estate, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_UpsertEstateAsync_estate_cancellationToken, new object[] {estate, cancellationToken}, () => impl.UpsertEstateAsync(estate, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpdateEstateAsync_dealId_contactId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -188,9 +242,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String dealId,
                 System.String contactId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpdateEstateAsync(dealId, contactId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_UpdateEstateAsync_dealId_contactId_cancellationToken, new object[] {dealId, contactId, cancellationToken}, () => impl.UpdateEstateAsync(dealId, contactId, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_StoreDealByIdAsync_subscriberId_dealId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -201,9 +260,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String subscriberId,
                 System.String dealId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().StoreDealByIdAsync(subscriberId, dealId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_StoreDealByIdAsync_subscriberId_dealId_cancellationToken, new object[] {subscriberId, dealId, cancellationToken}, () => impl.StoreDealByIdAsync(subscriberId, dealId, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_StoreDealAsync_deal_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -212,9 +276,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.Estate.Estate> StoreDealAsync(
                 RA.Mspecs.Types.Deal.Deal deal,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().StoreDealAsync(deal, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_StoreDealAsync_deal_cancellationToken, new object[] {deal, cancellationToken}, () => impl.StoreDealAsync(deal, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_PlaceBidAsync_dealId_contactIds_amount_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -227,9 +296,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Collections.Generic.IEnumerable<System.String> contactIds,
                 System.Decimal amount,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().PlaceBidAsync(dealId, contactIds, amount, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Estate.Estate>(_serviceProvider, impl, mi_PlaceBidAsync_dealId_contactIds_amount_cancellationToken, new object[] {dealId, contactIds, amount, cancellationToken}, () => impl.PlaceBidAsync(dealId, contactIds, amount, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_SetBidderUrlAsync_dealId_contactId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -240,9 +314,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String dealId,
                 System.String contactId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().SetBidderUrlAsync(dealId, contactId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetBidderUrlAsync_dealId_contactId_cancellationToken, new object[] {dealId, contactId, cancellationToken}, () => impl.SetBidderUrlAsync(dealId, contactId, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_SetLoanPromiseAsync_dealId_contactId_institute_validUntil_information_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -259,9 +338,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.DateTimeOffset? validUntil,
                 System.String information,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().SetLoanPromiseAsync(dealId, contactId, institute, validUntil, information, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetLoanPromiseAsync_dealId_contactId_institute_validUntil_information_cancellationToken, new object[] {dealId, contactId, institute, validUntil, information, cancellationToken}, () => impl.SetLoanPromiseAsync(dealId, contactId, institute, validUntil, information, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetEstateImageAsync_dealId_imageId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -272,7 +356,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String dealId,
                 System.String imageId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetEstateImageAsync(dealId, imageId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEstate)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.FileContent>(_serviceProvider, impl, mi_GetEstateImageAsync_dealId_imageId_cancellationToken, new object[] {dealId, imageId, cancellationToken}, () => impl.GetEstateImageAsync(dealId, imageId, cancellationToken));
             }
         
         }
@@ -291,14 +376,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_HandleBidderCreatedAsync_e_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="e"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task HandleBidderCreatedAsync(
                 RA.Mspecs.Types.Event.EventBidderCreated e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBidderCreatedAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBidderCreatedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBidderCreatedAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleBidderUpdatedAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -307,9 +401,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleBidderUpdatedAsync(
                 RA.Mspecs.Types.Event.EventBidderUpdated e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBidderUpdatedAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBidderUpdatedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBidderUpdatedAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleActivateAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -318,9 +417,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleActivateAsync(
                 RA.Mspecs.Types.Event.EventDealActivate e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleActivateAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleActivateAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleActivateAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleDeactivateAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -329,9 +433,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleDeactivateAsync(
                 RA.Mspecs.Types.Event.EventDealDeactivate e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleDeactivateAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleDeactivateAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleDeactivateAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleUpdateAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -340,9 +449,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleUpdateAsync(
                 RA.Mspecs.Types.Event.EventDealUpdate e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleUpdateAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleUpdateAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleUpdateAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleBidUpdatedAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -351,9 +465,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleBidUpdatedAsync(
                 RA.Mspecs.Types.Event.EventBidUpdated e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBidUpdatedAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBidUpdatedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBidUpdatedAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleBiddingUpdatedAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -362,9 +481,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleBiddingUpdatedAsync(
                 RA.Mspecs.Types.Event.EventBiddingUpdated e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBiddingUpdatedAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBiddingUpdatedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBiddingUpdatedAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleBiddingRestartAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -373,9 +497,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleBiddingRestartAsync(
                 RA.Mspecs.Types.Event.EventBiddingRestart e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBiddingRestartAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBiddingRestartAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBiddingRestartAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleBidCreatedAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -384,9 +513,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleBidCreatedAsync(
                 RA.Mspecs.Types.Event.EventBidCreated e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBidCreatedAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBidCreatedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBidCreatedAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleBidWinningAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -395,9 +529,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleBidWinningAsync(
                 RA.Mspecs.Types.Event.EventBidWinning e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleBidWinningAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleBidWinningAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleBidWinningAsync(e, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_HandleSubscriberAddedAsync_e_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -406,7 +545,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task HandleSubscriberAddedAsync(
                 RA.Mspecs.Types.Event.EventSubscriberAdded e,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().HandleSubscriberAddedAsync(e, cancellationToken);
+                var impl = (RA.Mspecs.Services.IEventHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_HandleSubscriberAddedAsync_e_cancellationToken, new object[] {e, cancellationToken}, () => impl.HandleSubscriberAddedAsync(e, cancellationToken));
             }
         
         }
@@ -425,14 +565,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_ProcessWebhookAsync_request_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="request"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task ProcessWebhookAsync(
                 RA.Mspecs.Types.HttpRequest request,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().ProcessWebhookAsync(request, cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_ProcessWebhookAsync_request_cancellationToken, new object[] {request, cancellationToken}, () => impl.ProcessWebhookAsync(request, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_InterpretWebhookAsync_uid_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -441,9 +590,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task InterpretWebhookAsync(
                 System.Guid uid,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().InterpretWebhookAsync(uid, cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_InterpretWebhookAsync_uid_cancellationToken, new object[] {uid, cancellationToken}, () => impl.InterpretWebhookAsync(uid, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_ListWebhookCallsAsync_fromDate_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -452,9 +606,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.StoredHttpRequest>> ListWebhookCallsAsync(
                 System.DateTimeOffset? fromDate,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().ListWebhookCallsAsync(fromDate, cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.StoredHttpRequest>>(_serviceProvider, impl, mi_ListWebhookCallsAsync_fromDate_cancellationToken, new object[] {fromDate, cancellationToken}, () => impl.ListWebhookCallsAsync(fromDate, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_DownloadWebhookCallsAsync_fromDate_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -463,18 +622,28 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.FileContent> DownloadWebhookCallsAsync(
                 System.DateTimeOffset? fromDate,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().DownloadWebhookCallsAsync(fromDate, cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.FileContent>(_serviceProvider, impl, mi_DownloadWebhookCallsAsync_fromDate_cancellationToken, new object[] {fromDate, cancellationToken}, () => impl.DownloadWebhookCallsAsync(fromDate, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetServicesAsync_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Service.Service>> GetServicesAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetServicesAsync(cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Service.Service>>(_serviceProvider, impl, mi_GetServicesAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetServicesAsync(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpdateServiceAsync_service_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -483,25 +652,36 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task UpdateServiceAsync(
                 RA.Mspecs.Types.Service.Service service,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpdateServiceAsync(service, cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_UpdateServiceAsync_service_cancellationToken, new object[] {service, cancellationToken}, () => impl.UpdateServiceAsync(service, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_SetWebhooksOnServicesAsync_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task SetWebhooksOnServicesAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().SetWebhooksOnServicesAsync(cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetWebhooksOnServicesAsync_cancellationToken, new object[] {cancellationToken}, () => impl.SetWebhooksOnServicesAsync(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetSubscribersAsync_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Subscriber.Subscriber>> GetSubscribersAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetSubscribersAsync(cancellationToken);
+                var impl = (RA.Mspecs.Services.IMspecs)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Subscriber.Subscriber>>(_serviceProvider, impl, mi_GetSubscribersAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetSubscribersAsync(cancellationToken));
             }
         
         }
@@ -520,6 +700,10 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetOfficeByIdAsync_id_useCache_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="id"></param>
             /// <param name="useCache"></param>
             /// <param name="cancellationToken"></param>
@@ -527,9 +711,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String id,
                 System.Boolean? useCache,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetOfficeByIdAsync(id, useCache, cancellationToken);
+                var impl = (RA.Mspecs.Services.IOffice)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Office.Office>(_serviceProvider, impl, mi_GetOfficeByIdAsync_id_useCache_cancellationToken, new object[] {id, useCache, cancellationToken}, () => impl.GetOfficeByIdAsync(id, useCache, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpsertOfficeAsync_office_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -538,7 +727,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.Office.Office> UpsertOfficeAsync(
                 RA.Mspecs.Types.Office.Office office,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpsertOfficeAsync(office, cancellationToken);
+                var impl = (RA.Mspecs.Services.IOffice)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Office.Office>(_serviceProvider, impl, mi_UpsertOfficeAsync_office_cancellationToken, new object[] {office, cancellationToken}, () => impl.UpsertOfficeAsync(office, cancellationToken));
             }
         
         }
@@ -557,12 +747,17 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_RedirectBidderAsync_bidderId_cancellation;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="bidderId"></param>
             /// <param name="cancellation"></param>
             public System.Threading.Tasks.Task<RA.Mspecs.Types.FileContent> RedirectBidderAsync(
                 System.String bidderId,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().RedirectBidderAsync(bidderId, cancellation);
+                var impl = (RA.Mspecs.Services.IRedirect)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.FileContent>(_serviceProvider, impl, mi_RedirectBidderAsync_bidderId_cancellation, new object[] {bidderId, cancellation}, () => impl.RedirectBidderAsync(bidderId, cancellation));
             }
         
         }
@@ -581,12 +776,21 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetCustomerEndpointsAsync_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Customer.CustomerEndpoint>> GetCustomerEndpointsAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetCustomerEndpointsAsync(cancellationToken);
+                var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<RA.Mspecs.Types.Customer.CustomerEndpoint>>(_serviceProvider, impl, mi_GetCustomerEndpointsAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetCustomerEndpointsAsync(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetCustomerEndpointAsync_subscriberId_useCache_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -597,9 +801,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String subscriberId,
                 System.Boolean? useCache,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetCustomerEndpointAsync(subscriberId, useCache, cancellationToken);
+                var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.Customer.CustomerEndpoint>(_serviceProvider, impl, mi_GetCustomerEndpointAsync_subscriberId_useCache_cancellationToken, new object[] {subscriberId, useCache, cancellationToken}, () => impl.GetCustomerEndpointAsync(subscriberId, useCache, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpsertCustomerEndpointAsync_customerEndpoint_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -608,9 +817,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task UpsertCustomerEndpointAsync(
                 RA.Mspecs.Types.Customer.CustomerEndpoint customerEndpoint,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpsertCustomerEndpointAsync(customerEndpoint, cancellationToken);
+                var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_UpsertCustomerEndpointAsync_customerEndpoint_cancellationToken, new object[] {customerEndpoint, cancellationToken}, () => impl.UpsertCustomerEndpointAsync(customerEndpoint, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_StructureUpdatedAsync_dataType_id_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -621,7 +835,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String dataType,
                 System.String id,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().StructureUpdatedAsync(dataType, id, cancellationToken);
+                var impl = (RA.Mspecs.Services.IUpdateHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_StructureUpdatedAsync_dataType_id_cancellationToken, new object[] {dataType, id, cancellationToken}, () => impl.StructureUpdatedAsync(dataType, id, cancellationToken));
             }
         
         }
@@ -640,6 +855,10 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetUserByIdAsync_id_useCache_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="id"></param>
             /// <param name="useCache"></param>
             /// <param name="cancellationToken"></param>
@@ -647,9 +866,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String id,
                 System.Boolean? useCache,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetUserByIdAsync(id, useCache, cancellationToken);
+                var impl = (RA.Mspecs.Services.IUser)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.User.User>(_serviceProvider, impl, mi_GetUserByIdAsync_id_useCache_cancellationToken, new object[] {id, useCache, cancellationToken}, () => impl.GetUserByIdAsync(id, useCache, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpsertUserAsync_user_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -658,9 +882,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.User.User> UpsertUserAsync(
                 RA.Mspecs.Types.User.User user,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpsertUserAsync(user, cancellationToken);
+                var impl = (RA.Mspecs.Services.IUser)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.User.User>(_serviceProvider, impl, mi_UpsertUserAsync_user_cancellationToken, new object[] {user, cancellationToken}, () => impl.UpsertUserAsync(user, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetUserImageAsync_userId_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -669,7 +898,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<RA.Mspecs.Types.FileContent> GetUserImageAsync(
                 System.String userId,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetUserImageAsync(userId, cancellationToken);
+                var impl = (RA.Mspecs.Services.IUser)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<RA.Mspecs.Types.FileContent>(_serviceProvider, impl, mi_GetUserImageAsync_userId_cancellationToken, new object[] {userId, cancellationToken}, () => impl.GetUserImageAsync(userId, cancellationToken));
             }
         
         }

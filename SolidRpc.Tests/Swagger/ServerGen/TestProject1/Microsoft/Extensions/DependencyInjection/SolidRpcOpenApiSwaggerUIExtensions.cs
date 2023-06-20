@@ -17,14 +17,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetIndexHtml_onlyImplemented_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="onlyImplemented"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.OpenApi.SwaggerUI.Types.FileContent> GetIndexHtml(
                 System.Boolean onlyImplemented,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetIndexHtml(onlyImplemented, cancellationToken);
+                var impl = (SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.OpenApi.SwaggerUI.Types.FileContent>(_serviceProvider, impl, mi_GetIndexHtml_onlyImplemented_cancellationToken, new object[] {onlyImplemented, cancellationToken}, () => impl.GetIndexHtml(onlyImplemented, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetSwaggerInitializer_onlyImplemented_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -33,18 +42,28 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<SolidRpc.OpenApi.SwaggerUI.Types.FileContent> GetSwaggerInitializer(
                 System.Boolean onlyImplemented,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetSwaggerInitializer(onlyImplemented, cancellationToken);
+                var impl = (SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.OpenApi.SwaggerUI.Types.FileContent>(_serviceProvider, impl, mi_GetSwaggerInitializer_onlyImplemented_cancellationToken, new object[] {onlyImplemented, cancellationToken}, () => impl.GetSwaggerInitializer(onlyImplemented, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetOauth2RedirectHtml_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.OpenApi.SwaggerUI.Types.FileContent> GetOauth2RedirectHtml(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetOauth2RedirectHtml(cancellationToken);
+                var impl = (SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.OpenApi.SwaggerUI.Types.FileContent>(_serviceProvider, impl, mi_GetOauth2RedirectHtml_cancellationToken, new object[] {cancellationToken}, () => impl.GetOauth2RedirectHtml(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetSwaggerUrls_onlyImplemented_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -53,9 +72,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl>> GetSwaggerUrls(
                 System.Boolean onlyImplemented,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetSwaggerUrls(onlyImplemented, cancellationToken);
+                var impl = (SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.OpenApi.SwaggerUI.Types.SwaggerUrl>>(_serviceProvider, impl, mi_GetSwaggerUrls_onlyImplemented_cancellationToken, new object[] {onlyImplemented, cancellationToken}, () => impl.GetSwaggerUrls(onlyImplemented, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetOpenApiSpec_assemblyName_openApiSpecResolverAddress_onlyImplemented_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -68,7 +92,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String openApiSpecResolverAddress,
                 System.Boolean onlyImplemented,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, onlyImplemented, cancellationToken);
+                var impl = (SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.OpenApi.SwaggerUI.Types.FileContent>(_serviceProvider, impl, mi_GetOpenApiSpec_assemblyName_openApiSpecResolverAddress_onlyImplemented_cancellationToken, new object[] {assemblyName, openApiSpecResolverAddress, onlyImplemented, cancellationToken}, () => impl.GetOpenApiSpec(assemblyName, openApiSpecResolverAddress, onlyImplemented, cancellationToken));
             }
         
         }

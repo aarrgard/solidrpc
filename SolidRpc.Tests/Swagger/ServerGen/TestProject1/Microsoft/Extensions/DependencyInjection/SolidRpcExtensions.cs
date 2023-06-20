@@ -1,6 +1,9 @@
-﻿using System;
+﻿using RA.Mspecs.Services;
+using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -51,6 +54,13 @@ namespace Microsoft.Extensions.DependencyInjection
             /// <param name="assembly"></param>
             /// <returns></returns>
             IProxyConfig SetAssemblyFactory(Assembly assembly);
+
+            /// <summary>
+            /// Adds an interceptor to the proxy
+            /// </summary>
+            /// <param name="interceptor"></param>
+            /// <returns></returns>
+            IProxyConfig AddInterceptor(ProxyInterceptor interceptor);
         }
 
         /// <summary>
@@ -58,7 +68,49 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         public interface IProxyConfig<T> : IProxyConfig
         {
+            /// <summary>
+            /// Intercepts a call
+            /// </summary>
+            /// <param name="serviceProvider"></param>
+            /// <param name="methodInfo"></param>
+            /// <param name="args"></param>
+            /// <param name="last"></param>
+            /// <returns></returns>
+            Task<T> InterceptAsync<T>(
+                IServiceProvider serviceProvider,
+                object impl,
+                MethodInfo methodInfo,
+                object[] args,
+                Func<Task<T>> last = null);
+
+            /// <summary>
+            /// Intercepts a call
+            /// </summary>
+            /// <param name="serviceProvider"></param>
+            /// <param name="impl"></param>
+            /// <param name="methodInfo"></param>
+            /// <param name="args"></param>
+            /// <param name="last"></param>
+            /// <returns></returns>
+            Task InterceptAsync(
+                IServiceProvider serviceProvider,
+                object impl,
+                MethodInfo methodInfo,
+                object[] args,
+                Func<Task> last = null);
         }
+
+        /// <summary>
+        /// The proxy interceptor
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="next"></param>
+        /// <param name="sp"></param>
+        /// <param name="impl"></param>
+        /// <param name="mi"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public delegate Task<object> ProxyInterceptor(Func<Task<object>> next, IServiceProvider sp, object impl, MethodInfo mi, object[] args);
 
         /// <summary>
         /// 
@@ -66,14 +118,23 @@ namespace Microsoft.Extensions.DependencyInjection
         public class ProxyConfig<T> : IProxyConfig<T>
         {
             /// <summary>
+            /// Empty constructor
+            /// </summary>
+            public ProxyConfig() : this(ServiceLifetime.Transient, null, new ProxyInterceptor[0])
+            {
+            }
+
+            /// <summary>
             /// 
             /// </summary>
             /// <param name="lifetime"></param>
             /// <param name="implementation"></param>
-            public ProxyConfig(ServiceLifetime lifetime, Type implementation)
+            /// <param name="interceptors"></param>
+            public ProxyConfig(ServiceLifetime lifetime, Type implementation, ProxyInterceptor[] interceptors)
             {
                 Lifetime = lifetime;
                 Implementation = implementation;
+                Interceptors = interceptors;
             }
 
             /// <summary>
@@ -92,13 +153,18 @@ namespace Microsoft.Extensions.DependencyInjection
             public Type Implementation { get; }
 
             /// <summary>
+            /// The factory
+            /// </summary>
+            public ProxyInterceptor[] Interceptors { get; }
+
+            /// <summary>
             /// The factory method to use in order to create implementations
             /// </summary>
             /// <param name="implementation"></param>
             /// <returns></returns>
             public IProxyConfig SetImplementation(Type implementation)
             {
-                return new ProxyConfig<T>(Lifetime, implementation);
+                return new ProxyConfig<T>(Lifetime, implementation, Interceptors);
             }
 
             /// <summary>
@@ -125,31 +191,72 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             /// <summary>
+            /// Adds an interceptor
+            /// </summary>
+            /// <param name="interceptor"></param>
+            /// <returns></returns>
+            public IProxyConfig AddInterceptor(ProxyInterceptor interceptor)
+            {
+                return new ProxyConfig<T>(Lifetime, Implementation, Interceptors.Union(new[] { interceptor }).ToArray());
+            }
+
+            /// <summary>
             /// The object lifetime in the IoC
             /// </summary>
             /// <param name="lifetime"></param>
             /// <returns></returns>
             public IProxyConfig SetLifetime(ServiceLifetime lifetime)
             {
-                return new ProxyConfig<T>(lifetime, Implementation);
+                return new ProxyConfig<T>(lifetime, Implementation, Interceptors);
             }
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="configure"></param>
-        public static IProxyConfig<T> Configure<T>(
-            System.Func<IProxyConfig, IProxyConfig> configure)
-        {
-            var config = (IProxyConfig<T>)new ProxyConfig<T>(
-                ServiceLifetime.Transient,
-                null);
-            if (configure != null)
+            /// <summary>
+            /// Intercepts an invocation
+            /// </summary>
+            /// <param name="serviceProvider"></param>
+            /// <param name="impl"></param>
+            /// <param name="methodInfo"></param>
+            /// <param name="args"></param>
+            /// <param name="last"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
+            public async Task InterceptAsync(IServiceProvider serviceProvider, object impl, MethodInfo methodInfo, object[] args, Func<Task> last = null)
             {
-                config = (IProxyConfig<T>)configure(config);
+                await InterceptInternalAsync<object>(0, serviceProvider, impl, methodInfo, args, async () => { await last(); return null; });
             }
-            return config;
+
+            /// <summary>
+            /// Intercepts an invocation
+            /// </summary>
+            /// <param name="serviceProvider"></param>
+            /// <param name="impl"></param>
+            /// <param name="methodInfo"></param>
+            /// <param name="args"></param>
+            /// <param name="last"></param>
+            /// <returns></returns>
+            /// <exception cref="Exception"></exception>
+            public Task<TRes> InterceptAsync<TRes>(IServiceProvider serviceProvider, object impl, MethodInfo methodInfo, object[] args, Func<Task<TRes>> last = null)
+            {
+                return InterceptInternalAsync(0, serviceProvider, impl, methodInfo, args, last);
+            }
+
+            private Task<TRes> InterceptInternalAsync<TRes>(int idx, IServiceProvider serviceProvider, object impl, MethodInfo methodInfo, object[] args, Func<Task<TRes>> last)
+            {
+                if (idx >= Interceptors.Length)
+                {
+                    return last();
+                }
+                return InvokeInterceptorAsync(idx, serviceProvider, impl, methodInfo, args, last);
+            }
+
+            private async Task<TRes> InvokeInterceptorAsync<TRes>(int idx, IServiceProvider serviceProvider, object impl, MethodInfo methodInfo, object[] args, Func<Task<TRes>> last)
+            {
+                return (TRes)await Interceptors[idx](async () =>
+                {
+                    return await InterceptInternalAsync(idx + 1, serviceProvider, impl, methodInfo, args, last);
+                },
+                serviceProvider, impl, methodInfo, args);
+            }
         }
 
         /// <summary>
@@ -164,9 +271,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection sc,
             Func<IProxyConfig, IProxyConfig> configure)
         {
-            // add the configuration
-            var config = Configure<TInterface>(configure);
-            sc.AddSingleton(config);
+            var config = sc.ConfigureInterface<TInterface>(configure);
             sc.Add(new ServiceDescriptor(typeof(TInterface), typeof(TImpl), config.Lifetime));
             if (config.Implementation != null)
             {
@@ -211,6 +316,25 @@ namespace Microsoft.Extensions.DependencyInjection
                 var implementation = _config.Implementation ?? throw new Exception($"No implementation registered for service {_config.ProxyType.FullName}");
                 return (T)_serviceProvider.GetRequiredService(implementation);
             }
+        }
+
+        /// <summary>
+        /// Some helper methods
+        /// </summary>
+        public static IProxyConfig<TInterface> ConfigureInterface<TInterface>(this IServiceCollection sc, Func<IProxyConfig, IProxyConfig> configure)
+        {
+            var existingConfigService = sc.FirstOrDefault(o => o.ServiceType == typeof(IProxyConfig<TInterface>));
+            var config = existingConfigService?.ImplementationInstance as IProxyConfig<TInterface> ?? new ProxyConfig<TInterface>();
+            if (configure != null)
+            {
+                config = (IProxyConfig<TInterface>)configure(config);
+            }
+            if (existingConfigService != null)
+            {
+                sc.Remove(existingConfigService);
+            }
+            sc.AddSingleton(config);
+            return config;
         }
     }
 }

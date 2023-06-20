@@ -17,14 +17,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_SetAcmeChallengeAsync_challenge_cancellation;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="challenge"></param>
             /// <param name="cancellation"></param>
             public System.Threading.Tasks.Task SetAcmeChallengeAsync(
                 System.String challenge,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().SetAcmeChallengeAsync(challenge, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_SetAcmeChallengeAsync_challenge_cancellation, new object[] {challenge, cancellation}, () => impl.SetAcmeChallengeAsync(challenge, cancellation));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetAcmeChallengeAsync_key_cancellation;
             /// <summary>
             /// 
             /// </summary>
@@ -34,7 +43,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> GetAcmeChallengeAsync(
                 System.String key,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().GetAcmeChallengeAsync(key, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcAcmeChallenge)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_GetAcmeChallengeAsync_key_cancellation, new object[] {key, cancellation}, () => impl.GetAcmeChallengeAsync(key, cancellation));
             }
         
         }
@@ -62,14 +72,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetContent_path_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="path"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> GetContent(
                 System.String path,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetContent(path, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcContentHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_GetContent_path_cancellationToken, new object[] {path, cancellationToken}, () => impl.GetContent(path, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetPathMappingsAsync_redirects_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -78,9 +97,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.NameValuePair>> GetPathMappingsAsync(
                 System.Boolean redirects,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetPathMappingsAsync(redirects, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcContentHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.NameValuePair>>(_serviceProvider, impl, mi_GetPathMappingsAsync_redirects_cancellationToken, new object[] {redirects, cancellationToken}, () => impl.GetPathMappingsAsync(redirects, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -89,9 +113,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> GetProtectedContentAsync(
                 System.Byte[] resource,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetProtectedContentAsync(resource, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcContentHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_GetProtectedContentAsync_resource_cancellationToken, new object[] {resource, cancellationToken}, () => impl.GetProtectedContentAsync(resource, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_fileName_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -102,7 +131,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Byte[] resource,
                 System.String fileName,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetProtectedContentAsync(resource, fileName, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcContentHandler)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_GetProtectedContentAsync_resource_fileName_cancellationToken, new object[] {resource, fileName, cancellationToken}, () => impl.GetProtectedContentAsync(resource, fileName, cancellationToken));
             }
         
         }
@@ -121,13 +151,22 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetHostId_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="cancellationToken"></param>
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Guid> GetHostId(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetHostId(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Guid>(_serviceProvider, impl, mi_GetHostId_cancellationToken, new object[] {cancellationToken}, () => impl.GetHostId(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetHostInstance_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -135,9 +174,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.SolidRpcHostInstance> GetHostInstance(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetHostInstance(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.SolidRpcHostInstance>(_serviceProvider, impl, mi_GetHostInstance_cancellationToken, new object[] {cancellationToken}, () => impl.GetHostInstance(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_SyncHostsFromStore_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -145,9 +189,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.SolidRpcHostInstance>> SyncHostsFromStore(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().SyncHostsFromStore(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.SolidRpcHostInstance>>(_serviceProvider, impl, mi_SyncHostsFromStore_cancellationToken, new object[] {cancellationToken}, () => impl.SyncHostsFromStore(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_CheckHost_hostInstance_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -157,9 +206,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.SolidRpcHostInstance> CheckHost(
                 SolidRpc.Abstractions.Types.SolidRpcHostInstance hostInstance,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().CheckHost(hostInstance, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.SolidRpcHostInstance>(_serviceProvider, impl, mi_CheckHost_hostInstance_cancellationToken, new object[] {hostInstance, cancellationToken}, () => impl.CheckHost(hostInstance, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetHostConfiguration_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -167,9 +221,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.NameValuePair>> GetHostConfiguration(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetHostConfiguration(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.NameValuePair>>(_serviceProvider, impl, mi_GetHostConfiguration_cancellationToken, new object[] {cancellationToken}, () => impl.GetHostConfiguration(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_IsAlive_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -177,9 +236,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task IsAlive(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().IsAlive(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_IsAlive_cancellationToken, new object[] {cancellationToken}, () => impl.IsAlive(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_BaseAddress_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -187,9 +251,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Uri> BaseAddress(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().BaseAddress(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Uri>(_serviceProvider, impl, mi_BaseAddress_cancellationToken, new object[] {cancellationToken}, () => impl.BaseAddress(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_AllowedCorsOrigins_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -197,9 +266,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<System.String>> AllowedCorsOrigins(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().AllowedCorsOrigins(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<System.String>>(_serviceProvider, impl, mi_AllowedCorsOrigins_cancellationToken, new object[] {cancellationToken}, () => impl.AllowedCorsOrigins(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_DefaultTimezone_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -207,9 +281,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
             public System.Threading.Tasks.Task<System.String> DefaultTimezone(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().DefaultTimezone(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.String>(_serviceProvider, impl, mi_DefaultTimezone_cancellationToken, new object[] {cancellationToken}, () => impl.DefaultTimezone(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_ParseDateTime_dateTime_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -219,7 +298,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<System.DateTimeOffset> ParseDateTime(
                 System.String dateTime,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().ParseDateTime(dateTime, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.DateTimeOffset>(_serviceProvider, impl, mi_ParseDateTime_dateTime_cancellationToken, new object[] {dateTime, cancellationToken}, () => impl.ParseDateTime(dateTime, cancellationToken));
             }
         
         }
@@ -238,14 +318,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_AddHostInstanceAsync_hostInstance_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="hostInstance"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task AddHostInstanceAsync(
                 SolidRpc.Abstractions.Types.SolidRpcHostInstance hostInstance,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().AddHostInstanceAsync(hostInstance, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHostStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_AddHostInstanceAsync_hostInstance_cancellationToken, new object[] {hostInstance, cancellationToken}, () => impl.AddHostInstanceAsync(hostInstance, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_RemoveHostInstanceAsync_hostInstance_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -254,16 +343,22 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task RemoveHostInstanceAsync(
                 SolidRpc.Abstractions.Types.SolidRpcHostInstance hostInstance,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().RemoveHostInstanceAsync(hostInstance, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHostStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_RemoveHostInstanceAsync_hostInstance_cancellationToken, new object[] {hostInstance, cancellationToken}, () => impl.RemoveHostInstanceAsync(hostInstance, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_ListHostInstancesAsync_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.SolidRpcHostInstance>> ListHostInstancesAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().ListHostInstancesAsync(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHostStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.SolidRpcHostInstance>>(_serviceProvider, impl, mi_ListHostInstancesAsync_cancellationToken, new object[] {cancellationToken}, () => impl.ListHostInstancesAsync(cancellationToken));
             }
         
         }
@@ -282,14 +377,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetHttpRequestAsync_takeCount_cancellation;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="takeCount"></param>
             /// <param name="cancellation"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.HttpRequest>> GetHttpRequestAsync(
                 System.Int32? takeCount,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().GetHttpRequestAsync(takeCount, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcMethodStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.HttpRequest>>(_serviceProvider, impl, mi_GetHttpRequestAsync_takeCount_cancellation, new object[] {takeCount, cancellation}, () => impl.GetHttpRequestAsync(takeCount, cancellation));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_RemoveHttpRequestAsync_solidRpcCallId_cancellation;
             /// <summary>
             /// 
             /// </summary>
@@ -298,9 +402,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task RemoveHttpRequestAsync(
                 System.String solidRpcCallId,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().RemoveHttpRequestAsync(solidRpcCallId, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcMethodStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_RemoveHttpRequestAsync_solidRpcCallId_cancellation, new object[] {solidRpcCallId, cancellation}, () => impl.RemoveHttpRequestAsync(solidRpcCallId, cancellation));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetHttpRequestsAsync_sessionId_takeCount_cancellation;
             /// <summary>
             /// 
             /// </summary>
@@ -311,9 +420,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String sessionId,
                 System.Int32? takeCount,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().GetHttpRequestsAsync(sessionId, takeCount, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcMethodStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.HttpRequest>>(_serviceProvider, impl, mi_GetHttpRequestsAsync_sessionId_takeCount_cancellation, new object[] {sessionId, takeCount, cancellation}, () => impl.GetHttpRequestsAsync(sessionId, takeCount, cancellation));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_RemoveHttpRequestAsync_sessionId_solidRpcCallId_cancellation;
             /// <summary>
             /// 
             /// </summary>
@@ -324,7 +438,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String sessionId,
                 System.String solidRpcCallId,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().RemoveHttpRequestAsync(sessionId, solidRpcCallId, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcMethodStore)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_RemoveHttpRequestAsync_sessionId_solidRpcCallId_cancellation, new object[] {sessionId, solidRpcCallId, cancellation}, () => impl.RemoveHttpRequestAsync(sessionId, solidRpcCallId, cancellation));
             }
         
         }
@@ -343,6 +458,10 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetAuthorizationCodeTokenAsync_callbackUri_state_scopes_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="callbackUri"></param>
             /// <param name="state"></param>
             /// <param name="scopes"></param>
@@ -352,9 +471,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String state,
                 System.Collections.Generic.IEnumerable<System.String> scopes,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetAuthorizationCodeTokenAsync(callbackUri, state, scopes, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOAuth2)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_GetAuthorizationCodeTokenAsync_callbackUri_state_scopes_cancellationToken, new object[] {callbackUri, state, scopes, cancellationToken}, () => impl.GetAuthorizationCodeTokenAsync(callbackUri, state, scopes, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_TokenCallbackAsync_code_state_cancellation;
             /// <summary>
             /// 
             /// </summary>
@@ -365,9 +489,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String code,
                 System.String state,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().TokenCallbackAsync(code, state, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOAuth2)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_TokenCallbackAsync_code_state_cancellation, new object[] {code, state, cancellation}, () => impl.TokenCallbackAsync(code, state, cancellation));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_RefreshTokenAsync_accessToken_cancellation;
             /// <summary>
             /// 
             /// </summary>
@@ -376,9 +505,14 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> RefreshTokenAsync(
                 System.String accessToken,
                 System.Threading.CancellationToken cancellation) {
-                return GetImplementation().RefreshTokenAsync(accessToken, cancellation);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOAuth2)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_RefreshTokenAsync_accessToken_cancellation, new object[] {accessToken, cancellation}, () => impl.RefreshTokenAsync(accessToken, cancellation));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_LogoutAsync_callbackUri_accessToken_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -389,9 +523,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.Uri callbackUri,
                 System.String accessToken,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().LogoutAsync(callbackUri, accessToken, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOAuth2)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_LogoutAsync_callbackUri_accessToken_cancellationToken, new object[] {callbackUri, accessToken, cancellationToken}, () => impl.LogoutAsync(callbackUri, accessToken, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_PostLogoutAsync_state_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -400,7 +539,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> PostLogoutAsync(
                 System.String state,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().PostLogoutAsync(state, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOAuth2)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_PostLogoutAsync_state_cancellationToken, new object[] {state, cancellationToken}, () => impl.PostLogoutAsync(state, cancellationToken));
             }
         
         }
@@ -419,22 +559,36 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetDiscoveryDocumentAsync_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="cancellationToken"></param>
             [SolidRpc.Abstractions.OpenApi(Path="/.well-known/openid-configuration")]
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetDiscoveryDocumentAsync(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOidc)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.OAuth2.OpenIDConnectDiscovery>(_serviceProvider, impl, mi_GetDiscoveryDocumentAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetDiscoveryDocumentAsync(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetKeysAsync_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.OAuth2.OpenIDKeys> GetKeysAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetKeysAsync(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOidc)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.OAuth2.OpenIDKeys>(_serviceProvider, impl, mi_GetKeysAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetKeysAsync(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetTokenAsync_grantType_clientId_clientSecret_username_password_scope_code_redirectUri_codeVerifier_refreshToken_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -461,9 +615,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String codeVerifier,
                 System.String refreshToken,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetTokenAsync(grantType, clientId, clientSecret, username, password, scope, code, redirectUri, codeVerifier, refreshToken, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOidc)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.OAuth2.TokenResponse>(_serviceProvider, impl, mi_GetTokenAsync_grantType_clientId_clientSecret_username_password_scope_code_redirectUri_codeVerifier_refreshToken_cancellationToken, new object[] {grantType, clientId, clientSecret, username, password, scope, code, redirectUri, codeVerifier, refreshToken, cancellationToken}, () => impl.GetTokenAsync(grantType, clientId, clientSecret, username, password, scope, code, redirectUri, codeVerifier, refreshToken, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_AuthorizeAsync_scope_responseType_clientId_redirectUri_state_responseMode_nonce_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -484,9 +643,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String responseMode,
                 System.String nonce,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().AuthorizeAsync(scope, responseType, clientId, redirectUri, state, responseMode, nonce, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOidc)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_AuthorizeAsync_scope_responseType_clientId_redirectUri_state_responseMode_nonce_cancellationToken, new object[] {scope, responseType, clientId, redirectUri, state, responseMode, nonce, cancellationToken}, () => impl.AuthorizeAsync(scope, responseType, clientId, redirectUri, state, responseMode, nonce, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_RevokeAsync_clientId_clientSecret_token_tokenHint_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -501,9 +665,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String token,
                 System.String tokenHint,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().RevokeAsync(clientId, clientSecret, token, tokenHint, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOidc)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_RevokeAsync_clientId_clientSecret_token_tokenHint_cancellationToken, new object[] {clientId, clientSecret, token, tokenHint, cancellationToken}, () => impl.RevokeAsync(clientId, clientSecret, token, tokenHint, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_EndSessionAsync_idTokenHint_postLogoutRedirectUri_state_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -516,7 +685,8 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String postLogoutRedirectUri,
                 System.String state,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().EndSessionAsync(idTokenHint, postLogoutRedirectUri, state, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcOidc)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_EndSessionAsync_idTokenHint_postLogoutRedirectUri_state_cancellationToken, new object[] {idTokenHint, postLogoutRedirectUri, state, cancellationToken}, () => impl.EndSessionAsync(idTokenHint, postLogoutRedirectUri, state, cancellationToken));
             }
         
         }
@@ -535,12 +705,17 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetProtectedContentAsync_resource_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="resource"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> GetProtectedContentAsync(
                 System.String resource,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetProtectedContentAsync(resource, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcProtectedContent)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_GetProtectedContentAsync_resource_cancellationToken, new object[] {resource, cancellationToken}, () => impl.GetProtectedContentAsync(resource, cancellationToken));
             }
         
         }
@@ -559,6 +734,10 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_GetRateLimitTokenAsync_resourceName_timeout_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="resourceName"></param>
             /// <param name="timeout"></param>
             /// <param name="cancellationToken"></param>
@@ -566,9 +745,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String resourceName,
                 System.TimeSpan timeout,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetRateLimitTokenAsync(resourceName, timeout, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.RateLimit.RateLimitToken>(_serviceProvider, impl, mi_GetRateLimitTokenAsync_resourceName_timeout_cancellationToken, new object[] {resourceName, timeout, cancellationToken}, () => impl.GetRateLimitTokenAsync(resourceName, timeout, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetSingeltonTokenAsync_resourceName_timeout_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -579,9 +763,14 @@ namespace Microsoft.Extensions.DependencyInjection {
                 System.String resourceName,
                 System.TimeSpan timeout,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetSingeltonTokenAsync(resourceName, timeout, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.RateLimit.RateLimitToken>(_serviceProvider, impl, mi_GetSingeltonTokenAsync_resourceName_timeout_cancellationToken, new object[] {resourceName, timeout, cancellationToken}, () => impl.GetSingeltonTokenAsync(resourceName, timeout, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_ReturnRateLimitTokenAsync_rateLimitToken_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -590,18 +779,28 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task ReturnRateLimitTokenAsync(
                 SolidRpc.Abstractions.Types.RateLimit.RateLimitToken rateLimitToken,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().ReturnRateLimitTokenAsync(rateLimitToken, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_ReturnRateLimitTokenAsync_rateLimitToken_cancellationToken, new object[] {rateLimitToken, cancellationToken}, () => impl.ReturnRateLimitTokenAsync(rateLimitToken, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_GetRateLimitSettingsAsync_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting>> GetRateLimitSettingsAsync(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().GetRateLimitSettingsAsync(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting>>(_serviceProvider, impl, mi_GetRateLimitSettingsAsync_cancellationToken, new object[] {cancellationToken}, () => impl.GetRateLimitSettingsAsync(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_UpdateRateLimitSetting_setting_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -610,7 +809,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task UpdateRateLimitSetting(
                 SolidRpc.Abstractions.Types.RateLimit.RateLimitSetting setting,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().UpdateRateLimitSetting(setting, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.RateLimit.ISolidRpcRateLimit)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync(_serviceProvider, impl, mi_UpdateRateLimitSetting_setting_cancellationToken, new object[] {setting, cancellationToken}, () => impl.UpdateRateLimitSetting(setting, cancellationToken));
             }
         
         }
@@ -629,12 +829,17 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_CreateCodeNamespace_assemblyName_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="assemblyName"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.Code.CodeNamespace> CreateCodeNamespace(
                 System.String assemblyName,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().CreateCodeNamespace(assemblyName, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.Code.ICodeNamespaceGenerator)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.Code.CodeNamespace>(_serviceProvider, impl, mi_CreateCodeNamespace_assemblyName_cancellationToken, new object[] {assemblyName, cancellationToken}, () => impl.CreateCodeNamespace(assemblyName, cancellationToken));
             }
         
         }
@@ -653,21 +858,31 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_CreateNpmPackage_assemblyNames_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="assemblyNames"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.Code.NpmPackage>> CreateNpmPackage(
                 System.Collections.Generic.IEnumerable<System.String> assemblyNames,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().CreateNpmPackage(assemblyNames, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.Code.INpmGenerator)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<SolidRpc.Abstractions.Types.Code.NpmPackage>>(_serviceProvider, impl, mi_CreateNpmPackage_assemblyNames_cancellationToken, new object[] {assemblyNames, cancellationToken}, () => impl.CreateNpmPackage(assemblyNames, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_CreateInitialZip_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> CreateInitialZip(
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().CreateInitialZip(cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.Code.INpmGenerator)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_CreateInitialZip_cancellationToken, new object[] {cancellationToken}, () => impl.CreateInitialZip(cancellationToken));
             }
         
         }
@@ -686,14 +901,23 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            System.Reflection.MethodInfo mi_CreateTypesTsForAssemblyAsync_assemblyName_cancellationToken;
+            /// <summary>
+            /// 
+            /// </summary>
             /// <param name="assemblyName"></param>
             /// <param name="cancellationToken"></param>
             public System.Threading.Tasks.Task<System.String> CreateTypesTsForAssemblyAsync(
                 System.String assemblyName,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().CreateTypesTsForAssemblyAsync(assemblyName, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.Code.ITypescriptGenerator)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.String>(_serviceProvider, impl, mi_CreateTypesTsForAssemblyAsync_assemblyName_cancellationToken, new object[] {assemblyName, cancellationToken}, () => impl.CreateTypesTsForAssemblyAsync(assemblyName, cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            System.Reflection.MethodInfo mi_CreateTypesTsForCodeNamespaceAsync_codeNamespace_cancellationToken;
             /// <summary>
             /// 
             /// </summary>
@@ -702,7 +926,8 @@ namespace Microsoft.Extensions.DependencyInjection {
             public System.Threading.Tasks.Task<System.String> CreateTypesTsForCodeNamespaceAsync(
                 SolidRpc.Abstractions.Types.Code.CodeNamespace codeNamespace,
                 System.Threading.CancellationToken cancellationToken) {
-                return GetImplementation().CreateTypesTsForCodeNamespaceAsync(codeNamespace, cancellationToken);
+                var impl = (SolidRpc.Abstractions.Services.Code.ITypescriptGenerator)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.String>(_serviceProvider, impl, mi_CreateTypesTsForCodeNamespaceAsync_codeNamespace_cancellationToken, new object[] {codeNamespace, cancellationToken}, () => impl.CreateTypesTsForCodeNamespaceAsync(codeNamespace, cancellationToken));
             }
         
         }

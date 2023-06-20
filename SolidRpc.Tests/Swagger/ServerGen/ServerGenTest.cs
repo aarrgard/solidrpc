@@ -6,7 +6,10 @@ using RA.Mspecs.Services;
 using RA.Mspecs.Types.Contact;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -133,6 +136,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
         [Test]
         public async Task TestProject2Assembly()
         {
+            var intercepted = new List<MethodInfo>();
             var sc = new ServiceCollection();
             sc.AddRAMspecs(conf => {
                 if(conf.ProxyType == typeof(IContact))
@@ -141,10 +145,16 @@ namespace SolidRpc.Tests.Swagger.ServerGen
                 }
                 return conf;
             });
+            sc.ConfigureInterface<IContact>(conf => conf.AddInterceptor((next, sp, impl, mi, args) =>
+            {
+                intercepted.Add(mi);
+                return next();
+            }));
             var sp = sc.BuildServiceProvider();
             var cs = sp.GetRequiredService<IContact>();
             var c = await cs.GetContactAsync("test");
             Assert.AreEqual("test", c.Id);
+            //Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted.Single().Name);
         }
     }
 }

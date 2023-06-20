@@ -1,5 +1,4 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
-using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.OpenApi.Generator.Impl.Csproj;
@@ -17,7 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -248,7 +246,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             } }).ToList();
         }
 
-        private void CreateServerCode(ICSharpRepository serverCode, string ns, Stream dllStream)
+        private async void CreateServerCode(ICSharpRepository serverCode, string ns, Stream dllStream)
         {
             var nsNoDots = ns.Replace(".", "");
             var c = serverCode.GetClass($"Microsoft.Extensions.DependencyInjection.{nsNoDots}Extensions");
@@ -305,24 +303,56 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 
                 foreach (var m in cst.Methods)
                 {
+                    var isTaskType = m.ReturnType?.IsTaskType ?? false;
+                    var argNames = string.Join(", ", m.Parameters.Select(o => o.Name));
+                    var miName = $"mi_{m.Name}_{string.Join("_", m.Parameters.Select(o => o.Name))}";
+
+                    // add methodInfo member
+                    var methodInfoField = new CSharpField(proxy, miName, serverCode.GetType(typeof(MethodInfo).FullName), null);
+                    proxy.AddMember(methodInfoField);
+    
+                    // add method member
                     m.AddMember(new CSharpModifier(m, "public"));
+                    //if(isTaskType)
+                    //{
+                    //    m.AddMember(new CSharpModifier(m, "async"));
+                    //}
                     proxy.AddMember(m);
-                    if(m.ReturnType != null)
+
+
+                    m.Body.AppendLine($"var impl = ({t.FullName})_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($\"No implementation registered for service {{_config.ProxyType.FullName}}\"));");
+
+                    string nextFunc = "null";
+                    string genReturnType = null;
+                    if (isTaskType)
                     {
-                        m.Body.Append($"return ");
-                    }
-                    m.Body.Append($"GetImplementation().{m.Name}(");
-                    bool argEmitted = false;
-                    foreach(var arg in m.Parameters)
-                    {
-                        if (argEmitted)
+                        if (m.ReturnType.IsGenericType)
                         {
-                            m.Body.Append(", ");
+                            genReturnType = $"<{m.ReturnType.TaskType.FullName}>";
                         }
-                        m.Body.Append(arg.Name);
-                        argEmitted = true;
+                        else
+                        {
+                            genReturnType = "";
+                        }
+                        nextFunc = $"() => impl.{m.Name}({argNames})";
                     }
-                    m.Body.AppendLine(");");
+                    else
+                    {
+                        if(m.ReturnType != null)
+                        {
+                            genReturnType = $"<{m.ReturnType.TaskType.FullName}>";
+                            nextFunc = $"() => Task.FromResult(impl.{m.Name}({argNames}))";
+                        }
+                        else
+                        {
+                            nextFunc = $"() => {{ impl.{m.Name}({argNames}); return Task.CompletedTask; }}";
+                        }
+                    }
+                    if(genReturnType != null)
+                    {
+                        m.Body.Append("return ");
+                    }
+                    m.Body.AppendLine($"_config.InterceptAsync{genReturnType}(_serviceProvider, impl, {miName}, new object[] {{{argNames}}}, {nextFunc});");
                 }
 
                 addServiceCollection.Body.AppendLine($"sc.SetupProxy<{t.FullName},{proxy.FullName}>(configure);");
@@ -333,5 +363,6 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
 
 
         }
+
     }
 }
