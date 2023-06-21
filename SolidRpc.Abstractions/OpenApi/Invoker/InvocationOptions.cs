@@ -10,6 +10,21 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     public class InvocationOptions
     {
         /// <summary>
+        /// Returns the current invocation options
+        /// </summary>
+        public static InvocationOptions Current
+        {
+            get
+            {
+                return InvocationOptionsLocal.Current;
+            }
+        }
+        /// <summary>
+        /// Returns the default invocation options
+        /// </summary>
+        public static InvocationOptions Default = new InvocationOptions("Local", MessagePriorityNormal);
+
+        /// <summary>
         /// The default pre invoke callback(Does nothing)
         /// </summary>
         /// <param name="httpReq"></param>
@@ -61,6 +76,15 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             ContinuationToken = continuationToken;
             PreInvokeCallback = preInvokeCallback ?? DefaultPreInvokeCallback;
             PostInvokeCallback = postInvokeCallback ?? DefaultPostInvokeCallback;
+        }
+
+        /// <summary>
+        /// Attaches these options to the task local
+        /// </summary>
+        /// <returns></returns>
+        public IDisposable Attach()
+        {
+            return new InvocationOptionsLocal(this);
         }
 
         /// <summary>

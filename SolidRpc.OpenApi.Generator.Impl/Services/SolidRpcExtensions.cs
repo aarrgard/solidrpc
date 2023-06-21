@@ -1,8 +1,11 @@
-﻿using RA.Mspecs.Services;
+﻿using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -284,6 +287,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 sc.Add(new ServiceDescriptor(config.Implementation, config.Implementation, config.Lifetime));
             }
+            sc.SetupInvoker<TInterface>();
         }
 
         /// <summary>
@@ -371,6 +375,149 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 var implementation = _config.Implementation ?? throw new Exception($"No implementation registered for service {_config.ProxyType.FullName}");
                 return (T)_serviceProvider.GetRequiredService(implementation);
+            }
+        }
+
+        /// <summary>
+        /// Configures the specified proxy
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <param name="sc"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public static void SetupInvoker<TInterface>(
+            this IServiceCollection sc) where TInterface : class
+        {
+            sc.AddTransient<IInvoker<TInterface>, Invoker<TInterface>>();
+        }
+
+        /// <summary>
+        /// The invoker
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public class Invoker<T> : IInvoker<T> where T : class
+        {
+            private static ConcurrentDictionary<MethodInfo, MethodInfo> _invocs = new ConcurrentDictionary<MethodInfo, MethodInfo>();
+
+            public Invoker(T service)
+            {
+                Service = service;
+            }
+
+            private T Service { get; }
+
+            public IMethodBinding GetMethodBinding(Expression<Action<T>> action)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IMethodBinding GetMethodBinding<TResult>(Expression<Func<T, TResult>> func)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IMethodBinding GetMethodBinding(MethodInfo methodInfo)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<Uri> GetUriAsync(Expression<Action<T>> action, bool includeQueryString = true)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<Uri> GetUriAsync<TRes>(Expression<Func<T, TRes>> func, bool includeQueryString = true)
+            {
+                throw new NotImplementedException();
+            }
+
+            public async Task InvokeAsync(Expression<Action<T>> action, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
+            {
+                using (SetupInvocationOptions(invocationOptions))
+                {
+                    var (mi, args) = GetMethodInfo(action);
+                    var res = mi.Invoke(Service, args);
+                    var task = res as Task;
+                    if (task != null)
+                    {
+                        await task;
+                    }
+                }
+            }
+
+            public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
+            {
+                using (SetupInvocationOptions(invocationOptions))
+                {
+                    var (mi, args) = GetMethodInfo(func);
+                    return (TResult)mi.Invoke(Service, args);
+                }
+            }
+
+            public Task<object> InvokeAsync(MethodInfo methodInfo, IEnumerable<object> args, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
+            {
+                return (Task<object>)_invocs.GetOrAdd(methodInfo, _ =>
+                {
+                    var retVal = _.ReturnType;
+                    if (retVal.IsGenericType)
+                    {
+                        if (retVal.GetGenericTypeDefinition() == typeof(Task<>))
+                        {
+                            retVal = retVal.GetGenericArguments()[0];
+                        }
+                    }
+                    return GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                        .Where(o => o.Name == nameof(InvokeAsync))
+                        .Where(o => o.IsGenericMethod)
+                        .Single()
+                        .MakeGenericMethod(retVal);
+                }).Invoke(this, new object[] { methodInfo, args, invocationOptions });
+            }
+            private async Task<object> InvokeAsync<TRes>(MethodInfo methodInfo, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
+            {
+                using (SetupInvocationOptions(invocationOptions))
+                {
+                    var res = methodInfo.Invoke(Service, args);
+                    var task = res as Task<TRes>;
+                    if (task != null)
+                    {
+                        return await task;
+                    }
+                    else
+                    {
+                        return (TRes)res;
+                    }
+                }
+            }
+
+            private IDisposable SetupInvocationOptions(Func<InvocationOptions, InvocationOptions> invocationOptions)
+            {
+                var opts = InvocationOptions.Current;
+                opts = invocationOptions?.Invoke(opts) ?? opts;
+                return opts.Attach();
+            }
+
+            protected static (MethodInfo, object[]) GetMethodInfo(LambdaExpression expr)
+            {
+                if (expr.Body is MethodCallExpression mce)
+                {
+                    var args = new List<object>();
+                    foreach (var argument in mce.Arguments)
+                    {
+                        var le = Expression.Lambda(argument);
+                        args.Add(le.Compile().DynamicInvoke());
+                    }
+
+                    return (mce.Method, args.ToArray());
+                }
+                if (expr.Body is MemberExpression me)
+                {
+                    if (me.Member is PropertyInfo pi)
+                    {
+                        return (pi.GetMethod, null);
+                    }
+                    throw new Exception();
+                }
+                throw new Exception("expression should be a method call.");
             }
         }
 

@@ -4,6 +4,7 @@ using NuGet.Frameworks;
 using NUnit.Framework;
 using RA.Mspecs.Services;
 using RA.Mspecs.Types.Contact;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.DotNetTool;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,11 @@ namespace SolidRpc.Tests.Swagger.ServerGen
         {
             public Task<Contact> GetContactAsync(string id, bool? useCache = null, CancellationToken cancellationToken = default)
             {
-                return Task.FromResult(new Contact() { Id = id });
+                return Task.FromResult(new Contact() { 
+                    Id = id, 
+                    FirstName = InvocationOptions.Current.TransportType,
+                    Identifier = InvocationOptions.Current.Priority.ToString() 
+                });
             }
 
             public Task<Contact> UpsertContactAsync(Contact contact, CancellationToken cancellationToken = default)
@@ -156,7 +161,16 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             var cs = sp.GetRequiredService<IContact>();
             var c = await cs.GetContactAsync("test");
             Assert.AreEqual("test", c.Id);
-            Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted.Single().Name);
+            Assert.AreEqual("Local", c.FirstName);
+            Assert.AreEqual("5", c.Identifier);
+            Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted[0].Name);
+
+            var ci = sp.GetRequiredService<IInvoker<IContact>>();
+            c = await ci.InvokeAsync(o => o.GetContactAsync("test", false, CancellationToken.None), opts => opts.SetPriority(1).SetTransport("Queue"));
+            Assert.AreEqual("test", c.Id);
+            Assert.AreEqual("Queue", c.FirstName);
+            Assert.AreEqual("1", c.Identifier);
+            Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted[1].Name);
         }
     }
 }

@@ -663,6 +663,16 @@
             Contains additional invocation options.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Current">
+            <summary>
+            Returns the current invocation options
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Default">
+            <summary>
+            Returns the default invocation options
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.DefaultPreInvokeCallback(SolidRpc.Abstractions.OpenApi.Http.IHttpRequest)">
             <summary>
             The default pre invoke callback(Does nothing)
@@ -701,6 +711,12 @@
             <param name="continuationToken"></param>
             <param name="preInvokeCallback"></param>
             <param name="postInvokeCallback"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Attach">
+            <summary>
+            Attaches these options to the task local
+            </summary>
+            <returns></returns>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TransportType">
             <summary>
@@ -761,6 +777,33 @@
             </summary>
             <param name="callback"></param>
             <returns></returns>
+        </member>
+        <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal">
+            <summary>
+            Connects and disconnects some invocation options 
+            to/from the local task pipeline
+            </summary>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.Current">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.#ctor(SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+            <summary>
+            
+            </summary>
+            <param name="opts"></param>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.InvocationOptions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.Dispose">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler">
             <summary>
