@@ -103,9 +103,8 @@ namespace SolidRpc.Tests.Invoker
             Task<FileContent> TestProxyFile(FileContent fileContent, CancellationToken cancellation = default);
 
             /// <summary>
-            /// Tests proxying a file
+            /// Tests getting the backend values
             /// </summary>
-            /// <param name="fileContent"></param>
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<string> GetBackendValueAsync(CancellationToken cancellation = default);
@@ -124,7 +123,7 @@ namespace SolidRpc.Tests.Invoker
             public Task<string> GetBackendValueAsync(CancellationToken cancellation = default)
             {
                 var currIncoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
-                return Task.FromResult(currIncoc.GetValue("http_req_host").ToString());
+                return Task.FromResult(string.Join(",",currIncoc.Keys.Order()));
             }
         }
         /// <summary>
@@ -386,7 +385,14 @@ namespace SolidRpc.Tests.Invoker
                 await ctx.StartAsync();
                 var ti = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
                 var backendValue = await ti.GetBackendValueAsync();
-                Assert.AreEqual(ctx.BaseAddress.Host+":"+ ctx.BaseAddress.Port, backendValue);
+                var value = string.Join(",", new[]
+                {
+                    $"http_req_{SecKey}",
+                    "http_req_host",
+                    "http_req_X-SolidRpc-MethodUri",
+                    "SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions"
+                }.Order());
+                Assert.AreEqual(value, backendValue);
             }
         }
         /// <summary>

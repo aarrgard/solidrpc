@@ -68,9 +68,9 @@
 //NUnit/3.13.3=>C:\Users\Andreas Arrgård\.nuget\packages\nunit\3.13.3\lib\netstandard2.0\nunit.framework.dll
 //SharpZipLib/1.4.2=>C:\Users\Andreas Arrgård\.nuget\packages\sharpziplib\1.4.2\lib\net6.0\ICSharpCode.SharpZipLib.dll
 //SolidCI.Azure/1.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\solidci.azure\1.0.1\lib\netstandard2.0\SolidCI.Azure.dll
-//SolidProxy.Core/1.0.0-rc024=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.core\1.0.0-rc024\lib\netstandard2.0\SolidProxy.Core.dll
-//SolidProxy.GeneratorCastle/1.0.0-rc024=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.generatorcastle\1.0.0-rc024\lib\netstandard2.0\SolidProxy.GeneratorCastle.dll
-//SolidProxy.MicrosoftDI/1.0.0-rc023=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.microsoftdi\1.0.0-rc023\lib\netstandard2.0\SolidProxy.MicrosoftDI.dll
+//SolidProxy.Core/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.core\1.0.0-rc025\lib\netstandard2.0\SolidProxy.Core.dll
+//SolidProxy.GeneratorCastle/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.generatorcastle\1.0.0-rc025\lib\netstandard2.0\SolidProxy.GeneratorCastle.dll
+//SolidProxy.MicrosoftDI/1.0.0-rc024=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.microsoftdi\1.0.0-rc024\lib\netstandard2.0\SolidProxy.MicrosoftDI.dll
 //Swashbuckle.AspNetCore.Swagger/6.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swagger\6.5.0\lib\net7.0\Swashbuckle.AspNetCore.Swagger.dll
 //Swashbuckle.AspNetCore.SwaggerGen/6.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggergen\6.5.0\lib\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 //Swashbuckle.AspNetCore.SwaggerUI/6.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggerui\6.5.0\lib\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll

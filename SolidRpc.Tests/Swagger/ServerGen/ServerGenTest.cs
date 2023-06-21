@@ -157,6 +157,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
                 intercepted.Add(mi);
                 return next();
             }));
+
             var sp = sc.BuildServiceProvider();
             var cs = sp.GetRequiredService<IContact>();
             var c = await cs.GetContactAsync("test");
