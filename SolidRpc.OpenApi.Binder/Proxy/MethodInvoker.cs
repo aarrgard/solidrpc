@@ -128,12 +128,21 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         private async Task<PathSegment> GetRootSegmentAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
             var rootSegment = _rootSegment;
-            if (_rootSegment != null)
+            if (rootSegment != null)
             {
-                return _rootSegment;
+                return rootSegment;
             }
-            await _semaphore.WaitAsync(cancellationToken);
-            try 
+            
+            await _semaphore.WaitAsync(TimeSpan.FromSeconds(60), cancellationToken);
+
+            rootSegment = _rootSegment;
+            if (rootSegment != null)
+            {
+                _semaphore.Release();
+                return rootSegment;
+            }
+
+            try
             {
                 Logger.LogInformation($" new root segments...");
                 rootSegment = new PathSegment();
@@ -177,13 +186,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     rootSegment.AddPath("OPTIONS", prefix, rewrite, contentBinding);
                 });
 
+                _rootSegment = rootSegment;
                 Logger.LogInformation($"...root segments created");
             } 
             finally
             {
                 _semaphore.Release();
             }
-            _rootSegment = rootSegment;
             return rootSegment;
         }
 
