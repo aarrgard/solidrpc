@@ -22,6 +22,51 @@ namespace SolidRpc.OpenApi.DotNetTool
         private const string s_serverbindings = "-serverbindings";
         private static string[] s_commands = new[] { s_openapi2code, s_code2openapi, s_serverbindings };
         private static IServiceProvider s_serviceProvider;
+        /// <summary>
+        /// 
+        /// </summary>
+        public static DirectoryInfo GetProjectFolder(string projectName)
+        {
+            var dir = new DirectoryInfo(".");
+            while (dir.Parent != null)
+            {
+                if (dir.Parent.Name == projectName)
+                {
+                    return dir.Parent;
+                }
+                var childeFolder = dir.GetDirectories().Where(x => x.Name == projectName).FirstOrDefault();
+                if (childeFolder != null)
+                {
+                    return childeFolder;
+                }
+                dir = dir.Parent;
+            }
+            throw new Exception("Cannot find project folder:" + projectName);
+        }
+
+        /// <summary>
+        /// Returns the file in supplied dir or one of the sub directories
+        /// </summary>
+        /// <param name="directoryInfo"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static FileInfo FindFile(DirectoryInfo directoryInfo, string fileName)
+        {
+            var fileInfo = directoryInfo.GetFiles().Where(o => o.Name == fileName).FirstOrDefault();
+            if (fileInfo != null)
+            {
+                return fileInfo;
+            }
+            foreach (var subDir in directoryInfo.GetDirectories())
+            {
+                fileInfo = FindFile(subDir, fileName);
+                if (fileInfo != null)
+                {
+                    return fileInfo;
+                }
+            }
+            return null;
+        }
 
         public static void Main(string[] args)
         {

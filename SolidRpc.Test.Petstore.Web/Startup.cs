@@ -88,11 +88,12 @@ namespace SolidRpc.Test.PetstoreWeb
             });
 
             services.AddPetstore();
-            //services.GetSolidRpcContentStore().AddMapping("/", async sp =>
-            //{
-            //    var handler = sp.GetRequiredService<IInvoker<ISwaggerUI>>();
-            //    return await handler.GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
-            //});
+            services.GetSolidRpcContentStore().AddMapping("/", async sp =>
+            {
+                var handler = sp.GetRequiredService<IInvoker<ISwaggerUI>>();
+                return await handler.GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
+            });
+            services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
             services.AddSolidRpcWellKnownRootRewrite();
 
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();

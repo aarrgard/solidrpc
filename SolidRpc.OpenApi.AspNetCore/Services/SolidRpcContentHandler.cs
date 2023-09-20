@@ -2,9 +2,12 @@
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
+using SolidRpc.OpenApi.Binder.Http;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -93,13 +96,73 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<FileContent> GetContent(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileContent> GetContent(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (path == null)
             {
                 throw new FileContentNotFoundException();
             }
-            return StaticFiles.GetOrAdd(path, GetContentInternal).Invoke(path, cancellationToken);
+
+            //
+            // check path mappings
+            //
+            if (ContentStore.DynamicContents.TryGetValue(path, out DynamicMapping dm))
+            {
+                using (var ss = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    var uri = (await dm.UriResolver(ss.ServiceProvider));
+                    var sUri = uri.ToString();
+
+                    // determine if this is a local path
+                    var localPaths = await ss.ServiceProvider.GetRequiredService<ISolidRpcHost>().AllowedCorsOrigins(cancellationToken);
+                    var isLocal = localPaths.Any(o => sUri.StartsWith(o));
+                    if (isLocal)
+                    {
+                        var invoc = ss.ServiceProvider.GetRequiredService<IMethodInvoker>();
+                        var httpRequest = new SolidHttpRequest();
+                        httpRequest.Method = "GET";
+                        httpRequest.HostAndPort = $"{uri.Host}:{uri.Port}";
+                        httpRequest.Path = uri.AbsolutePath;
+                        var transport = ss.ServiceProvider.GetRequiredService<IEnumerable<ITransportHandler>>().Single(o => o.TransportType == "Http");
+                        var resp = await invoc.InvokeAsync(ss.ServiceProvider, transport, httpRequest, cancellationToken);
+
+                        var okStatusCode = new[] { 200, 204, 302 };
+                        if(!okStatusCode.Contains(resp.StatusCode))
+                        {
+                            throw new FileContentNotFoundException();
+                        }
+
+                        return new FileContent()
+                        {
+                            Content = resp.ResponseStream,
+                            CharSet = resp.CharSet,
+                            ContentType = resp.MediaType,
+                            Location = resp.Location,
+                            ETag = resp.ETag,
+                            LastModified = resp.LastModified
+                        };
+                    }
+                    else
+                    {
+                        var httpClient = ss.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+                        var resp = await httpClient.GetAsync(uri, cancellationToken);
+                        var ms = new MemoryStream();
+                        await resp.Content.CopyToAsync(ms);
+
+                        return new FileContent()
+                        {
+                            Content = new MemoryStream(ms.ToArray()),
+                            CharSet = resp.Content?.Headers?.ContentType?.CharSet,
+                            ContentType = resp.Content?.Headers?.ContentType?.MediaType,
+                            Location = resp.Headers?.Location?.ToString(),
+                            ETag = resp.Headers?.ETag?.Tag,
+                            LastModified = resp.Content?.Headers?.LastModified
+                        };
+                    }
+                }
+            }
+
+            return await StaticFiles.GetOrAdd(path, GetStaticContentInternal).Invoke(path, cancellationToken);
         }
 
         private IEnumerable<string> GetPathPrefixes(StaticContent c)
@@ -117,36 +180,8 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
             }
         }
 
-        private Func<string, CancellationToken, Task<FileContent>> GetContentInternal(string path)
+        private Func<string, CancellationToken, Task<FileContent>> GetStaticContentInternal(string path)
         {
-            //
-            // check path mappings
-            //
-            if(ContentStore.DynamicContents.TryGetValue(path, out DynamicMapping dm))
-            {
-                return async (_, cancellationToken) =>
-                {
-                    using(var ss = ServiceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                    {
-                        var uri = await dm.UriResolver(ss.ServiceProvider);
-                        var httpClient = ss.ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
-                        var resp = await httpClient.GetAsync(uri, cancellationToken);
-                        var ms = new MemoryStream();
-                        await resp.Content.CopyToAsync(ms);
-
-                        return new FileContent()
-                        {
-                            Content = new MemoryStream(ms.ToArray()),
-                            CharSet = resp.Content?.Headers?.ContentType?.CharSet,
-                            ContentType = resp.Content?.Headers?.ContentType?.MediaType,
-                            Location = resp.Headers?.Location?.ToString(),
-                            ETag = resp.Headers?.ETag?.Tag,
-                            LastModified = resp.Content?.Headers?.LastModified
-                        };
-                    }
-                 };
-            }
-
             //
             // check static content
             //
@@ -175,7 +210,10 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 }
                 else
                 {
-                    return GetContentInternal(ContentStore.NotFoundRewrite);
+                    return (_, CancellationToken) =>
+                    {
+                        return GetContent(ContentStore.NotFoundRewrite);
+                    };
                 }
             }
             var staticFile = staticFiles.First();

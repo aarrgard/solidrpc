@@ -406,6 +406,7 @@ namespace Microsoft.AspNetCore.Builder
                 resp.CharSet = content.CharSet;
                 resp.MediaType = content.ContentType;
                 resp.ResponseStream = content.Content;
+                resp.Location = content.Location;
                 resp.AddAllowedCorsHeaders(request);
 
                 await resp.CopyToAsync(ctx.Response);
