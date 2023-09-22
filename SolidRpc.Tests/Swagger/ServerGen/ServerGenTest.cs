@@ -162,7 +162,7 @@ namespace SolidRpc.Tests.Swagger.ServerGen
             var cs = sp.GetRequiredService<IContact>();
             var c = await cs.GetContactAsync("test");
             Assert.AreEqual("test", c.Id);
-            Assert.AreEqual("Local", c.FirstName);
+            Assert.AreEqual(null, c.FirstName);
             Assert.AreEqual("5", c.Identifier);
             Assert.AreEqual(nameof(IContact.GetContactAsync), intercepted[0].Name);
 

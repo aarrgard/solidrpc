@@ -4,10 +4,8 @@ using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.Services;
-using SolidRpc.OpenApi.Binder;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SolidRpc.Tests

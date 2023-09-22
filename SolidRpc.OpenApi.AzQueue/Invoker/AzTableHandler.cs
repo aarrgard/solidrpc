@@ -166,10 +166,10 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             }
         }
 
-        protected override async Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IAzTableTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IAzTableTransport transport, string message, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message, cancellationToken);
-            var priority = invocationOptions.Priority;
+            var priority = InvocationOptions.GetOptions(methodBinding.MethodInfo).Priority;
             if (priority <= 0) priority = 1;
             var msg = new TableMessageEntity(transport.QueueName, priority, message);
             var tc = CloudQueueStore.GetCloudTable(transport.ConnectionName);

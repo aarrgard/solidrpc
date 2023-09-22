@@ -30,6 +30,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             ISolidRpcApplication solidRpcApplication,
             ISerializerFactory serializerFactory,
             MemoryQueueHandler queueHandler,
+            LocalHandler localHandler,
             IMethodInvoker methodInvoker,
             IServiceScopeFactory serviceScopeFactory)
         {
@@ -37,6 +38,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             SolidRpcApplication = solidRpcApplication;
             SerializerFactory = serializerFactory;
             QueueHandler = queueHandler;
+            LocalHandler = localHandler;
             MethodInvoker = methodInvoker;
             ServiceScopeFactory = serviceScopeFactory;
             RegisteredQueues = new HashSet<string>();
@@ -52,6 +54,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         private ISolidRpcApplication SolidRpcApplication { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ITransportHandler QueueHandler { get; }
+        private ITransportHandler LocalHandler { get; }
         private IMethodInvoker MethodInvoker { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
         private HashSet<string> RegisteredQueues { get; }

@@ -26,6 +26,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     public class MethodInvoker : IMethodInvoker
     {
         public const string RequestHeaderPrefixInInvocation = "http_req_";
+        public const string RequestHeaderPriorityInInvocation = "http_req_X-SolidRpc-Priority";
         public const string RequestHeaderContinuationTokenInInvocation = "http_req_X-SolidRpc-ContinuationToken";
         public const string RequestHeaderMethodUri = "http_req_X-SolidRpc-MethodUri";
         public const string ResponseHeaderPrefixInInvocation = "http_resp_";
@@ -247,8 +248,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 return resp;
             }
 
-            var invocationValues = new Dictionary<string, object>();
-
             if (Logger.IsEnabled(LogLevel.Information))
             {
                 Logger.LogInformation($"Method invoker handling http request:{request.Scheme}://{request.HostAndPort}{request.Path}");
@@ -269,6 +268,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 throw new Exception($"Invocation originates from {invocationSource.TransportType} but no such transport is configured ({string.Join(",", selectedBinding.Transports.Select(o => o.GetTransportType()))}).");
             }
 
+            var invocationOptions = InvocationOptions.GetOptions(selectedBinding.MethodInfo);
             var invokerTransport = transport.InvokerTransport;
             if (!string.IsNullOrEmpty(invokerTransport))
             {
@@ -285,7 +285,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 {
                     Logger.LogTrace($"Forwarding call from transport {transport.GetTransportType()} to transport {invokeTransport.GetTransportType()}");
                 }
-                invocationValues[typeof(InvocationOptions).FullName] = new InvocationOptions(invokeTransport.GetTransportType(), InvocationOptions.MessagePriorityNormal);
+                invocationOptions = invocationOptions.SetTransport(invokeTransport.GetTransportType());
             }
 
             //
@@ -320,6 +320,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // set http headers
             //
+            var invocationValues = new Dictionary<string, object>();
             foreach (var qv in request.Headers)
             {
                 var headerName = $"{RequestHeaderPrefixInInvocation}{qv.Name}".ToLower();
@@ -346,52 +347,55 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 continuationToken.Token = token?.ToString();
             }
-            using (continuationToken.PushToken())
+            using (invocationOptions.Attach())
             {
-                try
+                using (continuationToken.PushToken())
                 {
-                    //
-                    // Invoke
-                    //
-                    var res = await proxy.InvokeAsync(serviceProvider, invocationSource, selectedBinding.MethodInfo, args, invocationValues);
+                    try
+                    {
+                        //
+                        // Invoke
+                        //
+                        var res = await proxy.InvokeAsync(serviceProvider, invocationSource, selectedBinding.MethodInfo, args, invocationValues);
 
-                    //
-                    // return response
-                    //
-                    // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
-                    //
-                    var resType = selectedBinding.MethodInfo.ReturnType;
-                    if (resType.IsTaskType(out Type taskType))
-                    {
-                        resType = taskType ?? resType;
+                        //
+                        // return response
+                        //
+                        // the InvokeAsync never returns a Task<T>. Strip off the task type if exists...
+                        //
+                        var resType = selectedBinding.MethodInfo.ReturnType;
+                        if (resType.IsTaskType(out Type taskType))
+                        {
+                            resType = taskType ?? resType;
+                        }
+                        //
+                        // bind the response & continuation token
+                        //
+                        await selectedBinding.BindResponseAsync(resp, res, resType);
+                        if (!string.IsNullOrEmpty(continuationToken.Token))
+                        {
+                            resp.AdditionalHeaders.Add(continuationToken.GetHttpHeaderName(), continuationToken.Token);
+                        }
                     }
-                    //
-                    // bind the response & continuation token
-                    //
-                    await selectedBinding.BindResponseAsync(resp, res, resType);
-                    if(!string.IsNullOrEmpty(continuationToken.Token))
+                    catch (Exception ex)
                     {
-                        resp.AdditionalHeaders.Add(continuationToken.GetHttpHeaderName(), continuationToken.Token);
+                        // Only log error if this is a non http service code...
+                        var httpStatusCode = ex.Data["HttpStatusCode"];
+                        if (httpStatusCode == null)
+                        {
+                            Logger.LogError(ex, "Service returned an exception - sending to client");
+                        }
+                        else
+                        {
+                            Logger.LogInformation($"Service returned an exception with http status {httpStatusCode}:{ex.Message}");
+                        }
+                        await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Only log error if this is a non http service code...
-                    var httpStatusCode = ex.Data["HttpStatusCode"];
-                    if (httpStatusCode == null)
-                    {
-                        Logger.LogError(ex, "Service returned an exception - sending to client");
-                    }
-                    else 
-                    {
-                        Logger.LogInformation($"Service returned an exception with http status {httpStatusCode}:{ex.Message}");
-                    }
-                    await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
-                }
 
-                foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(ResponseHeaderPrefixInInvocation)))
-                {
-                    resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
+                    foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(ResponseHeaderPrefixInInvocation)))
+                    {
+                        resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
+                    }
                 }
             }
 

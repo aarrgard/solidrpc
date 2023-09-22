@@ -119,10 +119,12 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                     if (isLocal)
                     {
                         var invoc = ss.ServiceProvider.GetRequiredService<IMethodInvoker>();
+                        
                         var httpRequest = new SolidHttpRequest();
                         httpRequest.Method = "GET";
                         httpRequest.HostAndPort = $"{uri.Host}:{uri.Port}";
                         httpRequest.Path = uri.AbsolutePath;
+
                         var transport = ss.ServiceProvider.GetRequiredService<IEnumerable<ITransportHandler>>().Single(o => o.TransportType == "Http");
                         var resp = await invoc.InvokeAsync(ss.ServiceProvider, transport, httpRequest, cancellationToken);
 

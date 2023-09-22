@@ -25,7 +25,6 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="methodBinding"></param>
         /// <param name="transport"></param>
         /// <param name="httpReq"></param>
-        /// <param name="invocationOptions"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IHttpResponse> InvokeAsync(
@@ -33,8 +32,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             IMethodBinding methodBinding, 
             ITransport transport, 
             IHttpRequest httpReq, 
-            InvocationOptions invocationOptions, 
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -42,16 +40,12 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="methodBinding"></param>
-        /// <param name="target"></param>
-        /// <param name="mi"></param>
         /// <param name="args"></param>
-        /// <param name="invocationOptions"></param>
         /// <returns></returns>
         Task<object> InvokeAsync(
             IServiceProvider serviceProvider,
             IMethodBinding methodBinding,
-            object[] args,
-            InvocationOptions invocationOptions);
+            object[] args);
 
         /// <summary>
         /// Sends the httpRequest representing the call.
@@ -61,14 +55,12 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <param name="methodBinding"></param>
         /// <param name="transport"></param>
         /// <param name="args"></param>
-        /// <param name="invocationOptions"></param>
         /// <returns></returns>
         Task<T> InvokeAsync<T>(
             IServiceProvider serviceProvider,
             IMethodBinding methodBinding, 
             ITransport transport, 
-            object[] args,
-            InvocationOptions invocationOptions);
+            object[] args);
     }
 
     /// <summary>

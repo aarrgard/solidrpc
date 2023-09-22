@@ -26,7 +26,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="opts"></param>
+        /// <param name="invocationOptions"></param>
         public InvocationOptionsLocal(InvocationOptions invocationOptions)
         {
             InvocationOptions = invocationOptions;

@@ -432,9 +432,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             public async Task InvokeAsync(Expression<Action<T>> action, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
             {
-                using (SetupInvocationOptions(invocationOptions))
+                var (mi, args) = GetMethodInfo(action);
+                using (SetupInvocationOptions(mi, invocationOptions))
                 {
-                    var (mi, args) = GetMethodInfo(action);
                     var res = mi.Invoke(Service, args);
                     var task = res as Task;
                     if (task != null)
@@ -446,9 +446,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             public TResult InvokeAsync<TResult>(Expression<Func<T, TResult>> func, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
             {
-                using (SetupInvocationOptions(invocationOptions))
+                var (mi, args) = GetMethodInfo(func);
+                using (SetupInvocationOptions(mi, invocationOptions))
                 {
-                    var (mi, args) = GetMethodInfo(func);
                     return (TResult)mi.Invoke(Service, args);
                 }
             }
@@ -474,7 +474,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             private async Task<object> InvokeAsync<TRes>(MethodInfo methodInfo, object[] args, Func<InvocationOptions, InvocationOptions> invocationOptions = null)
             {
-                using (SetupInvocationOptions(invocationOptions))
+                using (SetupInvocationOptions(methodInfo, invocationOptions))
                 {
                     var res = methodInfo.Invoke(Service, args);
                     var task = res as Task<TRes>;
@@ -489,9 +489,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             }
 
-            private IDisposable SetupInvocationOptions(Func<InvocationOptions, InvocationOptions> invocationOptions)
+            private IDisposable SetupInvocationOptions(MethodInfo mi, Func<InvocationOptions, InvocationOptions> invocationOptions)
             {
-                var opts = InvocationOptions.Current;
+                var opts = InvocationOptions.GetOptions(mi);
                 opts = invocationOptions?.Invoke(opts) ?? opts;
                 return opts.Attach();
             }

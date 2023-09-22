@@ -1,4 +1,5 @@
 ﻿using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -40,10 +41,13 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         {
             var req = new SolidHttpRequest();
             await req.CopyFromAsync(request, p => p);
-            var resp = await MethodInvoker.InvokeAsync(ServiceProvider, HttpHandler, req, cancellationToken);
-            var response = new HttpResponseMessage();
-            await resp.CopyToAsync(response, request);
-            return response;
+            using (InvocationOptions.Default.Attach())
+            {
+                var resp = await MethodInvoker.InvokeAsync(ServiceProvider, HttpHandler, req, cancellationToken);
+                var response = new HttpResponseMessage();
+                await resp.CopyToAsync(response, request);
+                return response;
+            }
         }
     }
 }

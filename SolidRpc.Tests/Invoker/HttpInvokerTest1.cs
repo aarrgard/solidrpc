@@ -389,8 +389,7 @@ namespace SolidRpc.Tests.Invoker
                 {
                     $"http_req_{SecKey}",
                     "http_req_host",
-                    "http_req_X-SolidRpc-MethodUri",
-                    "SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions"
+                    "http_req_X-SolidRpc-MethodUri"
                 }.Order());
                 Assert.AreEqual(value, backendValue);
             }

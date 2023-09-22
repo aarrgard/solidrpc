@@ -2,7 +2,6 @@
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
-using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
@@ -103,7 +102,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             base.Configure(methodBinding, transport);
         }
 
-        public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, TTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, TTransport transport, IHttpRequest httpReq, CancellationToken cancellationToken)
         {
             var httpReqData = new HttpRequest();
             await httpReq.CopyToAsync(httpReqData);
@@ -113,7 +112,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
             await SolidRpcApplication.WaitForStartupTasks();
 
-            await InvokeAsync(serviceProvider, methodBinding, transport, message, invocationOptions, cancellationToken);
+            await InvokeAsync(serviceProvider, methodBinding, transport, message, cancellationToken);
 
             return new SolidHttpResponse()
             {
@@ -121,6 +120,6 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             };
         }
 
-        protected abstract Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, TTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken);
+        protected abstract Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, TTransport transport, string message, CancellationToken cancellationToken);
     }
 }

@@ -668,6 +668,13 @@
             Returns the current invocation options
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.GetOptions(System.Reflection.MethodInfo)">
+            <summary>
+            Returns the invocation options for specified method
+            </summary>
+            <param name="methodInfo"></param>
+            <returns></returns>
+        </member>
         <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Default">
             <summary>
             Returns the default invocation options
@@ -702,13 +709,14 @@
             The low message prio
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.String,System.Int32,System.String,System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.Reflection.MethodInfo,System.String,System.Int32,System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Constructs a new instance
             </summary>
             <param name="transportType"></param>
             <param name="priority"></param>
             <param name="continuationToken"></param>
+            <param name="kvs"></param>
             <param name="preInvokeCallback"></param>
             <param name="postInvokeCallback"></param>
         </member>
@@ -717,6 +725,11 @@
             Attaches these options to the task local
             </summary>
             <returns></returns>
+        </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.MethodInfo">
+            <summary>
+            The method info that this option is associated with
+            </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TransportType">
             <summary>
@@ -733,6 +746,11 @@
             The continuation token.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.KeyValues">
+            <summary>
+            The key values.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.PreInvokeCallback">
             <summary>
             The pre invoke callback
@@ -743,11 +761,25 @@
             The post invoke callback
             </summary>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetMethodInfo(System.Reflection.MethodInfo)">
+            <summary>
+            Returns a copy of this instance with another method info.
+            </summary>
+            <param name="methodInfo"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetPriority(System.Int32)">
             <summary>
             Returns a copy of this instance with another priority.
             </summary>
             <param name="priority"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetKeyValues(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Returns a copy of this instance with another key value set added.
+            </summary>
+            <param name="kvs"></param>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetContinuationToken(System.String)">
@@ -793,7 +825,7 @@
             <summary>
             
             </summary>
-            <param name="opts"></param>
+            <param name="invocationOptions"></param>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.InvocationOptions">
             <summary>
@@ -816,7 +848,7 @@
             The transport type that this handler uses.
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions,System.Threading.CancellationToken)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.CancellationToken)">
             <summary>
             Invokes the method
             </summary>
@@ -824,23 +856,19 @@
             <param name="methodBinding"></param>
             <param name="transport"></param>
             <param name="httpReq"></param>
-            <param name="invocationOptions"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,System.Object[])">
             <summary>
             Invokes the supplied method
             </summary>
             <param name="serviceProvider"></param>
             <param name="methodBinding"></param>
-            <param name="target"></param>
-            <param name="mi"></param>
             <param name="args"></param>
-            <param name="invocationOptions"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync``1(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[],SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler.InvokeAsync``1(System.IServiceProvider,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinding,SolidRpc.Abstractions.OpenApi.Transport.ITransport,System.Object[])">
             <summary>
             Sends the httpRequest representing the call.
             </summary>
@@ -849,7 +877,6 @@
             <param name="methodBinding"></param>
             <param name="transport"></param>
             <param name="args"></param>
-            <param name="invocationOptions"></param>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Invoker.ITransportHandler`1">

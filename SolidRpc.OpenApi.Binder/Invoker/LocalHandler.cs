@@ -10,6 +10,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+[assembly: SolidRpcService(typeof(LocalHandler), typeof(LocalHandler), SolidRpcServiceLifetime.Singleton)]
 [assembly: SolidRpcService(typeof(ITransportHandler), typeof(LocalHandler), SolidRpcServiceLifetime.Singleton, SolidRpcServiceInstances.Many)]
 namespace SolidRpc.OpenApi.Binder.Invoker
 {
@@ -22,7 +23,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             :base(logger, methodBinderStore)
         {
         }
-        public override Task<object> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding mb, object[] args, InvocationOptions invocationOptions)
+        public override Task<object> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding mb, object[] args)
         {
             var mi = mb.MethodInfo;
             var target = serviceProvider.GetService(mi.DeclaringType);
@@ -47,7 +48,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return res;
         }
 
-        public override Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ILocalTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ILocalTransport transport, IHttpRequest httpReq, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

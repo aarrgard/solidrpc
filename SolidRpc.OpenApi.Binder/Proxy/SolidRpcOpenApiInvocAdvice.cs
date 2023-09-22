@@ -70,7 +70,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName) ?? throw new Exception("No invocation options assigned to the invocation");
+            var invocationOptions = InvocationOptions.GetOptions(invocation.SolidProxyInvocationConfiguration.MethodInfo);
             var transportType = invocationOptions.TransportType;
             if (transportType == LocalHandler.TransportType)
             {
@@ -87,8 +87,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 {
                     invocation.SetValue<StringValues>(MethodInvoker.RequestHeaderContinuationTokenInInvocation, invocationOptions.ContinuationToken);
                 }
-                var httpHeaders = invocation.Keys.Where(o => o.StartsWith(MethodInvoker.RequestHeaderPrefixInInvocation, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                if (httpHeaders.Any())
+                if (invocationOptions.Priority != InvocationOptions.MessagePriorityNormal)
+                {
+                    invocation.SetValue<StringValues>(MethodInvoker.RequestHeaderPriorityInInvocation, invocationOptions.Priority.ToString());
+                }
+                var httpHeaders = invocation.Keys
+                    .Where(o => o.StartsWith(MethodInvoker.RequestHeaderPrefixInInvocation, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+                if(httpHeaders.Any())
                 {
                     invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
                     {
@@ -98,10 +104,14 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         req.Headers = req.Headers.Union(data).ToList();
                         return Task.CompletedTask;
                     });
+
                 }
 
                 var transport = MethodBinding.Transports.Single(o => o.GetTransportType() == invocationOptions.TransportType);
-                return handler.InvokeAsync<TAdvice>(invocation.ServiceProvider, MethodBinding, transport, invocation.Arguments, invocationOptions);
+                using (invocationOptions.Attach())
+                {
+                    return handler.InvokeAsync<TAdvice>(invocation.ServiceProvider, MethodBinding, transport, invocation.Arguments);
+                }
             }
 
         }

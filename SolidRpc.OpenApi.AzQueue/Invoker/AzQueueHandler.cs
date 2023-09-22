@@ -38,7 +38,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             base.Configure(methodBinding, transport);
         }
 
-        protected override async Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IAzQueueTransport transport, string message, InvocationOptions invocation, CancellationToken cancellationToken)
+        protected override async Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IAzQueueTransport transport, string message, CancellationToken cancellationToken)
         {
             message = await CloudQueueStore.StoreLargeMessageAsync(transport.ConnectionName, message);
             var msg = new CloudQueueMessage(message);

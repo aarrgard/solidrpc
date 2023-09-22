@@ -68,7 +68,7 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             return address;
         }
 
-        public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IHttpTransport transport, IHttpRequest httpReq, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IHttpTransport transport, IHttpRequest httpReq, CancellationToken cancellationToken)
         {
             var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
             if (Logger.IsEnabled(LogLevel.Trace))

@@ -100,8 +100,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // setup invocation options
             //
-            var invocationOptions = invocation.GetValue<InvocationOptions>(typeof(InvocationOptions).FullName);
-            if (invocationOptions == null)
+            var invocationOptions = InvocationOptions.GetOptions(invocation.SolidProxyInvocationConfiguration.MethodInfo);
+            if(invocationOptions.TransportType == null)
             {
                 ITransport transport;
                 if (invocation.Caller is ISolidProxy)
@@ -116,16 +116,17 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 {
                     transport = InvokerTransport;
                 }
-
-                invocationOptions = new InvocationOptions(transport.GetTransportType(), transport.MessagePriority, null, transport.PreInvokeCallback, transport.PostInvokeCallback);
+                invocationOptions = invocationOptions
+                    .SetTransport(transport.GetTransportType())
+                    .SetPriority(transport.MessagePriority)
+                    .AddPreInvokeCallback(transport.PreInvokeCallback)
+                    .AddPostInvokeCallback(transport.PostInvokeCallback);
             }
 
-            //
-            // assign to invocation
-            //
-            invocation.SetValue(typeof(InvocationOptions).FullName, invocationOptions);
-
-            return next();
+            using(invocationOptions.Attach())
+            {
+                return next();
+            }
         }
     }
 }

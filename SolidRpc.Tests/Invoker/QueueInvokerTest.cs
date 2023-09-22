@@ -2,13 +2,11 @@
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SolidProxy.Core.Proxy;
-using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -78,11 +76,8 @@ namespace SolidRpc.Tests.Invoker
             /// <returns></returns>
             public Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
-                var caller = SolidProxyInvocationImplAdvice.CurrentInvocation.Caller;
-                if(false == caller is MemoryQueueHandler)
-                {
-                    throw new Exception("Caller is not a queue handler.");
-                }
+                Assert.IsTrue(SolidProxyInvocationImplAdvice.CurrentInvocation.Caller is MemoryQueueHandler, "Caller is not a memory handler.");
+                //Assert.AreEqual(2, InvocationOptions.Current.Priority);
                 Logger.LogTrace("DoYAsync");
                 _doYInvocations++;
                 return Task.FromResult(myStruct.Value);
@@ -176,7 +171,6 @@ namespace SolidRpc.Tests.Invoker
                 }
 
                 // wait for the handler queues to complete
-                MemoryQueueBus.GetMessages().All(o => o.Options.Priority == 2);
                 var numDispatched = await MemoryQueueBus.DispatchAllMessagesAsync();
                 Assert.AreEqual(count, numDispatched);
 
@@ -187,7 +181,6 @@ namespace SolidRpc.Tests.Invoker
                 }
 
                 // wait for the handler queues to complete
-                MemoryQueueBus.GetMessages().All(o => o.Options.Priority == 2);
                 numDispatched = await MemoryQueueBus.DispatchAllMessagesAsync();
                 Assert.AreEqual(count, numDispatched);
 
@@ -210,7 +203,6 @@ namespace SolidRpc.Tests.Invoker
 
                 await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
 
-                MemoryQueueBus.GetMessages().All(o => o.Options.Priority == 2);
                 await MemoryQueueBus.DispatchAllMessagesAsync();
 
                 Assert.AreEqual(1, _doYInvocations);

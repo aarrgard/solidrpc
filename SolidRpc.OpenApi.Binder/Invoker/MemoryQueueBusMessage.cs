@@ -11,10 +11,5 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         /// The message
         /// </summary>
         public string Message { get; internal set; }
-
-        /// <summary>
-        /// The options
-        /// </summary>
-        public InvocationOptions Options { get; internal set; }
     }
 }

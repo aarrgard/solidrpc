@@ -62,7 +62,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             });
 
             //services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", "/");
-            services.GetSolidRpcContentStore().SetNotFoundRewrite("/index.html");
+            services.GetSolidRpcContentStore().SetNotFoundRewrite("/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml");
             //services.GetSolidRpcContentStore().AddMapping("/", async sp =>
             //{
             //    return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));

@@ -20,13 +20,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
         /// <param name="queueName"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public Task HandleMessage(string queueName, string message, InvocationOptions options)
+        public Task HandleMessage(string queueName, string message)
         {
             if (_messages.TryGetValue(queueName, out IList<MemoryQueueBusMessage> messages))
             {
                 lock (messages)
                 {
-                    messages.Add(new MemoryQueueBusMessage() { Message = message, Options = options});
+                    messages.Add(new MemoryQueueBusMessage() { Message = message });
                 }
                 return Task.CompletedTask;
             }

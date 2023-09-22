@@ -29,7 +29,7 @@ namespace SolidRpc.OpenApi.AzSvcBus.Invoker
 
         private IServiceBusClient ServiceBusClient { get; }
 
-        protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ISvcBusTransport queueTransport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, ISvcBusTransport queueTransport, string message, CancellationToken cancellationToken)
         {
             // dispatch message
             var msg = new ServiceBusMessage(Encoding.UTF8.GetBytes(message));

@@ -30,13 +30,13 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             base.Configure(methodBinding, transport);
         }
 
-        protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IMemoryQueueTransport transport, string message, InvocationOptions invocationOptions, CancellationToken cancellationToken)
+        protected override Task InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IMemoryQueueTransport transport, string message, CancellationToken cancellationToken)
         {
             try
             {
                 Logger.LogInformation("MemoryQueue dispatching message...");
                 var memoryQueueBus = serviceProvider.GetRequiredService<MemoryQueueBus>();
-                return memoryQueueBus.HandleMessage(transport.QueueName, message, invocationOptions);
+                return memoryQueueBus.HandleMessage(transport.QueueName, message);
             }
             finally
             {
