@@ -145,7 +145,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             // check authorization header
             //
             string jwt;
-            invocationOptions.TryGetValue($"http_req_authorization", out string authHeader);
+            invocationOptions.TryGetValue(
+                InvocationOptions.RequestHeaderInboundPrefix, 
+                "Authorization", 
+                out string authHeader);
             if (string.IsNullOrEmpty(authHeader))
             {
                 jwt = await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
@@ -222,7 +225,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
 
         private async Task<string> DoRedirectUnauthorizedIdentity(InvocationOptions invocationOptions, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            if(RedirectUnauthorizedIdentity && invocationOptions.TryGetValue<Uri>(MethodInvoker.RequestHeaderMethodUri, out Uri redirectUri))
+            if(RedirectUnauthorizedIdentity && invocationOptions.TryGetValue(
+                InvocationOptions.RequestHeaderInboundPrefix, 
+                InvocationOptions.RequestHeaderMethodUri, 
+                out Uri redirectUri))
             {
                 //
                 // try to fetch token from query
@@ -257,7 +263,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     throw new Exception($"Cannot obtain jwt token for client {ClientId}@{Authority.Authority}.");
                 }
-                return invocationOptions.SetKeyValue("http_req_authorization", $"bearer {jwt.AccessToken}");
+                return invocationOptions.SetKeyValue(
+                    InvocationOptions.RequestHeaderOutboundPrefix,
+                    "Authorization", 
+                    $"bearer {jwt.AccessToken}");
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Proxy)
             {
@@ -267,7 +276,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     throw new UnauthorizedException("No accesstoken claim exists");
                 }
-                return invocationOptions.SetKeyValue("http_req_authorization", $"bearer {jwt}");
+                return invocationOptions.SetKeyValue(
+                    InvocationOptions.RequestHeaderOutboundPrefix, 
+                    "Authorization", 
+                    $"bearer {jwt}");
             }
             throw new NotImplementedException();
         }

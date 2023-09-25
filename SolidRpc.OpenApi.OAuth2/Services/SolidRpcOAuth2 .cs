@@ -428,7 +428,7 @@ namespace SolidRpc.OpenApi.Binder.Services
         private string GetRefreshToken()
         {
             var invocOpts = InvocationOptions.Current;
-            if(invocOpts.TryGetValue("http_req_cookie", out IEnumerable<string> cookies))
+            if(invocOpts.TryGetValue(InvocationOptions.RequestHeaderInboundPrefix, "Cookie", out IEnumerable<string> cookies))
             {
                 var tokens = ParseCookies(cookies)
                     .Where(o => o.Name == RefreshTokenCookieName);

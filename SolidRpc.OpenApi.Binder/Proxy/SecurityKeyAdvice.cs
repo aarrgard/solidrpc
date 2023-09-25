@@ -47,10 +47,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         {
             var invocationOptions = InvocationOptions.GetOptions(invocation.SolidProxyInvocationConfiguration.MethodInfo);
             // Check the security key - if supplied
-            var secKey = $"{MethodInvoker.RequestHeaderPrefixInInvocation}{SecurityKey.Value.Key}";
 
             // add security key(if not set) - this key will be used when invoking remote calls.
-            if (invocationOptions.TryGetValue<string>(secKey, out string sKkey))
+            if (invocationOptions.TryGetValue(
+                InvocationOptions.RequestHeaderInboundPrefix,
+                SecurityKey.Value.Key,
+                out string sKkey))
             {
                 if (sKkey.Equals(SecurityKey.Value.Value))
                 {
@@ -58,18 +60,16 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     auth.CurrentPrincipal.AddIdentity(SecurityPathClaimAdvice.SecurityKeyIdentity);
                     invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
                 }
-                return await next();
             }
-            else
+
+            invocationOptions = invocationOptions.SetKeyValue(
+                InvocationOptions.RequestHeaderOutboundPrefix,
+                SecurityKey.Value.Key,
+                SecurityKey.Value.Value);
+
+            using (invocationOptions.Attach())
             {
-                invocationOptions = invocationOptions.SetKeyValues(new Dictionary<string, object>()
-                {
-                    { secKey, SecurityKey.Value.Value}
-                });
-                using (invocationOptions.Attach())
-                {
-                    return await next();
-                }
+                return await next();
             }
 
         }

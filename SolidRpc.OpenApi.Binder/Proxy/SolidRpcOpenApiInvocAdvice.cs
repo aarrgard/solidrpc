@@ -86,14 +86,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 //
                 if (!string.IsNullOrEmpty(invocationOptions.ContinuationToken))
                 {
-                    invocationOptions = invocationOptions.SetKeyValue(MethodInvoker.RequestHeaderContinuationTokenInInvocation, (StringValues)invocationOptions.ContinuationToken);
+                    invocationOptions = invocationOptions.SetKeyValue(
+                        InvocationOptions.RequestHeaderOutboundPrefix,
+                        InvocationOptions.RequestHeaderContinuationToken, 
+                        (StringValues)invocationOptions.ContinuationToken);
                 }
                 if (invocationOptions.Priority != InvocationOptions.MessagePriorityNormal)
                 {
-                    invocationOptions = invocationOptions.SetKeyValue(MethodInvoker.RequestHeaderPriorityInInvocation, (StringValues)invocationOptions.Priority.ToString());
+                    invocationOptions = invocationOptions.SetKeyValue(
+                        InvocationOptions.RequestHeaderOutboundPrefix,
+                        InvocationOptions.RequestHeaderPriority, 
+                        (StringValues)invocationOptions.Priority.ToString());
                 }
                 var httpHeaders = invocationOptions.Keys
-                    .Where(o => o.StartsWith(MethodInvoker.RequestHeaderPrefixInInvocation, StringComparison.InvariantCultureIgnoreCase))
+                    .Where(o => o.StartsWith(InvocationOptions.RequestHeaderOutboundPrefix, StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
                 if(httpHeaders.Any())
                 {
@@ -102,7 +108,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         var data = httpHeaders
                             .SelectMany(o => {
                                 invocationOptions.TryGetValue(o, out StringValues headerValues);
-                                return headerValues.Select(o2 => new { Key = o.Substring(MethodInvoker.RequestHeaderPrefixInInvocation.Length), Value = o2 });
+                                return headerValues.Select(o2 => new { Key = o.Substring(InvocationOptions.RequestHeaderOutboundPrefix.Length), Value = o2 });
                             }).Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value));
                         req.Headers = req.Headers.Union(data).ToList();
                         return Task.CompletedTask;

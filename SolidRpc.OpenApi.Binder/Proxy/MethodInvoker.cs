@@ -25,18 +25,12 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class MethodInvoker : IMethodInvoker
     {
-        public const string RequestHeaderPrefixInInvocation = "http_req_";
-        public const string RequestHeaderPriorityInInvocation = "http_req_X-SolidRpc-Priority";
-        public const string RequestHeaderContinuationTokenInInvocation = "http_req_X-SolidRpc-ContinuationToken";
-        public const string RequestHeaderMethodUri = "http_req_x-solidrpc-methoduri";
-        public const string ResponseHeaderPrefixInInvocation = "http_resp_";
-
         public static IDictionary<string, object> GetRequestHeaders(IHttpRequest request)
         {
             var invocationValues = new Dictionary<string, object>();
             foreach (var qv in request.Headers)
             {
-                var headerName = $"{RequestHeaderPrefixInInvocation}{qv.Name}";
+                var headerName = $"{InvocationOptions.RequestHeaderInboundPrefix}{qv.Name}";
                 if (invocationValues.TryGetValue(headerName, out object value))
                 {
                     invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
@@ -345,9 +339,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // recreate uri for redirects
             //
-            invocationValues[RequestHeaderMethodUri] = selectedBinding.BindUri(request, transport.OperationAddress);
+            invocationValues[$"{InvocationOptions.RequestHeaderInboundPrefix}{InvocationOptions.RequestHeaderMethodUri}"] = selectedBinding.BindUri(request, transport.OperationAddress);
 
-            if(invocationValues.TryGetValue(RequestHeaderPriorityInInvocation, out object oPrio))
+            if(invocationValues.TryGetValue($"{InvocationOptions.RequestHeaderInboundPrefix}{InvocationOptions.RequestHeaderPriority}", out object oPrio))
             {
                 if(int.TryParse(oPrio.ToString(), out int iPrio))
                 {
@@ -361,7 +355,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             // set continuation token
             //
             var continuationToken = serviceProvider.GetRequiredService<ISolidRpcContinuationToken>();
-            if(invocationOptions.TryGetValue(RequestHeaderContinuationTokenInInvocation, out string token)) 
+            if(invocationOptions.TryGetValue(
+                InvocationOptions.RequestHeaderInboundPrefix,
+                InvocationOptions.RequestHeaderContinuationToken, 
+                out string token)) 
             {
                 continuationToken.Token = token?.ToString();
             }
@@ -410,9 +407,9 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         await selectedBinding.BindResponseAsync(resp, ex, selectedBinding.MethodInfo.ReturnType);
                     }
 
-                    foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(ResponseHeaderPrefixInInvocation)))
+                    foreach (var respHeader in invocationValues.Where(o => o.Key.StartsWith(InvocationOptions.ResponseHeaderPrefix)))
                     {
-                        resp.AdditionalHeaders[respHeader.Key.Substring(ResponseHeaderPrefixInInvocation.Length)] = respHeader.Value.ToString();
+                        resp.AdditionalHeaders[respHeader.Key.Substring(InvocationOptions.ResponseHeaderPrefix.Length)] = respHeader.Value.ToString();
                     }
                 }
             }

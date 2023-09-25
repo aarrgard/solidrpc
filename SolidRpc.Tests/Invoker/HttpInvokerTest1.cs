@@ -191,7 +191,10 @@ namespace SolidRpc.Tests.Invoker
                 string cookieName = "TestCookie135xyx";
                 var invocOpts = InvocationOptions.Current;
                 string cookieValue = null;
-                if(invocOpts.TryGetValue("http_req_cookie", out IEnumerable<string> cookies))
+                if(invocOpts.TryGetValue(
+                    InvocationOptions.RequestHeaderInboundPrefix, 
+                    "Cookie", 
+                    out IEnumerable<string> cookies))
                 {
                     cookieValue = ParseCookies(cookies)
                                         .Where(o => o.Name == cookieName)
@@ -396,9 +399,10 @@ namespace SolidRpc.Tests.Invoker
                 var backendValue = await ti.GetBackendValueAsync();
                 var value = string.Join(",", new[]
                 {
-                    $"http_req_{SecKey}",
-                    "http_req_Host",
-                    "http_req_x-solidrpc-methoduri"
+                    $"http_in_req_{SecKey}",
+                    "http_in_req_Host",
+                    "http_in_req_X-SolidRpc-MethodUri",
+                    $"http_out_req_{SecKey}",
                 }.Order());
                 Assert.AreEqual(value, backendValue);
 

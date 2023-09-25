@@ -781,6 +781,17 @@
             <param name="priority"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetKeyValue``1(System.String,System.String,``0)">
+            <summary>
+            Adds a value to the key value set
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="prefix"></param>
+            <param name="key"></param>
+            <param name="val"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetKeyValue``1(System.String,``0)">
             <summary>
             Adds a value to the key value set
@@ -797,6 +808,16 @@
             </summary>
             <param name="kvs"></param>
             <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TryGetValue``1(System.String,System.String,``0@)">
+            <summary>
+            Returns the value
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TryGetValue``1(System.String,``0@)">
             <summary>

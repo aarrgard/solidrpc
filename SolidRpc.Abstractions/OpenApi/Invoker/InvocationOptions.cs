@@ -14,6 +14,14 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// </summary>
     public class InvocationOptions
     {
+        public const string RequestHeaderInboundPrefix = "http_in_req_";
+        public const string RequestHeaderOutboundPrefix = "http_out_req_";
+        public const string ResponseHeaderPrefix = "http_resp_";
+
+        public const string RequestHeaderPriority = "X-SolidRpc-Priority";
+        public const string RequestHeaderContinuationToken = "X-SolidRpc-ContinuationToken";
+        public const string RequestHeaderMethodUri = "X-SolidRpc-MethodUri";
+
         private struct KV
         {
             public KV(string key, object value)
@@ -233,6 +241,21 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
                 PostInvokeCallback);
         }
 
+
+        /// <summary>
+        /// Adds a value to the key value set
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="prefix"></param>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public InvocationOptions SetKeyValue<T>(string prefix, string key, T val)
+        {
+            return SetKeyValue($"{prefix}{key}", val);
+        }
+
         /// <summary>
         /// Adds a value to the key value set
         /// </summary>
@@ -295,6 +318,19 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             var retVal = new Dictionary<string, KV>(oldValues);
             modifiedValues.ToList().ForEach(o => retVal[o.Key.ToLower()] = new KV(o.Key, o.Value));
             return retVal;
+        }
+
+        /// <summary>
+        /// Returns the value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool TryGetValue<T>(string prefix, string key, out T value)
+        {
+            return TryGetValue($"{prefix}{key}", out value);
         }
 
         /// <summary>
