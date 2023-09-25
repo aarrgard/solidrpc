@@ -7,6 +7,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Principal;
 using SolidRpc.Abstractions.InternalServices;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -44,22 +45,33 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
+            var invocationOptions = InvocationOptions.GetOptions(invocation.SolidProxyInvocationConfiguration.MethodInfo);
             // Check the security key - if supplied
-            var val = invocation.GetValue<StringValues>($"http_req_{SecurityKey.Value.Key}").ToString();
-            if (val != null)
+            var secKey = $"{MethodInvoker.RequestHeaderPrefixInInvocation}{SecurityKey.Value.Key}";
+
+            // add security key(if not set) - this key will be used when invoking remote calls.
+            if (invocationOptions.TryGetValue<string>(secKey, out string sKkey))
             {
-                if (val.Equals(SecurityKey.Value.Value))
+                if (sKkey.Equals(SecurityKey.Value.Value))
                 {
                     var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
                     auth.CurrentPrincipal.AddIdentity(SecurityPathClaimAdvice.SecurityKeyIdentity);
                     invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
                 }
+                return await next();
+            }
+            else
+            {
+                invocationOptions = invocationOptions.SetKeyValues(new Dictionary<string, object>()
+                {
+                    { secKey, SecurityKey.Value.Value}
+                });
+                using (invocationOptions.Attach())
+                {
+                    return await next();
+                }
             }
 
-            // add security key(if not set) - this key will be used when invoking remote calls.
-            invocation.SetValue($"http_req_{SecurityKey.Value.Key}", new StringValues(SecurityKey.Value.Value));
-
-            return await next();
         }
     }
 }

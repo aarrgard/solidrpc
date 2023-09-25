@@ -1,4 +1,5 @@
-﻿using SolidRpc.Abstractions.OpenApi.Http;
+﻿using Microsoft.Extensions.Primitives;
+using SolidRpc.Abstractions.OpenApi.Http;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,18 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// </summary>
     public class InvocationOptions
     {
-        private static readonly ReadOnlyDictionary<string, object> EMPTY_KVS = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+        private struct KV
+        {
+            public KV(string key, object value)
+            {
+                Key = key;
+                Value = value;
+            }
+            public string Key { get;}
+            public object Value { get; }
+        }
+
+        private static readonly ReadOnlyDictionary<string, KV> EMPTY_KVS = new ReadOnlyDictionary<string, KV>(new Dictionary<string, KV>());
 
         /// <summary>
         /// Returns the current invocation options
@@ -42,7 +54,14 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             {
                 return options.SetMethodInfo(methodInfo);
             }
-            return new InvocationOptions(methodInfo, null, MessagePriorityNormal);
+            return new InvocationOptions(
+                methodInfo, 
+                null, 
+                MessagePriorityNormal,
+                null,
+                options.KeyValues,
+                null,
+                null);
         }
 
         /// <summary>
@@ -86,6 +105,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// Constructs a new instance
         /// </summary>
+        /// <param name="methodInfo"></param>
         /// <param name="transportType"></param>
         /// <param name="priority"></param>
         /// <param name="continuationToken"></param>
@@ -97,7 +117,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             string transportType, 
             int priority, 
             string continuationToken = null,
-            IDictionary<string, object> kvs = null,
+            IDictionary<string, KV> kvs = null,
             Func<IHttpRequest, Task> preInvokeCallback = null, 
             Func<IHttpResponse, Task> postInvokeCallback = null)
         {
@@ -120,7 +140,14 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <returns></returns>
         public IDisposable Attach()
         {
-            return new InvocationOptionsLocal(this);
+            if(ReferenceEquals(this, InvocationOptionsLocal.Current))
+            {
+                return InvocationOptionsLocal.DummyDisposable;
+            }
+            else
+            {
+                return new InvocationOptionsLocal(this);
+            }
         }
 
         /// <summary>
@@ -146,7 +173,7 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// <summary>
         /// The key values.
         /// </summary>
-        public IDictionary<string, object> KeyValues { get; }
+        private IDictionary<string, KV> KeyValues { get; }
 
         /// <summary>
         /// The pre invoke callback
@@ -157,6 +184,11 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// The post invoke callback
         /// </summary>
         public Func<IHttpResponse, Task> PostInvokeCallback { get; }
+
+        /// <summary>
+        /// The keys
+        /// </summary>
+        public IEnumerable<string> Keys => KeyValues.Select(o => o.Value.Key);
 
 
         /// <summary>
@@ -202,6 +234,28 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         }
 
         /// <summary>
+        /// Adds a value to the key value set
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public InvocationOptions SetKeyValue<T>(string key, T val)
+        {
+            var newKvs = new Dictionary<string, KV>(KeyValues);
+            newKvs[key.ToLower()] = new KV(key, val);
+            return new InvocationOptions(
+                MethodInfo,
+                TransportType,
+                Priority,
+                ContinuationToken,
+                newKvs,
+                PreInvokeCallback,
+                PostInvokeCallback);
+        }
+
+        /// <summary>
         /// Returns a copy of this instance with another key value set added.
         /// </summary>
         /// <param name="kvs"></param>
@@ -218,16 +272,16 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
                 PostInvokeCallback);
         }
 
-        private IDictionary<string, object> MergeKeyValues(IDictionary<string, object> oldValues, IDictionary<string, object> newValues)
+        private IDictionary<string, KV> MergeKeyValues(IDictionary<string, KV> oldValues, IDictionary<string, object> newValues)
         {
             var modifiedValues = newValues.Where(o =>
             {
-                if (oldValues.TryGetValue(o.Key, out object oldValue))
+                if (oldValues.TryGetValue(o.Key.ToLower(), out KV oldValue))
                 {
-                    if (ReferenceEquals(o.Value, oldValue)) return false;
+                    if (ReferenceEquals(o.Value, oldValue.Value)) return false;
                     if (ReferenceEquals(o.Value, null)) return true;
-                    if (ReferenceEquals(oldValue, null)) return true;
-                    return o.Value.Equals(oldValue);
+                    if (ReferenceEquals(oldValue.Value, null)) return true;
+                    return o.Value.Equals(oldValue.Value);
                 }
                 else
                 {
@@ -238,10 +292,61 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             {
                 return oldValues;
             }
-            var retVal = new Dictionary<string, object>(oldValues);
-            modifiedValues.ToList().ForEach(o => retVal[o.Key] = o.Value);
-            return new ReadOnlyDictionary<string, object>(retVal);
+            var retVal = new Dictionary<string, KV>(oldValues);
+            modifiedValues.ToList().ForEach(o => retVal[o.Key.ToLower()] = new KV(o.Key, o.Value));
+            return retVal;
         }
+
+        /// <summary>
+        /// Returns the value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool TryGetValue<T>(string key, out T value)
+        {
+            if (KeyValues.TryGetValue(key.ToLower(), out KV oVal))
+            {
+                if (oVal.Value == null)
+                {
+                    value = default(T);
+                    return false;
+                }
+                if (typeof(T).IsAssignableFrom(oVal.GetType()))
+                {
+                    value = (T)oVal.Value;
+                    return false;
+                }
+                if (typeof(T) == typeof(StringValues))
+                {
+                    if (oVal.Value.GetType() == typeof(string))
+                    {
+                        value = (T)(object)new StringValues((string)oVal.Value);
+                        return true;
+                    }
+                    if (oVal.Value.GetType() == typeof(Uri))
+                    {
+                        value = (T)(object)new StringValues(((Uri)oVal.Value).ToString());
+                        return true;
+                    }
+                }
+                if (typeof(T) == typeof(string))
+                {
+                    if (oVal.Value.GetType() == typeof(StringValues))
+                    {
+                        value = (T)(object)oVal.Value.ToString();
+                        return true;
+                    }
+                }
+                value = (T)oVal.Value;
+                return true;
+            }
+            value = default(T);
+            return false;
+        }
+
 
         /// <summary>
         /// Returns a copy of this instance with another continuation token.
@@ -332,5 +437,5 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
                     await oldCallback(resp);
                 });
         }
-   }
+    }
 }

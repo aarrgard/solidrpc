@@ -115,36 +115,40 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         /// <returns></returns>
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
+            var invocationOptions = InvocationOptions.Current;
             if (RemoteCall)
             {
-                await HandleRemoteCall(invocation);
+                invocationOptions = await HandleRemoteCall(invocationOptions, invocation);
             }
             else
             {
-                await HandleLocalCall(invocation);
+                invocationOptions = await HandleLocalCall(invocationOptions, invocation);
             }
 
-            return await next();
+            using(invocationOptions.Attach())
+            {
+                return await next();
+            }
         }
 
-        private async Task HandleLocalCall(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        private async Task<InvocationOptions> HandleLocalCall(InvocationOptions invocationOptions, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             // 
             // if invocation has been done from a proxy - let the user through
             //
             if (invocation.Caller is ISolidProxy)
             {
-                return;
+                return invocationOptions;
             }
 
             //
             // check authorization header
             //
             string jwt;
-            var authHeader = invocation.GetValue<StringValues>($"http_req_authorization").ToString();
+            invocationOptions.TryGetValue($"http_req_authorization", out string authHeader);
             if (string.IsNullOrEmpty(authHeader))
             {
-                jwt = await DoRedirectUnauthorizedIdentity(invocation);
+                jwt = await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
             }
             else if (authHeader.StartsWith("bearer ", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -160,11 +164,11 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             else
             {
-                jwt = await DoRedirectUnauthorizedIdentity(invocation);
+                jwt = await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
             }
             if (string.IsNullOrEmpty(jwt))
             {
-                return;
+                return invocationOptions;
             }
 
             //
@@ -178,8 +182,8 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             catch (Exception e)
             {
-                await DoRedirectUnauthorizedIdentity(invocation);
-                return;
+                await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
+                return invocationOptions;
             }
 
             //
@@ -194,6 +198,8 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 auth.CurrentPrincipal = jwtPrincipal;
             }
             invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
+            
+            return invocationOptions;
         }
 
         private async Task<string> GetClientJwtAsync(string basic, CancellationToken cancellationToken)
@@ -214,11 +220,10 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
         }
 
-        private async Task<string> DoRedirectUnauthorizedIdentity(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        private async Task<string> DoRedirectUnauthorizedIdentity(InvocationOptions invocationOptions, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
-            if(RedirectUnauthorizedIdentity)
+            if(RedirectUnauthorizedIdentity && invocationOptions.TryGetValue<Uri>(MethodInvoker.RequestHeaderMethodUri, out Uri redirectUri))
             {
-                var redirectUri = new Uri(invocation.GetValue<Uri>(MethodInvoker.RequestHeaderMethodUri).ToString());
                 //
                 // try to fetch token from query
                 //
@@ -239,11 +244,11 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         }
 
 
-        private async Task HandleRemoteCall(ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        private async Task<InvocationOptions> HandleRemoteCall(InvocationOptions invocationOptions, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.None)
             {
-                return;
+                return invocationOptions;
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Client)
             {
@@ -252,8 +257,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     throw new Exception($"Cannot obtain jwt token for client {ClientId}@{Authority.Authority}.");
                 }
-                invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt.AccessToken}");
-                return;
+                return invocationOptions.SetKeyValue("http_req_authorization", $"bearer {jwt.AccessToken}");
             }
             if (ProxyInvocationPrincipal == OAuthProxyInvocationPrincipal.Proxy)
             {
@@ -263,8 +267,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 {
                     throw new UnauthorizedException("No accesstoken claim exists");
                 }
-                invocation.SetValue<StringValues>("http_req_authorization", $"bearer {jwt}");
-                return;
+                return invocationOptions.SetKeyValue("http_req_authorization", $"bearer {jwt}");
             }
             throw new NotImplementedException();
         }

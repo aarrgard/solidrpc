@@ -5,6 +5,7 @@ using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.Abstractions.Types.OAuth2;
@@ -122,7 +123,7 @@ namespace SolidRpc.Tests.Invoker
             /// <returns></returns>
             public Task<string> GetBackendValueAsync(CancellationToken cancellation = default)
             {
-                var currIncoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
+                var currIncoc = InvocationOptions.Current;
                 return Task.FromResult(string.Join(",",currIncoc.Keys.Order()));
             }
         }
@@ -188,11 +189,15 @@ namespace SolidRpc.Tests.Invoker
                 var uri = await Invoker.GetUriAsync(o => o.TestSetCookie(cancellation));
 
                 string cookieName = "TestCookie135xyx";
-                var invoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
-                var cookieValue = ParseCookies(invoc.GetValue<IEnumerable<string>>("http_req_cookie"))
-                    .Where(o => o.Name == cookieName)
-                    .Select(o => o.Value)
-                    .FirstOrDefault();
+                var invocOpts = InvocationOptions.Current;
+                string cookieValue = null;
+                if(invocOpts.TryGetValue("http_req_cookie", out IEnumerable<string> cookies))
+                {
+                    cookieValue = ParseCookies(cookies)
+                                        .Where(o => o.Name == cookieName)
+                                        .Select(o => o.Value)
+                                        .FirstOrDefault();
+                }
                 cookieValue = cookieValue ?? "0";
                 cookieValue = (int.Parse(cookieValue) + 1).ToString();
 
@@ -308,6 +313,10 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcServices(o => true);
 
             services.GetSolidRpcContentStore().AddPrefixRewrite("/test", "/SolidRpc/Tests/Invoker/HttpInvokerTest1/ITestInterface/DoYAsync");
+            services.GetSolidRpcContentStore().AddMapping("/backendValues", sp =>
+            {
+                return sp.GetRequiredService<IInvoker<ITestInterface>>().GetUriAsync(o => o.GetBackendValueAsync(CancellationToken.None));
+            });
         }
 
         /// <summary>
@@ -388,10 +397,30 @@ namespace SolidRpc.Tests.Invoker
                 var value = string.Join(",", new[]
                 {
                     $"http_req_{SecKey}",
-                    "http_req_host",
-                    "http_req_X-SolidRpc-MethodUri"
+                    "http_req_Host",
+                    "http_req_x-solidrpc-methoduri"
                 }.Order());
                 Assert.AreEqual(value, backendValue);
+
+                // test using http client directly
+                var iti = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                var url = await iti.GetUriAsync(o => o.GetBackendValueAsync(CancellationToken.None));
+                var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
+
+                var req = new HttpRequestMessage(HttpMethod.Get, url);
+                req.Headers.Add(SecKey.ToString(), SecKey.ToString());
+                var cont = await httpClient.SendAsync(req);
+                backendValue = await cont.Content.ReadAsStringAsync();
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(backendValue, out backendValue);
+                Assert.AreEqual(value, backendValue);
+
+                req = new HttpRequestMessage(HttpMethod.Get, new Uri(url, "/backendValues"));
+                req.Headers.Add(SecKey.ToString(), SecKey.ToString());
+                cont = await httpClient.SendAsync(req);
+                backendValue = await cont.Content.ReadAsStringAsync();
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(backendValue, out backendValue);
+                Assert.AreEqual(value, backendValue);
+
             }
         }
         /// <summary>

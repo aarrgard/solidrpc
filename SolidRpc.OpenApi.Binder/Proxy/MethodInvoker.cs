@@ -28,8 +28,26 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         public const string RequestHeaderPrefixInInvocation = "http_req_";
         public const string RequestHeaderPriorityInInvocation = "http_req_X-SolidRpc-Priority";
         public const string RequestHeaderContinuationTokenInInvocation = "http_req_X-SolidRpc-ContinuationToken";
-        public const string RequestHeaderMethodUri = "http_req_X-SolidRpc-MethodUri";
+        public const string RequestHeaderMethodUri = "http_req_x-solidrpc-methoduri";
         public const string ResponseHeaderPrefixInInvocation = "http_resp_";
+
+        public static IDictionary<string, object> GetRequestHeaders(IHttpRequest request)
+        {
+            var invocationValues = new Dictionary<string, object>();
+            foreach (var qv in request.Headers)
+            {
+                var headerName = $"{RequestHeaderPrefixInInvocation}{qv.Name}";
+                if (invocationValues.TryGetValue(headerName, out object value))
+                {
+                    invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
+                }
+                else
+                {
+                    invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
+                }
+            }
+            return invocationValues;
+        }
 
         private class PathSegment
         {
@@ -214,6 +232,8 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 request.Path = contentBinding.LocalPath;
             }
             request = pathSegment?.Rewrite(request) ?? request;
+
+            // get priority from header
             return await InvokeAsync(serviceProvider, invocationSource, request, methodBindings, cancellationToken);
         }
 
@@ -320,30 +340,28 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // set http headers
             //
-            var invocationValues = new Dictionary<string, object>();
-            foreach (var qv in request.Headers)
-            {
-                var headerName = $"{RequestHeaderPrefixInInvocation}{qv.Name}".ToLower();
-                if (invocationValues.TryGetValue(headerName, out object value))
-                {
-                    invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
-                }
-                else
-                {
-                    invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
-                }
-            }
+            var invocationValues = GetRequestHeaders(request);
 
             //
             // recreate uri for redirects
             //
-            invocationValues.Add(RequestHeaderMethodUri, selectedBinding.BindUri(request, transport.OperationAddress));
+            invocationValues[RequestHeaderMethodUri] = selectedBinding.BindUri(request, transport.OperationAddress);
+
+            if(invocationValues.TryGetValue(RequestHeaderPriorityInInvocation, out object oPrio))
+            {
+                if(int.TryParse(oPrio.ToString(), out int iPrio))
+                {
+                    invocationOptions = invocationOptions.SetPriority(iPrio);
+                }
+            }
+
+            invocationOptions = invocationOptions.SetKeyValues(invocationValues);
 
             //
             // set continuation token
             //
             var continuationToken = serviceProvider.GetRequiredService<ISolidRpcContinuationToken>();
-            if(invocationValues.TryGetValue($"{RequestHeaderPrefixInInvocation}{continuationToken.GetHttpHeaderName()}".ToLower(), out object token)) 
+            if(invocationOptions.TryGetValue(RequestHeaderContinuationTokenInInvocation, out string token)) 
             {
                 continuationToken.Token = token?.ToString();
             }
@@ -356,7 +374,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                         //
                         // Invoke
                         //
-                        var res = await proxy.InvokeAsync(serviceProvider, invocationSource, selectedBinding.MethodInfo, args, invocationValues);
+                        var res = await proxy.InvokeAsync(serviceProvider, invocationSource, selectedBinding.MethodInfo, args);
 
                         //
                         // return response

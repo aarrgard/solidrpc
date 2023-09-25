@@ -77,7 +77,7 @@ namespace SolidRpc.Tests.Invoker
             public Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken))
             {
                 Assert.IsTrue(SolidProxyInvocationImplAdvice.CurrentInvocation.Caller is MemoryQueueHandler, "Caller is not a memory handler.");
-                //Assert.AreEqual(2, InvocationOptions.Current.Priority);
+                Assert.AreEqual(2, InvocationOptions.Current.Priority);
                 Logger.LogTrace("DoYAsync");
                 _doYInvocations++;
                 return Task.FromResult(myStruct.Value);
@@ -201,7 +201,10 @@ namespace SolidRpc.Tests.Invoker
 
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
 
-                await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
+                using (InvocationOptions.Default.SetPriority(2).Attach())
+                {
+                    await invoker.DoYAsync(new ComplexStruct() { Value = "test" });
+                }
 
                 await MemoryQueueBus.DispatchAllMessagesAsync();
 

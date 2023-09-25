@@ -4,11 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
+using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -393,24 +395,27 @@ namespace Microsoft.AspNetCore.Builder
             }
             try
             {
-                // get content
-                var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
-                var content = await contentHandler.GetContent(path, ctx.RequestAborted);
-
                 // send response
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(ctx.Request);
 
-                var resp = new SolidHttpResponse();
-                resp.StatusCode = 200;
-                resp.CharSet = content.CharSet;
-                resp.MediaType = content.ContentType;
-                resp.ResponseStream = content.Content;
-                resp.Location = content.Location;
-                resp.AddAllowedCorsHeaders(request);
+                // get content
+                var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
+                using(InvocationOptions.Current.SetKeyValues(MethodInvoker.GetRequestHeaders(request)).Attach())
+                {
+                    var content = await contentHandler.GetContent(path, ctx.RequestAborted);
 
-                await resp.CopyToAsync(ctx.Response);
-                ctx.SetProcessed();
+                    var resp = new SolidHttpResponse();
+                    resp.StatusCode = 200;
+                    resp.CharSet = content.CharSet;
+                    resp.MediaType = content.ContentType;
+                    resp.ResponseStream = content.Content;
+                    resp.Location = content.Location;
+                    resp.AddAllowedCorsHeaders(request);
+
+                    await resp.CopyToAsync(ctx.Response);
+                    ctx.SetProcessed();
+                }
             }
             catch (FileContentNotFoundException)
             {

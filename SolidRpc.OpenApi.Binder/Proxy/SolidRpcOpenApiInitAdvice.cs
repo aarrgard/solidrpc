@@ -118,7 +118,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 }
                 invocationOptions = invocationOptions
                     .SetTransport(transport.GetTransportType())
-                    .SetPriority(transport.MessagePriority)
+                    //.SetPriority(transport.MessagePriority)
                     .AddPreInvokeCallback(transport.PreInvokeCallback)
                     .AddPostInvokeCallback(transport.PostInvokeCallback);
             }

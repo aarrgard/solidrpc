@@ -709,10 +709,11 @@
             The low message prio
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.Reflection.MethodInfo,System.String,System.Int32,System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.#ctor(System.Reflection.MethodInfo,System.String,System.Int32,System.String,System.Collections.Generic.IDictionary{System.String,SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.KV},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpRequest,System.Threading.Tasks.Task},System.Func{SolidRpc.Abstractions.OpenApi.Http.IHttpResponse,System.Threading.Tasks.Task})">
             <summary>
             Constructs a new instance
             </summary>
+            <param name="methodInfo"></param>
             <param name="transportType"></param>
             <param name="priority"></param>
             <param name="continuationToken"></param>
@@ -761,6 +762,11 @@
             The post invoke callback
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Keys">
+            <summary>
+            The keys
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetMethodInfo(System.Reflection.MethodInfo)">
             <summary>
             Returns a copy of this instance with another method info.
@@ -775,12 +781,32 @@
             <param name="priority"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetKeyValue``1(System.String,``0)">
+            <summary>
+            Adds a value to the key value set
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <param name="val"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetKeyValues(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
             Returns a copy of this instance with another key value set added.
             </summary>
             <param name="kvs"></param>
             <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.TryGetValue``1(System.String,``0@)">
+            <summary>
+            Returns the value
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetContinuationToken(System.String)">
             <summary>
@@ -814,6 +840,11 @@
             <summary>
             Connects and disconnects some invocation options 
             to/from the local task pipeline
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.DummyDisposable">
+            <summary>
+            
             </summary>
         </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptionsLocal.Current">

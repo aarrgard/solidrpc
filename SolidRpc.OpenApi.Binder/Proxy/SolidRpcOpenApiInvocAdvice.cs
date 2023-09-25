@@ -79,19 +79,20 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             else
             {
                 var handler = Handlers.Single(o => o.TransportType == transportType);
+                var additionalValues = new Dictionary<string, object>();
 
                 //
                 // add http headers
                 //
                 if (!string.IsNullOrEmpty(invocationOptions.ContinuationToken))
                 {
-                    invocation.SetValue<StringValues>(MethodInvoker.RequestHeaderContinuationTokenInInvocation, invocationOptions.ContinuationToken);
+                    invocationOptions = invocationOptions.SetKeyValue(MethodInvoker.RequestHeaderContinuationTokenInInvocation, (StringValues)invocationOptions.ContinuationToken);
                 }
                 if (invocationOptions.Priority != InvocationOptions.MessagePriorityNormal)
                 {
-                    invocation.SetValue<StringValues>(MethodInvoker.RequestHeaderPriorityInInvocation, invocationOptions.Priority.ToString());
+                    invocationOptions = invocationOptions.SetKeyValue(MethodInvoker.RequestHeaderPriorityInInvocation, (StringValues)invocationOptions.Priority.ToString());
                 }
-                var httpHeaders = invocation.Keys
+                var httpHeaders = invocationOptions.Keys
                     .Where(o => o.StartsWith(MethodInvoker.RequestHeaderPrefixInInvocation, StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
                 if(httpHeaders.Any())
@@ -99,8 +100,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     invocationOptions = invocationOptions.AddPreInvokeCallback(req =>
                     {
                         var data = httpHeaders
-                            .SelectMany(o => invocation.GetValue<StringValues>(o).Select(o2 => new { Key = o.Substring(MethodInvoker.RequestHeaderPrefixInInvocation.Length), Value = o2 }))
-                            .Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value));
+                            .SelectMany(o => {
+                                invocationOptions.TryGetValue(o, out StringValues headerValues);
+                                return headerValues.Select(o2 => new { Key = o.Substring(MethodInvoker.RequestHeaderPrefixInInvocation.Length), Value = o2 });
+                            }).Select(o => new SolidHttpRequestDataString("text/plain", o.Key, o.Value));
                         req.Headers = req.Headers.Union(data).ToList();
                         return Task.CompletedTask;
                     });

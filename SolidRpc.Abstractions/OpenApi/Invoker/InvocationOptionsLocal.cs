@@ -9,6 +9,17 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// </summary>
     public class InvocationOptionsLocal : IDisposable
     {
+        private class EmptyDisposable : IDisposable
+        {
+            public void Dispose()
+            {
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly IDisposable DummyDisposable = new EmptyDisposable();
+
         private static AsyncLocal<InvocationOptionsLocal> s_options = new AsyncLocal<InvocationOptionsLocal>();
         
         /// <summary>

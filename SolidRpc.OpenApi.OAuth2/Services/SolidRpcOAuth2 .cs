@@ -427,12 +427,16 @@ namespace SolidRpc.OpenApi.Binder.Services
 
         private string GetRefreshToken()
         {
-            var currInvoc = SolidProxy.Core.Proxy.SolidProxyInvocationImplAdvice.CurrentInvocation;
-            var tokens = ParseCookies(currInvoc.GetValue<IEnumerable<string>>("http_req_cookie"))
-                .Where(o => o.Name == RefreshTokenCookieName);
-            return tokens
-                .Select(o => o.Value)
-                .FirstOrDefault();
+            var invocOpts = InvocationOptions.Current;
+            if(invocOpts.TryGetValue("http_req_cookie", out IEnumerable<string> cookies))
+            {
+                var tokens = ParseCookies(cookies)
+                    .Where(o => o.Name == RefreshTokenCookieName);
+                return tokens
+                    .Select(o => o.Value)
+                    .FirstOrDefault();
+            }
+            return null;
         }
 
         public async Task<FileContent> PostLogoutAsync(string state = null, CancellationToken cancellationToken = default)
