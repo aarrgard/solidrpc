@@ -50,7 +50,6 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         }
         private ILogger Logger { get; }
         private IAuthorityFactory AuthorityFactory { get; }
-        private bool RemoteCall { get; set; }
         private IAuthority Authority { get; set; }
         private string ClientId { get; set; }
         private string ClientSecret { get; set; }
@@ -87,7 +86,6 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                         }
                 }
             }
-            RemoteCall = !config.InvocationConfiguration.HasImplementation;
             ClientId = config.OAuth2ClientId;
             ClientSecret = config.OAuth2ClientSecret;
 
@@ -116,16 +114,16 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             var invocationOptions = InvocationOptions.Current;
-            if (RemoteCall)
-            {
-                invocationOptions = await HandleRemoteCall(invocationOptions, invocation);
-            }
-            else
+            if (invocationOptions.TransportType == "Local")
             {
                 invocationOptions = await HandleLocalCall(invocationOptions, invocation);
             }
+            else
+            {
+                invocationOptions = await HandleRemoteCall(invocationOptions, invocation);
+            }
 
-            using(invocationOptions.Attach())
+            using (invocationOptions.Attach())
             {
                 return await next();
             }

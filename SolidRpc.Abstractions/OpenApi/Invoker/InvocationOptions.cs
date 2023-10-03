@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using SolidRpc.Abstractions.OpenApi.Http;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,25 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
             get
             {
                 return InvocationOptionsLocal.Current;
+            }
+        }
+
+        /// <summary>
+        /// Returns the invocation options for a new invocation
+        /// </summary>
+        public static InvocationOptions New
+        {
+            get
+            {
+                var curr = InvocationOptionsLocal.Current;
+                return new InvocationOptions(
+                    null,
+                    null,
+                    curr.Priority,
+                    null,
+                    curr.KeyValues,
+                    null,
+                    null);
             }
         }
 
@@ -214,6 +234,22 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
                 methodInfo,
                 TransportType,
                 Priority,
+                ContinuationToken,
+                KeyValues,
+                PreInvokeCallback,
+                PostInvokeCallback);
+        }
+
+        /// <summary>
+        /// Returns a copy of this instance with another priority.
+        /// </summary>
+        /// <returns></returns>
+        public InvocationOptions LowerPriority()
+        {
+            return new InvocationOptions(
+                MethodInfo,
+                TransportType,
+                Priority + 1,
                 ContinuationToken,
                 KeyValues,
                 PreInvokeCallback,

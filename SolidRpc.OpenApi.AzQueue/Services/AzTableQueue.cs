@@ -171,11 +171,19 @@ namespace SolidRpc.OpenApi.AzQueue.Services
             await Task.WhenAll(tasks);
         }
 
-        public Task ProcessTestMessage(Stream payload, bool raiseException, CancellationToken cancellationToken = default)
+        public async Task ProcessTestMessage(Stream payload, bool raiseException, CancellationToken cancellationToken = default)
         {
-            while (payload.ReadByte() > 0);
+            var ms = new MemoryStream();
+            await payload.CopyToAsync(ms);
             if (raiseException) throw new Exception("Exception in test method.");
-            return Task.CompletedTask;
+            var priority = InvocationOptions.Current.Priority;
+            if(priority < InvocationOptions.MessagePriorityLow)
+            {
+                using (InvocationOptions.New.LowerPriority().Attach())
+                {
+                    await Proxy.ProcessTestMessage(new MemoryStream(ms.ToArray()), raiseException, cancellationToken);
+                }
+            }
         }
 
         public Task FlagErrorMessagesAsPending(CancellationToken cancellationToken = default)

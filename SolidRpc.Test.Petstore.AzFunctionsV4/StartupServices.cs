@@ -40,7 +40,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 conf.AddDefaultScopes("authorization_code", new[] { "openid", "solidrpc", "offline_access" });
             });
-            services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", ConfigureAzureFunction);
+            services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", c => ConfigureAzureFunction(services, c));
 
             services.AddSolidRpcSwaggerUI(o => {
                 o.OAuthClientId = SolidRpcOidcTestImpl.ClientId;

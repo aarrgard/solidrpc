@@ -668,6 +668,11 @@
             Returns the current invocation options
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.New">
+            <summary>
+            Returns the invocation options for a new invocation
+            </summary>
+        </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.GetOptions(System.Reflection.MethodInfo)">
             <summary>
             Returns the invocation options for specified method
@@ -772,6 +777,12 @@
             Returns a copy of this instance with another method info.
             </summary>
             <param name="methodInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.LowerPriority">
+            <summary>
+            Returns a copy of this instance with another priority.
+            </summary>
             <returns></returns>
         </member>
         <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.SetPriority(System.Int32)">

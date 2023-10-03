@@ -109,7 +109,18 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                         await AzTableHandler.UpdateTimedOutMessagesAsync(cloudTable, QueueName, CancellationToken);
                     }
 
-                    while (await AzTableHandler.DispatchMessageAsync(cloudTable, ConnectionName, QueueName, CancellationToken)) ;
+                    //
+                    // since a job can wait for this to be completed we need to limit the number
+                    // of jobs it dispatches. When this job finishes another task will do the rest
+                    //
+                    for(int i = 0; i < 20; i++)
+                    {
+                        bool dispatched = await AzTableHandler.DispatchMessageAsync(cloudTable, ConnectionName, QueueName, CancellationToken);
+                        if (!dispatched)
+                        {
+                            break;
+                        }
+                    }
                 }
                 finally
                 {

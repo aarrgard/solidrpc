@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using SolidProxy.Core.Proxy;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using System.Collections.Generic;
-using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Principal;
 using SolidRpc.Abstractions.InternalServices;
