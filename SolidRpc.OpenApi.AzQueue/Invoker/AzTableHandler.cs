@@ -62,48 +62,43 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
 
         private class RunningDispatch
         {
-            public RunningDispatch(AzTableHandler azTableHandler, string key, string connectionName, string queueName)
+            public RunningDispatch(AzTableHandler azTableHandler, string connectionName, string queueName)
             {
                 AzTableHandler = azTableHandler;
-                Key = key;
                 ConnectionName = connectionName;
                 QueueName = queueName;
                 CancellationToken = CancellationToken.None;
-                Task = DispatchMessageAsync();
+                Semaphore = new SemaphoreSlim(1);
+                Dispatching = new AsyncLocal<bool>();
             }
-            public Task Task { get; }
             private AzTableHandler AzTableHandler { get; }
-            private string Key { get; }
             private string ConnectionName { get; }
             private string QueueName { get; }
             private CancellationToken CancellationToken { get; }
-            public bool ScheduledScan { get; set; }
+            private SemaphoreSlim Semaphore { get; }
+            private AsyncLocal<bool> Dispatching { get; }
 
-            private async Task DispatchMessageAsync()
+            public async Task DispatchMessageAsync(bool scheduledScan)
             {
-                await Task.Yield(); // make sure that we add the task to the dictionary
-                var semaphore = AzTableHandler.Semaphores.GetOrAdd(Key, _ => new SemaphoreSlim(1));
-
+                if(Dispatching.Value)
+                {
+                    return;
+                }
                 //
                 // Wait for previous task to complete
                 //
-                await semaphore.WaitAsync(CancellationToken);
-
-                //
-                // remove this instance from the pending dispatch set.
-                //
-                lock (AzTableHandler.PendingDispatches)
+                if(!scheduledScan)
                 {
-                    var removed = AzTableHandler.PendingDispatches.Remove(new KeyValuePair<string, RunningDispatch>(Key, this));
-                    if (!removed)
+                    if (!await Semaphore.WaitAsync(100, CancellationToken))
                     {
-                        throw new Exception("Could not remove this instance.");
+                        return;
                     }
                 }
                 try
                 {
+                    Dispatching.Value = true;
                     var cloudTable = AzTableHandler.CloudQueueStore.GetCloudTable(ConnectionName);
-                    if (ScheduledScan)
+                    if (scheduledScan)
                     {
                         await AzTableHandler.UpdateErrorMessagesAsync(cloudTable, QueueName, CancellationToken);
                         await AzTableHandler.UpdateTimedOutMessagesAsync(cloudTable, QueueName, CancellationToken);
@@ -113,7 +108,8 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                     // since a job can wait for this to be completed we need to limit the number
                     // of jobs it dispatches. When this job finishes another task will do the rest
                     //
-                    for(int i = 0; i < 20; i++)
+                    var dispatchCount = scheduledScan ? 1000 : 10; 
+                    for(int i = 0; i < dispatchCount; i++)
                     {
                         bool dispatched = await AzTableHandler.DispatchMessageAsync(cloudTable, ConnectionName, QueueName, CancellationToken);
                         if (!dispatched)
@@ -122,9 +118,17 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                         }
                     }
                 }
+                catch(Exception e)
+                {
+                    throw;
+                }
                 finally
                 {
-                    semaphore.Release();
+                    if (!scheduledScan)
+                    {
+                        Dispatching.Value = false;
+                        Semaphore.Release();
+                    }
                 }
             }
         }
@@ -140,11 +144,9 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             : base(logger, methodBinderStore, serializerFactory, solidRpcApplication)
         {
             CloudQueueStore = cloudQueueStore;
-            Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
             PendingDispatches = new ConcurrentDictionary<string, RunningDispatch>();
             ServiceScopeFactory = serviceScopeFactory;
         }
-        private ConcurrentDictionary<string, SemaphoreSlim> Semaphores { get; }
         private IDictionary<string, RunningDispatch> PendingDispatches { get; }
         private IServiceScopeFactory ServiceScopeFactory { get; }
         private ICloudQueueStore CloudQueueStore { get; }
@@ -200,21 +202,16 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
             // Get/create pending dispatch
             // if we create a new dispatch we have to wait for it - otherwise we can return a completed task.
             //
-            Task returnTask = Task.CompletedTask;
-            var key = $"{connectionName}:{queueName}:{scheduledScan}";
+            var key = $"{connectionName}:{queueName}";
             lock (PendingDispatches)
             {
-                RunningDispatch runningDispatch;
-                if (!PendingDispatches.TryGetValue(key, out runningDispatch))
+                if (!PendingDispatches.TryGetValue(key, out RunningDispatch runningDispatch))
                 {
-                    PendingDispatches[key] = runningDispatch = new RunningDispatch(this, key, connectionName, queueName);
-                    runningDispatch.ScheduledScan = scheduledScan;
-                    returnTask = runningDispatch.Task;
+                    PendingDispatches[key] = runningDispatch = new RunningDispatch(this, connectionName, queueName);
                 }
+                return runningDispatch.DispatchMessageAsync(scheduledScan);
             }
-
-            return returnTask;
-        }
+       }
 
         private (IEnumerable<TableMessageEntity>, AzTableQueueSettings) GetSettings(IEnumerable<TableMessageEntity> results)
         {
