@@ -110,7 +110,7 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                     //
                     var dispatchCount = scheduledScan ? 1000 : 10; 
                     for(int i = 0; i < dispatchCount; i++)
-                    {
+                    { 
                         bool dispatched = await AzTableHandler.DispatchMessageAsync(cloudTable, ConnectionName, QueueName, CancellationToken);
                         if (!dispatched)
                         {

@@ -114,11 +114,8 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         public async Task<TAdvice> Handle(Func<Task<TAdvice>> next, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             var invocationOptions = InvocationOptions.Current;
-            if (invocationOptions.TransportType == "Local")
-            {
-                invocationOptions = await HandleLocalCall(invocationOptions, invocation);
-            }
-            else
+            await HandleLocalCall(invocationOptions, invocation);
+            if (invocationOptions.TransportType != "Local")
             {
                 invocationOptions = await HandleRemoteCall(invocationOptions, invocation);
             }
@@ -129,14 +126,14 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
         }
 
-        private async Task<InvocationOptions> HandleLocalCall(InvocationOptions invocationOptions, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
+        private async Task HandleLocalCall(InvocationOptions invocationOptions, ISolidProxyInvocation<TObject, TMethod, TAdvice> invocation)
         {
             // 
             // if invocation has been done from a proxy - let the user through
             //
             if (invocation.Caller is ISolidProxy)
             {
-                return invocationOptions;
+                return;
             }
 
             //
@@ -169,7 +166,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             if (string.IsNullOrEmpty(jwt))
             {
-                return invocationOptions;
+                return;
             }
 
             //
@@ -184,7 +181,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             catch (Exception e)
             {
                 await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
-                return invocationOptions;
+                return;
             }
 
             //
@@ -200,7 +197,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
             
-            return invocationOptions;
+            return;
         }
 
         private async Task<string> GetClientJwtAsync(string basic, CancellationToken cancellationToken)
@@ -238,8 +235,20 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                     .Select(o => o[1]).FirstOrDefault();
                 if (!string.IsNullOrEmpty(accessToken))
                 {
-                    return accessToken;
+                    try
+                    {
+                        var authFact = invocation.ServiceProvider.GetRequiredService<IAuthorityFactory>();
+                        var prin = await authFact.GetPrincipalAsync(accessToken, null, invocation.CancellationToken);
+                        return accessToken;
+                    }
+                    catch
+                    { }
+                    var ub = new UriBuilder(redirectUri);
+                    ub.Query = ub.Query.Replace($"?access_token={accessToken}", "");
+                    ub.Query = ub.Query.Replace($"&access_token={accessToken}", "");
+                    redirectUri = ub.Uri;
                 }
+
                 var authInvoker = invocation.ServiceProvider.GetService<IInvoker<ISolidRpcOAuth2>>();
                 var uri = await authInvoker.GetUriAsync(o => o.GetAuthorizationCodeTokenAsync(redirectUri, null, null, invocation.CancellationToken));
                 throw new FoundException(uri);
