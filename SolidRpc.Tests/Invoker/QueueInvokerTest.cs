@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.Extensions.DependencyInjection.SolidRpcExtensions;
 
 namespace SolidRpc.Tests.Invoker
 {
@@ -52,6 +53,14 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<string> DoYAsync(ComplexStruct myStruct, CancellationToken cancellation = default(CancellationToken));
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="count"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<int> DoXAsync(int count, CancellationToken cancellation = default);
         }
 
         /// <summary>
@@ -63,11 +72,24 @@ namespace SolidRpc.Tests.Invoker
             /// Constructs a new instance
             /// </summary>
             /// <param name="logger"></param>
-            public TestImplementation(ILogger<TestImplementation> logger)
+            /// <param name="proxy"></param>
+            public TestImplementation(ILogger<TestImplementation> logger, ITestInterface proxy)
             {
                 Logger = logger;
+                Proxy = proxy;
             }
             private ILogger Logger { get; }
+            private ITestInterface Proxy { get; }
+
+            public async Task<int> DoXAsync(int count, CancellationToken cancellation = default)
+            {
+                if(count > 0)
+                {
+                    await Proxy.DoXAsync(count - 1, cancellation);
+                }
+                return count;
+            }
+
             /// <summary>
             /// 
             /// </summary>
@@ -219,6 +241,34 @@ namespace SolidRpc.Tests.Invoker
                     return Task.CompletedTask;
                 }));
 
+            }
+        }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestQueueProxy()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<ITestInterface>();
+                int count = 5;
+                var res = await invoker.DoXAsync(count);
+                Assert.AreEqual(0, res);
+
+                int disp;
+                for(int i = 0; i < count; i++)
+                {
+                    disp = await MemoryQueueBus.DispatchAllMessagesAsync();
+                    Assert.AreEqual(1, disp);
+                }
+                disp = await MemoryQueueBus.DispatchAllMessagesAsync();
+                Assert.AreEqual(1, disp);
+                disp = await MemoryQueueBus.DispatchAllMessagesAsync();
+                Assert.AreEqual(0, disp);
             }
         }
     }

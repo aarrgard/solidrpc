@@ -425,7 +425,10 @@ namespace SolidRpc.OpenApi.AzQueue.Invoker
                     }
                     return false;
                 }
-                Logger.LogError(se, "Error trying to lock message.");
+                if (Logger.IsEnabled(LogLevel.Trace))
+                {
+                    Logger.LogTrace(se, "Error trying to lock message.");
+                }
                 return false;
                 //throw;
             }

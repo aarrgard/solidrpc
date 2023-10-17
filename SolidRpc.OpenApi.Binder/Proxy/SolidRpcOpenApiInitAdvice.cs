@@ -100,7 +100,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // setup invocation options
             //
-            var invocationOptions = InvocationOptions.GetOptions(invocation.SolidProxyInvocationConfiguration.MethodInfo);
+            var invocationOptions = InvocationOptions.Current;
+            if(invocationOptions.MethodInfo != null)
+            {
+                invocationOptions = InvocationOptions.New;
+            }
             if(invocationOptions.TransportType == null)
             {
                 ITransport transport;
