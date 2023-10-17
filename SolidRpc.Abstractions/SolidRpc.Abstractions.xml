@@ -673,11 +673,12 @@
             Returns the invocation options for a new invocation
             </summary>
         </member>
-        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.GetOptions(System.Reflection.MethodInfo)">
+        <member name="M:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.GetOptions(System.Reflection.MethodInfo,System.Boolean)">
             <summary>
             Returns the invocation options for specified method
             </summary>
             <param name="methodInfo"></param>
+            <param name="clearTransportIfSame"></param>
             <returns></returns>
         </member>
         <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Default">

@@ -70,12 +70,17 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
         /// Returns the invocation options for specified method
         /// </summary>
         /// <param name="methodInfo"></param>
+        /// <param name="clearTransportIfSame"></param>
         /// <returns></returns>
-        public static InvocationOptions GetOptions(MethodInfo methodInfo)
+        public static InvocationOptions GetOptions(MethodInfo methodInfo, bool clearTransportIfSame = false)
         {
             var options = Current;
             if (options.MethodInfo == methodInfo)
             {
+                if(clearTransportIfSame)
+                {
+                    return options.SetTransport(null);
+                }
                 return options;
             }
             if (options.MethodInfo == null)
