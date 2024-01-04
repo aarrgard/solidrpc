@@ -10,11 +10,75 @@ using System.Text;
 
 namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
+    public abstract class NewtonsoftConverter : JsonConverter
+    {
+        public static void SkipNode(JsonReader r, JsonSerializer s, StringBuilder sb)
+        {
+            switch (r.TokenType)
+            {
+                case JsonToken.StartObject:
+                    SkipNodeObject(r, s, sb);
+                    break;
+                case JsonToken.StartArray:
+                    SkipNodeArray(r, s, sb);
+                    break;
+                case JsonToken.String:
+                case JsonToken.Date:
+                    sb?.Append($"\"{r.Value}\"");
+                    break;
+                case JsonToken.Integer:
+                case JsonToken.Float:
+                case JsonToken.Boolean:
+                    sb?.Append(r.Value);
+                    break;
+                case JsonToken.Null:
+                    sb?.Append("null");
+                    break;
+                case JsonToken.Comment:
+                default:
+                    break;
+            }
+        }
+
+        public static void SkipNodeObject(JsonReader r, JsonSerializer s, StringBuilder sb)
+        {
+            if (r.TokenType != JsonToken.StartObject) throw new Exception("Not a start of object");
+            sb?.Append('{');
+            if (!r.Read()) throw new Exception("Failed to read");
+            while (r.TokenType != JsonToken.EndObject)
+            {
+                if (r.TokenType != JsonToken.PropertyName) throw new Exception("Not a property name:" + r.TokenType);
+                sb?.Append($"\"{r.Value}\":");
+                if (!r.Read()) throw new Exception("Failed to read");
+                SkipNode(r, s, sb);
+                if (!r.Read()) throw new Exception("Failed to read");
+            }
+            sb?.Append('}');
+        }
+
+        public static void SkipNodeArray(JsonReader r, JsonSerializer s, StringBuilder sb)
+        {
+            if (r.TokenType != JsonToken.StartArray) throw new Exception("Not a start of object");
+            sb?.Append('[');
+            if (!r.Read()) throw new Exception("Failed to read");
+            while (r.TokenType != JsonToken.EndArray)
+            {
+                SkipNode(r, s, sb);
+                if (!r.Read()) throw new Exception("Failed to read");
+                if (r.TokenType != JsonToken.EndArray)
+                {
+                    sb?.Append(',');
+                }
+            }
+            sb?.Append(']');
+        }
+    }
+
     /// <summary>
     /// A converter for converting json into structured elements
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class NewtonsoftConverter<T> : JsonConverter
+    public class NewtonsoftConverter<T> : NewtonsoftConverter
     {
         private delegate object ReadPropertyHandler(JsonReader r, object val, JsonSerializer s, ref IDictionary<string, string> sp);
 
@@ -345,9 +409,9 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                         {
                             rp = rp ?? new Dictionary<string, string>();
                             var sb = new StringBuilder();
-                            var res = SkipNode(r, o, s, sb);
+                            SkipNode(r, s, sb);
                             rp[propertyName] = sb.ToString();
-                            return res;
+                            return o;
                         }
                         var pmd = pmds.First();
                         var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
@@ -371,70 +435,9 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 };
             }
 
-            return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) => { return SkipNode(r, o, s, null); };
+            return (JsonReader r, object o, JsonSerializer s, ref IDictionary<string, string> rp) => { SkipNode(r, s, null); return o; };
         }
 
-        private object SkipNode(JsonReader r, object o, JsonSerializer s, StringBuilder sb)
-        {
-            switch(r.TokenType)
-            {
-                case JsonToken.StartObject:
-                    SkipNodeObject(r, o, s, sb);
-                    break;
-                case JsonToken.StartArray:
-                    SkipNodeArray(r, o, s, sb);
-                    break;
-                case JsonToken.String:
-                case JsonToken.Date:
-                    sb?.Append($"\"{r.Value}\"");
-                    break;
-                case JsonToken.Integer:
-                case JsonToken.Float:
-                case JsonToken.Boolean:
-                    sb?.Append(r.Value);
-                    break;
-                case JsonToken.Null:
-                    sb?.Append("null");
-                    break;
-                case JsonToken.Comment:
-                default:
-                    break;
-            }
-            return o;
-        }
-
-        private void SkipNodeObject(JsonReader r, object o, JsonSerializer s, StringBuilder sb)
-        {
-            if (r.TokenType != JsonToken.StartObject) throw new Exception("Not a start of object");
-            sb?.Append('{');
-            if (!r.Read()) throw new Exception("Failed to read");
-            while (r.TokenType != JsonToken.EndObject)
-            {
-                if (r.TokenType != JsonToken.PropertyName) throw new Exception("Not a property name:" + r.TokenType);
-                sb?.Append($"\"{r.Value}\":");
-                if (!r.Read()) throw new Exception("Failed to read");
-                SkipNode(r, o, s, sb);
-                if (!r.Read()) throw new Exception("Failed to read");
-            }
-            sb?.Append('}');
-        }
-
-        private void SkipNodeArray(JsonReader r, object o, JsonSerializer s, StringBuilder sb)
-        {
-            if (r.TokenType != JsonToken.StartArray) throw new Exception("Not a start of object");
-            sb?.Append('[');
-            if (!r.Read()) throw new Exception("Failed to read");
-            while (r.TokenType != JsonToken.EndArray)
-            {
-                SkipNode(r, o, s,sb);
-                if (!r.Read()) throw new Exception("Failed to read");
-                if(r.TokenType != JsonToken.EndArray)
-                {
-                    sb?.Append(',');
-                }
-            }
-            sb?.Append(']');
-        }
 
         private void ReadDictionaryData<Tp>(string propertyName, JsonReader r, object o, JsonSerializer s, Action<object, object> setParent) 
         {

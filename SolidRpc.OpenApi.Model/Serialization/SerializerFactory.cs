@@ -23,41 +23,41 @@ namespace SolidRpc.OpenApi.Model.Serialization
 
         public SerializerSettings DefaultSerializerSettings { get; set; }
 
-        public void SerializeToString<T>(out string s, T o, string contentType, Encoding charSet = null, bool prettyFormat = false)
+        public void SerializeToString<T>(out string s, T o, string contentType = "application/json", Encoding charSet = null, bool prettyFormat = false)
         {
             SerializeToString(out s, typeof(T), o, contentType, charSet, prettyFormat);
         }
 
-        public void DeserializeFromString<T>(string s, out T t, string contentType, Encoding charSet = null)
+        public void DeserializeFromString<T>(string s, out T t, string contentType = "application/json", Encoding charSet = null)
         {
             object o;
             DeserializeFromString(s, typeof(T), out o, contentType, charSet);
             t = (T)o;
         }
 
-        public void SerializeToStream<T>(Stream s, T o, string contentType, Encoding charSet = null, bool prettyFormat = false)
+        public void SerializeToStream<T>(Stream s, T o, string contentType = "application/json", Encoding charSet = null, bool prettyFormat = false)
         {
             SerializeToStream(s, typeof(T), o, contentType, charSet, prettyFormat);
         }
 
-        public void DeserializeFromStream<T>(Stream s, out T t, string contentType, Encoding charSet = null)
+        public void DeserializeFromStream<T>(Stream s, out T t, string contentType = "application/json", Encoding charSet = null)
         {
             object o;
             DeserializeFromStream(s, typeof(T), out o, contentType, charSet);
             t = (T)o;
         }
 
-        public void SerializeToStream(Stream s, Type type, object o, string contentType, Encoding charSet = null, bool prettyFormat = false)
+        public void SerializeToStream(Stream s, Type type, object o, string contentType = "application/json", Encoding charSet = null, bool prettyFormat = false)
         {
             GetSerializer(contentType, charSet, prettyFormat).Serialize(s, type, o);
         }
 
-        public void DeserializeFromStream(Stream s, Type type, out object o, string contentType, Encoding charSet = null)
+        public void DeserializeFromStream(Stream s, Type type, out object o, string contentType = "application/json", Encoding charSet = null)
         {
             GetSerializer(contentType, charSet).Deserialize(s, type, out o);
         }
 
-        public void SerializeToString(out string s, Type type, object o, string contentType, Encoding charSet = null, bool prettyFormat = false)
+        public void SerializeToString(out string s, Type type, object o, string contentType = "application/json", Encoding charSet = null, bool prettyFormat = false)
         {
             using (var ms = new MemoryStream())
             {
@@ -71,7 +71,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
             }
         }
 
-        public void DeserializeFromString(string s, Type type, out object o, string contentType, Encoding charSet = null)
+        public void DeserializeFromString(string s, Type type, out object o, string contentType = "application/json", Encoding charSet = null)
         {
             charSet = charSet ?? Encoding.UTF8;
             using (var ms = new MemoryStream(charSet.GetBytes(s)))
@@ -80,7 +80,7 @@ namespace SolidRpc.OpenApi.Model.Serialization
             }
         }
 
-        public ISerializer GetSerializer(string contentType, Encoding charSet = null, bool prettyPrint = false)
+        public ISerializer GetSerializer(string contentType = "application/json", Encoding charSet = null, bool prettyPrint = false)
         {
             var serializerSettings = DefaultSerializerSettings
                 .SetContentType(contentType)

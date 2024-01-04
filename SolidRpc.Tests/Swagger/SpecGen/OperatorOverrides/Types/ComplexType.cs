@@ -5,10 +5,24 @@ using System.Text;
 namespace SolidRpc.Tests.Swagger.SpecGen.OperatorOverrides.Types
 {
     /// <summary>
+    /// Interface
+    /// </summary>
+    public interface IComplexType
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        int X { get; set; }
+    }
+
+    /// <summary>
     /// ComplexType1
     /// </summary>
-    public class ComplexType
+    public class ComplexType : IComplexType
     {
+        public int X { get => 1; set { } }
+        int IComplexType.X { get => 2; set { } }
+
         /// <summary>
         /// 
         /// </summary>

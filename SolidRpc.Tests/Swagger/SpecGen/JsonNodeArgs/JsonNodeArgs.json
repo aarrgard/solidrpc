@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "JsonNodeArgs",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/SolidRpc/Tests/Swagger/SpecGen/JsonNodeArgs",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Services/IJsonNodeArgs/ProxyComplexTypeAsync": {
+      "post": {
+        "tags": [
+          "IJsonNodeArgs"
+        ],
+        "description": "",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_JsonNodeArgs_Services_IJsonNodeArgs_ProxyComplexTypeAsync",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "jsonNode",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ComplexType"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The complex type",
+            "schema": {
+              "$ref": "#/definitions/ComplexType"
+            }
+          }
+        }
+      }
+    },
+    "/Services/IJsonNodeArgs/ProxyJsonNodeAsync": {
+      "post": {
+        "tags": [
+          "IJsonNodeArgs"
+        ],
+        "description": "",
+        "operationId": "Post_SolidRpc_Tests_Swagger_SpecGen_JsonNodeArgs_Services_IJsonNodeArgs_ProxyJsonNodeAsync",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "jsonNode",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JsonNode"
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Represents some file data",
+            "schema": {
+              "$ref": "#/definitions/JsonNode"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComplexType": {
+      "properties": {
+        "StringData": {
+          "type": "string",
+          "description": "Some string data"
+        },
+        "JsonNode": {
+          "$ref": "#/definitions/JsonNode"
+        }
+      },
+      "type": "object",
+      "description": "The complex type"
+    },
+    "JsonNode": {
+      "type": "object",
+      "description": "Represents some file data"
+    }
+  },
+  "tags": [
+    {
+      "name": "IJsonNodeArgs",
+      "description": "Test interface to upload a file"
+    }
+  ]
+}

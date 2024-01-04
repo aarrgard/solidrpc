@@ -87,6 +87,12 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 contract.Converter = new StringValuesConverter();
                 return contract;
             }
+            if (JsonNodeConverter.CanConvert(type))
+            {
+                var contract = new JsonObjectContract(type);
+                contract.Converter = (JsonConverter)Activator.CreateInstance(typeof(JsonNodeConverter<>).MakeGenericType(type));
+                return contract;
+            }
             {
                 var converterType = typeof(NewtonsoftConverter<>).MakeGenericType(type);
                 var contract = new JsonObjectContract(type);

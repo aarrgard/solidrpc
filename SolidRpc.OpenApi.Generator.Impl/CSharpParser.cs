@@ -250,6 +250,14 @@ namespace SolidRpc.OpenApi.Generator.Impl
 
         private void CreateCSharpProperty(PropertyDeclarationSyntax pds)
         {
+            //
+            // do not add explicit interface calls
+            // these are not part of the reflected "Properties" during runtime either...
+            if(pds.ExplicitInterfaceSpecifier != null)
+            {
+                return;
+            }
+
             var (className, nameScope) = GetClassOrInterfaceName(pds);
             var m = GetMember(className, nameScope);
 

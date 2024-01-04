@@ -47,6 +47,13 @@
   },
   "definitions": {
     "ComplexType": {
+      "properties": {
+        "X": {
+          "type": "integer",
+          "format": "int32",
+          "description": ""
+        }
+      },
       "type": "object",
       "description": "ComplexType1"
     }

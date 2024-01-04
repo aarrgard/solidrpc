@@ -92,7 +92,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             Assert.IsTrue(dir.Exists);
             foreach (var subDir in dir.GetDirectories())
             {
-                //if (subDir.Name != "HttpRequestArgs") continue;
+                //if (subDir.Name != "OperatorOverrides") continue;
                 CreateSpec(subDir.Name, true);
             }
         }
@@ -112,12 +112,12 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 "-ProjectNamespace", $"{GetType().Assembly.GetName().Name}.Swagger.SpecGen.{dir.Name}",
                 openApiFile}).Wait();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.Out.WriteLine(e);
                 throw;
             }
-       }
+        }
 
         private DirectoryInfo GetSpecGenFolder(string folderName)
         {
@@ -126,7 +126,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
             path = Path.Combine(path, "SpecGen");
             path = Path.Combine(path, folderName);
             var dir = new DirectoryInfo(path);
-            if(!dir.Exists)
+            if (!dir.Exists)
             {
                 throw new ArgumentException("Cannot find path:" + folderName);
             }
@@ -330,7 +330,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
             };
         }
-        
+
         /// <summary>
         /// Tests invoking the generated proxy.
         /// </summary>
@@ -638,7 +638,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 // complex inheritance
                 var complexType = new ComplexAndSimpleArgs.Types.ComplexType2() {
                     CT1 = new ComplexAndSimpleArgs.Types.ComplexType1(),
-                    CT2 = new ComplexAndSimpleArgs.Types.ComplexType2() 
+                    CT2 = new ComplexAndSimpleArgs.Types.ComplexType2()
                 };
                 moq.Setup(o => o.GetSimpleAndComplexType(
                     It.Is<string>(s => s == "test"),
@@ -823,7 +823,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
         {
             return new LastModifiedArg.Types.FileType()
             {
-                Content = new MemoryStream(new byte[] { 1,2,3,4,5}),
+                Content = new MemoryStream(new byte[] { 1, 2, 3, 4, 5 }),
                 LastModified = lastModified
             };
         }
@@ -843,7 +843,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 await ctx.StartAsync();
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<UrlEncodeArg.Services.IUrlEncodeArg>();
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<UrlEncodeArg.Services.IUrlEncodeArg>>();
-                
+
                 var stringChecks = new[]
                 {
                     "",
@@ -859,7 +859,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                     "å ä ö Å Ä Ö",
                 };
 
-                foreach(var check in stringChecks)
+                foreach (var check in stringChecks)
                 {
                     moq.Setup(o => o.ProxyStrings(It.Is<string>(a => a == check), It.Is<string>(a => a == check))).Returns(() => check);
                     Assert.AreEqual(check, proxy.ProxyStrings(check, check));
@@ -871,18 +871,18 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 // byte array
                 //
                 var arr = new byte[1000];
-                for(int i = 0; i < arr.Length; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
                     arr[i] = (byte)i;
                 }
 
-                moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(a,arr)))).Returns(() => arr);
+                moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(a, arr)))).Returns(() => arr);
                 Assert.IsTrue(CompareStructs(arr, proxy.ProxyByteArray(arr)));
 
                 //
                 // raw post
                 //
-                if(ctx is TestHostContextKestrel)
+                if (ctx is TestHostContextKestrel)
                 {
                     // standard base64 encoded
                     var b64 = "A991R2IAAAAALABodHRwczovL2xvY2FsaG9zdDo1MDAxL1NvbGlkUnBjL0Fic3RyYWN0aW9uczcAQnJva2VySW1hZ2U6ODljMWVmNjctNWY0Yy00MGE3LTkxODktYWRiNzE2MjlmMzM0OnIxMDB4MAABcvnFdKkOCb5wa57Ov1F8FYT8d1sgN1Z%2fGE74o93zIKWyyMe2i%2fKbKy2f%2fQ032YLv4Nl3HcpXHaeApsrmPRPtXQBVmTeHVgjVfaz2FQbe06vV9MSmKsgmxZs1tCAlO6kzsOsN7e9cTYL5TzQyAiFqWN7hXEICWdiI9mBk%2f%2fZ0LO1n32TVXyrMclEBqMU%2fLkrGoOhvTsWL353iOLeMtzoLz+4dYOeezZSz2Cyc9jEWhBHGsHn+ly%2foqTb8CzJfPobQPQSjmF225Q+BA0v3eGCaem0VKfP2Pav59WabTECl38DSlyaKzHcpTbh+q9F9hqrxP%2fGq2A6JOyT7EzgPTPRhUw==";
@@ -920,7 +920,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
 
                 var stringCheck1 = "one/one";
                 var stringCheck2 = "one+one";
-                moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.FromResult(stringCheck1+stringCheck2));
+                moq.Setup(o => o.DoSometingAsync(It.Is<string>(a => a == stringCheck1), It.Is<string>(a => a == stringCheck2))).Returns(() => Task.FromResult(stringCheck1 + stringCheck2));
                 var res = await proxy.DoSometingAsync(stringCheck1, stringCheck2);
                 Assert.AreEqual("one/oneone+one", res);
 
@@ -954,7 +954,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var moq = new Mock<ByteArrArgs.Services.IByteArrArgs>(MockBehavior.Strict);
                 ctx.AddServerAndClientService(moq.Object, config);
                 await ctx.StartAsync();
-                var barr = new byte[] { 1,2,3 };
+                var barr = new byte[] { 1, 2, 3 };
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<ByteArrArgs.Services.IByteArrArgs>();
                 moq.Setup(o => o.ProxyByteArray(It.Is<byte[]>(a => CompareStructs(barr, a)))).Returns(() => barr);
                 var res = proxy.ProxyByteArray(barr);
@@ -982,7 +982,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var res = proxy.ProxyDateTimeOffset(dt);
 
                 // check other formats
-                if(ctx is TestHostContextKestrel)
+                if (ctx is TestHostContextKestrel)
                 {
                     var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<DateTimeArg.Services.IDateTimeArg>>();
                     var path = await invoker.GetUriAsync(o => o.ProxyDateTimeOffset(DateTimeOffset.MinValue));
@@ -1035,7 +1035,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var proxy = ctx.ClientServiceProvider.GetRequiredService<Redirect.Services.IRedirect>();
 
                 var location = await ctx.ClientServiceProvider.GetRequiredService<IInvoker<Redirect.Services.IRedirect>>().GetUriAsync(o => o.Redirected());
-                
+
                 //moq.Setup(o => o.Redirect(It.Is<Redirect.Types.Redirect>(a => CompareStructs(a, CreateRedirect())))).Returns(() => CreateRedirect());
                 moq.Setup(o => o.Redirect(It.IsAny<Redirect.Types.Redirect>())).Returns(() => CreateRedirect(location.ToString()));
                 //moq.Setup(o => o.Redirected()).Returns(() => CreateRedirect(location.ToString()));
@@ -1145,7 +1145,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var postResp = await httpClient.PostAsync(strUri.Substring(0, strUri.IndexOf('?')), content);
                 var postStrResp = await postResp.Content.ReadAsStringAsync();
                 Assert.AreEqual("{\"access_token\":\"AccessToken\"}", postStrResp);
-                
+
                 // test discovery
                 uri = await invoker.GetUriAsync(o => o.Discovery(CancellationToken.None));
                 Assert.AreEqual("/SolidRpc/Tests/Swagger/SpecGen/OAuth2/.well-known/openid-configuration", uri.PathAndQuery.ToString());
@@ -1182,8 +1182,8 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 //
                 // proxying strings should still work
                 //
-                var farr = new[] { 
-                    new FormAsStructArg.Types.FormData() { 
+                var farr = new[] {
+                    new FormAsStructArg.Types.FormData() {
                         StringValue = "struct1"
                     },
                     new FormAsStructArg.Types.FormData() {
@@ -1207,7 +1207,7 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<FormAsStructArg.Services.IFormAsStructArg>>();
                 var uri = await invoker.GetUriAsync(o => o.GetFormData(formData));
                 var httpClient = ctx.ClientServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("FormAsStructArg");
-                
+
                 // all params
                 var dict = new Dictionary<string, string>()
                 {
@@ -1249,6 +1249,56 @@ namespace SolidRpc.Tests.Swagger.SpecGen
                 Assert.AreEqual(HttpStatusCode.OK, httpRes.StatusCode);
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(await httpRes.Content.ReadAsStringAsync(), out res);
                 CompareStructs(formData, res);
+
+            });
+        }
+
+        /// <summary>
+        /// Tests invoking the generated proxy.
+        /// </summary>
+        [Test]
+        public Task TestJsonNodeArgs()
+        {
+            return RunTestInContext(async ctx =>
+            {
+                var config = ReadOpenApiConfiguration(nameof(TestJsonNodeArgs).Substring(4));
+
+                var moq = new Mock<JsonNodeArgs.Services.IJsonNodeArgs>(MockBehavior.Strict);
+                ctx.AddServerAndClientService(moq.Object, config);
+                
+
+
+                await ctx.StartAsync();
+                var proxy = ctx.ClientServiceProvider.GetRequiredService<JsonNodeArgs.Services.IJsonNodeArgs>();
+
+                //
+                // invoke json node arg
+                //
+                var json = "{\"test\":\"test\"}";
+                moq.Setup(o => o.ProxyJsonNodeAsync(
+                     It.Is<JsonNodeArgs.Types.JsonNode>(n => ((string) n) == json),
+                     It.IsAny<CancellationToken>()
+                     )).Returns(Task.FromResult((JsonNodeArgs.Types.JsonNode)json));
+
+                var jsonNode = await proxy.ProxyJsonNodeAsync(json);
+                Assert.AreEqual(json, (string)jsonNode);
+
+                //
+                // invoke complex type
+                //
+                var complexType = new JsonNodeArgs.Types.ComplexType()
+                {
+                    StringData = "test",
+                    JsonNode = json
+                };
+                moq.Setup(o => o.ProxyComplexTypeAsync(
+                     It.IsAny<JsonNodeArgs.Types.ComplexType>(),
+                     It.IsAny<CancellationToken>()
+                     )).Returns(Task.FromResult(complexType));
+
+                complexType = await proxy.ProxyComplexTypeAsync(complexType);
+                Assert.AreEqual("test", complexType.StringData);
+                Assert.AreEqual(json, (string)complexType.JsonNode);
 
             });
         }

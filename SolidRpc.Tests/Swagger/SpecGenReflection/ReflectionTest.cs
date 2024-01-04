@@ -158,14 +158,26 @@ namespace SolidRpc.Tests.Swagger.SpecGenReflection
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public interface ITestStruct
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            int IntProp { get; set; }
+        }
+
+        /// <summary>
         /// The test struct
         /// </summary>
-        public class TestStruct
+        public class TestStruct : ITestStruct
         {
             /// <summary>
             /// The int property
             /// </summary>
             public int IntProp { get; set; }
+            int ITestStruct.IntProp { get; set; }
 
             /// <summary>
             /// Recursive property

@@ -72,7 +72,7 @@ namespace SolidRpc.Tests
         /// </summary>
         public class TestHostContextKestrel : TestHostContext, IStartup
         {
-            private static int s_hostPort = 5000;
+            private static int s_hostPort = 5134;
             /// <summary>
             /// Constructor
             /// </summary>
