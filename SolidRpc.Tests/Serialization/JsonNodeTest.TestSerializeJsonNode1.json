@@ -1,0 +1,1668 @@
+{
+  "data": {
+    "dataObject": {
+      "id": "MDMwN3wwMDAwMDAwMDAwMXw1OA..",
+      "saleInformation": {
+        "startingPrice": 1100000,
+        "finalPrice": 1200000,
+        "currency": "SEK",
+        "contractType": {
+          "constant": "ENUMS_CONTRACTTYPES_TYPE_SALES",
+          "translation": "Förmedling"
+        },
+        "contractDate": "2023-07-20",
+        "accessDate": "2023-07-31",
+        "objectStatus": {
+          "constant": "ENUMS_OBJECTSTATUS_TYPE_SOLD",
+          "translation": "Såld"
+        },
+        "webPageURL": "http://127.0.0.1/sites/broker307/wp-admin/admin-ajax.php?action=mspecsapi&api=dealPage&deal=MDMwN3wwMDAwMDAwMDAwMXw1OA..",
+        "webPageImagesURL": "http://127.0.0.1/sites/broker307/wp-admin/admin-ajax.php?action=mspecsapi&api=dealImage&deal=MDMwN3wwMDAwMDAwMDAwMXw1OA.."
+      },
+      "capitalGainCalculation": {
+        "sale": {
+          "price": 1200000,
+          "commission": 100000
+        },
+        "improvements": [],
+        "sellerData": [
+          {
+            "id": "MDMwN3wwMDAwMDAwMDAwNXwyOTE.",
+            "sellerId": "MDMwN3wwMDAwMDAwMDAwMXw2MQ..",
+            "ownerInformation": {
+              "propertyUsedAsPermanentOrHolidayLivingFullPeriod": false,
+              "isForcedSale": false
+            },
+            "reversalInformation": {
+              "beenLivingOneYearPrecedingSale": false,
+              "beenLiving3OfLast5YearsBeforeSale": false,
+              "acquiredNewHomeBeforeSale": false
+            },
+            "deferralInformation": {
+              "typeOfDeferral": "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_PRELIMINARY",
+              "newShare": 100
+            }
+          }
+        ]
+      },
+      "sellers": [
+        {
+          "contactDetails": {
+            "isLegalEntity": false,
+            "id": "MDMwN3wwMDAwMDAwMDAwM3w0Ng..",
+            "identifier": "198703220718",
+            "firstName": "Nils",
+            "lastName": "Nilsson",
+            "address": {
+              "streetAddress": "Vaksalagatan 1B"
+            },
+            "createdDate": "2023-02-13T12:26:07.000Z",
+            "isDeceased": false,
+            "isIdentifierVerified": false
+          }
+        }
+      ],
+      "customFields": {}
+    },
+    "errors": {
+      "dataObjectErrors": {
+        "validationErrors": []
+      }
+    }
+  },
+  "uiSchema": {
+    "type": "Group",
+    "elements": [
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Group",
+            "label": "CAPITAL_GAIN_SALE",
+            "description": "CUSTOMER_PAGE_CAPITAL_GAIN_SALE_DESCRIPTION",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/contractDate",
+                        "label": "CAPITAL_GAIN_CONTRACT_DATE"
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/price",
+                        "label": "CAPITAL_GAIN_SALESPRICE",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/commission",
+                        "label": "COMMISSION",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/valuation",
+                        "label": "SALE_VALUATION",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/inspection",
+                        "label": "SALE_INSPECTION",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/otherCosts",
+                        "label": "CAPITAL_GAIN_OTHER",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/repairFundAmount",
+                        "label": "CAPITAL_GAIN_REPAIR_FUND",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/apartmentEquipment",
+                        "label": "CAPITAL_GAIN_APARTMENT_EQUIPMENT",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/sale/properties/apartmentNumber",
+                        "label": "CAPITAL_GAIN_APARTMENT_NUMBER"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Group",
+            "label": "CAPITAL_GAIN_BUYING",
+            "description": "CUSTOMER_PAGE_CAPITAL_GAIN_BUYING_DESCRIPTION",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/contractDate",
+                        "label": "CAPITAL_GAIN_CONTRACT_DATE"
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/price",
+                        "label": "CAPITAL_GAIN_BUYING_PRICE",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/assetValue1952",
+                        "label": "CAPITAL_GAIN_ASSET_VALUE_1974",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/apartmentEquipment",
+                        "label": "CAPITAL_GAIN_APARTMENT_EQUIPMENT",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/specialCharges",
+                        "label": "CAPITAL_GAIN_SPECIAL_CHARGES",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/capitalContributions",
+                        "label": "BUY_CAPITAL_CONTRIBUTIONS",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/repairFundAmount",
+                        "label": "BUY_REPAIR_FUND_AMOUNT",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/capitalGainCalculation/properties/purchase/properties/otherCosts",
+                        "label": "CAPITAL_GAIN_OTHER",
+                        "options": {
+                          "suffix": "SEK"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Mspx_CapitalGainImprovments",
+            "label": "CAPITAL_GAIN_IMPROVEMENTS",
+            "scope": "#/properties/capitalGainCalculation/properties/improvements",
+            "options": {
+              "format": "table",
+              "detail": {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/year",
+                    "label": "YEAR",
+                    "options": {
+                      "format": "year"
+                    }
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/description",
+                    "label": "CAPITAL_GAIN_INFORMATION_REFERS_TO"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/cost",
+                    "label": "COST"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/costDeduction",
+                    "label": "CAPITAL_GAIN_ROT_DEDUCTION"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "label": "CAPTIAL_GAIN_SELLER",
+        "elements": [
+          {
+            "type": "Mspx_CapitalGainSellers",
+            "scope": "#/properties/capitalGainCalculation/properties/sellerData",
+            "options": {
+              "detail": {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Group",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/reversalInformation/properties/reversalOfDeferralAmount",
+                        "label": "CAPITAL_GAIN_REVERSAL_OF_DEFERRAL",
+                        "options": {
+                          "suffix": "SEK",
+                          "inputWidth": "medium",
+                          "stackedLabel": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Group",
+                    "label": "CAPITAL_GAIN_VIEW_INFORMATION_TEXT",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/ownerInformation/properties/propertyUsedAsPermanentOrHolidayLivingFullPeriod",
+                        "label": "CAPITAL_GAIN_VIEW_INFORMATION_ENTIRE_PERIOD"
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/ownerInformation/properties/livingPeriodFromDate",
+                        "label": "CAPITAL_GAIN_VIEW_INFORMATION_PERIOD_FROM",
+                        "rule": {
+                          "effect": "DISABLE",
+                          "condition": {
+                            "scope": "#/properties/ownerInformation/properties/propertyUsedAsPermanentOrHolidayLivingFullPeriod",
+                            "schema": {
+                              "const": true
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/ownerInformation/properties/livingPeriodToDate",
+                        "label": "CAPITAL_GAIN_VIEW_INFORMATION_PERIOD_TO",
+                        "rule": {
+                          "effect": "DISABLE",
+                          "condition": {
+                            "scope": "#/properties/ownerInformation/properties/propertyUsedAsPermanentOrHolidayLivingFullPeriod",
+                            "schema": {
+                              "const": true
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/ownerInformation/properties/propertyUsedForPermanentOrHolidayLiving",
+                        "label": "CAPITAL_GAIN_VIEW_INFORMATION_PERCENTAGE_TEXT",
+                        "options": {
+                          "format": "percentage"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Group",
+                    "label": "CAPITAL_GAIN_VIEW_INFORMATION_RESIDENCE_TEXT",
+                    "elements": [
+                      {
+                        "type": "Group",
+                        "label": "CAPITAL_GAIN_VIEW_INFORMATION_LIVING_ON_PROPERTY_TEXT",
+                        "elements": [
+                          {
+                            "type": "Control",
+                            "scope": "#/properties/ownerInformation/properties/livedOnPropertyFromDate",
+                            "label": "FROM"
+                          },
+                          {
+                            "type": "Control",
+                            "scope": "#/properties/ownerInformation/properties/livedOnPropertyToDate",
+                            "label": "TO"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/ownerInformation/properties/isForcedSale",
+                        "label": "CUSTOMER_PAGE_ISFORCEDSALE",
+                        "helpText": "CUSTOMER_PAGE_ISFORCEDSALE_HELP_TEXT",
+                        "options": {
+                          "stackedLabel": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Group",
+                    "label": "CAPITAL_GAIN_VIEW_INFORMATION_SEARCH_DEFERRAL",
+                    "elements": [
+                      {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                          {
+                            "type": "VerticalLayout",
+                            "elements": [
+                              {
+                                "type": "Control",
+                                "scope": "#/properties/reversalInformation/properties/beenLivingOneYearPrecedingSale",
+                                "label": "CUSTOMER_PAGE_BEENLIVINGONEYEARPRECEDINGSALE",
+                                "options": {
+                                  "noWidth": true,
+                                  "reverseLabel": true
+                                }
+                              },
+                              {
+                                "type": "Control",
+                                "scope": "#/properties/reversalInformation/properties/beenLiving3OfLast5YearsBeforeSale",
+                                "label": "CUSTOMER_PAGE_BEENLIVING3OFLAST5YEARSBEFORESALE",
+                                "options": {
+                                  "noWidth": true,
+                                  "reverseLabel": true
+                                }
+                              },
+                              {
+                                "type": "Control",
+                                "scope": "#/properties/reversalInformation/properties/acquiredNewHomeBeforeSale",
+                                "label": "CAPITAL_GAIN_VIEW_INFORMATION_PRIMARY_RESIDENCE_OPTION3",
+                                "options": {
+                                  "noWidth": true,
+                                  "reverseLabel": true
+                                }
+                              },
+                              {
+                                "type": "Control",
+                                "scope": "#/properties/deferralInformation/properties/typeOfDeferral",
+                                "options": {
+                                  "noLabel": true,
+                                  "defaultValue": "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_PRELIMINARY"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Group",
+                    "rule": {
+                      "effect": "SHOW",
+                      "condition": {
+                        "scope": "#/properties/deferralInformation/properties/typeOfDeferral",
+                        "schema": {
+                          "const": "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_FINAL"
+                        }
+                      }
+                    },
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/deferralInformation/properties/newProperty",
+                        "label": "CAPITAL_GAIN_NEW_PROPERTY_TEXT"
+                      },
+                      {
+                        "type": "Group",
+                        "rule": {
+                          "effect": "SHOW",
+                          "condition": {
+                            "scope": "#/properties/deferralInformation/properties/newProperty",
+                            "schema": {
+                              "enum": [
+                                "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_NEW_PROPERTY_TENANT_OWNERSHIP"
+                              ]
+                            }
+                          }
+                        },
+                        "elements": [
+                          {
+                            "type": "HorizontalLayout",
+                            "elements": [
+                              {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/propertyName",
+                                    "label": "HOUSING_ASSOCIATION_NAME",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/apartmentNumber",
+                                    "label": "APARTMENT_NUMBER",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/contractDate",
+                                    "label": "CONTRACT_DATE",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/price",
+                                    "label": "PRICE",
+                                    "options": {
+                                      "stackedLabel": true,
+                                      "inputWidth": "medium",
+                                      "suffix": "SEK"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/identifier",
+                                    "label": "IDENTIFIER_HOUSINGASSOCIATIONS",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/newShare",
+                                    "label": "CAPITAL_GAIN_OWNED_SHARE_IN_NEW_PROPERTY_PERCENTAGE",
+                                    "options": {
+                                      "format": "percentage",
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/dateOfSettlement",
+                                    "label": "CAPITAL_GAIN_DATE_OF_SETTLEMENT",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Group",
+                        "rule": {
+                          "effect": "SHOW",
+                          "condition": {
+                            "scope": "#/properties/deferralInformation/properties/newProperty",
+                            "schema": {
+                              "const": "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_NEW_PROPERTY_HOUSE_OR_CONDOMINIUM"
+                            }
+                          }
+                        },
+                        "elements": [
+                          {
+                            "type": "HorizontalLayout",
+                            "elements": [
+                              {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/propertyName",
+                                    "label": "PROPERTY_NAME",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/contractDate",
+                                    "label": "CONTRACT_DATE",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/price",
+                                    "label": "PRICE",
+                                    "options": {
+                                      "stackedLabel": true,
+                                      "inputWidth": "medium",
+                                      "suffix": "SEK"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/newShare",
+                                    "label": "CAPITAL_GAIN_OWNED_SHARE_IN_NEW_PROPERTY_PERCENTAGE",
+                                    "options": {
+                                      "format": "percentage",
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/dateOfSettlement",
+                                    "label": "CAPITAL_GAIN_DATE_OF_SETTLEMENT",
+                                    "options": {
+                                      "stackedLabel": true
+                                    }
+                                  },
+                                  {
+                                    "type": "Control",
+                                    "scope": "#/properties/deferralInformation/properties/newAndRemodeling",
+                                    "label": "NEW_AND_REMODELLING",
+                                    "options": {
+                                      "stackedLabel": true,
+                                      "inputWidth": "medium",
+                                      "suffix": "SEK"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "jsonSchema": {
+    "type": "object",
+    "required": [],
+    "properties": {
+      "id": {
+        "description": "Id for deal",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "id"
+      },
+      "saleInformation": {
+        "description": "Sale information details",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "startingPrice": {
+                "description": "Starting price",
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "money",
+                "minimum": 0,
+                "maximum": 1000000000000000
+              },
+              "finalPrice": {
+                "description": "Final price",
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "format": "money",
+                "minimum": 0,
+                "maximum": 1000000000000000
+              },
+              "currency": {
+                "description": "Price currency",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 3
+              },
+              "contractType": {
+                "description": "Broker contract type\n\n<details>\n<summary>\nEnums\n</summary>\n\n| Constant | Swedish translation | English translation |\n|----------|---------------------|---------------------|\n| ENUMS_CONTRACTTYPES_TYPE_PAID ESTIMATE |  |  |\n| ENUMS_CONTRACTTYPES_TYPE_SALES |  |  |\n| ENUMS_CONTRACTTYPES_TYPE_WRITE ASSIGNMENT |  |  |\n</details>",
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "constant": {
+                    "description": "",
+                    "type": "string"
+                  },
+                  "translation": {
+                    "description": "",
+                    "type": "string"
+                  }
+                },
+                "constant": {
+                  "format": "enum",
+                  "type": "string",
+                  "enum": [
+                    "ENUMS_CONTRACTTYPES_TYPE_WRITE ASSIGNMENT",
+                    "ENUMS_CONTRACTTYPES_TYPE_SALES",
+                    "ENUMS_CONTRACTTYPES_TYPE_PAID ESTIMATE"
+                  ]
+                }
+              },
+              "contractDate": {
+                "description": "Date contract was signed",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "accessDate": {
+                "description": "Access date for buyer",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "earliestAccessDateDescription": {
+                "description": "",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 100
+              },
+              "objectStatus": {
+                "description": "Status of deal\n\n<details>\n<summary>\nEnums\n</summary>\n\n| Constant | Swedish translation | English translation |\n|----------|---------------------|---------------------|\n| ENUMS_OBJECTSTATUS_TYPE_ARCHIVED |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_ASSIGNMENT_SIGNED |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_AVAILABLE_FOR_RENT |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_CLOSED |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_COMING |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_DORMANT |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_ESTIMATE |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_FOR_SALE |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_INTAKE |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_IN_PROGRESS |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_LEASED |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_LOST_LISTING |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_MARKETING |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_NO ASSIGNMENT |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_OTHER |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_REFERENCE |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_REPOSSESSED |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_RESERVED |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_SOLD |  |  |\n| ENUMS_OBJECTSTATUS_TYPE_TERMINATED |  |  |\n</details>",
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "constant": {
+                    "description": "",
+                    "type": "string"
+                  },
+                  "translation": {
+                    "description": "",
+                    "type": "string"
+                  }
+                },
+                "constant": {
+                  "format": "enum",
+                  "type": "string",
+                  "enum": [
+                    "ENUMS_OBJECTSTATUS_TYPE_IN_PROGRESS",
+                    "ENUMS_OBJECTSTATUS_TYPE_REPOSSESSED",
+                    "ENUMS_OBJECTSTATUS_TYPE_ESTIMATE",
+                    "ENUMS_OBJECTSTATUS_TYPE_DORMANT",
+                    "ENUMS_OBJECTSTATUS_TYPE_RESERVED",
+                    "ENUMS_OBJECTSTATUS_TYPE_COMING",
+                    "ENUMS_OBJECTSTATUS_TYPE_NO ASSIGNMENT",
+                    "ENUMS_OBJECTSTATUS_TYPE_LOST_LISTING",
+                    "ENUMS_OBJECTSTATUS_TYPE_OTHER",
+                    "ENUMS_OBJECTSTATUS_TYPE_ARCHIVED",
+                    "ENUMS_OBJECTSTATUS_TYPE_CLOSED",
+                    "ENUMS_OBJECTSTATUS_TYPE_REFERENCE",
+                    "ENUMS_OBJECTSTATUS_TYPE_FOR_SALE",
+                    "ENUMS_OBJECTSTATUS_TYPE_INTAKE",
+                    "ENUMS_OBJECTSTATUS_TYPE_MARKETING",
+                    "ENUMS_OBJECTSTATUS_TYPE_SOLD",
+                    "ENUMS_OBJECTSTATUS_TYPE_LEASED",
+                    "ENUMS_OBJECTSTATUS_TYPE_TERMINATED",
+                    "ENUMS_OBJECTSTATUS_TYPE_AVAILABLE_FOR_RENT",
+                    "ENUMS_OBJECTSTATUS_TYPE_ASSIGNMENT_SIGNED"
+                  ]
+                }
+              },
+              "marketingMethodDescription": {
+                "description": "",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quotationDueDate": {
+                "description": "",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "quotationDescription": {
+                "description": "",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 100
+              },
+              "webPageURL": {
+                "description": "URL to deal at broker's website",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              },
+              "webPageImagesURL": {
+                "description": "URL to images at broker's website",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 200
+              }
+            }
+          }
+        ]
+      },
+      "sellers": {
+        "description": "**Access grant data**\n        \nData in this section is restricted. Only specific services will gain access too this data. Read more here: [Access Grants](#section/Access-Grants)\n\nThe sellers for this deal",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "contactDetails": {
+              "description": "Seller details company, if the seller is a company",
+              "allOf": [
+                {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [],
+                      "properties": {
+                        "isLegalEntity": {
+                          "description": "Indicator if contact details are for company (true) or person anything else",
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "id": {
+                          "description": "Id for company",
+                          "type": "string",
+                          "format": "id"
+                        },
+                        "identifier": {
+                          "description": "Company identifier. Swe: organizationsnummer",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "name": {
+                          "description": "Company name",
+                          "type": "string",
+                          "maxLength": 120
+                        },
+                        "nationality": {
+                          "description": "Nationality of company",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "address": {
+                          "description": "Company address",
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "required": [],
+                              "properties": {
+                                "streetAddress": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 100
+                                },
+                                "co": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 100
+                                },
+                                "postalCode": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 20
+                                },
+                                "city": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 100
+                                },
+                                "registeredResidenceCountry": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 60
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "communication": {
+                          "description": "Company communication details",
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "required": [],
+                              "properties": {
+                                "phoneNumber": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 25
+                                },
+                                "email": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 80
+                                },
+                                "faxNumber": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 25
+                                },
+                                "websiteUrl": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 150
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "createdDate": {
+                          "description": "Record created at",
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "firstName",
+                        "lastName"
+                      ],
+                      "properties": {
+                        "isLegalEntity": {
+                          "description": "Indicator if contact details are for company (true) or person anything else",
+                          "type": "boolean"
+                        },
+                        "id": {
+                          "description": "Id for person",
+                          "type": "string",
+                          "format": "id"
+                        },
+                        "identifier": {
+                          "description": "Person identifier. Swe: personnummer",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "extraIdentifier": {
+                          "description": "Person other identifier e.g. foreign SSN",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "firstName": {
+                          "description": "First name",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "lastName": {
+                          "description": "Last name",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "nationality": {
+                          "description": "Nationality of person",
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "passportNumber": {
+                          "description": "Passport number for a person",
+                          "type": "string",
+                          "maxLength": 20
+                        },
+                        "address": {
+                          "description": "Person address",
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "required": [],
+                              "properties": {
+                                "streetAddress": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 100
+                                },
+                                "co": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 100
+                                },
+                                "postalCode": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 20
+                                },
+                                "city": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 100
+                                },
+                                "registeredResidenceCountry": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 60
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "communication": {
+                          "description": "Person communication details",
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "required": [],
+                              "properties": {
+                                "phoneNumber": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 25
+                                },
+                                "email": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 80
+                                },
+                                "faxNumber": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 25
+                                },
+                                "websiteUrl": {
+                                  "description": "",
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "maxLength": 150
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "createdDate": {
+                          "description": "Record created at",
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "isDeceased": {
+                          "description": "Indicates if seller is deceased, Swe: Dödsbo",
+                          "type": "boolean"
+                        },
+                        "isIdentifierVerified": {
+                          "description": "Indicates if identitfier has been verified",
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ],
+                  "type": "object",
+                  "required": [],
+                  "properties": {
+                    "isLegalEntity": {
+                      "description": "Indicator if contact details are for company (true) or person anything else",
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "capitalGainCalculation": {
+        "description": "Capital gain calculation for seller.",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "purchase": {
+                "description": "Information about the purchase of the house or apartment.",
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "contractDate": {
+                        "description": "",
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "date"
+                      },
+                      "price": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "assetValue1952": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "apartmentEquipment": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "specialCharges": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "capitalContributions": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "repairFundAmount": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "landRegistrationFee": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "mortgageFee": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "inspection": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "otherCosts": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      }
+                    }
+                  }
+                ]
+              },
+              "sale": {
+                "description": "Information about the sale of the house or apartment.",
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "contractDate": {
+                        "description": "",
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "date"
+                      },
+                      "price": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "commission": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "valuation": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "inspection": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "otherCosts": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "repairFundAmount": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "apartmentEquipment": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "apartmentNumber": {
+                        "description": "",
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 30
+                      }
+                    }
+                  }
+                ]
+              },
+              "improvements": {
+                "description": "Information about improvements to the house or apartment.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {
+                    "id": {
+                      "description": "",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "id"
+                    },
+                    "year": {
+                      "description": "",
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 1000,
+                      "maximum": 9999
+                    },
+                    "description": {
+                      "description": "",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 200
+                    },
+                    "cost": {
+                      "description": "",
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "format": "money",
+                      "minimum": 0,
+                      "maximum": 1000000000000000
+                    },
+                    "costDeduction": {
+                      "description": "",
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "format": "money",
+                      "minimum": 0,
+                      "maximum": 1000000000000000
+                    },
+                    "newAndRemodelling": {
+                      "description": "",
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "repairAndMaintenance": {
+                      "description": "",
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              },
+              "sellerData": {
+                "description": "Information about a sellers usage of the house or apartment.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "sellerId"
+                  ],
+                  "properties": {
+                    "id": {
+                      "description": "",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "id"
+                    },
+                    "sellerId": {
+                      "description": "Id of seller this data applies to",
+                      "type": "string",
+                      "format": "id"
+                    },
+                    "ownerInformation": {
+                      "description": "Information about a sellers usage of the house or apartment.",
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "propertyUsedAsPermanentOrHolidayLivingFullPeriod": {
+                              "description": "",
+                              "type": [
+                                "boolean",
+                                "null"
+                              ]
+                            },
+                            "livingPeriodFromDate": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date"
+                            },
+                            "livingPeriodToDate": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date"
+                            },
+                            "propertyUsedForPermanentOrHolidayLiving": {
+                              "description": "",
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "livedOnPropertyFromDate": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date"
+                            },
+                            "livedOnPropertyToDate": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date"
+                            },
+                            "isForcedSale": {
+                              "description": "",
+                              "type": [
+                                "boolean",
+                                "null"
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "reversalInformation": {
+                      "description": "Information reversal by a seller.",
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "reversalOfDeferralAmount": {
+                              "description": "",
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "format": "money",
+                              "minimum": 0,
+                              "maximum": 1000000000000000
+                            },
+                            "beenLivingOneYearPrecedingSale": {
+                              "description": "At least one year immediately preceding the date of sale under the purchase contact",
+                              "type": [
+                                "boolean",
+                                "null"
+                              ]
+                            },
+                            "beenLiving3OfLast5YearsBeforeSale": {
+                              "description": "A minimum of three years of the last five years before date of sale under the purchase contract",
+                              "type": [
+                                "boolean",
+                                "null"
+                              ]
+                            },
+                            "acquiredNewHomeBeforeSale": {
+                              "description": "I have acquired my new home before the sale of the property and requests the residence conditions shall be assessed at acquisition date for my new home",
+                              "type": [
+                                "boolean",
+                                "null"
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "deferralInformation": {
+                      "description": "Information deferral by a seller.",
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "typeOfDeferral": {
+                              "description": "<details>\n<summary>\nEnums\n</summary>\n\n| Constant | Swedish translation | English translation |\n|----------|---------------------|---------------------|\n| ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_FINAL |  |  |\n| ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_PRELIMINARY |  |  |\n</details>",
+                              "format": "enum",
+                              "type": "string",
+                              "enum": [
+                                "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_PRELIMINARY",
+                                "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_DEFERRAL_FINAL"
+                              ]
+                            },
+                            "newProperty": {
+                              "description": "<details>\n<summary>\nEnums\n</summary>\n\n| Constant | Swedish translation | English translation |\n|----------|---------------------|---------------------|\n| ENUM_CAPITAL_GAIN_CALCULATION_SELLER_NEW_PROPERTY_HOUSE_OR_CONDOMINIUM |  |  |\n| ENUM_CAPITAL_GAIN_CALCULATION_SELLER_NEW_PROPERTY_TENANT_OWNERSHIP |  |  |\n</details>",
+                              "format": "enum",
+                              "type": "string",
+                              "enum": [
+                                "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_NEW_PROPERTY_HOUSE_OR_CONDOMINIUM",
+                                "ENUM_CAPITAL_GAIN_CALCULATION_SELLER_NEW_PROPERTY_TENANT_OWNERSHIP"
+                              ]
+                            },
+                            "propertyName": {
+                              "description": "used to store HA name as well as property designation",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "maxLength": 200
+                            },
+                            "apartmentNumber": {
+                              "description": "Only K6",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "maxLength": 20
+                            },
+                            "contractDate": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date"
+                            },
+                            "price": {
+                              "description": "",
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "format": "money",
+                              "minimum": 0,
+                              "maximum": 1000000000000000
+                            },
+                            "identifier": {
+                              "description": "Used to store HA organizationNr, Only K6",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "maxLength": 20
+                            },
+                            "newShare": {
+                              "description": "This share needs to be in percentage",
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "dateOfSettlement": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date"
+                            },
+                            "newAndRemodeling": {
+                              "description": "Only K5",
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "format": "money",
+                              "minimum": 0,
+                              "maximum": 1000000000000000
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "formStatus": "ENUM_FORM_INVITATIONS_FORM_STATUS_OPEN",
+  "latestSavedDate": "2023-07-17T13:35:55.000Z"
+}

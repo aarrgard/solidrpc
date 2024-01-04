@@ -1,0 +1,656 @@
+{
+  "data": {
+    "dataObject": {
+      "id": "MDMwN3wwMDAwMDAwMDAwMXw1OA..",
+      "currency": "SEK",
+      "economy": {
+        "costs": {
+          "otherOperatingCosts": []
+        }
+      },
+      "estate": {
+        "isSharedOwnership": false
+      },
+      "customFields": {}
+    },
+    "errors": {
+      "dataObjectErrors": {
+        "validationErrors": []
+      }
+    }
+  },
+  "uiSchema": {
+    "type": "Group",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/costs/properties/rent",
+                "label": "MONTHLY_RENT",
+                "options": {
+                  "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/personsInHousehold",
+                "label": "CUSTOMER_PAGE_PERSONSINHOUSEHOLD",
+                "helpText": "CUSTOMER_PAGE_PERSONSINHOUSEHOLD_HELP_TEXT"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/costs/properties/householdElectricity",
+                "label": "CUSTOMER_PAGE_HOUSEHOLDELECTRICITYCOST",
+                "helpText": "CUSTOMER_PAGE_HOUSEHOLDELECTRICITYCOST_HELP_TEXT",
+                "options": {
+                  "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/electricityConsumption",
+                "label": "CUSTOMER_PAGE_ENERGYCONSUMPTION",
+                "helpText": "CUSTOMER_PAGE_ENERGYCONSUMPTION_HELP_TEXT",
+                "options": {
+                  "suffix": "kWh/år"
+                }
+              }
+            ]
+          },
+          {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/costs/properties/heating",
+                "label": "CUSTOMER_PAGE_HEATINGCOST",
+                "helpText": "CUSTOMER_PAGE_HEATINGCOST_HELP_TEXT",
+                "options": {
+                  "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/costs/properties/insurance",
+                "label": "TENANT_INSURANCE_FEE",
+                "helpText": "CUSTOMER_PAGE_TENANT_INSURANCE_FEE_HELP_TEXT",
+                "options": {
+                  "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/economy/properties/costs/properties/condominiumSupplement",
+                "label": "CONDOMINIUM_SUPPLEMENT",
+                "helpText": "CUSTOMER_PAGE_CONDOMINIUM_SUPPLEMENT_HELP_TEXT",
+                "options": {
+                  "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+                }
+              },
+              {
+                "type": "Mspx_BooleanArray",
+                "label": "WHAT_IS_INCLUDED_IN_RENT",
+                "elements": [
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/cableTv",
+                    "label": "IS_CABLE_TV_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/carport",
+                    "label": "IS_CARPORT_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/coldWater",
+                    "label": "IS_COLD_WATER_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/condominiumSupplement",
+                    "label": "IS_CONDOMINIUM_SUPPLEMENT_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/garage",
+                    "label": "IS_GARAGE_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/heating",
+                    "label": "IS_HEAT_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/hotWater",
+                    "label": "IS_HOT_WATER_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/ipTV",
+                    "label": "IS_IPTV_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/ipTelephony",
+                    "label": "IS_IP_TELEPHONY_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/internetAndTV",
+                    "label": "IS_INTERNET_AND_TV_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/internet",
+                    "label": "IS_INTERNET_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/parkingSpace",
+                    "label": "IS_PARKING_SPACE_INCLUDED"
+                  },
+                  {
+                    "scope": "#/properties/economy/properties/includedInRent/properties/water",
+                    "label": "IS_WATER_INCLUDED"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "label": "ENUMS_FREEHOLD_TITLE_SHARED_OWNERSHIP",
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/estate/properties/isSharedOwnership",
+            "schema": {
+              "const": true
+            }
+          }
+        },
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/economy/properties/costs/properties/sharedOwnershipFee",
+                    "label": "SHARED_OWNERSHIP_FEE"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/economy/properties/costs/properties/sharedOwnershipName",
+                    "label": "SHARED_OWNERSHIP_NAME"
+                  }
+                ]
+              },
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/economy/properties/costs/properties/sharedOwnershipFeePeriod",
+                    "label": "PERIOD"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/economy/properties/costs/properties/otherOperatingCosts",
+            "label": "COST",
+            "options": {
+              "showSortButtons": false,
+              "detail": {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/title",
+                    "label": "TITLE"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/amount",
+                    "label": "AMOUNT",
+                    "options": {
+                      "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+                    }
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/isMandatory",
+                    "label": "IS_MANDATORY",
+                    "helpText": "CUSTOMER_PAGE_IS_MANDATORY_HELP_TEXT",
+                    "options": {
+                      "noWidth": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "label": "CUSTOMER_PAGE_OPERATING_COST_OTHER_COSTS",
+        "description": "CUSTOMER_PAGE_OPERATING_COST_OTHER_COSTS_DESCRIPTION"
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Mspx_SumFields",
+            "elements": [
+              {
+                "scope": "#/properties/economy/properties/costs/properties/heating"
+              },
+              {
+                "scope": "#/properties/economy/properties/costs/properties/householdElectricity"
+              },
+              {
+                "scope": "#/properties/economy/properties/costs/properties/insurance"
+              },
+              {
+                "scope": "#/properties/economy/properties/costs/properties/condominiumSupplement"
+              },
+              {
+                "scope": "#/properties/economy/properties/costs/properties/otherOperatingCosts/properties/amount"
+              }
+            ],
+            "options": {
+              "suffix": "CUSTOMER_PAGE_COST_MONTHLY"
+            },
+            "label": "TOTAL_AMOUNT_EXLUDE_MONTHLY_RENT"
+          }
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/economy/properties/costs/properties/description",
+            "label": "OPERATIONAL_COMMENT"
+          }
+        ]
+      }
+    ],
+    "label": "CUSTOMER_PAGE_OPERATING_COST_TITLE",
+    "description": "CUSTOMER_PAGE_OPERATING_COST_DESCRIPTION"
+  },
+  "jsonSchema": {
+    "type": "object",
+    "required": [],
+    "properties": {
+      "id": {
+        "description": "Id for deal",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "id"
+      },
+      "currency": {
+        "description": "Three char currency code - ISO 4217\n\nThe default currency for all amounts, if no other is specified",
+        "example": "SEK",
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 3
+      },
+      "estate": {
+        "description": "Details about the estate",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "isSharedOwnership": {
+                "description": "Swe: Andelsrätt",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "economy": {
+        "description": "Economy and cost operating information",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "personsInHousehold": {
+                "description": "Number of persons in the household",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "electricityConsumption": {
+                "description": "kWh/year",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "includedInRent": {
+                "description": "Included in rent",
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "heating": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "water": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "hotWater": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "coldWater": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "electricity": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "cableTv": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "ipTelephony": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "ipTV": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "internetAndTV": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "internet": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "garage": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "carport": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "parkingSpace": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "condominiumSupplement": {
+                        "description": "",
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "costs": {
+                "description": "All costs are / year",
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "costDescription": {
+                        "description": "Description of costs",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "insurance": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "insuranceDescription": {
+                        "description": "Insurance description",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "householdElectricity": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "heating": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "otherOperatingCosts": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "id": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "id"
+                            },
+                            "amountId": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "id"
+                            },
+                            "title": {
+                              "description": "",
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "maxLength": 120
+                            },
+                            "amount": {
+                              "description": "",
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "format": "money",
+                              "minimum": 0,
+                              "maximum": 1000000000000000
+                            },
+                            "isMandatory": {
+                              "description": "",
+                              "type": [
+                                "boolean",
+                                "null"
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "operatingCostSum": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "description": {
+                        "description": "",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "rent": {
+                        "description": "Per month",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "rentDescription": {
+                        "description": "",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "rentChanges": {
+                        "description": "",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "condominiumSupplement": {
+                        "description": "",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "sharedOwnershipName": {
+                        "description": "Name of the shared ownership. Only set if isSharedOwnership is true",
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 30
+                      },
+                      "sharedOwnershipDescription": {
+                        "description": "Shared ownership description. Only set if isSharedOwnership is true",
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "sharedOwnershipFee": {
+                        "description": "The fee for the shared ownership. Only set if isSharedOwnership is true",
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "format": "money",
+                        "minimum": 0,
+                        "maximum": 1000000000000000
+                      },
+                      "sharedOwnershipFeePeriod": {
+                        "description": "The ownership fee period. Only set if isSharedOwnership is true\n\n<details>\n<summary>\nEnums\n</summary>\n\n| Constant | Swedish translation | English translation |\n|----------|---------------------|---------------------|\n| ENUMS_ESTATE_SHARED_OWNERSHIP_FEE_PERIOD_MONTH |  |  |\n| ENUMS_ESTATE_SHARED_OWNERSHIP_FEE_PERIOD_QUARTER |  |  |\n| ENUMS_ESTATE_SHARED_OWNERSHIP_FEE_PERIOD_YEAR |  |  |\n</details>",
+                        "format": "enum",
+                        "type": "string",
+                        "enum": [
+                          "ENUMS_ESTATE_SHARED_OWNERSHIP_FEE_PERIOD_MONTH",
+                          "ENUMS_ESTATE_SHARED_OWNERSHIP_FEE_PERIOD_YEAR",
+                          "ENUMS_ESTATE_SHARED_OWNERSHIP_FEE_PERIOD_QUARTER"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "formStatus": "ENUM_FORM_INVITATIONS_FORM_STATUS_OPEN",
+  "latestSavedDate": "2023-07-17T13:35:55.000Z"
+}

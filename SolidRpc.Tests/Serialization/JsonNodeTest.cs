@@ -1,18 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using SolidRpc.Abstractions.Serialization;
-using System.IO;
-using SolidRpc.Abstractions.Types;
-using Microsoft.Extensions.Primitives;
-using System.Runtime.Serialization;
-using System.Linq;
-using SolidRpc.OpenApi.Binder;
-using System.Text;
-using System.Collections.Generic;
-using RA.Mspecs.Types.Event;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using SolidRpc.OpenApi.Model.Serialization;
+using System.Text;
 
 namespace SolidRpc.Tests.Serialization
 {
@@ -78,6 +68,82 @@ namespace SolidRpc.Tests.Serialization
 
             serFact.DeserializeFromString(s, out JsonNode jsonNode);
             Assert.AreEqual(json, (string)jsonNode);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Test]
+        public void TestSerializeJsonNode1()
+        {
+            var serFact = GetServiceProvider().GetRequiredService<SerializerFactory>();
+            var json = GetManifestResourceAsString(nameof(TestSerializeJsonNode1) + ".json");
+            serFact.SerializeToString(out string s, (JsonNode)json);
+            Assert.AreEqual(json, s);
+
+            serFact.DeserializeFromString(s, out JsonNode jsonNode);
+            json = CleanJson(json);
+            Assert.AreEqual(json, (string)jsonNode);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        [Test]
+        public void TestSerializeJsonNode2()
+        {
+            var serFact = GetServiceProvider().GetRequiredService<SerializerFactory>();
+            var json = GetManifestResourceAsString(nameof(TestSerializeJsonNode2) + ".json");
+            serFact.SerializeToString(out string s, (JsonNode)json);
+            Assert.AreEqual(json, s);
+
+            serFact.DeserializeFromString(s, out JsonNode jsonNode);
+            Assert.AreEqual(CleanJson(json), (string)jsonNode);
+        }
+
+        private string CleanJson(string json)
+        {
+            var sb = new StringBuilder();
+            var inString = false;
+            var escaped = false;
+            foreach (var c in json)
+            { 
+                var resetEscaped = escaped;
+                switch (c)
+                {
+                    case '\\':
+                        if(!inString)
+                        {
+                            escaped = true;
+                        }
+                        sb.Append(c);
+                        break;
+                    case '\r':
+                    case '\n':
+                    case ' ':
+                        if (inString)
+                        {
+                            sb.Append(c);
+                        }
+                        break;
+                    case '"':
+
+                        if(!escaped)
+                        {
+                            inString = !inString;
+                        }
+                        sb.Append(c);
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+                if(resetEscaped)
+                {
+                    resetEscaped = false;
+                    escaped = false;
+                }
+            }
+            return sb.ToString();
         }
 
         /// <summary>

@@ -24,6 +24,8 @@
     <None Remove="ContentStoreTest.Override.override.html" />
     <None Remove="ContentStoreTest.test.html" />
     <None Remove="ContentStore\www\images\test-override2\override.html" />
+    <None Remove="Serialization\JsonNodeTest.TestSerializeJsonNode1.json" />
+    <None Remove="Serialization\JsonNodeTest.TestSerializeJsonNode2.json" />
     <None Remove="Swagger\CodeGen\Stoer\Stoer.json" />
     <None Remove="Swagger\SpecGenReflection\TestInterface1TestInheritedStruct.json" />
   </ItemGroup>
@@ -37,6 +39,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Security\SecurityAuthorityTest.TestLocalAuthority2.pfx" />
+    <EmbeddedResource Include="Serialization\JsonNodeTest.TestSerializeJsonNode2.json" />
+    <EmbeddedResource Include="Serialization\JsonNodeTest.TestSerializeJsonNode1.json" />
     <EmbeddedResource Include="Swagger\CodeGen\Stoer\Stoer.json" />
     <EmbeddedResource Include="Swagger\CodeGen\Vitec\SolidRpc.Test.Vitec.json" />
     <EmbeddedResource Include="Swagger\Security\SecurityTest.TestAddSecurityDefs.well-known.json" />

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Web;
 
 namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
@@ -23,13 +24,17 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                     SkipNodeArray(r, s, sb);
                     break;
                 case JsonToken.String:
+                    sb?.Append(JsonConvert.ToString(r.Value));
+                    break;
                 case JsonToken.Date:
-                    sb?.Append($"\"{r.Value}\"");
+                    sb?.Append($"\"{(DateTime)r.Value:yyyy-MM-ddTHH:mm:ss.fffZ}\"");
                     break;
                 case JsonToken.Integer:
                 case JsonToken.Float:
-                case JsonToken.Boolean:
                     sb?.Append(r.Value);
+                    break;
+                case JsonToken.Boolean:
+                    sb?.Append(((bool)r.Value) ? "true" : "false");
                     break;
                 case JsonToken.Null:
                     sb?.Append("null");
@@ -45,13 +50,16 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             if (r.TokenType != JsonToken.StartObject) throw new Exception("Not a start of object");
             sb?.Append('{');
             if (!r.Read()) throw new Exception("Failed to read");
+            bool propertyWritten = false;
             while (r.TokenType != JsonToken.EndObject)
             {
                 if (r.TokenType != JsonToken.PropertyName) throw new Exception("Not a property name:" + r.TokenType);
+                if(propertyWritten) sb?.Append(',');
                 sb?.Append($"\"{r.Value}\":");
                 if (!r.Read()) throw new Exception("Failed to read");
                 SkipNode(r, s, sb);
                 if (!r.Read()) throw new Exception("Failed to read");
+                propertyWritten = true;
             }
             sb?.Append('}');
         }
