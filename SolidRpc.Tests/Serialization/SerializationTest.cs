@@ -452,5 +452,55 @@ namespace SolidRpc.Tests.Serialization
             serFact.DeserializeFromStream(ms, out Event e);
             Assert.AreEqual(typeof(EventSubscriberAdded), e.GetType());
         }
+
+        /// <summary>
+        /// Tests the mspecs serialization
+        /// </summary>
+        [Test]
+        public void TestRaVitecContacts()
+        {
+            var serFact = GetServiceProvider().GetRequiredService<ISerializerFactory>();
+            serFact.DeserializeFromString(@"{
+  ""type"": ""Company"",
+  ""name"": ""HSB Brf Eken 1"",
+  ""companyName"": ""HSB Brf Eken 1"",
+  ""corporateNumber"": ""769632-3387"",
+  ""homePage"": ""www.k.com"",
+  ""email"": {},
+  ""contactId"": ""ADR9676051DA516465E9A2747646852F686"",
+  ""customerId"": ""G12"",
+  ""brokerId"": ""HANC74738CE3F3640E4BB2706B6F166C610"",
+  ""createdAt"": ""2009-08-24T00:00:00+02:00"",
+  ""changedAt"": ""2022-03-23T00:22:18+01:00"",
+  ""buyerOnObjects"": [],
+  ""sellerOnObjects"": [
+    {
+      ""estateId"": ""OBJ22213_1062728558"",
+      ""type"": ""HousingCooperative""
+    }
+  ],
+  ""interestOnObjects"": [],
+  ""address"": {
+    ""streetAddress"": ""Råsundavägen"",
+    ""zipCode"": ""123456"",
+    ""city"": ""Solna""
+  },
+  ""leadScore"": 0,
+  ""note"": ""Förvaltare: xxxx"",
+  ""categories"": [
+    {
+      ""id"": ""CLS_ADRESS_FORENING"",
+      ""name"": ""Förening"",
+      ""readOnly"": false
+    },
+    {
+      ""id"": ""CLS_ADRESS_SALJARE"",
+      ""name"": ""Säljare"",
+      ""readOnly"": true
+    }
+  ]
+}", out RA.Vitec.Types.Contact.Models.Contact c);
+            Assert.AreEqual("HSB Brf Eken 1", c.Name);
+        }
     }
 }

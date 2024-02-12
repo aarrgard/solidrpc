@@ -125,10 +125,13 @@
 		  <HintPath>ExternalLib\RA.Broker.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RA.Customer">
-	    <HintPath>Swagger\ServerGen\TestProject2\bin\Debug\netstandard2.0\RA.Customer.dll</HintPath>
+		  <HintPath>Swagger\ServerGen\TestProject2\bin\Debug\netstandard2.0\RA.Customer.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RA.Mspecs">
 	    <HintPath>Swagger\ServerGen\TestProject2\bin\Debug\netstandard2.0\RA.Mspecs.dll</HintPath>
+	  </Reference>
+	  <Reference Include="RA.Vitec">
+	    <HintPath>ExternalLib\RA.Vitec.dll</HintPath>
 	  </Reference>
   </ItemGroup>
 

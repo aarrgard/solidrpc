@@ -389,7 +389,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                 {
                     if (upcast)
                     {
-                        var pmd = propertyMetaData.First();
+                        var pmd = propertyMetaData.Where(x => x.PropertyInfo.DeclaringType.IsAssignableFrom(o.GetType())).First();
                         var sp = CreateSetParent(pmd.PropertyInfo.PropertyType);
                         var val = pmd.ValueGetter.Invoke(this, new[] { r, o, s, sp });
                         pmd.PropertyInfo.SetValue(o, val);
