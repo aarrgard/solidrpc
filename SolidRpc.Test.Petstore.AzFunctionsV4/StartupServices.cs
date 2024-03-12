@@ -62,7 +62,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             });
 
             //services.GetSolidRpcContentStore().AddContent(typeof(SwaggerUI).Assembly, "www", "/");
-            services.GetSolidRpcContentStore().SetNotFoundRewrite("/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml");
+            //services.GetSolidRpcContentStore().SetNotFoundRewrite("/SolidRpc/OpenApi/SwaggerUI/Services/ISwaggerUI/GetIndexHtml");
             //services.GetSolidRpcContentStore().AddMapping("/", async sp =>
             //{
             //    return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
@@ -71,7 +71,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
             {
                 return await sp.GetRequiredService<IInvoker<IHttpFunc>>().GetUriAsync(o => o.Https(null, CancellationToken.None));
             });
-            services.GetSolidRpcContentStore().AddPrefixRewrite("/Vitec", "/SolidRpc/Test/Petstore/AzFunctionsV4/IHttpFunc/Https/Vitec");
+            services.GetSolidRpcContentStore().AddPrefixRewrite("/Https/", "/SolidRpc/Test/Petstore/AzFunctionsV4/IHttpFunc/Https?ops=");
 
             //services.AddSolidRpcRemoteBindings<INotification>(c => ConfigureAzureFunction(services, c));
 

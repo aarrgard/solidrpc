@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NuGet.Frameworks;
 using NUnit.Framework;
 using RA.Mspecs.Services;
 using RA.Mspecs.Types.Contact;

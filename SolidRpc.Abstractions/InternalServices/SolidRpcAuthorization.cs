@@ -31,7 +31,7 @@ namespace SolidRpc.Abstractions.InternalServices
         private ClaimsPrincipal Configure(ClaimsPrincipal claimsPrincipal)
         {
             ClientId = claimsPrincipal.FindFirst("client_id")?.Value;
-            ClientId = claimsPrincipal.FindFirst("session_id")?.Value;
+            SessionId = claimsPrincipal.FindFirst("session_id")?.Value;
             return claimsPrincipal;
         }
 

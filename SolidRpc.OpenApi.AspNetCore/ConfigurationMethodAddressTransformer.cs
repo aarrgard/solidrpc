@@ -247,7 +247,13 @@ namespace SolidRpc.OpenApi.Binder
                 var match = PathRewrites.Union(ContentStoreRewrites).FirstOrDefault(o => path.StartsWith(o[0]));
                 if (match == null) return path;
                 if (path == match[0]) return match[1];
-                if (path[match[0].Length] != '/') return path;
+                if(!match[0].EndsWith("/"))
+                {
+                    if (path[match[0].Length] != '/')
+                    {
+                        return path;
+                    }
+                }
 
                 path = $"{match[1]}{path.Substring(match[0].Length)}";
             }

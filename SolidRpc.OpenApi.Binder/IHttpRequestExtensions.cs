@@ -214,8 +214,20 @@ namespace SolidRpc.Abstractions.OpenApi.Http
                 target.HostAndPort = $"{uri.Host}:{uri.Port}";
             }
             target.HostAndPort = uri.Host;
-            target.Path = pathRewrite(uri.AbsolutePath);
-            target.Query = (uri.Query.StartsWith("?") ? uri.Query.Substring(1) : uri.Query)
+
+            // map to new path...
+            var sbQuery = new StringBuilder(uri.Query);
+            var newPathAndQuery = pathRewrite(uri.AbsolutePath).Split('?');
+            target.Path = newPathAndQuery[0];
+            
+            // handle query
+            if(newPathAndQuery.Length > 1)
+            {
+                sbQuery.Append('&').Append(newPathAndQuery[1]);
+            }
+            if (sbQuery[0] == '?') sbQuery.Remove(0, 1);
+            if (sbQuery[0] == '&') sbQuery.Remove(0, 1);
+            target.Query = sbQuery.ToString()
                 .Split('&')
                 .Select(o => o.Split('='))
                 .Where(o => o.Length > 0)

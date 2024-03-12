@@ -21,7 +21,7 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV4
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<FileContent> Https(
-            string ops,
+            string ops = null,
             CancellationToken cancellationToken = default);
     }
     public class HttpFuncImpl : IHttpFunc   

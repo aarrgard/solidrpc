@@ -13,11 +13,9 @@ using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -74,12 +72,20 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="applicationBuilder"></param>
         /// <param name="preInvoke"></param>
+        /// <param name="postInvoke"></param>
         /// <returns></returns>
-        public static IApplicationBuilder UseSolidRpcProxies(this IApplicationBuilder applicationBuilder, Func<HttpContext, Task> preInvoke = null)
+        public static IApplicationBuilder UseSolidRpcProxies(
+            this IApplicationBuilder applicationBuilder,
+            Func<HttpContext, Task> preInvoke = null,
+            Func<HttpContext, Task> postInvoke = null)
         {
             if (preInvoke is null)
             {
                 preInvoke = (ctx) => Task.CompletedTask;
+            }
+            if (postInvoke is null)
+            {
+                postInvoke = (ctx) => Task.CompletedTask;
             }
 
             applicationBuilder.Use(RewriteUrl);
@@ -151,7 +157,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 applicationBuilder.MapWhen(
                     ctx => string.Equals(ctx.Request.Method, method, StringComparison.InvariantCultureIgnoreCase),
-                    (ab) => BindPath(ab, method, dict, preInvoke));
+                    (ab) => BindPath(ab, method, dict, preInvoke, postInvoke));
             }
             return applicationBuilder;
         }
@@ -163,7 +169,12 @@ namespace Microsoft.AspNetCore.Builder
             return next();
         }
 
-        private static void BindPath(IApplicationBuilder ab, string pathPrefix, Dictionary<string, PathHandler> paths, Func<HttpContext, Task> preInvoke)
+        private static void BindPath(
+            IApplicationBuilder ab, 
+            string pathPrefix, 
+            Dictionary<string, PathHandler> paths,
+            Func<HttpContext, Task> preInvoke,
+            Func<HttpContext, Task> postInvoke)
         {
             //ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
 
@@ -189,7 +200,7 @@ namespace Microsoft.AspNetCore.Builder
 
             foreach (var part in parts)
             {
-                ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths, preInvoke));
+                ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths, preInvoke, postInvoke));
             }
 
             // add handler for this path
@@ -202,8 +213,15 @@ namespace Microsoft.AspNetCore.Builder
                 if(pathHandler.MethodBinding != null)
                 {
                     ab.Run(async (ctx) => {
-                        await preInvoke.Invoke(ctx);
-                        await HandleInvocation(pathHandler.HttpTransport, pathHandler.MethodBinding, ctx);
+                        try
+                        {
+                            await preInvoke.Invoke(ctx);
+                            await HandleInvocation(pathHandler.HttpTransport, pathHandler.MethodBinding, ctx);
+                        }
+                        finally
+                        {
+                            await postInvoke.Invoke(ctx);
+                        }
                     });
                 }
                 else if (pathHandler.ContentHandler != null)
