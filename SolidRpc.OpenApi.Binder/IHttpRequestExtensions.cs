@@ -225,9 +225,10 @@ namespace SolidRpc.Abstractions.OpenApi.Http
             {
                 sbQuery.Append('&').Append(newPathAndQuery[1]);
             }
-            if (sbQuery[0] == '?') sbQuery.Remove(0, 1);
-            if (sbQuery[0] == '&') sbQuery.Remove(0, 1);
-            target.Query = sbQuery.ToString()
+            var strQuery = sbQuery.ToString();
+            if (strQuery.StartsWith("?")) strQuery = strQuery.Substring(1);
+            if (strQuery.StartsWith("&")) strQuery = strQuery.Substring(1);
+            target.Query = strQuery
                 .Split('&')
                 .Select(o => o.Split('='))
                 .Where(o => o.Length > 0)
