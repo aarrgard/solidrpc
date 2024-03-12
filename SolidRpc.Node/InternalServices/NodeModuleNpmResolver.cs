@@ -16,7 +16,7 @@ namespace SolidRpc.Node.InternalServices
     /// </summary>
     public class NodeModuleNpmResolver : INodeModuleResolver
     {
-        public const string StrModuleId = "83d3fb56-0d08-4506-ac9a-0a4373795350";
+        public const string StrModuleId = "18c46789-c987-4cac-9a91-b6007a57b850";
         public static readonly Guid GuidModuleId = Guid.Parse(StrModuleId);
         public Guid ModuleId => GuidModuleId;
 

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="InternalServices\NodeModuleNpmResolver.83d3fb56-0d08-4506-ac9a-0a4373795350.zip" />
+    <EmbeddedResource Include="InternalServices\NodeModuleNpmResolver.18c46789-c987-4cac-9a91-b6007a57b850.zip" />
   </ItemGroup>
 
   <ItemGroup>
