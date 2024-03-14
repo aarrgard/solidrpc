@@ -109,6 +109,13 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<string> GetBackendValueAsync(CancellationToken cancellation = default);
+
+            /// <summary>
+            /// Returns the http_client header value
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<string> GetClientNameAsync(CancellationToken cancellation = default);
         }
 
         /// <summary>
@@ -250,6 +257,17 @@ namespace SolidRpc.Tests.Invoker
             {
                 return Backend.GetBackendValueAsync(cancellation);
             }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            public Task<string> GetClientNameAsync(CancellationToken cancellation = default)
+            {
+                InvocationOptions.Current.TryGetValue(InvocationOptions.RequestHeaderInboundPrefix + "client", out string val);
+                return Task.FromResult(val);
+            }
         }
 
         public class TestOidc : ISolidRpcOidc
@@ -356,6 +374,13 @@ namespace SolidRpc.Tests.Invoker
                 conf.OpenApiSpec = openApiSpec;
                 return true;
             });
+
+            //
+            // configure two http clients with different default headers
+            //
+            clientServices.AddHttpClient("client1").ConfigureHttpClient(o => o.DefaultRequestHeaders.Add("client", "client1"));
+            clientServices.AddHttpClient("client2").ConfigureHttpClient(o => o.DefaultRequestHeaders.Add("client", "client2"));
+
             base.ConfigureClientServices(clientServices, baseAddress);
         }
 
@@ -557,5 +582,26 @@ namespace SolidRpc.Tests.Invoker
                 }
             }
         }
+
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestHttpInvokerDifferentHttpClients()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                var resp = await invoker.InvokeAsync(o => o.GetClientNameAsync(CancellationToken.None));
+                Assert.IsNull(resp);
+                resp = await invoker.InvokeAsync(o => o.GetClientNameAsync(CancellationToken.None), o => o.SetKeyValue(nameof(IHttpClientFactory) + ".HttpClientName", "client1"));
+                Assert.AreEqual("client1", resp);
+                resp = await invoker.InvokeAsync(o => o.GetClientNameAsync(CancellationToken.None), o => o.SetKeyValue(nameof(IHttpClientFactory) + ".HttpClientName", "client2"));
+                Assert.AreEqual("client2", resp);
+            }
+        }
+
     }
 }

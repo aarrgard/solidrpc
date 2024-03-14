@@ -70,7 +70,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
 
         public override async Task<IHttpResponse> InvokeAsync(IServiceProvider serviceProvider, IMethodBinding methodBinding, IHttpTransport transport, IHttpRequest httpReq, CancellationToken cancellationToken)
         {
-            var httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
+            InvocationOptions.GetOptions(methodBinding.MethodInfo).TryGetValue(nameof(IHttpClientFactory)+".HttpClientName", out string httpClientName);
+            if(string.IsNullOrEmpty(httpClientName))
+            {
+                httpClientName = methodBinding.MethodBinder.OpenApiSpec.Title;
+            }
             if (Logger.IsEnabled(LogLevel.Trace))
             {
                 Logger.LogTrace($"Getting http client for '{httpClientName}'");
