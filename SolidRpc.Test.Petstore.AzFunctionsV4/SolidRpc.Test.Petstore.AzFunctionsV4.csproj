@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <UserSecretsId>807aac6d-d044-4c7f-9f91-4cb313df015b</UserSecretsId>
   </PropertyGroup>
@@ -8,7 +8,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.3.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.2.2" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.4.0" /> 
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.5.1" /> 
     <PackageReference Include="SolidProxy.GeneratorCastle" Version="1.0.0-rc025" />
   </ItemGroup>
 

@@ -15,6 +15,7 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.Test.Petstore.Impl;
 using SolidRpc.Test.Petstore.Web;
+using IdentityServer4.Models;
 
 namespace SolidRpc.Test.PetstoreWeb
 {
@@ -38,6 +39,13 @@ namespace SolidRpc.Test.PetstoreWeb
             });
             services.GetSolidConfigurationBuilder().SetGenerator<SolidProxyCastleGenerator>();
             services.AddHttpClient();
+
+            var identityBuilder = services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryClients(new Client[0])
+                .AddInMemoryApiResources(new ApiResource[0])
+                .AddValidationKey();
+
             services.AddSolidRpcOidcTestImpl();
             services.AddSolidRpcServices(conf =>
             {
@@ -133,6 +141,8 @@ namespace SolidRpc.Test.PetstoreWeb
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseIdentityServer();
 
             app.UseSolidRpcProxies((context) =>
             {
