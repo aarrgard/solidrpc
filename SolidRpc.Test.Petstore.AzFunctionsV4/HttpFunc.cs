@@ -30,15 +30,15 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV4
         {
         }
 
-        public async Task<FileContent> Https(string ops, CancellationToken cancellationToken = default)
+        public Task<FileContent> Https(string ops, CancellationToken cancellationToken = default)
         {
             var enc = Encoding.UTF8;
-            return new FileContent()
+            return Task.FromResult(new FileContent()
             {
                 CharSet = enc.HeaderName,
                 ContentType = "text/html",
                 Content = new MemoryStream(enc.GetBytes($"<html><body>Test page:{ops}</body></html>"))
-            };
+            });
         }
     }
 }

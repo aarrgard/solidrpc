@@ -38,10 +38,23 @@ namespace SolidRpc.Tests.Serialization
                 return jn._json;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public class StructWithJsonNode
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string Prologue { get; set; }    
+            /// <summary>
+            /// 
+            /// </summary>
             public JsonNode JsonNode { get; set; }
+            /// <summary>
+            /// 
+            /// </summary>
             public string Epilogue { get; set; }
 
         }

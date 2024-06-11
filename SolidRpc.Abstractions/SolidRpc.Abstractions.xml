@@ -663,6 +663,36 @@
             Contains additional invocation options.
             </summary>
         </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestHeaderInboundPrefix">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestHeaderOutboundPrefix">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.ResponseHeaderPrefix">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestHeaderPriority">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestHeaderContinuationToken">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestHeaderMethodUri">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.Current">
             <summary>
             Returns the current invocation options

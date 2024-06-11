@@ -125,6 +125,11 @@ namespace SolidRpc.Tests.Invoker
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cb"></param>
+        /// <param name="baseAddress"></param>
         protected override void ConfigureClientConfiguration(IConfigurationBuilder cb, Uri baseAddress)
         {
             base.ConfigureClientConfiguration(cb, baseAddress);

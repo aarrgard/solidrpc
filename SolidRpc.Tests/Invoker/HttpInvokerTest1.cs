@@ -139,6 +139,11 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="invoker"></param>
+            /// <param name="backend"></param>
             public TestImplementation(IInvoker<ITestInterface> invoker, IBackend backend)
             {
                 Invoker = invoker;
@@ -270,8 +275,23 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class TestOidc : ISolidRpcOidc
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="scope"></param>
+            /// <param name="responseType"></param>
+            /// <param name="clientId"></param>
+            /// <param name="redirectUri"></param>
+            /// <param name="state"></param>
+            /// <param name="responseMode"></param>
+            /// <param name="nonce"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<FileContent> AuthorizeAsync([OpenApi(Name = "scope", In = "query")] IEnumerable<string> scope, [OpenApi(Name = "response_type", In = "query")] string responseType, [OpenApi(Name = "client_id", In = "query")] string clientId, [OpenApi(Name = "redirect_uri", In = "query")] string redirectUri = null, [OpenApi(Name = "state", In = "query")] string state = null, [OpenApi(Name = "response_mode", In = "query")] string responseMode = null, [OpenApi(Name = "nonce", In = "query")] string nonce = null, CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(new FileContent()
@@ -281,26 +301,73 @@ namespace SolidRpc.Tests.Invoker
                 });
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="idTokenHint"></param>
+            /// <param name="postLogoutRedirectUri"></param>
+            /// <param name="state"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
             public Task<FileContent> EndSessionAsync([OpenApi(Name = "id_token_hint", In = "query")] string idTokenHint, [OpenApi(Name = "post_logout_redirect_uri", In = "query")] string postLogoutRedirectUri, [OpenApi(Name = "state", In = "query")] string state, CancellationToken cancellationToken = default)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
             public Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
             public Task<OpenIDKeys> GetKeysAsync(CancellationToken cancellationToken = default)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="grantType"></param>
+            /// <param name="clientId"></param>
+            /// <param name="clientSecret"></param>
+            /// <param name="username"></param>
+            /// <param name="password"></param>
+            /// <param name="scope"></param>
+            /// <param name="code"></param>
+            /// <param name="redirectUri"></param>
+            /// <param name="codeVerifier"></param>
+            /// <param name="refreshToken"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
             public Task<TokenResponse> GetTokenAsync([OpenApi(Name = "grant_type", In = "formData")] string grantType = null, [OpenApi(Name = "client_id", In = "formData")] string clientId = null, [OpenApi(Name = "client_secret", In = "formData")] string clientSecret = null, [OpenApi(Name = "username", In = "formData")] string username = null, [OpenApi(Name = "password", In = "formData")] string password = null, [OpenApi(Name = "scope", In = "formData", CollectionFormat = "ssv")] IEnumerable<string> scope = null, [OpenApi(Name = "code", In = "formData")] string code = null, [OpenApi(Name = "redirect_uri", In = "formData")] string redirectUri = null, [OpenApi(Name = "code_verifier", In = "formData")] string codeVerifier = null, [OpenApi(Name = "refresh_token", In = "formData")] string refreshToken = null, CancellationToken cancellationToken = default)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="clientId"></param>
+            /// <param name="clientSecret"></param>
+            /// <param name="token"></param>
+            /// <param name="tokenHint"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            /// <exception cref="NotImplementedException"></exception>
             public Task RevokeAsync([OpenApi(Name = "client_id", In = "formData")] string clientId = null, [OpenApi(Name = "client_secret", In = "formData")] string clientSecret = null, [OpenApi(Name = "token", In = "formData")] string token = null, [OpenApi(Name = "token_hint", In = "formData")] string tokenHint = null, CancellationToken cancellationToken = default)
             {
                 throw new NotImplementedException();

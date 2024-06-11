@@ -15,12 +15,32 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// </summary>
     public class InvocationOptions
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public const string RequestHeaderInboundPrefix = "http_in_req_";
+        /// <summary>
+        /// 
+        /// </summary>
         public const string RequestHeaderOutboundPrefix = "http_out_req_";
+        /// <summary>
+        /// 
+        /// </summary>
         public const string ResponseHeaderPrefix = "http_resp_";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public const string RequestHeaderPriority = "X-SolidRpc-Priority";
+
+        /// <summary>
+        /// 
+        /// </summary>
         public const string RequestHeaderContinuationToken = "X-SolidRpc-ContinuationToken";
+
+        /// <summary>
+        /// 
+        /// </summary>
         public const string RequestHeaderMethodUri = "X-SolidRpc-MethodUri";
 
         private struct KV

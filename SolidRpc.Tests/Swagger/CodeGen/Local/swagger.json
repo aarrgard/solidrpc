@@ -4,7 +4,7 @@
     "title": "My API",
     "version": "v1"
   },
-  "host": "localhost:5188",
+  "host": "localhost:5189",
   "schemes": [
     "http"
   ],
@@ -28,7 +28,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "type": "boolean"
             }
@@ -56,7 +56,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int32",
               "type": "integer"
@@ -85,7 +85,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int32",
               "type": "integer"
@@ -114,7 +114,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int32",
               "type": "integer"
@@ -145,7 +145,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int32",
               "type": "integer"
@@ -174,7 +174,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int32",
               "type": "integer"
@@ -204,7 +204,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int32",
               "type": "integer"
@@ -234,12 +234,13 @@
                 "format": "int32",
                 "type": "integer"
               }
-            }
+            },
+            "collectionFormat": "multi"
           }
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "type": "array",
               "items": {
@@ -274,7 +275,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "int64",
               "type": "integer"
@@ -303,7 +304,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "float",
               "type": "number"
@@ -332,7 +333,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "double",
               "type": "number"
@@ -360,7 +361,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "type": "string"
             }
@@ -388,7 +389,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "uuid",
               "type": "string"
@@ -417,7 +418,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "date-time",
               "type": "string"
@@ -446,7 +447,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "format": "date-time",
               "type": "string"
@@ -473,12 +474,13 @@
             "items": {
               "format": "date-time",
               "type": "string"
-            }
+            },
+            "collectionFormat": "multi"
           }
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "type": "array",
               "items": {
@@ -515,7 +517,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "type": "array",
               "items": {
@@ -581,7 +583,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/ComplexObject1"
             }
@@ -597,7 +599,7 @@
         "summary": "Returns data for the index page.",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -623,7 +625,8 @@
             "$ref": "#/definitions/ComplexObject1"
           }
         }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }

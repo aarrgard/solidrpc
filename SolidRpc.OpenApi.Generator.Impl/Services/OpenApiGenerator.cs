@@ -246,7 +246,7 @@ namespace SolidRpc.OpenApi.Generator.Impl.Services
             } }).ToList();
         }
 
-        private async void CreateServerCode(ICSharpRepository serverCode, string ns, Stream dllStream)
+        private void CreateServerCode(ICSharpRepository serverCode, string ns, Stream dllStream)
         {
             var nsNoDots = ns.Replace(".", "");
             var c = serverCode.GetClass($"Microsoft.Extensions.DependencyInjection.{nsNoDots}Extensions");

@@ -20,14 +20,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     {
         private class RsaKeyPair
         {
-            public RsaKeyPair(RsaKey publicKey, RsaKey privateKey)
+            public RsaKeyPair(RsaKey publicKey, RsaKey privateKey, DateTimeOffset expires)
             {
                 PublicKey = publicKey;
                 PrivateKey = privateKey;
+                Expires = expires;
             }
 
             public RsaKey PublicKey { get; }
             public RsaKey PrivateKey { get; }
+            public DateTimeOffset Expires { get; }
+
             public string KeyId => PublicKey.KeyId;
         }
 
@@ -58,15 +61,21 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             _keys = new List<RsaKeyPair>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public AuthorityLocalImpl()
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IAuthorityFactory AuthorityFactory => AuthorityImpl.AuthorityFactory;
 
         private AuthorityImpl AuthorityImpl { get; }
 
-        private RsaKeyPair CurrentKeyPair => _keys.Last();
+        private RsaKeyPair CurrentKeyPair => _keys.First();
 
         /// <summary>
         /// Returns the private signing key.
@@ -146,28 +155,32 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public void CreateSigningKey(bool removeOld = false)
         {
             var privateRSA = RSA.Create();
-            //var privateRSA = RSA.Create();
-            //privateRSA.ImportParameters(rsa.ExportParameters(true));
             var publicRSA = RSA.Create();
             publicRSA.ImportParameters(privateRSA.ExportParameters(false));
-            SetRsa(publicRSA, privateRSA, Guid.NewGuid().ToString());
+            SetRsa(publicRSA, privateRSA, Guid.NewGuid().ToString(), DateTimeOffset.MaxValue);
         }
 
         private RsaKeyPair SetRsa(
             RSA publicKey, 
             RSA privateKey,
-            string keyId)
+            string keyId,
+            DateTimeOffset expires)
         {
-            var keyPair = new RsaKeyPair(new RsaKey(publicKey, keyId), new RsaKey(privateKey, keyId));
-            _keys.Add(keyPair);
+            var keyPair = new RsaKeyPair(new RsaKey(publicKey, keyId), new RsaKey(privateKey, keyId), expires);
+            _keys = _keys.Union(new [] { keyPair }).OrderByDescending(o => o.Expires).ToList();
             return keyPair;
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cert"></param>
+        /// <param name="keyId"></param>
         public void AddSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId = null)
         {
             if (keyId == null) keyId = c => c.Thumbprint;
-            SetRsa(cert.GetRSAPublicKey(), cert.GetRSAPrivateKey(), keyId(cert));
+            SetRsa(cert.GetRSAPublicKey(), cert.GetRSAPrivateKey(), keyId(cert), cert.NotAfter);
         }
 
         /// <summary>
@@ -178,8 +191,8 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         public void SetSigningKey(X509Certificate2 cert, Func<X509Certificate2, string> keyId)
         {
             if (keyId == null) keyId = c => c.Thumbprint;
-            var keypair = SetRsa(cert.GetRSAPublicKey(), cert.GetRSAPrivateKey(), keyId(cert));
-            _keys = _keys.OrderBy(o => keypair.KeyId == o.KeyId ? 1 : 0).ToList();
+            var keypair = SetRsa(cert.GetRSAPublicKey(), cert.GetRSAPrivateKey(), keyId(cert), cert.NotAfter);
+            _keys = _keys.OrderBy(o => keypair.KeyId == o.KeyId ? 0 : 1).ToList();
         }
 
         Task<OpenIDConnectDiscovery> IAuthority.GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
@@ -211,31 +224,74 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return AuthorityImpl.GetUserJwtAsync(clientId, clientSecret, username, password, scopes, timeout, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="code"></param>
+        /// <param name="redirectUri"></param>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<TokenResponse> GetCodeJwtToken(string clientId, string clientSecret, string code, string redirectUri, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
             return AuthorityImpl.GetCodeJwtToken(clientId, clientSecret, code, redirectUri, timeout, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="refreshToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<TokenResponse> RefreshTokenAsync(string clientId, string clientSecret, string refreshToken, CancellationToken cancellationToken)
         {
             return AuthorityImpl.RefreshTokenAsync(clientId, clientSecret, refreshToken, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="grantType"></param>
+        /// <param name="scopes"></param>
         public void AddDefaultScopes(string grantType, IEnumerable<string> scopes)
         {
             AuthorityImpl.AddDefaultScopes(grantType, scopes);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="grantType"></param>
+        /// <param name="additionalScopes"></param>
+        /// <returns></returns>
         public IEnumerable<string> GetScopes(string grantType, IEnumerable<string> additionalScopes)
         {
             return AuthorityImpl.GetScopes(grantType, additionalScopes);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="token"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task RevokeTokenAsync(string clientId, string clientSecret, string token, CancellationToken cancellationToken = default)
         {
             return AuthorityImpl.RevokeTokenAsync(clientId, clientSecret, token, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<byte[]> SignHash(byte[] data, CancellationToken cancellationToken = default)
         {
             var b = CurrentKeyPair.PrivateKey.RSA.SignData(data, 0, data.Length, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
@@ -243,6 +299,13 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             return Task.FromResult(b);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="signature"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task<bool> VerifyData(byte[] data, byte[] signature, CancellationToken cancellationToken = default)
         {
             return AuthorityImpl.VerifyData(data, signature, cancellationToken);

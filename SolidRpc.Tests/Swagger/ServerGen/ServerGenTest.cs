@@ -20,8 +20,18 @@ namespace SolidRpc.Tests.Swagger.ServerGen
     /// </summary>
     public class GenTest : WebHostMvcTest
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public class ContactImpl : IContact
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="id"></param>
+            /// <param name="useCache"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<Contact> GetContactAsync(string id, bool? useCache = null, CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(new Contact() { 
@@ -31,6 +41,12 @@ namespace SolidRpc.Tests.Swagger.ServerGen
                 });
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="contact"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
             public Task<Contact> UpsertContactAsync(Contact contact, CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(contact);

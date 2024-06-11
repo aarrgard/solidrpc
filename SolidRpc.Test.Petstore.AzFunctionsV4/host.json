@@ -3,7 +3,7 @@
   "logging": {
     "fileLoggingMode": "debugOnly",
     "logLevel": {
-      "default": "Error"
+      "default": "Debug"
     },
     "applicationInsights": {
       "samplingSettings": {

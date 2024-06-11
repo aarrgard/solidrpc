@@ -60,11 +60,18 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="httpContextAccessor"></param>
             public TestImplementation(IHttpContextAccessor httpContextAccessor)
             {
                 HttpContext = httpContextAccessor.HttpContext;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
             public HttpContext HttpContext { get; }
 
             /// <summary>

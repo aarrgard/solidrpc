@@ -178,7 +178,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             {
                 jwtPrincipal = await Authority.GetPrincipalAsync(jwt, null, invocation.CancellationToken);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
                 return;

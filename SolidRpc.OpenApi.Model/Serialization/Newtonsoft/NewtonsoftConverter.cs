@@ -7,12 +7,20 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Web;
 
 namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class NewtonsoftConverter : JsonConverter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="s"></param>
+        /// <param name="sb"></param>
         public static void SkipNode(JsonReader r, JsonSerializer s, StringBuilder sb)
         {
             switch (r.TokenType)
@@ -45,6 +53,13 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="s"></param>
+        /// <param name="sb"></param>
+        /// <exception cref="Exception"></exception>
         public static void SkipNodeObject(JsonReader r, JsonSerializer s, StringBuilder sb)
         {
             if (r.TokenType != JsonToken.StartObject) throw new Exception("Not a start of object");
@@ -64,6 +79,13 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             sb?.Append('}');
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="s"></param>
+        /// <param name="sb"></param>
+        /// <exception cref="Exception"></exception>
         public static void SkipNodeArray(JsonReader r, JsonSerializer s, StringBuilder sb)
         {
             if (r.TokenType != JsonToken.StartArray) throw new Exception("Not a start of object");
@@ -134,7 +156,7 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             {
                 if (typeof(ModelBase).IsAssignableFrom(type))
                 {
-                    return (v, p) => ((ModelBase)v).SetParent((ModelBase)p);
+                    return (v, p) => ((ModelBase)v)?.SetParent((ModelBase)p);
                 }
                 if (typeof(IEnumerable<ModelBase>).IsAssignableFrom(type))
                 {
@@ -277,9 +299,22 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             return typeof(T) == objectType;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="objectType"></param>
+        /// <param name="value"></param>
+        /// <param name="serializer"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public override object ReadJson(JsonReader reader, Type objectType, object value, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null)
+            {
+                return null;
+            }
+            if (reader.TokenType == JsonToken.Boolean)
             {
                 return null;
             }
@@ -453,6 +488,12 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
             dict[propertyName] = (Tp)Deserialize<Tp>(r, o, s, setParent);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="serializer"></param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             writer.WriteStartObject();

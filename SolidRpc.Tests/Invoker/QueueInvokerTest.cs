@@ -81,6 +81,12 @@ namespace SolidRpc.Tests.Invoker
             private ILogger Logger { get; }
             private ITestInterface Proxy { get; }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="count"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
             public async Task<int> DoXAsync(int count, CancellationToken cancellation = default)
             {
                 if(count > 0)
