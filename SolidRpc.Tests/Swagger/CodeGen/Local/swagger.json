@@ -139,6 +139,7 @@
           {
             "in": "formData",
             "name": "i",
+            "description": "The interger to proxy",
             "type": "integer",
             "format": "int32"
           }
@@ -508,6 +509,7 @@
           {
             "in": "formData",
             "name": "dArr",
+            "description": "The datetime to proxy",
             "type": "array",
             "items": {
               "format": "date-time",
@@ -545,6 +547,7 @@
           {
             "in": "formData",
             "name": "ff",
+            "description": "The stream to proxy",
             "type": "file"
           }
         ],

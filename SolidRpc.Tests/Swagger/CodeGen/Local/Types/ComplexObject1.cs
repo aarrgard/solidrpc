@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using System.Collections.Generic;
 namespace SolidRpc.Tests.Swagger.CodeGen.Local.Types {
     /// <summary>
-    /// Success
+    /// OK
     /// </summary>
     [GeneratedCode("OpenApiCodeGeneratorV2","1.0.0.0")]
     public class ComplexObject1 {
