@@ -1,13 +1,13 @@
 
-    using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
     using System;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    namespace SolidRpc.OpenApi.AzFunctions
-    {
+namespace SolidRpc.OpenApi.AzFunctions
+{
     
 
     public class Queue_SolidRpc_OpenApi_AzQueue_Services_IAzTableQueue_ProcessMessageAsync_arg0_arg1_arg2
@@ -56,13 +56,12 @@
             _serviceProvider = serviceProvider;
         }
         [FunctionName("WildcardFunc")]
-        public async Task<HttpResponseMessage> Run(
+        public Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", "post", Route = "{*restOfPath}")] HttpRequestMessage req,
             CancellationToken cancellationToken)
         {
-            var res = await HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
-            return res;
+            return HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
         }
     }
 
-    }
+}

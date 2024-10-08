@@ -19,12 +19,44 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.QueueFunction">
+            <summary>
+            Handles queue triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.QueueFunction.Run(System.String,System.String,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="message"></param>
+            <param name="id"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.TimerFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.TimerFunction.Run(Microsoft.Azure.Functions.Worker.TimerInfo,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="myTimer"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="timerId"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctionsWorker.Services.SolidRpcHostAzWorker">
             <summary>
             The solid rpc host in an azure functions environment
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctionsWorker.Services.SolidRpcHostAzWorker.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},System.IServiceProvider,Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+        <member name="M:SolidRpc.OpenApi.AzFunctionsWorker.Services.SolidRpcHostAzWorker.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},System.IServiceProvider,Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.OpenApi.AzFunctions.Services.ITimerStore,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
             <summary>
             Constructs a new instance
             </summary>
@@ -33,7 +65,7 @@
             <param name="configuration"></param>
             <param name="methodBinderStore"></param>
             <param name="configurationStore"></param>
-            <param name="contentHandler"></param>
+            <param name="timerStore"></param>
             <param name="functionHandler"></param>
         </member>
     </members>

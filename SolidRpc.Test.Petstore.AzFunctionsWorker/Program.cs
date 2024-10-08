@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
 
@@ -23,7 +24,6 @@ var host = new HostBuilder()
         // solidrpc services
         services.AddSolidRpcOidcTestImpl();
 
-        services.AddSolidRpcApplicationInsights(SolidRpc.OpenApi.ApplicationInsights.LogSettings.ErrorScopes, "MS_FunctionInvocationId");
         services.AddSolidRpcOAuth2(conf =>
         {
             conf.AddDefaultScopes("authorization_code", ["openid", "solidrpc", "offline_access"]);
@@ -38,6 +38,9 @@ var host = new HostBuilder()
             o.OAuthClientId = SolidRpcOidcTestImpl.ClientId;
             o.OAuthClientSecret = SolidRpcOidcTestImpl.ClientSecret;
         }, conf => Configure(services, conf));
+
+        services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", c => Configure(services, c));
+        services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");
     })
     .Build();
 bool Configure(IServiceCollection services, ISolidRpcOpenApiConfig conf)

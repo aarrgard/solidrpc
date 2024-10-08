@@ -62,9 +62,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.ServerGen", "SolidRpc.Test.ServerGen\SolidRpc.Test.ServerGen.csproj", "{9EBDCD8B-BB6D-4488-ABAD-EBE9ADE6678F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.OpenApi.AzFunctionsWorker", "SolidRpc.OpenApi.AzFunctionsWorker\SolidRpc.OpenApi.AzFunctionsWorker.csproj", "{0D153315-213A-453C-9F5C-8056C4203A9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.OpenApi.AzFunctionsWorker", "SolidRpc.OpenApi.AzFunctionsWorker\SolidRpc.OpenApi.AzFunctionsWorker.csproj", "{0D153315-213A-453C-9F5C-8056C4203A9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidRpc.Test.Petstore.AzFunctionsWorker", "SolidRpc.Test.Petstore.AzFunctionsWorker\SolidRpc.Test.Petstore.AzFunctionsWorker.csproj", "{8B7859B5-1781-4DA0-AE0C-0BE19415F543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidRpc.Test.Petstore.AzFunctionsWorker", "SolidRpc.Test.Petstore.AzFunctionsWorker\SolidRpc.Test.Petstore.AzFunctionsWorker.csproj", "{8B7859B5-1781-4DA0-AE0C-0BE19415F543}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

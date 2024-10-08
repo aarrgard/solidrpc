@@ -902,12 +902,19 @@
             The timer store is used to invoke timers
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore.AddTimerAction(System.String,System.Func{System.IServiceProvider,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore.AddTimerAction(System.String,System.Func{System.IServiceProvider,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.String)">
             <summary>
             Adds the timer action
             </summary>
             <param name="timerId"></param>
             <param name="action"></param>
+            <param name="crontab"></param>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore.ListCrontabs">
+            <summary>
+            Returns the registered crontabs
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore.GetTimerAction(System.String)">
             <summary>
@@ -921,7 +928,7 @@
             The setup class
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},System.IServiceProvider,Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},System.IServiceProvider,Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.OpenApi.AzFunctions.Services.ITimerStore,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
             <summary>
             Constructs a new instance
             </summary>
@@ -930,7 +937,7 @@
             <param name="configuration"></param>
             <param name="methodBinderStore"></param>
             <param name="configurationStore"></param>
-            <param name="contentHandler"></param>
+            <param name="timerStore"></param>
             <param name="functionHandler"></param>
         </member>
         <member name="M:SolidRpc.OpenApi.AzFunctions.Services.SolidRpcHostAzFunctions.IsAlive(System.Threading.CancellationToken)">
@@ -945,7 +952,7 @@
             Implements the timer store logic
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.TimerStore.AddTimerAction(System.String,System.Func{System.IServiceProvider,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.TimerStore.AddTimerAction(System.String,System.Func{System.IServiceProvider,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.String)">
             <summary>
             Adds a new timer to the store
             </summary>
@@ -957,6 +964,12 @@
             Returns the actio for supplied timer
             </summary>
             <param name="timerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.TimerStore.ListCrontabs">
+            <summary>
+            Lists the crontabs
+            </summary>
             <returns></returns>
         </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.StartupSolidRpcServices">

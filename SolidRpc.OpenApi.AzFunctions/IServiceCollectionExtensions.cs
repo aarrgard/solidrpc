@@ -112,13 +112,12 @@ namespace Microsoft.Extensions.DependencyInjection
             var azFunc = funcHandler.GetFunctions().SingleOrDefault(o => o.Name == functionName);
 
             var action = invocation.Compile();
-            services.GetSolidRpcService<ITimerStore>().AddTimerAction(functionName, (sp, c) => action.Invoke(sp.GetRequiredService<TService>()));
+            services.GetSolidRpcService<ITimerStore>().AddTimerAction(functionName, (sp, c) => action.Invoke(sp.GetRequiredService<TService>()), schedule);
 
             var timerFunc = funcHandler.CreateFunction<IAzTimerFunction>(functionName);
             timerFunc.RunOnStartup = runOnStartup;
             timerFunc.Schedule = schedule;
             timerFunc.TimerId = functionName;
-            //timerFunc.Save();
 
             return services;
         }

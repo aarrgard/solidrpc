@@ -31,7 +31,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <param name="configuration"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="configurationStore"></param>
-        /// <param name="contentHandler"></param>
+        /// <param name="timerStore"></param>
         /// <param name="functionHandler"></param>
         public SolidRpcHostAzFunctions(
             ILogger<SolidRpcHost> logger,
@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             IConfiguration configuration,
             IMethodBinderStore methodBinderStore,
             ISolidProxyConfigurationStore configurationStore,
-            ISolidRpcContentHandler contentHandler,
+            ITimerStore timerStore,
             IAzFunctionHandler functionHandler)
             : base(logger, serviceProvider)
         {
@@ -47,8 +47,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             FunctionHandler = functionHandler;
             ConfigurationStore = configurationStore;
             WriteSemaphore = new SemaphoreSlim(1);
-
             var instanceid = configuration["WEBSITE_INSTANCE_ID"];
+            TimerStore = timerStore;
             if (!string.IsNullOrEmpty(instanceid))
             {
                 HttpCookies = new Dictionary<string, string>()
@@ -62,7 +62,8 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         private IAzFunctionHandler FunctionHandler { get; }
         private ISolidProxyConfigurationStore ConfigurationStore { get; }
         private SemaphoreSlim WriteSemaphore { get; }
-        protected abstract AzFunctionEmitSettings EmitSettings { get; set; } 
+        private ITimerStore TimerStore { get; }
+        protected abstract AzFunctionEmitSettings EmitSettings { get; set; }
 
         /// <summary>
         /// Perfomes the setup.
@@ -171,7 +172,6 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                 //
                 // handle queue functions
                 //
-                var tasks = new List<Task>();
                 var queueFunctionDefs = functionDefs.OfType<QueueFunctionDef>().ToList();
                 foreach(var queueFunctionDef in queueFunctionDefs)
                 {
@@ -197,7 +197,16 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                         throw new Exception("Cannot handle queue type:" + queueType);
                     }
                 }
-                await Task.WhenAll(tasks);
+
+                //
+                // handle timer functions
+                //
+                foreach(var crontab in TimerStore.ListCrontabs()) 
+                {
+                    var timerFunction = FunctionHandler.GetOrCreateFunction<IAzTimerFunction>(crontab.Key);
+                    timerFunction.Schedule = crontab.Value;
+                    touchedFunctions.Add(timerFunction);
+                }
 
                 // write all touched functions
                 var solidRpcFunctionsCs = new StringBuilder();

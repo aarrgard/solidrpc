@@ -26,7 +26,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
         /// <param name="configuration"></param>
         /// <param name="methodBinderStore"></param>
         /// <param name="configurationStore"></param>
-        /// <param name="contentHandler"></param>
+        /// <param name="timerStore"></param>
         /// <param name="functionHandler"></param>
         public SolidRpcHostAzFunctionsV2(
             ILogger<SolidRpcHost> logger,
@@ -34,14 +34,14 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
             IConfiguration configuration, 
             IMethodBinderStore methodBinderStore, 
             ISolidProxyConfigurationStore configurationStore, 
-            ISolidRpcContentHandler contentHandler, 
+            ITimerStore timerStore, 
             IAzFunctionHandler functionHandler) : 
             base(logger,
                 serviceProvider,
                 configuration, 
                 methodBinderStore, 
-                configurationStore, 
-                contentHandler, 
+                configurationStore,
+                timerStore, 
                 functionHandler)
         {
         }
