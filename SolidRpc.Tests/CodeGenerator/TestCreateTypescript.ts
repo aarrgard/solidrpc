@@ -731,6 +731,30 @@ export namespace Abstractions {
                     }
                 }, ParseDateTimeSubject);
             }
+            let ListAssemblyNamesSubject = new Subject<string[]>();
+            /**
+             * This observable is hot and monitors all the responses from the ListAssemblyNames invocations.
+             */
+            export var ListAssemblyNamesObservable = ListAssemblyNamesSubject.asObservable().pipe(share());
+            /**
+             * Returns all the assembly names that are located on this host
+             * @param cancellationToken 
+             */
+            export function ListAssemblyNames(
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<string[]> {
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/ListAssemblyNames';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<string[]>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return Array.from(data).map(o => o as string);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, ListAssemblyNamesSubject);
+            }
             }
         /**
          * The host store is responsible for storing persistent information about 

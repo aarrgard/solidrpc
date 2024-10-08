@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Microsoft.Extensions.DependencyInjection {
     /// <summary>
     /// 
@@ -305,11 +301,22 @@ namespace Microsoft.Extensions.DependencyInjection {
                 var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
                 return _config.InterceptAsync<System.DateTimeOffset>(_serviceProvider, impl, mi_ParseDateTime_dateTime_cancellationToken, new object[] {dateTime, cancellationToken}, () => impl.ParseDateTime(dateTime, cancellationToken));
             }
-
-            public Task<IEnumerable<string>> ListAssemblyNames(CancellationToken cancellationToken = default)
-            {
-                throw new System.NotImplementedException();
+        
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_ListAssemblyNames_cancellationToken = GetMethodInfo("ListAssemblyNames", new System.Type[] {typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
+            public System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<System.String>> ListAssemblyNames(
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.Collections.Generic.IEnumerable<System.String>>(_serviceProvider, impl, mi_ListAssemblyNames_cancellationToken, new object[] {cancellationToken}, () => impl.ListAssemblyNames(cancellationToken));
             }
+        
         }
     
         /// <summary>

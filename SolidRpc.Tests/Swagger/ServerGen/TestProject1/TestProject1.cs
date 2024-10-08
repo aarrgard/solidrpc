@@ -17,6 +17,8 @@
 //Microsoft.AspNetCore.Mvc.Versioning/5.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.mvc.versioning\5.1.0\lib\net6.0\Microsoft.AspNetCore.Mvc.Versioning.dll
 //Microsoft.AspNetCore.StaticFiles/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.staticfiles\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.StaticFiles.dll
 //Microsoft.AspNetCore.WebUtilities/2.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.webutilities\2.1.1\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll
+//Microsoft.Bcl.AsyncInterfaces/8.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.bcl.asyncinterfaces\8.0.0\lib\netstandard2.1\Microsoft.Bcl.AsyncInterfaces.dll
+//Microsoft.Bcl.TimeProvider/8.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.bcl.timeprovider\8.0.1\lib\netstandard2.0\Microsoft.Bcl.TimeProvider.dll
 //Microsoft.CodeAnalysis.Common/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.dll
 //Microsoft.CodeAnalysis.CSharp/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.CSharp.dll
 //Microsoft.CodeAnalysis.CSharp.Scripting/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
@@ -48,10 +50,10 @@
 //Microsoft.Extensions.Options.ConfigurationExtensions/8.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.options.configurationextensions\8.0.0\lib\net7.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 //Microsoft.Extensions.Primitives/8.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.primitives\8.0.0\lib\net7.0\Microsoft.Extensions.Primitives.dll
 //Microsoft.Extensions.WebEncoders/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.webencoders\2.2.0\lib\netstandard2.0\Microsoft.Extensions.WebEncoders.dll
-//Microsoft.IdentityModel.Abstractions/7.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.abstractions\7.6.0\lib\net6.0\Microsoft.IdentityModel.Abstractions.dll
-//Microsoft.IdentityModel.JsonWebTokens/7.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.jsonwebtokens\7.6.0\lib\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
-//Microsoft.IdentityModel.Logging/7.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.logging\7.6.0\lib\net6.0\Microsoft.IdentityModel.Logging.dll
-//Microsoft.IdentityModel.Tokens/7.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.tokens\7.6.0\lib\net6.0\Microsoft.IdentityModel.Tokens.dll
+//Microsoft.IdentityModel.Abstractions/8.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.abstractions\8.1.1\lib\net6.0\Microsoft.IdentityModel.Abstractions.dll
+//Microsoft.IdentityModel.JsonWebTokens/8.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.jsonwebtokens\8.1.1\lib\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+//Microsoft.IdentityModel.Logging/8.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.logging\8.1.1\lib\net6.0\Microsoft.IdentityModel.Logging.dll
+//Microsoft.IdentityModel.Tokens/8.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.tokens\8.1.1\lib\net6.0\Microsoft.IdentityModel.Tokens.dll
 //Microsoft.Net.Http.Headers/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.net.http.headers\2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll
 //Microsoft.NET.Test.Sdk/17.11.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.net.test.sdk\17.11.1\lib\netcoreapp3.1\_._
 //Microsoft.NETCore.Platforms/1.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.netcore.platforms\1.1.0\lib\netstandard1.0\_._
@@ -69,9 +71,9 @@
 //SolidProxy.Core/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.core\1.0.0-rc025\lib\netstandard2.0\SolidProxy.Core.dll
 //SolidProxy.GeneratorCastle/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.generatorcastle\1.0.0-rc025\lib\netstandard2.0\SolidProxy.GeneratorCastle.dll
 //SolidProxy.MicrosoftDI/1.0.0-rc024=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.microsoftdi\1.0.0-rc024\lib\netstandard2.0\SolidProxy.MicrosoftDI.dll
-//Swashbuckle.AspNetCore.Swagger/6.8.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swagger\6.8.0\lib\net7.0\Swashbuckle.AspNetCore.Swagger.dll
-//Swashbuckle.AspNetCore.SwaggerGen/6.8.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggergen\6.8.0\lib\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-//Swashbuckle.AspNetCore.SwaggerUI/6.8.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggerui\6.8.0\lib\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+//Swashbuckle.AspNetCore.Swagger/6.8.1=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swagger\6.8.1\lib\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+//Swashbuckle.AspNetCore.SwaggerGen/6.8.1=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggergen\6.8.1\lib\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+//Swashbuckle.AspNetCore.SwaggerUI/6.8.1=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggerui\6.8.1\lib\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 //System.Buffers/4.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.buffers\4.5.0\ref\netcoreapp2.0\_._
 //System.Collections/4.0.11=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections\4.0.11\ref\netstandard1.3\System.Collections.dll
 //System.Collections.Immutable/8.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections.immutable\8.0.0\lib\net7.0\System.Collections.Immutable.dll
@@ -82,7 +84,7 @@
 //System.Diagnostics.PerformanceCounter/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.diagnostics.performancecounter\6.0.0\lib\net6.0\System.Diagnostics.PerformanceCounter.dll
 //System.Drawing.Common/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.drawing.common\6.0.0\lib\net6.0\System.Drawing.Common.dll
 //System.Globalization/4.0.11=>
-//System.IdentityModel.Tokens.Jwt/7.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.identitymodel.tokens.jwt\7.6.0\lib\net6.0\System.IdentityModel.Tokens.Jwt.dll
+//System.IdentityModel.Tokens.Jwt/8.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\system.identitymodel.tokens.jwt\8.1.1\lib\net6.0\System.IdentityModel.Tokens.Jwt.dll
 //System.IO/4.1.0=>
 //System.IO.FileSystem.AccessControl/4.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.io.filesystem.accesscontrol\4.7.0\ref\netstandard2.0\System.IO.FileSystem.AccessControl.dll
 //System.Linq/4.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.linq\4.1.0\ref\netstandard1.6\System.Linq.dll
