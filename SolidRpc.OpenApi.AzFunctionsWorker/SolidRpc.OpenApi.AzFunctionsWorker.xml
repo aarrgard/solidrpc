@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SolidRpc.OpenApi.AzFunctionsWorker</name>
+    </assembly>
+    <members>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.HttpFunction">
+            <summary>
+            Handles timer triggers
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.HttpFunction.Run(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.Extensions.Logging.ILogger,System.IServiceProvider,System.Threading.CancellationToken)">
+            <summary>
+            Runs the trigger logic.
+            </summary>
+            <param name="req"></param>
+            <param name="log"></param>
+            <param name="serviceProvider"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctionsWorker.Services.SolidRpcHostAzWorker">
+            <summary>
+            The solid rpc host in an azure functions environment
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctionsWorker.Services.SolidRpcHostAzWorker.#ctor(Microsoft.Extensions.Logging.ILogger{SolidRpc.OpenApi.AspNetCore.Services.SolidRpcHost},System.IServiceProvider,Microsoft.Extensions.Configuration.IConfiguration,SolidRpc.Abstractions.OpenApi.Binder.IMethodBinderStore,SolidProxy.Core.Configuration.Runtime.ISolidProxyConfigurationStore,SolidRpc.Abstractions.Services.ISolidRpcContentHandler,SolidRpc.OpenApi.AzFunctions.Functions.IAzFunctionHandler)">
+            <summary>
+            Constructs a new instance
+            </summary>
+            <param name="logger"></param>
+            <param name="serviceProvider"></param>
+            <param name="configuration"></param>
+            <param name="methodBinderStore"></param>
+            <param name="configurationStore"></param>
+            <param name="contentHandler"></param>
+            <param name="functionHandler"></param>
+        </member>
+    </members>
+</doc>

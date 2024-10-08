@@ -11,7 +11,9 @@ using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +25,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
     /// </summary>
     public class SolidRpcHost : ISolidRpcHost
     {
-        /// <summary>
+        /// <summary>a
         /// Constructs a new instance
         /// </summary>
         /// <param name="logger"></param>
@@ -241,6 +243,32 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
         {
             SerializerFactory.DeserializeFromString(dateTime, out DateTimeOffset res);
             return Task.FromResult(res);
+        }
+
+        /// <summary>
+        /// Returns all the assembly names
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<IEnumerable<string>> ListAssemblyNames(CancellationToken cancellationToken = default)
+        {
+            var assemblyNames = new List<string>();
+            
+            // determine where this assembly is located
+            var location = GetType().Assembly.Location;
+            var folder = new FileInfo(location).Directory;
+            
+            // load all assemblies  
+            foreach(var assemblyFile in folder.EnumerateFiles())
+            {
+                if(!assemblyFile.Extension.Equals(".dll", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    continue;
+                }
+                var a = Assembly.LoadFile(assemblyFile.FullName);
+                assemblyNames.Add(a.FullName);
+            }
+            return Task.FromResult(assemblyNames.AsEnumerable());
         }
     }
 }

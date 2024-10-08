@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Microsoft.Extensions.DependencyInjection {
     /// <summary>
     /// 
@@ -301,7 +305,11 @@ namespace Microsoft.Extensions.DependencyInjection {
                 var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
                 return _config.InterceptAsync<System.DateTimeOffset>(_serviceProvider, impl, mi_ParseDateTime_dateTime_cancellationToken, new object[] {dateTime, cancellationToken}, () => impl.ParseDateTime(dateTime, cancellationToken));
             }
-        
+
+            public Task<IEnumerable<string>> ListAssemblyNames(CancellationToken cancellationToken = default)
+            {
+                throw new System.NotImplementedException();
+            }
         }
     
         /// <summary>

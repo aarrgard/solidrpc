@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SolidRpc.Test.Petstore.AzFunctionsWorker": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7298",
+      "launchBrowser": false
+    }
+  }
+}

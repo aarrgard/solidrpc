@@ -32,6 +32,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         }
 
         /// <summary>
+        /// <summary>
         /// The base dir
         /// </summary>
         public DirectoryInfo BaseDir { get; }

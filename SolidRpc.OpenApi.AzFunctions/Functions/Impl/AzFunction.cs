@@ -127,17 +127,9 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         }
 
         /// <summary>
-        /// Saves the run.csx and function.json files
-        /// </summary>
-        public void Save()
-        {
-            FunctionHandler.FunctionCode[Name] = WriteFunctionClass();
-        }
-
-        /// <summary>
         /// Writes the function class
         /// </summary>
         /// <returns></returns>
-        protected abstract string WriteFunctionClass();
+        public abstract string WriteFunctionClass(AzFunctionEmitSettings settings);
     }
 }

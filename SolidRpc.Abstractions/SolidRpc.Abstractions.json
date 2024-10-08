@@ -513,6 +513,29 @@
         }
       }
     },
+    "/Services/ISolidRpcHost/ListAssemblyNames": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns all the assembly names that are located on this host",
+        "operationId": "Get_SolidRpc_Abstractions_Services_ISolidRpcHost_ListAssemblyNames",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
     "/Services/ISolidRpcHost/ParseDateTime/{dateTime}": {
       "get": {
         "tags": [

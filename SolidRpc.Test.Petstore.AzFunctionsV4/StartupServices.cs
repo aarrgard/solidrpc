@@ -86,7 +86,6 @@ namespace SolidRpc.Test.Petstore.AzFunctionsV2
 
         protected bool ConfigureAzureFunction(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         {
-
             //conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), "swagger-ui", "swagger-ui");
             conf.SetOAuth2ClientSecurity(services.GetSolidRpcOAuth2LocalIssuer(), SolidRpcOidcTestImpl.ClientId, SolidRpcOidcTestImpl.ClientSecret);
             //conf.SetOAuth2ClientSecurity("https://identity.erikolsson.se", "eo-prd-o365-func", "1053f26b-80ce-443c-8529-6dfa2c5d23b6");

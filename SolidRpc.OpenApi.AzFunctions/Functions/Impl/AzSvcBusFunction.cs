@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Writes the function class
         /// </summary>
         /// <returns></returns>
-        protected override string WriteFunctionClass()
+        public override string WriteFunctionClass(AzFunctionEmitSettings settings)
         {
             return $@"/// SvcBusFunction";
         }

@@ -46,7 +46,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Writes the function class
         /// </summary>
         /// <returns></returns>
-        protected override string WriteFunctionClass()
+        public override string WriteFunctionClass(AzFunctionEmitSettings settings)
         {
             return $@"
     public class {Name}
@@ -57,7 +57,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             _logger = logger;
             _serviceProvider = serviceProvider;
         }}
-        [FunctionName(""{Name}"")]
+        [{settings.NameAttribute}(""{Name}"")]
         public Task Run(
             [TimerTrigger(""{Schedule}"", RunOnStartup = {RunOnStartup.ToString().ToLower()})] TimerInfo timerInfo,
             CancellationToken cancellationToken)

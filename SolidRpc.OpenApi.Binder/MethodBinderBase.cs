@@ -80,6 +80,7 @@ namespace SolidRpc.OpenApi.Binder
                 {
                     var handlerType = typeof(ITransportHandler<>).MakeGenericType(transport.GetTransportInterface());
                     var h = handlers.Where(o => handlerType.IsAssignableFrom(o.GetType())).FirstOrDefault();
+                    if (h == null) throw new Exception("Cannot find handler for transport " + transport.GetTransportType());
                     var configMethod = h.GetType().GetMethod("Configure");
                     configMethod.Invoke(h, new object[] { methodBinding, transport });
                 }

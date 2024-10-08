@@ -121,6 +121,26 @@
             The transport type
             </summary>
         </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings.Usings">
+            <summary>
+            The usings directive
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings.NameAttribute">
+            <summary>
+            The name attribute
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings.HttpRequestClass">
+            <summary>
+            The http request class
+            </summary>
+        </member>
+        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings.HttpResponseClass">
+            <summary>
+            The http response class
+            </summary>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction">
             <summary>
             Represents an azure function
@@ -146,7 +166,7 @@
             Removes this function.
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction.Save">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.IAzFunction.WriteFunctionClass(SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings)">
             <summary>
             Writes the run.csx and function.json files
             </summary>
@@ -355,12 +375,7 @@
             Deletes the function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.Save">
-            <summary>
-            Saves the run.csx and function.json files
-            </summary>
-        </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.WriteFunctionClass">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunction.WriteFunctionClass(SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings)">
             <summary>
             Writes the function class
             </summary>
@@ -378,11 +393,7 @@
             <param name="baseDir"></param>
             <param name="functionAssembly"></param>
         </member>
-        <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.BaseDir">
-            <summary>
-            The base dir
-            </summary>
-        </member>
+        <!-- Badly formed XML comment ignored for member "P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.BaseDir" -->
         <member name="P:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzFunctionHandler.DevDir">
             <summary>
             Returns the dev dir if it exists
@@ -473,7 +484,7 @@
             <param name="subDir"></param>
             <param name="functionJson"></param>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.WriteFunctionClass">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzHttpFunction.WriteFunctionClass(SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings)">
             <summary>
             Writes the function class
             </summary>
@@ -504,7 +515,7 @@
             Represents a timer function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.WriteFunctionClass">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzQueueFunction.WriteFunctionClass(SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings)">
             <summary>
             Writes the function class
             </summary>
@@ -545,7 +556,7 @@
             Represents a timer function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.WriteFunctionClass">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzSvcBusFunction.WriteFunctionClass(SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings)">
             <summary>
             Writes the function class
             </summary>
@@ -586,7 +597,7 @@
             Represents a timer function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.WriteFunctionClass">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Functions.Impl.AzTimerFunction.WriteFunctionClass(SolidRpc.OpenApi.AzFunctions.Functions.AzFunctionEmitSettings)">
             <summary>
             Writes the function class
             </summary>

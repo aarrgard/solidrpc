@@ -95,5 +95,12 @@ namespace SolidRpc.Abstractions.Services
         /// <returns></returns>
         [Security(nameof(SolidRpcHostPermission))]
         Task<DateTimeOffset> ParseDateTime(string dateTime, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Returns all the assembly names that are located on this host
+        /// </summary>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<IEnumerable<string>> ListAssemblyNames(CancellationToken cancellationToken = default);
     }
 }

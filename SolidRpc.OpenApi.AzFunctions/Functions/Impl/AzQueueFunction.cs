@@ -39,7 +39,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Writes the function class
         /// </summary>
         /// <returns></returns>
-        protected override string WriteFunctionClass()
+        public override string WriteFunctionClass(AzFunctionEmitSettings settings)
         {
             return $@"
 
@@ -51,7 +51,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             _logger = logger;
             _serviceProvider = serviceProvider;
         }}
-        [FunctionName(""{Name}"")]
+        [{settings.NameAttribute}(""{Name}"")]
         public Task Run(
             [QueueTrigger(""{QueueName}"", Connection = ""{Connection}"")] string message,
             string id,

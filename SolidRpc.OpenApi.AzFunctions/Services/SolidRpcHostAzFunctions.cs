@@ -62,6 +62,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         private IAzFunctionHandler FunctionHandler { get; }
         private ISolidProxyConfigurationStore ConfigurationStore { get; }
         private SemaphoreSlim WriteSemaphore { get; }
+        protected abstract AzFunctionEmitSettings EmitSettings { get; set; } 
 
         /// <summary>
         /// Perfomes the setup.
@@ -200,7 +201,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
 
                 // write all touched functions
                 var solidRpcFunctionsCs = new StringBuilder();
-                touchedFunctions.ForEach(o => o.Save());
+                touchedFunctions.ForEach(o => FunctionHandler.FunctionCode[o.Name] = o.WriteFunctionClass(EmitSettings));
 
                 if(FunctionHandler.DevDir != null)
                 {
@@ -208,17 +209,11 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
                     using (var fs = f.CreateText())
                     {
                         fs.WriteLine($@"
-    using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Extensions.Http;
-    using Microsoft.Extensions.Logging;
-    using System;
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;
-    namespace SolidRpc.OpenApi.AzFunctions
-    {{
+{EmitSettings.Usings}
+namespace SolidRpc.OpenApi.AzFunctions
+{{
     {string.Join(Environment.NewLine, FunctionHandler.FunctionCode.OrderBy(o => o.Key).Select(o => o.Value))}
-    }}");
+}}");
                     }
                 }
 

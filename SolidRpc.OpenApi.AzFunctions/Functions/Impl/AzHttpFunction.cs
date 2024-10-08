@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using SolidRpc.OpenApi.AzFunctions.Functions.Model;
 
 namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
@@ -69,7 +67,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
         /// Writes the function class
         /// </summary>
         /// <returns></returns>
-        protected override string WriteFunctionClass()
+        public override string WriteFunctionClass(AzFunctionEmitSettings settings)
         {
             return $@"
     public class {Name}
@@ -80,13 +78,12 @@ namespace SolidRpc.OpenApi.AzFunctions.Functions.Impl
             _logger = logger;
             _serviceProvider = serviceProvider;
         }}
-        [FunctionName(""{Name}"")]
-        public async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.{Char.ToUpper(AuthLevel[0]) + AuthLevel.Substring(1)}, {string.Join(", ", Methods.Select(o => $"\"{o}\""))}, Route = ""{Route}"")] HttpRequestMessage req,
+        [{settings.NameAttribute}(""{Name}"")]
+        public Task<{settings.HttpResponseClass}> Run(
+            [HttpTrigger(AuthorizationLevel.{Char.ToUpper(AuthLevel[0]) + AuthLevel.Substring(1)}, {string.Join(", ", Methods.Select(o => $"\"{o}\""))}, Route = ""{Route}"")] {settings.HttpRequestClass} req,
             CancellationToken cancellationToken)
         {{
-            var res = await HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
-            return res;
+            return HttpFunction.Run(req, _logger, _serviceProvider, cancellationToken);
         }}
     }}
 ";

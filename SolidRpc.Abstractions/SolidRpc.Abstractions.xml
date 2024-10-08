@@ -2635,6 +2635,12 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.ListAssemblyNames(System.Threading.CancellationToken)">
+            <summary>
+            Returns all the assembly names that are located on this host
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.Abstractions.Services.ISolidRpcHostStore">
             <summary>
             The host store is responsible for storing persistent information about 

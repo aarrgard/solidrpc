@@ -26,24 +26,17 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             lock(s_mutex)
             {
+                services.AddSolidRpcSingletonServices();
                 var funcHandler = (IAzFunctionHandler)services.Where(o => o.ServiceType == typeof(IAzFunctionHandler)).Select(o => o.ImplementationInstance).SingleOrDefault();
                 if(funcHandler == null)
                 {
-                    DirectoryInfo baseDir;
                     var assemblyLocation = new FileInfo(typeof(AzFunctionHandler).Assembly.Location);
                     if (!assemblyLocation.Exists)
                     {
                         throw new Exception("Cannot find location of assebly.");
                     }
-                    if (assemblyLocation.Directory.Name != "bin")
-                    {
-                        //throw new Exception($"Assemblies are not placed in the bin folder({assemblyLocation.Directory.Name}/{assemblyLocation.Directory.FullName}).");
-                        baseDir = new DirectoryInfo("d:\\home\\site\\wwwroot");
-                    }
-                    else
-                    {
-                        baseDir = assemblyLocation.Directory.Parent;
-                    }
+
+                    var baseDir = GetFolderWithHostJsonFile(assemblyLocation.Directory);
 
                     var assemblyNamePrefix = typeof(StartupSolidRpcServices).Assembly.GetName().Name;
                     var triggerAssemblies = AppDomain.CurrentDomain.GetAssemblies()
@@ -66,6 +59,24 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
                 return funcHandler;
             }
+        }
+
+        private static DirectoryInfo GetFolderWithHostJsonFile(DirectoryInfo directory)
+        {
+            if(directory.GetFiles("host.json").Length == 0)
+            {
+                if(directory.Parent == null) 
+                {
+                    return new DirectoryInfo("d:\\home\\site\\wwwroot");
+
+                } 
+                else
+                {
+                    return GetFolderWithHostJsonFile(directory.Parent);
+                }
+
+            }
+            return directory;
         }
 
         /// <summary>
@@ -107,7 +118,7 @@ namespace Microsoft.Extensions.DependencyInjection
             timerFunc.RunOnStartup = runOnStartup;
             timerFunc.Schedule = schedule;
             timerFunc.TimerId = functionName;
-            timerFunc.Save();
+            //timerFunc.Save();
 
             return services;
         }

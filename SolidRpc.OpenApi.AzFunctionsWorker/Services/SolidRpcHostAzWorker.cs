@@ -7,16 +7,16 @@ using SolidRpc.Abstractions.Services;
 using SolidRpc.OpenApi.AspNetCore.Services;
 using SolidRpc.OpenApi.AzFunctions.Functions;
 using SolidRpc.OpenApi.AzFunctions.Services;
-using SolidRpc.OpenApi.AzFunctionsV2Extension.Services;
+using SolidRpc.OpenApi.AzFunctionsWorker.Services;
 using System;
 
-[assembly: SolidRpcService(typeof(ISolidRpcHost), typeof(SolidRpcHostAzFunctionsV2))]
-namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
+[assembly: SolidRpcService(typeof(ISolidRpcHost), typeof(SolidRpcHostAzWorker))]
+namespace SolidRpc.OpenApi.AzFunctionsWorker.Services
 {
     /// <summary>
     /// The solid rpc host in an azure functions environment
     /// </summary>
-    public class SolidRpcHostAzFunctionsV2 : SolidRpcHostAzFunctions
+    public class SolidRpcHostAzWorker : SolidRpcHostAzFunctions
     {
         /// <summary>
         /// Constructs a new instance
@@ -28,7 +28,7 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
         /// <param name="configurationStore"></param>
         /// <param name="contentHandler"></param>
         /// <param name="functionHandler"></param>
-        public SolidRpcHostAzFunctionsV2(
+        public SolidRpcHostAzWorker(
             ILogger<SolidRpcHost> logger,
             IServiceProvider serviceProvider,
             IConfiguration configuration, 
@@ -48,16 +48,13 @@ namespace SolidRpc.OpenApi.AzFunctionsV2Extension.Services
 
         protected override AzFunctionEmitSettings EmitSettings { get; set; } = new AzFunctionEmitSettings()
         {
-            NameAttribute = "FunctionName",
-            Usings = @"using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Extensions.Http;
-    using Microsoft.Extensions.Logging;
-    using System;
-    using System.Net.Http;
-    using System.Threading;
-    using System.Threading.Tasks;",
-            HttpRequestClass = "HttpRequestMessage",
-            HttpResponseClass = "HttpResponseMessage"
+            NameAttribute = "Function",
+            Usings = @"using Microsoft.Azure.Functions.Worker;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;",
+            HttpRequestClass = "HttpRequest",
+            HttpResponseClass = "IActionResult"
         };
     }
 }

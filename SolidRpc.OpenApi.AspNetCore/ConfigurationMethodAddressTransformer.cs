@@ -77,7 +77,7 @@ namespace SolidRpc.OpenApi.Binder
 
                 if (string.IsNullOrEmpty(Host.Host))
                 {
-                    var hostConfigSettings = GetValue(configuration,ConfigHostSettings,"urls,WEBSITE_HOSTNAME");
+                    var hostConfigSettings = GetValue(configuration,ConfigHostSettings, "WEBSITE_HOSTNAME,urls");
                     if (!string.IsNullOrEmpty(hostConfigSettings))
                     {
                         foreach (var hostConfigSetting in hostConfigSettings.Split(','))
