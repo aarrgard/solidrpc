@@ -49,7 +49,10 @@ namespace SolidRpc.OpenApi.AzFunctionsWorker.Services
         protected override AzFunctionEmitSettings EmitSettings { get; set; } = new AzFunctionEmitSettings()
         {
             NameAttribute = "Function",
-            Usings = @"using Microsoft.Azure.Functions.Worker;
+            Usings = @"using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;",

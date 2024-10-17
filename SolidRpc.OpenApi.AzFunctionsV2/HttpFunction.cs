@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.OpenApi.AzFunctions.Functions;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -25,36 +26,44 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static Task<HttpResponseMessage> Run(HttpRequestMessage req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            //
-            // for some reason the port is not added to the request
-            //
-            var addrTrans = serviceProvider.GetRequiredService<IMethodAddressTransformer>();
-            var baseAddress = addrTrans.BaseAddress;
-            if (baseAddress.Host == req.RequestUri.Host)
+            return FuncExecutor.ExecuteFunction(serviceProvider, log, async () =>
             {
-                var ub = new UriBuilder(req.RequestUri);
-                ub.Port = baseAddress.Port;
-                req.RequestUri = ub.Uri;
-            }
-                
-            // copy data from req to generic structure
-            // skip api prefix.
-            var solidReq = new SolidHttpRequest();
-            await solidReq.CopyFromAsync(req, addrTrans.RewritePath);
+                //
+                // for some reason the port is not added to the request
+                //
+                var addrTrans = serviceProvider.GetRequiredService<IMethodAddressTransformer>();
+                var baseAddress = addrTrans.BaseAddress;
+                if (baseAddress.Host == req.RequestUri.Host)
+                {
+                    var ub = new UriBuilder(req.RequestUri);
+                    ub.Port = baseAddress.Port;
+                    req.RequestUri = ub.Uri;
+                }
 
-            // invoke the method
-            var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();
-            var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
-            var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
+                // copy data from req to generic structure
+                // skip api prefix.
+                var solidReq = new SolidHttpRequest();
+                await solidReq.CopyFromAsync(req, addrTrans.RewritePath);
 
-            //log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
+                // invoke the method
+                var httpHandler = serviceProvider.GetRequiredService<HttpHandler>();
+                var methodInvoker = serviceProvider.GetRequiredService<IMethodInvoker>();
+                var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
 
-            // return the response.
-            var httpResponse = new HttpResponseMessage();
-            await res.CopyToAsync(httpResponse, req);
-            return httpResponse;
+                //log.Info($"C# HTTP trigger function processed a request - {res.StatusCode}");
+
+                // return the response.
+                var httpResponse = new HttpResponseMessage();
+                await res.CopyToAsync(httpResponse, req);
+                return httpResponse;
+            }, () =>
+            {
+                var httpResponse = new HttpResponseMessage();
+                httpResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                return Task.FromResult(httpResponse);
+            });
         }
     }
 }

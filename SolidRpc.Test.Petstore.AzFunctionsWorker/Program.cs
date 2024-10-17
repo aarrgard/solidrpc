@@ -4,9 +4,11 @@ using Microsoft.Extensions.Hosting;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.Services;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.OpenApi.AzQueue.Services;
 using SolidRpc.OpenApi.OAuth2.Services;
 using SolidRpc.OpenApi.SwaggerUI.Services;
+using SolidRpc.Test.Petstore.AzFunctionsWorker;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -38,6 +40,8 @@ var host = new HostBuilder()
             o.OAuthClientId = SolidRpcOidcTestImpl.ClientId;
             o.OAuthClientSecret = SolidRpcOidcTestImpl.ClientSecret;
         }, conf => Configure(services, conf));
+
+        services.AddSingleton<IFuncMiddleware, FuncMiddleware>();
 
         services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", c => Configure(services, c));
         services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");

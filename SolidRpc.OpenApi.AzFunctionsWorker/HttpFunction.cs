@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -47,10 +48,9 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<IActionResult> Run(HttpRequest req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static Task<IActionResult> Run(HttpRequest req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            try
-            {
+            return FuncExecutor.ExecuteFunction<IActionResult>(serviceProvider, log, async () => {
                 // copy data from req to generic structure
                 // skip api prefix.
                 var solidReq = new SolidHttpRequest();
@@ -62,11 +62,7 @@ namespace SolidRpc.OpenApi.AzFunctions
                 var res = await methodInvoker.InvokeAsync(serviceProvider, httpHandler, solidReq, cancellationToken);
 
                 return new ResponseResult(res);
-            } 
-            catch(Exception e)
-            {
-                return new ErrorResult();
-            }
+            }, () => Task.FromResult<IActionResult>(new ErrorResult()));
         }
     }
 }

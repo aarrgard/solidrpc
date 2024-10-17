@@ -897,6 +897,44 @@
             <param name="value"></param>
             <param name="serializer"></param>
         </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor">
+            <summary>
+            Executes a function
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor.ExecuteFunction(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Executes a function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="serviceProvider"></param>
+            <param name="logger"></param>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor.ExecuteFunction``1(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task{``0}},System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Executes a function
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="serviceProvider"></param>
+            <param name="logger"></param>
+            <param name="action"></param>
+            <param name="errorAction"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.IFuncMiddleware">
+            <summary>
+            The function middleware
+            </summary>
+        </member>
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.IFuncMiddleware.HandleRequestAsync(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Handles the request
+            </summary>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
         <member name="T:SolidRpc.OpenApi.AzFunctions.Services.ITimerStore">
             <summary>
             The timer store is used to invoke timers

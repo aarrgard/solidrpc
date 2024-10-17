@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.AzFunctions.Services;
 using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
@@ -27,11 +28,11 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <param name="serviceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+        public static Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            try
+            return FuncExecutor.ExecuteFunction(serviceProvider, log, async () =>
             {
-                if(log.IsEnabled(LogLevel.Trace))
+                if (log.IsEnabled(LogLevel.Trace))
                 {
                     log.LogTrace($"Picked up message({id}) from queue:{message}");
                 }
@@ -39,11 +40,11 @@ namespace SolidRpc.OpenApi.AzFunctions
                 //
                 // the message might be base64 encoded. Microsoft tends to break contracts on a regular basis...
                 // 
-                if(!message.StartsWith("{"))
+                if (!message.StartsWith("{"))
                 {
                     message = Encoding.UTF8.GetString(Convert.FromBase64String(message));
                 }
-                
+
                 //
                 // deserialize the message
                 //
@@ -65,12 +66,7 @@ namespace SolidRpc.OpenApi.AzFunctions
                     return;
                 }
                 throw new Exception($"Response code is not ok - {res.StatusCode}");
-
-            }
-            catch (Exception e)
-            {
-                log.LogError(e, "Failed to run az function queue");
-            }
+            });
         }
     }
 }
