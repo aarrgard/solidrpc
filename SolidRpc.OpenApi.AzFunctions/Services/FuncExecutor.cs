@@ -21,26 +21,27 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <param name="logger"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static async Task ExecuteFunction(IServiceProvider serviceProvider, ILogger logger, Func<Task> action)
+        public static async Task ExecuteFunction<TInput>(IServiceProvider serviceProvider, ILogger logger, TInput input, Func<Task> action)
         {
-            await ExecuteFunction<object>(serviceProvider, logger, () => { action(); return null; }, () => { return null; });
+            await ExecuteFunction<TInput, object>(serviceProvider, logger, input, () => { action(); return null; }, () => { return null; });
         }
 
         /// <summary>
         /// Executes a function
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TInput"></typeparam>
+        /// <typeparam name="TRes"></typeparam>
         /// <param name="serviceProvider"></param>
         /// <param name="logger"></param>
         /// <param name="action"></param>
         /// <param name="errorAction"></param>
         /// <returns></returns>
-        public static async Task<T> ExecuteFunction<T>(IServiceProvider serviceProvider, ILogger logger, Func<Task<T>> action, Func<Task<T>> errorAction)
+        public static async Task<TRes> ExecuteFunction<TInput, TRes>(IServiceProvider serviceProvider, ILogger logger, TInput input, Func<Task<TRes>> action, Func<Task<TRes>> errorAction)
         {
             try
             {
-                var middlewares = serviceProvider.GetRequiredService<IEnumerable<IFuncMiddleware>>();
-                return await ExecuteMiddlewareChain<T>(middlewares, action);
+                var middlewares = serviceProvider.GetRequiredService<IEnumerable<IFuncMiddleware<TInput>>>();
+                return await ExecuteMiddlewareChain(middlewares, input, action);
             }
             catch (Exception e)
             {
@@ -49,15 +50,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
             }
         }
 
-        private static async Task<T> ExecuteMiddlewareChain<T>(IEnumerable<IFuncMiddleware> middlewares, Func<Task<T>> action)
+        private static async Task<TRes> ExecuteMiddlewareChain<TInput, TRes>(IEnumerable<IFuncMiddleware<TInput>> middlewares, TInput input, Func<Task<TRes>> action)
         {
             if(middlewares.Any())
             {
                 var middleware = middlewares.FirstOrDefault();
-                T res = default;
-                await middleware.HandleRequestAsync(async () =>
+                TRes res = default;
+                await middleware.HandleRequestAsync(input, async () =>
                 {
-                    res = await ExecuteMiddlewareChain(middlewares.Skip(1), action);
+                    res = await ExecuteMiddlewareChain(middlewares.Skip(1), input, action);
                 });
                 return res;
             }

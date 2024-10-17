@@ -28,7 +28,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static Task<HttpResponseMessage> Run(HttpRequestMessage req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            return FuncExecutor.ExecuteFunction(serviceProvider, log, async () =>
+            return FuncExecutor.ExecuteFunction<HttpRequestMessage, HttpResponseMessage>(serviceProvider, log, req, async () =>
             {
                 //
                 // for some reason the port is not added to the request

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,7 +42,7 @@ var host = new HostBuilder()
             o.OAuthClientSecret = SolidRpcOidcTestImpl.ClientSecret;
         }, conf => Configure(services, conf));
 
-        services.AddSingleton<IFuncMiddleware, FuncMiddleware>();
+        services.AddTransient<IFuncMiddleware<HttpRequest>, FuncMiddleware>();
 
         services.AddSolidRpcAzTableQueue("AzureWebJobsStorage", "azfunctions", c => Configure(services, c));
         services.AddAzFunctionTimer<IAzTableQueue>(o => o.DoScheduledScanAsync(CancellationToken.None), "0 * * * * *");

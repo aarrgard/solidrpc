@@ -902,7 +902,7 @@
             Executes a function
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor.ExecuteFunction(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor.ExecuteFunction``1(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger,``0,System.Func{System.Threading.Tasks.Task})">
             <summary>
             Executes a function
             </summary>
@@ -912,26 +912,28 @@
             <param name="action"></param>
             <returns></returns>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor.ExecuteFunction``1(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger,System.Func{System.Threading.Tasks.Task{``0}},System.Func{System.Threading.Tasks.Task{``0}})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.FuncExecutor.ExecuteFunction``2(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger,``0,System.Func{System.Threading.Tasks.Task{``1}},System.Func{System.Threading.Tasks.Task{``1}})">
             <summary>
             Executes a function
             </summary>
-            <typeparam name="T"></typeparam>
+            <typeparam name="TInput"></typeparam>
+            <typeparam name="TRes"></typeparam>
             <param name="serviceProvider"></param>
             <param name="logger"></param>
             <param name="action"></param>
             <param name="errorAction"></param>
             <returns></returns>
         </member>
-        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.IFuncMiddleware">
+        <member name="T:SolidRpc.OpenApi.AzFunctions.Services.IFuncMiddleware`1">
             <summary>
             The function middleware
             </summary>
         </member>
-        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.IFuncMiddleware.HandleRequestAsync(System.Func{System.Threading.Tasks.Task})">
+        <member name="M:SolidRpc.OpenApi.AzFunctions.Services.IFuncMiddleware`1.HandleRequestAsync(`0,System.Func{System.Threading.Tasks.Task})">
             <summary>
             Handles the request
             </summary>
+            <param name="trigger"></param>
             <param name="next"></param>
             <returns></returns>
         </member>

@@ -30,7 +30,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            return FuncExecutor.ExecuteFunction(serviceProvider, log, async () => {
+            return FuncExecutor.ExecuteFunction(serviceProvider, log, message, async () => {
                 if (log.IsEnabled(LogLevel.Trace))
                 {
                     log.LogTrace($"Picked up message({id}) from queue:{message}");

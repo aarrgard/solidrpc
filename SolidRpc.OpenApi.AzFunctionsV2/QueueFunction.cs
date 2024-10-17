@@ -4,7 +4,6 @@ using SolidRpc.Abstractions.OpenApi.Http;
 using SolidRpc.Abstractions.Serialization;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.AzFunctions.Services;
-using SolidRpc.OpenApi.AzQueue.Invoker;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
@@ -30,7 +29,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static Task Run(string message, string id, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            return FuncExecutor.ExecuteFunction(serviceProvider, log, async () =>
+            return FuncExecutor.ExecuteFunction(serviceProvider, log, message, async () =>
             {
                 if (log.IsEnabled(LogLevel.Trace))
                 {

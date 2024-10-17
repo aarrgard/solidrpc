@@ -50,7 +50,7 @@ namespace SolidRpc.OpenApi.AzFunctions
         /// <returns></returns>
         public static Task<IActionResult> Run(HttpRequest req, ILogger log, IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
-            return FuncExecutor.ExecuteFunction<IActionResult>(serviceProvider, log, async () => {
+            return FuncExecutor.ExecuteFunction<HttpRequest, IActionResult>(serviceProvider, log, req, async () => {
                 // copy data from req to generic structure
                 // skip api prefix.
                 var solidReq = new SolidHttpRequest();
