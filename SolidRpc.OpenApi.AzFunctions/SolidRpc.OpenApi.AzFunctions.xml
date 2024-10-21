@@ -906,9 +906,10 @@
             <summary>
             Executes a function
             </summary>
-            <typeparam name="T"></typeparam>
+            <typeparam name="TInput"></typeparam>
             <param name="serviceProvider"></param>
             <param name="logger"></param>
+            <param name="input"></param>
             <param name="action"></param>
             <returns></returns>
         </member>
@@ -920,6 +921,7 @@
             <typeparam name="TRes"></typeparam>
             <param name="serviceProvider"></param>
             <param name="logger"></param>
+            <param name="input"></param>
             <param name="action"></param>
             <param name="errorAction"></param>
             <returns></returns>

@@ -16,14 +16,15 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <summary>
         /// Executes a function
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TInput"></typeparam>
         /// <param name="serviceProvider"></param>
         /// <param name="logger"></param>
+        /// <param name="input"></param>
         /// <param name="action"></param>
         /// <returns></returns>
         public static async Task ExecuteFunction<TInput>(IServiceProvider serviceProvider, ILogger logger, TInput input, Func<Task> action)
         {
-            await ExecuteFunction<TInput, object>(serviceProvider, logger, input, () => { action(); return null; }, () => { return null; });
+            await ExecuteFunction<TInput, object>(serviceProvider, logger, input, () => { action(); return Task.FromResult<object>(null); }, () => { return Task.FromResult<object>(null); });
         }
 
         /// <summary>
@@ -33,6 +34,7 @@ namespace SolidRpc.OpenApi.AzFunctions.Services
         /// <typeparam name="TRes"></typeparam>
         /// <param name="serviceProvider"></param>
         /// <param name="logger"></param>
+        /// <param name="input"></param>
         /// <param name="action"></param>
         /// <param name="errorAction"></param>
         /// <returns></returns>
