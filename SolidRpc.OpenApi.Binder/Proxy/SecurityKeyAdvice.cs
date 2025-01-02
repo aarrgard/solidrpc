@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Security.Principal;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using Microsoft.Extensions.Logging;
 
 namespace SolidRpc.OpenApi.Binder.Proxy
 {
@@ -21,9 +22,11 @@ namespace SolidRpc.OpenApi.Binder.Proxy
         /// <summary>
         /// Constucts a new instance
         /// </summary>
-        public SecurityKeyAdvice()
+        public SecurityKeyAdvice(ILogger<SecurityKeyAdvice<TObject, TMethod, TAdvice>> logger)
         {
+            Logger = logger;
         }
+        private ILogger Logger { get; }
         private KeyValuePair<string, string>? SecurityKey { get; set; }
 
         /// <summary>
@@ -55,10 +58,19 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             {
                 if (sKkey.Equals(SecurityKey.Value.Value))
                 {
+                    Logger.LogTrace($"Found a security key({SecurityKey.Value.Key}) in header that matches the configured secret - adding security key identity.");
                     var auth = invocation.ServiceProvider.GetRequiredService<ISolidRpcAuthorization>();
                     auth.CurrentPrincipal.AddIdentity(SecurityPathClaimAdvice.SecurityKeyIdentity);
                     invocation.ReplaceArgument<IPrincipal>((n, v) => auth.CurrentPrincipal);
                 }
+                else
+                {
+                    Logger.LogTrace($"Found a security key({SecurityKey.Value.Key}) in header that that does NOT match configured secret.");
+                }
+            }
+            else
+            {
+                Logger.LogTrace($"Did not find a security key({SecurityKey.Value.Key}) in header.");
             }
 
             invocationOptions = invocationOptions.SetKeyValue(

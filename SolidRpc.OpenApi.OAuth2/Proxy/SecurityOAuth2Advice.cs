@@ -166,6 +166,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             if (string.IsNullOrEmpty(jwt))
             {
+                Logger.LogTrace("Did not find an authorization header in request");
                 return;
             }
 
@@ -180,6 +181,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             }
             catch (Exception)
             {
+                Logger.LogTrace("Jwt token is not valid - will not add principal.");
                 await DoRedirectUnauthorizedIdentity(invocationOptions, invocation);
                 return;
             }
@@ -187,6 +189,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
             //
             // assign the principal to the current set of identities
             //
+            Logger.LogTrace($"Adding principal {jwtPrincipal.Identity.Name} to request.");
             if (auth.CurrentPrincipal.Claims.Any())
             {
                 auth.CurrentPrincipal.AddIdentities(jwtPrincipal.Identities);
