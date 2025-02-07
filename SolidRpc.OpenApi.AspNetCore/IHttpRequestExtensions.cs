@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -35,16 +36,25 @@ namespace SolidRpc.OpenApi.Binder.Http
             var addrTrans = source.HttpContext.RequestServices.GetRequiredService<IMethodAddressTransformer>();
             var rawTarget = addrTrans.RewritePath(reqFeat.RawTarget);
 
+            var queryList = new List<IHttpRequestData>();
             var questionIdx = rawTarget.IndexOf('?');
             if(questionIdx > -1)
             {
                 target.Path = rawTarget.Substring(0,questionIdx);
+                if(source.Query.Count == 0)
+                {
+                    var equalSignIdx = rawTarget.IndexOf('=', questionIdx);
+                    if (equalSignIdx > -1)
+                    {
+                        var queryKey = rawTarget.Substring(questionIdx + 1, equalSignIdx - questionIdx - 1);
+                        queryList.Add(new SolidHttpRequestDataString("text/plain", queryKey, rawTarget.Substring(equalSignIdx + 1)));
+                    }
+                }
             }
             else
             {
                 target.Path = rawTarget;
             }
-            //target.Path = $"{source.PathBase}{source.Path}";
 
 
             if (prefixMappings != null)
@@ -59,7 +69,6 @@ namespace SolidRpc.OpenApi.Binder.Http
             }
 
             // extract query
-            var queryList = new List<IHttpRequestData>();
             foreach (var q in source.Query)
             {
                 foreach (var sv in q.Value)

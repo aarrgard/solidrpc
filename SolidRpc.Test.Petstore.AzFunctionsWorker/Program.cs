@@ -21,6 +21,7 @@ var host = new HostBuilder()
     {
         services.GetSolidRpcContentStore().AddPrefixRewrite("/front", "");
         services.GetSolidRpcContentStore().AddPrefixRewrite("/api", "");
+        services.GetSolidRpcContentStore().AddPrefixRewrite("/static/", "/SolidRpc/Test/Petstore/AzFunctionsWorker/IHttpFunc/Https?ops=");
 
         services.AddHttpClient();
 
@@ -41,6 +42,14 @@ var host = new HostBuilder()
             o.OAuthClientId = SolidRpcOidcTestImpl.ClientId;
             o.OAuthClientSecret = SolidRpcOidcTestImpl.ClientSecret;
         }, conf => Configure(services, conf));
+
+        var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(IHttpFunc)).WriteAsJsonString();
+        services.AddSolidRpcBindings(typeof(IHttpFunc), typeof(HttpFuncImpl), c =>
+        {
+            c.OpenApiSpec = apiSpec;
+            c.DisableSecurity();
+            return true;
+        });
 
         services.AddTransient<IFuncMiddleware<HttpRequest>, FuncMiddleware>();
 

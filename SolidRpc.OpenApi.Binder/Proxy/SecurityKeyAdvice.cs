@@ -68,10 +68,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     Logger.LogTrace($"Found a security key({SecurityKey.Value.Key}) in header that that does NOT match configured secret.");
                 }
             }
-            else
-            {
-                Logger.LogTrace($"Did not find a security key({SecurityKey.Value.Key}) in header.");
-            }
 
             invocationOptions = invocationOptions.SetKeyValue(
                 InvocationOptions.RequestHeaderOutboundPrefix,

@@ -1,7 +1,7 @@
-//Microsoft.CodeAnalysis.Common/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.dll
-//Microsoft.CodeAnalysis.CSharp/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.CSharp.dll
-//Microsoft.CodeAnalysis.CSharp.Scripting/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-//Microsoft.CodeAnalysis.Scripting.Common/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.scripting.common\4.11.0\lib\net7.0\Microsoft.CodeAnalysis.Scripting.dll
+//Microsoft.CodeAnalysis.Common/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\4.12.0\lib\net7.0\Microsoft.CodeAnalysis.dll
+//Microsoft.CodeAnalysis.CSharp/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\4.12.0\lib\net7.0\Microsoft.CodeAnalysis.CSharp.dll
+//Microsoft.CodeAnalysis.CSharp.Scripting/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\4.12.0\lib\net7.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+//Microsoft.CodeAnalysis.Scripting.Common/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.scripting.common\4.12.0\lib\net7.0\Microsoft.CodeAnalysis.Scripting.dll
 //Microsoft.CodeCoverage/17.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codecoverage\17.12.0\lib\netcoreapp3.1\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 //Microsoft.CSharp/4.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.csharp\4.7.0\ref\netcoreapp2.0\_._
 //Microsoft.Extensions.Configuration/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.configuration\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll

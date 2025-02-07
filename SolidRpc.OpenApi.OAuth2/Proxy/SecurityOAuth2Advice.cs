@@ -42,7 +42,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         /// <param name="logger"></param>
         /// <param name="serviceProvider"></param>
         public SecurityOAuth2Advice(
-            ILogger<SolidRpcRateLimitAdvice<TObject, TMethod, TAdvice>> logger,
+            ILogger<SecurityOAuth2Advice<TObject, TMethod, TAdvice>> logger,
             IServiceProvider serviceProvider)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));

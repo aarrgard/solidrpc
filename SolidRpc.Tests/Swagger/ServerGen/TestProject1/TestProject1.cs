@@ -17,10 +17,10 @@
 //Microsoft.AspNetCore.Mvc.Versioning/5.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.mvc.versioning\5.1.0\lib\net6.0\Microsoft.AspNetCore.Mvc.Versioning.dll
 //Microsoft.AspNetCore.StaticFiles/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.staticfiles\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.StaticFiles.dll
 //Microsoft.AspNetCore.WebUtilities/2.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.webutilities\2.1.1\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll
-//Microsoft.CodeAnalysis.Common/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\4.11.0\lib\net8.0\Microsoft.CodeAnalysis.dll
-//Microsoft.CodeAnalysis.CSharp/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\4.11.0\lib\net8.0\Microsoft.CodeAnalysis.CSharp.dll
-//Microsoft.CodeAnalysis.CSharp.Scripting/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\4.11.0\lib\net8.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-//Microsoft.CodeAnalysis.Scripting.Common/4.11.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.scripting.common\4.11.0\lib\net8.0\Microsoft.CodeAnalysis.Scripting.dll
+//Microsoft.CodeAnalysis.Common/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\4.12.0\lib\net8.0\Microsoft.CodeAnalysis.dll
+//Microsoft.CodeAnalysis.CSharp/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\4.12.0\lib\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+//Microsoft.CodeAnalysis.CSharp.Scripting/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\4.12.0\lib\net8.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+//Microsoft.CodeAnalysis.Scripting.Common/4.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.scripting.common\4.12.0\lib\net8.0\Microsoft.CodeAnalysis.Scripting.dll
 //Microsoft.CodeCoverage/17.12.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codecoverage\17.12.0\lib\netcoreapp3.1\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 //Microsoft.CSharp/4.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.csharp\4.7.0\ref\netcoreapp2.0\_._
 //Microsoft.Extensions.Caching.Abstractions/1.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.caching.abstractions\1.0.0\lib\netstandard1.0\Microsoft.Extensions.Caching.Abstractions.dll
@@ -69,9 +69,9 @@
 //SolidProxy.Core/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.core\1.0.0-rc025\lib\netstandard2.0\SolidProxy.Core.dll
 //SolidProxy.GeneratorCastle/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.generatorcastle\1.0.0-rc025\lib\netstandard2.0\SolidProxy.GeneratorCastle.dll
 //SolidProxy.MicrosoftDI/1.0.0-rc024=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.microsoftdi\1.0.0-rc024\lib\netstandard2.0\SolidProxy.MicrosoftDI.dll
-//Swashbuckle.AspNetCore.Swagger/7.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swagger\7.1.0\lib\net8.0\Swashbuckle.AspNetCore.Swagger.dll
-//Swashbuckle.AspNetCore.SwaggerGen/7.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggergen\7.1.0\lib\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-//Swashbuckle.AspNetCore.SwaggerUI/7.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggerui\7.1.0\lib\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+//Swashbuckle.AspNetCore.Swagger/7.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swagger\7.2.0\lib\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+//Swashbuckle.AspNetCore.SwaggerGen/7.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggergen\7.2.0\lib\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+//Swashbuckle.AspNetCore.SwaggerUI/7.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggerui\7.2.0\lib\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 //System.Buffers/4.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.buffers\4.5.0\ref\netcoreapp2.0\_._
 //System.Collections/4.0.11=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections\4.0.11\ref\netstandard1.3\System.Collections.dll
 //System.Collections.Immutable/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections.immutable\9.0.0\lib\net8.0\System.Collections.Immutable.dll
