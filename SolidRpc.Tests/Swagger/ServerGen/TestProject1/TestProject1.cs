@@ -74,7 +74,7 @@
 //Swashbuckle.AspNetCore.SwaggerUI/7.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\swashbuckle.aspnetcore.swaggerui\7.2.0\lib\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 //System.Buffers/4.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.buffers\4.5.0\ref\netcoreapp2.0\_._
 //System.Collections/4.0.11=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections\4.0.11\ref\netstandard1.3\System.Collections.dll
-//System.Collections.Immutable/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections.immutable\9.0.0\lib\net8.0\System.Collections.Immutable.dll
+//System.Collections.Immutable/9.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections.immutable\9.0.1\lib\net8.0\System.Collections.Immutable.dll
 //System.Configuration.ConfigurationManager/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.configuration.configurationmanager\6.0.0\lib\net6.0\System.Configuration.ConfigurationManager.dll
 //System.Diagnostics.Debug/4.0.11=>
 //System.Diagnostics.DiagnosticSource/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.diagnostics.diagnosticsource\9.0.0\lib\net8.0\System.Diagnostics.DiagnosticSource.dll
@@ -88,7 +88,7 @@
 //System.IO.Pipelines/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.io.pipelines\9.0.0\lib\net8.0\System.IO.Pipelines.dll
 //System.Linq/4.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.linq\4.1.0\ref\netstandard1.6\System.Linq.dll
 //System.Reflection/4.1.0=>
-//System.Reflection.Metadata/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.reflection.metadata\9.0.0\lib\net8.0\System.Reflection.Metadata.dll
+//System.Reflection.Metadata/9.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\system.reflection.metadata\9.0.1\lib\net8.0\System.Reflection.Metadata.dll
 //System.Reflection.Primitives/4.0.1=>
 //System.Resources.ResourceManager/4.0.1=>
 //System.Runtime/4.1.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.runtime\4.1.0\ref\netstandard1.5\System.Runtime.dll

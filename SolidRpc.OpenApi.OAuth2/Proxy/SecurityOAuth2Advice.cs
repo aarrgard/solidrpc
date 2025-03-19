@@ -211,7 +211,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
                 var parts = dec.Split(':');
                 var clientId = parts[0];
                 var clientSecret = parts[1];
-                var resp = await Authority.GetClientJwtAsync(clientId, clientSecret, Scopes, TimeSpan.FromSeconds(5), cancellationToken);
+                var resp = await Authority.GetClientJwtAsync(clientId, clientSecret, Scopes, TimeSpan.FromSeconds(60), cancellationToken);
                 return resp.AccessToken;
             }
             catch (Exception e)

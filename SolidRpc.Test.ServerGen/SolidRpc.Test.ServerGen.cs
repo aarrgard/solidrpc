@@ -24,10 +24,10 @@
 //SharpZipLib/1.4.2=>C:\Users\Andreas Arrgård\.nuget\packages\sharpziplib\1.4.2\lib\net6.0\ICSharpCode.SharpZipLib.dll
 //SolidProxy.Core/1.0.0-rc025=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.core\1.0.0-rc025\lib\netstandard2.0\SolidProxy.Core.dll
 //SolidProxy.MicrosoftDI/1.0.0-rc024=>C:\Users\Andreas Arrgård\.nuget\packages\solidproxy.microsoftdi\1.0.0-rc024\lib\netstandard2.0\SolidProxy.MicrosoftDI.dll
-//System.Collections.Immutable/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections.immutable\9.0.0\lib\netstandard2.0\System.Collections.Immutable.dll
+//System.Collections.Immutable/9.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\system.collections.immutable\9.0.1\lib\netstandard2.0\System.Collections.Immutable.dll
 //System.ComponentModel.Annotations/4.5.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.componentmodel.annotations\4.5.0\ref\netcoreapp2.0\_._
 //System.Memory/4.5.5=>C:\Users\Andreas Arrgård\.nuget\packages\system.memory\4.5.5\ref\netcoreapp2.1\_._
-//System.Reflection.Metadata/9.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.reflection.metadata\9.0.0\lib\netstandard2.0\System.Reflection.Metadata.dll
+//System.Reflection.Metadata/9.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\system.reflection.metadata\9.0.1\lib\netstandard2.0\System.Reflection.Metadata.dll
 //System.Runtime.CompilerServices.Unsafe/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\system.runtime.compilerservices.unsafe\6.0.0\lib\net6.0\System.Runtime.CompilerServices.Unsafe.dll
 //SolidRpc.Abstractions/1.0.0=>C:\Development\github\solidrpc\SolidRpc.Abstractions\bin\Debug\netstandard2.0\SolidRpc.Abstractions.dll
 //SolidRpc.OpenApi.Binder/1.0.0=>C:\Development\github\solidrpc\SolidRpc.OpenApi.Binder\bin\Debug\netstandard2.0\SolidRpc.OpenApi.Binder.dll

@@ -23,13 +23,15 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
     {
         private class CachedJwt
         {
-            public CachedJwt(TokenResponse jwt, DateTimeOffset validTo)
+            public CachedJwt()
             {
-                Jwt = jwt;
-                ValidTo = validTo;
+                Jwt = null;
+                ValidTo = DateTimeOffset.MinValue;
+                Semaphore = new SemaphoreSlim(1);
             }
-            public TokenResponse Jwt { get; }
-            public DateTimeOffset ValidTo { get; }
+            public TokenResponse Jwt { get; set; }
+            public DateTimeOffset ValidTo { get; set; }
+            public SemaphoreSlim Semaphore { get; }
         }
 
         private class AuthorityTokenValidationParameters : TokenValidationParameters, IAuthorityTokenChecks
@@ -79,13 +81,17 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             Authority = authority;
             CachedJwts = new ConcurrentDictionary<string, CachedJwt>();
             GrantTypeScopes = new Dictionary<string, IEnumerable<string>>();
+            DiscoveryDocumentSempaphore = new SemaphoreSlim(1);
+            SigningKeysSempaphore = new SemaphoreSlim(1);
         }
         private ILogger Logger { get; }
         private IHttpClientFactory HttpClientFactory { get; }
         private ISerializerFactory SerializerFactory { get; }
         private ConcurrentDictionary<string, CachedJwt> CachedJwts { get; }
         private Dictionary<string, IEnumerable<string>> GrantTypeScopes { get; }
-
+        private SemaphoreSlim DiscoveryDocumentSempaphore { get; }
+        private SemaphoreSlim SigningKeysSempaphore { get; }
+        
         public IAuthorityFactory AuthorityFactory { get; }
 
         /// <summary>
@@ -105,7 +111,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             var now = DateTime.UtcNow;
             foreach (var cachedJwt in CachedJwts)
             {
-                if(cachedJwt.Value.ValidTo < now)
+                if(cachedJwt.Value.ValidTo < now && cachedJwt.Value.Jwt != null)
                 {
                     CachedJwts.TryRemove(cachedJwt.Key, out CachedJwt tmp);
                 }
@@ -224,33 +230,44 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
             if (timeout == null) timeout = TimeSpan.FromMinutes(5);
 
             var key = string.Join(":", nvc.Select(o => o.Value));
-            if(CachedJwts.TryGetValue(key, out CachedJwt cachedJwt))
+
+            var cachedJwt = CachedJwts.AddOrUpdate(key, _ => new CachedJwt(), (k, o) => o);
+            await cachedJwt.Semaphore.WaitAsync(cancellationToken);
+            try
             {
-                if (cachedJwt.ValidTo > DateTimeOffset.Now.Subtract(timeout.Value))
+                if (cachedJwt.Jwt != null)
                 {
-                    return cachedJwt.Jwt;
+                    if (cachedJwt.ValidTo > DateTimeOffset.Now.Subtract(timeout.Value))
+                    {
+                        return cachedJwt.Jwt;
+                    }
                 }
-            }
 
-            var result = await GetTokenResponseAsync(nvc, cancellationToken);
-            if(result == null)
+                var result = await GetTokenResponseAsync(nvc, cancellationToken);
+                if (result == null)
+                {
+                    CachedJwts.TryRemove(key, out _);
+                    return null;
+                }
+
+                //
+                // parse returned token
+                //
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var securityToken = tokenHandler.ReadToken(result.AccessToken);
+
+                //
+                // add cached token
+                //
+                cachedJwt.ValidTo = securityToken.ValidTo;
+                cachedJwt.Jwt = result;
+
+                return result;
+            }
+            finally
             {
-                return null;
+                cachedJwt.Semaphore.Release();
             }
-
-            //
-            // parse returned token
-            //
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.ReadToken(result.AccessToken);
-
-            //
-            // add cached token
-            //
-            var cj = new CachedJwt(result, securityToken.ValidTo);
-            CachedJwts.AddOrUpdate(key, cj, (k, o) => cj);
-
-            return result;
         }
 
         private async Task<TokenResponse> GetTokenResponseAsync(List<KeyValuePair<string, string>> nvc, CancellationToken cancellationToken)
@@ -305,32 +322,39 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// <returns></returns>
         public async Task<OpenIDConnectDiscovery> GetDiscoveryDocumentAsync(CancellationToken cancellationToken = default)
         {
-            //
-            // use cached version
-            //
-            var openIDConnnectDiscovery = OpenIDConnnectDiscovery;
-            if (openIDConnnectDiscovery != null)
+            await DiscoveryDocumentSempaphore.WaitAsync(cancellationToken);
+            try
             {
+                //
+                // use cached version
+                //
+                var openIDConnnectDiscovery = OpenIDConnnectDiscovery;
+                if (openIDConnnectDiscovery != null)
+                {
+                    return openIDConnnectDiscovery;
+                }
+                //
+                // fetch new version
+                //
+                var client = HttpClientFactory.CreateClient();
+                var separator = Authority.EndsWith("/") ? "" : "/";
+                var uri = new Uri($"{Authority}{separator}.well-known/openid-configuration");
+                var resp = await client.GetAsync(uri);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Cannot find well known configuration @ {uri}");
+                }
+                using (var s = await resp.Content.ReadAsStreamAsync())
+                {
+                    SerializerFactory.DeserializeFromStream(s, out openIDConnnectDiscovery);
+                }
+                OpenIDConnnectDiscovery = openIDConnnectDiscovery;
                 return openIDConnnectDiscovery;
             }
-
-            //
-            // fetch new version
-            //
-            var client = HttpClientFactory.CreateClient();
-            var separator = Authority.EndsWith("/") ? "" : "/";
-            var uri = new Uri($"{Authority}{separator}.well-known/openid-configuration");
-            var resp = await client.GetAsync(uri);
-            if(!resp.IsSuccessStatusCode)
+            finally
             {
-                throw new Exception($"Cannot find well known configuration @ {uri}");
+                DiscoveryDocumentSempaphore.Release();
             }
-            using (var s = await resp.Content.ReadAsStreamAsync())
-            {
-                SerializerFactory.DeserializeFromStream(s, out openIDConnnectDiscovery);
-            }
-            OpenIDConnnectDiscovery = openIDConnnectDiscovery;
-            return openIDConnnectDiscovery;
         }
 
         /// <summary>
@@ -373,15 +397,23 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<OpenIDKey>> GetSigningKeysAsync(CancellationToken cancellationToken = default)
         {
-            var openIdKeys = OpenIdKeys;
-            if (openIdKeys != null)
+            await SigningKeysSempaphore.WaitAsync(cancellationToken);
+            try
             {
-                return Task.FromResult(openIdKeys.Keys);
-            }
+                var openIdKeys = OpenIdKeys;
+                if (openIdKeys != null)
+                {
+                    return openIdKeys.Keys;
+                }
 
-            return GetSigningKeysNoCacheAsync(cancellationToken);
+                return await GetSigningKeysNoCacheAsync(cancellationToken);
+            } 
+            finally
+            {
+                SigningKeysSempaphore.Release();
+            }
         }
         /// <summary>
         /// Returns the signing keys
