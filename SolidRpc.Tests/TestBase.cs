@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests
 {
@@ -312,6 +313,12 @@ namespace SolidRpc.Tests
                 Assert.AreEqual(o1, o2);
                 return true;
             }
+            if (typeof(Guid).IsAssignableFrom(t))
+            {
+                Assert.AreEqual(o1, o2);
+                return true;
+            }
+
             if (typeof(CancellationToken).IsAssignableFrom(t))
             {
                 return true;

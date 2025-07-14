@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
-using SolidRpc.OpenApi.DotNetTool;
 using SolidRpc.Tests.Swagger.CodeGen.Petstore.Types.Services.User.UpdateUser;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Swagger.CodeGen
 {

@@ -16,6 +16,7 @@ using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.Abstractions.OpenApi.Http;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Invoker
 {

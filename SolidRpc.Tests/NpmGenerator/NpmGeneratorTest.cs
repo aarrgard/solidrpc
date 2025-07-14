@@ -9,6 +9,7 @@ using System;
 using SolidRpc.Node.Types;
 using SolidRpc.Node.InternalServices;
 using System.IO;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.NpmGenerator
 {

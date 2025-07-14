@@ -5,6 +5,7 @@ using SolidProxy.GeneratorCastle;
 using System.Threading.Tasks;
 using System.Linq;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Security
 {

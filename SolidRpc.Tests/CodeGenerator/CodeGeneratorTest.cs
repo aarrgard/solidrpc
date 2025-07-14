@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using SolidRpc.Abstractions.Services.Code;
 using SolidRpc.Abstractions.Services;
-using System.IO;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.CodeGenerator
 {

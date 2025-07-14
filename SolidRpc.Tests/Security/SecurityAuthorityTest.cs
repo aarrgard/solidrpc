@@ -13,6 +13,7 @@ using System.Threading;
 using SolidRpc.Abstractions.Types;
 using Microsoft.IdentityModel.Logging;
 using SolidRpc.Abstractions.OpenApi.Invoker;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Security
 {

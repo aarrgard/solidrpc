@@ -82,6 +82,17 @@ namespace SolidRpc.OpenApi.Model.Serialization
 
         public ISerializer GetSerializer(string contentType = "application/json", Encoding charSet = null, bool prettyPrint = false)
         {
+            switch(contentType?.ToLower())
+            {
+                case "application/json":
+                    break;
+                case "application/gzip":
+                case "application/zip":
+                default:
+                    contentType = "application/json"; 
+                    break;
+            }
+
             var serializerSettings = DefaultSerializerSettings
                 .SetContentType(contentType)
                 .SetCharSet(charSet)

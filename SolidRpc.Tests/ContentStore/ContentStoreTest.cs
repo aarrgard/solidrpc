@@ -7,6 +7,7 @@ using SolidRpc.Abstractions.Services;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests
 {

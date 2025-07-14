@@ -11,6 +11,7 @@ using SolidRpc.OpenApi.Binder;
 using System.Text;
 using System.Collections.Generic;
 using RA.Mspecs.Types.Event;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Serialization
 {

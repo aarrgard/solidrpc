@@ -7,12 +7,12 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.Types;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.OpenApi.Binder;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Invoker
 {

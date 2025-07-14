@@ -74,7 +74,7 @@ namespace SolidRpc.OpenApi.Binder.Services
                             return res.Host;
                         }
                         else
-                        {
+                        {   
                             return null;
                         }
                     }).Where(o => o != null)

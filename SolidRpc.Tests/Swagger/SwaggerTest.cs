@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.OpenApi.Model;
 using SolidRpc.OpenApi.Model;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Swagger
 {

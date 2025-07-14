@@ -4,8 +4,8 @@ using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
 using SolidRpc.OpenApi.Binder;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests
 {

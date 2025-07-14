@@ -8,6 +8,7 @@ using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.Abstractions.OpenApi.Http;
 using Microsoft.AspNetCore.Http;
 using SolidRpc.Abstractions.OpenApi.Transport;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Invoker
 {

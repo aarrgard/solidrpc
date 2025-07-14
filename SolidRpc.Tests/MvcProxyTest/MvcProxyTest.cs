@@ -14,10 +14,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SolidProxy.GeneratorCastle;
-using SolidRpc.Abstractions.OpenApi.Proxy;
 using SolidRpc.OpenApi.Binder.Proxy;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Services;
 using SolidRpc.Tests.Swagger.CodeGen.Local.Types;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.MvcProxyTest
 {

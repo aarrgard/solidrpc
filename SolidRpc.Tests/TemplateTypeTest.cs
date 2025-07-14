@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Primitives;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SolidRpc.Abstractions.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests
 {

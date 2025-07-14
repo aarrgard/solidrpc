@@ -2,11 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SolidRpc.Abstractions.OpenApi.OAuth2;
-using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Legacy.ClassicAssert;
 
 namespace SolidRpc.Tests.Swagger.Binder
 {
