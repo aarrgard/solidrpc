@@ -146,7 +146,10 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                 return rootSegment;
             }
             
-            await _semaphore.WaitAsync(TimeSpan.FromSeconds(60), cancellationToken);
+            if(!await _semaphore.WaitAsync(TimeSpan.FromSeconds(120), cancellationToken))
+            {
+                throw new TimeoutException("Failed to obtain lock on root segment");
+            }
 
             rootSegment = _rootSegment;
             if (rootSegment != null)

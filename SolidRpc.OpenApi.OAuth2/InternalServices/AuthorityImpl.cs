@@ -333,6 +333,7 @@ namespace SolidRpc.OpenApi.OAuth2.InternalServices
                 {
                     return openIDConnnectDiscovery;
                 }
+
                 //
                 // fetch new version
                 //
