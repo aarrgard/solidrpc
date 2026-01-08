@@ -46,6 +46,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetOauth2RedirectJs(System.Threading.CancellationToken)">
+            <summary>
+            Returns the oauth2-redirect file
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI.GetSwaggerUrls(System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Returns the swagger urls.

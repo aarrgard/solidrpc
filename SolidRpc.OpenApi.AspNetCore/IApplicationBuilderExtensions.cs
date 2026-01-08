@@ -419,7 +419,7 @@ namespace Microsoft.AspNetCore.Builder
 
                 // get content
                 var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
-                using(InvocationOptions.Current.SetKeyValues(MethodInvoker.GetRequestHeaders(request)).Attach())
+                using(InvocationOptions.Current.SetKeyValues(MethodInvoker.GetRequestHeadersAndQueryString(request)).Attach())
                 {
                     var content = await contentHandler.GetContent(path, ctx.RequestAborted);
 

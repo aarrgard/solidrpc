@@ -63,6 +63,20 @@ namespace Microsoft.Extensions.DependencyInjection {
             /// <summary>
             /// 
             /// </summary>
+            private static System.Reflection.MethodInfo mi_GetOauth2RedirectJs_cancellationToken = GetMethodInfo("GetOauth2RedirectJs", new System.Type[] {typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            public System.Threading.Tasks.Task<SolidRpc.OpenApi.SwaggerUI.Types.FileContent> GetOauth2RedirectJs(
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (SolidRpc.OpenApi.SwaggerUI.Services.ISwaggerUI)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.OpenApi.SwaggerUI.Types.FileContent>(_serviceProvider, impl, mi_GetOauth2RedirectJs_cancellationToken, new object[] {cancellationToken}, () => impl.GetOauth2RedirectJs(cancellationToken));
+            }
+        
+            /// <summary>
+            /// 
+            /// </summary>
             private static System.Reflection.MethodInfo mi_GetSwaggerUrls_onlyImplemented_cancellationToken = GetMethodInfo("GetSwaggerUrls", new System.Type[] {typeof(System.Boolean), typeof(System.Threading.CancellationToken)});
             /// <summary>
             /// 

@@ -663,6 +663,11 @@
             Contains additional invocation options.
             </summary>
         </member>
+        <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestQueryInboundPrefix">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="F:SolidRpc.Abstractions.OpenApi.Invoker.InvocationOptions.RequestHeaderInboundPrefix">
             <summary>
             

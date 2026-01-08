@@ -59,6 +59,26 @@
         }
       }
     },
+    "/Services/ISwaggerUI/GetOauth2RedirectJs": {
+      "get": {
+        "tags": [
+          "ISwaggerUI"
+        ],
+        "description": "Returns the oauth2-redirect file",
+        "operationId": "Get_SolidRpc_OpenApi_SwaggerUI_Services_ISwaggerUI_GetOauth2RedirectJs",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
     "/Services/ISwaggerUI/GetOpenApiSpec/{assemblyName}/{openApiSpecResolverAddress}": {
       "get": {
         "tags": [

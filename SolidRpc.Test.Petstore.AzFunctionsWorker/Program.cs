@@ -68,6 +68,7 @@ bool Configure(IServiceCollection services, ISolidRpcOpenApiConfig conf)
         switch (method.Name)
         {
             case nameof(ISwaggerUI.GetOauth2RedirectHtml):
+            case nameof(ISwaggerUI.GetOauth2RedirectJs):
                 conf.DisableSecurity();
                 break;
             default:

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Primitives;
 using SolidRpc.Abstractions.OpenApi.Http;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,10 @@ namespace SolidRpc.Abstractions.OpenApi.Invoker
     /// </summary>
     public class InvocationOptions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string RequestQueryInboundPrefix = "http_in_reqq_";
         /// <summary>
         /// 
         /// </summary>

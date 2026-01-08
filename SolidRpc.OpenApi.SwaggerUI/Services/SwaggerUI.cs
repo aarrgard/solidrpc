@@ -306,15 +306,30 @@ namespace SolidRpc.OpenApi.SwaggerUI.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<FileContent> GetOauth2RedirectHtml(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<FileContent> GetOauth2RedirectHtml(CancellationToken cancellationToken = default(CancellationToken))
         {
+            var oauth2Redirect = await Invoker.GetUriAsync(o => o.GetOauth2RedirectJs(cancellationToken));
+
             var str = GetManifestResourceAsString("oauth2-redirect.html");
+            str = str.Replace("oauth2-redirect.js", oauth2Redirect.ToString());
+            var encoding = Encoding.UTF8;
+            return new FileContent()
+            {
+                CharSet = encoding.HeaderName,
+                Content = new MemoryStream(encoding.GetBytes(str)),
+                ContentType = "text/html"
+            };
+        }
+
+        public Task<FileContent> GetOauth2RedirectJs(CancellationToken cancellationToken = default)
+        {
+            var str = GetManifestResourceAsString("oauth2-redirect.js");
             var encoding = Encoding.UTF8;
             return Task.FromResult(new FileContent()
             {
                 CharSet = encoding.HeaderName,
                 Content = new MemoryStream(encoding.GetBytes(str)),
-                ContentType = "text/html"
+                ContentType = "text/javascript"
             });
         }
 

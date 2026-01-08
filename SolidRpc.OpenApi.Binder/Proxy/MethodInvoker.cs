@@ -25,12 +25,19 @@ namespace SolidRpc.OpenApi.Binder.Proxy
     /// </summary>
     public class MethodInvoker : IMethodInvoker
     {
-        public static IDictionary<string, object> GetRequestHeaders(IHttpRequest request)
+        public static IDictionary<string, object> GetRequestHeadersAndQueryString(IHttpRequest request)
         {
             var invocationValues = new Dictionary<string, object>();
-            foreach (var qv in request.Headers)
+            AddValues(invocationValues, InvocationOptions.RequestHeaderInboundPrefix, request.Headers);
+            AddValues(invocationValues, InvocationOptions.RequestQueryInboundPrefix, request.Query);
+            return invocationValues;
+        }
+
+        private static void AddValues(Dictionary<string, object> invocationValues, string prefix, IEnumerable<IHttpRequestData> data)
+        {
+            foreach (var qv in data)
             {
-                var headerName = $"{InvocationOptions.RequestHeaderInboundPrefix}{qv.Name}";
+                var headerName = $"{prefix}{qv.Name}";
                 if (invocationValues.TryGetValue(headerName, out object value))
                 {
                     invocationValues[headerName] = StringValues.Concat((StringValues)value, qv.GetStringValue());
@@ -40,7 +47,6 @@ namespace SolidRpc.OpenApi.Binder.Proxy
                     invocationValues.Add(headerName, new StringValues(qv.GetStringValue()));
                 }
             }
-            return invocationValues;
         }
 
         private class PathSegment
@@ -337,7 +343,7 @@ namespace SolidRpc.OpenApi.Binder.Proxy
             //
             // set http headers
             //
-            var invocationValues = GetRequestHeaders(request);
+            var invocationValues = GetRequestHeadersAndQueryString(request);
 
             //
             // recreate uri for redirects
