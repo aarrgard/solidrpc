@@ -8,6 +8,7 @@ using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
@@ -22,6 +23,11 @@ namespace SolidRpc.OpenApi.Binder.Invoker
     /// </summary>
     public class HttpHandler : TransportHandler<IHttpTransport>
     {
+        public static readonly IDictionary<int, Func<TimeSpan>> DefaultRetryPolicy = new Dictionary<int, Func<TimeSpan>>()
+        {
+            { 503, () => TimeSpan.FromSeconds(60) }
+        };
+
         public HttpHandler(
             ILogger<HttpHandler> logger,
             IMethodBinderStore methodBinderStore)
@@ -82,14 +88,44 @@ namespace SolidRpc.OpenApi.Binder.Invoker
             var factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
             var httpClient = factory.CreateClient(httpClientName);
 
-            var httpClientReq = new HttpRequestMessage();
-            httpReq.CopyTo(httpClientReq);
+            var timeouts = new Dictionary<int, DateTimeOffset>();
+            foreach(var x in transport.RetryPolicy ?? DefaultRetryPolicy)
+            {
+                timeouts[x.Key] = DateTimeOffset.Now.Add(x.Value());
+            }
 
-            var httpClientResponse = await httpClient.SendAsync(httpClientReq);
+            var httpClientResponse = await SendWithRetryAsync(httpClient, httpReq, timeouts);
             var httpResp = new SolidHttpResponse();
             await httpResp.CopyFromAsync(httpClientResponse);
 
             return httpResp;
+        }
+
+        private async Task<HttpResponseMessage> SendWithRetryAsync(HttpClient httpClient, IHttpRequest httpReq, IDictionary<int, DateTimeOffset> retryPolicy)
+        {
+            int count = 0;
+            while(true)
+            {
+
+                var httpClientReq = new HttpRequestMessage();
+                httpReq.CopyTo(httpClientReq);
+
+                var resp = await httpClient.SendAsync(httpClientReq);
+                if(retryPolicy.TryGetValue((int)resp.StatusCode, out DateTimeOffset retryTimeout))
+                {
+                    if(retryTimeout > DateTimeOffset.Now)
+                    {
+                        var wait = (int)(Math.Pow(2, count)) * 1000;
+                        var waitMills = Math.Max((retryTimeout - DateTimeOffset.Now).TotalMilliseconds, 0);
+                        waitMills = Math.Min(waitMills, wait);
+                        await Task.Delay((int)waitMills);
+                        count++;
+                        continue;
+                    }
+                }
+
+                return resp;
+            }
         }
     }
 }

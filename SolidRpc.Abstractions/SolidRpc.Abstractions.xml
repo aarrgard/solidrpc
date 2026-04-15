@@ -1687,6 +1687,11 @@
             The path relative to the base method.
             </summary>
         </member>
+        <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.RetryPolicy">
+            <summary>
+            The path relative to the base method.
+            </summary>
+        </member>
         <member name="P:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport.MethodAddressTransformer">
             <summary>
             The method to transform the Uri. This delegate is invoked to determine
@@ -1705,6 +1710,14 @@
             </summary>
             <param name="t"></param>
             <param name="methodAddressTransformer"></param>
+        </member>
+        <member name="M:SolidRpc.Abstractions.OpenApi.Transport.IHttpTransportExtensions.AddRetryPolicy(SolidRpc.Abstractions.OpenApi.Transport.IHttpTransport,System.Int32,System.Func{System.TimeSpan})">
+            <summary>
+            Sets the method address transformer on the transports
+            </summary>
+            <param name="t"></param>
+            <param name="statusCode"></param>
+            <param name="retryTimeout"></param>
         </member>
         <member name="T:SolidRpc.Abstractions.OpenApi.Transport.ILocalTransport">
             <summary>

@@ -140,6 +140,9 @@ namespace SolidRpc.Tests.Invoker
         /// </summary>
         public class TestImplementation : ITestInterface
         {
+            public static bool Available = true;
+            public static int NumDoY = 0;
+
             /// <summary>
             /// 
             /// </summary>
@@ -163,7 +166,18 @@ namespace SolidRpc.Tests.Invoker
             /// <returns></returns>
             public Task<int> DoXAsync(ComplexStruct myStruct, CancellationToken cancellation = default)
             {
+                CheckAvailable();
                 return Task.FromResult(myStruct.Value);
+            }
+
+            private void CheckAvailable()
+            {
+                if (!Available)
+                {
+                    var e = new Exception();
+                    e.Data["HttpStatusCode"] = 503;
+                    throw e;
+                }
             }
 
             /// <summary>
@@ -175,6 +189,8 @@ namespace SolidRpc.Tests.Invoker
             /// <exception cref="NotImplementedException"></exception>
             public Task<string> DoYAsync(string s, CancellationToken cancellation = default)
             {
+                NumDoY++;
+                CheckAvailable();
                 return Task.FromResult(s);
             }
 
@@ -426,6 +442,7 @@ namespace SolidRpc.Tests.Invoker
             {
                 conf.OpenApiSpec = openApiSpec;
                 conf.SetSecurityKey(SecKey.ToString(), SecKey.ToString());
+                conf.ConfigureTransport<IHttpTransport>().AddRetryPolicy(503, () => TimeSpan503);
                 return true;
             });
 
@@ -456,6 +473,7 @@ namespace SolidRpc.Tests.Invoker
         /// The sec key
         /// </summary>
         public Guid SecKey { get; }
+        public TimeSpan TimeSpan503 { get; set; } = TimeSpan.FromSeconds(0);
 
         /// <summary>
         /// Tests the type store
@@ -671,5 +689,54 @@ namespace SolidRpc.Tests.Invoker
             }
         }
 
+        /// <summary>
+        /// Tests the type store
+        /// </summary>
+        [Test]
+        public async Task TestHttpInvokerUnavailableService()
+        {
+            using (var ctx = CreateKestrelHostContext())
+            {
+                await ctx.StartAsync();
+
+                var invoker = ctx.ClientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+
+                var resp = await invoker.InvokeAsync(o => o.DoYAsync("test", CancellationToken.None));
+                Assert.That(resp, Is.EqualTo("test"));
+
+                await DoTest503Async(ctx.ClientServiceProvider, 1);
+
+                TimeSpan503 = TimeSpan.FromSeconds(5);
+                await DoTest503Async(ctx.ClientServiceProvider, 4);
+
+            }
+        }
+
+        private async Task DoTest503Async(IServiceProvider clientServiceProvider, int numDoY)
+        {
+            try
+            {
+                TestImplementation.Available = false;
+                TestImplementation.NumDoY = 0;
+                var started = DateTimeOffset.Now;
+                try
+                {
+                    var invoker = clientServiceProvider.GetRequiredService<IInvoker<ITestInterface>>();
+                    var resp = await invoker.InvokeAsync(o => o.DoYAsync("test", CancellationToken.None));
+                    Assert.Fail();
+                }
+                catch (Exception e)
+                {
+                    Assert.That(e.Message, Is.EqualTo("Status:503"));
+                }
+                var duration = DateTimeOffset.Now - started;
+                Assert.That(duration.TotalMicroseconds, Is.GreaterThan(TimeSpan503.TotalMicroseconds));
+                Assert.That(TestImplementation.NumDoY, Is.EqualTo(numDoY));
+            }
+            finally
+            {
+                TestImplementation.Available = true;
+            }
+        }
     }
 }
