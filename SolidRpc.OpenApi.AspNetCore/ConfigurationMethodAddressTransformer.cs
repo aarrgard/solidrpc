@@ -249,9 +249,16 @@ namespace SolidRpc.OpenApi.Binder
                 if (path == match[0]) return match[1];
                 if(!match[0].EndsWith("/"))
                 {
-                    if (path[match[0].Length] != '/')
+                    if(path.Length > match[0].Length)
                     {
-                        return path;
+                        switch(path[match[0].Length])
+                        {
+                            case '/':
+                            case '?':
+                                break;
+                            default:
+                                return path;
+                        }
                     }
                 }
 

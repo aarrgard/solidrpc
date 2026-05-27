@@ -101,9 +101,12 @@ namespace SolidRpc.Test.PetstoreWeb
                 var handler = sp.GetRequiredService<IInvoker<ISwaggerUI>>();
                 return await handler.GetUriAsync(o => o.GetIndexHtml(true, CancellationToken.None));
             });
-            services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
+            //services.GetSolidRpcContentStore().SetNotFoundRewrite("/");
             services.AddSolidRpcWellKnownRootRewrite();
 
+            services.GetSolidRpcContentStore().AddPrefixRewrite($"/bidding/activate", $"/SolidRpc/Test/Petstore/Web/ITestInterface/ProxyString");
+            services.GetSolidRpcContentStore().AddPrefixRewrite($"/bidding/pause", $"/SolidRpc/Test/Petstore/Web/ITestInterface/ProxyString");
+            services.GetSolidRpcContentStore().AddPrefixRewrite($"/bidding/continue", $"/SolidRpc/Test/Petstore/Web/ITestInterface/ProxyString");
             var apiSpec = services.GetSolidRpcOpenApiParser().CreateSpecification(typeof(ITestInterface)).WriteAsJsonString();
             services.AddSolidRpcBindings(typeof(ITestInterface), typeof(TestInterface), conf =>
             {

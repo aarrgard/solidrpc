@@ -237,10 +237,11 @@ namespace SolidRpc.OpenApi.Model.V2
             {
                 return opObj.OperationId;
             }
-            else
+            if (Parent is ParameterObject pObj)
             {
-                throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
+                return pObj.Name;
             }
+            throw new Exception("Cannot handle object type:" + Parent?.GetType().FullName);
         }
     }
 }
