@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SolidRpc.Abstractions.InternalServices;
 using SolidRpc.Abstractions.OpenApi.Binder;
 using SolidRpc.Abstractions.OpenApi.Http;
@@ -162,10 +163,24 @@ namespace Microsoft.AspNetCore.Builder
             return applicationBuilder;
         }
 
+        public class IApplicationBuilderExtensionsLogging { }
         private static Task RewriteUrl(HttpContext ctx, Func<Task> next)
         {
             var trans = ctx.RequestServices.GetRequiredService<IMethodAddressTransformer>();
-            ctx.Request.Path = trans.RewritePath(ctx.Request.Path);
+            var oldPath = ctx.Request.Path;
+            var newPath = trans.RewritePath(oldPath);
+
+            var logger = ctx.RequestServices.GetRequiredService<ILogger<IApplicationBuilderExtensionsLogging>>();
+            if(oldPath == newPath)
+            {
+                logger.LogTrace($"Path not rewritten");
+            }
+            else
+            {
+                logger.LogTrace($"Path rewritten from {oldPath} to {newPath}");
+                ctx.Request.Path = newPath;
+            }
+
             return next();
         }
 
