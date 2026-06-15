@@ -9,6 +9,7 @@ using SolidRpc.Abstractions.OpenApi.Invoker;
 using SolidRpc.Abstractions.OpenApi.Transport;
 using SolidRpc.Abstractions.Services;
 using SolidRpc.Abstractions.Types;
+using SolidRpc.OpenApi.AspNetCore;
 using SolidRpc.OpenApi.Binder.Http;
 using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.Binder.Proxy;
@@ -17,6 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+namespace SolidRpc.OpenApi.AspNetCore {
+    public class IApplicationBuilderExtensionsLogging { }
+}
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -29,6 +34,19 @@ namespace Microsoft.AspNetCore.Builder
         public static void SetProcessed(this HttpContext httpContext)
         {
             httpContext.Items["__Processed__"] = true;
+        }
+        public static bool AddPathMatch(this HttpContext httpContext, string segment)
+        {
+            if(!httpContext.Items.TryGetValue("__PathMatch__", out object matches))
+            {
+                httpContext.Items["__PathMatch__"] = matches = new List<string>();
+            }
+            ((List<string>)matches).Add(segment);
+            return true;
+        }
+        public static IEnumerable<string> GetPathMatches(this HttpContext httpContext)
+        {
+            return (httpContext.Items["__PathMatch__"] as IEnumerable<string>) ?? Array.Empty<string>();
         }
     }
 
@@ -130,7 +148,7 @@ namespace Microsoft.AspNetCore.Builder
                 var httpTransport = o.Transports.OfType<IHttpTransport>().FirstOrDefault();
                 if(httpTransport == null)
                 {
-                    applicationBuilder.ApplicationServices.LogInformation<IApplicationBuilder>($"No http transport configured for binding {o.OperationId} - will not map path.");
+                    applicationBuilder.ApplicationServices.LogInformation<IApplicationBuilderExtensionsLogging>($"No http transport configured for binding {o.OperationId} - will not map path.");
                     continue;
                 } 
                 var path = $"{o.Method}{httpTransport.OperationAddress.LocalPath}";
@@ -163,8 +181,7 @@ namespace Microsoft.AspNetCore.Builder
             return applicationBuilder;
         }
 
-        public class IApplicationBuilderExtensionsLogging { }
-        private static Task RewriteUrl(HttpContext ctx, Func<Task> next)
+        private static async Task RewriteUrl(HttpContext ctx, Func<Task> next)
         {
             var trans = ctx.RequestServices.GetRequiredService<IMethodAddressTransformer>();
             var oldPath = ctx.Request.Path;
@@ -181,7 +198,9 @@ namespace Microsoft.AspNetCore.Builder
                 ctx.Request.Path = newPath;
             }
 
-            return next();
+            await next();
+
+            logger.LogTrace($"Matched segments {string.Join("", ctx.GetPathMatches())}");
         }
 
         private static void BindPath(
@@ -191,9 +210,9 @@ namespace Microsoft.AspNetCore.Builder
             Func<HttpContext, Task> preInvoke,
             Func<HttpContext, Task> postInvoke)
         {
-            //ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Handling path {pathPrefix}");
+            ab.ApplicationServices.LogInformation<IApplicationBuilderExtensionsLogging>($"Handling path {pathPrefix}");
 
-            if(paths.TryGetValue($"{pathPrefix}/", out PathHandler staticHandler))
+            if (paths.TryGetValue($"{pathPrefix}/", out PathHandler staticHandler))
             {
                 if(staticHandler.ContentHandler != null)
                 {
@@ -222,7 +241,7 @@ namespace Microsoft.AspNetCore.Builder
             if (paths.TryGetValue(pathPrefix, out PathHandler pathHandler))
             {
                 // emit to log
-                ab.ApplicationServices.LogInformation<IApplicationBuilder>($"Binding path {pathPrefix} to {pathHandler}");
+                ab.ApplicationServices.LogInformation<IApplicationBuilderExtensionsLogging>($"Binding path {pathPrefix} to {pathHandler}");
                 
                 // bind path
                 if(pathHandler.MethodBinding != null)
@@ -271,7 +290,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
                 ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
-                return true;
+                return ctx.AddPathMatch(segment);
             }
             if(fixedPaths.Contains(path))
             {
@@ -279,9 +298,9 @@ namespace Microsoft.AspNetCore.Builder
             }
             if(fixedPaths.Contains("/*"))
             {
-                return true;
+                return ctx.AddPathMatch(segment);
             }
-            if(segment.StartsWith("/{"))
+            if (segment.StartsWith("/{"))
             {
                 // we need to use the "raw" url to get correct data 
                 var reqFeat = (IHttpRequestFeature)ctx.Features[typeof(IHttpRequestFeature)];
@@ -303,8 +322,9 @@ namespace Microsoft.AspNetCore.Builder
 
                 ctx.Request.Path = path.Substring(nextRawSegment.Length);
                 ctx.Request.PathBase = ctx.Request.PathBase.Add(nextRawSegment);
-                return true;
+                return ctx.AddPathMatch(segment);
             }
+
             return false;
         }
 
@@ -468,7 +488,7 @@ namespace Microsoft.AspNetCore.Builder
                 var request = new SolidHttpRequest();
                 await request.CopyFromAsync(context.Request);
                 
-                context.RequestServices.LogTrace<IApplicationBuilder>($"Letting {methodBinding.OperationId}:{methodBinding.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+                context.RequestServices.LogTrace<IApplicationBuilderExtensionsLogging>($"Letting {methodBinding.OperationId}:{methodBinding.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
 
                 context.RequestServices.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = context.User;
                 var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();
@@ -482,7 +502,7 @@ namespace Microsoft.AspNetCore.Builder
             }
             catch (Exception e)
             {
-                context.RequestServices.LogError<IApplicationBuilder>(e, "Failed to invoke service");
+                context.RequestServices.LogError<IApplicationBuilderExtensionsLogging>(e, "Failed to invoke service");
                 throw;
             }
         }
