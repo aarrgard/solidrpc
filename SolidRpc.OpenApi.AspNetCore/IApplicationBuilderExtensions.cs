@@ -37,12 +37,22 @@ namespace Microsoft.AspNetCore.Builder
         }
         public static bool AddPathMatch(this HttpContext httpContext, string segment)
         {
-            if(!httpContext.Items.TryGetValue("__PathMatch__", out object matches))
+            httpContext.AddPathMiss(segment, null);
+            return true;
+        }
+        public static bool AddPathMiss(this HttpContext httpContext, string segment, string reason)
+        {
+            if (!httpContext.Items.TryGetValue("__PathMatch__", out object matches))
             {
                 httpContext.Items["__PathMatch__"] = matches = new List<string>();
             }
-            ((List<string>)matches).Add(segment);
-            return true;
+            var x = segment;
+            if(reason != null)
+            {
+                x = $"(!{segment}[{reason}])";
+            }
+            ((List<string>)matches).Add(x);
+            return false;
         }
         public static IEnumerable<string> GetPathMatches(this HttpContext httpContext)
         {
@@ -279,7 +289,7 @@ namespace Microsoft.AspNetCore.Builder
             var path = ctx.Request.Path.Value;
             if (!path.StartsWith("/"))
             {
-                return false;
+                return ctx.AddPathMiss(segment, "!/");
             }
             var nextSlashIdx = path.IndexOf('/', 1);
             if(nextSlashIdx > -1)
@@ -294,7 +304,7 @@ namespace Microsoft.AspNetCore.Builder
             }
             if(fixedPaths.Contains(path))
             {
-                return false;
+                return ctx.AddPathMiss (segment, "fixed");
             }
             if(fixedPaths.Contains("/*"))
             {
@@ -325,7 +335,7 @@ namespace Microsoft.AspNetCore.Builder
                 return ctx.AddPathMatch(segment);
             }
 
-            return false;
+            return ctx.AddPathMiss(segment, $"!{path}");
         }
 
         /// <summary>
