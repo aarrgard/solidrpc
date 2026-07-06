@@ -15,6 +15,7 @@ using SolidRpc.OpenApi.Binder.Invoker;
 using SolidRpc.OpenApi.Binder.Proxy;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,29 +36,6 @@ namespace Microsoft.AspNetCore.Builder
         {
             httpContext.Items["__Processed__"] = true;
         }
-        public static bool AddPathMatch(this HttpContext httpContext, string segment)
-        {
-            httpContext.AddPathMiss(segment, null);
-            return true;
-        }
-        public static bool AddPathMiss(this HttpContext httpContext, string segment, string reason)
-        {
-            if (!httpContext.Items.TryGetValue("__PathMatch__", out object matches))
-            {
-                httpContext.Items["__PathMatch__"] = matches = new List<string>();
-            }
-            var x = segment;
-            if(reason != null)
-            {
-                x = $"(!{segment}[{reason}])";
-            }
-            ((List<string>)matches).Add(x);
-            return false;
-        }
-        public static IEnumerable<string> GetPathMatches(this HttpContext httpContext)
-        {
-            return (httpContext.Items["__PathMatch__"] as IEnumerable<string>) ?? Array.Empty<string>();
-        }
     }
 
     /// <summary>
@@ -65,9 +43,19 @@ namespace Microsoft.AspNetCore.Builder
     /// </summary>
     public static class IApplicationBuilderExtensions
     {
- 
+        ///
         private class PathHandler
         {
+            public PathHandler(string path)
+            {
+                Path = path;
+            }
+
+            /// <summary>
+            /// The path
+            /// </summary>
+            public string Path { get;  }
+
              /// <summary>
             /// The method mapped to the path
             /// </summary>
@@ -92,6 +80,213 @@ namespace Microsoft.AspNetCore.Builder
                 else
                 {
                     return "Static content";
+                }
+            }
+        }
+
+        private class SegmentHandler
+        {
+            private IDictionary<string, SegmentHandler> segmentHandlers = new Dictionary<string, SegmentHandler>();
+
+            public SegmentHandler(SegmentHandler parent, string segment, PathHandler pathHandler, Func<HttpContext, Task> preInvoke, Func<HttpContext, Task> postInvoke)
+            {
+                Parent = parent;
+                Segment = segment;
+                PathHandler = pathHandler;
+                PreInvoke = preInvoke;
+                PostInvoke = postInvoke;
+            }
+
+            public SegmentHandler Parent { get; }
+            public string Segment { get; }
+            public PathHandler PathHandler { get; }
+            public Func<HttpContext, Task> PreInvoke { get; }
+            public Func<HttpContext, Task> PostInvoke { get; }
+
+            public void Initialize(Dictionary<string, PathHandler> dict)
+            {
+                // grab all the first segments
+                foreach (var baseSegment in dict.Keys.Select(o => o.Split('/')[0]).Distinct())
+                {
+                    dict.TryGetValue(baseSegment, out PathHandler pathHandler);
+                    var segmentHandler = new SegmentHandler(this, baseSegment, pathHandler, PreInvoke, PostInvoke);
+                    var subSegments = dict.Where(o => o.Key.StartsWith(baseSegment + "/"))
+                        .ToDictionary(o => o.Key.Substring(baseSegment.Length + 1), o => o.Value);
+                    segmentHandler.Initialize(subSegments);
+                    segmentHandlers[baseSegment] = segmentHandler;
+                }
+            }
+
+            public Task<bool> HandleRequest(HttpContext ctx)
+            {
+                if(segmentHandlers.TryGetValue(ctx.Request.Method, out SegmentHandler segmentHandler)) 
+                {
+                    return segmentHandler.HandlePath(ctx, "", ctx.Request.PathBase + ctx.Request.Path, false);
+                }
+                return Task.FromResult(false);
+            }
+
+            public async Task<bool> HandlePath(HttpContext ctx, string matched, string rest, bool lastMatchIsVariable)
+            {
+                if(string.IsNullOrEmpty(rest))
+                {
+                    if (PathHandler == null)
+                    {
+                        return false;
+                    }
+                    return await HandleInvocation(PathHandler, ctx);
+                }
+                if (!rest.StartsWith("/"))
+                {
+                    throw new ArgumentException();
+                }
+                var segment = rest.Substring(1);
+                var segmentIdx = segment.IndexOf('/');
+                if(segmentIdx > -1)
+                {
+                    segment = segment.Substring(0, segmentIdx);
+                }
+                if(segmentHandlers.TryGetValue(segment, out SegmentHandler segmentHandler))
+                {
+                    return await segmentHandler.HandlePath(ctx, $"{matched}/{segment}", rest.Substring(segment.Length + 1), false);
+                }
+                foreach(var varSegment in segmentHandlers.Where(o => o.Key.StartsWith("{")))
+                {
+                    // we need to use the "raw" url to get correct data 
+                    var reqFeat = (IHttpRequestFeature)ctx.Features[typeof(IHttpRequestFeature)];
+                    var addrTrans = ctx.RequestServices.GetRequiredService<IMethodAddressTransformer>();
+                    var rawPath = addrTrans.RewritePath(reqFeat.RawTarget);
+
+                    var nextRawSegment = GetNextRawSegment(matched, rawPath);
+                    nextRawSegment = DecodeHex(nextRawSegment, '/');
+
+                    if (!rest.StartsWith(nextRawSegment))
+                    {
+                        nextRawSegment = DecodeHex(nextRawSegment);
+                        rest = DecodeHex(rest);
+                        if (!rest.StartsWith(nextRawSegment))
+                        {
+                            throw new Exception("Path does not start with extracted next segement");
+                        }
+                    }
+
+                    var handled = await varSegment.Value.HandlePath(ctx, $"{matched}{nextRawSegment}", rest.Substring(nextRawSegment.Length), true);
+                    if(handled)
+                    {
+                        return true;
+                    }
+                }
+
+                if(segmentHandlers.TryGetValue("*", out segmentHandler))
+                {
+                    return await segmentHandler.HandlePath(ctx, $"{matched}{rest}", "", true);
+                }
+
+                if(lastMatchIsVariable)
+                {
+                    return await HandlePath(ctx, $"{matched}{rest}", "", false);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            private async Task<bool> HandleInvocation(PathHandler pathHandler, HttpContext ctx)
+            {
+                var logger = ctx.RequestServices.GetRequiredService<ILogger<IApplicationBuilderExtensionsLogging>>();
+                // bind path
+                if (pathHandler.MethodBinding != null)
+                {
+                    logger.LogTrace($"{pathHandler.Path} using method binding to handle invocation");
+                    try
+                    {
+                        await PreInvoke.Invoke(ctx);
+                        await HandleInvocation(pathHandler.HttpTransport, pathHandler.MethodBinding, ctx);
+                        return true;
+                    }
+                    finally
+                    {
+                        await PostInvoke.Invoke(ctx);
+                    }
+                }
+                else if (pathHandler.ContentHandler != null)
+                {
+                    logger.LogTrace($"{pathHandler.Path} using content handler handle invocation");
+                    return await HandleInvocation(pathHandler.ContentHandler, ctx);
+                }
+                else
+                {
+                    logger.LogTrace($"{pathHandler.Path} no handler for path");
+                    return false;
+                }
+            }
+
+            private async Task<bool> HandleInvocation(ISolidRpcContentHandler contentHandler, HttpContext ctx)
+            {
+                if (ctx.IsProcessed())
+                {
+                    return true;
+                }
+                try
+                {
+                    // send response
+                    var request = new SolidHttpRequest();
+                    await request.CopyFromAsync(ctx.Request);
+
+                    // get content
+                    var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
+                    using (InvocationOptions.Current.SetKeyValues(MethodInvoker.GetRequestHeadersAndQueryString(request)).Attach())
+                    {
+                        var content = await contentHandler.GetContent(path, ctx.RequestAborted);
+
+                        var resp = new SolidHttpResponse();
+                        resp.StatusCode = 200;
+                        resp.CharSet = content.CharSet;
+                        resp.MediaType = content.ContentType;
+                        resp.ResponseStream = content.Content;
+                        resp.Location = content.Location;
+                        resp.AddAllowedCorsHeaders(request);
+
+                        await resp.CopyToAsync(ctx.Response);
+                        ctx.SetProcessed();
+                    }
+                }
+                catch (FileContentNotFoundException)
+                {
+                    ctx.Response.StatusCode = FileContentNotFoundException.HttpStatusCode;
+                }
+                catch (UnauthorizedException)
+                {
+                    ctx.Response.StatusCode = UnauthorizedException.HttpStatusCode;
+                }
+                return true;
+            }
+
+            private async Task HandleInvocation(IHttpTransport httpTransport, IMethodBinding methodBinding, HttpContext context)
+            {
+                try
+                {
+                    // extract information from http context.
+                    var request = new SolidHttpRequest();
+                    await request.CopyFromAsync(context.Request);
+
+                    context.RequestServices.LogTrace<IApplicationBuilderExtensionsLogging>($"Letting {methodBinding.OperationId}:{methodBinding.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
+
+                    context.RequestServices.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = context.User;
+                    var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();
+                    var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
+                    var response = await methodInvoker.InvokeAsync(context.RequestServices, httpHandler, request, new[] { methodBinding }, context.RequestAborted);
+
+                    // send data back
+                    await response.CopyToAsync(context.Response);
+
+                    context.SetProcessed();
+                }
+                catch (Exception e)
+                {
+                    context.RequestServices.LogError<IApplicationBuilderExtensionsLogging>(e, "Failed to invoke service");
+                    throw;
                 }
             }
         }
@@ -131,13 +326,13 @@ namespace Microsoft.AspNetCore.Builder
             }
             foreach (var path in contentHandler.PathPrefixes)
             {
-                dict[$"GET{path}"] = new PathHandler() { ContentHandler = contentHandler };
-                dict[$"HEAD{path}"] = new PathHandler() { ContentHandler = contentHandler };
+                dict[$"GET{path}"] = new PathHandler(path) { ContentHandler = contentHandler };
+                dict[$"HEAD{path}"] = new PathHandler(path) { ContentHandler = contentHandler };
             }
             foreach (var path in contentHandler.GetPathMappingsAsync(false).Result)
             {
-                dict[$"GET{path.Name}"] = new PathHandler() { ContentHandler = contentHandler };
-                dict[$"HEAD{path.Name}"] = new PathHandler() { ContentHandler = contentHandler };
+                dict[$"GET{path.Name}"] = new PathHandler(path.Name) { ContentHandler = contentHandler };
+                dict[$"HEAD{path.Name}"] = new PathHandler(path.Name) { ContentHandler = contentHandler };
             }
 
             var bindingStore = applicationBuilder.ApplicationServices.GetService<IMethodBinderStore>();
@@ -164,7 +359,7 @@ namespace Microsoft.AspNetCore.Builder
                 var path = $"{o.Method}{httpTransport.OperationAddress.LocalPath}";
                 if(!dict.TryGetValue(path, out PathHandler binding))
                 {
-                    dict[path] = binding = new PathHandler();
+                    dict[path] = binding = new PathHandler(path);
                 }
                 binding.MethodBinding = o;
                 binding.HttpTransport = httpTransport;
@@ -173,22 +368,32 @@ namespace Microsoft.AspNetCore.Builder
                 path = $"OPTIONS{httpTransport.OperationAddress.LocalPath}";
                 if (!dict.TryGetValue(path, out binding))
                 {
-                    dict[path] = binding = new PathHandler();
+                    dict[path] = binding = new PathHandler(path);
                 }
                 binding.MethodBinding = o;
                 binding.HttpTransport = httpTransport;
             }
 
             //
-            // start mapping paths
+            // map all the paths to segment handlers
             //
-            foreach(var method in dict.Keys.Select(o => o.Split('/')[0]).Distinct())
-            {
-                applicationBuilder.MapWhen(
-                    ctx => string.Equals(ctx.Request.Method, method, StringComparison.InvariantCultureIgnoreCase),
-                    (ab) => BindPath(ab, method, dict, preInvoke, postInvoke));
-            }
+            var rootSegment = new SegmentHandler(null, null, null, preInvoke, postInvoke);
+            rootSegment.Initialize(dict);
+            applicationBuilder.Use((ctx, next) => HandleRequest(ctx, next, rootSegment));
+
             return applicationBuilder;
+        }
+
+        private static async Task HandleRequest(HttpContext ctx, Func<Task> next, SegmentHandler rootSegment)
+        {
+            if(await rootSegment.HandleRequest(ctx))
+            {
+                return;
+            }
+            else
+            {
+                await next();
+            }
         }
 
         private static async Task RewriteUrl(HttpContext ctx, Func<Task> next)
@@ -209,133 +414,6 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             await next();
-
-            logger.LogTrace($"Matched segments {string.Join("", ctx.GetPathMatches())}");
-        }
-
-        private static void BindPath(
-            IApplicationBuilder ab, 
-            string pathPrefix, 
-            Dictionary<string, PathHandler> paths,
-            Func<HttpContext, Task> preInvoke,
-            Func<HttpContext, Task> postInvoke)
-        {
-            ab.ApplicationServices.LogInformation<IApplicationBuilderExtensionsLogging>($"Handling path {pathPrefix}");
-
-            if (paths.TryGetValue($"{pathPrefix}/", out PathHandler staticHandler))
-            {
-                if(staticHandler.ContentHandler != null)
-                {
-                    ConnectStaticContent(ab, staticHandler.ContentHandler);
-                }
-            }
-
-            // drill down in sub paths
-            var parts = paths.Select(o => o.Key)
-                .Where(o => o.StartsWith($"{pathPrefix}/"))
-                .Select(o => o.Substring(pathPrefix.Length+1).Split('/')[0])
-                .Distinct()
-                .ToList();
-
-            var fixedPaths = parts
-                .Where(o => !o.StartsWith("{"))
-                .Select(o => $"/{o}")
-                .ToList();
-
-            foreach (var part in parts)
-            {
-                ab.MapWhen(ctx => IsMatch(ctx, $"/{part}", fixedPaths), (sab) => BindPath(sab, $"{pathPrefix}/{part}", paths, preInvoke, postInvoke));
-            }
-
-            // add handler for this path
-            if (paths.TryGetValue(pathPrefix, out PathHandler pathHandler))
-            {
-                // emit to log
-                ab.ApplicationServices.LogInformation<IApplicationBuilderExtensionsLogging>($"Binding path {pathPrefix} to {pathHandler}");
-                
-                // bind path
-                if(pathHandler.MethodBinding != null)
-                {
-                    ab.Run(async (ctx) => {
-                        try
-                        {
-                            await preInvoke.Invoke(ctx);
-                            await HandleInvocation(pathHandler.HttpTransport, pathHandler.MethodBinding, ctx);
-                        }
-                        finally
-                        {
-                            await postInvoke.Invoke(ctx);
-                        }
-                    });
-                }
-                else if (pathHandler.ContentHandler != null)
-                {
-                    ConnectStaticContent(ab, pathHandler.ContentHandler);
-                }
-            }
-        }
-
-        private static void ConnectStaticContent(IApplicationBuilder ab, ISolidRpcContentHandler contentHandler)
-        {
-            ab.Use(async (ctx, next) =>
-            {
-                await next();
-                await HandleInvocation(contentHandler, ctx);
-            });
-        }
-
-        private static bool IsMatch(HttpContext ctx, string segment, IEnumerable<string> fixedPaths)
-        {
-            var path = ctx.Request.Path.Value;
-            if (!path.StartsWith("/"))
-            {
-                return ctx.AddPathMiss(segment, "!/");
-            }
-            var nextSlashIdx = path.IndexOf('/', 1);
-            if(nextSlashIdx > -1)
-            {
-                path = path.Substring(0, nextSlashIdx);
-            }
-            if(path == segment)
-            {
-                ctx.Request.Path = ctx.Request.Path.Value.Substring(path.Length);
-                ctx.Request.PathBase = ctx.Request.PathBase.Add(path);
-                return ctx.AddPathMatch(segment);
-            }
-            if(fixedPaths.Contains(path))
-            {
-                return ctx.AddPathMiss (segment, "fixed");
-            }
-            if(fixedPaths.Contains("/*"))
-            {
-                return ctx.AddPathMatch(segment);
-            }
-            if (segment.StartsWith("/{"))
-            {
-                // we need to use the "raw" url to get correct data 
-                var reqFeat = (IHttpRequestFeature)ctx.Features[typeof(IHttpRequestFeature)];
-                var addrTrans = ctx.RequestServices.GetRequiredService<IMethodAddressTransformer>();
-                var rawPath = addrTrans.RewritePath(reqFeat.RawTarget);
-
-                var nextRawSegment = GetNextRawSegment(ctx.Request.PathBase, rawPath);
-                nextRawSegment = DecodeHex(nextRawSegment, '/');
-                
-                path = ctx.Request.Path.Value;
-                if (!path.StartsWith(nextRawSegment))
-                {
-                    nextRawSegment = DecodeHex(nextRawSegment);
-                    if (!path.StartsWith(nextRawSegment))
-                    {
-                        throw new Exception("Path does not start with extracted next segement");
-                    }
-                }
-
-                ctx.Request.Path = path.Substring(nextRawSegment.Length);
-                ctx.Request.PathBase = ctx.Request.PathBase.Add(nextRawSegment);
-                return ctx.AddPathMatch(segment);
-            }
-
-            return ctx.AddPathMiss(segment, $"!{path}");
         }
 
         /// <summary>
@@ -391,130 +469,89 @@ namespace Microsoft.AspNetCore.Builder
 
         private static string DecodeHex(string str, params char[] skipChars)
         {
-            var sb = new StringBuilder();
-            int escapeSequence = 0;
-            for(int i = 0; i < str.Length; i++)
-            {
-                switch (str[i])
-                {
-                    case '%':
-                        escapeSequence ++;
-                        sb.Append(str[i]);
-                        break;
-                    default:
-                        if (escapeSequence > 0)
-                        {
-                            escapeSequence++;
-                        }
-                        sb.Append(str[i]);
-                        if (escapeSequence == 3)
-                        {
-                            var b = Convert.ToByte($"{sb[sb.Length - 2]}{sb[sb.Length - 1]}", 16);
-                            if (b < 126)
-                            {
-                                var c = (char)b;
-                                if (!skipChars.Contains(c))
-                                {
-                                    sb.Length = sb.Length - 3;
-                                    sb.Append(c);
-                                }
-                                escapeSequence = 0;
-                            }
-                            else
-                            {
-                                // continue reading next escape sequence
-                            }
-                        }
-                        else if (escapeSequence == 4)
-                        {
-                            if (str[i] != '%')
-                            {
-                                escapeSequence = 0;
-                            }
-                        }
-                        else if (escapeSequence == 6)
-                        {
-                            var b1 = Convert.ToByte($"{sb[sb.Length - 2]}{sb[sb.Length - 1]}", 16);
-                            var b2 = Convert.ToByte($"{sb[sb.Length - 5]}{sb[sb.Length - 4]}", 16);
-                            var x = Encoding.UTF8.GetString(new byte[] { b2, b1})[0];
-                            if (!skipChars.Contains(x))
-                            {
-                                sb.Length = sb.Length - 6;
-                                sb.Append(x);
-                            }
-                            escapeSequence = 0;
-                        }
-                        break;
-                }
-            }
-            return sb.ToString();
-        }
+            if (string.IsNullOrEmpty(str)) return str;
 
-        private static async Task HandleInvocation(ISolidRpcContentHandler contentHandler, HttpContext ctx)
-        {
-            if(ctx.IsProcessed())
-            {
-                return;
-            }
+            // Simple percent-decoder that collects consecutive %XX sequences,
+            // decodes them as UTF-8 bytes and appends decoded chars unless they are in skipChars.
+            // Use a pooled byte buffer to avoid allocating for common small sequences.
+
+            var skipSet = (skipChars == null || skipChars.Length == 0) ? null : new HashSet<char>(skipChars);
+            var sb = new StringBuilder(str.Length);
+            var pool = System.Buffers.ArrayPool<byte>.Shared;
+            byte[] rented = null;
             try
             {
-                // send response
-                var request = new SolidHttpRequest();
-                await request.CopyFromAsync(ctx.Request);
-
-                // get content
-                var path = $"{ctx.Request.PathBase}{ctx.Request.Path}";
-                using(InvocationOptions.Current.SetKeyValues(MethodInvoker.GetRequestHeadersAndQueryString(request)).Attach())
+                int len = str.Length;
+                for (int i = 0; i < len; i++)
                 {
-                    var content = await contentHandler.GetContent(path, ctx.RequestAborted);
+                    char c = str[i];
+                    if (c != '%')
+                    {
+                        sb.Append(c);
+                        continue;
+                    }
 
-                    var resp = new SolidHttpResponse();
-                    resp.StatusCode = 200;
-                    resp.CharSet = content.CharSet;
-                    resp.MediaType = content.ContentType;
-                    resp.ResponseStream = content.Content;
-                    resp.Location = content.Location;
-                    resp.AddAllowedCorsHeaders(request);
+                    // collect consecutive %XX sequences
+                    int j = i;
+                    int byteCount = 0;
+                    while (j + 2 < len && str[j] == '%')
+                    {
+                        int hi = HexValue(str[j + 1]);
+                        int lo = HexValue(str[j + 2]);
+                        if (hi < 0 || lo < 0) break;
+                        if (rented == null)
+                        {
+                            rented = pool.Rent(8);
+                        }
+                        if (byteCount >= rented.Length)
+                        {
+                            // grow buffer
+                            var newBuf = pool.Rent(rented.Length * 2);
+                            Array.Copy(rented, newBuf, rented.Length);
+                            pool.Return(rented);
+                            rented = newBuf;
+                        }
+                        rented[byteCount++] = (byte)((hi << 4) | lo);
+                        j += 3;
+                    }
 
-                    await resp.CopyToAsync(ctx.Response);
-                    ctx.SetProcessed();
+                    if (byteCount == 0)
+                    {
+                        // not a valid escape sequence, copy the '%' char
+                        sb.Append('%');
+                        continue;
+                    }
+
+                    // Decode collected bytes as UTF8
+                    string decoded = Encoding.UTF8.GetString(rented, 0, byteCount);
+
+                    // If decoded result is a single char and it's in skipSet, then append the original percent-encoded text
+                    if (decoded.Length == 1 && skipSet != null && skipSet.Contains(decoded[0]))
+                    {
+                        sb.Append(str.Substring(i, (j - i)));
+                    }
+                    else
+                    {
+                        sb.Append(decoded);
+                    }
+
+                    i = j - 1; // advance outer loop
                 }
+
+                return sb.ToString();
             }
-            catch (FileContentNotFoundException)
+            finally
             {
-                ctx.Response.StatusCode = FileContentNotFoundException.HttpStatusCode;
-            }
-            catch (UnauthorizedException)
-            {
-                ctx.Response.StatusCode = UnauthorizedException.HttpStatusCode;
+                if (rented != null) pool.Return(rented);
             }
         }
 
-        private static async Task HandleInvocation(IHttpTransport httpTransport, IMethodBinding methodBinding, HttpContext context)
+        private static int HexValue(char c)
         {
-            try
-            {
-                // extract information from http context.
-                var request = new SolidHttpRequest();
-                await request.CopyFromAsync(context.Request);
-                
-                context.RequestServices.LogTrace<IApplicationBuilderExtensionsLogging>($"Letting {methodBinding.OperationId}:{methodBinding.MethodInfo} handle invocation to {context.Request.Method}:{context.Request.PathBase}{context.Request.Path}");
-
-                context.RequestServices.GetRequiredService<ISolidRpcAuthorization>().CurrentPrincipal = context.User;
-                var httpHandler = context.RequestServices.GetRequiredService<HttpHandler>();
-                var methodInvoker = context.RequestServices.GetRequiredService<IMethodInvoker>();
-                var response = await methodInvoker.InvokeAsync(context.RequestServices, httpHandler, request, new[] { methodBinding }, context.RequestAborted);
-
-                // send data back
-                await response.CopyToAsync(context.Response);
-
-                context.SetProcessed();
-            }
-            catch (Exception e)
-            {
-                context.RequestServices.LogError<IApplicationBuilderExtensionsLogging>(e, "Failed to invoke service");
-                throw;
-            }
+            if (c >= '0' && c <= '9') return c - '0';
+            if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+            if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+            return -1;
         }
     }
 }

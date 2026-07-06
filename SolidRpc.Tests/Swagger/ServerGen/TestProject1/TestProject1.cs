@@ -18,11 +18,11 @@
 //Microsoft.AspNetCore.StaticFiles/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.staticfiles\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.StaticFiles.dll
 //Microsoft.AspNetCore.WebUtilities/2.1.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.aspnetcore.webutilities\2.1.1\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll
 //Microsoft.Bcl.Cryptography/10.0.2=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.bcl.cryptography\10.0.2\lib\net9.0\Microsoft.Bcl.Cryptography.dll
-//Microsoft.CodeAnalysis.Common/5.3.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\5.3.0\lib\net9.0\Microsoft.CodeAnalysis.dll
-//Microsoft.CodeAnalysis.CSharp/5.3.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\5.3.0\lib\net9.0\Microsoft.CodeAnalysis.CSharp.dll
-//Microsoft.CodeAnalysis.CSharp.Scripting/5.3.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\5.3.0\lib\net9.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-//Microsoft.CodeAnalysis.Scripting.Common/5.3.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.scripting.common\5.3.0\lib\net9.0\Microsoft.CodeAnalysis.Scripting.dll
-//Microsoft.CodeCoverage/18.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codecoverage\18.6.0\lib\net8.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
+//Microsoft.CodeAnalysis.Common/5.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.common\5.6.0\lib\net8.0\Microsoft.CodeAnalysis.dll
+//Microsoft.CodeAnalysis.CSharp/5.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp\5.6.0\lib\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+//Microsoft.CodeAnalysis.CSharp.Scripting/5.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.csharp.scripting\5.6.0\lib\net8.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+//Microsoft.CodeAnalysis.Scripting.Common/5.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codeanalysis.scripting.common\5.6.0\lib\net8.0\Microsoft.CodeAnalysis.Scripting.dll
+//Microsoft.CodeCoverage/18.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.codecoverage\18.7.0\lib\net8.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 //Microsoft.Extensions.Caching.Abstractions/1.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.caching.abstractions\1.0.0\lib\netstandard1.0\Microsoft.Extensions.Caching.Abstractions.dll
 //Microsoft.Extensions.Caching.Memory/1.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.caching.memory\1.0.0\lib\netstandard1.3\Microsoft.Extensions.Caching.Memory.dll
 //Microsoft.Extensions.Configuration/10.0.9=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.extensions.configuration\10.0.9\lib\net9.0\Microsoft.Extensions.Configuration.dll
@@ -54,7 +54,7 @@
 //Microsoft.IdentityModel.Logging/8.19.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.logging\8.19.1\lib\net9.0\Microsoft.IdentityModel.Logging.dll
 //Microsoft.IdentityModel.Tokens/8.19.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.identitymodel.tokens\8.19.1\lib\net9.0\Microsoft.IdentityModel.Tokens.dll
 //Microsoft.Net.Http.Headers/2.2.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.net.http.headers\2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll
-//Microsoft.NET.Test.Sdk/18.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.net.test.sdk\18.6.0\lib\net8.0\_._
+//Microsoft.NET.Test.Sdk/18.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.net.test.sdk\18.7.0\lib\net8.0\_._
 //Microsoft.NETCore.Platforms/1.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.netcore.platforms\1.0.1\lib\netstandard1.0\_._
 //Microsoft.NETCore.Targets/1.0.1=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.netcore.targets\1.0.1\lib\netstandard1.0\_._
 //Microsoft.OpenApi/1.6.22=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.openapi\1.6.22\lib\netstandard2.0\Microsoft.OpenApi.dll
@@ -63,8 +63,8 @@
 //Microsoft.Testing.Extensions.VSTestBridge/2.1.0=>
 //Microsoft.Testing.Platform/2.1.0=>
 //Microsoft.Testing.Platform.MSBuild/2.1.0=>
-//Microsoft.TestPlatform.ObjectModel/18.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.testplatform.objectmodel\18.6.0\lib\net8.0\Microsoft.TestPlatform.CoreUtilities.dll
-//Microsoft.TestPlatform.TestHost/18.6.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.testplatform.testhost\18.6.0\lib\net8.0\Microsoft.TestPlatform.CommunicationUtilities.dll
+//Microsoft.TestPlatform.ObjectModel/18.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.testplatform.objectmodel\18.7.0\lib\net8.0\Microsoft.TestPlatform.CoreUtilities.dll
+//Microsoft.TestPlatform.TestHost/18.7.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.testplatform.testhost\18.7.0\lib\net8.0\Microsoft.TestPlatform.CommunicationUtilities.dll
 //Microsoft.Win32.SystemEvents/6.0.0=>C:\Users\Andreas Arrgård\.nuget\packages\microsoft.win32.systemevents\6.0.0\lib\net6.0\Microsoft.Win32.SystemEvents.dll
 //Moq/4.20.72=>C:\Users\Andreas Arrgård\.nuget\packages\moq\4.20.72\lib\net6.0\Moq.dll
 //Newtonsoft.Json/13.0.4=>C:\Users\Andreas Arrgård\.nuget\packages\newtonsoft.json\13.0.4\lib\net6.0\Newtonsoft.Json.dll
