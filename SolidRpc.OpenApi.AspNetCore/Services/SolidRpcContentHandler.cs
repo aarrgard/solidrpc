@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using static SolidRpc.OpenApi.AspNetCore.Services.SolidRpcContentStore;
 
 [assembly: SolidRpcService(typeof(ISolidRpcContentHandler), typeof(SolidRpcContentHandler))]
@@ -124,6 +125,9 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                         httpRequest.Method = "GET";
                         httpRequest.HostAndPort = $"{uri.Host}:{uri.Port}";
                         httpRequest.Path = uri.AbsolutePath;
+                        var query = HttpUtility.ParseQueryString(uri.Query);
+                        httpRequest.Query = query.AllKeys.Select(o => new SolidHttpRequestDataString("text/plain", o, query[o])).ToList();
+
 
                         var transport = ss.ServiceProvider.GetRequiredService<IEnumerable<ITransportHandler>>().Single(o => o.TransportType == "Http");
                         var resp = await invoc.InvokeAsync(ss.ServiceProvider, transport, httpRequest, cancellationToken);

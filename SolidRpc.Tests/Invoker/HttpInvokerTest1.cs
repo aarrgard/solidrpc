@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 using SolidRpc.Abstractions;
 using SolidRpc.Abstractions.InternalServices;
@@ -117,6 +118,15 @@ namespace SolidRpc.Tests.Invoker
             /// <param name="cancellation"></param>
             /// <returns></returns>
             Task<string> GetClientNameAsync(CancellationToken cancellation = default);
+
+            /// <summary>
+            /// Tests getting the backend values
+            /// </summary>
+            /// <param name="pathValue"></param>
+            /// <param name="queryValue"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            Task<string> GetPathOrQueryValueAsync(string pathValue, string queryValue = null, CancellationToken cancellation = default);
         }
 
         /// <summary>
@@ -290,6 +300,26 @@ namespace SolidRpc.Tests.Invoker
                 InvocationOptions.Current.TryGetValue(InvocationOptions.RequestHeaderInboundPrefix + "client", out string val);
                 return Task.FromResult(val);
             }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="pathValue"></param>
+            /// <param name="queryValue"></param>
+            /// <param name="cancellation"></param>
+            /// <returns></returns>
+            public Task<string> GetPathOrQueryValueAsync(string pathValue, string queryValue = null, CancellationToken cancellation = default)
+            {
+                if (!string.IsNullOrEmpty(pathValue))
+                {
+                    return Task.FromResult(pathValue);
+                }
+                if (!string.IsNullOrEmpty(queryValue))
+                {
+                    return Task.FromResult(queryValue);
+                }
+                return Task.FromResult<string>(null);
+            }
         }
 
         /// <summary>
@@ -418,9 +448,18 @@ namespace SolidRpc.Tests.Invoker
             services.AddSolidRpcServices(o => true);
 
             services.GetSolidRpcContentStore().AddPrefixRewrite("/test", "/SolidRpc/Tests/Invoker/HttpInvokerTest1/ITestInterface/DoYAsync");
-            services.GetSolidRpcContentStore().AddMapping("/backendValues", sp =>
+            services.GetSolidRpcContentStore().AddMapping("/backendValue", sp =>
             {
                 return sp.GetRequiredService<IInvoker<ITestInterface>>().GetUriAsync(o => o.GetBackendValueAsync(CancellationToken.None));
+            });
+
+            services.GetSolidRpcContentStore().AddMapping("/pathOrQueryValue", sp =>
+            {
+                var invocationOptions = InvocationOptions.Current;
+                invocationOptions.TryGetValue("http_in_reqq_path", out StringValues pathValue);
+                invocationOptions.TryGetValue("http_in_reqq_query", out StringValues queryValue);
+                var uri = sp.GetRequiredService<IInvoker<ITestInterface>>().GetUriAsync(o => o.GetPathOrQueryValueAsync(pathValue, queryValue, CancellationToken.None));
+                return uri;
             });
         }
 
@@ -529,12 +568,28 @@ namespace SolidRpc.Tests.Invoker
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(backendValue, out backendValue);
                 Assert.AreEqual(value, backendValue);
 
-                req = new HttpRequestMessage(HttpMethod.Get, new Uri(url, "/backendValues"));
+                req = new HttpRequestMessage(HttpMethod.Get, new Uri(url, "/backendValue"));
                 req.Headers.Add(SecKey.ToString(), SecKey.ToString());
                 cont = await httpClient.SendAsync(req);
                 backendValue = await cont.Content.ReadAsStringAsync();
                 ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(backendValue, out backendValue);
                 Assert.AreEqual(value, backendValue);
+
+                // query
+                req = new HttpRequestMessage(HttpMethod.Get, new Uri(url, "/pathOrQueryValue?query=query"));
+                req.Headers.Add(SecKey.ToString(), SecKey.ToString());
+                cont = await httpClient.SendAsync(req);
+                var pathOrQueryValue = await cont.Content.ReadAsStringAsync();
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(pathOrQueryValue, out pathOrQueryValue);
+                Assert.AreEqual("query", pathOrQueryValue);
+
+                // path
+                req = new HttpRequestMessage(HttpMethod.Get, new Uri(url, "/pathOrQueryValue?path=path"));
+                req.Headers.Add(SecKey.ToString(), SecKey.ToString());
+                cont = await httpClient.SendAsync(req);
+                pathOrQueryValue = await cont.Content.ReadAsStringAsync();
+                ctx.ClientServiceProvider.GetRequiredService<ISerializerFactory>().DeserializeFromString(pathOrQueryValue, out pathOrQueryValue);
+                Assert.AreEqual("path", pathOrQueryValue);
 
             }
         }
