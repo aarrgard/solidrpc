@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -39,7 +40,21 @@ namespace SolidRpc.OpenApi.Model.Serialization.Newtonsoft
                     break;
                 case JsonToken.Integer:
                 case JsonToken.Float:
-                    sb?.Append(r.Value);
+                    var x = r.Value;
+                    string t;
+                    if (x is double d)
+                    {
+                        t = d.ToString(CultureInfo.InvariantCulture);
+                    }
+                    else if (x is long l)
+                    {
+                        t = l.ToString(CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        t = x.ToString();
+                    }
+                    sb?.Append(t);
                     break;
                 case JsonToken.Boolean:
                     sb?.Append(((bool)r.Value) ? "true" : "false");
