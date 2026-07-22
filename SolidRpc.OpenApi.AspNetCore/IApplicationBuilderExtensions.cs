@@ -132,6 +132,7 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     if (PathHandler == null)
                     {
+                        GetLogger(ctx).LogTrace($"No match @{matched}[{rest}]");
                         return false;
                     }
                     return await HandleInvocation(PathHandler, ctx);
@@ -188,17 +189,22 @@ namespace Microsoft.AspNetCore.Builder
                 }
                 else
                 {
+                    GetLogger(ctx).LogTrace($"No match @{matched}[{rest}]");
                     return false;
                 }
             }
 
+            private ILogger GetLogger(HttpContext ctx)
+            {
+                return ctx.RequestServices.GetRequiredService<ILogger<IApplicationBuilderExtensionsLogging>>();
+            }
+
             private async Task<bool> HandleInvocation(PathHandler pathHandler, HttpContext ctx)
             {
-                var logger = ctx.RequestServices.GetRequiredService<ILogger<IApplicationBuilderExtensionsLogging>>();
                 // bind path
                 if (pathHandler.MethodBinding != null)
                 {
-                    logger.LogTrace($"{pathHandler.Path} using method binding to handle invocation");
+                    GetLogger(ctx).LogTrace($"{pathHandler.Path} using method binding to handle invocation");
                     try
                     {
                         await PreInvoke.Invoke(ctx);
@@ -212,12 +218,12 @@ namespace Microsoft.AspNetCore.Builder
                 }
                 else if (pathHandler.ContentHandler != null)
                 {
-                    logger.LogTrace($"{pathHandler.Path} using content handler handle invocation");
+                    GetLogger(ctx).LogTrace($"{pathHandler.Path} using content handler handle invocation");
                     return await HandleInvocation(pathHandler.ContentHandler, ctx);
                 }
                 else
                 {
-                    logger.LogTrace($"{pathHandler.Path} no handler for path");
+                    GetLogger(ctx).LogTrace($"{pathHandler.Path} no handler for path");
                     return false;
                 }
             }
