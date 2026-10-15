@@ -69,7 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 if(string.IsNullOrEmpty(localAuthority))
                 {
-                    localAuthority = services.GetSolidRpcOAuth2LocalIssuer();
+                    localAuthority = sp.GetRequiredService<IMethodAddressTransformer>().GetSolidRpcOAuth2LocalIssuer();
                 }
                 var auth = sp.GetRequiredService<IAuthorityFactory>().GetLocalAuthority(localAuthority);
                 conf?.Invoke(auth);
@@ -85,10 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static string GetSolidRpcOAuth2LocalIssuer(this IServiceCollection services)
         {
-            var baseAddress = services.GetSolidRpcService<IMethodAddressTransformer>().BaseAddress.ToString();
-            if (baseAddress.EndsWith("/")) baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
-            var oauth2Issuer = $"{baseAddress}/SolidRpc/Abstractions";
-            return oauth2Issuer;
+            return services.GetSolidRpcService<IMethodAddressTransformer>().GetSolidRpcOAuth2LocalIssuer();
         }
 
         /// <summary>

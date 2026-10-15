@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SolidRpc.OpenApi.AspNetCore {
@@ -123,6 +124,7 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     return segmentHandler.HandlePath(ctx, "", ctx.Request.PathBase + ctx.Request.Path, false);
                 }
+                GetLogger(ctx).LogTrace($"No method match [{ctx.Request.Method}]");
                 return Task.FromResult(false);
             }
 
@@ -132,7 +134,7 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     if (PathHandler == null)
                     {
-                        GetLogger(ctx).LogTrace($"No match @{matched}[{rest}]");
+                        GetLogger(ctx).LogTrace($"No path handler @{matched}[{rest}]");
                         return false;
                     }
                     return await HandleInvocation(PathHandler, ctx);
