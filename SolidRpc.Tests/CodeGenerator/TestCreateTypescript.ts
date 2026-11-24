@@ -662,7 +662,7 @@ export namespace Abstractions {
              */
             export var AllowedCorsOriginsObservable = AllowedCorsOriginsSubject.asObservable().pipe(share());
             /**
-             * Returns the base url for this host
+             * Returns the allowed cors origins for this host. This is used to determine if a request from a specific origin is allowed to access the host.
              * @param cancellationToken 
              */
             export function AllowedCorsOrigins(
@@ -710,7 +710,7 @@ export namespace Abstractions {
              */
             export var ParseDateTimeObservable = ParseDateTimeSubject.asObservable().pipe(share());
             /**
-             * Returns the list of allowed cors origins.
+             * Parses a date time string into a DateTimeOffset. The date time string is expected to be in the default timezone of the host.
              * @param dateTime 
              * @param cancellationToken 
              */
@@ -754,6 +754,54 @@ export namespace Abstractions {
                         throw 'Response code != 200('+code+')';
                     }
                 }, ListAssemblyNamesSubject);
+            }
+            let ApplicationZipNameSubject = new Subject<string>();
+            /**
+             * This observable is hot and monitors all the responses from the ApplicationZipName invocations.
+             */
+            export var ApplicationZipNameObservable = ApplicationZipNameSubject.asObservable().pipe(share());
+            /**
+             * Returns the name of the assembly that is executing this code. This is usually the entry point of the application.
+             * @param cancellationToken 
+             */
+            export function ApplicationZipName(
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<string> {
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/ApplicationZipName';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<string>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return data as string;
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, ApplicationZipNameSubject);
+            }
+            let ApplicationZipSubject = new Subject<Types.FileContent>();
+            /**
+             * This observable is hot and monitors all the responses from the ApplicationZip invocations.
+             */
+            export var ApplicationZipObservable = ApplicationZipSubject.asObservable().pipe(share());
+            /**
+             * Returns the application assemblies that are located on this host. This is usually the entry point of the application and all the referenced assemblies.
+             * @param cancellationToken 
+             */
+            export function ApplicationZip(
+                cancellationToken? : CancellationToken
+            ): SolidRpcJs.RpcServiceRequestTyped<Types.FileContent> {
+                let __ns = SolidRpcJs.rootNamespace.declareNamespace('SolidRpc.Abstractions.Services.ISolidRpcHost');
+                let __uri = __ns.getStringValue('baseUrl','https://localhost/') + 'SolidRpc/Abstractions/Services/ISolidRpcHost/ApplicationZip';
+                let query: { [index: string]: any } = {};
+                let headers: { [index: string]: any } = {};
+                return new SolidRpcJs.RpcServiceRequestTyped<Types.FileContent>('get', __uri, query, headers, null, cancellationToken, function(code : number, data : any) {
+                    if(code == 200) {
+                        return new Types.FileContent(data);
+                    } else {
+                        throw 'Response code != 200('+code+')';
+                    }
+                }, ApplicationZipSubject);
             }
             }
         /**
