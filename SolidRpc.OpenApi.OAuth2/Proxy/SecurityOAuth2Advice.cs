@@ -28,7 +28,7 @@ namespace SolidRpc.OpenApi.OAuth2.Proxy
         private const string SolidRpcJwtTokenCookieName = "SolidRpcJwtToken";
         /// <summary>
         /// The advices that must run after this advice
-        /// </summary>
+        /// </summary>  
         public static IEnumerable<Type> BeforeAdvices = new Type[] { typeof(SecurityPathClaimAdvice<,,>), typeof(SecurityPathClaimAdvice<,,>) };
 
         /// <summary>

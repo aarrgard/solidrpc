@@ -317,6 +317,36 @@ namespace Microsoft.Extensions.DependencyInjection {
                 return _config.InterceptAsync<System.Collections.Generic.IEnumerable<System.String>>(_serviceProvider, impl, mi_ListAssemblyNames_cancellationToken, new object[] {cancellationToken}, () => impl.ListAssemblyNames(cancellationToken));
             }
         
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_ApplicationZipName_cancellationToken = GetMethodInfo("ApplicationZipName", new System.Type[] {typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
+            public System.Threading.Tasks.Task<System.String> ApplicationZipName(
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<System.String>(_serviceProvider, impl, mi_ApplicationZipName_cancellationToken, new object[] {cancellationToken}, () => impl.ApplicationZipName(cancellationToken));
+            }
+        
+            /// <summary>
+            /// 
+            /// </summary>
+            private static System.Reflection.MethodInfo mi_ApplicationZip_cancellationToken = GetMethodInfo("ApplicationZip", new System.Type[] {typeof(System.Threading.CancellationToken)});
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="cancellationToken"></param>
+            [SolidRpc.Abstractions.Security(new [] {"SolidRpcHostPermission"})]
+            public System.Threading.Tasks.Task<SolidRpc.Abstractions.Types.FileContent> ApplicationZip(
+                System.Threading.CancellationToken cancellationToken) {
+                var impl = (SolidRpc.Abstractions.Services.ISolidRpcHost)_serviceProvider.GetRequiredService(_config.Implementation ?? throw new System.Exception($"No implementation registered for service {_config.ProxyType.FullName}"));
+                return _config.InterceptAsync<SolidRpc.Abstractions.Types.FileContent>(_serviceProvider, impl, mi_ApplicationZip_cancellationToken, new object[] {cancellationToken}, () => impl.ApplicationZip(cancellationToken));
+            }
+        
         }
     
         /// <summary>

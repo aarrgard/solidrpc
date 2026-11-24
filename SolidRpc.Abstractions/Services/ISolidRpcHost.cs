@@ -72,7 +72,7 @@ namespace SolidRpc.Abstractions.Services
         Task<Uri> BaseAddress(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Returns the base url for this host
+        /// Returns the allowed cors origins for this host. This is used to determine if a request from a specific origin is allowed to access the host.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -88,7 +88,7 @@ namespace SolidRpc.Abstractions.Services
         Task<string> DefaultTimezone(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Returns the list of allowed cors origins.
+        /// Parses a date time string into a DateTimeOffset. The date time string is expected to be in the default timezone of the host.
         /// </summary>
         /// <param name="dateTime"></param>
         /// <param name="cancellationToken"></param>
@@ -102,5 +102,19 @@ namespace SolidRpc.Abstractions.Services
         /// <returns></returns>
         [Security(nameof(SolidRpcHostPermission))]
         Task<IEnumerable<string>> ListAssemblyNames(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Returns the name of the assembly that is executing this code. This is usually the entry point of the application.
+        /// </summary>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<string> ApplicationZipName(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Returns the application assemblies that are located on this host. This is usually the entry point of the application and all the referenced assemblies.
+        /// </summary>
+        /// <returns></returns>
+        [Security(nameof(SolidRpcHostPermission))]
+        Task<FileContent> ApplicationZip(CancellationToken cancellationToken = default);
     }
 }

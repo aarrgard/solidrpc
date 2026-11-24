@@ -2633,7 +2633,7 @@
         </member>
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.AllowedCorsOrigins(System.Threading.CancellationToken)">
             <summary>
-            Returns the base url for this host
+            Returns the allowed cors origins for this host. This is used to determine if a request from a specific origin is allowed to access the host.
             </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
@@ -2647,7 +2647,7 @@
         </member>
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.ParseDateTime(System.String,System.Threading.CancellationToken)">
             <summary>
-            Returns the list of allowed cors origins.
+            Parses a date time string into a DateTimeOffset. The date time string is expected to be in the default timezone of the host.
             </summary>
             <param name="dateTime"></param>
             <param name="cancellationToken"></param>
@@ -2656,6 +2656,18 @@
         <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.ListAssemblyNames(System.Threading.CancellationToken)">
             <summary>
             Returns all the assembly names that are located on this host
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.ApplicationZipName(System.Threading.CancellationToken)">
+            <summary>
+            Returns the name of the assembly that is executing this code. This is usually the entry point of the application.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SolidRpc.Abstractions.Services.ISolidRpcHost.ApplicationZip(System.Threading.CancellationToken)">
+            <summary>
+            Returns the application assemblies that are located on this host. This is usually the entry point of the application and all the referenced assemblies.
             </summary>
             <returns></returns>
         </member>

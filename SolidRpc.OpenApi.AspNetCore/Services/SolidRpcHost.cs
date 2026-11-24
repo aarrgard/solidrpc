@@ -12,6 +12,7 @@ using SolidRpc.OpenApi.AspNetCore.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -269,6 +270,36 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
                 assemblyNames.Add(a.FullName);
             }
             return Task.FromResult(assemblyNames.AsEnumerable());
+        }
+
+        public Task<string> ApplicationZipName(CancellationToken cancellationToken = default)
+        {
+            var ass = Assembly.GetEntryAssembly();
+            return Task.FromResult($"{ass.GetName().Name}-{ass.GetName().Version}");
+        }
+
+        public async Task<FileContent> ApplicationZip(CancellationToken cancellationToken = default)
+        {
+
+            // determine where this assembly is located
+            var location = GetType().Assembly.Location;
+            var folder = new FileInfo(location).Directory;
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+                {
+                    foreach (var assemblyFile in folder.EnumerateFiles("*", SearchOption.AllDirectories))
+                    {
+                        archive.CreateEntryFromFile(assemblyFile.FullName, assemblyFile.FullName.Substring(folder.FullName.Length + 1));
+                    }
+                }
+                return new FileContent
+                {
+                    FileName = $"{await ApplicationZipName(cancellationToken)}.zip",
+                    ContentType = "application/zip",
+                    Content = new MemoryStream(memoryStream.ToArray())
+                };
+            }
         }
     }
 }

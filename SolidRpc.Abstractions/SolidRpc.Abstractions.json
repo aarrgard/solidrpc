@@ -342,7 +342,7 @@
         "tags": [
           "ISolidRpcHost"
         ],
-        "description": "Returns the base url for this host",
+        "description": "Returns the allowed cors origins for this host. This is used to determine if a request from a specific origin is allowed to access the host.",
         "operationId": "Get_SolidRpc_Abstractions_Services_ISolidRpcHost_AllowedCorsOrigins",
         "produces": [
           "application/json"
@@ -355,6 +355,46 @@
               "items": {
                 "type": "string"
               }
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/ApplicationZip": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the application assemblies that are located on this host. This is usually the entry point of the application and all the referenced assemblies.",
+        "operationId": "Get_SolidRpc_Abstractions_Services_ISolidRpcHost_ApplicationZip",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/Services/ISolidRpcHost/ApplicationZipName": {
+      "get": {
+        "tags": [
+          "ISolidRpcHost"
+        ],
+        "description": "Returns the name of the assembly that is executing this code. This is usually the entry point of the application.",
+        "operationId": "Get_SolidRpc_Abstractions_Services_ISolidRpcHost_ApplicationZipName",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The response type",
+            "schema": {
+              "type": "string"
             }
           }
         }
@@ -541,7 +581,7 @@
         "tags": [
           "ISolidRpcHost"
         ],
-        "description": "Returns the list of allowed cors origins.",
+        "description": "Parses a date time string into a DateTimeOffset. The date time string is expected to be in the default timezone of the host.",
         "operationId": "Get_SolidRpc_Abstractions_Services_ISolidRpcHost_ParseDateTime_1",
         "produces": [
           "application/json"
