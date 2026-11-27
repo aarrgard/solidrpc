@@ -274,7 +274,7 @@ namespace SolidRpc.OpenApi.AspNetCore.Services
 
         public Task<string> ApplicationZipName(CancellationToken cancellationToken = default)
         {
-            var ass = Assembly.GetEntryAssembly();
+            var ass = Assembly.GetExecutingAssembly();
             return Task.FromResult($"{ass.GetName().Name}-{ass.GetName().Version}");
         }
 
